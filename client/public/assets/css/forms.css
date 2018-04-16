@@ -1,0 +1,61 @@
+@charset "utf-8";
+/* Forms CSS Document */
+
+#contact-main input[type=text], #contact-main select, #contact-main textarea {
+  display: block;
+  border:1px solid #b7b5a8;
+  padding:5px 1%;
+  width:90%;
+}
+#contact-main input:focus, #contact-main textarea:focus {
+  background: #F9F7EF;
+  outline: none;
+}
+.contact-us-field {
+  margin-bottom:2rem;
+}
+.required {
+  padding-left: 5px;
+}
+.require-input:after {
+  content: "*";
+}
+.input-invalid label {
+  color: orangered;
+}
+.input-invalid input {
+  background-color: yellow;
+}
+.field-required {
+}
+.field-required label {
+  color: red;
+}
+.field-required label:after {
+  content: "* required field";
+}
+
+#reviewerRejectionRationale {
+  margin-bottom: 1.5rem;
+}
+
+/* search */
+.search-wrapper {
+  padding: 0;
+}
+.search-wrapper label { /* this should probably be handled different for 508 */
+  display: none;
+}
+.search-wrapper .searchField input { /* can we do away with the wrappers for the field and button? */
+  background: #ffffff;
+  padding: 3px 2% 2px 1%;
+  margin: 0 0 0 0;
+  width: 95%;
+  display: inline-block;
+  border: 2px rgba(0, 149, 138, 1) solid;
+  transition: all 0.4s ease-in-out;
+}
+.search-wrapper .searchField input:focus {
+  outline: none;
+  background: #F9F7EF;
+}
