@@ -5,6 +5,7 @@ import './Home.css';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeader from '../TableHeader/TableHeader';
+import Workbook from '../Workbook/Workbook'
 
 
 class Home extends Component {
@@ -19,7 +20,8 @@ class Home extends Component {
 				order:"asc"
 			},
 			pageInfo:{page:1,pageSize:15,total:0},
-			lastPage:1
+			lastPage:1,
+			data1:[]
 		};
 		this.changeText = this.changeText.bind(this);
 		this.search = this.search.bind(this);
@@ -103,6 +105,29 @@ class Home extends Component {
 		this.search(pageInfo.page,orderBy);
 	}
 
+	loadingData = (next) =>{
+		
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			searchText:state.searchString,
+			orderBy:state.orderBy,
+			paging:state.pageInfo
+		};
+		reqBody.paging.page = 0;
+		fetch('./api/export/home',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let list = result.data;
+			next(list);
+		});
+	}
+
 	renderTableHeader(title, percentage){
 		return (
 			<TableHeader width={percentage} value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
@@ -158,6 +183,7 @@ class Home extends Component {
 				</tr>
   			);
   		}
+  		
       return (
 		<div>
 			<p className="welcome">Welcome! Below is the list of cohorts participating in the Cancer Epidemiology Descriptive Cohort Database (CEDCD). Search for a cohort by name or select a cohort to view a brief description and contact information. If you want to know more about one or more cohorts, select one of the options from the menu at the top.
@@ -185,7 +211,15 @@ class Home extends Component {
 			          </ul>
 			        </div>
 			        <div id="tableExport" className="col-md-2 col-md-offset-4">
-		              <a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+			        	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+					      <Workbook.Sheet name="Cohort_Selection">
+					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
+					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+					        <Workbook.Column label="Website" value="cohort_web_site"/>
+					        <Workbook.Column label="Last Updated" value="update_time"/>
+					      </Workbook.Sheet>
+					    </Workbook>
+		              
 		            </div>
 			      </div>
 		          <div className="clearFix"></div>
