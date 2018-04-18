@@ -419,18 +419,23 @@ class Details extends Component {
 	  			let id = item.cohort_id;
 	  			let url = './cohort?id='+id;
 	  			let website = item.cohort_web_site;
-	  			if(website.trim() === ""){
-	  				website = "javascript:void(0);";
-	  			}
+				if(!website.startsWith("http") && !website.startsWith("www")){
+					website = "";
+				}
+				let website_label = website;
+				if(website.length > 30){
+					website_label = website.substring(0,27) + "...";
+				}
 	  			return (
 	  				<tr key={id}>
 	  					<td headers="table-select-col">
 	  						<SelectBox onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
 	  					</td>
 						<td headers="cohort_name">
-							<a href={website} target="_blank">{item.cohort_name}</a>
+							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+						<td><a href={website} title={website} target="_blank">{website_label}</a></td>
 						<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
 	  			);
@@ -514,8 +519,12 @@ class Details extends Component {
 								<thead>
 									<tr id="summaryHeader" className="col-header">
 										{this.renderSelectHeader("5%")}
-										{this.renderTableHeader("cohort_name","60%")}
+										{this.renderTableHeader("cohort_name","40%")}
 										{this.renderTableHeader("cohort_acronym","20%")}
+										<th className="sortable" width="20%" scope="col">
+											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
+											</a>
+										</th>
 										{this.renderTableHeader("update_time","15%")}
 									</tr>
 								</thead>

@@ -436,10 +436,24 @@ router.get('/:id', function(req, res){
 				info.cohort_name = basic.cohort_name;
 				info.cohort_acronym = basic.cohort_acronym;
 				info.update_time = basic.update_time;
-				info.completed_by_name = basic.completed_by_name;
-				info.completed_by_position = basic.completed_by_position;
-				info.completed_by_phone = basic.completed_by_phone;
-				info.completed_by_email = basic.completed_by_email;
+				info.collab_name = basic.collab_contact_name;
+				info.collab_position = basic.collab_contact_position;
+				info.collab_phone = basic.collab_contact_phone;
+				info.collab_email = basic.collab_contact_email;
+				if(info.collab_name == null){
+					if(basic.contact_name == null){
+						info.collab_name = basic.completed_by_name;
+						info.collab_position = basic.completed_by_position;
+						info.collab_phone = basic.completed_by_phone;
+						info.collab_email = basic.completed_by_email;
+					}
+					else{
+						info.collab_name = basic.contact_name;
+						info.collab_position = basic.contact_position;
+						info.collab_phone = basic.contact_phone;
+						info.collab_email = basic.contact_email;
+					}
+				}
 				info.pi_name_1 = basic.pi_name_1;
 				info.pi_name_2 = basic.pi_name_2;
 				info.pi_name_3 = basic.pi_name_3;

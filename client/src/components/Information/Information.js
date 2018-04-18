@@ -171,7 +171,7 @@ class Information extends Component {
   	}
   	else{
   		const info = this.state.info;
-	  	const mailto = "mailto:"+info.completed_by_email;
+	  	const mailto = "mailto:"+info.collab_email;
 	  	let pis = [1,2,3,4,5,6].map((item, idx) => {
 	  		let result;
 	  		let prop_1 = "pi_name_"+item;
@@ -230,10 +230,10 @@ class Information extends Component {
 	              <h3>Cohort Collaboration Contact</h3>
 	              <p className="profile-contact-intro" style={{fontStyle:'italic',fontSize:'.80em'}}>If interested in collaborating with the cohort on a project, please contact:</p>
 	              <ul id="cd_contact">
-	              <li>{info.completed_by_name} ({info.completed_by_position})</li>
+	              <li>{info.collab_name} ({info.collab_position})</li>
 	              <li className="link-email">
 	              	<a href={mailto}>
-	              		<span className="glyphicon glyphicon-envelope"></span> {info.completed_by_email}</a></li><li><span className="glyphicon glyphicon-phone-alt"></span> {info.completed_by_phone}</li></ul>
+	              		<span className="glyphicon glyphicon-envelope"></span> {info.collab_email}</a></li><li><span className="glyphicon glyphicon-phone-alt"></span> {info.collab_phone}</li></ul>
 	            </div>
 	            <div className="cohortInfo col-md-6 last">
 	              <h3>Principal Investigators</h3>

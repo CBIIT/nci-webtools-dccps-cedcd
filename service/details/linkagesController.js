@@ -127,7 +127,8 @@ exports.run = function(req, res){
 		  	values = [{
 		  		name:"Adopted Use of Mobile Devices",
 		  		title:"Has the cohort adopted the use of mobile devices (i.e., tablet computers, personal digital assistants, etc.) for the collection and/or measurement of demographic or lifestyle factors, environmental exposures, and/or other types information?",
-		  		column:"tech_use_of_mobile"
+		  		column:"tech_use_of_mobile",
+		  		values:["Yes","No, Considering","No Plans"]
 		  	},{
 		  		name:"Mobile Technology Use Described",
 		  		column:"tech_use_of_mobile_describe",
@@ -135,7 +136,8 @@ exports.run = function(req, res){
 		  	},{
 		  		name:"Adopted Use of Cloud-based Approaches for the Collection, Management, or Distribution of Study Data",
 		  		title:"Cloud computing refers to storing data on the internet. Has the cohort adopted the use of cloud-based approaches for the collection, management, or distribution of study data?",
-		  		column:"tech_use_of_cloud"
+		  		column:"tech_use_of_cloud",
+		  		values:["Yes","No, Considering","No Plans"]
 		  	},{
 		  		name:"Cloud-based Technology Use Described",
 		  		column:"tech_use_of_cloud_describe",
@@ -157,7 +159,12 @@ exports.run = function(req, res){
 						v = "N/P";
 					}
 					else{
-						v = v?"Yes":"No";
+						if(vl.values){
+							v = vl.values[v];
+						}
+						else{
+							v = v?"Yes":"No";
+						}
 					}
 					tmp["c_"+l.cohort_id] = v;
 				});

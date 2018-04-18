@@ -5,8 +5,8 @@ class EthnicityList extends Component {
 		super(props);
 		this.state = {
 			list:[
-				"Hispanic",
-				"Non-Hispanic",
+				"Hispanic/Latino",
+				"Non-Hispanic/Latino",
 				"Unknown"
 			],
 			open:false

@@ -36,8 +36,8 @@ var all = {
 		"More than one race":"multiple"
 	},
 	ethnicity:{
-		"Hispanic":"hispanic",
-		"Non-Hispanic":"nonhispanic",
+		"Hispanic/Latino":"hispanic",
+		"Non-Hispanic/Latino":"nonhispanic",
 		"Unknown":"unknown"
 	},
 	collected_data:{
