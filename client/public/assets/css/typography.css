@@ -346,7 +346,7 @@ p.text-req-citation {
 /* End Paragraphs */
 /* Links */
 a {
-  color: inherit;
+  color: #23527c;
   text-decoration: none;
 }
 a:hover {
