@@ -5,7 +5,7 @@ import './Home.css';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeader from '../TableHeader/TableHeader';
-import Workbook from '../Workbook/Workbook'
+import Workbook from '../Workbook/Workbook';
 
 
 class Home extends Component {

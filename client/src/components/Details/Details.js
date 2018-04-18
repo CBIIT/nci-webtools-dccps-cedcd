@@ -17,6 +17,7 @@ import DiseaseStateList from '../DiseaseStateList/DiseaseStateList';
 import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
+import Workbook from '../Workbook/Workbook';
 
 class Details extends Component {
 
@@ -50,6 +51,28 @@ class Details extends Component {
 			comparasion:false,
 			currTab:0
 		};
+	}
+
+	loadingData = (next) =>{
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			filter:state.filter,
+			orderBy:state.orderBy,
+			paging:state.pageInfo
+		};
+		reqBody.paging.page = 0;
+		fetch('./api/export/select',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data;
+				next(list);
+			});
 	}
 
 	gotoPage(i){
@@ -510,7 +533,14 @@ class Details extends Component {
 			            </ul>
 			          </div>
 			          <div id="tableExport" className="col-md-2 col-md-offset-4">
-			              <a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+			          	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+					      <Workbook.Sheet name="Cohort_Selection">
+					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
+					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+					        <Workbook.Column label="Website" value="cohort_web_site"/>
+					        <Workbook.Column label="Last Updated" value="update_time"/>
+					      </Workbook.Sheet>
+					    </Workbook>
 			          </div>
 			        </div>
 			        <div className="cedcd-table home">

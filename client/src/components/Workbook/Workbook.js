@@ -25,7 +25,8 @@ function sheet_from_array_of_arrays (data, header_Pos) {
       if (range.s.c > C) range.s.c = C
       if (range.e.r < R) range.e.r = R
       if (range.e.c < C) range.e.c = C
-      var cell = {v: data[R][C]}
+      var cell = {};
+      cell.v = data[R][C] == 0 ? 0 : data[R][C];
       if (cell.v == null) continue
       var cell_ref = XLSX.utils.encode_cell({c:C, r:R})
 
@@ -62,9 +63,6 @@ export class Sheet extends Component { // eslint-disable-line react/require-rend
     name: PropTypes.string.isRequired,
     children: PropTypes.arrayOf((propValue, key) => {
       const type = propValue[key].type
-      if (type !== Column) {
-        throw new Error('<Sheet> can only have <Column>\'s as children. ')
-      }
     }).isRequired
   }
 
@@ -101,15 +99,33 @@ export class Workbook extends Component {
         React.Children.forEach(this.props.children, sheet => {
           const columns = sheet.props.children;
           let sheetData = result.list[sheet.props.name].header;
-          sheetData.push(React.Children.map(columns, column => column.props.label));
-
-          result.list[sheet.props.name].rows.forEach(row => {
-            const sheetRow = [];
-            React.Children.forEach(columns, column => {
-              sheetRow.push(row[column.props.value] || '');
+          if(result.list[sheet.props.name].rows){
+            sheetData.push(React.Children.map(columns, column => column.props.label));
+            result.list[sheet.props.name].rows.forEach(row => {
+              const sheetRow = [];
+              React.Children.forEach(columns, column => {
+                sheetRow.push(row[column.props.value] || '');
+              });
+              sheetData.push(sheetRow);
             });
-            sheetData.push(sheetRow);
-          });
+          }
+          else{
+            result.list[sheet.props.name].sections.forEach(function(section){
+                section.header.forEach(function(h){
+                  sheetData.push(h);
+                });
+                sheetData.push(React.Children.map(columns, column => column.props.label));
+                section.rows.forEach(row => {
+                  const sheetRow = [];
+                  React.Children.forEach(columns, column => {
+                    sheetRow.push(row[column.props.value] || '');
+                  });
+                  sheetData.push(sheetRow);
+                });
+            });
+              
+          }
+          
           sheetsData[sheet.props.name] = sheet_from_array_of_arrays(sheetData,6);
         });
         
@@ -127,7 +143,7 @@ export class Workbook extends Component {
 
     this.createSheetsData(dataSource,function(sheets, filename){
       wb.Sheets = sheets;
-      //console.log(sheets);
+      console.log(sheets);
       const wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
       saveAs(new Blob([s2ab(wbout)], {type:"application/octet-stream"}), filename || 'data.xlsx');
     });
