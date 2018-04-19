@@ -143,7 +143,7 @@ export class Workbook extends Component {
 
     this.createSheetsData(dataSource,function(sheets, filename){
       wb.Sheets = sheets;
-      console.log(sheets);
+      //console.log(sheets);
       const wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
       saveAs(new Blob([s2ab(wbout)], {type:"application/octet-stream"}), filename || 'data.xlsx');
     });

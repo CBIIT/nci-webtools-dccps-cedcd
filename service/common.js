@@ -378,4 +378,76 @@ router.post('/export/enrollment', function(req, res){
 	
 });
 
+router.post('/export/cancer', function(req, res){
+	const ds = moment().format('YYYYMMDD');
+	const dt = moment().format('MM/DD/YYYY');
+	const filename = "cancer_"+ds+".xlsx";
+	const data = {};
+	data.filename = filename;
+	data.list = {};
+	data.list["Cancer_Counts"] = {};
+	let body = req.body;
+	let filter = body.filter || {};
+	let func = "cohort_cancer_count";
+	let params = [];
+	//form filter into Strings
+	let gender;
+	let cancer;
+	
+	gender = filter.gender;
+	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
+	cancer = filter.cancer;
+
+	if(filter.cohort.length > 0){
+		params.push(filter.cohort.toString());
+	}
+	else{
+		params.push("");
+	}
+	data.list["Cancer_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+							["Table Name:","Cancer Counts"],
+							["Export Date:",dt],
+							["Selected Gender(s):",gender.toString()],
+							["Selected Cancer Type(s):",cancer.toString()]];
+	mysql.callProcedure(func,params,function(results){
+		if(results && results[0] && results[0].length > 0){
+			let dt = [];
+			let list = results[0];
+			//parse cancer data
+			cancer.forEach(function(c){
+				gender.forEach(function(g){
+					let column = "ci_" + config.cancer[c] + "_" + g.toLowerCase();
+					let tmp = {};
+					tmp.Cancer = c;
+					tmp.Gender = g;
+					list.forEach(function(l){
+						let v = l[column];
+						if(l[column] == -1){
+							v = "N/P";
+						}
+						tmp[l.cohort_acronym] = v;
+					});
+					dt.push(tmp);
+				});
+			});
+			data.list["Cancer_Counts"].rows = dt;
+			let cohorts = [];
+			list.forEach(function(l){
+				cohorts.push(l.cohort_acronym);
+			});
+			data.list["Cancer_Counts"].header.push(["Selected Cohort(s):",cohorts.toString()]);
+			data.list["Cancer_Counts"].header.push([]);
+			data.list["Cancer_Counts"].header.push([]);
+		}
+		else{
+			data.list["Cancer_Counts"].rows = [];
+			data.list["Cancer_Counts"].header.push(["Selected Cohort(s):",""]);
+			data.list["Cancer_Counts"].header.push([]);
+			data.list["Cancer_Counts"].header.push([]);
+		}
+		res.json({status:200, data:data});
+	});
+	
+});
+
 module.exports = router;
