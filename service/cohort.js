@@ -390,7 +390,7 @@ router.post('/specimen', function(req, res) {
 			dt.list = [];
 			dt.cohorts = [];
 			let list = results[0];
-			//parse cancer data
+			//parse specimen data
 			cancer.forEach(function(c){
 				specimen.forEach(function(s){
 					let column = "bio_" + config.cancer[c] + "_" + config.specimen[s];

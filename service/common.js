@@ -450,4 +450,76 @@ router.post('/export/cancer', function(req, res){
 	
 });
 
+router.post('/export/biospecimen', function(req, res){
+	const ds = moment().format('YYYYMMDD');
+	const dt = moment().format('MM/DD/YYYY');
+	const filename = "biospecimen_"+ds+".xlsx";
+	const data = {};
+	data.filename = filename;
+	data.list = {};
+	data.list["Biospecimen_Counts"] = {};
+	let body = req.body;
+	let filter = body.filter || {};
+	let func = "cohort_specimen_count";
+	let params = [];
+	//form filter into Strings
+	let specimen;
+	let cancer;
+	
+	specimen = filter.specimen;
+	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
+	cancer = filter.cancer;
+
+	if(filter.cohort.length > 0){
+		params.push(filter.cohort.toString());
+	}
+	else{
+		params.push("");
+	}
+	data.list["Biospecimen_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+							["Table Name:","Biospecimen Counts"],
+							["Export Date:",dt],
+							["Specimen Type(s):",specimen.toString()],
+							["Cancer Type(s):",cancer.toString()]];
+	mysql.callProcedure(func,params,function(results){
+		if(results && results[0] && results[0].length > 0){
+			let dt = [];
+			let list = results[0];
+			//parse specimen data
+			specimen.forEach(function(s){
+				cancer.forEach(function(c){
+					let column = "bio_" + config.cancer[c] + "_" + config.specimen[s];
+					let tmp = {};
+					tmp["Specimens Type"] = s;
+					tmp.Cancer = c;
+					list.forEach(function(l){
+						let v = l[column];
+						if(l[column] == -1 || l[column] == null){
+							v = "N/P";
+						}
+						tmp[l.cohort_acronym] = v;
+					});
+					dt.push(tmp);
+				});
+			});
+			data.list["Biospecimen_Counts"].rows = dt;
+			let cohorts = [];
+			list.forEach(function(l){
+				cohorts.push(l.cohort_acronym);
+			});
+			data.list["Biospecimen_Counts"].header.push(["Selected Cohort(s):",cohorts.toString()]);
+			data.list["Biospecimen_Counts"].header.push([]);
+			data.list["Biospecimen_Counts"].header.push([]);
+		}
+		else{
+			data.list["Biospecimen_Counts"].rows = [];
+			data.list["Biospecimen_Counts"].header.push(["Selected Cohort(s):",""]);
+			data.list["Biospecimen_Counts"].header.push([]);
+			data.list["Biospecimen_Counts"].header.push([]);
+		}
+		res.json({status:200, data:data});
+	});
+	
+});
+
 module.exports = router;

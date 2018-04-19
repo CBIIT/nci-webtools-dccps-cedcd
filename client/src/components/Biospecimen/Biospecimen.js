@@ -4,6 +4,7 @@ import SpecimenList from '../SpecimenList/SpecimenList';
 import CohortList from '../CohortList/CohortList';
 import CountsTable from '../CountsTable/CountsTable';
 import CollectedCancersList from '../CollectedCancersList/CollectedCancersList';
+import Workbook from '../Workbook/Workbook';
 
 class Biospecimen extends Component {
 
@@ -146,6 +147,26 @@ class Biospecimen extends Component {
 		}
 	}
 
+	loadingData = (next) =>{
+		
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			filter:state.filter
+		};
+		fetch('./api/export/biospecimen',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data;
+				next(list);
+			});
+	}
+
   render() {
   	let content = "";
   	let exportTable = "";
@@ -166,11 +187,21 @@ class Biospecimen extends Component {
 					<CountsTable saveHistory={this.saveHistory} values={data} topic={topic} cohorts={cohorts} others={others} config={config}/>
 				</div>
 			);
+	  	let cohorts_export = cohorts.map((item, idx) => {
+	  		const key = "export_c_"+idx;
+	  		return (
+	  			<Workbook.Column key={key} label={item.cohort_acronym} value={item.cohort_acronym}/>
+	  		);
+	  	});
 	  	exportTable = (
-	  			<a href="javascript:void(0);">
-	  					Export Table <span className="glyphicon glyphicon-export"></span>
-	  			</a>);
-  	}
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+				      <Workbook.Sheet name="Biospecimen_Counts">
+				        <Workbook.Column label="Specimens Type" value="Specimens Type"/>
+				        <Workbook.Column label="Cancer" value="Cancer"/>
+				        {cohorts_export}
+				      </Workbook.Sheet>
+				    </Workbook>);
+  		}
       return (
         <div id="cedcd-main-content" className="row">
         <div id="filter-block" className="filter-block col-md-12">
