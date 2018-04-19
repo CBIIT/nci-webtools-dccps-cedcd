@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import DetailsTable from '../DetailsTable';
 import FloatingSideHeader from '../FloatingSideHeader';
 import FloatingHeader from '../FloatingHeader';
+import moment from 'moment';
+import Workbook from '../../Workbook/Workbook';
 
 class Followup extends Component {
 
@@ -78,6 +80,36 @@ class Followup extends Component {
 		});
 	}
 
+	loadingData = (next) =>{
+		const state = Object.assign({}, this.state);
+		const ds = moment().format('YYYYMMDD');
+		const dt = moment().format('MM/DD/YYYY');
+		const filename = "compare_Followup Data_"+ds+".xlsx";
+		const data = {};
+		data.filename = filename;
+		data.list = {};
+		data.list["Followup_Data"] = {};
+		data.list["Followup_Data"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+							["Table Name:","Cohort Overview Tab: Data Collected at Followup"],
+							["Export Date:",dt],
+							[],
+							[]];
+		let rows = [];
+		//generate rows
+		state.list.forEach(function(l){
+			if(l.type == "data"){
+				let tmp = {};
+				tmp["Data Collected"] = l.name;
+				state.cohorts.forEach(function(c){
+					tmp[c.cohort_acronym] = l["c_"+c.cohort_id];
+				});
+				rows.push(tmp);
+			}
+		});
+		data.list["Followup_Data"].rows = rows;
+		next(data);
+	}
+
   render() {
   	let width = document.getElementById('cedcd-main-content').clientWidth;
     let params = {};
@@ -111,7 +143,19 @@ class Followup extends Component {
   		}
   	}
   	params.config.sideHeader = [48,36,36,36,36,36,36,36,48,36,36,36,36,36,36,74,36,36,36,36,36,48,36,36,36,36,36,36,36,36,36,55,55,36,36,36,48,36,36,36,36,36,36,36];
-
+  	let cohorts_export = params.cohorts.map((item, idx) => {
+  		const key = "export_c_"+idx;
+  		return (
+  			<Workbook.Column key={key} label={item.cohort_acronym} value={item.cohort_acronym}/>
+  		);
+  	});
+  	let exportTable = (
+  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+			      <Workbook.Sheet name="Followup_Data">
+			        <Workbook.Column label="Data Collected" value="Data Collected"/>
+			        {cohorts_export}
+			      </Workbook.Sheet>
+			    </Workbook>);
     return (
     <div>
       	<div id="table-intro" className="col-md-12">
@@ -126,7 +170,7 @@ class Followup extends Component {
 			<div className="table-inner col-md-12">
 				<div className="table-legend col-sm-9"> <span className="">N/A: Not Applicable; N/P: Not Provided</span> </div>
 				<div className="table-export col-sm-3">
-					<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+					{exportTable}
 				</div>
 				<div className="clearFix"></div>
 				<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>

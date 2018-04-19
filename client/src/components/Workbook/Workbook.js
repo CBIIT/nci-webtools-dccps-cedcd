@@ -151,9 +151,9 @@ export class Workbook extends Component {
 
   render () {
     return (
-      <span onClick={this.download}>
+      <div onClick={this.download}>
         {this.props.element ? this.props.element : "Download"}
-      </span>
+      </div>
     )
   }
 }
