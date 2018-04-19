@@ -468,6 +468,10 @@ router.get('/:id', function(req, res){
 				info.pi_institution_6 = basic.pi_institution_6;
 				info.cohort_web_site = basic.cohort_web_site;
 				info.cohort_description = basic.cohort_description;
+				info.request_procedures_web_url = "";
+				if(basic.request_procedures_web == 1){
+					info.request_procedures_web_url = basic.request_procedures_web_url;
+				}
 				info.attachments = {};
 				let attachs = results[1];
 				attachs.forEach(function(attach){

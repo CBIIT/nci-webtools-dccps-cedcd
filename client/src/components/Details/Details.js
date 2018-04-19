@@ -396,7 +396,6 @@ class Details extends Component {
 	}
 
 	saveHistory = () =>{
-		console.log("saved!");
 		const state = Object.assign({}, this.state);
 		let item = {
 			filter:state.filter,

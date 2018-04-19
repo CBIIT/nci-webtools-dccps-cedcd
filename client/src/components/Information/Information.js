@@ -112,9 +112,19 @@ class Information extends Component {
 			}
 		}
 		else{
+			console.log(this.state.info);
+			let has = false;
+			let request_web_url = this.state.info.request_procedures_web_url;
+			if(!request_web_url.startsWith("http") && !request_web_url.startsWith("www") && !request_web_url.startsWith("wiki.")){
+				request_web_url = "";
+				has = true;
+			}
 			if(this.state.info.attachments && this.state.info.attachments.policies){
 				const links = this.state.info.attachments.policies.map((item, id) => {
 					const uid = "policy_"+id;
+					if(request_web_url !== ""){
+						has = has || (request_web_url.trim() == item.url.trim());
+					}
 					if(item.type === 1){
 						return (
 							<li key={uid} className="link-pdf">
@@ -131,18 +141,39 @@ class Information extends Component {
 					}
 					
 				});
+				let other_link = "";
+				if(!has){
+					other_link = (
+							<li className="link-url">
+								<a href={request_web_url} target="_blank">{request_web_url}</a>
+							</li>
+						);
+				}
 				return (
 					<ul className="links-list">
 						{links}
+						{other_link}
 					</ul>
 				);	
 			}
 			else{
-				return (
-					<ul>
-						<li>Not Provided</li>
-					</ul>
-				);
+				if(has){
+					return (
+						<ul>
+							<li>Not Provided</li>
+						</ul>
+					);
+				}
+				else{
+					return (
+						<ul>
+							<li className="link-url">
+								<a href={request_web_url} target="_blank">{request_web_url}</a>
+							</li>
+						</ul>
+					);
+				}
+				
 			}
 		}
 	}
