@@ -7,7 +7,6 @@
     "moment": "^2.21.0",
     "npm": "^5.7.1",
     "prop-types": "^15.6.1",
-    "query-string": "^6.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-moment": "^0.7.0",
@@ -23,5 +22,6 @@
     "eject": "react-scripts eject"
   },
   "homepage": ".",
+  "//":"proxy attribute below is only for development purpose",
   "proxy": "http://localhost:9221"
 }
