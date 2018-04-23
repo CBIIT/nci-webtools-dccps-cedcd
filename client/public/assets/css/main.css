@@ -51,6 +51,70 @@ body {
   padding: 30px 0 30px 0;
   border-top: 3px #135B5D solid;
 }
+.message-top{
+    width: 20%;
+    visibility: hidden;
+    margin-left: 40%;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    padding:4px;
+    background: #135B5D;
+    color:white;
+    transform:translate(0,0);
+    transition:all .4s ease-out;
+}
+.message-top.fade-away{
+  visibility: visible;
+  transform:translate(0,100%);
+}
+.shadow{
+  width:100%;
+  background-color: gray;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 10000;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  opacity:0.5;
+}
+.pop-content.open{
+  transform: translate(0,0);
+  visibility: visible;
+}
+.pop-content{
+    width: 960px;
+    max-width: 100%;
+    min-height: 700px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    z-index: 10500;
+    position: fixed;
+    visibility: hidden;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #999;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 6px;
+    outline: 0;
+    -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
+    padding: 3rem;
+    transform: translate(100%,0);
+    -webkit-transition: all .3s ease-out;
+    -o-transition: all .3s ease-out;
+    transition: all .3s ease-out;
+}
+.pop-close{
+  min-width:10px;
+  padding:4px 10px;
+}
 /* MAIN CONTENT AREA -------------------------------------------------------- */ 
 #cedcd-main-content {
   padding: 0 0 30px 0;
@@ -143,6 +207,17 @@ body {
 .floatingFixedTop{
   position: fixed !important;
   top:0px !important;
+}
+
+.fadein, .fadeout {
+    opacity: 0;
+    -moz-transition: opacity 0.4s ease-in-out;
+    -o-transition: opacity 0.4s ease-in-out;
+    -webkit-transition: opacity 0.4s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
+}
+.fadein {
+    opacity: 1;
 }
 /********************/
 #cedcd-home-cohorts-inner, #cedcd-cohorts-inner {

@@ -5,10 +5,47 @@ var config = require('../config');
 var mysql = require('../components/mysql');
 var path = require('path');
 var moment = require('moment');
+var mail = require('../components/mail');
 const XlsxPopulate = require('xlsx-populate');
 
 router.get('/', function(req, res, next) {
 	res.json({status:200,data:'Welcome to CEDCD API Center.'});
+});
+
+router.post('/contact/add', function(req, res, next){
+	//save to mysql and sent email to admin
+	let body = req.body;
+	let firstname = body.firstname || "";
+	let lastname = body.lastname || "";
+	let organization = body.organization || "";
+	let phone = body.phone || "";
+	let email = body.email || "";
+	let topic = parseInt(body.topic || "1");
+	let message = body.message || "";
+	let func = "contact_us";
+	let params = [firstname,lastname,organization,phone,email,topic,message];
+	mysql.callProcedure(func,params,function(results){
+		if(results && results[0] && results[0].length > 0){
+			let message_text = "<p>This is an automated email generated from the CEDCD Website.</p>";
+			message_text += "<p>Researcher: "+firstname + " " + lastname+"</p>";
+			message_text +="<p>Organization: "+organization+", Phone Number: " + phone + "</p>";
+			message_text +="<p>Email: "+email+"</p>";
+			message_text +="<p>Topic: "+config.topic[topic]+"</p>";
+			message_text +="<p>Message: "+message+"</p>";
+			mail.sendMail(config.mail.from.user,config.mail.to,"Cohort User Contact", "", message_text, function(data){
+				if(data){
+					res.json({status:200,data:'sent'});
+				}
+				else{
+					res.json({status:200,data:'failed'});
+				}
+			});
+		}
+		else{
+			res.json({status:200,data:'failed'});
+		}
+	});
+	
 });
 
 router.get('/download/:filename', function(req, res, next) {

@@ -32,7 +32,7 @@
   color: red;
 }
 .field-required label:after {
-  content: "* required field";
+  content: " required field";
 }
 
 #reviewerRejectionRationale {

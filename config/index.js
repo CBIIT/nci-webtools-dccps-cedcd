@@ -24,7 +24,7 @@ var all = {
 	gender:{
 		"Female":"females",
 		"Male":"males",
-		"Unknown":"unknown"
+		"Other/Unknown":"unknown"
 	},
 	race:{
 		"American Indian / Alaska Native":"ai",
@@ -118,6 +118,12 @@ var all = {
 		"Tumor Tissue: Fresh/Frozen":"tumor_tissue_1",
 		"Tumor Tissue: FFPE":"tumor_tissue_2",
 		"Urine":"urine"
+	},
+	topic:{
+		"1":"General CEDCD Inquiry",
+		"2":"Report a Bug",
+		"3":"Question for NCI CEDCD Researcher Team",
+		"4":"Other Issues"
 	}
 
 };

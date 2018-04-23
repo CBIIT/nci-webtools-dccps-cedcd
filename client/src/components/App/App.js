@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import NavBar from '../NavBar/NavBar';
+import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 
 class App extends Component {
@@ -67,6 +68,7 @@ class App extends Component {
           </div>
         </div>
         <div id="cedcd-main-content" className="row">
+          <ContactBox/>
           {content}
           <div className="clearFix"></div>
         </div>

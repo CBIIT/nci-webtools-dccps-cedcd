@@ -761,7 +761,7 @@ thead th a:hover {
 .filter-clear:hover {
   text-decoration: underline;
 }
-a.bttn_submit {
+input.bttn_submit {
   color: #fff;
   font-size: 85%;
   line-height: 120%;
@@ -778,14 +778,17 @@ a.bttn_submit {
   border: 1px #ffffff solid;
   transition: all 300ms ease-out;
 }
-a.bttn_submit:hover {
+input.bttn_submit:hover {
   background: #135B5D;
   border: 1px #135B5D solid;
   cursor: pointer;
   color: #fff;
   text-decoration: none;
 }
-a.bttn_submit.disabled, a.bttn_submit.dabled:hover {
+input.bttn_submit:focus {
+  background: #1c8282 !important;
+}
+input.bttn_submit.disabled, input.bttn_submit.dabled:hover {
   background: #fff;
   color: #777;
   border-color: #777;

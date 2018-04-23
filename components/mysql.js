@@ -135,13 +135,14 @@ var callProcedure = function(func, params, next){
         params.forEach(function(p){
         	let t = typeof p;
           if(t === "string"){
-            sql += "'"+p+"',";
+            p = p.replace(/'/g,"''");
+            sql += '"'+p+'",';
           }
           else if(t === "number"){
             sql += ""+p+",";
           }
           else{
-            sql += "'"+p+"',";
+            sql += '"'+p+'",';
           }
         });
         sql = sql.substring(0, sql.length -1);

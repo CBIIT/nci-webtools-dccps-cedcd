@@ -26,6 +26,7 @@
     "morgan": "^1.8.2",
     "mysql": "^2.15.0",
     "node-cache": "^4.1.1",
+    "nodemailer": "^4.6.4",
     "rotating-file-stream": "^1.2.2",
     "sha1": "^1.1.1",
     "urllib": "^2.25.4",
