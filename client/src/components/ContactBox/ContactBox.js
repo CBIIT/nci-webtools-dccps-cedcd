@@ -120,7 +120,6 @@ class ContactBox extends Component {
     let email_cls = this.state.email_required?"contact-us-field field-required":"contact-us-field";
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
     const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
-    console.log(this.state);
     return (
       <div>
         <div id="contactFlag" className="rightSideFlag" data-toggle="modal" data-target="#contactOverlay">

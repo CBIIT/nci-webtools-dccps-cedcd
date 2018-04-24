@@ -64,7 +64,7 @@ class App extends Component {
       <div>
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
-            <NavBar currTab={this.state.currTab} onClick={(i) => this.handleClick(i)}/>
+            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)}/>
           </div>
         </div>
         <div id="cedcd-main-content" className="row">

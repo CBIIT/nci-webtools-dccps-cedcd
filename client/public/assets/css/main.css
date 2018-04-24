@@ -115,6 +115,10 @@ body {
   min-width:10px;
   padding:4px 10px;
 }
+.tour-close{
+  min-width:10px;
+  padding:0px 6px;
+}
 /* MAIN CONTENT AREA -------------------------------------------------------- */ 
 #cedcd-main-content {
   padding: 0 0 30px 0;

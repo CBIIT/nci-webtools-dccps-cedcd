@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './NavBar.css';
 import Tab from '../Tab/Tab';
+import TourBox from '../Tour/TourBox';
 
 class NavBar extends Component {
 
@@ -19,6 +20,7 @@ class NavBar extends Component {
         {this.renderTab(3)}
         {this.renderTab(4)}
         {this.renderTab(5)}
+        <TourBox currTab={this.props.currTab}/>
       </ul>
     );
   }

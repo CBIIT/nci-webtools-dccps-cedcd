@@ -204,8 +204,9 @@ class Biospecimen extends Component {
   		}
       return (
         <div id="cedcd-main-content" className="row">
+        <input id="tourable" type="hidden" />
         <div id="filter-block" className="filter-block col-md-12">
-          <div className="panel panel-default">
+          <div id="filter-panel" className="panel panel-default">
             <div className="panel-heading">
               <h2 className="panel-title">Specify</h2>
             </div>
@@ -229,7 +230,7 @@ class Biospecimen extends Component {
               <div className="row">
                 <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
                   <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
-                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary bttn_submit" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
+                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
                 </div>
               </div>
             </div>

@@ -471,8 +471,9 @@ class Details extends Component {
 	  		}
 			return (
 				<div>
+				<input id="tourable" type="hidden" />
 			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
-			    <div className="panel panel-default">
+			    <div id="filter-panel" className="panel panel-default">
 			      <div className="panel-heading">
 			        <h2 className="panel-title">Filter</h2>
 			      </div>
@@ -513,7 +514,7 @@ class Details extends Component {
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
-			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary bttn_submit btn-filter" onClick={this.toFilter}/>
+			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			          </div>
 			        </div>
 			      </div>

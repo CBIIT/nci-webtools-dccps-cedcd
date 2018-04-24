@@ -13,6 +13,7 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.1",
     "react-tooltip": "^3.5.0",
+    "react-user-tour": "^3.0.0",
     "xlsx": "^0.12.9"
   },
   "scripts": {
@@ -22,6 +23,6 @@
     "eject": "react-scripts eject"
   },
   "homepage": ".",
-  "//":"proxy attribute below is only for development purpose",
+  "//": "proxy attribute below is only for development purpose",
   "proxy": "http://localhost:9221"
 }

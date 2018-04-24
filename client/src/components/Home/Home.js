@@ -191,6 +191,7 @@ class Home extends Component {
   		
       return (
 		<div>
+			<input id="tourable" type="hidden" />
 			<p className="welcome">Welcome! Below is the list of cohorts participating in the Cancer Epidemiology Descriptive Cohort Database (CEDCD). Search for a cohort by name or select a cohort to view a brief description and contact information. If you want to know more about one or more cohorts, select one of the options from the menu at the top.
 			</p>
 			<div id="cedcd-home-filter" className="home col-md-12">
