@@ -144,28 +144,28 @@ class ContactBox extends Component {
                     <form onSubmit={this.handleSubmit}>  
                       <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                       <div id="ctl11_div_firstname" className={firstname_cls}>
-                        <label className="oneLineLabel">First Name <span className="required">*</span></label>
-                        <input name="cu_firstName" type="text" id="ctl11_cu_firstName" value={this.state.firstname} onChange={(e) =>this.handleChange("firstname",e)}/>
+                        <label className="oneLineLabel"  htmlFor="cu_firstName">First Name <span className="required">*</span></label>
+                        <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.firstname} onChange={(e) =>this.handleChange("firstname",e)}/>
                       </div>
                       <div id="ctl11_div_lastname" className={lastname_cls}>
-                        <label className="oneLineLabel">Last Name <span className="required">*</span></label>
-                        <input name="cu_lastName" type="text" id="ctl11_cu_lastName" value={this.state.lastname} onChange={(e) =>this.handleChange("lastname",e)}/>
+                        <label className="oneLineLabel" htmlFor="cu_lastName">Last Name <span className="required">*</span></label>
+                        <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.lastname} onChange={(e) =>this.handleChange("lastname",e)}/>
                       </div>
                       <div id="ctl11_div_organization" className={org_cls}>
-                        <label className="oneLineLabel">Organization <span className="required">*</span></label>
-                        <input name="cu_organization" type="text" id="ctl11_cu_organization" value={this.state.organization} onChange={(e) =>this.handleChange("organization",e)}/> 
+                        <label className="oneLineLabel" htmlFor="cu_organization">Organization <span className="required">*</span></label>
+                        <input name="cu_organization" type="text" id="cu_organization" value={this.state.organization} onChange={(e) =>this.handleChange("organization",e)}/> 
                       </div>
                       <div id="ctl11_div_phone" className="contact-us-field">
-                        <label className="oneLineLabel">Phone Number</label>
-                        <input name="cu_phone" type="text" id="ctl11_cu_phone" placeholder="(   )   -" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
+                        <label className="oneLineLabel" htmlFor="cu_phone">Phone Number</label>
+                        <input name="cu_phone" type="text" id="cu_phone" placeholder="(   )   -" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
                       </div>
                       <div id="ctl11_div_email" className={email_cls}>
-                      <label className="oneLineLabel">Email <span className="required">*</span></label>
-                      <input name="cu_email" type="text" id="ctl11_cu_email" value={this.state.email} onChange={(e) =>this.handleChange("email",e)}/>
+                      <label className="oneLineLabel" htmlFor="cu_email">Email <span className="required">*</span></label>
+                      <input name="cu_email" type="text" id="cu_email" value={this.state.email} onChange={(e) =>this.handleChange("email",e)}/>
                       </div>
                       <div id="div_topic" className="contact-us-field">
-                      <label className="oneLineLabel">Topic <span className="required">*</span></label>
-                      <select name="cu_topic" id="ctl11_cu_topic" className="textEntrySmall" value={this.state.topic}  onChange={(e) =>this.handleChange("topic",e)}>
+                      <label className="oneLineLabel" htmlFor="cu_topic">Topic <span className="required">*</span></label>
+                      <select name="cu_topic" id="cu_topic" className="textEntrySmall" value={this.state.topic}  onChange={(e) =>this.handleChange("topic",e)}>
                         <option value="1">General CEDCD Inquiry</option>
                         <option value="2">Report a Bug</option>
                         <option value="3">Question for NCI CEDCD Researcher Team</option>
@@ -173,8 +173,8 @@ class ContactBox extends Component {
                       </select>
                       </div>
                       <div id="ctl11_div_message" className={message_cls}>
-                      <label className="oneLineLabel">Message <span className="required">*</span></label>
-                      <textarea name="cu_message" rows="4" cols="20" id="ctl11_cu_message" value={this.state.message} onChange={(e) =>this.handleChange("message",e)}/>
+                      <label className="oneLineLabel" htmlFor="cu_message">Message <span className="required">*</span></label>
+                      <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.message} onChange={(e) =>this.handleChange("message",e)}/>
                       </div>
                       <div className="bttn-group">
                           <input type="submit"className="bttn_submit" value="Submit" />

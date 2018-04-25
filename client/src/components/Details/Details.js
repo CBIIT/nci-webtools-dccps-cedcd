@@ -366,7 +366,7 @@ class Details extends Component {
 	renderSelectHeader(width){
 		return (
 			<th id="table-select-col" width={width} title="Toggle Select All">
-				<SelectBox onClick={(e) => this.handleSelect(-1,e)} />
+				<SelectBox id="select_all" label="Toggle Select All" onClick={(e) => this.handleSelect(-1,e)} />
 			</th>
 		);
 	}
@@ -448,16 +448,21 @@ class Details extends Component {
 				if(website.length > 30){
 					website_label = website.substring(0,27) + "...";
 				}
+				let website_content = "";
+	  			if(website !== ""){
+	  				website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
+	  			}
+	  			let select_id = "select_"+id;
 	  			return (
 	  				<tr key={id}>
 	  					<td headers="table-select-col">
-	  						<SelectBox onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
+	  						<SelectBox  id={select_id} label={id} onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
 	  					</td>
 						<td headers="cohort_name">
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
-						<td><a href={website} title={website} target="_blank">{website_label}</a></td>
+						<td>{website_content}</td>
 						<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
 	  			);

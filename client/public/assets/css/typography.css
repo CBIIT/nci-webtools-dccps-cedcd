@@ -882,16 +882,20 @@ a#cd_website:hover {
   width: 5%;
   text-align: center;
   display: inline-block;
-  padding: 4px 1% 5px 1%;
+  padding: 6px 1% 5px 1%;
   background: #135B5D;
-  border: 2px #135B5D solid;
   border-radius: 0 10px 10px 0;
   transition: all 0.4s ease-in-out;
 }
+.searchBttn .searchIcon{
+  -webkit-transform: rotate(-45deg); 
+  -moz-transform: rotate(-45deg); 
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  font-size:18px;
+}
 .search-wrapper .searchBttn a:hover {
   background: #008E83;
-
-  border: 2px #008E83 solid;
 }
 .table-export a:hover {
   cursor: pointer;
@@ -1112,7 +1116,7 @@ a#cd_website:hover {
   line-height: 140%;
 }
 .invisibleLabel {
-  font-size: 0px;
+  display:none !important;
 }
 .table-legend {
   font-size: 14px;

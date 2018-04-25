@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
+var ejs = require('ejs');
 var config = require('../config');
 var mysql = require('../components/mysql');
 var path = require('path');
@@ -26,12 +27,15 @@ router.post('/contact/add', function(req, res, next){
 	let params = [firstname,lastname,organization,phone,email,topic,message];
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
-			let message_text = "<p>This is an automated email generated from the CEDCD Website.</p>";
-			message_text += "<p>Researcher: "+firstname + " " + lastname+"</p>";
-			message_text +="<p>Organization: "+organization+", Phone Number: " + phone + "</p>";
-			message_text +="<p>Email: "+email+"</p>";
-			message_text +="<p>Topic: "+config.topic[topic]+"</p>";
-			message_text +="<p>Message: "+message+"</p>";
+			let value = {};
+			value.firstname = firstname;
+			value.lastname = lastname;
+			value.organization = organization;
+			value.phone = phone;
+			value.email = email;
+			value.topic = config.topic[topic];
+			value.message = message;
+			let message_text = ejs.render(config.email_contact, value);
 			mail.sendMail(config.mail.from.user,config.mail.to,"Cohort User Contact", "", message_text, function(data){
 				if(data){
 					res.json({status:200,data:'sent'});
