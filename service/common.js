@@ -36,13 +36,22 @@ router.post('/contact/add', function(req, res, next){
 			value.topic = config.topic[topic];
 			value.message = message;
 			let message_text = ejs.render(config.email_contact, value);
-			mail.sendMail(config.mail.from.user,config.mail.to,"Cohort User Contact", "", message_text, function(data){
+			mail.sendMail(config.mail.from,config.mail.to,"CEDCD Website Contact Us Message", "", message_text, function(data){
 				if(data){
-					res.json({status:200,data:'sent'});
+					message_text = ejs.render(config.email_contact_recieved,{});
+					mail.sendMail(config.mail.from,email,"CEDCD Website Recieved Email Message", "", message_text, function(data_1){
+						if(data_1){
+							res.json({status:200,data:'sent'});
+						}
+						else{
+							res.json({status:200,data:'failed'});
+						}
+					});
 				}
 				else{
 					res.json({status:200,data:'failed'});
 				}
+				
 			});
 		}
 		else{

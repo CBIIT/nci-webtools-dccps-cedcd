@@ -7,7 +7,7 @@
 var config = require('../config');
 var logger = require('./logger');
 const nodeMailer = require('nodemailer');
-const transporter = nodeMailer.createTransport(config.mail.from);
+const transporter = nodeMailer.createTransport(config.mail);
 
 
 var sendMail = function(from, to, subject, text, html, next){
