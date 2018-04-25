@@ -41,7 +41,7 @@ class GenderList extends Component {
   	const hasUnknown = this.props.hasUnknown;
   	let f_list = Object.assign([],this.state.list);
   	if(hasUnknown){
-  		f_list.push("Unknown");
+  		f_list.push("Other/Unknown");
   	}
   	const list = f_list.map((item, idx) => {
   		const key = "gender_"+idx;

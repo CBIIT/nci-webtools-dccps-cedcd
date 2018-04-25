@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import NavBar from '../NavBar/NavBar';
+import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 
 class App extends Component {
@@ -63,10 +64,11 @@ class App extends Component {
       <div>
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
-            <NavBar currTab={this.state.currTab} onClick={(i) => this.handleClick(i)}/>
+            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)}/>
           </div>
         </div>
         <div id="cedcd-main-content" className="row">
+          <ContactBox/>
           {content}
           <div className="clearFix"></div>
         </div>

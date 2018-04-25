@@ -5,6 +5,7 @@ import './Home.css';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeader from '../TableHeader/TableHeader';
+import Workbook from '../Workbook/Workbook';
 
 
 class Home extends Component {
@@ -19,7 +20,8 @@ class Home extends Component {
 				order:"asc"
 			},
 			pageInfo:{page:1,pageSize:15,total:0},
-			lastPage:1
+			lastPage:1,
+			data1:[]
 		};
 		this.changeText = this.changeText.bind(this);
 		this.search = this.search.bind(this);
@@ -103,6 +105,29 @@ class Home extends Component {
 		this.search(pageInfo.page,orderBy);
 	}
 
+	loadingData = (next) =>{
+		
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			searchText:state.searchString,
+			orderBy:state.orderBy,
+			paging:state.pageInfo
+		};
+		reqBody.paging.page = 0;
+		fetch('./api/export/home',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let list = result.data;
+			next(list);
+		});
+	}
+
 	renderTableHeader(title, percentage){
 		return (
 			<TableHeader width={percentage} value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
@@ -138,15 +163,24 @@ class Home extends Component {
   			let id = item.cohort_id;
   			let url = "./cohort?id="+id;
   			let website = item.cohort_web_site;
-  			if(website.trim() === ""){
-  				website = "javascript:void(0);";
+  			if(!website.startsWith("http") && !website.startsWith("www")){
+  				website = "";
+  			}
+  			let website_label = website;
+  			if(website.length > 30){
+  				website_label = website.substring(0,27) + "...";
+  			}
+  			let website_content = "";
+  			if(website !== ""){
+  				website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
   			}
   			return (
   				<tr key={id}>
 					<td headers="cohort_name">
-						<a href={website} target="_blank">{item.cohort_name}</a>
+						<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 					</td>
 					<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+					<td>{website_content}</td>
 					<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 				</tr>
   			);
@@ -158,19 +192,23 @@ class Home extends Component {
 				</tr>
   			);
   		}
+  		
       return (
 		<div>
+			<input id="tourable" type="hidden" />
 			<p className="welcome">Welcome! Below is the list of cohorts participating in the Cancer Epidemiology Descriptive Cohort Database (CEDCD). Search for a cohort by name or select a cohort to view a brief description and contact information. If you want to know more about one or more cohorts, select one of the options from the menu at the top.
 			</p>
 			<div id="cedcd-home-filter" className="home col-md-12">
 			  <div className="search-wrapper col-md-12">
+			  	<label htmlFor="inKeyword">Search for Cohorts by name or acronym</label>
 			    <span className="searchField">
-			    	<input name="inKeyword" type="text" value={this.state.searchString} onChange={this.changeText} id="inKeyword" placeholder="Search for Cohorts by name or acronym" onKeyPress={this.handleKeyPress}></input>
+			    	<input name="inKeyword" type="text" label="keyword" value={this.state.searchString} onChange={this.changeText} id="inKeyword" placeholder="Search for Cohorts by name or acronym" onKeyPress={this.handleKeyPress}></input>
 			    </span>
 			    <span className="searchBttn">
 			    	<a id="btKeyword" href='javascript:void(0);' onClick={this.toSearch}>
-			        	<span className="glyphicon glyphicon-search">
-			        	</span>
+			    		<div className="searchIcon">
+			    			&#9906;
+			    		</div>
 			    	</a>
 			    </span>
 			  </div>
@@ -185,7 +223,15 @@ class Home extends Component {
 			          </ul>
 			        </div>
 			        <div id="tableExport" className="col-md-2 col-md-offset-4">
-		              <a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+			        	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+					      <Workbook.Sheet name="Cohort_Selection">
+					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
+					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+					        <Workbook.Column label="Website" value="cohort_web_site"/>
+					        <Workbook.Column label="Last Updated" value="update_time"/>
+					      </Workbook.Sheet>
+					    </Workbook>
+		              
 		            </div>
 			      </div>
 		          <div className="clearFix"></div>
@@ -194,8 +240,12 @@ class Home extends Component {
 						<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="summaryGridView" >
 							<thead>
 								<tr id="summaryHeader" className="col-header">
-									{this.renderTableHeader("cohort_name","65%")}
+									{this.renderTableHeader("cohort_name","45%")}
 									{this.renderTableHeader("cohort_acronym","20%")}
+									<th className="sortable" width="20%" scope="col">
+										<a href="javascript:void(0);" style={{cursor:'default'}}>Website
+										</a>
+									</th>
 									{this.renderTableHeader("update_time","15%")}
 								</tr>
 							</thead>

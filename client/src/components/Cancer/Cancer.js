@@ -4,6 +4,7 @@ import GenderList from '../GenderList/GenderList';
 import CohortList from '../CohortList/CohortList';
 import CountsTable from '../CountsTable/CountsTable';
 import CollectedCancersList from '../CollectedCancersList/CollectedCancersList';
+import Workbook from '../Workbook/Workbook';
 
 class Cancer extends Component {
 
@@ -146,6 +147,26 @@ class Cancer extends Component {
 		}
 	}
 
+	loadingData = (next) =>{
+		
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			filter:state.filter
+		};
+		fetch('./api/export/cancer',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data;
+				next(list);
+			});
+	}
+
   render() {
   	let content = "";
   	let exportTable = "";
@@ -166,15 +187,26 @@ class Cancer extends Component {
 					<CountsTable saveHistory={this.saveHistory} values={data} topic={topic} cohorts={cohorts} others={others} config={config}/>
 				</div>
 			);
+	  	let cohorts_export = cohorts.map((item, idx) => {
+	  		const key = "export_c_"+idx;
+	  		return (
+	  			<Workbook.Column key={key} label={item.cohort_acronym} value={item.cohort_acronym}/>
+	  		);
+	  	});
 	  	exportTable = (
-	  			<a href="javascript:void(0);">
-	  					Export Table <span className="glyphicon glyphicon-export"></span>
-	  			</a>);
-  	}
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+				      <Workbook.Sheet name="Cancer_Counts">
+				        <Workbook.Column label="Cancer" value="Cancer"/>
+				        <Workbook.Column label="Gender" value="Gender"/>
+				        {cohorts_export}
+				      </Workbook.Sheet>
+				    </Workbook>);
+  		}
       return (
         <div id="cedcd-main-content" className="row">
+        <input id="tourable" type="hidden" />
         <div id="filter-block" className="filter-block col-md-12">
-          <div className="panel panel-default">
+          <div id="filter-panel" className="panel panel-default">
             <div className="panel-heading">
               <h2 className="panel-title">Specify</h2>
             </div>
@@ -198,7 +230,7 @@ class Cancer extends Component {
               <div className="row">
                 <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
                   <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
-                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary bttn_submit" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
+                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
                 </div>
               </div>
             </div>

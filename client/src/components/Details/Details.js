@@ -17,6 +17,7 @@ import DiseaseStateList from '../DiseaseStateList/DiseaseStateList';
 import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
+import Workbook from '../Workbook/Workbook';
 
 class Details extends Component {
 
@@ -50,6 +51,28 @@ class Details extends Component {
 			comparasion:false,
 			currTab:0
 		};
+	}
+
+	loadingData = (next) =>{
+		const state = Object.assign({}, this.state);
+		let reqBody = {
+			filter:state.filter,
+			orderBy:state.orderBy,
+			paging:state.pageInfo
+		};
+		reqBody.paging.page = 0;
+		fetch('./api/export/select',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data;
+				next(list);
+			});
 	}
 
 	gotoPage(i){
@@ -343,7 +366,7 @@ class Details extends Component {
 	renderSelectHeader(width){
 		return (
 			<th id="table-select-col" width={width} title="Toggle Select All">
-				<SelectBox onClick={(e) => this.handleSelect(-1,e)} />
+				<SelectBox id="select_all" label="Toggle Select All" onClick={(e) => this.handleSelect(-1,e)} />
 			</th>
 		);
 	}
@@ -373,7 +396,6 @@ class Details extends Component {
 	}
 
 	saveHistory = () =>{
-		console.log("saved!");
 		const state = Object.assign({}, this.state);
 		let item = {
 			filter:state.filter,
@@ -419,18 +441,28 @@ class Details extends Component {
 	  			let id = item.cohort_id;
 	  			let url = './cohort?id='+id;
 	  			let website = item.cohort_web_site;
-	  			if(website.trim() === ""){
-	  				website = "javascript:void(0);";
+				if(!website.startsWith("http") && !website.startsWith("www")){
+					website = "";
+				}
+				let website_label = website;
+				if(website.length > 30){
+					website_label = website.substring(0,27) + "...";
+				}
+				let website_content = "";
+	  			if(website !== ""){
+	  				website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
 	  			}
+	  			let select_id = "select_"+id;
 	  			return (
 	  				<tr key={id}>
 	  					<td headers="table-select-col">
-	  						<SelectBox onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
+	  						<SelectBox  id={select_id} label={id} onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
 	  					</td>
 						<td headers="cohort_name">
-							<a href={website} target="_blank">{item.cohort_name}</a>
+							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+						<td>{website_content}</td>
 						<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
 	  			);
@@ -444,8 +476,9 @@ class Details extends Component {
 	  		}
 			return (
 				<div>
+				<input id="tourable" type="hidden" />
 			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
-			    <div className="panel panel-default">
+			    <div id="filter-panel" className="panel panel-default">
 			      <div className="panel-heading">
 			        <h2 className="panel-title">Filter</h2>
 			      </div>
@@ -486,7 +519,7 @@ class Details extends Component {
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
-			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary bttn_submit btn-filter" onClick={this.toFilter}/>
+			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			          </div>
 			        </div>
 			      </div>
@@ -505,7 +538,14 @@ class Details extends Component {
 			            </ul>
 			          </div>
 			          <div id="tableExport" className="col-md-2 col-md-offset-4">
-			              <a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+			          	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+					      <Workbook.Sheet name="Cohort_Selection">
+					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
+					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+					        <Workbook.Column label="Website" value="cohort_web_site"/>
+					        <Workbook.Column label="Last Updated" value="update_time"/>
+					      </Workbook.Sheet>
+					    </Workbook>
 			          </div>
 			        </div>
 			        <div className="cedcd-table home">
@@ -514,8 +554,12 @@ class Details extends Component {
 								<thead>
 									<tr id="summaryHeader" className="col-header">
 										{this.renderSelectHeader("5%")}
-										{this.renderTableHeader("cohort_name","60%")}
+										{this.renderTableHeader("cohort_name","40%")}
 										{this.renderTableHeader("cohort_acronym","20%")}
+										<th className="sortable" width="20%" scope="col">
+											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
+											</a>
+										</th>
 										{this.renderTableHeader("update_time","15%")}
 									</tr>
 								</thead>

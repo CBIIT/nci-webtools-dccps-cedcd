@@ -24,7 +24,7 @@ var all = {
 	gender:{
 		"Female":"females",
 		"Male":"males",
-		"Unknown":"unknown"
+		"Other/Unknown":"unknown"
 	},
 	race:{
 		"American Indian / Alaska Native":"ai",
@@ -36,8 +36,8 @@ var all = {
 		"More than one race":"multiple"
 	},
 	ethnicity:{
-		"Hispanic":"hispanic",
-		"Non-Hispanic":"nonhispanic",
+		"Hispanic/Latino":"hispanic",
+		"Non-Hispanic/Latino":"nonhispanic",
 		"Unknown":"unknown"
 	},
 	collected_data:{
@@ -118,8 +118,14 @@ var all = {
 		"Tumor Tissue: Fresh/Frozen":"tumor_tissue_1",
 		"Tumor Tissue: FFPE":"tumor_tissue_2",
 		"Urine":"urine"
+	},
+	topic:{
+		"1":"General CEDCD Inquiry",
+		"2":"Report a Bug",
+		"3":"Question for NCI CEDCD Researcher Team",
+		"4":"Other Issues"
 	}
 
 };
 
-module.exports = _.merge(all, require('./project.settings.js'));
+module.exports = _.merge(all, require('./template.js'), require('./project.settings.js'));

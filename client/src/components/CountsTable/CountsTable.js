@@ -92,7 +92,7 @@ class CountsTable extends Component {
 				<table className="enrollTbl" cellSpacing="0" rules="all" has_results="true" border="1" id="enrollTblMales" style={{borderCollapse:"collapse"}}>
 					<thead>
 						<tr className="col-header">
-							<th className={config.blockClass}></th>
+							<th className={config.blockClass}>columns</th>
 							{cohort_columns}
 							{other_columns}
 						</tr>

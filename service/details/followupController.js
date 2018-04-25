@@ -122,10 +122,11 @@ exports.run = function(req, res){
 					list.forEach(function(l){
 						let v = l[vl.column];
 						if(v == 0){
-							v = "No";
+							v = "N/A";
 						}
 						else{
 							v = l[vl.column_specify];
+							v = v?v:"N/P";
 						}
 						tmp["c_"+l.cohort_id] = v;
 					});

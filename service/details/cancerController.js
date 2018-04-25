@@ -237,8 +237,8 @@ exports.run = function(req, res){
 							v = "N/P";
 						}
 						else{
-							if(l[vl.values]){
-								v = l[vl.values][v];
+							if(vl.values){
+								v = vl.values[v];
 							}
 							else{
 								v = v?"Yes":"No";

@@ -390,7 +390,7 @@ router.post('/specimen', function(req, res) {
 			dt.list = [];
 			dt.cohorts = [];
 			let list = results[0];
-			//parse cancer data
+			//parse specimen data
 			cancer.forEach(function(c){
 				specimen.forEach(function(s){
 					let column = "bio_" + config.cancer[c] + "_" + config.specimen[s];
@@ -436,10 +436,24 @@ router.get('/:id', function(req, res){
 				info.cohort_name = basic.cohort_name;
 				info.cohort_acronym = basic.cohort_acronym;
 				info.update_time = basic.update_time;
-				info.completed_by_name = basic.completed_by_name;
-				info.completed_by_position = basic.completed_by_position;
-				info.completed_by_phone = basic.completed_by_phone;
-				info.completed_by_email = basic.completed_by_email;
+				info.collab_name = basic.collab_contact_name;
+				info.collab_position = basic.collab_contact_position;
+				info.collab_phone = basic.collab_contact_phone;
+				info.collab_email = basic.collab_contact_email;
+				if(info.collab_name == null){
+					if(basic.contact_name == null){
+						info.collab_name = basic.completed_by_name;
+						info.collab_position = basic.completed_by_position;
+						info.collab_phone = basic.completed_by_phone;
+						info.collab_email = basic.completed_by_email;
+					}
+					else{
+						info.collab_name = basic.contact_name;
+						info.collab_position = basic.contact_position;
+						info.collab_phone = basic.contact_phone;
+						info.collab_email = basic.contact_email;
+					}
+				}
 				info.pi_name_1 = basic.pi_name_1;
 				info.pi_name_2 = basic.pi_name_2;
 				info.pi_name_3 = basic.pi_name_3;
@@ -454,6 +468,10 @@ router.get('/:id', function(req, res){
 				info.pi_institution_6 = basic.pi_institution_6;
 				info.cohort_web_site = basic.cohort_web_site;
 				info.cohort_description = basic.cohort_description;
+				info.request_procedures_web_url = "";
+				if(basic.request_procedures_web == 1){
+					info.request_procedures_web_url = basic.request_procedures_web_url;
+				}
 				info.attachments = {};
 				let attachs = results[1];
 				attachs.forEach(function(attach){

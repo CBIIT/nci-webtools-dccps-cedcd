@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import moment from 'moment';
 import DetailsTable from '../DetailsTable';
 import FloatingSideHeader from '../FloatingSideHeader';
 import FloatingHeader from '../FloatingHeader';
+import Workbook from '../../Workbook/Workbook';
 
 class BasicInfo extends Component {
 
@@ -79,6 +81,44 @@ class BasicInfo extends Component {
 		});
 	}
 
+	loadingData = (next) =>{
+		const state = Object.assign({}, this.state);
+		const ds = moment().format('YYYYMMDD');
+		const dt = moment().format('MM/DD/YYYY');
+		const filename = "compare_Basic Info_"+ds+".xlsx";
+		const data = {};
+		data.filename = filename;
+		data.list = {};
+		data.list["Basic_Info"] = {};
+		data.list["Basic_Info"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+							["Table Name:","Cohort Overview Tab: Basic Cohort Information"],
+							["Export Date:",dt],
+							[],
+							[]];
+		let rows = [];
+		//generate rows
+		state.list.forEach(function(l){
+			if(l.type == "data"){
+				let tmp = {};
+				tmp["Data Collected"] = l.name;
+				state.cohorts.forEach(function(c){
+					tmp[c.cohort_acronym] = l["c_"+c.cohort_id];
+				});
+				rows.push(tmp);
+			}
+			else if(l.type == "array"){
+				let tmp = {};
+				tmp["Data Collected"] = l.name;
+				state.cohorts.forEach(function(c){
+					tmp[c.cohort_acronym] = l["c_"+c.cohort_id].join(";");
+				});
+				rows.push(tmp);
+			}
+		});
+		data.list["Basic_Info"].rows = rows;
+		next(data);
+	}
+
   render() {
   	let width = document.getElementById('cedcd-main-content').clientWidth;
     let params = {};
@@ -112,6 +152,19 @@ class BasicInfo extends Component {
   		}
   	}
   	params.config.sideHeader = [48,36,36,36,55,50,36,36,36,36,36,36,49,150,36,36,36,36,55,131,36,131,36,36,388];
+  	let cohorts_export = params.cohorts.map((item, idx) => {
+  		const key = "export_c_"+idx;
+  		return (
+  			<Workbook.Column key={key} label={item.cohort_acronym} value={item.cohort_acronym}/>
+  		);
+  	});
+  	let exportTable = (
+  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+			      <Workbook.Sheet name="Basic_Info">
+			        <Workbook.Column label="Data Collected" value="Data Collected"/>
+			        {cohorts_export}
+			      </Workbook.Sheet>
+			    </Workbook>);
     return (
     <div>
       	<div id="table-intro" className="col-md-12">
@@ -126,7 +179,7 @@ class BasicInfo extends Component {
 			<div className="table-inner col-md-12">
 				<div className="table-legend col-sm-9"> <span className="">N/A: Not Applicable; N/P: Not Provided</span> </div>
 				<div className="table-export col-sm-3">
-					<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>
+					{exportTable}
 				</div>
 				<div className="clearFix"></div>
 				<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
