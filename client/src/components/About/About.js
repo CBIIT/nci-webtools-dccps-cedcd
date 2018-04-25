@@ -17,7 +17,7 @@ class About extends Component {
             <p>Information in the CEDCD has been provided with approval from the cohort Principal Investigators (PIs). Cohort PIs may request correction of their information by clicking Contact Us on the right. Annual updates are scheduled to begin in 2017. The date the data were collected/last updated is listed in the cohort description.  PIs who are interested in providing information about cohorts that are not currently included are encouraged to contact NCI by clicking Contact Us on the right.</p>
             <h2>Who we are</h2>
             <p>The CEDCD was developed through a contract with Westat and is maintained by the Epidemiology and Genomics Research Program (EGRP), located in the Division of Cancer Control and Population Sciences, National Cancer Institute's (NCI's), National Institutes of Health.</p>
-            <p>EGRP supports scientific collaborations that pool the large quantity of available data and biospecimens in cohort studies for research in cancer etiology, prevention, and control. <a href="https://epi.grants.cancer.gov/" target="_blank"><u>Learn more about EGRP</u>.</a></p>
+            <p>EGRP supports scientific collaborations that pool the large quantity of available data and biospecimens in cohort studies for research in cancer etiology, prevention, and control. <a href="https://epi.grants.cancer.gov/" target="_blank">Learn more about EGRP</a>.</p>
           </div>
           
           <div id="about-col-2" className="col-md-3 about-col">

@@ -521,6 +521,13 @@ a:hover {
 #piList a {
   padding-left: 25px;
 }
+#about-main #about-col-1 a {
+  color: #135B5D;
+  text-decoration: none;
+}
+#about-main #about-col-1 a:hover {
+  text-decoration: underline;
+}
 #about-main #about-col-2 ul a {
   color: #135B5D;
 }
