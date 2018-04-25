@@ -128,4 +128,4 @@ var all = {
 
 };
 
-module.exports = _.merge(all, require('./template.js'), require('./project.settings.js'));
+module.exports = _.merge(all, require('./template.js'), require('./cedcd.settings'));
