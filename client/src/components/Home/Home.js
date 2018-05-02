@@ -176,12 +176,12 @@ class Home extends Component {
   			}
   			return (
   				<tr key={id}>
-					<td headers="cohort_name">
+					<td>
 						<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 					</td>
-					<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+					<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
 					<td>{website_content}</td>
-					<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
+					<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 				</tr>
   			);
   		});
@@ -200,9 +200,8 @@ class Home extends Component {
 			</p>
 			<div id="cedcd-home-filter" className="home col-md-12">
 			  <div className="search-wrapper col-md-12">
-			  	<label htmlFor="inKeyword">Search for Cohorts by name or acronym</label>
-			    <span className="searchField">
-			    	<input name="inKeyword" type="text" label="keyword" value={this.state.searchString} onChange={this.changeText} id="inKeyword" placeholder="Search for Cohorts by name or acronym" onKeyPress={this.handleKeyPress}></input>
+			  	<span className="searchField">
+			    	<input name="inKeyword" type="text" aria-label="keyword" value={this.state.searchString} onChange={this.changeText} id="inKeyword" placeholder="Search for Cohorts by name or acronym" onKeyPress={this.handleKeyPress}></input>
 			    </span>
 			    <span className="searchBttn">
 			    	<a id="btKeyword" href='javascript:void(0);' onClick={this.toSearch}>

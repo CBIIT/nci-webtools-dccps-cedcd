@@ -7,7 +7,7 @@ class SelectBox extends Component {
     return (
       <span className="select-checkbox">
       	<label htmlFor={this.props.id} className="invisibleLabel">{this.props.label}</label>
-      	<input id={this.props.id} type="checkbox" onChange={this.props.onClick} checked={this.props.checked}/>
+      	<input id={this.props.id} aria-label={this.props.label} type="checkbox" onChange={this.props.onClick} checked={this.props.checked}/>
       </span>
     );
   }

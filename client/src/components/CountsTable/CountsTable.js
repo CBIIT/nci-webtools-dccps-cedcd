@@ -89,7 +89,7 @@ class CountsTable extends Component {
 
     return (
 			<div className="tableArea">
-				<table className="enrollTbl" cellSpacing="0" rules="all" has_results="true" border="1" id="enrollTblMales" style={{borderCollapse:"collapse"}}>
+				<table className="enrollTbl" cellSpacing="0" border="1" id="enrollTblMales" style={{borderCollapse:"collapse"}}>
 					<thead>
 						<tr className="col-header">
 							<th className={config.blockClass}>columns</th>
@@ -103,11 +103,11 @@ class CountsTable extends Component {
 				</table>
 				<div className="fixed-header-column fixed-header-column--double fixed-header-column--enroll" aria-hidden="true">
 					<div className="header-column__half" style={config.blockStyle}>
-						<div className="table-header" data-text="Ethnicity" style={{height:"51px",width:"100%"}}>{topic[0]}</div>
+						<div className="table-header" style={{height:"51px",width:"100%"}}>{topic[0]}</div>
 						{column_1_content}
 					</div>
 					<div className="header-column__half" style={config.blockStyle}>
-						<div className="table-header" data-text="Race" style={{height:"51px",width:"100%",borderRight:"1px #B7B5B0 solid"}}>{topic[1]}</div>
+						<div className="table-header" style={{height:"51px",width:"100%",borderRight:"1px #B7B5B0 solid"}}>{topic[1]}</div>
 						{column_2_content}
 					</div>
 				</div>

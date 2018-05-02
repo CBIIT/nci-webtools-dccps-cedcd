@@ -82,7 +82,6 @@ class TourBox extends Component{
 		return (
 			<li>
 				<a onClick={this.showHelp}>
-					<span className="text-hide">Help</span>
 					<span className="glyphicon glyphicon-question-sign"></span>
 				</a>
 	          	{content}

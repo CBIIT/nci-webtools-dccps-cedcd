@@ -7,7 +7,7 @@ class About extends Component {
       return (
         <div id="about-main" className="clearfix">
           <div id="about-header" className="col-md-12">
-            <h2 className="pg-title">About</h2>
+            <h1 className="pg-title">About</h1>
           </div>
           
           <div id="about-col-1" className="col-md-9 about-col">

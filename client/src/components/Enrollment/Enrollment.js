@@ -188,7 +188,7 @@ class Enrollment extends Component {
 	  	let data_group = {};
 	  	data_group["Male"] = [];
 	  	data_group["Female"] = [];
-	  	data_group["Unknown"] = [];
+	  	data_group["Other/Unknown"] = [];
 	  	let data = Object.assign([], this.state.result.list);
 	  	data.forEach(function(element){
 	  		data_group[element.c0].push(element);
@@ -208,12 +208,12 @@ class Enrollment extends Component {
 	  	if(data_group["Female"].length > 0){
 	  		sections.push("Female");
 	  	}
-	  	if(data_group["Unknown"].length > 0){
-	  		sections.push("Unknown");
+	  	if(data_group["Other/Unknown"].length > 0){
+	  		sections.push("Other/Unknown");
 	  	}
 	  	content = sections.map((item, idx) => {
 	  		let key = "section_"+idx;
-	  		let label = item === "Unknown"? item : item + "s";
+	  		let label = item === "Other/Unknown"? item : item + "s";
 	  		return (
 	  			<div key={key}>
 		  			<label>
@@ -244,6 +244,8 @@ class Enrollment extends Component {
       return (
       	<div>
       		<input id="tourable" type="hidden" />
+      		<p className="welcome">Specify the Gender, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by gender, race and ethnicity across the selected cohorts.
+      		</p>
 	        <div id="filter-block" className="filter-block col-md-12">
 	          <div id="filter-panel" className="panel panel-default">
 	            <div className="panel-heading">
@@ -288,9 +290,6 @@ class Enrollment extends Component {
 	        <div className="level2 col-md-12">
 	          <div id="cedcd-cohorts-inner" className="col-md-12">
 	            <div className="table-inner col-md-12">
-	              <div className="table-description">
-	                <p>Specify the Gender, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by gender, race and ethnicity across the selected cohorts.</p>
-	              </div>
 	              <div className="tableTopMatter row">
 	                <div id="tableLegend" className="col-md-10">
 	                  <p>N/A: Not Applicable; N/P: Not Provided</p>

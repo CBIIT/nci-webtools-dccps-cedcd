@@ -7,7 +7,7 @@ class EthnicityList extends Component {
 			list:[
 				"Hispanic/Latino",
 				"Non-Hispanic/Latino",
-				"Unknown"
+				"Other/Unknown"
 			],
 			open:false
 		};
@@ -76,14 +76,14 @@ class EthnicityList extends Component {
   		}
   		
   	});
-  	let cls = "dropdown filter-component btn-group";
+  	let cls = "dropdown filter-component btn-group filter-component-div";
   	if(this.state.open){
   		cls = cls + " open";
   	}
   	let expanded = this.state.open? "true": "false";
     return (
-		<div>
-			<div className={cls} tabIndex="2" onBlur={this.handleBlur}>
+		<div className="filter-component-block">
+			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
 				<button className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Ethnicity&nbsp;
 				<span className="badge">{values.length}</span>

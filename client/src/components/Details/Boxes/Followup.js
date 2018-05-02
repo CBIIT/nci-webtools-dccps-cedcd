@@ -142,7 +142,7 @@ class Followup extends Component {
   			params.config.f_header.push(200+1);
   		}
   	}
-  	params.config.sideHeader = [48,36,36,36,36,36,36,36,48,36,36,36,36,36,36,74,36,36,36,36,36,48,36,36,36,36,36,36,36,36,36,55,55,36,36,36,48,36,36,36,36,36,36,36];
+  	params.config.sideHeader = [48,40,40,40,40,40,40,40,48,40,40,40,40,40,40,40,40,40,40,40,40,48,40,40,40,40,40,40,40,40,40,40,40,40,40,40,48,40,40,40,40,40,40,40];
   	let cohorts_export = params.cohorts.map((item, idx) => {
   		const key = "export_c_"+idx;
   		return (
@@ -162,9 +162,6 @@ class Followup extends Component {
 		  <h2 className="table-title">
 		  	<span id="tabLabel" className="subtitle">Data Collected at Followup</span>
 		  </h2>
-		  <div className="table-description">
-		    <p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
-		  </div>
 		</div>
 		<div id="cedcd-cohorts-inner" className="col-md-12 activeArea">
 			<div className="table-inner col-md-12">
