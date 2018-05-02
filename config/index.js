@@ -38,7 +38,7 @@ var all = {
 	ethnicity:{
 		"Hispanic/Latino":"hispanic",
 		"Non-Hispanic/Latino":"nonhispanic",
-		"Unknown":"unknown"
+		"Other/Unknown":"unknown"
 	},
 	collected_data:{
 		"Alcohol Consumption":"mdc_alcohol_baseline,mdc_alcohol_followup",
@@ -108,7 +108,7 @@ var all = {
 	eligible_disease_state:{
 		"Cancer Survivors Only":0,
 		"Generally Healthy, No Previous Cancer Diagnosis":1,
-		"Other":2
+		"Other/Unknown":2
 	},
 	specimen:{
 		"Buffy Coat and/or Lymphocytes":"buffy",

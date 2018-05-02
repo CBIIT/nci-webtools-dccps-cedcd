@@ -205,6 +205,8 @@ class Biospecimen extends Component {
       return (
         <div id="cedcd-main-content" className="row">
         <input id="tourable" type="hidden" />
+        <p className="welcome">To display biospecimens across cohorts, specify the Specimen Type, one or more Cancer Type/All Cancers/No Cancer, and Cohort(s) and then select the submit button. All fields are required. A table will display the number of biospecimens across the selected cohorts by cancer type.
+        </p>      
         <div id="filter-block" className="filter-block col-md-12">
           <div id="filter-panel" className="panel panel-default">
             <div className="panel-heading">
@@ -239,9 +241,6 @@ class Biospecimen extends Component {
         <div id="data-table" className="level2 col-md-12">
           <div id="cedcd-cohorts-inner" className="col-md-12">
             <div className="table-inner col-md-12">
-              <div className="table-description">
-                <p>To display biospecimens across cohorts, specify the Specimen Type, one or more Cancer Type/All Cancers/No Cancer, and Cohort(s) and then select the submit button. All fields are required. A table will display the number of biospecimens across the selected cohorts by cancer type.</p>
-              </div>
               <div className="tableTopMatter row">
                 <div id="tableLegend" className="col-md-10">
                   <p>N/A: Not Applicable; N/P: Not Provided</p>

@@ -422,6 +422,9 @@ class Details extends Component {
 			            <a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><span className="glyphicon glyphicon-chevron-left"></span><span>Back to filter</span></a>
 					</div>
 				</div>
+				<div className="table-description">
+					<p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
+				</div>
 			  	<div id="data-table" className="level2 col-md-12">
 					<div id="table-header" className="">
 						<div>
@@ -455,15 +458,15 @@ class Details extends Component {
 	  			let select_id = "select_"+id;
 	  			return (
 	  				<tr key={id}>
-	  					<td headers="table-select-col">
+	  					<td>
 	  						<SelectBox  id={select_id} label={id} onClick={() => this.handleSelect(id)} checked={this.state.selected.indexOf(id) > -1}/>
 	  					</td>
-						<td headers="cohort_name">
+						<td>
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
-						<td headers="cohort_acronym"><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
 						<td>{website_content}</td>
-						<td headers="date_form_completed"><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
+						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
 	  			);
 	  		});
@@ -477,6 +480,8 @@ class Details extends Component {
 			return (
 				<div>
 				<input id="tourable" type="hidden" />
+				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
+				</p>
 			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
 			    <div id="filter-panel" className="panel panel-default">
 			      <div className="panel-heading">
@@ -493,23 +498,23 @@ class Details extends Component {
 			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
 			            </div>
 			          </div>
-			          <div className="filterCol col-sm-6">
+			          <div className="filterCol col-sm-5">
 			            <div className="filter-component">
 			              <h3>Data and Specimens Collected</h3>
 			              <div className="row">
-			                <div className="col-sm-4">
+			                <div className="col-sm-10">
 			                  	<CollectedDataList values={this.state.filter.collect.data} displayMax="5" onClick={this.handleDataClick}/>
 			                </div>
-			                <div className="col-sm-4">
+			                <div className="col-sm-10">
 			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
 			                </div>
-			                <div className="col-sm-4">
+			                <div className="col-sm-10">
 			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={false} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
 			                </div>
 			              </div>
 			            </div>
 			          </div>
-			          <div className="filterCol col-sm-3 last">
+			          <div className="filterCol col-sm-4 last">
 			            <div className="filter-component">
 			              	<h3>Study Design</h3>
 			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
@@ -528,9 +533,6 @@ class Details extends Component {
 			  <div id="cedcd-home-cohorts" className="home col-md-12">
 			    <div id="cedcd-home-cohorts-inner" className="col-md-12">
 			      <div className="table-inner col-md-12">
-			        <div className="table-description">
-			          <p>Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the <b>Submit</b> button.</p>
-			        </div>
 			        <div className="tableTopMatter row">
 			          <div id="tableControls" className="col-md-6">
 			            <ul className="table-controls">

@@ -44,14 +44,10 @@ class DetailsTable extends Component {
           );
           const cohort_row = data_columns.map((item_1, idx_1) => {
             const ckey = "c_"+idx + "_"+idx_1;
-            const array = item[item_1].map((item_2, idx_2) => {
-              let akey = "a_" +idx + "_"+idx_1 +"_" + idx_2;
-              return (
-                <li key={akey}>{item_2}</li>
-              );
-            });
+            const array = item[item_1].join('; ');
+            const array_title = item[item_1].join('\n');
             return (
-              <td key={ckey}><ul>{array}</ul></td>
+              <td key={ckey} title={array_title}>{array}</td>
             );
           });
           let cls = item.cls?"compare-row":"compare-row compare-section-hidden";
@@ -72,7 +68,7 @@ class DetailsTable extends Component {
         const cohort_row = data_columns.map((item_1, idx_1) => {
           const ckey = "c_"+idx + "_"+idx_1;
           return (
-            <td key={ckey}>{item[item_1]}</td>
+            <td key={ckey} title={item[item_1]}>{item[item_1]}</td>
           );
         });
         let cls = item.cls?"compare-row":"compare-row compare-section-hidden";

@@ -139,11 +139,11 @@ body {
   border-top-right-radius: 0px;
 }
 .panel-default {
-  border-color: #009589;
+  border-color: #01857b;
 }
 .panel-default > .panel-heading {
-  background-color: #009589;
-  border-color: #009589;
+  background-color: #01857b;
+  border-color: #01857b;
 }
 #cedcd-home-filter .filter-inner {
   display: flex;
@@ -164,9 +164,6 @@ body {
 .filterCol.last {
   border-right: none;
 }
-#filterLabels {
-  margin-bottom: 2rem;
-}
 #filterLabels #filter-inner {
   border: #135B5D 1px solid;
 }
@@ -174,6 +171,7 @@ body {
   background-color: rgba(0, 149, 137, 0.125);
 }
 .filter-component-dropdown {
+  width:100%;
   min-width: 250px;
   max-height: 600px;
   overflow-y: auto;
@@ -244,7 +242,7 @@ body {
   display: flex;
   font-size: 20px;
   font-weight: bold;
-  color: rgba(0, 149, 138, 1);
+  color: #05746c;
   background-color: #e8e8e6;
 }
 .tableArea{
@@ -257,6 +255,8 @@ body {
 .table-description {
   padding-top: 1rem;
   padding-bottom:0.5rem;
+  padding-left:15px;
+  padding-right:15px;
 }
 .tableTopMatter {
   padding-top: 1rem;
@@ -315,7 +315,8 @@ tr:hover {
   background: #E9F6F5;
 }
 table thead th {
-  background: rgba(0, 149, 138, 1);
+  /*background: rgba(0, 149, 138, 1);*/
+  background:#01857b;
   color: white;
   font-weight: normal;
 /*  border: 1px rgba(102,102,93,1.00) solid;
@@ -368,8 +369,11 @@ tr.compare-child-row-hidden {
 tr.compare-row{
   word-wrap: break-word;
 }
-tr.compare-row td {
+tr.compare-row th,tr.compare-row td {
   text-align: left;
+  white-space: nowrap; 
+  overflow-x:hidden; 
+  text-overflow:ellipsis;
 }
 tr.compare-parent-row th, tr.compare-parent-row td {
   text-align: left;
@@ -503,7 +507,7 @@ th.comRowHeader:hover {
 }
 /* ABOUT ---------------------------------------------------------------- */
 #about-col-2 {
-  background-color: rgba(0,0,0,0.125);
+  background-color: #e8e8e6;
   padding-bottom: 2rem;
 }
 /* other stuff */
@@ -666,7 +670,7 @@ th.comRowHeader:hover {
 }
 /* Cohort Selection Page additions 10-Mar-2015  ------------- */
 #inKeyword {
-  color: Gray;
+  color: Black;
 }
 #inKeyword:focus {
   color: Black;
@@ -707,9 +711,6 @@ th.comRowHeader:hover {
 }
 .cedcd-table #moreCol {
   width: 70px
-}
-.table-legend {
-  
 }
 #cohort_list_container {
   margin: 0 auto;
@@ -779,7 +780,7 @@ a.section-expand {
 
 .inner-fixed-header-column {
   position: absolute;
-  top: 33px;
+  top: 35px;
   left: 15px;
   width: 201px;
   /*pointer-events: none;*/
@@ -813,7 +814,7 @@ a.section-expand {
 
 .table-header {
   height: 53px;
-  background-color: rgba(0, 149, 138, 1);
+  background-color: #01857b;
   color: white;
   border-left: 1px #B7B5B0 solid;
   border-top: 1px #B7B5B0 solid;
@@ -821,6 +822,7 @@ a.section-expand {
   align-items: center;
   padding: 0px 10px;
   position: relative;
+  font-weight:bold;
 }
 
 /*.table-header::after {
@@ -960,7 +962,7 @@ tr.compare-row--hover, .body-header--hover {
     display: inline-flex;
     align-items: center;
     padding: 8px 10px;
-    background: rgba(0, 149, 138, 1);
+    background: #01857b;
     color: white;
     font-weight: bold;
     border: 1px #B7B5B0 solid;
@@ -970,13 +972,14 @@ tr.compare-row--hover, .body-header--hover {
     display: inline-flex;
     align-items: center;
     padding: 8px 10px;
-    background: rgba(0, 149, 138, 1);
+    background: #01857b;
     color: white;
     font-weight: bold;
     border: 1px #B7B5B0 solid;
 }
 .fixed-row__cell a{
   text-decoration: underline;
+  color:white !important;
 }
 
 
@@ -1068,18 +1071,18 @@ tr.compare-row--hover, .body-header--hover {
 .reactTooltip{
   cursor: pointer;
   font-weight: bold;
-  color: rgba(0, 149, 138, 1);
+  color: #01857b;
 }
 
 .customeTheme {
   color: white !important;
-  background-color: rgba(0, 149, 138, 1) !important;
+  background-color: #01857b !important;
 }
 .place-top {
   width:400px;
 }
 .place-top:after {
-  border-top-color: rgba(0, 149, 138, 1) !important;
+  border-top-color: #01857b !important;
   border-top-style: solid !important;
   border-top-width: 6px !important;
 }

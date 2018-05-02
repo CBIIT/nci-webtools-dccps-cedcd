@@ -220,7 +220,7 @@ ul.results-nav li {
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #008E83;
+  border-top: 10px solid #01857b;
   left: 40%;
   top: 31px;
 }
@@ -253,6 +253,12 @@ ul#mainNav li {
 }
 li#liLogin, a#user_profile, a#user_logout {
   cursor: pointer;
+}
+.filter-component-block{
+  width:100%;
+}
+.filter-component-div{
+  width:100%;
 }
 .filter-component:focus{
   outline: none;
@@ -528,9 +534,6 @@ a:hover {
 #about-main #about-col-1 a:hover {
   text-decoration: underline;
 }
-#about-main #about-col-2 ul a {
-  color: #135B5D;
-}
 #about-main #about-col-2 ul a:hover {
   text-decoration: underline;
 }
@@ -552,14 +555,14 @@ ul#mainNav li a {
 }
 .loggedin ul#mainNav li#liLogin a, .loggedin ul#mainNav li#liHelp a {
   padding:0 3rem;
-  background-color: #008E83;
+  background-color: #01857b;
 }
 ul#mainNav li a:hover {
-  background-color: #008E83;
+  background-color: #01857b;
   text-decoration: none;
 }
 ul#mainNav li.active a {
-  background-color: #008E83;
+  background-color: #01857b;
 }
 ul#mainNav li.active a:hover {
 }
@@ -653,7 +656,7 @@ a:hover.expand-link {
   background-color:#135B5D;
 }
 #contactFlag a:hover {
-  background-color: #008E83;
+  background-color: #01857b;
   text-decoration: none;
 }
 
@@ -678,10 +681,14 @@ thead th a:hover {
 /* Bootstrap Button Overrides */
 .btn-default {
   border-color: #1c8282;
+  text-align:left;
+  width:100%;
 }
 .btn-default .badge {
     color: #fff;
     background-color: #1c8282;
+    float:right;
+    top:0px;
 }
 .btn-primary {
   background-color: #1c8282;
@@ -895,7 +902,7 @@ a#cd_website:hover {
   font-size:18px;
 }
 .search-wrapper .searchBttn a:hover {
-  background: #008E83;
+  background: #01857b;
 }
 .table-export a:hover {
   cursor: pointer;
@@ -1055,6 +1062,7 @@ a#cd_website:hover {
   color: #525349;
   text-align: right;
   line-height: 190%;
+  background: #E8E3F0;
 }
 .level2 .table-export span:hover {
   text-decoration: underline;
@@ -1121,6 +1129,7 @@ a#cd_website:hover {
 .table-legend {
   font-size: 14px;
   color: #525349;
+  background: #E8E3F0;
   text-align: left;
   font-weight: bold;
 }
