@@ -502,13 +502,13 @@ class Details extends Component {
 			            <div className="filter-component">
 			              <h3>Data and Specimens Collected</h3>
 			              <div className="row">
-			                <div className="col-sm-10">
+			                <div className="col-sm-12">
 			                  	<CollectedDataList values={this.state.filter.collect.data} displayMax="5" onClick={this.handleDataClick}/>
 			                </div>
-			                <div className="col-sm-10">
+			                <div className="col-sm-12">
 			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
 			                </div>
-			                <div className="col-sm-10">
+			                <div className="col-sm-12">
 			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={false} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
 			                </div>
 			              </div>
