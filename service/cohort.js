@@ -440,8 +440,8 @@ router.get('/:id', function(req, res){
 				info.collab_position = basic.collab_contact_position;
 				info.collab_phone = basic.collab_contact_phone;
 				info.collab_email = basic.collab_contact_email;
-				if(info.collab_name == null){
-					if(basic.contact_name == null){
+				if(info.collab_name == null || info.collab_name.trim() == ""){
+					if(basic.contact_name == null || basic.contact_name.trim() == ""){
 						info.collab_name = basic.completed_by_name;
 						info.collab_position = basic.completed_by_position;
 						info.collab_phone = basic.completed_by_phone;
