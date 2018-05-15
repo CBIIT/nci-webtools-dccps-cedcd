@@ -239,6 +239,8 @@ class Enrollment extends Component {
 				        {cohorts_export}
 				        <Workbook.Column label="total" value="total"/>
 				      </Workbook.Sheet>
+				      <Workbook.Sheet name="Criteria">
+				      </Workbook.Sheet>
 				    </Workbook>);
   	}
       return (

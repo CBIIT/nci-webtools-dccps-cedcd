@@ -80,14 +80,31 @@ router.post('/export/home', function(req, res){
 	const data = {};
 	data.filename = filename;
 	data.list = {};
+	data.list["Criteria"] = {};
 	data.list["Cohort_Selection"] = {};
-	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+	let website="";
+	if(config.env == 'prod'){
+		website = "cedcd.nci.nih.gov";
+	}
+	else{
+		website = "cedcd-"+config.env+".nci.nih.gov";
+	}
+	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
 							["Table Name:","Cohort Selection"],
 							["Export Date:",dt],
 							[],
 							[]];
 	let body = req.body;
 	let searchText = body.searchText || "";
+	if(searchText == ""){
+		data.list["Criteria"].header = [["Search Text:"]
+							];
+	}
+	else{
+		data.list["Criteria"].header = [["Search Text:",searchText]
+							];
+	}
+	
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
 	let func = "cohort_published";
@@ -130,8 +147,16 @@ router.post('/export/select', function(req, res){
 	const data = {};
 	data.filename = filename;
 	data.list = {};
+	data.list["Criteria"] = {};
 	data.list["Cohort_Selection"] = {};
-	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+	let website="";
+	if(config.env == 'prod'){
+		website = "cedcd.nci.nih.gov";
+	}
+	else{
+		website = "cedcd-"+config.env+".nci.nih.gov";
+	}
+	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
 							["Table Name:","Cohort Selection"],
 							["Export Date:",dt],
 							[],
@@ -313,6 +338,62 @@ router.post('/export/select', function(req, res){
 		params.push(-1);
 		params.push(-1);
 	}
+	data.list["Criteria"].header = [];
+	if(filter.participant.gender.length !== 0 || filter.participant.race.length !== 0 || filter.participant.ethnicity.length !== 0 || filter.participant.age.length !== 0){
+		data.list["Criteria"].header.push(["[Type of participant]"]);
+		if(filter.participant.gender.length !== 0){
+			data.list["Criteria"].header.push(["Gender:"]);
+			filter.participant.gender.forEach(function(g){
+				data.list["Criteria"].header.push([" - "+g]);
+			});
+		}
+		if(filter.participant.race.length !== 0){
+			data.list["Criteria"].header.push(["Race:"]);
+			filter.participant.race.forEach(function(r){
+				data.list["Criteria"].header.push([" - "+r]);
+			});
+		}
+		if(filter.participant.ethnicity.length !== 0){
+			data.list["Criteria"].header.push(["Ethnicity:"]);
+			filter.participant.ethnicity.forEach(function(e){
+				data.list["Criteria"].header.push([" - "+e]);
+			});
+		}
+		if(filter.participant.age.length !== 0){
+			data.list["Criteria"].header.push(["Age:"]);
+			filter.participant.age.forEach(function(a){
+				data.list["Criteria"].header.push([" - "+a]);
+			});
+		}
+	}
+	if(filter.collect.data.length !== 0 || filter.collect.specimen.length !== 0 || filter.collect.cancer.length !== 0){
+		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
+		if(filter.collect.data.length !== 0){
+			data.list["Criteria"].header.push(["Data Collected:"]);
+			filter.collect.data.forEach(function(d){
+				data.list["Criteria"].header.push([" - "+d]);
+			});
+		}
+		if(filter.collect.specimen.length !== 0){
+			data.list["Criteria"].header.push(["Specimens Collected:"]);
+			filter.collect.specimen.forEach(function(s){
+				data.list["Criteria"].header.push([" - "+s]);
+			});
+		}
+		if(filter.collect.cancer.length !== 0){
+			data.list["Criteria"].header.push(["Cancers Collected:"]);
+			filter.collect.cancer.forEach(function(c){
+				data.list["Criteria"].header.push([" - "+c]);
+			});
+		}
+	}
+	if(filter.study.state.length !== 0){
+		data.list["Criteria"].header.push(["[Study Design]"]);
+		data.list["Criteria"].header.push(["Eligible Disease State:"]);
+		filter.study.state.forEach(function(s){
+			data.list["Criteria"].header.push([" - "+s]);
+		});
+	}
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			results[0].forEach(function(entry){
@@ -334,8 +415,16 @@ router.post('/export/enrollment', function(req, res){
 	const data = {};
 	data.filename = filename;
 	data.list = {};
+	data.list["Criteria"] = {};
 	data.list["Enrollment_Counts"] = {};
-	data.list["Enrollment_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+	let website="";
+	if(config.env == 'prod'){
+		website = "cedcd.nci.nih.gov";
+	}
+	else{
+		website = "cedcd-"+config.env+".nci.nih.gov";
+	}
+	data.list["Enrollment_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
 							["Table Name:","Enrollment Counts"],
 							["Export Date:",dt],
 							[],
@@ -419,9 +508,44 @@ router.post('/export/enrollment', function(req, res){
 				tmp.rows = unknown_rows;
 				data.list["Enrollment_Counts"].sections.push(tmp);
 			}
+			let cohorts = [];
+			list.forEach(function(l){
+				cohorts.push(l.cohort_acronym);
+			});
+			data.list["Criteria"].header = [];
+			if(filter.gender.length !== 0){
+				data.list["Criteria"].header.push(["Gender:"]);
+				filter.gender.forEach(function(g){
+					data.list["Criteria"].header.push([" - "+g]);
+				});
+			}
+			if(filter.race.length !== 0){
+				data.list["Criteria"].header.push(["Race:"]);
+				filter.race.forEach(function(r){
+					data.list["Criteria"].header.push([" - "+r]);
+				});
+			}
+			if(filter.ethnicity.length !== 0){
+				data.list["Criteria"].header.push(["Ethnicity:"]);
+				filter.ethnicity.forEach(function(e){
+					data.list["Criteria"].header.push([" - "+e]);
+				});
+			}
+			if(filter.cohort.length !== 0){
+				data.list["Criteria"].header.push(["Cohorts:"]);
+				cohorts.forEach(function(c){
+					data.list["Criteria"].header.push([" - "+c]);
+				});
+			}
 		}
 		else{
 			data.list["Enrollment_Counts"].sections = [];
+			data.list["Criteria"].header = [
+							["Gender:"],
+							["Race:"],
+							["Ethnicity:"],
+							["Cohorts:"]
+							];
 		}
 		res.json({status:200, data:data});
 	});
@@ -435,6 +559,7 @@ router.post('/export/cancer', function(req, res){
 	const data = {};
 	data.filename = filename;
 	data.list = {};
+	data.list["Criteria"] = {};
 	data.list["Cancer_Counts"] = {};
 	let body = req.body;
 	let filter = body.filter || {};
@@ -454,11 +579,16 @@ router.post('/export/cancer', function(req, res){
 	else{
 		params.push("");
 	}
-	data.list["Cancer_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+	let website="";
+	if(config.env == 'prod'){
+		website = "cedcd.nci.nih.gov";
+	}
+	else{
+		website = "cedcd-"+config.env+".nci.nih.gov";
+	}
+	data.list["Cancer_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
 							["Table Name:","Cancer Counts"],
-							["Export Date:",dt],
-							["Selected Gender(s):",gender.toString()],
-							["Selected Cancer Type(s):",cancer.toString()]];
+							["Export Date:",dt]];
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = [];
@@ -485,15 +615,36 @@ router.post('/export/cancer', function(req, res){
 			list.forEach(function(l){
 				cohorts.push(l.cohort_acronym);
 			});
-			data.list["Cancer_Counts"].header.push(["Selected Cohort(s):",cohorts.toString()]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
+			data.list["Criteria"].header = [];
+			if(filter.gender.length !== 0){
+				data.list["Criteria"].header.push(["Gender:"]);
+				filter.gender.forEach(function(g){
+					data.list["Criteria"].header.push([" - "+g]);
+				});
+			}
+			if(filter.cancer.length !== 0){
+				data.list["Criteria"].header.push(["Cancer Type:"]);
+				filter.cancer.forEach(function(c){
+					data.list["Criteria"].header.push([" - "+c]);
+				});
+			}
+			if(filter.cohort.length !== 0){
+				data.list["Criteria"].header.push(["Cohorts:"]);
+				cohorts.forEach(function(c){
+					data.list["Criteria"].header.push([" - "+c]);
+				});
+			}
 		}
 		else{
 			data.list["Cancer_Counts"].rows = [];
-			data.list["Cancer_Counts"].header.push(["Selected Cohort(s):",""]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
+			data.list["Criteria"].header = [["Gender:"],
+							["Cancer Type:"],
+							["Cohorts:"]
+							];
 		}
 		res.json({status:200, data:data});
 	});
@@ -507,6 +658,7 @@ router.post('/export/biospecimen', function(req, res){
 	const data = {};
 	data.filename = filename;
 	data.list = {};
+	data.list["Criteria"] = {};
 	data.list["Biospecimen_Counts"] = {};
 	let body = req.body;
 	let filter = body.filter || {};
@@ -526,11 +678,16 @@ router.post('/export/biospecimen', function(req, res){
 	else{
 		params.push("");
 	}
-	data.list["Biospecimen_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (cedcd.nci.nih.gov)"],
+	let website="";
+	if(config.env == 'prod'){
+		website = "cedcd.nci.nih.gov";
+	}
+	else{
+		website = "cedcd-"+config.env+".nci.nih.gov";
+	}
+	data.list["Biospecimen_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
 							["Table Name:","Biospecimen Counts"],
-							["Export Date:",dt],
-							["Specimen Type(s):",specimen.toString()],
-							["Cancer Type(s):",cancer.toString()]];
+							["Export Date:",dt]];
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = [];
@@ -557,15 +714,36 @@ router.post('/export/biospecimen', function(req, res){
 			list.forEach(function(l){
 				cohorts.push(l.cohort_acronym);
 			});
-			data.list["Biospecimen_Counts"].header.push(["Selected Cohort(s):",cohorts.toString()]);
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Biospecimen_Counts"].header.push([]);
+			data.list["Criteria"].header = [];
+			if(filter.specimen.length !== 0){
+				data.list["Criteria"].header.push(["Specimen Type:"]);
+				filter.specimen.forEach(function(s){
+					data.list["Criteria"].header.push([" - "+s]);
+				});
+			}
+			if(filter.cancer.length !== 0){
+				data.list["Criteria"].header.push(["Cancer Type:"]);
+				filter.cancer.forEach(function(c){
+					data.list["Criteria"].header.push([" - "+c]);
+				});
+			}
+			if(filter.cohort.length !== 0){
+				data.list["Criteria"].header.push(["Cohorts:"]);
+				cohorts.forEach(function(c){
+					data.list["Criteria"].header.push([" - "+c]);
+				});
+			}
 		}
 		else{
 			data.list["Biospecimen_Counts"].rows = [];
-			data.list["Biospecimen_Counts"].header.push(["Selected Cohort(s):",""]);
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Biospecimen_Counts"].header.push([]);
+			data.list["Criteria"].header = [["Specimen Type:"],
+							["Cancer Type:"],
+							["Cohorts:"]
+							];
 		}
 		res.json({status:200, data:data});
 	});
