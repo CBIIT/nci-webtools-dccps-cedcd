@@ -200,6 +200,8 @@ class Biospecimen extends Component {
 				        <Workbook.Column label="Cancer" value="Cancer"/>
 				        {cohorts_export}
 				      </Workbook.Sheet>
+				      <Workbook.Sheet name="Criteria">
+				      </Workbook.Sheet>
 				    </Workbook>);
   		}
       return (

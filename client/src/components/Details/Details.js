@@ -547,6 +547,8 @@ class Details extends Component {
 					        <Workbook.Column label="Website" value="cohort_web_site"/>
 					        <Workbook.Column label="Last Updated" value="update_time"/>
 					      </Workbook.Sheet>
+					      <Workbook.Sheet name="Criteria">
+					      </Workbook.Sheet>
 					    </Workbook>
 			          </div>
 			        </div>

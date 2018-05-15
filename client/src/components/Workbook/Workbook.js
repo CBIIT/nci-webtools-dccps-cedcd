@@ -109,7 +109,7 @@ export class Workbook extends Component {
               sheetData.push(sheetRow);
             });
           }
-          else{
+          else if(result.list[sheet.props.name].sections){
             result.list[sheet.props.name].sections.forEach(function(section){
                 section.header.forEach(function(h){
                   sheetData.push(h);
@@ -124,6 +124,9 @@ export class Workbook extends Component {
                 });
             });
               
+          }
+          else{
+            
           }
           
           sheetsData[sheet.props.name] = sheet_from_array_of_arrays(sheetData,6);

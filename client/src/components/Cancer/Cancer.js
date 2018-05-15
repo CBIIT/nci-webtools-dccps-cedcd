@@ -200,6 +200,8 @@ class Cancer extends Component {
 				        <Workbook.Column label="Gender" value="Gender"/>
 				        {cohorts_export}
 				      </Workbook.Sheet>
+				      <Workbook.Sheet name="Criteria">
+				      </Workbook.Sheet>
 				    </Workbook>);
   		}
       return (
