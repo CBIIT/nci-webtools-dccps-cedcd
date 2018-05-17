@@ -13,6 +13,7 @@ var connect = function(config, next){
 	pool = mysql.createPool({
 	    connectionLimit : config.connectionLimit, 
 	    host     : config.host,
+      port     : config.port,
 	    user     : config.user,
 	    password : config.password,
 	    database : config.db,

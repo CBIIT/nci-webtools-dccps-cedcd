@@ -36,7 +36,7 @@ module.exports = function(app){
     if ('dev' === env) {
         app.use(morgan('dev'));
     }
-    else if('prod' === env || 'test' === env){
+    else if('prod' === env || 'qa' === env || 'stage' === env){
         let logDirectory = config.logDir;
 
         // ensure log directory exists
