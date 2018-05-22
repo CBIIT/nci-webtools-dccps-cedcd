@@ -474,8 +474,17 @@ router.get('/:id', function(req, res){
 				}
 				info.attachments = {};
 				let attachs = results[1];
+				let tmp = [[],[],[]];
 				attachs.forEach(function(attach){
-					if(attach.category == 0){
+					let idx = attach.category >1? 2: attach.category;
+					let content = attach.attachment_type == 1 ? attach.filename : attach.website;
+					if(tmp[idx].indexOf(content) > -1){
+						return;
+					}
+					else{
+						tmp[idx].push(content);
+					}
+					if(attach.category == 1){
 						//cohort questionnaires
 						if(info.attachments.questionnaires == undefined){
 							info.attachments.questionnaires = [];
@@ -486,7 +495,7 @@ router.get('/:id', function(req, res){
 							name:attach.filename
 						});
 					}
-					else if(attach.category == 1){
+					else if(attach.category == 0){
 						//study protocol
 						if(info.attachments.protocols == undefined){
 							info.attachments.protocols = [];
