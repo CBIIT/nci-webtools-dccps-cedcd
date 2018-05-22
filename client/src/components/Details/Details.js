@@ -49,7 +49,8 @@ class Details extends Component {
 			lastPage:1,
 			selected:[],
 			comparasion:false,
-			currTab:0
+			currTab:0,
+			selectAll:false
 		};
 	}
 
@@ -176,8 +177,37 @@ class Details extends Component {
 		if(id === -1){
 			selected = [];
 			if(e.target.checked){
-				this.state.list.forEach(function(t){
-					selected.push(t.cohort_id);
+				//select all cohorts
+				const state = Object.assign({}, this.state);
+				let reqBody = {
+					filter:state.filter,
+					orderBy:state.orderBy,
+					paging:{}
+				};
+				reqBody.paging.page = 0;
+				fetch('./api/cohort/select',{
+					method: "POST",
+					body: JSON.stringify(reqBody),
+					headers: {
+				        'Content-Type': 'application/json'
+				    }
+				})
+					.then(res => res.json())
+					.then(result => {
+						let list = result.data.list;
+						list.forEach(function(t){
+							selected.push(t.cohort_id);
+						});
+						this.setState({
+							selected: selected,
+							selectAll:true
+						});
+					});
+			}
+			else{
+				this.setState({
+					selected: selected,
+					selectAll:false
 				});
 			}
 		}
@@ -190,10 +220,11 @@ class Details extends Component {
 			else{
 				selected.push(id);
 			}
+			this.setState({
+				selected: selected
+			});
 		}
-		this.setState({
-			selected: selected
-		});
+		
 	}
 
 	handleGenderClick = (v) =>{
@@ -365,8 +396,8 @@ class Details extends Component {
 
 	renderSelectHeader(width){
 		return (
-			<th id="table-select-col" width={width} title="Toggle Select All">
-				<SelectBox id="select_all" label="Toggle Select All" onClick={(e) => this.handleSelect(-1,e)} />
+			<th id="table-select-col" width={width} title="Select / Deselect All Cohorts">
+				<SelectBox id="select_all" label="Select / Deselect All Cohorts" onClick={(e) => this.handleSelect(-1,e)} checked={this.state.selectAll}/>
 			</th>
 		);
 	}
