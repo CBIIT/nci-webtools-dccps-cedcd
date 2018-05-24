@@ -267,9 +267,9 @@ router.post('/enrollment', function(req, res) {
 			dt.cohorts = [];
 			let list = results[0];
 			//parse enrollment data
-			race.forEach(function(r){
+			gender.forEach(function(g){
 				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
+					race.forEach(function(r){
 						let column = "race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g];
 						let tmp = {};
 						let total = 0;
