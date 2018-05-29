@@ -267,9 +267,9 @@ router.post('/enrollment', function(req, res) {
 			dt.cohorts = [];
 			let list = results[0];
 			//parse enrollment data
-			race.forEach(function(r){
+			gender.forEach(function(g){
 				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
+					race.forEach(function(r){
 						let column = "race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g];
 						let tmp = {};
 						let total = 0;
@@ -440,19 +440,37 @@ router.get('/:id', function(req, res){
 				info.collab_position = basic.collab_contact_position;
 				info.collab_phone = basic.collab_contact_phone;
 				info.collab_email = basic.collab_contact_email;
-				if(info.collab_name == null || info.collab_name.trim() == ""){
-					if(basic.contact_name == null || basic.contact_name.trim() == ""){
-						info.collab_name = basic.completed_by_name;
-						info.collab_position = basic.completed_by_position;
-						info.collab_phone = basic.completed_by_phone;
-						info.collab_email = basic.completed_by_email;
-					}
-					else{
-						info.collab_name = basic.contact_name;
-						info.collab_position = basic.contact_position;
-						info.collab_phone = basic.contact_phone;
-						info.collab_email = basic.contact_email;
-					}
+				// if(info.collab_name == null || info.collab_name.trim() == ""){
+				// 	if(basic.contact_name == null || basic.contact_name.trim() == ""){
+				// 		info.collab_name = basic.completed_by_name;
+				// 		info.collab_position = basic.completed_by_position;
+				// 		info.collab_phone = basic.completed_by_phone;
+				// 		info.collab_email = basic.completed_by_email;
+				// 	}
+				// 	else{
+				// 		info.collab_name = basic.contact_name;
+				// 		info.collab_position = basic.contact_position;
+				// 		info.collab_phone = basic.contact_phone;
+				// 		info.collab_email = basic.contact_email;
+				// 	}
+				// }
+				if(basic.same_as_a3a == 1){
+					info.collab_name = basic.completed_by_name;
+					info.collab_position = basic.completed_by_position;
+					info.collab_phone = basic.completed_by_phone;
+					info.collab_email = basic.completed_by_email;
+				}
+				else if(basic.same_as_a3b == 1){
+					info.collab_name = basic.contact_name;
+					info.collab_position = basic.contact_position;
+					info.collab_phone = basic.contact_phone;
+					info.collab_email = basic.contact_email;
+				}
+				else{
+					info.collab_name = basic.collab_contact_name;
+					info.collab_position = basic.collab_contact_position;
+					info.collab_phone = basic.collab_contact_phone;
+					info.collab_email = basic.collab_contact_email;
 				}
 				info.pi_name_1 = basic.pi_name_1;
 				info.pi_name_2 = basic.pi_name_2;
@@ -477,7 +495,7 @@ router.get('/:id', function(req, res){
 				let tmp = [[],[],[]];
 				attachs.forEach(function(attach){
 					let idx = attach.category >1? 2: attach.category;
-					let content = attach.attachment_type == 1 ? attach.filename : attach.website;
+					let content = attach.attachment_type == 1 ? attach.filename.trim() : attach.website.trim();
 					if(tmp[idx].indexOf(content) > -1){
 						return;
 					}

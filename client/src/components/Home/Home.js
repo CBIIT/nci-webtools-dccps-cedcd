@@ -16,7 +16,7 @@ class Home extends Component {
 			searchString:"",
 			list:[],
 			orderBy:{
-				column:"cohort_name",
+				column:"cohort_acronym",
 				order:"asc"
 			},
 			pageInfo:{page:1,pageSize:15,total:0},

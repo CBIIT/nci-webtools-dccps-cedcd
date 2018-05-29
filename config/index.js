@@ -49,7 +49,7 @@ var all = {
 		"Complementary and Alternative Medicine":"mdc_alternative_medicine_baseline,mdc_alternative_medicine_followup",
 		"Depression":"mdc_depression_baseline,mdc_depression_followup",
 		"Dietary Intake":"mdc_dietary_intake_baseline,mdc_dietary_intake_followup",
-		"Dietary Supplement Use":"mdc_dietary_supplement_baseline,mdc_dietary_intake_followup",
+		"Dietary Supplement Use":"mdc_dietary_supplement_baseline,mdc_dietary_supplement_followup",
 		"Education Level":"mdc_education_baseline,mdc_education_followup",
 		"Employment Status":"mdc_employment_baseline,mdc_employment_followup",
 		"Environmental or Occupational Exposures":"mdc_environment_baseline,mdc_environment_followup",

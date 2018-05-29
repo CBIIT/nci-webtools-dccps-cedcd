@@ -55,9 +55,13 @@ class Information extends Component {
 						);
 					}
 					else{
+						let url = item.url;
+						if(!url.startsWith("http")){
+							url = "http://"+url;
+						}
 						return (
 							<li key={uid} className="link-url">
-								<a href={item.url} target="_blank">{item.url}</a>
+								<a href={url} target="_blank">{item.url}</a>
 							</li>
 						);
 					}
@@ -89,9 +93,13 @@ class Information extends Component {
 						);
 					}
 					else{
+						let url = item.url;
+						if(!url.startsWith("http")){
+							url = "http://"+url;
+						}
 						return (
 							<li key={uid} className="link-url">
-								<a href={item.url} target="_blank">{item.url}</a>
+								<a href={url} target="_blank">{item.url}</a>
 							</li>
 						);
 					}
@@ -112,7 +120,6 @@ class Information extends Component {
 			}
 		}
 		else{
-			console.log(this.state.info);
 			let has = false;
 			let request_web_url = this.state.info.request_procedures_web_url;
 			if(!request_web_url.startsWith("http") && !request_web_url.startsWith("www") && !request_web_url.startsWith("wiki.")){
@@ -133,9 +140,13 @@ class Information extends Component {
 						);
 					}
 					else{
+						let url = item.url;
+						if(!url.startsWith("http")){
+							url = "http://"+url;
+						}
 						return (
 							<li key={uid} className="link-url">
-								<a href={item.url} target="_blank">{item.url}</a>
+								<a href={url} target="_blank">{item.url}</a>
 							</li>
 						);
 					}
@@ -173,7 +184,6 @@ class Information extends Component {
 						</ul>
 					);
 				}
-				
 			}
 		}
 	}
