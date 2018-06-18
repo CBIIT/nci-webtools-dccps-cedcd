@@ -39,7 +39,7 @@ class TourBox extends Component{
 
 	toTour = (i) =>{
 		let selector = this.state.selector[this.props.currTab][this.state.tourStep -1];
-		document.getElementById(selector).style = {};
+		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];
 		document.getElementById(selector).style.zIndex = 10000;
 		document.getElementById(selector).style.position = "relative";
@@ -51,7 +51,7 @@ class TourBox extends Component{
 
 	handleCancel = () =>{
 	  	let selector = this.state.selector[this.props.currTab][this.state.tourStep-1];
-		document.getElementById(selector).style = {};
+		document.getElementById(selector).style.cssText = "remove-css";
 		document.getElementById("selectPage").style.overflowY = "";
 		this.setState({
 			isTourActive:!this.state.isTourActive,
