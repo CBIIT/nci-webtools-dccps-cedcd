@@ -222,7 +222,7 @@ class Home extends Component {
 			          </ul>
 			        </div>
 			        <div id="tableExport" className="col-md-2 col-md-offset-4">
-			        	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+			        	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 					      <Workbook.Sheet name="Cohort_Selection">
 					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
 					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>

@@ -245,6 +245,9 @@ body {
   color: #05746c;
   background-color: #e8e8e6;
 }
+.tableArrow{
+  float:right;
+}
 .tableArea{
   overflow-x: scroll;
 }

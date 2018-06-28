@@ -124,7 +124,7 @@ class ContactBox extends Component {
       <div>
         <div id="contactFlag" className="rightSideFlag" data-toggle="modal" data-target="#contactOverlay">
           <a href="javascript:void(0);" onClick={this.handleClick}>
-            <span className="glyphicon glyphicon-envelope"></span>
+            <i className="far fa-envelope"></i>
             <span>Contact Us</span>
           </a>
         </div>

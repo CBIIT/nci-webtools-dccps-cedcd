@@ -151,7 +151,7 @@ class Linkage extends Component {
   		);
   	});
   	let exportTable = (
-  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
 			      <Workbook.Sheet name="Linkages and Technology">
 			        <Workbook.Column label="Data Collected" value="Data Collected"/>
 			        {cohorts_export}
