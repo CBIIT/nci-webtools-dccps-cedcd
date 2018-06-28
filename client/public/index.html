@@ -4,6 +4,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-10"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -13,26 +14,26 @@
   </script>
   <script>
     function detectIE() {
-      var ua = window.navigator.userAgent;
-      var result = 0;
-      var msie = ua.indexOf('MSIE ');
-      if (msie > 0) {
-        // IE 10 or older => return version number
-        result =  parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-      }
+      // var ua = window.navigator.userAgent;
+      // var result = 0;
+      // var msie = ua.indexOf('MSIE ');
+      // if (msie > 0) {
+      //   // IE 10 or older => return version number
+      //   result =  parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+      // }
 
-      var trident = ua.indexOf('Trident/');
-      if (trident > 0) {
-        // IE 11 => return version number
-        var rv = ua.indexOf('rv:');
-        result =  parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-      }
-      if(result){
-          document.getElementById("compatibleInfo").className = "alert alert-info";
-      }
-      else{
-          document.getElementById("compatibleInfo").className = "hidden-section";
-      }
+      // var trident = ua.indexOf('Trident/');
+      // if (trident > 0) {
+      //   // IE 11 => return version number
+      //   var rv = ua.indexOf('rv:');
+      //   result =  parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+      // }
+      // if(result){
+      //     document.getElementById("compatibleInfo").className = "alert alert-info";
+      // }
+      // else{
+      //     document.getElementById("compatibleInfo").className = "hidden-section";
+      // }
     }
   </script>
   <script src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>

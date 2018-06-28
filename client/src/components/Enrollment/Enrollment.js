@@ -232,7 +232,7 @@ class Enrollment extends Component {
 	  		);
 	  	});
 	  	exportTable = (
-	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
 				      <Workbook.Sheet name="Enrollment_Counts">
 				        <Workbook.Column label="Ethnicity" value="Ethnicity"/>
 				        <Workbook.Column label="Race" value="Race"/>
@@ -281,7 +281,7 @@ class Enrollment extends Component {
 	              <div className="row">
 	                <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 	                  <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
-	                  	<span className="glyphicon glyphicon-remove"></span> Clear All
+	                  	<i className="fas fa-times"></i> Clear All
 	                  </a>
 	                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 || this.state.filter.race.length === 0 || this.state.filter.ethnicity.length === 0 || this.state.filter.cohort.length === 0}/>
 	                </div>

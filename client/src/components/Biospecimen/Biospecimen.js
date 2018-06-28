@@ -194,7 +194,7 @@ class Biospecimen extends Component {
 	  		);
 	  	});
 	  	exportTable = (
-	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
 				      <Workbook.Sheet name="Biospecimen_Counts">
 				        <Workbook.Column label="Specimens Type" value="Specimens Type"/>
 				        <Workbook.Column label="Cancer" value="Cancer"/>
@@ -233,7 +233,7 @@ class Biospecimen extends Component {
               </div>
               <div className="row">
                 <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-                  <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
+                  <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
                   <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
                 </div>
               </div>

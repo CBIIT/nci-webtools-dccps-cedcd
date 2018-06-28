@@ -261,7 +261,7 @@ class Information extends Component {
 	  	return (
 	        <div id="prof-main">
 	          <div id="prof-header">
-	            <a className="back" href="javascript:void(0);" onClick={this.goBack}><span className="glyphicon glyphicon-chevron-left"></span><span>Back to previous page</span></a>
+	            <a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to previous page</span></a>
 	            <h2 className="pg-title"><span id="cd_name">{info.cohort_name}</span> (<span id="cd_acronym">{info.cohort_acronym}</span>)</h2>
 	            <div className="rightLink"> <span className="lastUpdated">Last Updated: <span id="cd_lastupdate"><Moment format="MM/DD/YYYY">{info.update_time}</Moment></span></span> </div>
 	            <div id="cd_errorMsg" className="errorText"></div>
@@ -274,7 +274,7 @@ class Information extends Component {
 	              <li>{info.collab_name} ({info.collab_position})</li>
 	              <li className="link-email">
 	              	<a href={mailto}>
-	              		<span className="glyphicon glyphicon-envelope"></span> {info.collab_email}</a></li><li><span className="glyphicon glyphicon-phone-alt"></span> {info.collab_phone}</li></ul>
+	              		<i className="far fa-envelope"></i> {info.collab_email}</a></li><li><i className="fas fa-phone"></i> {info.collab_phone}</li></ul>
 	            </div>
 	            <div className="cohortInfo col-md-6 last">
 	              <h3>Principal Investigators</h3>

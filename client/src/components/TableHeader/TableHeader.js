@@ -21,10 +21,10 @@ class TableHeader extends Component {
     let cls;
     if(this.props.value === this.props.orderBy.column){
       if(this.props.orderBy.order ==='asc'){
-          cls = (<span className="glyphicon glyphicon-arrow-up"></span>);
+          cls = (<img src="./assets/img/arrow-up.png" className="tableArrow"></img>);
       }
       else{
-          cls = (<span className="glyphicon glyphicon-arrow-down"></span>);
+          cls = (<img src="./assets/img/arrow-down.png" className="tableArrow"></img>);
       }
     }
     else{

@@ -450,7 +450,7 @@ class Details extends Component {
 			<div>
 				<div id="filterLabels" className="filter-block col-md-12 lockedFilter">
 					<div className="content-nav">
-			            <a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><span className="glyphicon glyphicon-chevron-left"></span><span>Back to filter</span></a>
+			            <a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to filter</span></a>
 					</div>
 				</div>
 				<div className="table-description">
@@ -554,7 +554,7 @@ class Details extends Component {
 			        </div>
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><span className="glyphicon glyphicon-remove"></span> Clear All</a>
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			          </div>
 			        </div>
@@ -571,7 +571,7 @@ class Details extends Component {
 			            </ul>
 			          </div>
 			          <div id="tableExport" className="col-md-2 col-md-offset-4">
-			          	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <span className="glyphicon glyphicon-export"></span></a>}>
+			          	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 					      <Workbook.Sheet name="Cohort_Selection">
 					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
 					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
