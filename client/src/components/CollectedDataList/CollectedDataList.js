@@ -112,7 +112,7 @@ class CollectedDataList extends Component {
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
 				<button className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
-				Data Collected&nbsp;
+				Categories of Data Collected&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>
 				<div className="dropdown-menu filter-component-dropdown">

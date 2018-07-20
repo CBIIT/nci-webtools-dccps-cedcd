@@ -232,7 +232,7 @@ class Enrollment extends Component {
 	  		);
 	  	});
 	  	exportTable = (
-	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 				      <Workbook.Sheet name="Enrollment_Counts">
 				        <Workbook.Column label="Ethnicity" value="Ethnicity"/>
 				        <Workbook.Column label="Race" value="Race"/>

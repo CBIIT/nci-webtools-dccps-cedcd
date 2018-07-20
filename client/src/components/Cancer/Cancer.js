@@ -194,7 +194,7 @@ class Cancer extends Component {
 	  		);
 	  	});
 	  	exportTable = (
-	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 				      <Workbook.Sheet name="Cancer_Counts">
 				        <Workbook.Column label="Cancer" value="Cancer"/>
 				        <Workbook.Column label="Gender" value="Gender"/>
@@ -219,7 +219,7 @@ class Cancer extends Component {
                 <div className="col-sm-4 filterCol">
                   <div id="gender_area" className="filter-component">
                     <h3>Gender</h3>
-					<GenderList hasUnknown={false} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick}/>
+					<GenderList hasUnknown={true} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick}/>
                   </div>
                 </div>
                 <div className="col-sm-4 filterCol">

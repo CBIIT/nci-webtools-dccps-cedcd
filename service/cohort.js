@@ -342,7 +342,7 @@ router.post('/cancer', function(req, res) {
 					tmp.c2 = g;
 					list.forEach(function(l){
 						let v = l[column];
-						if(l[column] == -1){
+						if(l[column] == undefined || l[column] == -1){
 							v = "N/P";
 						}
 						tmp["c_"+l.cohort_id] = v;

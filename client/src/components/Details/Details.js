@@ -354,17 +354,26 @@ class Details extends Component {
 		});
 	}
 
-	handleCancerClick = (v) =>{
+	handleCancerClick = (v,allIds,e) =>{
 		const filter = Object.assign({},this.state.filter);
-		let idx = filter.collect.cancer.indexOf(v);
+		if(v){
+			let idx = filter.collect.cancer.indexOf(v);
 
-		if(idx > -1){
-			//remove element
-			filter.collect.cancer.splice(idx,1);
+			if(idx > -1){
+				//remove element
+				filter.collect.cancer.splice(idx,1);
+			}
+			else{
+				//add element
+				filter.collect.cancer.push(v);
+			}
 		}
 		else{
-			//add element
-			filter.collect.cancer.push(v);
+			//click on the "all cohort"
+			filter.collect.cancer = [];
+			if(e.target.checked){
+				filter.collect.cancer = allIds;
+			}
 		}
 		this.setState({
 			filter:filter
@@ -496,6 +505,7 @@ class Details extends Component {
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+						<td>{item.race_total_total > -1 ? item.race_total_total : 0}</td>
 						<td>{website_content}</td>
 						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
@@ -516,20 +526,25 @@ class Details extends Component {
 			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
 			    <div id="filter-panel" className="panel panel-default">
 			      <div className="panel-heading">
-			        <h2 className="panel-title">Filter</h2>
+			        <h2 className="panel-title">Variables Collected in Cohort Study</h2>
 			      </div>
 			      <div className="panel-body">
 			        <div className="filter row">
-			          <div className="col-sm-3 filterCol">
+			          <div className="col-sm-6 filterCol">
 			            <div className="filter-component">
-			              <h3>Type of Participant</h3>
+			              <h3>Eligibility Requirements</h3>
+			              <div className="col-sm-6">
 			              	<GenderList hasUnknown={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick}/>
 			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
 			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
+			              </div>
+			              <div className="col-sm-6">
 			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
+			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
+			              </div>
 			            </div>
 			          </div>
-			          <div className="filterCol col-sm-5">
+			          <div className="filterCol col-sm-6 last">
 			            <div className="filter-component">
 			              <h3>Data and Specimens Collected</h3>
 			              <div className="row">
@@ -540,22 +555,16 @@ class Details extends Component {
 			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
 			                </div>
 			                <div className="col-sm-12">
-			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={false} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
+			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
 			                </div>
 			              </div>
 			            </div>
 			          </div>
-			          <div className="filterCol col-sm-4 last">
-			            <div className="filter-component">
-			              	<h3>Study Design</h3>
-			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
-			            </div>
-			          </div> 
 			        </div>
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" name="filterEngage" value="Apply Filter" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
+			            <input type="submit" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			          </div>
 			        </div>
 			      </div>
@@ -575,6 +584,7 @@ class Details extends Component {
 					      <Workbook.Sheet name="Cohort_Selection">
 					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
 					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+					        <Workbook.Column label="Total Enrollment" value="race_total_total"/>
 					        <Workbook.Column label="Website" value="cohort_web_site"/>
 					        <Workbook.Column label="Last Updated" value="update_time"/>
 					      </Workbook.Sheet>
@@ -589,8 +599,9 @@ class Details extends Component {
 								<thead>
 									<tr id="summaryHeader" className="col-header">
 										{this.renderSelectHeader("5%")}
-										{this.renderTableHeader("cohort_name","40%")}
-										{this.renderTableHeader("cohort_acronym","20%")}
+										{this.renderTableHeader("cohort_name","30%")}
+										{this.renderTableHeader("cohort_acronym","15%")}
+										{this.renderTableHeader("race_total_total","15%")}
 										<th className="sortable" width="20%" scope="col">
 											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
 											</a>

@@ -12,7 +12,7 @@ class Tab extends Component {
       url="home";
     }
     else if(this.props.value === 1){
-      name="Cohort Details";
+      name="Search Cohorts";
       url="select";
     }
     else if(this.props.value === 2){

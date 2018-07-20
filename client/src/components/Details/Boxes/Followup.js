@@ -150,7 +150,7 @@ class Followup extends Component {
   		);
   	});
   	let exportTable = (
-  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
+  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 			      <Workbook.Sheet name="Followup_Data">
 			        <Workbook.Column label="Data Collected" value="Data Collected"/>
 			        {cohorts_export}

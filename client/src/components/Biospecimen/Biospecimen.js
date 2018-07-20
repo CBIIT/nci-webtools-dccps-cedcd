@@ -28,17 +28,26 @@ class Biospecimen extends Component {
 		localStorage.setItem('informationHistory_specimen', JSON.stringify(item));
 	}
 
-	handleSpecimenClick = (v) =>{
+	handleSpecimenClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
-		let idx = filter.specimen.indexOf(v);
+		if(v){
+			let idx = filter.specimen.indexOf(v);
 
-		if(idx > -1){
-			//remove element
-			filter.specimen.splice(idx,1);
+			if(idx > -1){
+				//remove element
+				filter.specimen.splice(idx,1);
+			}
+			else{
+				//add element
+				filter.specimen.push(v);
+			}
 		}
 		else{
-			//add element
-			filter.specimen.push(v);
+			//click on the "all Types"
+			filter.specimen = [];
+			if(e.target.checked){
+				filter.specimen = allIds;
+			}
 		}
 		this.setState({
 			filter:filter
@@ -194,7 +203,7 @@ class Biospecimen extends Component {
 	  		);
 	  	});
 	  	exportTable = (
-	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i class="fas fa-file-export"></i></a>}>
+	  				<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 				      <Workbook.Sheet name="Biospecimen_Counts">
 				        <Workbook.Column label="Specimens Type" value="Specimens Type"/>
 				        <Workbook.Column label="Cancer" value="Cancer"/>

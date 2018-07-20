@@ -34,7 +34,7 @@ class FloatingSubmit extends Component {
     return (
       <div id="floatingSubmitButtonContainer" className="row col-md-12 clearfix floatingFixed" style={{width: "1170px"}}>
         <div id="compareButton" className="submit-button">
-          <input type="submit" name="submitBtn" value="Submit Cohort(s)" className="btn btn-primary btn-filter" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
+          <input type="submit" name="submitBtn" value="Go to Cohort Description for Selected Studies" className="btn btn-primary btn-filter" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
         </div>
       </div>);
   }

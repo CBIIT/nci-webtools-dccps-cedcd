@@ -75,7 +75,7 @@ class CollectedCancersList extends Component {
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={(e) => this.props.onClick(null,f_list,e)}/>
 					</span>
-					All Cancer
+					_(All Cancers)_
 				</label>
 			</li>
 		);

@@ -44,8 +44,10 @@ class SpecimenList extends Component {
   render() {
   	const values = this.props.values;
   	let f_list = Object.assign([],this.state.list);
+  	let allIds = [];
   	const list = f_list.map((item, idx) => {
   		const key = "specimen_"+idx;
+  		allIds.push(item);
   		let checked = (values.indexOf(item) > -1);
   		return (
   			<li key={key}>
@@ -100,6 +102,14 @@ class SpecimenList extends Component {
 					<h4>Select Specimen Type(s)</h4>
 					<button className="btn btn-primary pull-right" type="button" onClick={this.handleClick}>X</button>
 					<ul>
+						<li>
+							<label>
+								<span className="filter-component-input">
+									<input type="checkbox" onClick={(e) => this.props.onClick(null,allIds,e)}/>
+								</span>
+								_(All Types)_
+							</label>
+						</li>
 						{list}
 					</ul>
 				</div>
