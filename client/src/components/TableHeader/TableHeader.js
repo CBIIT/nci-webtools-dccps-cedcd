@@ -12,6 +12,9 @@ class TableHeader extends Component {
     else if(this.props.value === "cohort_acronym"){
       name="Cohort Acronym";
     }
+    else if(this.props.value === "race_total_total"){
+      name="Total Enrollment";
+    }
     else if(this.props.value === "update_time"){
       name="Last Updated";
     }

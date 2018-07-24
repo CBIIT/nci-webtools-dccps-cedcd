@@ -602,7 +602,7 @@ router.post('/export/cancer', function(req, res){
 					tmp.Gender = g;
 					list.forEach(function(l){
 						let v = l[column];
-						if(l[column] == -1){
+						if(l[column] == undefined || l[column] == -1){
 							v = "N/P";
 						}
 						tmp[l.cohort_acronym] = v;
