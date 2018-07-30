@@ -61,19 +61,24 @@ router.post('/select', function(req, res) {
 	let ethnicity;
 	
 	gender = filter.participant.gender;
+
 	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	if(gender.indexOf("Female") > -1 && gender.indexOf("Male") > -1){
-		params.push(0);
+	let gender_pass_value ="";
+
+	if(gender.indexOf("Female") > -1){
+		gender_pass_value="0,1";
 	}
-	else if(gender.indexOf("Female") == -1 && gender.indexOf("Male") > -1){
-		params.push(2);
+	if(gender.indexOf("Male") > -1){
+		gender_pass_value==""?gender_pass_value="0,2":gender_pass_value=gender_pass_value+",0,2"
 	}
-	else if(gender.indexOf("Female") > -1 && gender.indexOf("Male") == -1){
-		params.push(1);
+	if(gender.indexOf("Other/Unknown") > -1){
+		gender_pass_value==""?gender_pass_value="-1":gender_pass_value=gender_pass_value+",-1"
 	}
-	else{
-		params.push(-1)
-	}
+	
+	params.push(gender_pass_value)
+	
+
+
 	race = filter.participant.race;
 	ethnicity = filter.participant.ethnicity;
 	let column_info = [];
