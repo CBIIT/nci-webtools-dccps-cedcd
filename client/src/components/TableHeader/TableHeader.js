@@ -24,10 +24,10 @@ class TableHeader extends Component {
     let cls;
     if(this.props.value === this.props.orderBy.column){
       if(this.props.orderBy.order ==='asc'){
-          cls = (<img src="./assets/img/arrow-up.png" className="tableArrow"></img>);
+          cls = (<img src="./assets/img/arrow-up.png" className="tableArrow" alt="sort by alphabet order up"></img>);
       }
       else{
-          cls = (<img src="./assets/img/arrow-down.png" className="tableArrow"></img>);
+          cls = (<img src="./assets/img/arrow-down.png" className="tableArrow"  alt="sort by alphabet order down"></img>);
       }
     }
     else{
