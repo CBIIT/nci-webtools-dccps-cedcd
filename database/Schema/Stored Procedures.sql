@@ -288,7 +288,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_select`(in gender int(1), in enrollment_info text,in age_info varchar(100),
+CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_select`(in gender varchar(200), in enrollment_info text,in age_info varchar(100),
 									in cancer_info text,in collected_data text,in collected_specimen varchar(200),
                                     in disease_state varchar(10), in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -298,15 +298,10 @@ BEGIN
 	declare i int default 0;
     declare tmp_count int default 0; 
     
-    if gender = 2 then 
-		set @queryString = " and eligible_gender in (0,2) ";
-    elseif gender = 1 then
-		set @queryString = " and eligible_gender in (0,1) ";
-	elseif gender = 0 then
-		set @queryString = " and eligible_gender = 0 ";
-    else
-		set @queryString = "";
-    end if;
+    if gender !="" then 
+    	set @queryString = concat(" and eligible_gender in (",gender,") ");
+    end if 
+  
     
     if enrollment_info != "" then
 		set tmp_count = 1+length(enrollment_info) - length(replace(enrollment_info,',','')); 
