@@ -199,6 +199,7 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
+
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -216,9 +217,11 @@ BEGIN
 	declare i int default 0;
     declare tmp_count int default 0; 
     
+
 	if gender !="" then 
     	set @queryString = concat(" and eligible_gender in (",gender,") ");
     end if;
+
     
     
     if enrollment_info != "" then
