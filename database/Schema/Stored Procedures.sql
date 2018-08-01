@@ -1,22 +1,12 @@
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
---
--- Host: nciws-d474-v    Database: cedcd
--- ------------------------------------------------------
--- Server version	5.1.73
---
--- Dumping routines for database 'cedcd'
---
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_baseline_data` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_baseline_data`(in cohort_info text)
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_baseline_data
+-- -----------------------------------------------------------------------------------------------------------
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS `cohort_baseline_data`//
+
+
+CREATE PROCEDURE `cohort_baseline_data`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -30,23 +20,16 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_basic_info` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_basic_info`(in cohort_info text)
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_basic_info
+-- -----------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `cohort_basic_info`//
+
+
+CREATE PROCEDURE `cohort_basic_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -60,23 +43,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_cancer_count` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_cancer_count`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_cancer_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_cancer_count`//
+
+CREATE PROCEDURE `cohort_cancer_count`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -90,23 +65,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_cancer_info` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_cancer_info`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_cancer_info
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_cancer_info`//
+
+CREATE PROCEDURE `cohort_cancer_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -120,23 +87,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_enrollment_count` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_enrollment_count`(in cohort_info text)
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_enrollment_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_enrollment_count`//
+
+
+CREATE PROCEDURE `cohort_enrollment_count`(in cohort_info text)
 BEGIN
     set @queryString = "";
     
@@ -150,43 +109,28 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_info` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_info`(in c_id int(11))
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_infovvvv
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_info`//
+
+
+CREATE PROCEDURE `cohort_info`(in c_id int(11))
 BEGIN
 	select * from cohort_basic where cohort_id = c_id;
     select * from cohort_attachment where cohort_id = c_id;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_linkages_technology` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_linkages_technology`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_linkages_technology
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_linkages_technology`//
+
+CREATE PROCEDURE `cohort_linkages_technology`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -200,23 +144,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_mortality` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_mortality`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_mortality
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_mortality`//
+
+CREATE PROCEDURE `cohort_mortality`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -230,23 +166,14 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_published` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_published`(in searchText varchar(100), in columnName varchar(40), in columnOrder varchar(10),
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_published
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_published` //
+
+CREATE PROCEDURE `cohort_published`(in searchText varchar(100), in columnName varchar(40), in columnOrder varchar(10),
 																in pageIndex int, in pageSize int)
 BEGIN
     if searchText != "" then 
@@ -272,23 +199,14 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_select` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_select`(in gender int(1), in enrollment_info text,in age_info varchar(100),
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_select
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_select`//
+
+CREATE PROCEDURE `cohort_select`(in gender varchar(200), in enrollment_info text,in age_info varchar(100),
 									in cancer_info text,in collected_data text,in collected_specimen varchar(200),
                                     in disease_state varchar(10), in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -298,15 +216,10 @@ BEGIN
 	declare i int default 0;
     declare tmp_count int default 0; 
     
-    if gender = 2 then 
-		set @queryString = " and eligible_gender in (0,2) ";
-    elseif gender = 1 then
-		set @queryString = " and eligible_gender in (0,1) ";
-	elseif gender = 0 then
-		set @queryString = " and eligible_gender = 0 ";
-    else
-		set @queryString = "";
+	if gender !="" then 
+    	set @queryString = concat(" and eligible_gender in (",gender,") ");
     end if;
+    
     
     if enrollment_info != "" then
 		set tmp_count = 1+length(enrollment_info) - length(replace(enrollment_info,',','')); 
@@ -440,23 +353,15 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_specimen_count` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_specimen_count`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_specimen_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_specimen_count`//
+
+CREATE PROCEDURE `cohort_specimen_count`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -470,23 +375,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `cohort_specimen_overview` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `cohort_specimen_overview`(in cohort_info text)
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_specimen_overview
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_specimen_overview` //
+
+CREATE PROCEDURE `cohort_specimen_overview`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -500,23 +397,15 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `contact_us` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `contact_us`(in firstname varchar(50), in lastname varchar(50), in organization varchar(100), 
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: contact_us
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `contact_us` //
+
+CREATE PROCEDURE `contact_us`(in firstname varchar(50), in lastname varchar(50), in organization varchar(100), 
 														in phone varchar(20), in email varchar(50), in topic int(3), in message text)
 BEGIN
 	set @queryString = concat("('",firstname,"','",lastname,"','",organization,"','",phone,"','",email,"',",topic,",'",message,"',now(),now())");
@@ -527,9 +416,5 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
     
     SELECT LAST_INSERT_ID();
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
+END //
+
