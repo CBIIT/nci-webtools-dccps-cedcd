@@ -14,7 +14,7 @@ class DetailsTable extends Component {
   	const cohort_columns = cohorts.map((item, idx) => {
   		const key = "th_cohort_"+item.cohort_id;
   		data_columns.push("c_"+item.cohort_id);
-      let style = {width:config.header[idx]+"px",height:"36px"};
+      let style = {width:config.header[idx]+"px"};
   		return (
         <th style={style} key={key}>
           {item.cohort_acronym}
@@ -40,7 +40,7 @@ class DetailsTable extends Component {
       }
       else if(item.type === "array"){
           let row = (
-            <td>{item.name}</td>
+            <th>{item.name}</th>
           );
           const cohort_row = data_columns.map((item_1, idx_1) => {
             const ckey = "c_"+idx + "_"+idx_1;
@@ -62,21 +62,19 @@ class DetailsTable extends Component {
           );
       }
       else{
-        let style = {
-          height:sideHeader[idx]+"px"
-        };
-
         let row = (
-          <td style={style} >{item.name}</td>
+          <th>{item.name}</th>
         );
         const cohort_row = data_columns.map((item_1, idx_1) => {
           const ckey = "c_"+idx + "_"+idx_1;
           return (
-            <td key={ckey} style={style} title={item[item_1]}>{item[item_1]}</td>
+            <td key={ckey} title={item[item_1]}>{item[item_1]}</td>
           );
         });
         let cls = item.cls?"compare-row":"compare-row compare-section-hidden";
-        
+        let style = {
+          height:sideHeader[idx]+"px"
+        };
         if(item.rows){
           return (
             <tr key={key} className={cls} style={style}  onClick={() => this.props.expand(idx+1,item.rows)}>
