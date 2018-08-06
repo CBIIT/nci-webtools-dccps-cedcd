@@ -293,8 +293,8 @@ table, .cedcd-table tr, .cedcd-table td, .cedcd-table th { /*clears default tabl
   overflow: auto;
 }
 table {
-  width: 100%;
   text-align: left;
+  width: 100%;
   background: #ffffff;
   padding: 0 0 0 0;
   border: 1px #B7B5B0 solid;
@@ -783,7 +783,7 @@ a.section-expand {
 
 .inner-fixed-header-column {
   position: absolute;
-  top: 33px;
+  top: 35px;
   left: 15px;
   width: 201px;
   /*pointer-events: none;*/
@@ -900,9 +900,6 @@ a.section-expand {
     transition: background 200ms ease-out;
     padding-left: 10px;
     display: table;
-}
-.inner-fixed-header-column .body-header {
-    border-right: 1px solid transparent;
 }
 
 .body-header span{

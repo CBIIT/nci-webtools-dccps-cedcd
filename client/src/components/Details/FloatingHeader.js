@@ -41,7 +41,7 @@ class FloatingHeader extends Component {
       );
     });
     let stl = {width:config.width};
-    let first_column_style = {height: "39px",width: config.first_column_width+"px","border-right":"1px solid transparent"};
+    let first_column_style = {height: "39px",width: config.first_column_width+"px"};
     return (
       <div id="floatingHeader" className="fixed-header-row-wrapper" style={stl}>
           <div className="xingFloating" style={first_column_style}>Data Collected</div>

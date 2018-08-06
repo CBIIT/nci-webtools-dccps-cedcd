@@ -1,7 +1,7 @@
 /config/project.settings.js
 /config/cedcd.settings
+package-lock.json
 node_modules
 .DS_Store
 npm-debug.log
 yarn-error.log*
-doc.txt

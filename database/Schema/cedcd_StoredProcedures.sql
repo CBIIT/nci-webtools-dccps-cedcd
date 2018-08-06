@@ -1,9 +1,10 @@
+
+DELIMITER //
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_baseline_data
 -- -----------------------------------------------------------------------------------------------------------
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS `cohort_baseline_data`//
+DROP PROCEDURE IF EXISTS `cohort_baseline_data` //
 
 
 CREATE PROCEDURE `cohort_baseline_data`(in cohort_info text)
@@ -22,12 +23,11 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END //
 
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_basic_info
 -- -----------------------------------------------------------------------------------------------------------
-
-DROP PROCEDURE IF EXISTS `cohort_basic_info`//
-
+DROP PROCEDURE IF EXISTS `cohort_basic_info` //
 
 CREATE PROCEDURE `cohort_basic_info`(in cohort_info text)
 BEGIN
@@ -45,11 +45,10 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END //
 
-
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_cancer_count
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_cancer_count`//
+DROP PROCEDURE IF EXISTS `cohort_cancer_count` //
 
 CREATE PROCEDURE `cohort_cancer_count`(in cohort_info text)
 BEGIN
@@ -71,7 +70,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_cancer_info
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_cancer_info`//
+DROP PROCEDURE IF EXISTS `cohort_cancer_info` //
 
 CREATE PROCEDURE `cohort_cancer_info`(in cohort_info text)
 BEGIN
@@ -89,11 +88,11 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END //
 
--- -----------------------------------------------------------------------------------------------------------
--- Stored Procedure: cohort_enrollment_count
--- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_enrollment_count`//
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_enrollment_countcohort_enrollment_countcohort_enrollment_countcohort_enrollment_countcohort_enrollment_countcohort_enrollment_countcohort_enrollment_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `cohort_enrollment_count` //
 
 CREATE PROCEDURE `cohort_enrollment_count`(in cohort_info text)
 BEGIN
@@ -113,10 +112,9 @@ END //
 
 
 -- -----------------------------------------------------------------------------------------------------------
--- Stored Procedure: cohort_infovvvv
+-- Stored Procedure: cohort_info
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_info`//
-
+DROP PROCEDURE IF EXISTS `cohort_info` //
 
 CREATE PROCEDURE `cohort_info`(in c_id int(11))
 BEGIN
@@ -128,7 +126,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_linkages_technology
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_linkages_technology`//
+DROP PROCEDURE IF EXISTS `cohort_linkages_technology` //
 
 CREATE PROCEDURE `cohort_linkages_technology`(in cohort_info text)
 BEGIN
@@ -150,7 +148,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_mortality`//
+DROP PROCEDURE IF EXISTS `cohort_mortality` //
 
 CREATE PROCEDURE `cohort_mortality`(in cohort_info text)
 BEGIN
@@ -167,6 +165,7 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_published
@@ -201,12 +200,13 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END //
 
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_select
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_select`//
+DROP PROCEDURE IF EXISTS `cohort_select` //
 
-CREATE PROCEDURE `cohort_select`(in gender varchar(200), in enrollment_info text,in age_info varchar(100),
+CREATE PROCEDURE `cohort_select`(in gender int(1), in enrollment_info text,in age_info varchar(100),
 									in cancer_info text,in collected_data text,in collected_specimen varchar(200),
                                     in disease_state varchar(10), in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -216,10 +216,15 @@ BEGIN
 	declare i int default 0;
     declare tmp_count int default 0; 
     
-	if gender !="" then 
-    	set @queryString = concat(" and eligible_gender in (",gender,") ");
+    if gender = 2 then 
+		set @queryString = " and eligible_gender in (0,2) ";
+    elseif gender = 1 then
+		set @queryString = " and eligible_gender in (0,1) ";
+	elseif gender = 0 then
+		set @queryString = " and eligible_gender = 0 ";
+    else
+		set @queryString = "";
     end if;
-    
     
     if enrollment_info != "" then
 		set tmp_count = 1+length(enrollment_info) - length(replace(enrollment_info,',','')); 
@@ -348,7 +353,7 @@ BEGIN
 		set @paging = "";
     end if;
     
-    set @query = concat("select sql_calc_found_rows cohort_id,cohort_name, cohort_acronym,cohort_web_site,update_time from cohort_summary where 1=1 ",@queryString,@orderBy,@paging);
+    set @query = concat("select sql_calc_found_rows cohort_id,cohort_name, cohort_acronym,cohort_web_site,update_time,race_total_total from cohort_summary where 1=1 ",@queryString,@orderBy,@paging);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
@@ -359,7 +364,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_specimen_count
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_specimen_count`//
+DROP PROCEDURE IF EXISTS `cohort_specimen_count` //
 
 CREATE PROCEDURE `cohort_specimen_count`(in cohort_info text)
 BEGIN
@@ -417,4 +422,3 @@ BEGIN
     
     SELECT LAST_INSERT_ID();
 END //
-
