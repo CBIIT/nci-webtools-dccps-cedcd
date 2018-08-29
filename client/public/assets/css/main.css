@@ -783,7 +783,7 @@ a.section-expand {
 
 .inner-fixed-header-column {
   position: absolute;
-  top: 35px;
+  top: 33px;
   left: 15px;
   width: 201px;
   /*pointer-events: none;*/
