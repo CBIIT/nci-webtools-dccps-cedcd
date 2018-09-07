@@ -107,7 +107,7 @@ class SpecimenList extends Component {
 								<span className="filter-component-input">
 									<input type="checkbox" onClick={(e) => this.props.onClick(null,allIds,e)}/>
 								</span>
-								(All Types)
+								All Types
 							</label>
 						</li>
 						{list}
