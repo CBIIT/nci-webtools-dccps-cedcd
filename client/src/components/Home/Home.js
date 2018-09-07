@@ -79,8 +79,7 @@ class Home extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let list = result.data.list;
-				// sort the list by sort alphabetical on the cohort name field
-				list.sort(function(a,b) {return (a.cohort_name > b.cohort_name) ? 1 : ((b.cohort_name > a.cohort_name) ? -1 : 0);} );
+				
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
 					{
@@ -144,7 +143,10 @@ class Home extends Component {
 			this.search(state.paging.page, state.orderBy, state.searchText);
 		}
 		else{
-			this.search(this.state.pageInfo.page);
+			let orderBy = Object.assign({}, this.state.orderBy);
+			orderBy.column = "cohort_name";
+			orderBy.order = "asc";
+			this.search(this.state.pageInfo.page,orderBy);
 		}
 		
 	}
