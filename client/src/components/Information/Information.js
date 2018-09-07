@@ -288,10 +288,10 @@ class Information extends Component {
 	              <div className="cohortInfoBody" id="more" aria-hidden={description.hidden} style={description.style}>
 					<div id="cd_description" dangerouslySetInnerHTML={{__html: desc}}/>
 	              </div>
-	              <button type="button" className={protocol.className} aria-expanded={protocol.expanded} aria-controls="protocols" onClick={this.protocolClick}><span className="triangle"></span>Protocols and Questionnaires</button>
+	              <button type="button" className={protocol.className} aria-expanded={protocol.expanded} aria-controls="protocols" onClick={this.protocolClick}><span className="triangle"></span>Questionnaires</button>
 	              <div className="cohortInfoBody" id="protocols" aria-hidden={protocol.hidden} style={protocol.style}>
-	                <h3>Study Protocol</h3>
-	                <div id="prot_attachments">
+	                <h3 style={{"display":"none"}}>Study Protocol</h3>
+	                <div id="prot_attachments" style={{"display":"none"}}>
 	                	{this.renderLinks(0)}
 	                </div>
 	                <h3>Cohort Questionnaires</h3>
