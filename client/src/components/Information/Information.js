@@ -118,74 +118,64 @@ class Information extends Component {
 					</ul>
 				);
 			}
-		}
+		}// end idx ==1 
 		else{
-			let has = false;
+			
+			// combination of  basic info request_procedures_web_url and attachments policies 
+			let has = false;  // has == true -> not provided 
 			let request_web_url = this.state.info.request_procedures_web_url;
+			let return_body =[]
+			// check if is a valid web url
 			if(!request_web_url.startsWith("http") && !request_web_url.startsWith("www") && !request_web_url.startsWith("wiki.")){
-				request_web_url = "";
-				has = true;
+				// nothing to do 
+			}else{
+				has=true
+				return_body.push(
+							<li className="link-url" key="request_procedures_web_url_key">
+								<a href={request_web_url} target="_blank">{"procedure:   "+request_web_url}</a>
+							</li>
+					)
 			}
+
 			if(this.state.info.attachments && this.state.info.attachments.policies){
+				// map return 
 				const links = this.state.info.attachments.policies.map((item, id) => {
 					const uid = "policy_"+id;
 					if(request_web_url !== ""){
 						has = has || (request_web_url.trim() == item.url.trim());
 					}
 					if(item.type === 1){
-						return (
+						has = true;
+						return_body.push(
 							<li key={uid} className="link-pdf">
-								<a href={item.url}  target="_blank">{item.name}</a>
+								<a href={item.url}  target="_blank">{"policies:  "+item.name}</a>
 							</li>
-						);
+						)
 					}
 					else{
 						let url = item.url;
 						if(!url.startsWith("http")){
 							url = "http://"+url;
 						}
-						return (
+						has = true;
+						return_body.push(
 							<li key={uid} className="link-url">
-								<a href={url} target="_blank">{item.url}</a>
+								<a href={url} target="_blank">{"policies:  "+item.url}</a>
 							</li>
-						);
+						)
 					}
-					
-				});
-				let other_link = "";
-				if(!has){
-					other_link = (
-							<li className="link-url">
-								<a href={request_web_url} target="_blank">{request_web_url}</a>
-							</li>
-						);
-				}
-				return (
-					<ul className="links-list">
-						{links}
-						{other_link}
-					</ul>
-				);	
+				}); // end mapping
 			}
-			else{
-				if(has){
+			if(!has){
 					return (
 						<ul>
 							<li>Not Provided</li>
 						</ul>
 					);
-				}
-				else{
-					return (
-						<ul>
-							<li className="link-url">
-								<a href={request_web_url} target="_blank">{request_web_url}</a>
-							</li>
-						</ul>
-					);
-				}
+			}else{
+				return <ul> {return_body} </ul>;
 			}
-		}
+		}// end else 
 	}
 	
 	componentDidMount(){
@@ -230,13 +220,13 @@ class Information extends Component {
 	  		return result;
 	  	});
 	  	let website;
-	  	if(info.cohort_web_site && info.cohort_web_site.trim() !== ""){
+	  	if(info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available"&& info.cohort_web_site.trim() !== ""){
 	  		website = (
 	  			<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a> 
 	  		);
 	  	}
 	  	else{
-	  		website = "";
+	  		website = <a href="#" id="cd_website" className="link-url">Cohort Website (Not Provided)</a> ;
 	  	}
 	  	let desc = "<p>"+info.cohort_description+"</p>";
 	  	desc = desc.replace(/\n/g,'<br/>');
