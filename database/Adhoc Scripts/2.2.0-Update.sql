@@ -87,7 +87,7 @@ Add https://www.maelstrom-research.org/mica/individual-study/csdlh#/ to “Cohor
 
 */
 
-Update cohort_basic set cohort_web_site = "https://www.maelstrom-research.org/mica/individual-study/csdlh#/" where cohort_id=20;
+Update cohort_basic set cohort_web_site = "https://www.maelstrom-research.org/mica/individual-study/csdlh#/" where cohort_id=20//
 
 
 
@@ -133,7 +133,7 @@ Add “Not Provided” to questionnaires  [change status does not works, hard de
 */
 
 
-Update cohort_basic set cohort_web_site = "https://snd.gu.se/en/catalogue/study/ext0015" where cohort_id=78;
+Update cohort_basic set cohort_web_site = "https://snd.gu.se/en/catalogue/study/ext0015" where cohort_id=78//
 
 
 delete from cohort_attachment where attachment_id=130;
@@ -147,7 +147,7 @@ Add https://healthcare.utah.edu/huntsmancancerinstitute/clinical-trials/colocare
 
 
 
-Update cohort_basic set cohort_web_site = "https://healthcare.utah.edu/huntsmancancerinstitute/clinical-trials/colocare-consortium.php" where cohort_id=74;
+Update cohort_basic set cohort_web_site = "https://healthcare.utah.edu/huntsmancancerinstitute/clinical-trials/colocare-consortium.php" where cohort_id=74//
 
 
 /*
@@ -176,8 +176,8 @@ Detroit Research on Cancer Survivorship (Detroit ROCS):
 Add Not Provided next to the “Cohort Website” purple button link and remove current link,
 Add Not Provided under Questionnaires and remove current pdf links*/
 
-delete from cohort_attachment where attachment_id=37;
-delete from cohort_attachment where attachment_id=38;
+delete from cohort_attachment where attachment_id=37//
+delete from cohort_attachment where attachment_id=38//
 
 /*
 European Prospective Investigation into Cancer and Nutrition (EPIC):
@@ -206,12 +206,12 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES and remove cur
 */
 
 
-Update cohort_basic set cohort_web_site = "" where cohort_id=68;
+Update cohort_basic set cohort_web_site = "" where cohort_id=68//
 
-delete from cohort_attachment where cohort_id=68;
+delete from cohort_attachment where cohort_id=68//
 
 
-Update cohort_basic set request_procedures_web_url = "" where cohort_id=68;
+Update cohort_basic set request_procedures_web_url = "" where cohort_id=68//
 
 
 
@@ -226,13 +226,13 @@ replace https://www.ed.ac.uk/generation-scotland/using-resources/access-to-resou
 
 */
 
-Update cohort_basic set cohort_web_site = "https://www.ed.ac.uk/generation-scotland/our-resources/scottish-family-health-study" where cohort_id=15;
+Update cohort_basic set cohort_web_site = "https://www.ed.ac.uk/generation-scotland/our-resources/scottish-family-health-study" where cohort_id=15//
 
-Update cohort_basic set request_procedures_web_url = "" where cohort_id=15;
+Update cohort_basic set request_procedures_web_url = "" where cohort_id=15//
 
 
 
-delete from cohort_attachment where cohort_id=15;
+delete from cohort_attachment where cohort_id=15//
 
 
 
@@ -250,9 +250,9 @@ Replace https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/ to questionnaire
 Replace https://sites.sph.harvard.edu/hpfs/for-collaborators/ to DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
-delete from cohort_attachment where cohort_id=61;
+delete from cohort_attachment where cohort_id=61//
 
-Update cohort_basic set request_procedures_web_url = "" where cohort_id=61;
+Update cohort_basic set request_procedures_web_url = "" where cohort_id=61//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) VALUES ('61', '0', '1', 'https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/', '1', '2018-09-09 00:00:00')//
@@ -270,7 +270,7 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES and remove cur
 
 */
 
-delete from cohort_attachment where cohort_id=22;
+delete from cohort_attachment where cohort_id=22//
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) VALUES ('22', '0', '1', 'https://www.cancer.umn.edu/our-research/research-programs/specs-program/research-studies', '1', '2018-09-09 00:00:00')//
 
@@ -283,9 +283,9 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
 
-delete from cohort_attachment where cohort_id=47;
+delete from cohort_attachment where cohort_id=47//
 
-Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/molecular-epidemiology-resource" where cohort_id=47;
+Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/molecular-epidemiology-resource" where cohort_id=47//
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) VALUES ('47', '0', '1', 'https://www.mayo.edu/research/documents/6-mayo-mer-baseline-enrollment/doc-20400290', '1', '2018-09-09 00:00:00')//
 
@@ -299,9 +299,9 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
 
-delete from cohort_attachment where cohort_id=46;
+delete from cohort_attachment where cohort_id=46//
 
-Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/lymphoma-epidemiology-outcomes-study" where cohort_id=46;
+Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/lymphoma-epidemiology-outcomes-study" where cohort_id=46//
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) VALUES ('46', '0', '1', 'ttps://www.mayo.edu/research/documents/13-mayo-leo-baseline-enrollment-questionnaire/doc-20400301', '1', '2018-09-09 00:00:00')//
 
