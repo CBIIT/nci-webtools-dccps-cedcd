@@ -132,7 +132,7 @@ class Information extends Component {
 				has=true
 				return_body.push(
 							<li className="link-url" key="request_procedures_web_url_key">
-								<a href={request_web_url} target="_blank">{"procedure:   "+request_web_url}</a>
+								<a href={request_web_url} target="_blank">{request_web_url}</a>
 							</li>
 					)
 			}
@@ -148,7 +148,7 @@ class Information extends Component {
 						has = true;
 						return_body.push(
 							<li key={uid} className="link-pdf">
-								<a href={item.url}  target="_blank">{"policies:  "+item.name}</a>
+								<a href={item.url}  target="_blank">{item.name}</a>
 							</li>
 						)
 					}
@@ -160,7 +160,7 @@ class Information extends Component {
 						has = true;
 						return_body.push(
 							<li key={uid} className="link-url">
-								<a href={url} target="_blank">{"policies:  "+item.url}</a>
+								<a href={url} target="_blank">{item.url}</a>
 							</li>
 						)
 					}
