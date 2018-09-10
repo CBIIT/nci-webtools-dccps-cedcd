@@ -16,7 +16,7 @@ class Home extends Component {
 			searchString:"",
 			list:[],
 			orderBy:{
-				column:"cohort_acronym",
+				column:"cohort_name",
 				order:"asc"
 			},
 			pageInfo:{page:1,pageSize:15,total:0},
@@ -143,10 +143,7 @@ class Home extends Component {
 			this.search(state.paging.page, state.orderBy, state.searchText);
 		}
 		else{
-			let orderBy = Object.assign({}, this.state.orderBy);
-			orderBy.column = "cohort_name";
-			orderBy.order = "asc";
-			this.search(this.state.pageInfo.page,orderBy);
+			this.search(this.state.pageInfo.page);
 		}
 		
 	}
