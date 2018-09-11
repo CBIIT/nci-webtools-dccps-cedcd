@@ -29,6 +29,8 @@ update cohort_basic set cohort_web_site = "https://biometry.nci.nih.gov/cdas/plc
 
 update cohort_basic set cohort_web_site = "https://www.sph.nus.edu.sg/research/schs" where cohort_id =62//
 
+update cohort_basic set cohort_web_site = "https://www.schs.pitt.edu/methods/shanghai-cohort-study/" where cohort_id =65//
+
 update cohort_basic set cohort_web_site = "https://staging.mc.vanderbilt.edu/swhs-smhs/index_smhs.html" where cohort_id =32//
 
 update cohort_basic set cohort_web_site = "https://snd.gu.se/en/catalogue/study/ext0018	" where cohort_id =75//
@@ -53,7 +55,7 @@ update cohort_basic set cohort_web_site="http://www.breakthroughgenerations.org.
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('17' as a, '0' as b, '1' as c, 'http://live-breakthrough-generations.pantheonsite.io/about-study/what-information-collected/questionnaire' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '17' as a, '0' as b, '1' as c, 'http://live-breakthrough-generations.pantheonsite.io/about-study/what-information-collected/questionnaire' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '17' AND attachment_type=0  AND category= 1 AND website = 'http://live-breakthrough-generations.pantheonsite.io/about-study/what-information-collected/questionnaire'
 ) LIMIT 1//
@@ -61,7 +63,7 @@ WHERE NOT EXISTS (
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('17' as a, '0' as b, '2' as c, 'http://live-breakthrough-generations.pantheonsite.io/researchers' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '17' as a, '0' as b, '2' as c, 'http://live-breakthrough-generations.pantheonsite.io/researchers' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '17' AND attachment_type=0  AND category=2 AND website = 'http://live-breakthrough-generations.pantheonsite.io/researchers'
 ) LIMIT 1//
@@ -73,7 +75,7 @@ Add http://www.bcsc-research.org/data/elements.html#questionnaires to “questio
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('60' as a, '0' as b, '1' as c, 'http://www.bcsc-research.org/data/elements.html#questionnaires' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '60' as a, '0' as b, '1' as c, 'http://www.bcsc-research.org/data/elements.html#questionnaires' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '60' AND attachment_type=0  AND category=1 AND website = 'http://www.bcsc-research.org/data/elements.html#questionnaires'
 ) LIMIT 1//
@@ -86,14 +88,14 @@ Add https://www.calteachersstudy.org/collaborations to “DATA, BIOSPECIMEN, AND
 */
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('66' as a, '0' as b, '1' as c, 'https://www.calteachersstudy.org/past-questionnaires' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '66' as a, '0' as b, '1' as c, 'https://www.calteachersstudy.org/past-questionnaires' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '66' AND attachment_type=0  AND category=1 AND website = 'https://www.calteachersstudy.org/past-questionnaires'
 ) LIMIT 1//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('66' as a, '0' as b, '2' as c, 'https://www.calteachersstudy.org/collaborations' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '66' as a, '0' as b, '2' as c, 'https://www.calteachersstudy.org/collaborations' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '66' AND attachment_type=0  AND category=2 AND website = 'https://www.calteachersstudy.org/collaborations'
 ) LIMIT 1//
@@ -142,7 +144,7 @@ Update cohort_attachment set website = "https://www.jhsph.edu/research/centers-a
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('73' as a, '0' as b, '1' as c, 'https://www.jhsph.edu/research/centers-and-institutes/george-w-comstock-center-for-public-health-research-and-prevention/1989_CLUE_II_Baseline_Q.pdf' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '73' as a, '0' as b, '1' as c, 'https://www.jhsph.edu/research/centers-and-institutes/george-w-comstock-center-for-public-health-research-and-prevention/1989_CLUE_II_Baseline_Q.pdf' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '73' AND attachment_type=0  AND category=1 AND website = 'https://www.jhsph.edu/research/centers-and-institutes/george-w-comstock-center-for-public-health-research-and-prevention/1989_CLUE_II_Baseline_Q.pdf'
 ) LIMIT 1//
@@ -162,7 +164,7 @@ Add “Not Provided” to questionnaires  [change status does not works, hard de
 Update cohort_basic set cohort_web_site = "https://snd.gu.se/en/catalogue/study/ext0015" where cohort_id=78//
 
 
-delete from cohort_attachment where attachment_id=130;
+delete from cohort_attachment where attachment_id=130//
 
 /*
 ColoCare Consortium (ColoCare):
@@ -188,7 +190,7 @@ ADD http://www.partnershipfortomorrow.ca/accessing-data-biosamples/ to DATA, BIO
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('64' as a, '0' as b, '1' as c, 'http://www.partnershipfortomorrow.ca/cptp-data-biosamples/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '64' as a, '0' as b, '1' as c, 'http://www.partnershipfortomorrow.ca/cptp-data-biosamples/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '64' AND attachment_type=0  AND category=1 AND website = 'http://www.partnershipfortomorrow.ca/cptp-data-biosamples/'
 ) LIMIT 1//
@@ -196,7 +198,7 @@ WHERE NOT EXISTS (
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('64' as a, '0' as b, '2' as c, 'http://www.partnershipfortomorrow.ca/accessing-data-biosamples/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '64' as a, '0' as b, '2' as c, 'http://www.partnershipfortomorrow.ca/accessing-data-biosamples/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '64' AND attachment_type=0  AND category=2 AND website = 'http://www.partnershipfortomorrow.ca/accessing-data-biosamples/'
 ) LIMIT 1//
@@ -218,14 +220,14 @@ Add http://epic.iarc.fr/access/index.php to DATA, BIOSPECIMEN, AND AUTHORSHIP PO
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('71' as a, '0' as b, '1' as c, 'http://epic.iarc.fr/about/studyresources.php' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '71' as a, '0' as b, '1' as c, 'http://epic.iarc.fr/about/studyresources.php' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '71' AND attachment_type=0  AND category=1 AND website = 'http://epic.iarc.fr/about/studyresources.php'
 ) LIMIT 1//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('71' as a, '0' as b, '2' as c, 'http://epic.iarc.fr/access/index.php' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '71' as a, '0' as b, '2' as c, 'http://epic.iarc.fr/access/index.php' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '71' AND attachment_type=0  AND category=2 AND website = 'http://epic.iarc.fr/access/index.php'
 ) LIMIT 1//
@@ -275,7 +277,7 @@ delete from cohort_attachment where cohort_id=15//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('15' as a, '0' as b, '1' as c, 'https://www.ed.ac.uk/generation-scotland/our-resources/scottish-family-health-study' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '15' as a, '0' as b, '1' as c, 'https://www.ed.ac.uk/generation-scotland/our-resources/scottish-family-health-study' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '15' AND attachment_type=0  AND category=1 AND website = 'https://www.ed.ac.uk/generation-scotland/our-resources/scottish-family-health-study'
 ) LIMIT 1//
@@ -283,7 +285,7 @@ WHERE NOT EXISTS (
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('15' as a, '0' as b, '2' as c, 'https://www.ed.ac.uk/generation-scotland/using-resources/access-to-resources' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '15' as a, '0' as b, '2' as c, 'https://www.ed.ac.uk/generation-scotland/using-resources/access-to-resources' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '15' AND attachment_type=0  AND category=2 AND website = 'https://www.ed.ac.uk/generation-scotland/using-resources/access-to-resources'
 ) LIMIT 1//
@@ -303,14 +305,14 @@ Update cohort_basic set request_procedures_web_url = "" where cohort_id=61//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('61' as a, '0' as b, '1' as c, 'https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '61' as a, '0' as b, '1' as c, 'https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '61' AND attachment_type=0  AND category=1 AND website = 'https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/'
 ) LIMIT 1//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('61' as a, '0' as b, '2' as c, 'https://sites.sph.harvard.edu/hpfs/for-collaborators/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '61' as a, '0' as b, '2' as c, 'https://sites.sph.harvard.edu/hpfs/for-collaborators/' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '61' AND attachment_type=0  AND category=2 AND website = 'https://sites.sph.harvard.edu/hpfs/for-collaborators/'
 ) LIMIT 1//
@@ -328,7 +330,7 @@ delete from cohort_attachment where cohort_id=22//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('22' as a, '0' as b, '1' as c, 'https://www.cancer.umn.edu/our-research/research-programs/specs-program/research-studies' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '22' as a, '0' as b, '1' as c, 'https://www.cancer.umn.edu/our-research/research-programs/specs-program/research-studies' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '22' AND attachment_type=0  AND category=1 AND website = 'https://www.cancer.umn.edu/our-research/research-programs/specs-program/research-studies'
 ) LIMIT 1//
@@ -348,7 +350,7 @@ Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/ly
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('47' as a, '0' as b, '1' as c, 'https://www.mayo.edu/research/documents/6-mayo-mer-baseline-enrollment/doc-20400290' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '47' as a, '0' as b, '1' as c, 'https://www.mayo.edu/research/documents/6-mayo-mer-baseline-enrollment/doc-20400290' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '47' AND attachment_type=0  AND category=1 AND website = 'https://www.mayo.edu/research/documents/6-mayo-mer-baseline-enrollment/doc-20400290'
 ) LIMIT 1//
@@ -369,7 +371,7 @@ Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/ly
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
-SELECT ('46' as a, '0' as b, '1' as c, 'https://www.mayo.edu/research/documents/13-mayo-leo-baseline-enrollment-questionnaire/doc-20400301' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
+SELECT * FROM (SELECT  '46' as a, '0' as b, '1' as c, 'https://www.mayo.edu/research/documents/13-mayo-leo-baseline-enrollment-questionnaire/doc-20400301' as d, '1' as e, '2018-09-09 00:00:00' as f) as tmp
 WHERE NOT EXISTS (
     SELECT * FROM `cedcd`.`cohort_attachment` WHERE cohort_id = '46' AND attachment_type=0  AND category=1 AND website = 'https://www.mayo.edu/research/documents/13-mayo-leo-baseline-enrollment-questionnaire/doc-20400301'
 ) LIMIT 1//
