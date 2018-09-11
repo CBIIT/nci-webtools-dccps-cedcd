@@ -248,7 +248,7 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES and remove cur
 
 Update cohort_basic set cohort_web_site = "" where cohort_id=68//
 
-delete from cohort_attachment where cohort_id=68//
+delete from cohort_attachment where cohort_id=68 and category !=0//
 
 
 Update cohort_basic set request_procedures_web_url = "" where cohort_id=68//
@@ -271,8 +271,7 @@ Update cohort_basic set cohort_web_site = "https://www.ed.ac.uk/generation-scotl
 Update cohort_basic set request_procedures_web_url = "" where cohort_id=15//
 
 
-
-delete from cohort_attachment where cohort_id=15//
+delete from cohort_attachment where cohort_id=15 and category !=0//
 
 
 
@@ -299,7 +298,7 @@ Replace https://sites.sph.harvard.edu/hpfs/hpfs-questionnaires/ to questionnaire
 Replace https://sites.sph.harvard.edu/hpfs/for-collaborators/ to DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
-delete from cohort_attachment where cohort_id=61//
+delete from cohort_attachment where cohort_id=61 and category !=0//
 
 Update cohort_basic set request_procedures_web_url = "" where cohort_id=61//
 
@@ -326,7 +325,7 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES and remove cur
 
 */
 
-delete from cohort_attachment where cohort_id=22//
+delete from cohort_attachment where cohort_id=22 and  category!=0//
 
 
 INSERT INTO `cedcd`.`cohort_attachment` (`cohort_id`, `attachment_type`, `category`, `website`, `status`, `create_time`) 
@@ -344,7 +343,7 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
 
-delete from cohort_attachment where cohort_id=47//
+delete from cohort_attachment where cohort_id=47 and category !=0//
 
 Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/molecular-epidemiology-resource" where cohort_id=47//
 
@@ -365,7 +364,7 @@ Add Not Provided under DATA, BIOSPECIMEN, AND AUTHORSHIP POLICIES
 */
 
 
-delete from cohort_attachment where cohort_id=46//
+delete from cohort_attachment where cohort_id=46 and category !=0//
 
 Update cohort_basic set cohort_web_site = "https://www.mayo.edu/research/labs/lymphoma-epidemiology/research/lymphoma-epidemiology-outcomes-study" where cohort_id=46//
 
