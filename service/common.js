@@ -394,6 +394,7 @@ router.post('/export/select', function(req, res){
 			data.list["Criteria"].header.push([" - "+s]);
 		});
 	}
+	
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			results[0].forEach(function(entry){

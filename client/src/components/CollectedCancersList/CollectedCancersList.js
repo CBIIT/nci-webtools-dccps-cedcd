@@ -64,9 +64,7 @@ class CollectedCancersList extends Component {
   	const innertitle = this.props.innertitle;
   	const hasNoCancer = this.props.hasNoCancer;
   	let f_list = Object.assign([],this.state.list);
-  	if(hasNoCancer){
-  		f_list.push("No Cancer");
-  	}
+  	
   	let selectAll = "";
   	if(this.props.hasSelectAll){
   		selectAll = (
@@ -75,13 +73,27 @@ class CollectedCancersList extends Component {
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={(e) => this.props.onClick(null,f_list,e)}/>
 					</span>
-					(All Cancers)
+					All Cancers
 				</label>
 			</li>
 		);
   	}
+  	let hasNoCancer_opt =""
+  	if(hasNoCancer){
+  		let checked = (values.indexOf("No Cancer") > -1);
+  		hasNoCancer_opt =(<li  key={"cancer_0"}>
+				<label>
+					<span className="filter-component-input">
+						<input type="checkbox" onClick={() => this.props.onClick("No Cancer")} checked={checked}/>
+					</span>
+					{"No Cancer"}
+				</label>
+			</li>)
+  	}
+  	
+
   	const list = f_list.map((item, idx) => {
-  		const key = "cancer_"+idx;
+  		const key = "cancer_"+idx+1;
   		let checked = (values.indexOf(item) > -1);
   		return (
   			<li  key={key}>
@@ -94,6 +106,7 @@ class CollectedCancersList extends Component {
 			</li>
   		);
   	});
+
   	const displayMax = parseInt(this.props.displayMax);
   	const selectedList = values.map((item, idx) => {
   		const key = "s_cancer_"+idx;
@@ -134,6 +147,7 @@ class CollectedCancersList extends Component {
 					<h4>{innertitle}</h4>
 					<button className="btn btn-primary pull-right" type="button" onClick={this.handleClick}>X</button>
 					<ul>
+						{hasNoCancer_opt}
 						{selectAll}
 						{list}
 					</ul>

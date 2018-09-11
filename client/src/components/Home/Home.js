@@ -16,7 +16,7 @@ class Home extends Component {
 			searchString:"",
 			list:[],
 			orderBy:{
-				column:"cohort_acronym",
+				column:"cohort_name",
 				order:"asc"
 			},
 			pageInfo:{page:1,pageSize:15,total:0},
@@ -79,6 +79,7 @@ class Home extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let list = result.data.list;
+				
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
 					{
@@ -163,6 +164,10 @@ class Home extends Component {
   			let id = item.cohort_id;
   			let url = "./cohort?id="+id;
   			let website = item.cohort_web_site;
+  			let website_content = "";
+  			if(website =="Not Available"){
+  				website_content = ("Not Available");
+  			}
   			if(!website.startsWith("http") && !website.startsWith("www")){
   				website = "";
   			}
@@ -170,10 +175,14 @@ class Home extends Component {
   			if(website.length > 30){
   				website_label = website.substring(0,27) + "...";
   			}
-  			let website_content = "";
+  			
   			if(website !== ""){
   				website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
   			}
+
+  			
+
+
   			return (
   				<tr key={id}>
 					<td>

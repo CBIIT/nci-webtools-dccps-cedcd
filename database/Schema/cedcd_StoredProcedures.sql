@@ -184,7 +184,7 @@ BEGIN
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
 	else
-		set @orderBy = "";
+		set @orderBy = "order by cohort_name asc";
     end if;
     
     if pageIndex > -1 then
@@ -344,7 +344,7 @@ BEGIN
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
 	else
-		set @orderBy = "";
+		set @orderBy = "order by cohort_name asc";
     end if;
     
     if pageIndex > -1 then
