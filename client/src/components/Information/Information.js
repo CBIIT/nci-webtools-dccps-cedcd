@@ -141,8 +141,8 @@ class Information extends Component {
 				// map return 
 				const links = this.state.info.attachments.policies.map((item, id) => {
 					const uid = "policy_"+id;
-					if(request_web_url !== ""){
-						has = has || (request_web_url.trim() == item.url.trim());
+					if(request_web_url !== ""&&request_web_url.trim() == item.url.trim()){
+						return;
 					}
 					if(item.type === 1){
 						has = true;
