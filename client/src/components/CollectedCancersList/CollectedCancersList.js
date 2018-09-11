@@ -80,13 +80,13 @@ class CollectedCancersList extends Component {
   	}
   	let hasNoCancer_opt =""
   	if(hasNoCancer){
-  		let checked = (values.indexOf("No cancer") > -1);
+  		let checked = (values.indexOf("No Cancer") > -1);
   		hasNoCancer_opt =(<li  key={"cancer_0"}>
 				<label>
 					<span className="filter-component-input">
-						<input type="checkbox" onClick={() => this.props.onClick("No cancer")} checked={checked}/>
+						<input type="checkbox" onClick={() => this.props.onClick("No Cancer")} checked={checked}/>
 					</span>
-					{"No cancer"}
+					{"No Cancer"}
 				</label>
 			</li>)
   	}
