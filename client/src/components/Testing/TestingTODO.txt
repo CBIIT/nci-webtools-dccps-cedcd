@@ -1,0 +1,5 @@
+TODO:
+
+See if they want to implement some sort of SQL-injection protection
+Make the interface look nicer 0.0
+Fix the cancer selection

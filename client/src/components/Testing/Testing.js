@@ -28,7 +28,18 @@ class Details extends Component {
 		super(props);
 		this.toggle = this.toggle.bind(this);
 		this.state = {
-			list:[],
+      list:[],
+      selectionList:[[],[],[]],
+      booleanStates:[
+        'AND',
+        'AND',
+        'AND'
+      ],
+      items: [
+        'Select',
+        'Select',
+        'Select'
+      ],
 			filter:{
 				participant:{
 					gender:[],
@@ -57,7 +68,184 @@ class Details extends Component {
 			selectAll:false,
 			collapse: true,
 		};
-	}
+  }
+  
+  
+  removeItem(index) {
+    const { items, booleanStates, selectionList } = this.state;
+    if(items.length > 1){
+      items.splice(index, 1);
+      booleanStates.splice(index, 1);
+      selectionList.splice(index, 1);
+      this.setState({ 
+        items: items,
+        booleanStates: booleanStates,
+        selectionList: selectionList
+      });
+    }
+  }
+
+  addItem(index) {
+	const { items, booleanStates, selectionList } = this.state;
+  items.splice(index,0,'Select');
+  booleanStates.splice(index,0,'AND');
+  selectionList.splice(index,0,[]);
+  console.log(items);
+  console.log(booleanStates);
+  console.log("selectionList");
+  for(var i = 0; i < selectionList.length; i++){
+    console.log(selectionList[i]);
+  }
+    this.setState({
+      items: items,
+      booleanStates:booleanStates,
+      selectionList: selectionList
+    });
+    this.itemInput = null;
+  }
+
+  handleSelectChange(e, index){
+      const { items, selectionList } = this.state;
+      items[index]= e.target.value;
+      const currSelect = selectionList[index];
+      currSelect.splice(0, currSelect.length);
+      selectionList[index] = currSelect;
+      this.setState({
+        items: items,
+        selectionList: selectionList
+      });
+  }
+
+  handleGeneralListClick(v, index){
+    const {selectionList} = this.state;
+    const currList = selectionList[index];
+    let idx = selectionList[index].indexOf(v);
+    
+		if(idx > -1){
+			//remove element
+			currList.splice(idx,1);
+		}
+		else{
+			//add element
+			currList.push(v);
+    }
+    selectionList[index] = currList;
+		this.setState({
+			selectionList: selectionList
+    });
+    
+  }
+  
+	handleCancerClick (v,allIds,e,index){
+		const {selectionList} = this.state;
+    	const currList = selectionList[index];
+   
+    
+		if(v){
+      		let idx = selectionList[index].indexOf(v);
+			if(idx > -1){
+        		//remove element
+        		currList.splice(idx,1);
+      		}
+      		else{
+        		//add element
+        		currList.push(v);
+      		}
+		}
+		else{
+			//click on the "all cohort"
+			currList.splice(0,currList.length);
+			if(e.target.checked){
+        		allIds.forEach(function(element){
+          			currList.push(element );
+        		});
+			}
+    }
+    selectionList[index] = currList;
+		this.setState({
+			selectionList: selectionList
+		});
+  }
+
+  createSelectItems(index) {
+
+    const {items} = this.state;
+    const currItem = items[index];
+    if(currItem == "Gender"){
+      return <GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Race"){
+      return <RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Ethnicity"){
+      return <EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Age"){
+      return <AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "State"){
+      return <DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Categories"){
+      return <CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Biospecimen"){
+      return <CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+    }
+    else if(currItem == "Cancers"){
+      return <CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/>;
+    }
+
+    return;
+
+  }
+
+  createBoolean(index){
+    const { booleanStates } = this.state;
+    if(index > 0){
+      return <select class="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>
+      </select>
+    }
+    return <p class = "indent"></p>;
+  }
+
+  createSelector(index){
+	  if(index > 0){
+		return <select class="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+          <option value="Select" selected disabled hidden>-Select type-</option>
+          <option value="Gender">Gender</option>
+          <option value="Race">Race</option>
+          <option value="Ethnicity">Ethnicity</option>
+          <option value="Age">Age at Baseline</option>
+          <option value="State">Study Population</option>
+          <option value="Categories">Categories of Data Collected</option>
+          <option value="Biospecimen">Types of Biospecimens Collected</option>
+          <option value="Cancers">Cancers Collected</option>
+        </select>
+	  }
+	  return <select class="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+		<option value="Select" selected disabled hidden>-Select type-</option>
+	  	<option value="Gender">Gender</option>
+	  	<option value="Race">Race</option>
+	  	<option value="Ethnicity">Ethnicity</option>
+	  	<option value="Age">Age at Baseline</option>
+	  	<option value="State">Study Population</option>
+	  	<option value="Categories">Categories of Data Collected</option>
+	  	<option value="Biospecimen">Types of Biospecimens Collected</option>
+	  	<option value="Cancers">Cancers Collected</option>
+	  </select>
+  }
+
+  handleBooleanChange(e, index){
+    const { booleanStates } = this.state;
+    booleanStates[index] = e.target.value;
+    this.setState({
+      booleanStates:booleanStates
+    });
+  }
+
 
 	toggle() {
 		this.setState(state => ({ collapse: !state.collapse }));
@@ -127,7 +315,10 @@ class Details extends Component {
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage: state.pageInfo.page;
 		let reqBody = {
-			filter:state.filter,
+			filter: state.filter,
+			selectionList: state.selectionList,
+			items: state.items,
+			booleanStates: state.booleanStates,
 			orderBy:state.orderBy,
 			paging:state.pageInfo
 		};
@@ -140,10 +331,10 @@ class Details extends Component {
 		if(orderBy){
 			reqBody.orderBy = orderBy;
 		}
-		if(filter){
+		/*if(filter){
 			reqBody.filter = filter;
-		}
-		fetch('./api/cohort/select',{
+		}*/
+		fetch('./api/cohort/testSelect',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -152,6 +343,7 @@ class Details extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
+				console.log(result.data.list);
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -188,14 +380,18 @@ class Details extends Component {
 			selected = [];
 			if(e.target.checked){
 				//select all cohorts
-				const state = Object.assign({}, this.state);
+				const state = Object.assign({}, this.state);;
 				let reqBody = {
 					filter:state.filter,
+					selectionList: state.selectionList,
+					booleanStates: state.booleanStates,
+					items: state.items,
 					orderBy:state.orderBy,
 					paging:{}
 				};
 				reqBody.paging.page = 0;
-				fetch('./api/cohort/select',{
+				console.log(state.filter.participant.gender);
+				fetch('./api/cohort/testSelect',{
 					method: "POST",
 					body: JSON.stringify(reqBody),
 					headers: {
@@ -235,162 +431,6 @@ class Details extends Component {
 			});
 		}
 		
-	}
-
-	handleGenderClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.gender.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.participant.gender.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.participant.gender.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleRaceClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.race.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.participant.race.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.participant.race.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleEthnicityClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.ethnicity.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.participant.ethnicity.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.participant.ethnicity.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-		console.log(filter.participant.ethnicity);
-		console.log(filter.participant.gender);
-		console.log(filter.participant.race);
-	}
-
-	handleAgeClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.age.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.participant.age.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.participant.age.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleDataClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.collect.data.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.collect.data.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.collect.data.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleSpecimenClick = (v) =>{
-		const filter = Object.assign({},this.state.filter);
-		let idx = filter.collect.specimen.indexOf(v);
-
-		if(idx > -1){
-			//remove element
-			filter.collect.specimen.splice(idx,1);
-		}
-		else{
-			//add element
-			filter.collect.specimen.push(v);
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleCancerClick = (v,allIds,e) =>{
-		let filter = Object.assign({},this.state.filter);
-		if(v){
-			let idx = filter.collect.cancer.indexOf(v);
-			if(idx > -1){
-				//remove element
-				filter.collect.cancer.splice(idx,1);
-			}
-			else{
-				//add element
-				filter.collect.cancer.push(v);
-			}
-		}
-		else{
-			//click on the "all cohort"
-			filter.collect.cancer = [];
-			if(e.target.checked){
-				filter.collect.cancer = allIds;
-			}
-		}
-		this.setState({
-			filter:filter
-		});
-	}
-
-	handleCancerClick = (v,allIds,e) =>{
-		const filter = Object.assign({},this.state.filter);
-		if(v){
-			let idx = filter.collect.cancer.indexOf(v);
-
-			if(idx > -1){
-				//remove element
-				filter.collect.cancer.splice(idx,1);
-			}
-			else{
-				//add element
-				filter.collect.cancer.push(v);
-			}
-		}
-		else{
-			//click on the "all cohort"
-			filter.collect.cancer = [];
-			if(e.target.checked){
-				filter.collect.cancer = allIds;
-			}
-		}
-		this.setState({
-			filter:filter
-		});
 	}
 
 	handleStateClick = (v) =>{
@@ -534,7 +574,24 @@ class Details extends Component {
 						<td colSpan="3">Nothing to display</td>
 					</tr>
 	  			);
-	  		}
+        }
+        const { items, itemText } = this.state;
+    const itemList = items.map((item, index) => (
+      <div>
+
+		{this.createBoolean(index)}
+		{this.createSelector(index)}
+        
+        <button class="add-button"onClick={e => this.addItem(index+1)}>
+          +
+        </button>
+        <button class="remove-button" onClick={e => this.removeItem(index)}>
+          &times;
+        </button>
+        {this.createSelectItems(index)}
+	    	
+      </div>
+    ));
 			return (
 				<div>
 				<input id="tourable" type="hidden" />
@@ -550,38 +607,7 @@ class Details extends Component {
 					</div>
 					<Collapse isOpen={this.state.collapse}>
 			      <div className="panel-body">
-			        <div className="filter row">
-			          <div className="col-sm-6 filterCol">
-			            <div className="filter-component">
-			              <h3>Eligibility Requirements</h3>
-			              <div className="col-sm-6">
-			              	<GenderList hasUnknown={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick}/>
-			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
-			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
-			              </div>
-			              <div className="col-sm-6">
-			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
-			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
-			              </div>
-			            </div>
-			          </div>
-			          <div className="filterCol col-sm-6 last">
-			            <div className="filter-component">
-			              <h3>Data and Specimens Collected</h3>
-			              <div className="row">
-			                <div className="col-sm-12">
-			                  	<CollectedDataList values={this.state.filter.collect.data} displayMax="5" onClick={this.handleDataClick}/>
-			                </div>
-			                <div className="col-sm-12">
-			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
-			                </div>
-			                <div className="col-sm-12">
-			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
-			                </div>
-			              </div>
-			            </div>
-			          </div>
-			        </div>
+              {itemList}
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>

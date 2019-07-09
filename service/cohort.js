@@ -1,3 +1,4 @@
+var TestingFunctions = require('./TestingFunctions');
 var express = require('express');
 var router = express.Router();
 var mysql = require('../components/mysql');
@@ -226,6 +227,251 @@ router.post('/select', function(req, res) {
 		params.push(-1);
 		params.push(-1);
 	}
+
+	console.log(params);
+
+	mysql.callProcedure(func,params,function(results){
+		if(results && results[0] && results[0].length > 0){
+			let dt = {};
+			dt.list = results[0];
+			dt.total = results[1][0].total;
+			res.json({status:200, data:dt});
+		}
+		else{
+			res.json({status:200, data:{list:[],total:0}});
+		}
+	});
+});
+
+router.post('/testSelect', function(req, res) {
+	let body = req.body;
+	let selectionList = body.selectionList || {};
+	let items = body.items || {};
+	let booleanStates = body.booleanStates || {};
+	let orderBy = body.orderBy || {};
+	let paging = body.paging || {};
+	let func = "cohort_select";
+	let params = [];
+	//form filter into Strings
+
+	
+	let sql = 'select sql_calc_found_rows cohort_id,cohort_name, cohort_acronym,cohort_web_site,update_time,race_total_total from cohort_summary where 1=1 ';
+	for(let i = 0; i < selectionList.length; i++){
+
+		let currItem = items[i];
+		let currState = booleanStates[i];
+		let currSelection = selectionList[i];
+		if(currItem == "Gender"){
+			let toAdd = "";
+			if(currSelection.includes("Male")){
+				if(currSelection.includes("Female")){
+					toAdd += " eligible_gender = 0 ";
+				}
+				else{
+					toAdd += " eligible_gender in (0,2) ";
+				}
+			}
+			else if(currSelection.includes("Female")){
+				toAdd += "eligible_gender in (0,1) ";
+			}
+			else{
+				toAdd += "";
+			}
+			enrollmentInfo = TestingFunctions.getEnrollmentStuff(currSelection,[],[]);
+			let tempString = "";
+			for(let a = 0; a < enrollmentInfo.length; a++){
+				tempString += " " + enrollmentInfo[a] + " > 0 ";
+				if(a != enrollmentInfo.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != "" && toAdd != ""){
+				sql += " " + currState + " (" + toAdd + " and (" + tempString + ")) ";
+			}
+			else if(tempString == "" && toAdd != ""){
+				sql += " " + currState + " ( " + toAdd + ") ";
+			}
+			else if(tempString != "" && toAdd == ""){
+				sql += " " + currState + " (" + tempString + ") "
+			}
+		}
+		else if(currItem == "Race"){
+			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],currSelection,[]);
+			let tempString = "";
+			for(let a = 0; a < enrollmentInfo.length; a++){
+				tempString += " " + enrollmentInfo[a] + " > 0 ";
+				if(a != enrollmentInfo.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") "
+			}
+
+		}
+		else if(currItem == "Ethnicity"){
+			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],[],currSelection);
+			let tempString = "";
+			for(let a = 0; a < enrollmentInfo.length; a++){
+				tempString += " " + enrollmentInfo[a] + " > 0 ";
+				if(a != enrollmentInfo.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") "
+			}
+
+		}
+		else if(currItem == "Age"){
+
+			let tempString = "";
+
+			for(let a = 0; a < currSelection.length; a++){
+				let curr = currSelection[a]; 
+				if(curr == "0-14"){
+					tempString += " enrollment_age_min <= 14 ";
+				}
+				else if(curr == "15-19"){
+					tempString += " (enrollment_age_min >= 15 and enrollment_age_min <= 19) ";
+				}
+				else if(curr == "20-24"){
+					tempString += " (enrollment_age_min >= 20 and enrollment_age_min <= 24)";
+				}
+				else if(curr == "25-29"){
+					tempString += " (enrollment_age_min >= 25 and enrollment_age_min <= 29)";
+				}
+				else if(curr == "30-34"){
+					tempString += " (enrollment_age_min >= 30 and enrollment_age_min <= 34)";
+				}
+				else if(curr == "35-39"){
+					tempString += " (enrollment_age_min >= 35 and enrollment_age_min <= 39)";
+				}
+				else if(curr == "40-44"){
+					tempString += " (enrollment_age_min >= 40 and enrollment_age_min <= 44)";
+				}
+				else if(curr == "45-49"){
+					tempString += " (enrollment_age_min >= 45 and enrollment_age_min <= 49)";
+				}
+				else if(curr == "50-54"){
+					tempString += " (enrollment_age_min >= 50 and enrollment_age_min <= 54)";
+				}
+				else if(curr == "55-59"){
+					tempString += " (enrollment_age_min >= 55 and enrollment_age_min <= 59)";
+				}
+				else if(curr == "60-64"){
+					tempString += " (enrollment_age_min >= 60 and enrollment_age_min <= 64)";
+				}
+				else if(curr == "65-69"){
+					tempString += " (enrollment_age_min >= 65 and enrollment_age_min <= 69)";
+				}
+				else if(curr == "70-74"){
+					tempString += " (enrollment_age_min >= 70 and enrollment_age_min <= 74)";
+				}
+				else if(curr == "75-79"){
+					tempString += " (enrollment_age_min >= 75 and enrollment_age_min <= 79)";
+				}
+				else if(curr == "80-85+"){
+					tempString += " (enrollment_age_min >= 80) "
+				}
+				else{
+					tempString += "";
+				}
+				if(a != currSelection.length - 1){
+					tempString += " or ";
+				}
+
+			}
+
+			sql += " " + currState + " (" + tempString + ") ";
+
+		}
+		else if(currItem == "Cancer"){
+			let tempString = "";
+			for(let a = 0; a < currSelection.length; a++){
+				let cancerType = config.cancer[currSelection[a]];
+				tempString += " ci_" + cancerType + "_male > 0 ";
+				tempString += " or ci_" + cancerType + "_female > 0 ";
+				if(a != currSelection.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") ";
+			}
+		}
+		else if(currItem == "Categories"){
+			let tempString = "";
+			for(let a = 0; a < currSelection.length; a++){
+				let dataType = config.collected_data[currSelection[a]];
+				tempString += " " + dataType + " = 1 ";
+				if(a != currSelection.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") ";
+			}
+			
+		}
+		else if(currItem == "Biospecimen"){
+			let tempString = "";
+			for(let a = 0; a < currSelection.length; a++){
+				let specimenType = config.collected_specimen[currSelection[a]];
+				tempString += " " + specimenType + " = 1 ";
+				if(a != currSelection.length - 1){
+					tempString += " or ";
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") ";
+			}
+			
+		}
+		else if(currItem == "State"){
+			let tempString = "";
+			for(let a = 0; a < currSelection.length; a++){
+				tempString += " " + config.eligible_disease_state[currSelection[a]] + " ";
+				if(a != currSelection.length - 1){
+					tempString += ", "
+				}
+			}
+			if(tempString != ""){
+				sql += " " + currState + " eligible_disease in (" + tempString + ") ";
+			}
+		}
+
+	}
+
+	let orderString = "";
+
+	if(orderBy){
+
+		orderString += " order by " + orderBy.column + " " + orderBy.order, " ";
+
+	}
+	else{
+		
+		orderString += " order by cohort_name asc "
+
+	}
+
+	let pagingString = "";
+	let pIndex = (paging.page-1) * paging.pageSize
+	if(paging && paging.page != 0){
+		pagingString += " limit " + pIndex + " , " + paging.pageSize + " ";
+	}
+	else{
+		pagingString += "";
+	}
+
+	sql += " " + orderString + " " + pagingString + " ";
+
+	sql += ';'
+	console.log(sql);
+	params = [];
+	params.push(sql);
+	func = "advanced_cohort_select";
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
