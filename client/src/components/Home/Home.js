@@ -205,12 +205,11 @@ class Home extends Component {
   		
       return (
 		<div>
-			<h2 className="welcome" id="welcome-title">What the CEDCD is and its purpose</h2>
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
 			<div className="row-for-home-grid">
 				<div className="column-for-home-grid">
 					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="inner-card" align="center">
+						<div className="animation-card" align="center">
 							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
 							<h2 align = "center" id = "ToolName1">Search Cohorts</h2>
 							<p align = "center">Description for the search cohorts tool.</p>
@@ -219,7 +218,7 @@ class Home extends Component {
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="inner-card" align="center">
+						<div className="animation-card" align="center">
 							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
 							<h2 align = "center">Enrollment Counts</h2>
 							<p align = "center">Description for the enrollment counts tool.</p>
@@ -231,7 +230,7 @@ class Home extends Component {
 			<div className="row-for-home-grid">
 				<div className="column-for-home-grid">
 					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
-					<div className="inner-card" align="center">
+					<div className="animation-card" align="center">
 						<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
 						<h2 align = "center">Cancer Counts</h2>
 						<p align = "center">Description for the cancer counts tool.</p>
@@ -240,7 +239,7 @@ class Home extends Component {
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="inner-card" align="center">
+						<div className="animation-card" align="center">
 							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
 							<h2 align = "center">Biospecimen Counts</h2>
 							<p align = "center">Description for the biospecimen counts tool.</p>

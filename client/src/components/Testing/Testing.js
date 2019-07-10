@@ -172,31 +172,31 @@ class Details extends Component {
     const {items} = this.state;
     const currItem = items[index];
     if(currItem == "Gender"){
-      return <GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <GenderList class="select-box" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Race"){
-      return <RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <RaceList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Ethnicity"){
-      return <EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <EthnicityList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Age"){
-      return <AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <AgeList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "State"){
-      return <DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <DiseaseStateList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Categories"){
-      return <CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <CollectedDataList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Biospecimen"){
-      return <CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <CollectedSpecimensList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
     }
     else if(currItem == "Cancers"){
-      return <CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/>;
+      return <CollectedCancersList class="select-box" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/>;
     }
 
-    return;
+    return <div class="select-box"></div>;
 
   }
 
@@ -208,7 +208,7 @@ class Details extends Component {
         <option value="OR">OR</option>
       </select>
     }
-    return <p class = "indent"></p>;
+    return <p class = "boolean-selector"></p>;
   }
 
   createSelector(index){
@@ -577,7 +577,7 @@ class Details extends Component {
         }
         const { items, itemText } = this.state;
     const itemList = items.map((item, index) => (
-      <div>
+      <div class="grid-container">
 
 		{this.createBoolean(index)}
 		{this.createSelector(index)}
@@ -588,6 +588,7 @@ class Details extends Component {
         <button class="remove-button" onClick={e => this.removeItem(index)}>
           &times;
         </button>
+		<p class = "boolean-selector"></p>
         {this.createSelectItems(index)}
 	    	
       </div>

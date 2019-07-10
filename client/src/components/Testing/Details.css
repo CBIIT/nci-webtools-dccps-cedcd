@@ -20,15 +20,24 @@
 
 .boolean-selector {
     grid-column: 0/0;
+    grid-row: 1/1;
   }
 .type-selector{
     grid-column:4/20;
+    grid-row: 1/1;
 }
 .add-button{
     grid-column:23/23;
+    grid-row: 1/1;
 }
 .remove-button{
-    grid-column:25/25;
+    grid-column:29/29;
+    grid-row: 1/1;
+}
+.select-box{
+    display:flex;
+    grid-column:4/24;
+    grid-row: 2/2;
 }
 /*
 .btn-primary{
