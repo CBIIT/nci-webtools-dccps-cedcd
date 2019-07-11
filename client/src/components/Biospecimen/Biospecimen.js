@@ -243,7 +243,7 @@ class Biospecimen extends Component {
               <div className="row">
                 <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
                   <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 || this.state.filter.cancer.length === 0 || this.state.filter.cohort.length === 0}/>
+                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 && this.state.filter.cancer.length === 0 && this.state.filter.cohort.length === 0}/>
                 </div>
               </div>
             </div>

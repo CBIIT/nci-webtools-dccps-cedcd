@@ -5,6 +5,7 @@ import Moment from 'react-moment';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeader from '../TableHeader/TableHeader';
+import TableHeaderMiddle from '../TableHeader/TableHeaderMiddle'
 import SelectBox from '../SelectBox/SelectBox';
 import GenderList from '../GenderList/GenderList';
 import RaceList from '../RaceList/RaceList';
@@ -429,6 +430,11 @@ class Details extends Component {
 			<TableHeader width={width} value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
 		);
 	}
+	renderTableHeaderMiddle(title, width){
+		return (
+			<TableHeaderMiddle width={width} align="center" value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
+		);
+	}
 
 	componentDidMount(){
 		const previousState = localStorage.getItem('informationHistory_select');
@@ -544,9 +550,13 @@ class Details extends Component {
 			    <div id="filter-panel" className="panel panel-default">
 					<div className="panel-heading" onClick={this.toggle}>
 						<h2 className="panel-title">Variables Collected in Cohort Study</h2>
+						
 						<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
-							<i class="fas fa-chevron-up" id="toggle-switch"></i>
+							<i className="fas fa-chevron-up" id="toggle-switch"></i>
 						</span>
+						<p className={`pull-right d-inline-block padded-string`}>
+							{this.state.collapse ? "Click to Collapse" : "Click to Expand"}
+						</p>
 					</div>
 					<Collapse isOpen={this.state.collapse}>
 			      <div className="panel-body">
@@ -623,7 +633,7 @@ class Details extends Component {
 										{this.renderSelectHeader("5%")}
 										{this.renderTableHeader("cohort_name","30%")}
 										{this.renderTableHeader("cohort_acronym","10%")}
-										{this.renderTableHeader("race_total_total","20%")}
+										{this.renderTableHeaderMiddle("race_total_total","20%")}
 										<th className="sortable" width="20%" scope="col">
 											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
 											</a>

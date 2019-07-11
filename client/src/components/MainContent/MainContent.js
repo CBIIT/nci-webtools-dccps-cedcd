@@ -14,7 +14,7 @@ import Testing from '../Testing/Testing';
 class MainContent extends Component {
   
   render() {
-    
+    //<Route path={match+'/testing'} component={Testing}/>
     let match = window.location.pathname;
     if(match.startsWith('/cedcd')){
       match = "/cedcd";
@@ -37,7 +37,6 @@ class MainContent extends Component {
         <Route path={match+'/about'} component={About}/>
         <Route path={match+'/cohort'} component={Information}/>
         <Route path={match+'/contact'} component={Contact}/>
-        <Route path={match+'/testing'} component={Testing}/>
       </Switch>
     );
   }

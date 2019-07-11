@@ -40,6 +40,12 @@
     margin: 5px 0 10px 0;
 }
   
+.padded-string {
+    color: white;
+    padding-top: 2px;
+    padding-right: 10px;
+}
+
 /*#filter-panel{
     margin:0 1.5rem;
 }*/

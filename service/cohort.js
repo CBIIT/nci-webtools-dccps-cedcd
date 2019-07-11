@@ -404,9 +404,12 @@ router.post('/testSelect', function(req, res) {
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
 				let dataType = config.collected_data[currSelection[a]];
-				tempString += " " + dataType + " = 1 ";
-				if(a != currSelection.length - 1){
-					tempString += " or ";
+				let data = dataType.split(",");
+				for(let b = 0; b < data.length; b++){
+					tempString += " " + data[b] + " = 1 ";
+					if(a != currSelection.length - 1 || b != data.length){
+						tempString += " or ";
+					}
 				}
 			}
 			if(tempString != ""){
@@ -491,14 +494,106 @@ router.post('/enrollment', function(req, res) {
 	let func = "cohort_enrollment_count";
 	let params = [];
 	//form filter into Strings
+	
 	let gender;
 	let race;
 	let ethnicity;
 	
 	gender = filter.gender;
+	if(gender.length == 0){
+		gender = ["Male", "Female", "Other/Unknown"];
+	}
+
 	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
 	race = filter.race;
 	ethnicity = filter.ethnicity;
+
+	if(ethnicity.length == 0){
+		console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+		ethnicity = ["Hispanic/Latino",
+		"Non-Hispanic/Latino",
+		"Other/Unknown"];
+	}
+
+	if(race.length == 0){
+		race = [
+			"American Indian / Alaska Native",
+			"Asian",
+			"Black or African-American",
+			"Native Hawaiian or Other Pacific Islander",
+			"White",
+			"Other/Unknown",
+			"More than one race"
+		];
+	}
+
+	if(filter.cohort == []){
+		filter.cohort = [ 52,
+			16,
+			39,
+			13,
+			76,
+			60,
+			17,
+			59,
+			53,
+			72,
+			73,
+			74,
+			70,
+			78,
+			18,
+			64,
+			20,
+			66,
+			56,
+			71,
+			68,
+			15,
+			61,
+			22,
+			51,
+			47,
+			46,
+			23,
+			24,
+			40,
+			41,
+			42,
+			43,
+			69,
+			25,
+			26,
+			27,
+			54,
+			44,
+			28,
+			45,
+			50,
+			29,
+			30,
+			77,
+			67,
+			31,
+			62,
+			65,
+			49,
+			55,
+			57,
+			75,
+			32,
+			58,
+			33,
+			63,
+			14,
+			48,
+			38,
+			34 ];
+	}
+
+	console.log(race);
+	console.log(ethnicity);
+	console.log(gender);
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -567,6 +662,104 @@ router.post('/cancer', function(req, res) {
 	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
 	cancer = filter.cancer;
 
+	if(gender.length == 0){
+		gender = ["Male", "Female", "Other/Unknown"];
+	}
+	if(cancer.length == 0){
+		cancer = [
+			"Bladder",
+			"Bone",
+			"Brain",
+			"Breast",
+			"Cervix",
+			"Colon",
+			"Corpus, body of uterus",
+			"Esophagus",
+			"Gall bladder and extrahepatic bile duct",
+			"Kidney and other unspecified urinary organs including renal pelvis, ureter, urethra",
+			"Leukemia",
+			"Liver and intrahepatic bile ducts",
+			"Lymphoma (HL and NHL)",
+			"Melanoma (excluding genital organs)",
+			"Myeloma",
+			"Oropharyngeal",
+			"Ovary, fallopian tube, broad ligament",
+			"Pancreas",
+			"Prostate",
+			"Rectum and anus",
+			"Small intestine",
+			"Stomach",
+			"Thyroid",
+			"Trachea, bronchus, and lung",
+			"All Other Cancers"
+		];
+	}
+
+
+	if(filter.cohort == []){
+		filter.cohort = [ 52,
+			16,
+			39,
+			13,
+			76,
+			60,
+			17,
+			59,
+			53,
+			72,
+			73,
+			74,
+			70,
+			78,
+			18,
+			64,
+			20,
+			66,
+			56,
+			71,
+			68,
+			15,
+			61,
+			22,
+			51,
+			47,
+			46,
+			23,
+			24,
+			40,
+			41,
+			42,
+			43,
+			69,
+			25,
+			26,
+			27,
+			54,
+			44,
+			28,
+			45,
+			50,
+			29,
+			30,
+			77,
+			67,
+			31,
+			62,
+			65,
+			49,
+			55,
+			57,
+			75,
+			32,
+			58,
+			33,
+			63,
+			14,
+			48,
+			38,
+			34 ];
+	}
+
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
 	}
@@ -629,6 +822,112 @@ router.post('/specimen', function(req, res) {
 	}
 	else{
 		params.push("");
+	}
+	
+	if(specimen.length == 0){
+		specimen = [
+			"Buffy Coat and/or Lymphocytes",
+			"Feces",
+			"Saliva and/or Buccal",
+			"Serum and/or Plasma",
+			"Tumor Tissue: Fresh/Frozen",
+			"Tumor Tissue: FFPE",
+			"Urine"
+		];
+	}
+	if(cancer.length == 0){
+		cancer = [
+			"Bladder",
+			"Bone",
+			"Brain",
+			"Breast",
+			"Cervix",
+			"Colon",
+			"Corpus, body of uterus",
+			"Esophagus",
+			"Gall bladder and extrahepatic bile duct",
+			"Kidney and other unspecified urinary organs including renal pelvis, ureter, urethra",
+			"Leukemia",
+			"Liver and intrahepatic bile ducts",
+			"Lymphoma (HL and NHL)",
+			"Melanoma (excluding genital organs)",
+			"Myeloma",
+			"Oropharyngeal",
+			"Ovary, fallopian tube, broad ligament",
+			"Pancreas",
+			"Prostate",
+			"Rectum and anus",
+			"Small intestine",
+			"Stomach",
+			"Thyroid",
+			"Trachea, bronchus, and lung",
+			"All Other Cancers",
+			"No Cancer"
+		];
+	}
+
+	if(filter.cohort.length == 0){
+		filter.cohort = [ 52,
+			16,
+			39,
+			13,
+			76,
+			60,
+			17,
+			59,
+			53,
+			72,
+			73,
+			74,
+			70,
+			78,
+			18,
+			64,
+			20,
+			66,
+			56,
+			71,
+			68,
+			15,
+			61,
+			22,
+			51,
+			47,
+			46,
+			23,
+			24,
+			40,
+			41,
+			42,
+			43,
+			69,
+			25,
+			26,
+			27,
+			54,
+			44,
+			28,
+			45,
+			50,
+			29,
+			30,
+			77,
+			67,
+			31,
+			62,
+			65,
+			49,
+			55,
+			57,
+			75,
+			32,
+			58,
+			33,
+			63,
+			14,
+			48,
+			38,
+			34 ];
 	}
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){

@@ -283,7 +283,7 @@ class Enrollment extends Component {
 	                  <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
 	                  	<i className="fas fa-times"></i> Clear All
 	                  </a>
-	                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 || this.state.filter.race.length === 0 || this.state.filter.ethnicity.length === 0 || this.state.filter.cohort.length === 0}/>
+	                  <input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 && this.state.filter.race.length === 0 && this.state.filter.ethnicity.length === 0 && this.state.filter.cohort.length === 0}/>
 	                </div>
 	              </div>
 	            </div>
