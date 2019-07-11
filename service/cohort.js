@@ -228,8 +228,6 @@ router.post('/select', function(req, res) {
 		params.push(-1);
 	}
 
-	console.log(params);
-
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
@@ -471,7 +469,6 @@ router.post('/testSelect', function(req, res) {
 	sql += " " + orderString + " " + pagingString + " ";
 
 	sql += ';'
-	console.log(sql);
 	params = [];
 	params.push(sql);
 	func = "advanced_cohort_select";
@@ -509,7 +506,6 @@ router.post('/enrollment', function(req, res) {
 	ethnicity = filter.ethnicity;
 
 	if(ethnicity.length == 0){
-		console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
 		ethnicity = ["Hispanic/Latino",
 		"Non-Hispanic/Latino",
 		"Other/Unknown"];
@@ -591,9 +587,6 @@ router.post('/enrollment', function(req, res) {
 			34 ];
 	}
 
-	console.log(race);
-	console.log(ethnicity);
-	console.log(gender);
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
