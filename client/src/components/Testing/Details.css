@@ -1,0 +1,81 @@
+.panel-title{
+    display:inline;
+}
+.Accordion.Toggle:hover{
+    background-color:#4CAF50;
+    border:none;
+    color:Black;
+
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+    padding: 10px;
+}
+.grid-container > div {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    padding: 20px 0;
+}
+
+.boolean-selector {
+    grid-column: 0/0;
+    grid-row: 1/1;
+  }
+.type-selector{
+    grid-column:4/20;
+    grid-row: 1/1;
+}
+.add-button{
+    grid-column:23/23;
+    grid-row: 1/1;
+}
+.remove-button{
+    grid-column:29/29;
+    grid-row: 1/1;
+}
+.select-box{
+    display:flex;
+    grid-column:4/24;
+    grid-row: 2/2;
+}
+/*
+.btn-primary{
+    background-color:#a46fdb;
+}
+.btn-primary:hover{
+    background-color:#62269e;
+}
+.btn-primary:focus{
+    background-color:#a46fdb;
+}
+.btn-primary:hover:active{
+    background-color:#a46fdb;
+}*/
+
+.indent{
+    margin-left: 3.5em;
+}
+
+.panel-heading:hover{
+    cursor:pointer;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.toggle-down {
+    transform: rotate(180deg);
+    margin: 5px 0 10px 0;
+}
+  
+  
+.toggle-up {
+    transform: rotate(0deg);
+    margin: 5px 0 10px 0;
+}
+  
+/*#filter-panel{
+    margin:0 1.5rem;
+}*/

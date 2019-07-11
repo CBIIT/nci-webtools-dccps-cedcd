@@ -26,7 +26,7 @@ class TourBox extends Component{
 		if(document.getElementById('tourable')){
 			document.body.scrollTop = 0;
     		document.documentElement.scrollTop = 0;
-			document.getElementById("selectPage").style.overflowY = "hidden";
+			//document.getElementById("selectPage").style.overflowY = "hidden";
 			let selector = this.state.selector[this.props.currTab][this.state.tourStep-1];
 			document.getElementById(selector).style.zIndex = 10000;
 			document.getElementById(selector).style.position = "relative";

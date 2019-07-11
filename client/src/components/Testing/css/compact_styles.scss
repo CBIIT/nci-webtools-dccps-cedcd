@@ -1,0 +1,60 @@
+@mixin force_nomargin {
+    margin: 0px !important;
+  }
+  
+  %force_nomargin {
+    @include force_nomargin;
+  }
+  
+  .group, .rule {
+  }
+  
+  .rule {
+    padding: 5px;
+  }
+  
+  .group {
+    padding-left: 0px;
+  }
+  
+  .group--children {
+    @extend %force_nomargin;
+    padding-left: 10px !important;
+  
+    & > .group-or-rule-container > .group-or-rule {
+      &::before, &::after {
+          left: -7px;
+          width: 7px;
+      }
+    }
+  }
+  
+  .group--conjunctions {
+    @extend %force_nomargin;
+    margin-left: 4px !important;
+  }
+  
+  .group-or-rule-container {
+      margin-bottom: 5px;
+      padding-right: 5px;
+  }
+  
+  /*
+  .query-builder.qb-dragging {
+      .group-or-rule-container {
+          margin-bottom: 10px;
+      }
+  }
+  */
+  
+  .rule--operator, .widget--widget, .widget--valuesrc, .widget--sep {
+    margin-left: 5px;
+  }
+  .operator--options--sep {
+    margin-right: 5px;
+  }
+  .group--header {
+    padding: 5px;
+    padding-left: 0;
+  }
+  

@@ -1,0 +1,51 @@
+.panel-title{
+    display:inline;
+}
+.Accordion.Toggle:hover{
+    background-color:#4CAF50;
+    border:none;
+    color:Black;
+
+}
+
+#filterEngage{
+    background-color:#a46fdb;
+}
+#filterEngage:hover{
+    background-color:#62269e;
+}
+#filterEngage:focus{
+    background-color:#a46fdb;
+}
+#filterEngage:hover:active{
+    background-color:#a46fdb;
+}
+
+.panel-heading:hover{
+    cursor:pointer;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.toggle-down {
+    transform: rotate(180deg);
+    margin: 5px 0 10px 0;
+}
+  
+  
+.toggle-up {
+    transform: rotate(0deg);
+    margin: 5px 0 10px 0;
+}
+  
+.padded-string {
+    color: white;
+    padding-top: 2px;
+    padding-right: 10px;
+}
+
+/*#filter-panel{
+    margin:0 1.5rem;
+}*/

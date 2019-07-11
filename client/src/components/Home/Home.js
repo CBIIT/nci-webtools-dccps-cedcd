@@ -147,6 +147,7 @@ class Home extends Component {
 		}
 		
 	}
+	
 
 	saveHistory = () =>{
 		const state = Object.assign({}, this.state);
@@ -204,70 +205,47 @@ class Home extends Component {
   		
       return (
 		<div>
-			<input id="tourable" type="hidden" />
-			<p className="welcome">Welcome! Below is the list of cohorts participating in the Cancer Epidemiology Descriptive Cohort Database (CEDCD). Search for a cohort by name or select a cohort to view a brief description and contact information. If you want to know more about one or more cohorts, select one of the options from the menu at the top.
-			</p>
-			<div id="cedcd-home-filter" className="home col-md-12">
-			  <div className="search-wrapper col-md-12">
-			  	<span className="searchField">
-			    	<input name="inKeyword" type="text" aria-label="keyword" value={this.state.searchString} onChange={this.changeText} id="inKeyword" placeholder="Search for Cohorts by name or acronym" onKeyPress={this.handleKeyPress}></input>
-			    </span>
-			    <span className="searchBttn">
-			    	<a id="btKeyword" href='javascript:void(0);' onClick={this.toSearch}>
-			    		<div className="searchIcon">
-			    			&#9906;
-			    		</div>
-			    	</a>
-			    </span>
-			  </div>
+            <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
+			<div className="row-for-home-grid">
+				<div className="column-for-home-grid">
+					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
+						<div className="animation-card" align="center">
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
+							<h2 align = "center" id = "ToolName1">Search Cohorts</h2>
+							<p align = "center">Description for the search cohorts tool.</p>
+						</div>
+					</Link>
+				</div>
+				<div className="column-for-home-grid">
+					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
+						<div className="animation-card" align="center">
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
+							<h2 align = "center">Enrollment Counts</h2>
+							<p align = "center">Description for the enrollment counts tool.</p>
+						</div>
+					</Link>
+				</div>
+				
 			</div>
-			<div id="cedcd-home-cohorts" className="home col-md-12">
-			  <div id="cedcd-home-cohorts-inner" className="col-md-12">
-			    <div className="table-inner col-md-12">
-			      <div className="tableTopMatter row">
-			        <div id="tableControls" className="col-md-6">
-			          <ul className="table-controls">
-			          	<PageSummary pageInfo={this.state.pageInfo} />
-			          </ul>
-			        </div>
-			        <div id="tableExport" className="col-md-2 col-md-offset-4">
-			        	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
-					      <Workbook.Sheet name="Cohort_Selection">
-					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
-					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-					        <Workbook.Column label="Website" value="cohort_web_site"/>
-					        <Workbook.Column label="Last Updated" value="update_time"/>
-					      </Workbook.Sheet>
-					      <Workbook.Sheet name="Criteria">
-					      </Workbook.Sheet>
-					    </Workbook>
-		              
-		            </div>
-			      </div>
-		          <div className="clearFix"></div>
-		          <div className="cedcd-table home">
-			        <div>
-						<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="summaryGridView" >
-							<thead>
-								<tr id="summaryHeader" className="col-header">
-									{this.renderTableHeader("cohort_name","45%")}
-									{this.renderTableHeader("cohort_acronym","20%")}
-									<th className="sortable" width="20%" scope="col">
-										<a href="javascript:void(0);" style={{cursor:'default'}}>Website
-										</a>
-									</th>
-									{this.renderTableHeader("update_time","15%")}
-								</tr>
-							</thead>
-							<tbody>
-								{content}
-							</tbody>
-						</table>
+			<div className="row-for-home-grid">
+				<div className="column-for-home-grid">
+					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
+					<div className="animation-card" align="center">
+						<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
+						<h2 align = "center">Cancer Counts</h2>
+						<p align = "center">Description for the cancer counts tool.</p>
 					</div>
-			      </div>
-			      <Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
-			    </div>
-			  </div>
+					</Link>
+				</div>
+				<div className="column-for-home-grid">
+					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
+						<div className="animation-card" align="center">
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
+							<h2 align = "center">Biospecimen Counts</h2>
+							<p align = "center">Description for the biospecimen counts tool.</p>
+						</div>
+					</Link>
+				</div>
 			</div>
 		</div>
       );

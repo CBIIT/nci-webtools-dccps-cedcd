@@ -24,6 +24,7 @@ class DetailsTour extends Component{
 			width:"100%",
 			height:"100%",
 			backgroundColor:"rgba(0, 0, 0, .5)"
+			//scroll-snap-type: "both mandatory"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (

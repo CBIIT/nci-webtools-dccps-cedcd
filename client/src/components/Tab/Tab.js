@@ -31,6 +31,14 @@ class Tab extends Component {
       name="About";
       url="about";
     }
+    else if(this.props.value === 6){
+      name="Contact Us";
+      url="contact"
+    }
+    /*else if(this.props.value == 7){
+      name="Testing Only";
+      url="testing";
+    }*/
     else{
       name="Home";
       url="home";

@@ -1,0 +1,9 @@
+.panel-title{
+    width: "5000px";
+}
+.Accordion.Toggle:hover{
+    background-color:#4CAF50;
+    border:none;
+    color:Black
+
+}

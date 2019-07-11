@@ -5,6 +5,7 @@ import Moment from 'react-moment';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeader from '../TableHeader/TableHeader';
+import TableHeaderMiddle from '../TableHeader/TableHeaderMiddle'
 import SelectBox from '../SelectBox/SelectBox';
 import GenderList from '../GenderList/GenderList';
 import RaceList from '../RaceList/RaceList';
@@ -18,11 +19,15 @@ import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
 import Workbook from '../Workbook/Workbook';
+import Accordion from 'react-bootstrap/Accordion';
+import Card from 'react-bootstrap/Card';
+import { Collapse} from 'reactstrap';
 
 class Details extends Component {
 
 	constructor(props){
 		super(props);
+		this.toggle = this.toggle.bind(this);
 		this.state = {
 			list:[],
 			filter:{
@@ -50,8 +55,13 @@ class Details extends Component {
 			selected:[],
 			comparasion:false,
 			currTab:0,
-			selectAll:false
+			selectAll:false,
+			collapse: true,
 		};
+	}
+
+	toggle() {
+		this.setState(state => ({ collapse: !state.collapse }));
 	}
 
 	loadingData = (next) =>{
@@ -110,6 +120,7 @@ class Details extends Component {
 	}
 
 	toFilter = () =>{
+		this.toggle();
 		this.filterData(1,null,null,[]);
 	}
 
@@ -276,6 +287,9 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
+		console.log(filter.participant.ethnicity);
+		console.log(filter.participant.gender);
+		console.log(filter.participant.race);
 	}
 
 	handleAgeClick = (v) =>{
@@ -416,6 +430,11 @@ class Details extends Component {
 			<TableHeader width={width} value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
 		);
 	}
+	renderTableHeaderMiddle(title, width){
+		return (
+			<TableHeaderMiddle width={width} align="center" value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
+		);
+	}
 
 	componentDidMount(){
 		const previousState = localStorage.getItem('informationHistory_select');
@@ -451,6 +470,10 @@ class Details extends Component {
 
 	handleTabClick(i){
 	    this.setState({currTab: i});
+	}
+
+	numberWithCommas(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
   render() {
@@ -505,7 +528,7 @@ class Details extends Component {
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
-						<td>{item.race_total_total > -1 ? item.race_total_total : 0}</td>
+						<td align="center">{item.race_total_total > -1 ? this.numberWithCommas(item.race_total_total) : 0}</td>
 						<td>{website_content}</td>
 						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
@@ -525,9 +548,17 @@ class Details extends Component {
 				</p>
 			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
 			    <div id="filter-panel" className="panel panel-default">
-			      <div className="panel-heading">
-			        <h2 className="panel-title">Variables Collected in Cohort Study</h2>
-			      </div>
+					<div className="panel-heading" onClick={this.toggle}>
+						<h2 className="panel-title">Variables Collected in Cohort Study</h2>
+						
+						<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
+							<i className="fas fa-chevron-up" id="toggle-switch"></i>
+						</span>
+						<p className={`pull-right d-inline-block padded-string`}>
+							{this.state.collapse ? "Click to Collapse" : "Click to Expand"}
+						</p>
+					</div>
+					<Collapse isOpen={this.state.collapse}>
 			      <div className="panel-body">
 			        <div className="filter row">
 			          <div className="col-sm-6 filterCol">
@@ -564,10 +595,11 @@ class Details extends Component {
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			          </div>
 			        </div>
 			      </div>
+				  </Collapse>
 			    </div>
 			  </div>
 			  <div id="cedcd-home-cohorts" className="home col-md-12">
@@ -576,7 +608,7 @@ class Details extends Component {
 			        <div className="tableTopMatter row">
 			          <div id="tableControls" className="col-md-6">
 			            <ul className="table-controls">
-			              <PageSummary pageInfo={this.state.pageInfo} />
+			              <PageSummary pageInfo={this.state.pageInfo}/>
 			            </ul>
 			          </div>
 			          <div id="tableExport" className="col-md-2 col-md-offset-4">
@@ -600,8 +632,8 @@ class Details extends Component {
 									<tr id="summaryHeader" className="col-header">
 										{this.renderSelectHeader("5%")}
 										{this.renderTableHeader("cohort_name","30%")}
-										{this.renderTableHeader("cohort_acronym","15%")}
-										{this.renderTableHeader("race_total_total","15%")}
+										{this.renderTableHeader("cohort_acronym","10%")}
+										{this.renderTableHeaderMiddle("race_total_total","20%")}
 										<th className="sortable" width="20%" scope="col">
 											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
 											</a>
@@ -625,5 +657,4 @@ class Details extends Component {
   		}
   }
 }
-
 export default Details;

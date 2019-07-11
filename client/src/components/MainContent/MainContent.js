@@ -8,10 +8,13 @@ import Cancer from '../Cancer/Cancer';
 import Biospecimen from '../Biospecimen/Biospecimen';
 import About from '../About/About';
 import Information from '../Information/Information';
+import Contact from '../Contact/Contact';
+import Testing from '../Testing/Testing';
 
 class MainContent extends Component {
-
+  
   render() {
+    //<Route path={match+'/testing'} component={Testing}/>
     let match = window.location.pathname;
     if(match.startsWith('/cedcd')){
       match = "/cedcd";
@@ -33,6 +36,7 @@ class MainContent extends Component {
         <Route path={match+'/biospecimen'} component={Biospecimen}/>
         <Route path={match+'/about'} component={About}/>
         <Route path={match+'/cohort'} component={Information}/>
+        <Route path={match+'/contact'} component={Contact}/>
       </Switch>
     );
   }

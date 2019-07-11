@@ -1,0 +1,13 @@
+.btn-cohort-des-coloring{
+    background-color: #a46fdb;
+    color: white;
+    
+}
+.btn-cohort-des-coloring:hover:enabled{
+    background-color:#62269e;
+    border-color: #62269e;
+}
+/*
+.btn-cohort-des-coloring:disabled{
+    background-color: purple;
+}*/
