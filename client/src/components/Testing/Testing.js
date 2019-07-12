@@ -173,28 +173,28 @@ class Details extends Component {
     const {items} = this.state;
     const currItem = items[index];
     if(currItem == "Gender"){
-      return <GenderList class="select-box" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Race"){
-      return <RaceList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Ethnicity"){
-      return <EthnicityList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Age"){
-      return <AgeList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "State"){
-      return <DiseaseStateList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Categories"){
-      return <CollectedDataList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Biospecimen"){
-      return <CollectedSpecimensList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Cancers"){
-      return <CollectedCancersList class="select-box" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/>;
+      return <div className = "select-box"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/></div>;
     }
 
     return <div class="select-box"></div>;
@@ -578,24 +578,19 @@ class Details extends Component {
         }
         const { items, itemText } = this.state;
     const itemList = items.map((item, index) => (
-      <div class="grid-container">
-
-		{this.createBoolean(index)}
-		{this.createSelector(index)}
-        
-        <button class="add-button"onClick={e => this.addItem(index+1)}>
-          +
-        </button>
-        <button class="remove-button" onClick={e => this.removeItem(index)}>
-          &times;
-        </button>
-		<p class = "boolean-selector"></p>
-        {this.createSelectItems(index)}
-	    	
+      <div>
+		  <div class="grid-container">
+				{this.createBoolean(index)}
+				{this.createSelector(index)}
+				<button class="add-button"onClick={e => this.addItem(index+1)}>+</button>
+				<button class="remove-button" onClick={e => this.removeItem(index)}>&times;</button>
+				{this.createSelectItems(index)}
+	    	</div>
       </div>
     ));
 			return (
 				<div>
+					
 				<input id="tourable" type="hidden" />
 				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
 				</p>
