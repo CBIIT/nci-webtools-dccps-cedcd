@@ -36,19 +36,7 @@
     grid-column:2/8;
 }
 
-/*
-.add-button{
-    grid-column:23/24;
-}
-.remove-button{
-    grid-column:25/26;
-    grid-row: 1/1;
-}
-.select-box{
-    display:flex;
-    grid-column:4/24;
-    grid-row: 2/2;
-}
+
 /*
 .btn-primary{
     background-color:#a46fdb;
