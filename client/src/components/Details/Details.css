@@ -59,13 +59,12 @@
   }
   
   .grid-container > * {
-    background-color: rgba(255, 255, 255, 0.8);
     padding: 0 0;
     font-size: 15px;
   }
 
   .grid-container > p {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: #F5F5F5;
     padding: 0 25px;
     font-size: 15px;
   }
@@ -85,4 +84,6 @@
 .select-box{
     grid-column:2/8;
 }
-
+.panel-coloring{
+    background-color: #F5F5F5;
+}

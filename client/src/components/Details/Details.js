@@ -182,6 +182,56 @@ class Details extends Component {
 			});
 	}
 
+	handleAdvancedCancerClick (v,allIds,e,index){
+		const {selectionList} = this.state;
+    	const currList = selectionList[index];
+   
+    
+		if(v){
+      		let idx = selectionList[index].indexOf(v);
+			if(idx > -1){
+        		//remove element
+        		currList.splice(idx,1);
+      		}
+      		else{
+        		//add element
+        		currList.push(v);
+      		}
+		}
+		else{
+			//click on the "all cohort"
+			currList.splice(0,currList.length);
+			if(e.target.checked){
+        		allIds.forEach(function(element){
+          			currList.push(element );
+        		});
+			}
+    }
+    selectionList[index] = currList;
+		this.setState({
+			selectionList: selectionList
+		});
+  }
+
+	clearAdvancedFilter = () =>{
+		let orderBy = {
+				column:"cohort_name",
+				order:"asc"
+		};
+		this.setState({selectionList:[[],[],[]],
+			booleanStates:[
+				'AND',
+				'AND',
+				'AND'
+			],
+			items: [
+				'Select',
+				'Select',
+				'Select'
+			]});
+		this.advancedFilterData(1,orderBy,null,[]);
+	}
+
 	toAdvancedFilter = () =>{
 		this.toggle();
 		this.advancedFilterData(1,null,null,[]);
@@ -610,7 +660,7 @@ class Details extends Component {
 		  return <div className = "select-box"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 		}
 		else if(currItem == "Cancers"){
-		  return <div className = "select-box"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/></div>;
+		  return <div className = "select-box"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
 		}
 	
 		return <div className="select-box"></div>;
@@ -625,7 +675,7 @@ class Details extends Component {
 			<option value="OR">OR</option>
 		  </select>
 		}
-		return <p class = "boolean-selector"></p>;
+		return;
 	  }
 	
 	  createSelector(index){
@@ -666,6 +716,7 @@ class Details extends Component {
 	renderSearchFilters(){
 		const {searchState} = this.state;
 		if(searchState){
+			
 			return(
 				<div className="panel-body">
 			        <div className="filter row">
@@ -726,14 +777,16 @@ class Details extends Component {
 			</div>
 			));
 			return(
-				<div className="panel-body">
-              		{itemList}
+				<div className="panel-body panel-coloring">
+
+					<h3>Advanced Search</h3>  
+					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
 			            <a id="switchSearchButton" href="javascript:void(0);" onClick={() => this.setState(state => ({ searchState: !state.searchState }))}>Switch to Normal Search</a>
 			          </div>
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
 			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toAdvancedFilter}/>
 			          </div>
 			        </div>

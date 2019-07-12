@@ -435,7 +435,7 @@ router.post('/testSelect', function(req, res) {
 				let specimen = specimenType.split(",");
 				for(let b = 0; b < specimen.length; b++){
 					tempString += " " + specimen[b] + " = 1 ";
-					if(a != currSelection.length - 1 || b != data.length-1){
+					if(a != currSelection.length - 1 || b != specimen.length-1){
 						tempString += " or ";
 					}
 				}
