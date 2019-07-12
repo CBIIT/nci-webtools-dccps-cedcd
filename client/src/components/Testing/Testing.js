@@ -75,7 +75,8 @@ class Details extends Component {
     const { items, booleanStates, selectionList } = this.state;
     if(items.length > 1){
       items.splice(index, 1);
-      booleanStates.splice(index, 1);
+	  booleanStates.splice(index, 1);
+	  booleanStates[0] = "AND";
       selectionList.splice(index, 1);
       this.setState({ 
         items: items,

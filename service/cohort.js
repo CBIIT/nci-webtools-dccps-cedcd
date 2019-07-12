@@ -250,6 +250,7 @@ router.post('/testSelect', function(req, res) {
 	let paging = body.paging || {};
 	let func = "cohort_select";
 	let params = [];
+	let first = true;
 	//form filter into Strings
 
 	
@@ -258,6 +259,10 @@ router.post('/testSelect', function(req, res) {
 
 		let currItem = items[i];
 		let currState = booleanStates[i];
+		if(first == true){
+			currState = "AND"
+		}
+		
 		let currSelection = selectionList[i];
 		if(currItem == "Gender"){
 			let toAdd = "";
@@ -285,12 +290,15 @@ router.post('/testSelect', function(req, res) {
 			}
 			if(tempString != "" && toAdd != ""){
 				sql += " " + currState + " (" + toAdd + " and (" + tempString + ")) ";
+				first = false;
 			}
 			else if(tempString == "" && toAdd != ""){
 				sql += " " + currState + " ( " + toAdd + ") ";
+				first = false;
 			}
 			else if(tempString != "" && toAdd == ""){
 				sql += " " + currState + " (" + tempString + ") "
+				first = false;
 			}
 		}
 		else if(currItem == "Race"){
@@ -304,6 +312,7 @@ router.post('/testSelect', function(req, res) {
 			}
 			if(tempString != ""){
 				sql += " " + currState + " (" + tempString + ") "
+				first = false;
 			}
 
 		}
@@ -318,56 +327,55 @@ router.post('/testSelect', function(req, res) {
 			}
 			if(tempString != ""){
 				sql += " " + currState + " (" + tempString + ") "
+				first = false;
 			}
 
 		}
 		else if(currItem == "Age"){
-
 			let tempString = "";
-
 			for(let a = 0; a < currSelection.length; a++){
 				let curr = currSelection[a]; 
 				if(curr == "0-14"){
 					tempString += " enrollment_age_min <= 14 ";
 				}
 				else if(curr == "15-19"){
-					tempString += " (enrollment_age_min >= 15 and enrollment_age_min <= 19) ";
+					tempString += " ((enrollment_age_min >= 15 and enrollment_age_min <= 19) or (enrollment_age_max >= 15 and enrollment_age_max <= 19) or (enrollment_age_min <= 15 and enrollment_age_max >= 19)) ";
 				}
 				else if(curr == "20-24"){
-					tempString += " (enrollment_age_min >= 20 and enrollment_age_min <= 24)";
+					tempString += " ((enrollment_age_min >= 20 and enrollment_age_min <= 24) or (enrollment_age_max >= 20 and enrollment_age_max <= 24) or (enrollment_age_min <= 20 and enrollment_age_max >= 24)) ";
 				}
 				else if(curr == "25-29"){
-					tempString += " (enrollment_age_min >= 25 and enrollment_age_min <= 29)";
+					tempString += " ((enrollment_age_min >= 25 and enrollment_age_min <= 29) or (enrollment_age_max >= 25 and enrollment_age_max <= 29) or (enrollment_age_min <= 25 and enrollment_age_max >= 29)) ";
 				}
 				else if(curr == "30-34"){
-					tempString += " (enrollment_age_min >= 30 and enrollment_age_min <= 34)";
+					tempString += " ((enrollment_age_min >= 30 and enrollment_age_min <= 34) or (enrollment_age_max >= 30 and enrollment_age_max <= 34) or (enrollment_age_min <= 30 and enrollment_age_max >= 34)) ";
 				}
 				else if(curr == "35-39"){
-					tempString += " (enrollment_age_min >= 35 and enrollment_age_min <= 39)";
+					tempString += " ((enrollment_age_min >= 35 and enrollment_age_min <= 39) or (enrollment_age_max >= 35 and enrollment_age_max <= 39) or (enrollment_age_min <= 35 and enrollment_age_max >= 39)) ";
 				}
 				else if(curr == "40-44"){
-					tempString += " (enrollment_age_min >= 40 and enrollment_age_min <= 44)";
+					tempString += " ((enrollment_age_min >= 40 and enrollment_age_min <= 44) or (enrollment_age_max >= 40 and enrollment_age_max <= 44) or (enrollment_age_min <= 40 and enrollment_age_max >= 44)) ";
 				}
 				else if(curr == "45-49"){
-					tempString += " (enrollment_age_min >= 45 and enrollment_age_min <= 49)";
+					tempString += " ((enrollment_age_min >= 45 and enrollment_age_min <= 49) or (enrollment_age_max >= 45 and enrollment_age_max <= 49) or (enrollment_age_min <= 45 and enrollment_age_max >= 49)) ";
 				}
 				else if(curr == "50-54"){
-					tempString += " (enrollment_age_min >= 50 and enrollment_age_min <= 54)";
+					tempString += " ((enrollment_age_min >= 50 and enrollment_age_min <= 54) or (enrollment_age_max >= 50 and enrollment_age_max <= 54) or (enrollment_age_min <= 50 and enrollment_age_max >= 54)) ";
 				}
 				else if(curr == "55-59"){
-					tempString += " (enrollment_age_min >= 55 and enrollment_age_min <= 59)";
+					tempString += " ((enrollment_age_min >= 55 and enrollment_age_min <= 59) or (enrollment_age_max >= 55 and enrollment_age_max <= 59) or (enrollment_age_min <= 55 and enrollment_age_max >= 59)) ";
 				}
 				else if(curr == "60-64"){
-					tempString += " (enrollment_age_min >= 60 and enrollment_age_min <= 64)";
+					tempString += " ((enrollment_age_min >= 60 and enrollment_age_min <= 64) or (enrollment_age_max >= 60 and enrollment_age_max <= 64) or (enrollment_age_min <= 60 and enrollment_age_max >= 64)) ";
 				}
 				else if(curr == "65-69"){
-					tempString += " (enrollment_age_min >= 65 and enrollment_age_min <= 69)";
+					tempString += " ((enrollment_age_min >= 65 and enrollment_age_min <= 69) or (enrollment_age_max >= 65 and enrollment_age_max <= 69) or (enrollment_age_min <= 65 and enrollment_age_max >= 69)) ";
 				}
 				else if(curr == "70-74"){
-					tempString += " (enrollment_age_min >= 70 and enrollment_age_min <= 74)";
+					tempString += " ((enrollment_age_min >= 70 and enrollment_age_min <= 74) or (enrollment_age_max >= 70 and enrollment_age_max <= 74) or (enrollment_age_min <= 70 and enrollment_age_max >= 74)) ";
 				}
 				else if(curr == "75-79"){
-					tempString += " (enrollment_age_min >= 75 and enrollment_age_min <= 79)";
+					tempString += " ((enrollment_age_min >= 75 and enrollment_age_min <= 79) or (enrollment_age_max >= 75 and enrollment_age_max <= 79) or (enrollment_age_min <= 75 and enrollment_age_max >= 79)) ";
 				}
 				else if(curr == "80-85+"){
 					tempString += " (enrollment_age_min >= 80) "
@@ -380,11 +388,14 @@ router.post('/testSelect', function(req, res) {
 				}
 
 			}
-
-			sql += " " + currState + " (" + tempString + ") ";
+			if(tempString != ""){
+				sql += " " + currState + " (" + tempString + ") ";
+				first = false;
+			}
+			
 
 		}
-		else if(currItem == "Cancer"){
+		else if(currItem == "Cancers"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
 				let cancerType = config.cancer[currSelection[a]];
@@ -396,6 +407,7 @@ router.post('/testSelect', function(req, res) {
 			}
 			if(tempString != ""){
 				sql += " " + currState + " (" + tempString + ") ";
+				first = false;
 			}
 		}
 		else if(currItem == "Categories"){
@@ -405,13 +417,14 @@ router.post('/testSelect', function(req, res) {
 				let data = dataType.split(",");
 				for(let b = 0; b < data.length; b++){
 					tempString += " " + data[b] + " = 1 ";
-					if(a != currSelection.length - 1 || b != data.length){
+					if(a != currSelection.length - 1 || b != data.length-1){
 						tempString += " or ";
 					}
 				}
 			}
 			if(tempString != ""){
 				sql += " " + currState + " (" + tempString + ") ";
+				first = false;
 			}
 			
 		}
@@ -419,13 +432,18 @@ router.post('/testSelect', function(req, res) {
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
 				let specimenType = config.collected_specimen[currSelection[a]];
-				tempString += " " + specimenType + " = 1 ";
-				if(a != currSelection.length - 1){
-					tempString += " or ";
+				let specimen = specimenType.split(",");
+				for(let b = 0; b < specimen.length; b++){
+					tempString += " " + specimen[b] + " = 1 ";
+					if(a != currSelection.length - 1 || b != data.length-1){
+						tempString += " or ";
+					}
 				}
+				
 			}
 			if(tempString != ""){
 				sql += " " + currState + " (" + tempString + ") ";
+				first = false;
 			}
 			
 		}
@@ -439,6 +457,7 @@ router.post('/testSelect', function(req, res) {
 			}
 			if(tempString != ""){
 				sql += " " + currState + " eligible_disease in (" + tempString + ") ";
+				first = false;
 			}
 		}
 

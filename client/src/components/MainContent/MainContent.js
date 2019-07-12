@@ -37,6 +37,7 @@ class MainContent extends Component {
         <Route path={match+'/about'} component={About}/>
         <Route path={match+'/cohort'} component={Information}/>
         <Route path={match+'/contact'} component={Contact}/>
+        <Route path={match+'/testing'} component={Testing}/>
       </Switch>
     );
   }
