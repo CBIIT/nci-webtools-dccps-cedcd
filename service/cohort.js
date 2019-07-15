@@ -268,7 +268,7 @@ router.post('/testSelect', function(req, res) {
 			let toAdd = "";
 			if(currSelection.includes("Male")){
 				if(currSelection.includes("Female")){
-					toAdd += " eligible_gender = 0 ";
+					toAdd += " eligible_gender in (0,1,2) ";
 				}
 				else{
 					toAdd += " eligible_gender in (0,2) ";

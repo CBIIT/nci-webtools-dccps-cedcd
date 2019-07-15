@@ -79,27 +79,53 @@ class Details extends Component {
 	loadingData = (next) =>{
 		const state = Object.assign({}, this.state);
 		let reqBody = {
-			filter:state.filter,
+			filter: state.filter,
+			selectionList: state.selectionList,
+			items: state.items,
+			booleanStates: state.booleanStates,
 			orderBy:state.orderBy,
 			paging:state.pageInfo
 		};
 		reqBody.paging.page = 0;
-		fetch('./api/export/select',{
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-		        'Content-Type': 'application/json'
-		    }
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data;
-				next(list);
-			});
+
+		if(this.state.searchState == true){
+			fetch('./api/export/select',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data;
+					next(list);
+				});
+		}
+		else{
+			fetch('./api/export/advancedSelect',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data;
+					next(list);
+				});
+		}
+
 	}
 
 	gotoPage(i){
-		this.filterData(i);
+		if(this.state.searchState == true){
+			this.filterData(i);
+		}
+		else{
+			this.advancedFilterData(i);
+		}
 	}
 
 	clearFilter = () =>{
@@ -133,8 +159,23 @@ class Details extends Component {
 
 	toFilter = () =>{
 		this.toggle();
-		console.log(this.state.searchState);
 		this.filterData(1,null,null,[]);
+	}
+
+	switchSearchType = () =>{
+		this.setState({
+			searchState: !this.state.searchState
+		});
+
+		if(this.state.searchState == true){
+			this.clearAdvancedFilter;
+			this.clearFilter;
+			this.advancedFilterData(1,null,null,[]);
+		}
+		else{
+			this.clearAdvancedFilter;
+			this.clearFilter;
+		}
 	}
 
 	filterData(i, orderBy, filter,selected){
@@ -218,7 +259,11 @@ class Details extends Component {
 				column:"cohort_name",
 				order:"asc"
 		};
-		this.setState({selectionList:[[],[],[]],
+		this.state.selectionList = [[],[],[]];
+		this.state.booleanStates = ['AND', 'AND', 'AND'];
+		this.state.items = ['Select', 'Select', 'Select'];
+		this.setState({
+			selectionList:[[],[],[]],
 			booleanStates:[
 				'AND',
 				'AND',
@@ -228,8 +273,10 @@ class Details extends Component {
 				'Select',
 				'Select',
 				'Select'
-			]});
-		this.advancedFilterData(1,orderBy,null,[]);
+			]
+		});
+
+		this.advancedFilterData(1,null,null,[]);
 	}
 
 	toAdvancedFilter = () =>{
@@ -269,7 +316,6 @@ class Details extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				console.log(result.data.list);
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -305,7 +351,14 @@ class Details extends Component {
 			orderBy.order = "asc";
 		}
 		let pageInfo = Object.assign({}, this.state.pageInfo);
-		this.filterData(pageInfo.page,orderBy);
+		this.advancedFilterData(pageInfo.page,orderBy);
+		if(this.state.searchState == true){
+			this.filterData(pageInfo.page,orderBy);
+		}
+		else{
+			this.advancedFilterData(pageInfo.page,orderBy)
+		}
+		
 	}
 
 	handleSelect(id, e){
@@ -314,31 +367,66 @@ class Details extends Component {
 			selected = [];
 			if(e.target.checked){
 				//select all cohorts
-				const state = Object.assign({}, this.state);
-				let reqBody = {
-					filter:state.filter,
-					orderBy:state.orderBy,
-					paging:{}
-				};
-				reqBody.paging.page = 0;
-				fetch('./api/cohort/select',{
-					method: "POST",
-					body: JSON.stringify(reqBody),
-					headers: {
-				        'Content-Type': 'application/json'
-				    }
-				})
-					.then(res => res.json())
-					.then(result => {
-						let list = result.data.list;
-						list.forEach(function(t){
-							selected.push(t.cohort_id);
+				if(this.state.searchState == true){
+
+					const state = Object.assign({}, this.state);
+					let reqBody = {
+						filter:state.filter,
+						orderBy:state.orderBy,
+						paging:{}
+					};
+					reqBody.paging.page = 0;
+					fetch('./api/cohort/select',{
+						method: "POST",
+						body: JSON.stringify(reqBody),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(res => res.json())
+						.then(result => {
+							let list = result.data.list;
+							list.forEach(function(t){
+								selected.push(t.cohort_id);
+							});
+							this.setState({
+								selected: selected,
+								selectAll:true
+							});
 						});
-						this.setState({
-							selected: selected,
-							selectAll:true
+				}
+				else{
+
+					const state = Object.assign({}, this.state);
+					let reqBody = {
+						filter: state.filter,
+						selectionList: state.selectionList,
+						items: state.items,
+						booleanStates: state.booleanStates,
+						orderBy:state.orderBy,
+						paging:{}
+					};
+					reqBody.paging.page = 0;
+					fetch('./api/cohort/testSelect',{
+						method: "POST",
+						body: JSON.stringify(reqBody),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(res => res.json())
+						.then(result => {
+							let list = result.data.list;
+							list.forEach(function(t){
+								selected.push(t.cohort_id);
+							});
+							this.setState({
+								selected: selected,
+								selectAll:true
+							});
 						});
-					});
+
+				}
 			}
 			else{
 				this.setState({
@@ -412,9 +500,6 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
-		console.log(filter.participant.ethnicity);
-		console.log(filter.participant.gender);
-		console.log(filter.participant.race);
 	}
 
 	handleAgeClick = (v) =>{
@@ -753,7 +838,7 @@ class Details extends Component {
 			        </div>
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" href="javascript:void(0);" onClick={() => this.setState(state => ({ searchState: !state.searchState }))}>Switch to advanced search</a>
+			            <a id="switchSearchButton" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to advanced search</a>
 			          </div>
 					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
@@ -783,7 +868,7 @@ class Details extends Component {
 					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" href="javascript:void(0);" onClick={() => this.setState(state => ({ searchState: !state.searchState }))}>Switch to Normal Search</a>
+			            <a id="switchSearchButton" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Normal Search</a>
 			          </div>
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
@@ -823,12 +908,22 @@ class Details extends Component {
 				this.setState(state);
 			}
 			else{
-				this.filterData(state.paging.page, state.orderBy, state.filter);
+				if(this.state.searchState == true){
+					this.filterData(state.paging.page, state.orderBy, state.filter);
+				}
+				else{
+					this.advancedFilterData(state.paging.page, state.orderBy, state.filter);
+				}
 			}
 			
 		}
 		else{
-			this.filterData(this.state.pageInfo.page);
+			if(this.state.searchState == true){
+				this.filterData(this.state.pageInfo.page);
+			}
+			else{
+				this.advancedFilterData(this.state.pageInfo.page);
+			}
 		}
 	}
 
