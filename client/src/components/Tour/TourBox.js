@@ -26,7 +26,7 @@ class TourBox extends Component{
 		if(document.getElementById('tourable')){
 			document.body.scrollTop = 0;
     		document.documentElement.scrollTop = 0;
-			document.getElementById("selectPage").style.overflowY = "hidden";
+			//document.getElementById("selectPage").style.overflowY = "hidden";
 			let selector = this.state.selector[this.props.currTab][this.state.tourStep-1];
 			document.getElementById(selector).style.zIndex = 10000;
 			document.getElementById(selector).style.position = "relative";
@@ -42,7 +42,7 @@ class TourBox extends Component{
 		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];
 		document.getElementById(selector).style.zIndex = 10000;
-		document.getElementById(selector).style.position = "relative";
+		document.getElementById(selector).style.position = "absolute";
 		document.getElementById(selector).style.background = "white";
 		this.setState({
 			tourStep:i

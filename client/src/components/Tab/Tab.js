@@ -35,10 +35,10 @@ class Tab extends Component {
       name="Contact Us";
       url="contact"
     }
-    else if(this.props.value == 7){
+    /*else if(this.props.value == 7){
       name="Testing Only";
       url="testing";
-    }
+    }*/
     else{
       name="Home";
       url="home";
