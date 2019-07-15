@@ -168,13 +168,13 @@ class Details extends Component {
 		});
 
 		if(this.state.searchState == true){
-			this.clearAdvancedFilter;
-			this.clearFilter;
+			this.clearAdvancedFilter();
+			this.clearFilter();
 			this.advancedFilterData(1,null,null,[]);
 		}
 		else{
-			this.clearAdvancedFilter;
-			this.clearFilter;
+			this.clearAdvancedFilter();
+			this.clearFilter();
 		}
 	}
 
@@ -868,7 +868,7 @@ class Details extends Component {
 					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Normal Search</a>
+			            <a id="switchSearchButton" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Basic Search</a>
 			          </div>
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
