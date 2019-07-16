@@ -18,12 +18,14 @@ class TourBox extends Component{
       				["filter-panel"],
       				["filter-panel"],
       				["filter-panel"]
-      				]
+					  ],
+			forResize:true
 		};
 	}
 
 	showHelp = () =>{
 		if(document.getElementById('tourable')){
+			
 			document.body.scrollTop = 0;
     		document.documentElement.scrollTop = 0;
 			//document.getElementById("selectPage").style.overflowY = "hidden";
@@ -34,15 +36,19 @@ class TourBox extends Component{
 			this.setState({
 				isTourActive:!this.state.isTourActive
 			});
+			
+			console.log(document.getElementsByClassName("react-user-tour-container"));
 	    }
 	}
 
 	toTour = (i) =>{
 		let selector = this.state.selector[this.props.currTab][this.state.tourStep -1];
+		document.body.scrollTop = 0;
+    	document.documentElement.scrollTop = 0;
 		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];
 		document.getElementById(selector).style.zIndex = 10000;
-		document.getElementById(selector).style.position = "absolute";
+		document.getElementById(selector).style.position = "relative";
 		document.getElementById(selector).style.background = "white";
 		this.setState({
 			tourStep:i
@@ -65,7 +71,7 @@ class TourBox extends Component{
 			content = (<HomeTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
 		}
 		else if(this.props.currTab == 1){
-			content = (<DetailsTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
+			content = (<DetailsTour class="testingTour" active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
 		}
 		else if(this.props.currTab == 2){
 			content = (<EnrollmentTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
@@ -80,9 +86,10 @@ class TourBox extends Component{
 			content = "";
 		}
 		return (
-			<li>
+			
+			<li id="tourNav">
 				<a onClick={this.showHelp}>
-					<i className="fas fa-question-circle"></i>
+					<i id="question" className="fas fa-question-circle"></i>
 				</a>
 	          	{content}
 	        </li>

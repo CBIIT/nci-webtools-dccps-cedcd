@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import UserTour from 'react-user-tour';
+import ReactDOM from 'react-dom';
+import RotatingFileStream from 'rotating-file-stream';
 
 class DetailsTour extends Component{
+
 
 	render(){
 		const tourTitleStyle = {
@@ -16,19 +19,31 @@ class DetailsTour extends Component{
 			fontSize: 12,
 			paddingLeft: 10
 		};
+		let selectors = ["filter-panel","cohortGridView","compareButton"];
+		let pageRect = document.getElementById("selectPage").getBoundingClientRect();
+		let height = pageRect.height;
+		let width = pageRect.width;
+		let questionPosition = document.getElementById("tourNav").getBoundingClientRect();
+		let distanceLeft = -1 * questionPosition.left;
+		let distanceUp = -1 * questionPosition.top;
+		console.log(pageRect);
+		console.log(questionPosition);
+		console.log(distanceLeft);
+		console.log(distanceUp);
 		const containerStyle = {
-			position:"fixed",
-			left:0,
-			top:0,
+			position:"absolute",
+			left:distanceLeft,
+			top:distanceUp,
 			zIndex:9,
-			width:"100%",
-			height:"100%",
-			backgroundColor:"rgba(0, 0, 0, .5)"
+			width:width,
+			height:height,
+			backgroundColor:"rgba(0, 0, 0, .5)",
 			//scroll-snap-type: "both mandatory"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (
 			<UserTour
+				id="trialboxId"
 	            active={this.props.active}
 	            step={this.props.tourStep}
 	            onNext={(step) => this.props.toTour(step)}
@@ -49,7 +64,7 @@ class DetailsTour extends Component{
 	                selector: "#cohortGridView",
 	                title: <div style={tourTitleStyle}>2 of 3</div>,
 	                body: <div style={tourMessageStyle}><b>Select one or more</b> cohorts <b>to compare Cohort Details</b> across cohorts. </div>,
-	                position:"left"
+	                position:"top"
 	              },
 	              {
 	                step: 3,

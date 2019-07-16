@@ -351,7 +351,6 @@ class Details extends Component {
 			orderBy.order = "asc";
 		}
 		let pageInfo = Object.assign({}, this.state.pageInfo);
-		this.advancedFilterData(pageInfo.page,orderBy);
 		if(this.state.searchState == true){
 			this.filterData(pageInfo.page,orderBy);
 		}

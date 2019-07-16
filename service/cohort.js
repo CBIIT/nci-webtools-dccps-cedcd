@@ -82,7 +82,7 @@ router.post('/select', function(req, res) {
 	let race_len = race.length;
 	let gender_len = gender.length;
 	if(ethnicity_len !== 0 || race_len !== 0 || gender_len !== 0){
-		if(ethnicity_len === config.ethnicity.length && race_len === config.race.length && gender_len === config.gender.length){
+		if((ethnicity_len === Object.keys(config.ethnicity).length || ethnicity_len === 0) && (race_len === Object.keys(config.race).length || race_len === 0) && (gender_len === Object.keys(config.gender).length || gender_len === 0)){
 			column_info.push("race_total_total");
 		}
 		else{

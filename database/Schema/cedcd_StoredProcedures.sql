@@ -221,7 +221,7 @@ BEGIN
     elseif gender = 1 then
 		set @queryString = " and eligible_gender in (0,1) ";
 	elseif gender = 0 then
-		set @queryString = " and eligible_gender = 0 ";
+		set @queryString = " and eligible_gender in (0,1,2) ";
     else
 		set @queryString = "";
     end if;
