@@ -307,7 +307,7 @@ class Details extends Component {
 		/*if(filter){
 			reqBody.filter = filter;
 		}*/
-		fetch('./api/cohort/testSelect',{
+		fetch('./api/cohort/advancedSelect',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -406,7 +406,7 @@ class Details extends Component {
 						paging:{}
 					};
 					reqBody.paging.page = 0;
-					fetch('./api/cohort/testSelect',{
+					fetch('./api/cohort/advancedSelect',{
 						method: "POST",
 						body: JSON.stringify(reqBody),
 						headers: {
@@ -863,7 +863,7 @@ class Details extends Component {
 			return(
 				<div className="panel-body panel-coloring">
 
-					<h3>Advanced Search</h3>  
+					<h3>Search Terms</h3>  
 					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
