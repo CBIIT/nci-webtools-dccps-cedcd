@@ -16,27 +16,18 @@ class CancerTour extends Component{
 			fontSize: 12,
 			paddingLeft: 10
 		};
-		let pageRect = document.getElementById("selectPage").getBoundingClientRect();
-		let height = pageRect.height + 1;
-		let width = pageRect.width;
-		let questionPosition = document.getElementById("tourNav").getBoundingClientRect();
-		let distanceLeft = -1 * questionPosition.left;
-		let distanceUp = -1 * questionPosition.top - document.body.scrollTop;
-
 		const containerStyle = {
-			position:"absolute",
-			left:distanceLeft,
-			top:distanceUp,
+			position:"fixed",
+			left:0,
+			top:0,
 			zIndex:9,
-			width:width,
-			height:height,
-			backgroundColor:"rgba(0, 0, 0, .5)",
-			//scroll-snap-type: "both mandatory"
+			width:"100%",
+			height:"100%",
+			backgroundColor:"rgba(0, 0, 0, .5)"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (
 			<UserTour
-				id = "trialBoxId"
 	            active={this.props.active}
 	            step={this.props.tourStep}
 	            onNext={(step) => this.props.toTour(step)}
@@ -50,7 +41,7 @@ class CancerTour extends Component{
 	                selector: "#filter-panel",
 	                title: <div style={tourTitleStyle}>Cancer Help</div>,
 	                body: <div style={tourMessageStyle}>Starting with Gender, <b>specify one or more</b> participant characteristics from each category and select <b>cohorts,</b> then select <b>Submit</b> to proceed to a table of cancers across the selected cohorts.</div>,
-	                position:"bottom",
+					position:"top",
 	                horizontalOffset:5
 	              }
 	            ]}

@@ -14,21 +14,19 @@ class TourBox extends Component{
 			isTourActive:false,
       		tourStep:1,
       		selector:[["summaryGridView","inKeyword","exportSpan"],
-      				["filter-panel","switchSearchButton","cohortGridView","compareButton"],
+      				["filter-panel","cohortGridView","compareButton"],
       				["filter-panel"],
       				["filter-panel"],
       				["filter-panel"]
-					  ],
-			forResize:true
+      				]
 		};
 	}
 
 	showHelp = () =>{
 		if(document.getElementById('tourable')){
-			
-			//document.body.scrollTop = 0;
-    		//document.documentElement.scrollTop = 0;
-			//document.getElementById("selectPage").style.overflowY = "hidden";
+			document.body.scrollTop = 0;
+    		document.documentElement.scrollTop = 0;
+			document.getElementById("selectPage").style.overflowY = "hidden";
 			let selector = this.state.selector[this.props.currTab][this.state.tourStep-1];
 			document.getElementById(selector).style.zIndex = 10000;
 			document.getElementById(selector).style.position = "relative";
@@ -36,16 +34,13 @@ class TourBox extends Component{
 			this.setState({
 				isTourActive:!this.state.isTourActive
 			});
-			
-			//console.log(document.getElementsByClassName("react-user-tour-container"));
-			
 	    }
 	}
 
 	toTour = (i) =>{
+		document.body.scrollTop = 0;
+    		document.documentElement.scrollTop = 0;
 		let selector = this.state.selector[this.props.currTab][this.state.tourStep -1];
-		//document.body.scrollTop = 0;
-    	//document.documentElement.scrollTop = 0;
 		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];
 		document.getElementById(selector).style.zIndex = 10000;
@@ -54,9 +49,6 @@ class TourBox extends Component{
 		this.setState({
 			tourStep:i
 		});
-		if(document.getElementsByClassName("react-user-tour-container")){
-			console.log(document.getElementsByClassName("react-user-tour-container")[0].getBoundingClientRect());
-		}
 	}
 
 	handleCancel = () =>{
@@ -90,10 +82,9 @@ class TourBox extends Component{
 			content = "";
 		}
 		return (
-			
-			<li id="tourNav">
+			<li>
 				<a onClick={this.showHelp}>
-					<i id="question" className="fas fa-question-circle"></i>
+					<i className="fas fa-question-circle"></i>
 				</a>
 	          	{content}
 	        </li>
