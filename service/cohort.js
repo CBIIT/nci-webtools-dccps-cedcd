@@ -490,6 +490,7 @@ router.post('/testSelect', function(req, res) {
 	sql += ';'
 	params = [];
 	params.push(sql);
+	logger.debug(sql);
 	func = "advanced_cohort_select";
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
