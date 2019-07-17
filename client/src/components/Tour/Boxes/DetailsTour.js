@@ -19,17 +19,13 @@ class DetailsTour extends Component{
 			fontSize: 12,
 			paddingLeft: 10
 		};
-		let selectors = ["filter-panel","cohortGridView","compareButton"];
 		let pageRect = document.getElementById("selectPage").getBoundingClientRect();
-		let height = pageRect.height;
+		let height = pageRect.height + 1;
 		let width = pageRect.width;
 		let questionPosition = document.getElementById("tourNav").getBoundingClientRect();
 		let distanceLeft = -1 * questionPosition.left;
-		let distanceUp = -1 * questionPosition.top;
-		console.log(pageRect);
-		console.log(questionPosition);
-		console.log(distanceLeft);
-		console.log(distanceUp);
+		let distanceUp = -1 * questionPosition.top - document.body.scrollTop;
+
 		const containerStyle = {
 			position:"absolute",
 			left:distanceLeft,
@@ -41,6 +37,14 @@ class DetailsTour extends Component{
 			//scroll-snap-type: "both mandatory"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
+		let checkSwitch = document.getElementsByClassName("switchSearchButtonToAdvanced");
+		let step2body;
+		if(checkSwitch.length > 0	){
+			step2body =  <div style={tourMessageStyle}><b>Switch</b> to <b>advanced search</b> where you can use more complex search queries.</div>;
+		}
+		else{
+			step2body =  <div style={tourMessageStyle}><b>Switch</b> to <b>basic search</b>, the recommended way to search.</div>;
+		}
 		return (
 			<UserTour
 				id="trialboxId"
@@ -55,21 +59,28 @@ class DetailsTour extends Component{
 	              {
 	                step: 1,
 	                selector: "#filter-panel",
-	                title: <div style={tourTitleStyle}>1 of 3</div>,
+	                title: <div style={tourTitleStyle}>1 of 4</div>,
 	                body: <div style={tourMessageStyle}><b>Filter</b> the list of cohorts by applying a set of <b>specific criteria.</b> Each <b>category</b> can be <b>expanded by clicking on the subject header.</b>  After a selections are made, select <b>Apply Criteria,</b> to see the list of cohorts that match to the selections.</div>,
-	                position:"bottom"
-	              },
+	                position:"top"
+				  },
+				  {
+					step: 2,
+	                selector: "#switchSearchButton",
+	                title: <div style={tourTitleStyle}>2 of 4</div>,
+	                body: step2body,
+	                position:"top"
+				  },
 	              {
-	                step: 2,
+	                step: 3,
 	                selector: "#cohortGridView",
-	                title: <div style={tourTitleStyle}>2 of 3</div>,
+	                title: <div style={tourTitleStyle}>3 of 4</div>,
 	                body: <div style={tourMessageStyle}><b>Select one or more</b> cohorts <b>to compare Cohort Details</b> across cohorts. </div>,
 	                position:"top"
 	              },
 	              {
-	                step: 3,
+	                step: 4,
 	                selector: "#compareButton",
-	                title: <div style={tourTitleStyle}>3 of 3</div>,
+	                title: <div style={tourTitleStyle}>4 of 4</div>,
 	                body: <div style={tourMessageStyle}>Select <b>Submit</b> to see the detail information available.</div>,
 	                position:"top"
 	              }

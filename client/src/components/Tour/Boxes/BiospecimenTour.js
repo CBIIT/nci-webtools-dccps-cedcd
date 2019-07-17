@@ -16,18 +16,27 @@ class BiospecimenTour extends Component{
 			fontSize: 12,
 			paddingLeft: 10
 		};
+		let pageRect = document.getElementById("selectPage").getBoundingClientRect();
+		let height = pageRect.height + 1;
+		let width = pageRect.width;
+		let questionPosition = document.getElementById("tourNav").getBoundingClientRect();
+		let distanceLeft = -1 * questionPosition.left;
+		let distanceUp = -1 * questionPosition.top - document.body.scrollTop;
+
 		const containerStyle = {
-			position:"fixed",
-			left:0,
-			top:0,
+			position:"absolute",
+			left:distanceLeft,
+			top:distanceUp,
 			zIndex:9,
-			width:"100%",
-			height:"100%",
-			backgroundColor:"rgba(0, 0, 0, .5)"
+			width:width,
+			height:height,
+			backgroundColor:"rgba(0, 0, 0, .5)",
+			//scroll-snap-type: "both mandatory"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (
 			<UserTour
+				id = "trialBoxId"
 	            active={this.props.active}
 	            step={this.props.tourStep}
 	            onNext={(step) => this.props.toTour(step)}
@@ -41,7 +50,7 @@ class BiospecimenTour extends Component{
 	                selector: "#filter-panel",
 	                title: <div style={tourTitleStyle}>Biospecimen Help</div>,
 	                body: <div style={tourMessageStyle}>Starting with Gender, <b>specify one or more</b> participant characteristics from each category and select <b>cohorts,</b> then select <b>Submit</b> to proceed to a table of biospecimen counts across the selected cohorts.</div>,
-	                position:"left",
+	                position:"bottom",
 	                horizontalOffset:5
 	              }
 	            ]}

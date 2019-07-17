@@ -14,7 +14,7 @@ class TourBox extends Component{
 			isTourActive:false,
       		tourStep:1,
       		selector:[["summaryGridView","inKeyword","exportSpan"],
-      				["filter-panel","cohortGridView","compareButton"],
+      				["filter-panel","switchSearchButton","cohortGridView","compareButton"],
       				["filter-panel"],
       				["filter-panel"],
       				["filter-panel"]
@@ -26,8 +26,8 @@ class TourBox extends Component{
 	showHelp = () =>{
 		if(document.getElementById('tourable')){
 			
-			document.body.scrollTop = 0;
-    		document.documentElement.scrollTop = 0;
+			//document.body.scrollTop = 0;
+    		//document.documentElement.scrollTop = 0;
 			//document.getElementById("selectPage").style.overflowY = "hidden";
 			let selector = this.state.selector[this.props.currTab][this.state.tourStep-1];
 			document.getElementById(selector).style.zIndex = 10000;
@@ -37,14 +37,15 @@ class TourBox extends Component{
 				isTourActive:!this.state.isTourActive
 			});
 			
-			console.log(document.getElementsByClassName("react-user-tour-container"));
+			//console.log(document.getElementsByClassName("react-user-tour-container"));
+			
 	    }
 	}
 
 	toTour = (i) =>{
 		let selector = this.state.selector[this.props.currTab][this.state.tourStep -1];
-		document.body.scrollTop = 0;
-    	document.documentElement.scrollTop = 0;
+		//document.body.scrollTop = 0;
+    	//document.documentElement.scrollTop = 0;
 		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];
 		document.getElementById(selector).style.zIndex = 10000;
@@ -53,6 +54,9 @@ class TourBox extends Component{
 		this.setState({
 			tourStep:i
 		});
+		if(document.getElementsByClassName("react-user-tour-container")){
+			console.log(document.getElementsByClassName("react-user-tour-container")[0].getBoundingClientRect());
+		}
 	}
 
 	handleCancel = () =>{
@@ -71,7 +75,7 @@ class TourBox extends Component{
 			content = (<HomeTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
 		}
 		else if(this.props.currTab == 1){
-			content = (<DetailsTour class="testingTour" active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
+			content = (<DetailsTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
 		}
 		else if(this.props.currTab == 2){
 			content = (<EnrollmentTour active={this.state.isTourActive} tourStep={this.state.tourStep} toTour={this.toTour} handleCancel={this.handleCancel}/>);
