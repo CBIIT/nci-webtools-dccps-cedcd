@@ -24,7 +24,6 @@ class DetailsTour extends Component{
 			width:"100%",
 			height:"100%",
 			backgroundColor:"rgba(0, 0, 0, .5)"
-			//scroll-snap-type: "both mandatory"
 		};
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (
@@ -42,14 +41,14 @@ class DetailsTour extends Component{
 	                selector: "#filter-panel",
 	                title: <div style={tourTitleStyle}>1 of 3</div>,
 	                body: <div style={tourMessageStyle}><b>Filter</b> the list of cohorts by applying a set of <b>specific criteria.</b> Each <b>category</b> can be <b>expanded by clicking on the subject header.</b>  After a selections are made, select <b>Apply Criteria,</b> to see the list of cohorts that match to the selections.</div>,
-	                position:"bottom"
+	                position:"top"
 	              },
 	              {
 	                step: 2,
 	                selector: "#cohortGridView",
 	                title: <div style={tourTitleStyle}>2 of 3</div>,
 	                body: <div style={tourMessageStyle}><b>Select one or more</b> cohorts <b>to compare Cohort Details</b> across cohorts. </div>,
-	                position:"left"
+	                position:"top"
 	              },
 	              {
 	                step: 3,

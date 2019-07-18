@@ -41,7 +41,7 @@ class CancerTour extends Component{
 	                selector: "#filter-panel",
 	                title: <div style={tourTitleStyle}>Cancer Help</div>,
 	                body: <div style={tourMessageStyle}>Starting with Gender, <b>specify one or more</b> participant characteristics from each category and select <b>cohorts,</b> then select <b>Submit</b> to proceed to a table of cancers across the selected cohorts.</div>,
-	                position:"left",
+					position:"top",
 	                horizontalOffset:5
 	              }
 	            ]}

@@ -30,6 +30,17 @@ class Details extends Component {
 		this.toggle = this.toggle.bind(this);
 		this.state = {
 			list:[],
+			selectionList:[[],[],[]],
+			booleanStates:[
+				'AND',
+				'AND',
+				'AND'
+			],
+			items: [
+				'Select',
+				'Select',
+				'Select'
+			],
 			filter:{
 				participant:{
 					gender:[],
@@ -57,6 +68,7 @@ class Details extends Component {
 			currTab:0,
 			selectAll:false,
 			collapse: true,
+			searchState: true,
 		};
 	}
 
@@ -67,27 +79,53 @@ class Details extends Component {
 	loadingData = (next) =>{
 		const state = Object.assign({}, this.state);
 		let reqBody = {
-			filter:state.filter,
+			filter: state.filter,
+			selectionList: state.selectionList,
+			items: state.items,
+			booleanStates: state.booleanStates,
 			orderBy:state.orderBy,
 			paging:state.pageInfo
 		};
 		reqBody.paging.page = 0;
-		fetch('./api/export/select',{
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-		        'Content-Type': 'application/json'
-		    }
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data;
-				next(list);
-			});
+
+		if(this.state.searchState == true){
+			fetch('./api/export/select',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data;
+					next(list);
+				});
+		}
+		else{
+			fetch('./api/export/advancedSelect',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data;
+					next(list);
+				});
+		}
+
 	}
 
 	gotoPage(i){
-		this.filterData(i);
+		if(this.state.searchState == true){
+			this.filterData(i);
+		}
+		else{
+			this.advancedFilterData(i);
+		}
 	}
 
 	clearFilter = () =>{
@@ -122,6 +160,22 @@ class Details extends Component {
 	toFilter = () =>{
 		this.toggle();
 		this.filterData(1,null,null,[]);
+	}
+
+	switchSearchType = () =>{
+		this.setState({
+			searchState: !this.state.searchState
+		});
+
+		if(this.state.searchState == true){
+			this.clearAdvancedFilter();
+			this.clearFilter();
+			this.advancedFilterData(1,null,null,[]);
+		}
+		else{
+			this.clearAdvancedFilter();
+			this.clearFilter();
+		}
 	}
 
 	filterData(i, orderBy, filter,selected){
@@ -169,6 +223,123 @@ class Details extends Component {
 			});
 	}
 
+	handleAdvancedCancerClick (v,allIds,e,index){
+		const {selectionList} = this.state;
+    	const currList = selectionList[index];
+   
+    
+		if(v){
+      		let idx = selectionList[index].indexOf(v);
+			if(idx > -1){
+        		//remove element
+        		currList.splice(idx,1);
+      		}
+      		else{
+        		//add element
+        		currList.push(v);
+      		}
+		}
+		else{
+			//click on the "all cohort"
+			currList.splice(0,currList.length);
+			if(e.target.checked){
+        		allIds.forEach(function(element){
+          			currList.push(element );
+        		});
+			}
+    }
+    selectionList[index] = currList;
+		this.setState({
+			selectionList: selectionList
+		});
+  }
+
+	clearAdvancedFilter = () =>{
+		let orderBy = {
+				column:"cohort_name",
+				order:"asc"
+		};
+		this.state.selectionList = [[],[],[]];
+		this.state.booleanStates = ['AND', 'AND', 'AND'];
+		this.state.items = ['Select', 'Select', 'Select'];
+		this.setState({
+			selectionList:[[],[],[]],
+			booleanStates:[
+				'AND',
+				'AND',
+				'AND'
+			],
+			items: [
+				'Select',
+				'Select',
+				'Select'
+			]
+		});
+
+		this.advancedFilterData(1,null,null,[]);
+	}
+
+	toAdvancedFilter = () =>{
+		this.toggle();
+		this.advancedFilterData(1,null,null,[]);
+	}
+
+	advancedFilterData(i, orderBy, filter,selected){
+		const state = Object.assign({}, this.state);
+		const lastPage = state.pageInfo.page == 0 ? state.lastPage: state.pageInfo.page;
+		let reqBody = {
+			filter: state.filter,
+			selectionList: state.selectionList,
+			items: state.items,
+			booleanStates: state.booleanStates,
+			orderBy:state.orderBy,
+			paging:state.pageInfo
+		};
+		if(i == -1){
+			reqBody.paging.page = state.lastPage;
+		}
+		else{
+			reqBody.paging.page = i;
+		}
+		if(orderBy){
+			reqBody.orderBy = orderBy;
+		}
+		/*if(filter){
+			reqBody.filter = filter;
+		}*/
+		fetch('./api/cohort/testSelect',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data.list;
+				reqBody.paging.total = result.data.total;
+				this.setState(prevState => (
+					{
+						list: list,
+						filter: reqBody.filter,
+						orderBy: reqBody.orderBy,
+						pageInfo: reqBody.paging,
+						lastPage: (i > -1? lastPage : i),
+						selected:selected?selected:prevState.selected,
+						comparasion:false
+					}
+				));
+			});
+	}
+
+
+	searchChange(){
+		const {searchState} = this.state;
+		this.setState({ 
+			searchState: !searchState 
+		});
+	}
+
 
 	handleOrderBy(column){
 		let orderBy = Object.assign({}, this.state.orderBy);
@@ -180,7 +351,13 @@ class Details extends Component {
 			orderBy.order = "asc";
 		}
 		let pageInfo = Object.assign({}, this.state.pageInfo);
-		this.filterData(pageInfo.page,orderBy);
+		if(this.state.searchState == true){
+			this.filterData(pageInfo.page,orderBy);
+		}
+		else{
+			this.advancedFilterData(pageInfo.page,orderBy)
+		}
+		
 	}
 
 	handleSelect(id, e){
@@ -189,31 +366,66 @@ class Details extends Component {
 			selected = [];
 			if(e.target.checked){
 				//select all cohorts
-				const state = Object.assign({}, this.state);
-				let reqBody = {
-					filter:state.filter,
-					orderBy:state.orderBy,
-					paging:{}
-				};
-				reqBody.paging.page = 0;
-				fetch('./api/cohort/select',{
-					method: "POST",
-					body: JSON.stringify(reqBody),
-					headers: {
-				        'Content-Type': 'application/json'
-				    }
-				})
-					.then(res => res.json())
-					.then(result => {
-						let list = result.data.list;
-						list.forEach(function(t){
-							selected.push(t.cohort_id);
+				if(this.state.searchState == true){
+
+					const state = Object.assign({}, this.state);
+					let reqBody = {
+						filter:state.filter,
+						orderBy:state.orderBy,
+						paging:{}
+					};
+					reqBody.paging.page = 0;
+					fetch('./api/cohort/select',{
+						method: "POST",
+						body: JSON.stringify(reqBody),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(res => res.json())
+						.then(result => {
+							let list = result.data.list;
+							list.forEach(function(t){
+								selected.push(t.cohort_id);
+							});
+							this.setState({
+								selected: selected,
+								selectAll:true
+							});
 						});
-						this.setState({
-							selected: selected,
-							selectAll:true
+				}
+				else{
+
+					const state = Object.assign({}, this.state);
+					let reqBody = {
+						filter: state.filter,
+						selectionList: state.selectionList,
+						items: state.items,
+						booleanStates: state.booleanStates,
+						orderBy:state.orderBy,
+						paging:{}
+					};
+					reqBody.paging.page = 0;
+					fetch('./api/cohort/testSelect',{
+						method: "POST",
+						body: JSON.stringify(reqBody),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+						.then(res => res.json())
+						.then(result => {
+							let list = result.data.list;
+							list.forEach(function(t){
+								selected.push(t.cohort_id);
+							});
+							this.setState({
+								selected: selected,
+								selectAll:true
+							});
 						});
-					});
+
+				}
 			}
 			else{
 				this.setState({
@@ -287,9 +499,6 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
-		console.log(filter.participant.ethnicity);
-		console.log(filter.participant.gender);
-		console.log(filter.participant.race);
 	}
 
 	handleAgeClick = (v) =>{
@@ -417,6 +626,259 @@ class Details extends Component {
 		});
 	}
 
+	removeItem(index) {
+		const { items, booleanStates, selectionList } = this.state;
+		if(items.length > 1){
+		  items.splice(index, 1);
+		  booleanStates.splice(index, 1);
+		  booleanStates[0] = "AND";
+		  selectionList.splice(index, 1);
+		  this.setState({ 
+			items: items,
+			booleanStates: booleanStates,
+			selectionList: selectionList
+		  });
+		}
+	  }
+	
+	  addItem(index) {
+		const { items, booleanStates, selectionList } = this.state;
+	  items.splice(index,0,'Select');
+	  booleanStates.splice(index,0,'AND');
+	  selectionList.splice(index,0,[]);
+	
+		this.setState({
+		  items: items,
+		  booleanStates:booleanStates,
+		  selectionList: selectionList
+		});
+		this.itemInput = null;
+	  }
+	
+	  handleSelectChange(e, index){
+		  const { items, selectionList } = this.state;
+		  items[index]= e.target.value;
+		  const currSelect = selectionList[index];
+		  currSelect.splice(0, currSelect.length);
+		  selectionList[index] = currSelect;
+		  this.setState({
+			items: items,
+			selectionList: selectionList
+		  });
+	  }
+	
+	  handleGeneralListClick(v, index){
+		const {selectionList} = this.state;
+		const currList = selectionList[index];
+		let idx = selectionList[index].indexOf(v);
+		
+			if(idx > -1){
+				//remove element
+				currList.splice(idx,1);
+			}
+			else{
+				//add element
+				currList.push(v);
+		}
+		selectionList[index] = currList;
+			this.setState({
+				selectionList: selectionList
+		});
+		
+	  }
+	  
+		handleCancerClick (v,allIds,e,index){
+			const {selectionList} = this.state;
+			const currList = selectionList[index];
+	   
+		
+			if(v){
+				  let idx = selectionList[index].indexOf(v);
+				if(idx > -1){
+					//remove element
+					currList.splice(idx,1);
+				  }
+				  else{
+					//add element
+					currList.push(v);
+				  }
+			}
+			else{
+				//click on the "all cohort"
+				currList.splice(0,currList.length);
+				if(e.target.checked){
+					allIds.forEach(function(element){
+						  currList.push(element );
+					});
+				}
+		}
+		selectionList[index] = currList;
+			this.setState({
+				selectionList: selectionList
+			});
+	  }
+	
+	  createSelectItems(index) {
+	
+		const {items} = this.state;
+		const currItem = items[index];
+		if(currItem == "Gender"){
+		  return <div className = "select-box"><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Race"){
+		  return <div className = "select-box"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Ethnicity"){
+		  return <div className = "select-box"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Age"){
+		  return <div className = "select-box"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "State"){
+		  return <div className = "select-box"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Categories"){
+		  return <div className = "select-box"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Biospecimen"){
+		  return <div className = "select-box"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		}
+		else if(currItem == "Cancers"){
+		  return <div className = "select-box"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
+		}
+	
+		return <div className="select-box"></div>;
+	
+	  }
+	
+	  createBoolean(index){
+		const { booleanStates } = this.state;
+		if(index > 0){
+		  return <select className="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
+			<option value="AND">AND</option>
+			<option value="OR">OR</option>
+		  </select>
+		}
+		return;
+	  }
+	
+	  createSelector(index){
+		  if(index > 0){
+			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+			  <option value="Select" selected disabled hidden>-Select type-</option>
+			  <option value="Gender">Gender</option>
+			  <option value="Race">Race</option>
+			  <option value="Ethnicity">Ethnicity</option>
+			  <option value="Age">Age at Baseline</option>
+			  <option value="State">Study Population</option>
+			  <option value="Categories">Categories of Data Collected</option>
+			  <option value="Biospecimen">Types of Biospecimens Collected</option>
+			  <option value="Cancers">Cancers Collected</option>
+			</select>
+		  }
+		  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+			<option value="Select" selected disabled hidden>-Select type-</option>
+			  <option value="Gender">Gender</option>
+			  <option value="Race">Race</option>
+			  <option value="Ethnicity">Ethnicity</option>
+			  <option value="Age">Age at Baseline</option>
+			  <option value="State">Study Population</option>
+			  <option value="Categories">Categories of Data Collected</option>
+			  <option value="Biospecimen">Types of Biospecimens Collected</option>
+			  <option value="Cancers">Cancers Collected</option>
+		  </select>
+	  }
+	
+	  handleBooleanChange(e, index){
+		const { booleanStates } = this.state;
+		booleanStates[index] = e.target.value;
+		this.setState({
+		  booleanStates:booleanStates
+		});
+	  }
+	
+	renderSearchFilters(){
+		const {searchState} = this.state;
+		if(searchState){
+			
+			return(
+				<div className="panel-body">
+			        <div className="filter row">
+			          <div className="col-sm-6 filterCol">
+			            <div className="filter-component">
+			              <h3>Eligibility Requirements</h3>
+			              <div className="col-sm-6">
+			              	<GenderList hasUnknown={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick}/>
+			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
+			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
+			              </div>
+			              <div className="col-sm-6">
+			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
+			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
+			              </div>
+			            </div>
+			          </div>
+			          <div className="filterCol col-sm-6 last">
+			            <div className="filter-component">
+			              <h3>Data and Specimens Collected</h3>
+			              <div className="row">
+			                <div className="col-sm-12">
+			                  	<CollectedDataList values={this.state.filter.collect.data} displayMax="5" onClick={this.handleDataClick}/>
+			                </div>
+			                <div className="col-sm-12">
+			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
+			                </div>
+			                <div className="col-sm-12">
+			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
+			                </div>
+			              </div>
+			            </div>
+			          </div>
+			        </div>
+			        <div className="row">
+					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to advanced search</a>
+			          </div>
+					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
+			          </div>
+			        </div>
+			      </div>
+			)
+		} 
+		else{
+			const { items, itemText } = this.state;
+			const itemList = items.map((item, index) => (
+			<div>
+				<div className="grid-container">
+						{this.createBoolean(index)}
+						{this.createSelector(index)}
+						<button className="add-button"onClick={e => this.addItem(index+1)}>+</button>
+						<button className="remove-button" onClick={e => this.removeItem(index)}>&times;</button>
+						{this.createSelectItems(index)}
+					</div>
+			</div>
+			));
+			return(
+				<div className="panel-body panel-coloring">
+
+					<h3>Advanced Search</h3>  
+					  {itemList}
+			        <div className="row">
+					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Basic Search</a>
+			          </div>
+			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toAdvancedFilter}/>
+			          </div>
+			        </div>
+			      </div>
+			)
+		}
+	}
+
 	renderSelectHeader(width){
 		return (
 			<th id="table-select-col" width={width} title="Select / Deselect All Cohorts">
@@ -445,12 +907,22 @@ class Details extends Component {
 				this.setState(state);
 			}
 			else{
-				this.filterData(state.paging.page, state.orderBy, state.filter);
+				if(this.state.searchState == true){
+					this.filterData(state.paging.page, state.orderBy, state.filter);
+				}
+				else{
+					this.advancedFilterData(state.paging.page, state.orderBy, state.filter);
+				}
 			}
 			
 		}
 		else{
-			this.filterData(this.state.pageInfo.page);
+			if(this.state.searchState == true){
+				this.filterData(this.state.pageInfo.page);
+			}
+			else{
+				this.advancedFilterData(this.state.pageInfo.page);
+			}
 		}
 	}
 
@@ -540,7 +1012,8 @@ class Details extends Component {
 						<td colSpan="3">Nothing to display</td>
 					</tr>
 	  			);
-	  		}
+			  }
+			  
 			return (
 				<div>
 				<input id="tourable" type="hidden" />
@@ -559,46 +1032,7 @@ class Details extends Component {
 						</p>
 					</div>
 					<Collapse isOpen={this.state.collapse}>
-			      <div className="panel-body">
-			        <div className="filter row">
-			          <div className="col-sm-6 filterCol">
-			            <div className="filter-component">
-			              <h3>Eligibility Requirements</h3>
-			              <div className="col-sm-6">
-			              	<GenderList hasUnknown={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick}/>
-			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
-			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
-			              </div>
-			              <div className="col-sm-6">
-			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
-			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
-			              </div>
-			            </div>
-			          </div>
-			          <div className="filterCol col-sm-6 last">
-			            <div className="filter-component">
-			              <h3>Data and Specimens Collected</h3>
-			              <div className="row">
-			                <div className="col-sm-12">
-			                  	<CollectedDataList values={this.state.filter.collect.data} displayMax="5" onClick={this.handleDataClick}/>
-			                </div>
-			                <div className="col-sm-12">
-			                  	<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick}/>
-			                </div>
-			                <div className="col-sm-12">
-			                  	<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick}/>
-			                </div>
-			              </div>
-			            </div>
-			          </div>
-			        </div>
-			        <div className="row">
-			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
-			          </div>
-			        </div>
-			      </div>
+			      {this.renderSearchFilters()}
 				  </Collapse>
 			    </div>
 			  </div>

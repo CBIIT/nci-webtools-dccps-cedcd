@@ -75,7 +75,8 @@ class Details extends Component {
     const { items, booleanStates, selectionList } = this.state;
     if(items.length > 1){
       items.splice(index, 1);
-      booleanStates.splice(index, 1);
+	  booleanStates.splice(index, 1);
+	  booleanStates[0] = "AND";
       selectionList.splice(index, 1);
       this.setState({ 
         items: items,
@@ -90,12 +91,7 @@ class Details extends Component {
   items.splice(index,0,'Select');
   booleanStates.splice(index,0,'AND');
   selectionList.splice(index,0,[]);
-  console.log(items);
-  console.log(booleanStates);
-  console.log("selectionList");
-  for(var i = 0; i < selectionList.length; i++){
-    console.log(selectionList[i]);
-  }
+
     this.setState({
       items: items,
       booleanStates:booleanStates,
@@ -172,38 +168,38 @@ class Details extends Component {
     const {items} = this.state;
     const currItem = items[index];
     if(currItem == "Gender"){
-      return <GenderList class="select-box" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Race"){
-      return <RaceList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Ethnicity"){
-      return <EthnicityList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Age"){
-      return <AgeList class="select-box" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "State"){
-      return <DiseaseStateList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Categories"){
-      return <CollectedDataList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Biospecimen"){
-      return <CollectedSpecimensList class="select-box" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/>;
+      return <div className = "select-box"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
     }
     else if(currItem == "Cancers"){
-      return <CollectedCancersList class="select-box" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/>;
+      return <div className = "select-box"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleCancerClick(v, allIds, e, index)}/></div>;
     }
 
-    return <div class="select-box"></div>;
+    return <div className="select-box"></div>;
 
   }
 
   createBoolean(index){
     const { booleanStates } = this.state;
     if(index > 0){
-      return <select class="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
+      return <select className="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
         <option value="AND">AND</option>
         <option value="OR">OR</option>
       </select>
@@ -213,7 +209,7 @@ class Details extends Component {
 
   createSelector(index){
 	  if(index > 0){
-		return <select class="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+		return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
           <option value="Select" selected disabled hidden>-Select type-</option>
           <option value="Gender">Gender</option>
           <option value="Race">Race</option>
@@ -225,7 +221,7 @@ class Details extends Component {
           <option value="Cancers">Cancers Collected</option>
         </select>
 	  }
-	  return <select class="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+	  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
 		<option value="Select" selected disabled hidden>-Select type-</option>
 	  	<option value="Gender">Gender</option>
 	  	<option value="Race">Race</option>
@@ -577,24 +573,19 @@ class Details extends Component {
         }
         const { items, itemText } = this.state;
     const itemList = items.map((item, index) => (
-      <div class="grid-container">
-
-		{this.createBoolean(index)}
-		{this.createSelector(index)}
-        
-        <button class="add-button"onClick={e => this.addItem(index+1)}>
-          +
-        </button>
-        <button class="remove-button" onClick={e => this.removeItem(index)}>
-          &times;
-        </button>
-		<p class = "boolean-selector"></p>
-        {this.createSelectItems(index)}
-	    	
+      <div>
+		  <div className="grid-container">
+				{this.createBoolean(index)}
+				{this.createSelector(index)}
+				<button className="add-button"onClick={e => this.addItem(index+1)}>+</button>
+				<button className="remove-button" onClick={e => this.removeItem(index)}>&times;</button>
+				{this.createSelectItems(index)}
+	    	</div>
       </div>
     ));
 			return (
 				<div>
+					
 				<input id="tourable" type="hidden" />
 				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
 				</p>
@@ -603,12 +594,12 @@ class Details extends Component {
 					<div className="panel-heading" onClick={this.toggle}>
 						<h2 className="panel-title">Variables Collected in Cohort Study</h2>
 						<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
-							<i class="fas fa-chevron-up" id="toggle-switch"></i>
+							<i className="fas fa-chevron-up" id="toggle-switch"></i>
 						</span>
 					</div>
 					<Collapse isOpen={this.state.collapse}>
 			      <div className="panel-body">
-              {itemList}
+              		{itemList}
 			        <div className="row">
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
