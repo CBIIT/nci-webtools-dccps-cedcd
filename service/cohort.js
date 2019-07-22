@@ -1,4 +1,4 @@
-var TestingFunctions = require('./TestingFunctions');
+var EnrollmentFunctions = require('./EnrollmentFunctions');
 var express = require('express');
 var router = express.Router();
 var mysql = require('../components/mysql');
@@ -241,7 +241,7 @@ router.post('/select', function(req, res) {
 	});
 });
 
-router.post('/testSelect', function(req, res) {
+router.post('/advancedSelect', function(req, res) {
 	let body = req.body;
 	let selectionList = body.selectionList || {};
 	let items = body.items || {};
@@ -280,7 +280,7 @@ router.post('/testSelect', function(req, res) {
 			else{
 				toAdd += "";
 			}
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff(currSelection,[],[]);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo(currSelection,[],[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -302,7 +302,7 @@ router.post('/testSelect', function(req, res) {
 			}
 		}
 		else if(currItem == "Race"){
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],currSelection,[]);
+			enrollmentInfo = TestingFunctions.getEnrollmentInfo([],currSelection,[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -317,7 +317,7 @@ router.post('/testSelect', function(req, res) {
 
 		}
 		else if(currItem == "Ethnicity"){
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],[],currSelection);
+			enrollmentInfo = TestingFunctions.getEnrollmentInfo([],[],currSelection);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";

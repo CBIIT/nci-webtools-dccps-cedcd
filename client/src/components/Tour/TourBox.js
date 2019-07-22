@@ -38,8 +38,15 @@ class TourBox extends Component{
 	}
 
 	toTour = (i) =>{
-		document.body.scrollTop = 0;
-    		document.documentElement.scrollTop = 0;
+		if(selector =="compareButton"){
+			document.body.scrollTop = 1000;
+			document.documentElement.scrollTop = 1000;
+			console.log("LMAOO")
+		}
+		else{
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+		}
 		let selector = this.state.selector[this.props.currTab][this.state.tourStep -1];
 		document.getElementById(selector).style.cssText = "remove-css";
 		selector = this.state.selector[this.props.currTab][i-1];

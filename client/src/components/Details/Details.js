@@ -72,10 +72,12 @@ class Details extends Component {
 		};
 	}
 
+	//Expand and collapse the filter-panel
 	toggle() {
 		this.setState(state => ({ collapse: !state.collapse }));
 	}
 
+	//Sends the information to the api to export to an excel file
 	loadingData = (next) =>{
 		const state = Object.assign({}, this.state);
 		let reqBody = {
@@ -157,11 +159,13 @@ class Details extends Component {
 		this.filterData(this.state.pageInfo.page);
 	}
 
+	//Handles when the filter button for the basic search is hit
 	toFilter = () =>{
 		this.toggle();
 		this.filterData(1,null,null,[]);
 	}
 
+	//Switches between the basic and advanced search
 	switchSearchType = () =>{
 		this.setState({
 			searchState: !this.state.searchState
@@ -837,7 +841,7 @@ class Details extends Component {
 			        </div>
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to advanced search</a>
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
 			          </div>
 					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
@@ -867,7 +871,7 @@ class Details extends Component {
 					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Basic Search</a>
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
 			          </div>
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
