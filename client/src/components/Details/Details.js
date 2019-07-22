@@ -448,7 +448,8 @@ class Details extends Component {
 				selected.push(id);
 			}
 			this.setState({
-				selected: selected
+				selected: selected,
+				selectAll: false
 			});
 		}
 		
@@ -1054,7 +1055,7 @@ class Details extends Component {
 					      <Workbook.Sheet name="Cohort_Selection">
 					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
 					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-					        <Workbook.Column label="Total Enrollments (n=)" value="race_total_total"/>
+					        <Workbook.Column label="Total Enrollments (n=)git" value="race_total_total"/>
 					        <Workbook.Column label="Website" value="cohort_web_site"/>
 					        <Workbook.Column label="Last Updated" value="update_time"/>
 					      </Workbook.Sheet>
