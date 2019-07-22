@@ -35,7 +35,7 @@ class TableHeaderMiddle extends Component {
     }
     return (
       <th className="sortable" width={this.props.width} scope="col">
-        <a href="javascript:void(0);" onClick={this.props.onClick}><p className="top-padded-header" align="center">Total Enrollment
+        <a href="javascript:void(0);" onClick={this.props.onClick}><p className="top-padded-header" align="center">Total Enrollments
           <br />(n=){cls}
         </p>
         </a>
