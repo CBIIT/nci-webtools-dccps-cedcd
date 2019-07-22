@@ -13,7 +13,7 @@ class TableHeaderMiddle extends Component {
       name="Cohort Acronym";
     }
     else if(this.props.value === "race_total_total"){
-      name="Total Enrollment (n=)";
+      name="Total Enrollments (n=)";
     }
     else if(this.props.value === "update_time"){
       name="Last Updated";
