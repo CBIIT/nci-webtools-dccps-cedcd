@@ -19,7 +19,7 @@ var all = {
 	//time to live for cohort information
 	cohort_ttl: 24 * 60 * 60,
 
-	port: argv.p || 9221,
+	port: argv.p || 8221,
 
 	gender:{
 		"Female":"females",
