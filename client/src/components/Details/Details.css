@@ -87,3 +87,10 @@
 .panel-coloring{
     background-color: #F5F5F5;
 }
+
+.switchSearchButtonToAdvanced{
+    text-decoration: underline;
+}
+.switchSearchButtonToBasic{
+    text-decoration: underline;
+}

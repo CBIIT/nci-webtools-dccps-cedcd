@@ -1,4 +1,4 @@
-var TestingFunctions = require('./TestingFunctions');
+var EnrollmentFunctions = require('./EnrollmentFunctions');
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
@@ -475,7 +475,7 @@ router.post('/export/advancedSelect', function(req, res){
 			else{
 				toAdd += "";
 			}
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff(currSelection,[],[]);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff(currSelection,[],[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -497,7 +497,7 @@ router.post('/export/advancedSelect', function(req, res){
 			}
 		}
 		else if(currItem == "Race"){
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],currSelection,[]);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff([],currSelection,[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -512,7 +512,7 @@ router.post('/export/advancedSelect', function(req, res){
 
 		}
 		else if(currItem == "Ethnicity"){
-			enrollmentInfo = TestingFunctions.getEnrollmentStuff([],[],currSelection);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff([],[],currSelection);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";

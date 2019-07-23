@@ -16,7 +16,7 @@ class DetailsTour extends Component{
 			fontSize: 12,
 			paddingLeft: 10
 		};
-		const containerStyle = {
+		let containerStyle = {
 			position:"fixed",
 			left:0,
 			top:0,
@@ -25,6 +25,23 @@ class DetailsTour extends Component{
 			height:"100%",
 			backgroundColor:"rgba(0, 0, 0, .5)"
 		};
+		let offset = 0;
+		
+		if(document.getElementById("compareButton")){
+			offset = -1 * (document.getElementById("selectPage").getBoundingClientRect().height - window.innerHeight);
+		}
+		
+		if(this.props.tourStep == 3){
+			containerStyle = {
+				position:"fixed",
+				left:0,
+				top: offset,
+				zIndex:9,
+				width:"100%",
+				height:"2000%",
+				backgroundColor:"rgba(0, 0, 0, .5)"
+			};
+		}
 		const closeButton = (<button className="btn btn-primary pull-right tour-close" type="button">X</button>);
 		return (
 			<UserTour

@@ -72,10 +72,12 @@ class Details extends Component {
 		};
 	}
 
+	//Expand and collapse the filter-panel
 	toggle() {
 		this.setState(state => ({ collapse: !state.collapse }));
 	}
 
+	//Sends the information to the api to export to an excel file
 	loadingData = (next) =>{
 		const state = Object.assign({}, this.state);
 		let reqBody = {
@@ -157,11 +159,13 @@ class Details extends Component {
 		this.filterData(this.state.pageInfo.page);
 	}
 
+	//Handles when the filter button for the basic search is hit
 	toFilter = () =>{
 		this.toggle();
 		this.filterData(1,null,null,[]);
 	}
 
+	//Switches between the basic and advanced search
 	switchSearchType = () =>{
 		this.setState({
 			searchState: !this.state.searchState
@@ -307,7 +311,7 @@ class Details extends Component {
 		/*if(filter){
 			reqBody.filter = filter;
 		}*/
-		fetch('./api/cohort/testSelect',{
+		fetch('./api/cohort/advancedSelect',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -406,7 +410,7 @@ class Details extends Component {
 						paging:{}
 					};
 					reqBody.paging.page = 0;
-					fetch('./api/cohort/testSelect',{
+					fetch('./api/cohort/advancedSelect',{
 						method: "POST",
 						body: JSON.stringify(reqBody),
 						headers: {
@@ -444,7 +448,8 @@ class Details extends Component {
 				selected.push(id);
 			}
 			this.setState({
-				selected: selected
+				selected: selected,
+				selectAll: false
 			});
 		}
 		
@@ -837,7 +842,7 @@ class Details extends Component {
 			        </div>
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to advanced search</a>
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
 			          </div>
 					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
@@ -863,11 +868,11 @@ class Details extends Component {
 			return(
 				<div className="panel-body panel-coloring">
 
-					<h3>Advanced Search</h3>  
+					<h3>Search Terms</h3>  
 					  {itemList}
 			        <div className="row">
 					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Switch to Basic Search</a>
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
 			          </div>
 			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
@@ -1050,7 +1055,7 @@ class Details extends Component {
 					      <Workbook.Sheet name="Cohort_Selection">
 					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
 					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-					        <Workbook.Column label="Total Enrollment" value="race_total_total"/>
+					        <Workbook.Column label="Total Enrollments (n=)git" value="race_total_total"/>
 					        <Workbook.Column label="Website" value="cohort_web_site"/>
 					        <Workbook.Column label="Last Updated" value="update_time"/>
 					      </Workbook.Sheet>

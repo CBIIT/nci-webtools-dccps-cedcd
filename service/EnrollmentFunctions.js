@@ -1,7 +1,7 @@
 var config = require('../config');
 
 
-    function getEnrollmentStuff(gender, race, ethnicity){
+    function getEnrollmentInfo(gender, race, ethnicity){
         let column_info = [];
         let ethnicity_len = ethnicity.length;
         let race_len = race.length;
@@ -84,5 +84,5 @@ var config = require('../config');
     
 
 module.exports = {
-    getEnrollmentStuff
+    getEnrollmentInfo
 };
