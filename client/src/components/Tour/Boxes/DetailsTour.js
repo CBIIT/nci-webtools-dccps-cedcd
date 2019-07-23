@@ -27,7 +27,7 @@ class DetailsTour extends Component{
 		};
 		let offset = 0;
 		
-		if(document.getElementById("compareButton")){
+		if(document.getElementById("compareButton") && document.getElementById("compareButton").getBoundingClientRect().top > window.innerHeight){
 			offset = -1 * (document.getElementById("selectPage").getBoundingClientRect().height - window.innerHeight);
 		}
 		
