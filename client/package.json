@@ -4,15 +4,17 @@
   "private": true,
   "dependencies": {
     "file-saver": "^1.3.8",
+    "js-yaml": "^3.13.1",
     "moment": "^2.21.0",
-    "npm": "^5.7.1",
+    "npm": "^6.10.2",
     "prop-types": "^15.7.2",
+    "query-string": "^6.8.1",
     "react": "^16.2.0",
     "react-bootstrap": "^1.0.0-beta.9",
     "react-dom": "^16.2.0",
     "react-moment": "^0.7.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.1",
+    "react-scripts": "^3.0.1",
     "react-tooltip": "^3.5.0",
     "react-user-tour": "^3.0.0",
     "reactstrap": "^8.0.0",
@@ -26,5 +28,17 @@
   },
   "homepage": ".",
   "//": "proxy attribute below is only for development purpose",
-  "proxy": "http://localhost:9000"
+  "proxy": "http://localhost:9000",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
