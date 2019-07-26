@@ -251,10 +251,11 @@ router.post('/advancedSelect', function(req, res) {
 	let func = "cohort_select";
 	let params = [];
 	let first = true;
-	//form filter into Strings
-
 	
+	//Begin the sql string builder
 	let sql = 'select sql_calc_found_rows cohort_id,cohort_name, cohort_acronym,cohort_web_site,update_time,race_total_total from cohort_summary where 1=1 ';
+	
+	//For each item in the list, of selected values, add something to the sql query
 	for(let i = 0; i < selectionList.length; i++){
 
 		let currItem = items[i];
@@ -264,6 +265,12 @@ router.post('/advancedSelect', function(req, res) {
 		}
 		
 		let currSelection = selectionList[i];
+
+		//For eligible_gender, 
+		//1 = male
+		//2 = female
+		//0 = male AND female
+		//Gender, Race, and Ethnicity all use the getEnrollmentInfo which basically gathers together the different combinations of the races, genders, and ethinicities given
 		if(currItem == "Gender"){
 			let toAdd = "";
 			if(currSelection.includes("Male")){
@@ -331,6 +338,8 @@ router.post('/advancedSelect', function(req, res) {
 			}
 
 		}
+
+		//Basically keeps reading in age selections and adds them to the sql query depending on what values are given
 		else if(currItem == "Age"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
@@ -395,6 +404,8 @@ router.post('/advancedSelect', function(req, res) {
 			
 
 		}
+
+		//Adds both male or female to the search query
 		else if(currItem == "Cancers"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
@@ -410,6 +421,8 @@ router.post('/advancedSelect', function(req, res) {
 				first = false;
 			}
 		}
+
+		//Just adds all of the selected categories selected to the query
 		else if(currItem == "Categories"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
@@ -428,6 +441,8 @@ router.post('/advancedSelect', function(req, res) {
 			}
 			
 		}
+		
+		//Adds all of the selected biospecimens to the query
 		else if(currItem == "Biospecimen"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
@@ -447,6 +462,8 @@ router.post('/advancedSelect', function(req, res) {
 			}
 			
 		}
+
+		//Adds all of the selected states to the query
 		else if(currItem == "State"){
 			let tempString = "";
 			for(let a = 0; a < currSelection.length; a++){
@@ -463,6 +480,7 @@ router.post('/advancedSelect', function(req, res) {
 
 	}
 
+	//Adds the order by part to the sql query
 	let orderString = "";
 
 	if(orderBy){
@@ -476,6 +494,7 @@ router.post('/advancedSelect', function(req, res) {
 
 	}
 
+	//Sends what page we are on and how large the pages are supposed to be
 	let pagingString = "";
 	let pIndex = (paging.page-1) * paging.pageSize
 	if(paging && paging.page != 0){
@@ -492,6 +511,8 @@ router.post('/advancedSelect', function(req, res) {
 	params.push(sql);
 	logger.debug(sql);
 	func = "advanced_cohort_select";
+
+	//Calls the advanced_cohort_select procedures - just runs the query given
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};

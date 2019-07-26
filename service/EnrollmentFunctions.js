@@ -1,6 +1,7 @@
 var config = require('../config');
 
-
+    //Basically gets all the combinations of the selected genders, races, and ethnicities
+    //If any of the parameters are empty, then return all possible combinations.
     function getEnrollmentInfo(gender, race, ethnicity){
         let column_info = [];
         let ethnicity_len = ethnicity.length;
