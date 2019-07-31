@@ -73,6 +73,7 @@
 .boolean-selector {
     grid-column: 1/2;
     margin: 0;
+    background-color: white;
   }
 .type-selector{
     grid-column:2/4;
