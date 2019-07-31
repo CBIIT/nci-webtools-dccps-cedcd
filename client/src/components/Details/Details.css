@@ -56,11 +56,13 @@
     grid-template-columns: 10% 30% 30% 5% 5% 5% 5%;
     grid-gap: 10px;
     padding: 5px;
+    background-color: inherit;
   }
   
   .grid-container > * {
     padding: 0 0;
     font-size: 15px;
+    background-color: inherit;
   }
 
   .grid-container > p {
@@ -74,6 +76,7 @@
   }
 .type-selector{
     grid-column:2/4;
+    background-color: white;
 }
 .add-button{
     grid-column:5/6;
@@ -83,6 +86,7 @@
 }
 .select-box{
     grid-column:2/8;
+    background-color: blue;
 }
 .panel-coloring{
     background-color: #F5F5F5;
@@ -93,4 +97,17 @@
 }
 .switchSearchButtonToBasic{
     text-decoration: underline;
+}
+.gray-back{
+    background-color: #f5f5f5;
+}
+.filter-component-block{
+    background-color: inherit;
+}
+.picked-options{
+    background-color: inherit;
+    border-color: #f5f5f5
+}
+.select-box{
+    background-color: inherit;
 }
