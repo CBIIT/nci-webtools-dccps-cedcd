@@ -76,6 +76,9 @@ class Details extends Component {
 	toggle() {
 		this.setState(state => ({ collapse: !state.collapse }));
 	}
+	setAllToFalse(){
+		this.setState(state => ({selectAll: false}));
+	}
 
 	//Sends the information to the api to export to an excel file
 	loadingData = (next) =>{
@@ -132,6 +135,7 @@ class Details extends Component {
 
 	clearFilter = () =>{
 		let i = 1;
+		this.setAllToFalse();
 		let orderBy = {
 				column:"cohort_name",
 				order:"asc"
@@ -162,6 +166,7 @@ class Details extends Component {
 	//Handles when the filter button for the basic search is hit
 	toFilter = () =>{
 		this.toggle();
+		this.setAllToFalse();
 		this.filterData(1,null,null,[]);
 	}
 
@@ -259,6 +264,7 @@ class Details extends Component {
   }
 
 	clearAdvancedFilter = () =>{
+		this.setAllToFalse();
 		let orderBy = {
 				column:"cohort_name",
 				order:"asc"
@@ -285,6 +291,7 @@ class Details extends Component {
 
 	toAdvancedFilter = () =>{
 		this.toggle();
+		this.setAllToFalse();
 		this.advancedFilterData(1,null,null,[]);
 	}
 
