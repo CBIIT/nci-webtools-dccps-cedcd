@@ -102,7 +102,7 @@ exports.run = function(req, res) {
 						v = "N/P";
 					}
 					else if( v == 0){
-						v = 'Male, Female, and Unknown';
+						v = 'Male, Female, and Other';
 					}
 					else if(v == 1){
 						v = "Female";
@@ -111,7 +111,7 @@ exports.run = function(req, res) {
 						v = "Male";
 					}
 					else if(v == 3){
-						v = "Unknown/Other"
+						v = "Other/Unknown"
 					}
 					else if(v == 4){
 						v = "Both"
