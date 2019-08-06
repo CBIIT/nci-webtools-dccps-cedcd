@@ -15,6 +15,23 @@ var config = require('../config');
                 column_info.push("race_total_total");
             }
             else{
+                if(race_len === config.gender.length || race_len === 0){
+                    race = Object.keys(config.race);
+                }
+                if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
+                    ethnicity = Object.keys(config.ethnicity);
+                }
+                if(gender_len === config.gender.length || gender_len === 0){
+                    gender = Object.keys(config.gender);
+                }
+                race.forEach(function(r){
+                    ethnicity.forEach(function(eth){
+                        gender.forEach(function(g){
+                            column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
+                        });
+                    });
+                });
+                /*
                 if(race_len === config.race.length || race_len === 0){
                     let prefix = "race_total_";
                     if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
@@ -73,7 +90,7 @@ var config = require('../config');
                             });
                         });
                     }
-                }
+                }*/
             }
             return column_info;
         }
