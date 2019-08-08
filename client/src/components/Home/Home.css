@@ -110,3 +110,12 @@ img {
 #welcome-title{
     padding:0 1.5rem;
 }
+
+.card-text{
+    text-align:center;
+    width:50%;
+
+}
+.card-header{
+    padding: 20px 0 0 0;
+}
