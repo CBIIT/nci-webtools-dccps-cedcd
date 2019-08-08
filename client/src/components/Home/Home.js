@@ -210,18 +210,19 @@ class Home extends Component {
 				<div className="column-for-home-grid">
 					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" align="center">
-							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
-							<h2 align = "center" id = "ToolName1">Search Cohorts</h2>
-							<p align = "center">Description for the search cohorts tool.</p>
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"30%"}}></img>
+							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
+							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., gender, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
 						</div>
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" align="center">
-							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
-							<h2 align = "center">Enrollment Counts</h2>
-							<p align = "center">Description for the enrollment counts tool.</p>
+
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"30%"}}></img>
+							<h2 class="card-header" align = "center">Enrollment Counts</h2>
+							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific gender, race, and ethnicity terms.</p>
 						</div>
 					</Link>
 				</div>
@@ -231,18 +232,18 @@ class Home extends Component {
 				<div className="column-for-home-grid">
 					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
 					<div className="animation-card" align="center">
-						<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
-						<h2 align = "center">Cancer Counts</h2>
-						<p align = "center">Description for the cancer counts tool.</p>
+						<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"30%"}}></img>
+						<h2 class="card-header" align = "center">Cancer Counts</h2>
+						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by gender.</p>
 					</div>
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" align="center">
-							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"25%"}}></img>
-							<h2 align = "center">Biospecimen Counts</h2>
-							<p align = "center">Description for the biospecimen counts tool.</p>
+							<img src="./assets/img/SearchImage.png" alt="Avatar" style={{width:"30%"}}></img>
+							<h2 class="card-header" align = "center">Biospecimen Counts</h2>
+							<p class="card-text"align = "center">Search biospecimens across cohorts with the option to specify the type of biospecimen and find specimens in participants diagnosed with specific cancer sites.</p>
 						</div>
 					</Link>
 				</div>
