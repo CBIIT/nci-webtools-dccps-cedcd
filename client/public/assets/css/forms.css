@@ -35,6 +35,17 @@
   content: " required field";
 }
 
+
+.field-valid {
+}
+.field-invalid label {
+  color: red;
+}
+.field-invalid label:after {
+  content: " field not valid";
+}
+
+
 #reviewerRejectionRationale {
   margin-bottom: 1.5rem;
 }
