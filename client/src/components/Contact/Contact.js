@@ -83,7 +83,7 @@ class Contact extends Component {
         state.phone_invalid = false;
       }
 
-      if(state.firstname_required || state.lastname_required || state.org_required || state.email_required || state.message_required || state.email_invalid){
+      if(state.firstname_required || state.lastname_required || state.org_required || state.email_required || state.message_required || state.email_invalid || state.phone_invalid){
         this.setState(state);
       }
       else{
@@ -148,7 +148,7 @@ class Contact extends Component {
     const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
     return (
       <div>
-              <div className={submit_cls}>
+              <div className={submit_cls} top={window.innerHeight/2}>
                 Message sent successfully.    
               </div>  
               <div id="contactForm" className="row pop-form">
