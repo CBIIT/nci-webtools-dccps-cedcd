@@ -66,7 +66,6 @@ class Contact extends Component {
       state.message_required = state.message.trim() === "";
       
       //Check validity of email and phone number
-      RegExp('^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
       if(state.email.trim().search(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) === -1){
         
         state.email_invalid = true;
@@ -77,7 +76,7 @@ class Contact extends Component {
       }
 
       //Check validity of phone number if one is given
-      if(state.phone.trim() !== "" && state.phone.trim().search(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/) === -1){
+      if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
         state.phone_invalid = true;
       }
       else{
@@ -119,6 +118,7 @@ class Contact extends Component {
               email_required:false,
               message_required:false,
               email_invalid:false,
+              phone_invalid:false,
               firstname:"",
               lastname:"",
               organization:"",
