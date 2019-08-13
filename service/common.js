@@ -475,7 +475,7 @@ router.post('/export/advancedSelect', function(req, res){
 			else{
 				toAdd += "";
 			}
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff(currSelection,[],[]);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo(currSelection,[],[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -497,7 +497,7 @@ router.post('/export/advancedSelect', function(req, res){
 			}
 		}
 		else if(currItem == "Race"){
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff([],currSelection,[]);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo([],currSelection,[]);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";
@@ -512,7 +512,7 @@ router.post('/export/advancedSelect', function(req, res){
 
 		}
 		else if(currItem == "Ethnicity"){
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentStuff([],[],currSelection);
+			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo([],[],currSelection);
 			let tempString = "";
 			for(let a = 0; a < enrollmentInfo.length; a++){
 				tempString += " " + enrollmentInfo[a] + " > 0 ";

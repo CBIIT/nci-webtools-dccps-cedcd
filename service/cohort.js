@@ -181,11 +181,11 @@ router.post('/select', function(req, res) {
 		let cancer_column = [];
 		let category = params[0];
 		filter.collect.cancer.forEach(function(cc){
-			if(category == -1 || category == 2){
+			if(category == -1 || category == 0){
 				cancer_column.push("ci_"+config.cancer[cc]+"_male");
 				cancer_column.push("ci_"+config.cancer[cc]+"_female");
 			}
-			else if(category == 0){
+			else if(category == 2){
 				cancer_column.push("ci_"+config.cancer[cc]+"_male");
 			}
 			else{
