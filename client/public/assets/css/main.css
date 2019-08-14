@@ -55,8 +55,8 @@ body {
     width: 20%;
     visibility: hidden;
     margin-left: 40%;
-    position: fixed;
-    top: 200px;
+    position: absolute;
+    top: 210px;
     left: 0px;
     padding:4px;
     background: #135B5D;
@@ -67,6 +67,7 @@ body {
 .message-top.fade-away{
   visibility: visible;
   transform:translate(0,100%);
+  z-index:10000;
 }
 .shadow{
   width:100%;

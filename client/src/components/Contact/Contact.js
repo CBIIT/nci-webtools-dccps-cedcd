@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './Contact.css';
 
 class Contact extends Component {
-
     constructor(props){
       super(props);
       this.state = {
@@ -33,10 +32,10 @@ class Contact extends Component {
     }
 
     handleModalClick = () => {
-      success_back = "non-modal";
       this.setState({
-        submitted:false
+        background_gray:false
       })
+      console.log('LMOA')
     }
 
     handleClear =() =>{
@@ -139,7 +138,8 @@ class Contact extends Component {
             });
           }, 1500);
         });
-      }
+            }
+            
     }
 
   render() {
@@ -155,14 +155,19 @@ class Contact extends Component {
     let email_cls = this.state.email_required?"contact-us-field field-required":(this.state.email_invalid?"contact-us-field field-invalid":"contact-us-field");
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
     let phone_cls = this.state.phone_invalid?"contact-us-field field-invalid":"contact-us-field"
-    const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
+    const submit_cls = this.state.background_gray?"message-top fade-away":"message-top";
     const success_back = this.state.background_gray?"modal":"non-modal";
     return (
       <div>
 
-            <div id="myModal" className={success_back} onclick={(e) => this.handleModalClick(e)}>
-              <div className={submit_cls}>
-                Message sent successfully.    
+            <div id="myModal" className={success_back} onClick={this.handleModalClick}>
+              <div className={submit_cls} style={{textAlign:"center", "border-radius": "10px"}}>
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+              <div class="modal-body">
+                <h3>Message sent successfully!</h3>
+              </div>
               </div>  
              </div>
               <div id="contactForm" className="row pop-form">
