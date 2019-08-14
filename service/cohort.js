@@ -86,6 +86,23 @@ router.post('/select', function(req, res) {
 			column_info.push("race_total_total");
 		}
 		else{
+			if(race_len === config.gender.length || race_len === 0){
+				race = Object.keys(config.race);
+			}
+			if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
+				ethnicity = Object.keys(config.ethnicity);
+			}
+			if(gender_len === config.gender.length || gender_len === 0){
+				gender = Object.keys(config.gender);
+			}
+			race.forEach(function(r){
+				ethnicity.forEach(function(eth){
+					gender.forEach(function(g){
+						column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
+					});
+				});
+			});
+			/*
 			if(race_len === config.race.length || race_len === 0){
 				let prefix = "race_total_";
 				if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
@@ -144,7 +161,7 @@ router.post('/select', function(req, res) {
 						});
 					});
 				}
-			}
+			}*/
 		}
 		params.push(column_info.toString());
 	}
@@ -164,11 +181,11 @@ router.post('/select', function(req, res) {
 		let cancer_column = [];
 		let category = params[0];
 		filter.collect.cancer.forEach(function(cc){
-			if(category == -1 || category == 2){
+			if(category == -1 || category == 0){
 				cancer_column.push("ci_"+config.cancer[cc]+"_male");
 				cancer_column.push("ci_"+config.cancer[cc]+"_female");
 			}
-			else if(category == 0){
+			else if(category == 2){
 				cancer_column.push("ci_"+config.cancer[cc]+"_male");
 			}
 			else{

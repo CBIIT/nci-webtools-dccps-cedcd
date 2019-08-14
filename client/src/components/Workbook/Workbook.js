@@ -54,7 +54,8 @@ export class Column extends Component { // eslint-disable-line react/require-ren
   }
 
   render () {
-    throw new Error('<Column/> is not meant to be rendered.')
+    return null;
+    //throw new Error('<Column/> is not meant to be rendered.')
   }
 }
 
@@ -67,7 +68,8 @@ export class Sheet extends Component { // eslint-disable-line react/require-rend
   }
 
   render () {
-    throw new Error('<Sheet/> is not meant to be rendered.')
+    return null;
+    //throw new Error('<Sheet/> is not meant to be rendered.')
   }
 }
 
