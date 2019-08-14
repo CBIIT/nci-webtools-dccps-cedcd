@@ -33,6 +33,7 @@ class Contact extends Component {
     }
 
     handleModalClick = () => {
+      success_back = "non-modal";
       this.setState({
         submitted:false
       })
