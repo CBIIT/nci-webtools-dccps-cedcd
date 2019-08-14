@@ -148,7 +148,7 @@ class Contact extends Component {
     const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
     return (
       <div>
-              <div className={submit_cls} top={window.innerHeight/2}>
+              <div className={submit_cls}>
                 Message sent successfully.    
               </div>  
               <div id="contactForm" className="row pop-form">
