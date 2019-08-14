@@ -8,6 +8,7 @@ class Contact extends Component {
       this.state = {
         open:false,
         submitted:false,
+        background_gray:false,
         firstname_required:false,
         lastname_required:false,
         org_required:false,
@@ -118,7 +119,8 @@ class Contact extends Component {
           this.setState(state);
           setTimeout(() =>{
             this.setState({
-              //submitted:!this.state.submitted,
+              submitted:!this.state.submitted,
+              background_gray:true,
               firstname_required:false,
               lastname_required:false,
               org_required:false,
@@ -153,11 +155,11 @@ class Contact extends Component {
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
     let phone_cls = this.state.phone_invalid?"contact-us-field field-invalid":"contact-us-field"
     const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
-    const success_back = this.state.submitted?"modal":"";
+    const success_back = this.state.background_gray?"modal":"non-modal";
     return (
       <div>
 
-            <div id="myModal" className={success_back} style={{display:"block"}} onclick={(e) => this.handleModalClick(e)}>
+            <div id="myModal" className={success_back} onclick={(e) => this.handleModalClick(e)}>
               <div className={submit_cls}>
                 Message sent successfully.    
               </div>  
