@@ -73,6 +73,8 @@
 .boolean-selector {
     grid-column: 1/2;
     margin: 0;
+    height:26.7833;
+    min-height:26.7833;
     background-color: white;
   }
 .type-selector{
