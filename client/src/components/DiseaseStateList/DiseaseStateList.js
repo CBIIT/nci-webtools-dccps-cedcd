@@ -9,7 +9,7 @@ class DiseaseStateList extends Component {
 				"Generally Healthy, No Previous Cancer Diagnosis",
 				"Other/Unknown"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}

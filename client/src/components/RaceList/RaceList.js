@@ -13,7 +13,7 @@ class RaceList extends Component {
 				"Other/Unknown",
 				"More than one race"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}

@@ -4,13 +4,16 @@ class GenderList extends Component {
 
 	constructor(props){
 		super(props);
-		this.state = {
-			list:[
-				"Male",
-				"Female"
-			],
-			open:false
-		};
+		
+			this.state = {
+				list:[
+					"Male",
+					"Female"
+				],
+				open:props.startOpen === undefined?false:true
+			};
+		
+		
 
 		this.handleBlur = this.handleBlur.bind(this);
 	}

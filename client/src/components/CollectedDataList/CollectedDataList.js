@@ -36,7 +36,7 @@ class CollectedDataList extends Component {
 				"Social Support",
 				"Socio-Economic Status"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}

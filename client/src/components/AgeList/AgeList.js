@@ -21,7 +21,7 @@ class AgeList extends Component {
 				"75-79",
 				"80-85+"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}
