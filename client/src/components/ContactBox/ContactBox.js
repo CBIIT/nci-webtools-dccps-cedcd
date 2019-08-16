@@ -1,55 +1,66 @@
 import React, { Component } from 'react';
 
 class ContactBox extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      open:false,
+      submitted:false,
+      background_gray:false,
+      firstname_required:false,
+      lastname_required:false,
+      org_required:false,
+      email_required:false,
+      message_required:false,
+      email_invalid:false,
+      phone_invalid:false,
+      firstname:"",
+      lastname:"",
+      organization:"",
+      phone:"",
+      email:"",
+      topic:"1",
+      message:""
+    };
+  }
 
-    constructor(props){
-      super(props);
-      this.state = {
-        open:false,
-        submitted:false,
-        firstname_required:false,
-        lastname_required:false,
-        org_required:false,
-        email_required:false,
-        message_required:false,
-        firstname:"",
-        lastname:"",
-        organization:"",
-        phone:"",
-        email:"",
-        topic:"1",
-        message:""
-      };
-    }
+  handleClick =() =>{
+    this.setState({
+      open:!this.state.open
+    });
+  }
 
-    handleClick =() =>{
-      this.setState({
-        open:!this.state.open
-      });
-    }
+  handleModalClick = () => {
+    this.setState({
+      background_gray:false
+    })
+    console.log('LMOA')
+  }
 
-    handleClear =() =>{
-      this.setState({
-        firstname_required:false,
-        lastname_required:false,
-        org_required:false,
-        email_required:false,
-        message_required:false,
-        firstname:"",
-        lastname:"",
-        organization:"",
-        phone:"",
-        email:"",
-        topic:"1",
-        message:""
-      });
-    }
+  handleClear =() =>{
+    this.setState({
+      firstname_required:false,
+      lastname_required:false,
+      org_required:false,
+      email_required:false,
+      message_required:false,
+      email_invalid:false,
+      phone_invalid:false,
+      firstname:"",
+      lastname:"",
+      organization:"",
+      phone:"",
+      email:"",
+      topic:"1",
+      message:""
+    });
+  }
 
-    handleChange(field, event){
-      let dict = {};
-      dict[field] = event.target.value;
-      this.setState(dict);
-    }
+  handleChange(field, event){
+    let dict = {};
+    dict[field] = event.target.value;
+    this.setState(dict);
+  }
 
     handleSubmit =(event) =>{
       event.preventDefault();
