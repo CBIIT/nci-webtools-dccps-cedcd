@@ -1,66 +1,66 @@
 import React, { Component } from 'react';
 
 class ContactBox extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      open:false,
-      submitted:false,
-      background_gray:false,
-      firstname_required:false,
-      lastname_required:false,
-      org_required:false,
-      email_required:false,
-      message_required:false,
-      email_invalid:false,
-      phone_invalid:false,
-      firstname:"",
-      lastname:"",
-      organization:"",
-      phone:"",
-      email:"",
-      topic:"1",
-      message:""
-    };
-  }
+    constructor(props){
+      super(props);
+      this.state = {
+        open:false,
+        submitted:false,
+        background_gray:false,
+        firstname_required:false,
+        lastname_required:false,
+        org_required:false,
+        email_required:false,
+        message_required:false,
+        email_invalid:false,
+        phone_invalid:false,
+        firstname:"",
+        lastname:"",
+        organization:"",
+        phone:"",
+        email:"",
+        topic:"1",
+        message:""
+      };
+    }
 
-  handleClick =() =>{
-    this.setState({
-      open:!this.state.open
-    });
-  }
+    handleClick =() =>{
+      this.setState({
+        open:!this.state.open
+      });
+    }
 
-  handleModalClick = () => {
-    this.setState({
-      background_gray:false
-    })
-    console.log('LMOA')
-  }
+    handleModalClick = () => {
+      this.setState({
+        background_gray:false
+      })
+      console.log('LMOA')
+    }
 
-  handleClear =() =>{
-    this.setState({
-      firstname_required:false,
-      lastname_required:false,
-      org_required:false,
-      email_required:false,
-      message_required:false,
-      email_invalid:false,
-      phone_invalid:false,
-      firstname:"",
-      lastname:"",
-      organization:"",
-      phone:"",
-      email:"",
-      topic:"1",
-      message:""
-    });
-  }
+    handleClear =() =>{
+      this.setState({
+        firstname_required:false,
+        lastname_required:false,
+        org_required:false,
+        email_required:false,
+        message_required:false,
+        email_invalid:false,
+        phone_invalid:false,
+        firstname:"",
+        lastname:"",
+        organization:"",
+        phone:"",
+        email:"",
+        topic:"1",
+        message:""
+      });
+    }
 
-  handleChange(field, event){
-    let dict = {};
-    dict[field] = event.target.value;
-    this.setState(dict);
-  }
+    handleChange(field, event){
+      let dict = {};
+      dict[field] = event.target.value;
+      this.setState(dict);
+    }
 
     handleSubmit =(event) =>{
       event.preventDefault();
@@ -175,7 +175,6 @@ class ContactBox extends Component {
                 Message sent successfully.    
               </div>  
               <div id="contactForm" className="row pop-form">
-                <button className="btn btn-primary pull-right pop-close" type="button" onClick={this.handleClick}>X</button>
                 <div id="contact-main" className="col">
                   <div id="contact-header" className="col-md-12">
                     <h1 className="pg-title">Contact</h1>             
@@ -195,9 +194,9 @@ class ContactBox extends Component {
                         <label className="oneLineLabel" htmlFor="cu_organization">Organization <span className="required">*</span></label>
                         <input name="cu_organization" type="text" id="cu_organization" value={this.state.organization} onChange={(e) =>this.handleChange("organization",e)}/> 
                       </div>
-                      <div id="ctl11_div_phone" className="contact-us-field">
+                      <div id="ctl11_div_phone" className={phone_cls}>
                         <label className="oneLineLabel" htmlFor="cu_phone">Phone Number</label>
-                        <input name="cu_phone" type="text" id="cu_phone" placeholder="(   )   -" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
+                        <input name="cu_phone" type="text" id="cu_phone" placeholder="" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
                       </div>
                       <div id="ctl11_div_email" className={email_cls}>
                       <label className="oneLineLabel" htmlFor="cu_email">Email <span className="required">*</span></label>
