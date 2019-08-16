@@ -777,7 +777,7 @@ class Details extends Component {
 	  createSelector(index){
 		  if(index > 0){
 			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			  <option value="Select" selected disabled hidden>-Select type-</option>
+			  <option value="Select" selected disabled hidden>-Select Term-</option>
 			  <option value="Gender">Gender</option>
 			  <option value="Race">Race</option>
 			  <option value="Ethnicity">Ethnicity</option>
@@ -789,7 +789,7 @@ class Details extends Component {
 			</select>
 		  }
 		  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			<option value="Select" selected disabled hidden>-Select type-</option>
+			<option value="Select" selected disabled hidden>-Select Term-</option>
 			  <option value="Gender">Gender</option>
 			  <option value="Race">Race</option>
 			  <option value="Ethnicity">Ethnicity</option>
