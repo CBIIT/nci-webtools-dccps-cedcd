@@ -650,6 +650,14 @@ class Details extends Component {
 			booleanStates: booleanStates,
 			selectionList: selectionList
 		  });
+		  
+		}
+		else{
+			this.setState({
+				items:["Select"],
+				booleanStates:["AND"],
+				selectionList:[[]]
+			});
 		}
 	  }
 	
@@ -874,14 +882,10 @@ class Details extends Component {
 			            </div>
 			          </div>
 			        </div>
-			        <div className="row">
-					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
-			          </div>
-					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
-			          </div>
+			        <div className="row" style={{"display":"flex"}}>
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
+					 	<a id="filterClear" className="btn-filter" style={{"margin-left":"auto"}} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>   
+			            <input type="submit" id="filterEngage" name="filterEngage" style={{"margin-right":"1rem"}} value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			        </div>
 			      </div>
 			)
@@ -905,14 +909,10 @@ class Details extends Component {
 
 					<h3>Search Terms</h3>  
 					  {itemList}
-			        <div className="row">
-					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
-			          </div>
-			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toAdvancedFilter}/>
-			          </div>
+			        <div className="row" style={{"display":"flex"}}>
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{"margin-left":"auto"}} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" style={{"margin-right":"1rem"}} onClick={this.toAdvancedFilter}/>
 			        </div>
 			      </div>
 			)
@@ -984,7 +984,7 @@ class Details extends Component {
 	    this.setState({currTab: i});
 	}
 
-	numberWithCommas(x) {
+	numberWithCommas(x) { 
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
