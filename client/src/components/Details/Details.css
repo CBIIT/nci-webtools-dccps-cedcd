@@ -9,16 +9,16 @@
 }
 
 #filterEngage{
-    background-color:#a46fdb;
+    background-color:#782FC1;
 }
 #filterEngage:hover{
     background-color:#62269e;
 }
 #filterEngage:focus{
-    background-color:#a46fdb;
+    background-color:#782FC1;
 }
 #filterEngage:hover:active{
-    background-color:#a46fdb;
+    background-color:#782FC1;
 }
 
 .panel-heading:hover{
@@ -73,6 +73,8 @@
 .boolean-selector {
     grid-column: 1/2;
     margin: 0;
+    height:26.7833;
+    min-height:26.7833;
     background-color: white;
   }
 .type-selector{
@@ -80,13 +82,18 @@
     background-color: white;
 }
 .add-button{
+    height:26.7833;
+    min-height:26.7833;
     grid-column:5/6;
 }
 .remove-button{
+    height:26.7833;
+    min-height:26.7833;
     grid-column:7/8;
 }
 .select-box{
-    grid-column:2/8;
+    grid-column:2/4;
+    
     background-color: blue;
 }
 .panel-coloring{

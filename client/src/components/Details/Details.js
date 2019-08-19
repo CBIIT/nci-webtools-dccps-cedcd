@@ -650,6 +650,14 @@ class Details extends Component {
 			booleanStates: booleanStates,
 			selectionList: selectionList
 		  });
+		  
+		}
+		else{
+			this.setState({
+				items:["Select"],
+				booleanStates:["AND"],
+				selectionList:[[]]
+			});
 		}
 	  }
 	
@@ -735,28 +743,28 @@ class Details extends Component {
 		const {items} = this.state;
 		const currItem = items[index];
 		if(currItem == "Gender"){
-		  return <div className = "select-box gray-back" ><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back" ><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Race"){
-		  return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Ethnicity"){
-		  return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Age"){
-		  return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "State"){
-		  return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Categories"){
-		  return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Biospecimen"){
-		  return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
+		  return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
 		}
 		else if(currItem == "Cancers"){
-		  return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
+		  return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
 		}
 	
 		return <div className="select-box gray-back"></div>;
@@ -775,9 +783,36 @@ class Details extends Component {
 	  }
 	
 	  createSelector(index){
+		  
+		const {items} = this.state;
+		const currItem = items[index];
+		if(currItem == "Gender"){
+		  return <div className = "select-box gray-back" ><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Race"){
+		  return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Ethnicity"){
+		  return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Age"){
+		  return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "State"){
+		  return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Categories"){
+		  return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Biospecimen"){
+		  return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		}
+		else if(currItem == "Cancers"){
+		  return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+		}
 		  if(index > 0){
 			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			  <option value="Select" selected disabled hidden>-Select type-</option>
+			  <option value="Select" selected disabled hidden>-Select Term-</option>
 			  <option value="Gender">Gender</option>
 			  <option value="Race">Race</option>
 			  <option value="Ethnicity">Ethnicity</option>
@@ -789,7 +824,7 @@ class Details extends Component {
 			</select>
 		  }
 		  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			<option value="Select" selected disabled hidden>-Select type-</option>
+			<option value="Select" selected disabled hidden>-Select Term-</option>
 			  <option value="Gender">Gender</option>
 			  <option value="Race">Race</option>
 			  <option value="Ethnicity">Ethnicity</option>
@@ -847,19 +882,16 @@ class Details extends Component {
 			            </div>
 			          </div>
 			        </div>
-			        <div className="row">
-					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced" href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
-			          </div>
-					  <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">  
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
-			          </div>
+			        <div className="row" style={{"display":"flex"}}>
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
+					 	<a id="filterClear" className="btn-filter" style={{"margin-left":"auto"}} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>   
+			            <input type="submit" id="filterEngage" name="filterEngage" style={{"margin-right":"1rem"}} value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			        </div>
 			      </div>
 			)
 		} 
 		else{
+			//{this.createSelectItems(index)}
 			const { items, itemText } = this.state;
 			const itemList = items.map((item, index) => (
 			<div>
@@ -868,7 +900,7 @@ class Details extends Component {
 						{this.createSelector(index)}
 						<button className="add-button"onClick={e => this.addItem(index+1)}>+</button>
 						<button className="remove-button" onClick={e => this.removeItem(index)}>&times;</button>
-						{this.createSelectItems(index)}
+						
 					</div>
 			</div>
 			));
@@ -877,14 +909,10 @@ class Details extends Component {
 
 					<h3>Search Terms</h3>  
 					  {itemList}
-			        <div className="row">
-					  <div id="switchSearchButtonContainer" className="col-sm-3 col-sm-offset-0">
-			            <a id="switchSearchButton" className="switchSearchButtonToBasic" href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
-			          </div>
-			          <div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toAdvancedFilter}/>
-			          </div>
+			        <div className="row" style={{"display":"flex"}}>
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{"margin-left":"auto"}} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" style={{"margin-right":"1rem"}} onClick={this.toAdvancedFilter}/>
 			        </div>
 			      </div>
 			)
@@ -956,7 +984,7 @@ class Details extends Component {
 	    this.setState({currTab: i});
 	}
 
-	numberWithCommas(x) {
+	numberWithCommas(x) { 
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 

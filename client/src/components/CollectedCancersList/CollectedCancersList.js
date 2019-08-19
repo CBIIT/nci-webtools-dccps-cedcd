@@ -31,7 +31,7 @@ class CollectedCancersList extends Component {
 				"Trachea, bronchus, and lung",
 				"All Other Cancers"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}

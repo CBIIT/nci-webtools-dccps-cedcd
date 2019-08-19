@@ -35,7 +35,6 @@ class Contact extends Component {
       this.setState({
         background_gray:false
       })
-      console.log('LMOA')
     }
 
     handleClear =() =>{
@@ -75,7 +74,7 @@ class Contact extends Component {
       
       //Check validity of email and phone number
       if(state.email.trim().search(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) === -1){
-        
+
         state.email_invalid = true;
 
       }
@@ -84,7 +83,11 @@ class Contact extends Component {
       }
 
       //Check validity of phone number if one is given
-      if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
+      //if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
+      
+
+      if(state.phone.trim().search(/^[+]?([0-9]|[-])*$/) === -1){
+
         state.phone_invalid = true;
       }
       else{
@@ -155,7 +158,7 @@ class Contact extends Component {
     let email_cls = this.state.email_required?"contact-us-field field-required":(this.state.email_invalid?"contact-us-field field-invalid":"contact-us-field");
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
     let phone_cls = this.state.phone_invalid?"contact-us-field field-invalid":"contact-us-field"
-    const submit_cls = this.state.background_gray?"message-top fade-away":"message-top";
+    const submit_cls = this.state.background_gray?"message-mid fade-away":"message-mid";
     const success_back = this.state.background_gray?"modal":"non-modal";
     return (
       <div>
@@ -192,7 +195,7 @@ class Contact extends Component {
                       </div>
                       <div id="ctl11_div_phone" className={phone_cls}>
                         <label className="oneLineLabel" htmlFor="cu_phone">Phone Number</label>
-                        <input name="cu_phone" type="text" id="cu_phone" placeholder="(   )   -" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
+                        <input name="cu_phone" type="text" id="cu_phone" placeholder="" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
                       </div>
                       <div id="ctl11_div_email" className={email_cls}>
                       <label className="oneLineLabel" htmlFor="cu_email">Email <span className="required">*</span></label>

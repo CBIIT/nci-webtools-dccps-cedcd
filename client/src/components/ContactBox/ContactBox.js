@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 
 class ContactBox extends Component {
-
     constructor(props){
       super(props);
       this.state = {
         open:false,
         submitted:false,
+        background_gray:false,
         firstname_required:false,
         lastname_required:false,
         org_required:false,
         email_required:false,
         message_required:false,
+        email_invalid:false,
+        phone_invalid:false,
         firstname:"",
         lastname:"",
         organization:"",
@@ -28,6 +30,13 @@ class ContactBox extends Component {
       });
     }
 
+    handleModalClick = () => {
+      this.setState({
+        background_gray:false
+      })
+      console.log('LMOA')
+    }
+
     handleClear =() =>{
       this.setState({
         firstname_required:false,
@@ -35,6 +44,8 @@ class ContactBox extends Component {
         org_required:false,
         email_required:false,
         message_required:false,
+        email_invalid:false,
+        phone_invalid:false,
         firstname:"",
         lastname:"",
         organization:"",
@@ -60,11 +71,35 @@ class ContactBox extends Component {
       state.org_required = state.organization.trim() === "";
       state.email_required = state.email.trim() === "";
       state.message_required = state.message.trim() === "";
-      if(state.firstname_required || state.lastname_required || state.org_required || state.email_required || state.message_required){
+      
+      //Check validity of email and phone number
+      if(state.email.trim().search(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) === -1){
+
+        state.email_invalid = true;
+
+      }
+      else{
+        state.email_invalid = false;
+      }
+
+      //Check validity of phone number if one is given
+      //if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
+      
+
+      if(state.phone.trim().search(/^[+]?([0-9]|[-])*$/) === -1){
+
+        state.phone_invalid = true;
+      }
+      else{
+        state.phone_invalid = false;
+      }
+
+      if(state.firstname_required || state.lastname_required || state.org_required || state.email_required || state.message_required || state.email_invalid || state.phone_invalid){
         this.setState(state);
       }
       else{
         //submit
+        
         let reqBody = {
           firstname:state.firstname,
           lastname:state.lastname,
@@ -89,11 +124,14 @@ class ContactBox extends Component {
           setTimeout(() =>{
             this.setState({
               submitted:!this.state.submitted,
+              background_gray:true,
               firstname_required:false,
               lastname_required:false,
               org_required:false,
               email_required:false,
               message_required:false,
+              email_invalid:false,
+              phone_invalid:false,
               firstname:"",
               lastname:"",
               organization:"",
@@ -104,7 +142,8 @@ class ContactBox extends Component {
             });
           }, 1500);
         });
-      }
+            }
+            
     }
 
   render() {
@@ -117,9 +156,11 @@ class ContactBox extends Component {
     let firstname_cls = this.state.firstname_required?"contact-us-field field-required":"contact-us-field";
     let lastname_cls = this.state.lastname_required?"contact-us-field field-required":"contact-us-field";
     let org_cls = this.state.org_required?"contact-us-field field-required":"contact-us-field";
-    let email_cls = this.state.email_required?"contact-us-field field-required":"contact-us-field";
+    let email_cls = this.state.email_required?"contact-us-field field-required":(this.state.email_invalid?"contact-us-field field-invalid":"contact-us-field");
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
+    let phone_cls = this.state.phone_invalid?"contact-us-field field-invalid":"contact-us-field"
     const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
+    const success_back = this.state.background_gray?"modal":"non-modal";
     return (
       <div>
         <div id="contactFlag" className="rightSideFlag" data-toggle="modal" data-target="#contactOverlay">
@@ -135,7 +176,6 @@ class ContactBox extends Component {
                 Message sent successfully.    
               </div>  
               <div id="contactForm" className="row pop-form">
-                <button className="btn btn-primary pull-right pop-close" type="button" onClick={this.handleClick}>X</button>
                 <div id="contact-main" className="col">
                   <div id="contact-header" className="col-md-12">
                     <h1 className="pg-title">Contact</h1>             
@@ -155,9 +195,9 @@ class ContactBox extends Component {
                         <label className="oneLineLabel" htmlFor="cu_organization">Organization <span className="required">*</span></label>
                         <input name="cu_organization" type="text" id="cu_organization" value={this.state.organization} onChange={(e) =>this.handleChange("organization",e)}/> 
                       </div>
-                      <div id="ctl11_div_phone" className="contact-us-field">
+                      <div id="ctl11_div_phone" className={phone_cls}>
                         <label className="oneLineLabel" htmlFor="cu_phone">Phone Number</label>
-                        <input name="cu_phone" type="text" id="cu_phone" placeholder="(   )   -" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
+                        <input name="cu_phone" type="text" id="cu_phone" placeholder="" value={this.state.phone} onChange={(e) =>this.handleChange("phone",e)}/>
                       </div>
                       <div id="ctl11_div_email" className={email_cls}>
                       <label className="oneLineLabel" htmlFor="cu_email">Email <span className="required">*</span></label>

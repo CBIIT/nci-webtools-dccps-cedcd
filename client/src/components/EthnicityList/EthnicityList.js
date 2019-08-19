@@ -9,7 +9,7 @@ class EthnicityList extends Component {
 				"Non-Hispanic/Latino",
 				"Other/Unknown"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}

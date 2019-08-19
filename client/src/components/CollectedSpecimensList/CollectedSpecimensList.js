@@ -9,7 +9,7 @@ class CollectedSpecimensList extends Component {
 				"Buccal/Saliva",
 				"Tissue (includes tumor and/or normal)"
 			],
-			open:false
+			open:props.startOpen === undefined?false:true
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}
