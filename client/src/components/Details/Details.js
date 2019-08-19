@@ -136,6 +136,9 @@ class Details extends Component {
 	clearFilter = () =>{
 		let i = 1;
 		this.setAllToFalse();
+		if(document.getElementById("cancerAll")!==undefined){
+			document.getElementById("cancerAll").checked = false;
+		}
 		let orderBy = {
 				column:"cohort_name",
 				order:"asc"
@@ -157,6 +160,7 @@ class Details extends Component {
 			}
 		};
 		this.filterData(i, orderBy, filter,[]);
+		
 	}
 
 	goBack2Filter = () => {
@@ -683,7 +687,7 @@ class Details extends Component {
 		  selectionList[index] = currSelect;
 		  this.setState({
 			items: items,
-			selectionList: selectionList
+			selectionList: selectionList,
 		  });
 	  }
 	
