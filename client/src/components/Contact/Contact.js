@@ -35,7 +35,6 @@ class Contact extends Component {
       this.setState({
         background_gray:false
       })
-      console.log('LMOA')
     }
 
     handleClear =() =>{
