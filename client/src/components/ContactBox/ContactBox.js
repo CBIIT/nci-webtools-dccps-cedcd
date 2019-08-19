@@ -99,6 +99,7 @@ class ContactBox extends Component {
       }
       else{
         //submit
+        
         let reqBody = {
           firstname:state.firstname,
           lastname:state.lastname,
@@ -119,6 +120,7 @@ class ContactBox extends Component {
         .then(result => {
           let data = result.data;
           state.submitted = data === "sent";
+          state.submitted = true;
           this.setState(state);
           setTimeout(() =>{
             this.setState({
@@ -158,7 +160,7 @@ class ContactBox extends Component {
     let email_cls = this.state.email_required?"contact-us-field field-required":(this.state.email_invalid?"contact-us-field field-invalid":"contact-us-field");
     let message_cls = this.state.message_required?"contact-us-field field-required":"contact-us-field";
     let phone_cls = this.state.phone_invalid?"contact-us-field field-invalid":"contact-us-field"
-    const submit_cls = this.state.background_gray?"message-top fade-away":"message-top";
+    const submit_cls = this.state.submitted?"message-top fade-away":"message-top";
     const success_back = this.state.background_gray?"modal":"non-modal";
     return (
       <div>
