@@ -120,7 +120,6 @@ class ContactBox extends Component {
         .then(result => {
           let data = result.data;
           state.submitted = data === "sent";
-          state.submitted = true;
           this.setState(state);
           setTimeout(() =>{
             this.setState({
