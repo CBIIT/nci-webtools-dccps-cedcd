@@ -86,7 +86,7 @@ class ContactBox extends Component {
       //if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
       
 
-      if(state.phone.trim().search(/^[+]?([0-9]|[-])*$/) === -1){
+      if(state.phone.trim().search(/^[+]?([0-9]|[-])*$/) === -1 || state.phone.length > 20){
 
         state.phone_invalid = true;
       }
