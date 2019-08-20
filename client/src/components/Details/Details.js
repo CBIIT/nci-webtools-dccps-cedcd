@@ -69,6 +69,8 @@ class Details extends Component {
 			selectAll:false,
 			collapse: true,
 			searchState: true,
+			prevBasicParams:{},
+			prevAdvancedParam:{},
 		};
 	}
 
@@ -126,10 +128,81 @@ class Details extends Component {
 
 	gotoPage(i){
 		if(this.state.searchState == true){
-			this.filterData(i);
+			this.pageData(i);
 		}
 		else{
-			this.advancedFilterData(i);
+			this.pageData(i);
+		}
+	}
+	pageData(i, orderBy, filter,selected){
+		if(this.state.searchState == true){
+			const state = Object.assign({}, this.state);
+			const lastPage = state.pageInfo.page == 0 ? state.lastPage: state.pageInfo.page;
+			let reqBody = this.state.prevBasicParams;
+			if(i == -1){
+				reqBody.paging.page = state.lastPage;
+			}
+			else{
+				reqBody.paging.page = i;
+			}
+			fetch('./api/cohort/select',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data.list;
+					reqBody.paging.total = result.data.total;
+					this.setState(prevState => (
+						{
+							list: list,
+							filter: reqBody.filter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1? lastPage : i),
+							selected:selected?selected:prevState.selected,
+							comparasion:false
+						}
+					));
+				});
+		}
+		else{
+			const state = Object.assign({}, this.state);
+			const lastPage = state.pageInfo.page == 0 ? state.lastPage: state.pageInfo.page;
+			let reqBody = this.state.prevAdvancedParam;
+			if(i == -1){
+				reqBody.paging.page = state.lastPage;
+			}
+			else{
+				reqBody.paging.page = i;
+			}
+
+			fetch('./api/cohort/advancedSelect',{
+				method: "POST",
+				body: JSON.stringify(reqBody),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+				.then(res => res.json())
+				.then(result => {
+					let list = result.data.list;
+					reqBody.paging.total = result.data.total;
+					this.setState(prevState => (
+						{
+							list: list,
+							filter: reqBody.filter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1? lastPage : i),
+							selected:selected?selected:prevState.selected,
+							comparasion:false
+						}
+					));
+				});
 		}
 	}
 
@@ -211,6 +284,10 @@ class Details extends Component {
 		if(filter){
 			reqBody.filter = filter;
 		}
+		this.setState({
+			prevBasicParams:JSON.parse(JSON.stringify(reqBody)),
+		})
+		console.log(JSON.stringify(this.state.prevBasicParams));
 		fetch('./api/cohort/select',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
@@ -322,6 +399,9 @@ class Details extends Component {
 		/*if(filter){
 			reqBody.filter = filter;
 		}*/
+		this.setState({
+			prevAdvancedParam:JSON.parse(JSON.stringify(reqBody)),
+		})
 		fetch('./api/cohort/advancedSelect',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
@@ -384,11 +464,13 @@ class Details extends Component {
 				if(this.state.searchState == true){
 
 					const state = Object.assign({}, this.state);
-					let reqBody = {
+					/*let reqBody = {
 						filter:state.filter,
 						orderBy:state.orderBy,
 						paging:{}
-					};
+					};*/
+					let reqBody = this.state.prevBasicParams;
+					console.log("HandleSelect Req: " + JSON.stringify(this.state.prevBasicParams));
 					reqBody.paging.page = 0;
 					fetch('./api/cohort/select',{
 						method: "POST",
@@ -412,14 +494,15 @@ class Details extends Component {
 				else{
 
 					const state = Object.assign({}, this.state);
-					let reqBody = {
+					/*let reqBody = {
 						filter: state.filter,
 						selectionList: state.selectionList,
 						items: state.items,
 						booleanStates: state.booleanStates,
 						orderBy:state.orderBy,
 						paging:{}
-					};
+					};*/
+					let reqBody = this.state.prevAdvancedParam;
 					reqBody.paging.page = 0;
 					fetch('./api/cohort/advancedSelect',{
 						method: "POST",
@@ -591,6 +674,7 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
+		console.log(JSON.stringify(this.state.prevBasicParams));
 	}
 
 	handleCancerClick = (v,allIds,e) =>{
@@ -617,6 +701,8 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
+		console.log(JSON.stringify(this.state.prevBasicParams));
+
 	}
 
 	handleStateClick = (v) =>{
@@ -740,6 +826,8 @@ class Details extends Component {
 			this.setState({
 				selectionList: selectionList
 			});
+			console.log(JSON.stringify(this.state.prevBasicParams));
+
 	  }
 	
 	  createSelectItems(index) {
