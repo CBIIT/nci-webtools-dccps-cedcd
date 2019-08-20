@@ -26,7 +26,7 @@ router.post('/contact/add', function(req, res, next){
 	let message = body.message || "";
 	let func = "contact_us";
 	let params = [firstname,lastname,organization,phone,email,topic,message];
-	mysql.callProcedure(func,params,function(results){
+	mysql.callProcedure(func,params, async function(results){
 		if(results && results[0] && results[0].length > 0){
 			let value = {};
 			value.firstname = firstname;
@@ -37,6 +37,18 @@ router.post('/contact/add', function(req, res, next){
 			value.topic = config.topic[topic];
 			value.message = message;
 			let message_text = ejs.render(config.email_contact, value);
+
+			try {
+				await mail.sendMail(config.mail.from,config.mail.to,"CEDCD Website Contact Us Message", "", message_text);
+				message_text = ejs.render(config.email_contact_recieved,{});
+				await mail.sendMail(config.mail.from,email,"CEDCD Website Recieved Email Message", "", message_text);
+				res.json({status:200,data:'sent'});
+				
+			} catch (e) {
+				res.json({status:200,data:'failed'});
+			}
+
+			/*
 			mail.sendMail(config.mail.from,config.mail.to,"CEDCD Website Contact Us Message", "", message_text, function(data){
 				if(data){
 					message_text = ejs.render(config.email_contact_recieved,{});
@@ -53,11 +65,11 @@ router.post('/contact/add', function(req, res, next){
 					res.json({status:200,data:'failed'});
 				}
 				
-			});
+			});*/
 		}
 		else{
 			res.json({status:200,data:'failed'});
-		}
+		}		
 	});
 	
 });
