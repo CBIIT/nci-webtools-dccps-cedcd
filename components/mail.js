@@ -7,10 +7,10 @@
 var config = require('../config');
 var logger = require('./logger');
 const nodeMailer = require('nodemailer');
-const transporter = nodeMailer.createTransport(config.mail);
 
 
 var sendMail = function(from, to, subject, text, html, next){
+	const transporter = nodeMailer.createTransport(config.mail);
 	let mailOptions = {
 	  from: from, // sender address
 	  to: to, // list of receivers
