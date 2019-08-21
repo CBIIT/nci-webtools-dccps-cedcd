@@ -120,27 +120,27 @@ class Contact extends Component {
           let data = result.data;
           state.submitted = data === "sent";
           this.setState(state);
-          setTimeout(() =>{
-            this.setState({
-              submitted:!this.state.submitted,
-              background_gray:true,
-              firstname_required:false,
-              lastname_required:false,
-              org_required:false,
-              email_required:false,
-              message_required:false,
-              email_invalid:false,
-              phone_invalid:false,
-              firstname:"",
-              lastname:"",
-              organization:"",
-              phone:"",
-              email:"",
-              topic:"1",
-              message:""
-            });
-          }, 1500);
         });
+        setTimeout(() =>{
+          this.setState({
+            submitted:!this.state.submitted,
+            background_gray:true,
+            firstname_required:false,
+            lastname_required:false,
+            org_required:false,
+            email_required:false,
+            message_required:false,
+            email_invalid:false,
+            phone_invalid:false,
+            firstname:"",
+            lastname:"",
+            organization:"",
+            phone:"",
+            email:"",
+            topic:"1",
+            message:""
+          });
+        }, 1500);
             }
             
     }
