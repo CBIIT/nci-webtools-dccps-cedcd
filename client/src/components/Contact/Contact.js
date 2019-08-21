@@ -116,7 +116,7 @@ class Contact extends Component {
             }
         })
         .then(res => res.json())
-        then(result => {
+        .then(result => {
           let data = result.data;
           state.submitted = data === "sent";
           this.setState(state);
