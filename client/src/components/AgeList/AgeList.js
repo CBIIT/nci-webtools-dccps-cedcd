@@ -21,7 +21,8 @@ class AgeList extends Component {
 				"75-79",
 				"80-85+"
 			],
-			open:props.startOpen === undefined?false:true
+			open:props.startOpen === undefined?false:true,
+			focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}
@@ -53,16 +54,30 @@ class AgeList extends Component {
   	const list = this.state.list.map((item, idx) => {
   		const key = "age_"+idx;
   		let checked = (values.indexOf(item) > -1);
-  		return (
+		  if(idx == 0 && this.state.focusThis == true && this.props.focusThis == "true"){ 
+			return (
   			<li key={key}>
 				<label>
 					<span className="filter-component-input">
-						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
+						<input type="checkbox" id="focusMe" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
 					{item}
 				</label>
 			</li>
-  		);
+		  );
+		}
+		  else{
+			return (
+				<li key={key}>
+				  <label>
+					  <span className="filter-component-input">
+						  <input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
+					  </span>
+					  {item}
+				  </label>
+			  </li>
+			);
+		  }
   	});
   	const displayMax = parseInt(this.props.displayMax);
   	const selectedList = values.map((item, idx) => {
