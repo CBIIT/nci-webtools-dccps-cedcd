@@ -1315,10 +1315,7 @@ class Details extends Component {
 							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
 						</ul>
 					</div>
-					<div style={{"padding-left":"1rem" }}>
-						<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
-					</div>
-					<div id="tableExport" style={{"margin-left":"auto", "padding-right":"1rem"}}>
+					<div id="tableExport" style={{"padding-left":"1rem"}}>
 						<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 							<Workbook.Sheet name="Cohort_Selection">
 							<Workbook.Column label="Cohort Name" value="cohort_name"/>
@@ -1331,6 +1328,10 @@ class Details extends Component {
 							</Workbook.Sheet>
 						</Workbook>
 					</div>
+					<div style={{"margin-left":"auto", "padding-right":"1rem" }}>
+						<PageSummary pageInfo={this.state.pageInfo}/>
+					</div>
+					
 					<div style={{"padding-right":"15px"}}>
 						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
 					</div>
