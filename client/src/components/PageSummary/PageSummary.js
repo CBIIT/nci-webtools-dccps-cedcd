@@ -18,12 +18,19 @@ class PageSummary extends Component {
       pageEnd = pageStart + this.props.pageInfo.pageSize -1;
       pageEnd = pageEnd > total ? total : pageEnd;
     }
-    
-    return (
-      <li className="total">
-            <span id="summaryCount">{pageStart}-{pageEnd} of {total}</span>
-      </li>);
+    if(this.props.mid === undefined){
+      return (
+        <li className="total">
+              <span id="summaryCount">{pageStart}-{pageEnd} of {total}</span>
+        </li>);
+    }
+    else{
+      return (
+        <span className="vertical-alignment" id="summaryCount">Viewing {pageStart}-{pageEnd} of {total}</span>
+      );
+    }
   }
+  
 }
 
 export default PageSummary;

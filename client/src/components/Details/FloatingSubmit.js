@@ -36,10 +36,18 @@ class FloatingSubmit extends Component {
     /* Puts it inside of a bar 
     <div id="floatingSubmitButtonContainer" className="row col-md-12 clearfix floatingFixed" style={{align:"center", width: "100%"}}>
     */
-    return (
-        <div align="center" className="submit-button">
+   if(this.props.align ===undefined){
+      return (
+          <div align="center" className="submit-button">
+            <input id="compareButton" type="submit" name="submitBtn" value="Go to Cohort Description for Selected Studies" className="btn btn-primary btn-filter btn-cohort-des-coloring" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
+          </div>);
+    }
+    else{
+      return (
+        <div align="" className="submit-button">
           <input id="compareButton" type="submit" name="submitBtn" value="Go to Cohort Description for Selected Studies" className="btn btn-primary btn-filter btn-cohort-des-coloring" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
         </div>);
+    }
   }
 }
 

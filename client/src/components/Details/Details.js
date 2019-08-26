@@ -19,7 +19,7 @@ import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
 import Workbook from '../Workbook/Workbook';
-import Accordion from 'react-bootstrap/Accordion';
+import Accordion from 'react-bootstrap/Accordion';	
 import Card from 'react-bootstrap/Card';
 import { Collapse} from 'reactstrap';
 
@@ -71,7 +71,9 @@ class Details extends Component {
 			searchState: true,
 			prevBasicParams:{},
 			prevAdvancedParam:{},
+			advancedFocus:-1,
 		};
+		this.toFocus = React.createRef();
 	}
 
 	//Expand and collapse the filter-panel
@@ -209,7 +211,7 @@ class Details extends Component {
 	clearFilter = () =>{
 		let i = 1;
 		this.setAllToFalse();
-		if(document.getElementById("cancerAll")!==undefined){
+		if(document.getElementById("cancerAll")!==null){
 			document.getElementById("cancerAll").checked = false;
 		}
 		let orderBy = {
@@ -765,6 +767,20 @@ class Details extends Component {
 		this.itemInput = null;
 	  }
 	
+	  focus() {
+		// Explicitly focus the text input using the raw DOM API
+		// Note: we're accessing "current" to get the DOM node
+		if(this.toFocus.current !== undefined){
+			console.log(this.toFocus.current);
+			//this.toFocus.current.focus();
+
+		}
+		if(document.getElementById("focusMe") !== null){
+			console.log('success!');
+			document.getElementById("focusMe").focus();
+		}
+	  }
+
 	  handleSelectChange(e, index){
 		  const { items, selectionList } = this.state;
 		  items[index]= e.target.value;
@@ -774,7 +790,8 @@ class Details extends Component {
 		  this.setState({
 			items: items,
 			selectionList: selectionList,
-		  });
+			advancedFocus: index,
+		  }, ()=>{this.focus();});
 	  }
 	
 	  handleGeneralListClick(v, index){
@@ -829,39 +846,76 @@ class Details extends Component {
 			console.log(JSON.stringify(this.state.prevBasicParams));
 
 	  }
-	
+	/*
 	  createSelectItems(index) {
 	
-		const {items} = this.state;
+		const {items,advancedFocus} = this.state;
 		const currItem = items[index];
-		if(currItem == "Gender"){
-		  return <div className = "select-box gray-back" ><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		let cls = "";
+		console.log('Indexing: ' + index + ", " + advancedFocus);
+		if(advancedFocus == index){
+			
+			if(currItem == "Gender"){
+				return <div className = "select-box gray-back"><GenderList autofocus="true" ref={(r) => this.toFocus = r} hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Race"){
+				return <div className = "select-box gray-back"><RaceList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Ethnicity"){
+				return <div className = "select-box gray-back"><EthnicityList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Age"){
+				return <div className = "select-box gray-back"><AgeList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "State"){
+				return <div className = "select-box gray-back"><DiseaseStateList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Categories"){
+				return <div className = "select-box gray-back"><CollectedDataList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Biospecimen"){
+				return <div className = "select-box gray-back"><CollectedSpecimensList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Cancers"){
+				return <div className = "select-box gray-back"><CollectedCancersList autofocus="true"  ref={(r) => this.toFocus = r} hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+			}
+		
+			return <div className="select-box gray-back"></div>;
+			
 		}
-		else if(currItem == "Race"){
-		  return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		else{
+
+			if(currItem == "Gender"){
+				return <div className = "select-box gray-back"><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Race"){
+				return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Ethnicity"){
+				return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Age"){
+				return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "State"){
+				return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Categories"){
+				return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Biospecimen"){
+				return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Cancers"){
+				return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+			}
+		
+			return <div className={"select-box gray-back" + cls}></div>;
+
 		}
-		else if(currItem == "Ethnicity"){
-		  return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Age"){
-		  return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "State"){
-		  return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Categories"){
-		  return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Biospecimen"){
-		  return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Cancers"){
-		  return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
-		}
+		
 	
-		return <div className="select-box gray-back"></div>;
-	
-	  }
+	  }*/
 	
 	  createBoolean(index){
 		const { booleanStates } = this.state;
@@ -876,31 +930,116 @@ class Details extends Component {
 	
 	  createSelector(index){
 		  
-		const {items} = this.state;
+		const {items, advancedFocus} = this.state;
 		const currItem = items[index];
-		if(currItem == "Gender"){
-		  return <div className = "select-box gray-back" ><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+		console.log('Indexing: ' + index + ", " + advancedFocus);
+
+		if(advancedFocus == index){
+			console.log(index)
+			if(currItem == "Gender"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><GenderList focusThis="true" ref={this.toFocus} autofocus hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Race"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><RaceList focusThis="true" ref={this.toFocus} autofocus values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Ethnicity"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><EthnicityList focusThis="true" ref={this.toFocus} autofocus values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Age"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><AgeList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "State"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><DiseaseStateList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Categories"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedDataList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Biospecimen"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedSpecimensList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Cancers"){
+				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedCancersList focusThis="true" ref={this.toFocus} hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+			}
+		
+			if(index > 0){
+				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+				  <option value="Select" selected disabled hidden>-Select Term-</option>
+				  <option value="Gender">Gender</option>
+				  <option value="Race">Race</option>
+				  <option value="Ethnicity">Ethnicity</option>
+				  <option value="Age">Age at Baseline</option>
+				  <option value="State">Study Population</option>
+				  <option value="Categories">Categories of Data Collected</option>
+				  <option value="Biospecimen">Types of Biospecimens Collected</option>
+				  <option value="Cancers">Cancers Collected</option>
+				</select>
+			  }
+			  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+				<option value="Select" selected disabled hidden>-Select Term-</option>
+				  <option value="Gender">Gender</option>
+				  <option value="Race">Race</option>
+				  <option value="Ethnicity">Ethnicity</option>
+				  <option value="Age">Age at Baseline</option>
+				  <option value="State">Study Population</option>
+				  <option value="Categories">Categories of Data Collected</option>
+				  <option value="Biospecimen">Types of Biospecimens Collected</option>
+				  <option value="Cancers">Cancers Collected</option>
+			  </select>
+		  			
 		}
-		else if(currItem == "Race"){
-		  return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Ethnicity"){
-		  return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Age"){
-		  return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "State"){
-		  return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Categories"){
-		  return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Biospecimen"){
-		  return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-		}
-		else if(currItem == "Cancers"){
-		  return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+		else{
+
+			if(currItem == "Gender"){
+				console.log("FALSE FOUND")
+				return <div className = "select-box gray-back"><GenderList focusThis="false" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Race"){
+				return <div className = "select-box gray-back"><RaceList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Ethnicity"){
+				return <div className = "select-box gray-back"><EthnicityList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Age"){
+				return <div className = "select-box gray-back"><AgeList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "State"){
+				return <div className = "select-box gray-back"><DiseaseStateList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Categories"){
+				return <div className = "select-box gray-back"><CollectedDataList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Biospecimen"){
+				return <div className = "select-box gray-back"><CollectedSpecimensList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+			}
+			else if(currItem == "Cancers"){
+				return <div className = "select-box gray-back"><CollectedCancersList focusThis="false" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+			}
+		
+			if(index > 0){
+				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+				  <option value="Select" selected disabled hidden>-Select Term-</option>
+				  <option value="Gender">Gender</option>
+				  <option value="Race">Race</option>
+				  <option value="Ethnicity">Ethnicity</option>
+				  <option value="Age">Age at Baseline</option>
+				  <option value="State">Study Population</option>
+				  <option value="Categories">Categories of Data Collected</option>
+				  <option value="Biospecimen">Types of Biospecimens Collected</option>
+				  <option value="Cancers">Cancers Collected</option>
+				</select>
+			  }
+			  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+				<option value="Select" selected disabled hidden>-Select Term-</option>
+				  <option value="Gender">Gender</option>
+				  <option value="Race">Race</option>
+				  <option value="Ethnicity">Ethnicity</option>
+				  <option value="Age">Age at Baseline</option>
+				  <option value="State">Study Population</option>
+				  <option value="Categories">Categories of Data Collected</option>
+				  <option value="Biospecimen">Types of Biospecimens Collected</option>
+				  <option value="Cancers">Cancers Collected</option>
+			  </select>
+		  
 		}
 		  if(index > 0){
 			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
@@ -985,6 +1124,7 @@ class Details extends Component {
 		else{
 			//{this.createSelectItems(index)}
 			const { items, itemText } = this.state;
+			console.log("RENDERING");
 			const itemList = items.map((item, index) => (
 			<div>
 				<div className="grid-container">
@@ -1151,7 +1291,7 @@ class Details extends Component {
 				<input id="tourable" type="hidden" />
 				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
 				</p>
-			  <div id="cedcd-home-filter" className="filter-block home col-md-12">
+			  <div id="cedcd-home-filter" className="filter-block col-md-12">
 			    <div id="filter-panel" className="panel panel-default">
 					<div className="panel-heading" onClick={this.toggle}>
 						<h2 className="panel-title">Variables Collected in Cohort Study</h2>
@@ -1168,56 +1308,60 @@ class Details extends Component {
 				  </Collapse>
 			    </div>
 			  </div>
-			  <div id="cedcd-home-cohorts" className="home col-md-12">
-			    <div id="cedcd-home-cohorts-inner" className="col-md-12">
-			      <div className="table-inner col-md-12">
-			        <div className="tableTopMatter row">
-			          <div id="tableControls" className="col-md-6">
-			            <ul className="table-controls">
-			              <PageSummary pageInfo={this.state.pageInfo}/>
-			            </ul>
-			          </div>
-			          <div id="tableExport" className="col-md-2 col-md-offset-4">
-			          	<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
-					      <Workbook.Sheet name="Cohort_Selection">
-					        <Workbook.Column label="Cohort Name" value="cohort_name"/>
-					        <Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-					        <Workbook.Column label="Total Enrollments (n=)" value="race_total_total"/>
-					        <Workbook.Column label="Website" value="cohort_web_site"/>
-					        <Workbook.Column label="Last Updated" value="update_time"/>
-					      </Workbook.Sheet>
-					      <Workbook.Sheet name="Criteria">
-					      </Workbook.Sheet>
-					    </Workbook>
-			          </div>
-			        </div>
-			        <div className="cedcd-table home">
-			        	<div>
-							<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
-								<thead>
-									<tr id="summaryHeader" className="col-header">
-										{this.renderSelectHeader("5%")}
-										{this.renderTableHeader("cohort_name","30%")}
-										{this.renderTableHeader("cohort_acronym","10%")}
-										{this.renderTableHeaderMiddle("race_total_total","20%")}
-										<th className="sortable" width="20%" scope="col">
-											<a href="javascript:void(0);" style={{cursor:'default'}}>Website
-											</a>
-										</th>
-										{this.renderTableHeader("update_time","15%")}
-									</tr>
-								</thead>
-								<tbody>
-									{content}
-								</tbody>
-							</table>
-						</div>
-			        </div>
-			        <Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
-			      </div>
-			      <FloatingSubmit onClick={this.handleComparasion} values={this.state.selected} />
-			    </div>
-			  </div>
+			  <div className="filter-block home col-md-12">
+				<div className="row" style={{"display":"flex"}}>
+					<div id="tableControls" className="" style={{"padding-left":"15px"}}>
+						<ul className="table-controls">
+							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
+						</ul>
+					</div>
+					<div style={{"padding-left":"1rem" }}>
+						<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
+					</div>
+					<div id="tableExport" style={{"margin-left":"auto", "padding-right":"1rem"}}>
+						<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
+							<Workbook.Sheet name="Cohort_Selection">
+							<Workbook.Column label="Cohort Name" value="cohort_name"/>
+							<Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+							<Workbook.Column label="Total Enrollments (n=)" value="race_total_total"/>
+							<Workbook.Column label="Website" value="cohort_web_site"/>
+							<Workbook.Column label="Last Updated" value="update_time"/>
+							</Workbook.Sheet>
+							<Workbook.Sheet name="Criteria">
+							</Workbook.Sheet>
+						</Workbook>
+					</div>
+					<div style={{"padding-right":"15px"}}>
+						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+					</div>
+				</div>
+			</div>
+			<div className="table-inner col-md-12">
+				<div className="cedcd-table home">
+					<div>
+						<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
+							<thead>
+								<tr id="summaryHeader" className="col-header">
+									{this.renderSelectHeader("5%")}
+									{this.renderTableHeader("cohort_name","30%")}
+									{this.renderTableHeader("cohort_acronym","10%")}
+									{this.renderTableHeaderMiddle("race_total_total","20%")}
+									<th className="sortable" width="20%" scope="col">
+										<a href="javascript:void(0);" style={{cursor:'default'}}>Website
+										</a>
+									</th>
+									{this.renderTableHeader("update_time","15%")}
+								</tr>
+							</thead>
+							<tbody>
+								{content}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+				</div>
+				<FloatingSubmit onClick={this.handleComparasion} values={this.state.selected} />
 			</div>
 			);
   		}
