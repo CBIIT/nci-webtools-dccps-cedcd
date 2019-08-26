@@ -1329,7 +1329,7 @@ class Details extends Component {
 						</Workbook>
 					</div>
 					<div style={{"margin-left":"auto", "padding-right":"1rem" }}>
-						<PageSummary pageInfo={this.state.pageInfo}/>
+						<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
 					</div>
 					
 					<div style={{"padding-right":"15px"}}>
@@ -1360,9 +1360,24 @@ class Details extends Component {
 						</table>
 					</div>
 				</div>
-				<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+				
 				</div>
-				<FloatingSubmit onClick={this.handleComparasion} values={this.state.selected} />
+				<div className="filter-block home col-md-12">
+				<div className="row" style={{"display":"flex"}}>
+					<div id="tableControls" className="" style={{"padding-left":"15px"}}>
+						<ul className="table-controls">
+							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
+						</ul>
+					</div>
+					<div style={{"margin-left":"auto", "padding-right":"1rem" }}>
+						<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
+					</div>
+					
+					<div style={{"padding-right":"15px"}}>
+						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+					</div>
+				</div>
+			</div>
 			</div>
 			);
   		}
