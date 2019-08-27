@@ -1328,7 +1328,7 @@ class Details extends Component {
 							</Workbook.Sheet>
 						</Workbook>
 					</div>
-					<div style={{ "margin-left":"auto", "padding-right":"1rem", "position":"relative", "padding-top":"7px"}}>
+					<div style={{ "margin-left":"auto", "padding-left":"10px", "padding-right":"1rem", "position":"relative", "padding-top":"7px"}}>
 							<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
 					</div>
 					<div style={{"padding-right":"15px", "padding-top": "5px"}}>
