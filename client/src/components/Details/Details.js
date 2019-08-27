@@ -1315,7 +1315,7 @@ class Details extends Component {
 							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
 						</ul>
 					</div>
-					<div id="tableExport" style={{"padding-left":"1rem"}}>
+					<div id="tableExport" style={{"padding-left":"1rem", "padding-top": "7px"}}>
 						<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
 							<Workbook.Sheet name="Cohort_Selection">
 							<Workbook.Column label="Cohort Name" value="cohort_name"/>
@@ -1328,11 +1328,10 @@ class Details extends Component {
 							</Workbook.Sheet>
 						</Workbook>
 					</div>
-					<div style={{"margin-left":"auto", "padding-right":"1rem" }}>
-						<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
+					<div style={{ "margin-left":"auto", "padding-right":"1rem", "position":"relative", "padding-top":"7px"}}>
+							<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
 					</div>
-					
-					<div style={{"padding-right":"15px"}}>
+					<div style={{"padding-right":"15px", "padding-top": "5px"}}>
 						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
 					</div>
 				</div>
@@ -1369,11 +1368,11 @@ class Details extends Component {
 							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
 						</ul>
 					</div>
-					<div style={{"margin-left":"auto", "padding-right":"1rem" }}>
+					<div style={{"margin-left":"auto", "padding-right":"1rem", "padding-top": "7px" }}>
 						<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
 					</div>
 					
-					<div style={{"padding-right":"15px"}}>
+					<div style={{"padding-right":"15px",  "padding-top": "5px"}}>
 						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
 					</div>
 				</div>
