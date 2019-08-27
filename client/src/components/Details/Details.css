@@ -119,3 +119,8 @@
 .select-box{
     background-color: inherit;
 }
+h1.welcome{
+    margin-bottom: 2rem;
+    margin-top:0;
+    padding: 0 1.5rem;
+}
