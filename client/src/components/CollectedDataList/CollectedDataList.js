@@ -36,7 +36,8 @@ class CollectedDataList extends Component {
 				"Social Support",
 				"Socio-Economic Status"
 			],
-			open:props.startOpen === undefined?false:true
+			open:props.startOpen === undefined?false:true,
+			focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}
@@ -68,8 +69,9 @@ class CollectedDataList extends Component {
   	const list = this.state.list.map((item, idx) => {
   		const key = "cdata_"+idx;
   		let checked = (values.indexOf(item) > -1);
-  		return (
-  			<li  key={key}>
+
+		return (
+			<li key={key}>
 				<label>
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
@@ -77,7 +79,8 @@ class CollectedDataList extends Component {
 					{item}
 				</label>
 			</li>
-  		);
+		);
+		
   	});
   	const displayMax = parseInt(this.props.displayMax);
   	const selectedList = values.map((item, idx) => {
@@ -107,11 +110,15 @@ class CollectedDataList extends Component {
   	if(this.state.open){
   		cls = cls + " open";
   	}
-  	let expanded = this.state.open? "true": "false";
+	  let expanded = this.state.open? "true": "false";
+	  let buttonId = ""
+	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
+		buttonId = "focusMe"
+	  }
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Categories of Data Collected&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

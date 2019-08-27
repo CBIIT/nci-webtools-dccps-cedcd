@@ -113,9 +113,9 @@ img {
 
 .card-text{
     text-align:center;
-    width:50%;
+    width:55%;
 
 }
 .card-header{
-    padding: 20px 0 0 0;
+    /*padding: 20px 0 0 0;*/
 }
