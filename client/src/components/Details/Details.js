@@ -1289,6 +1289,7 @@ class Details extends Component {
 			return (
 				<div>
 				<input id="tourable" type="hidden" />
+				<h1 className="welcome">Search Cohorts</h1>
 				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
 				</p>
 			  <div id="cedcd-home-filter" className="filter-block col-md-12">
