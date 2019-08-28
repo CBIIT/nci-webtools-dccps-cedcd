@@ -216,6 +216,7 @@ class Biospecimen extends Component {
       return (
         <div id="cedcd-main-content" className="row">
         <input id="tourable" type="hidden" />
+		<h1 className="welcome pg-title">Biospecimen Counts</h1>
         <p className="welcome">To display biospecimens across cohorts, specify the Specimen Type, one or more Cancer Type/All Cancers/No Cancer, and Cohort(s) and then select the submit button. All fields are required. A table will display the number of biospecimens across the selected cohorts by cancer type.
         </p>      
         <div id="filter-block" className="filter-block col-md-12">

@@ -124,10 +124,10 @@ li {
   font-size: 90%;
   margin-top: 20px;
   padding-bottom: 10px;
-  background: url(../img/bg_footer_rule.png) center bottom no-repeat;
+  /*background: url(../img/bg_footer_rule.png) center bottom no-repeat;*/
 }
 #footer .footer-nav li {
-  color: #135B5D;
+  color: white;
   text-align: center;
   display: inline;
   margin: 0 0 0 0;
@@ -136,6 +136,12 @@ li {
 }
 #footer .footer-nav li.no-right {
   background: none;
+}
+
+#footer .footer-nav li a{
+  color:white;
+  text-decoration: none;
+  border-bottom:none;
 }
 #cedcd-home-filter .w-accordion ul {
   list-style: none;

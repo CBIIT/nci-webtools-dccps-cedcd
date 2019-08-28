@@ -205,12 +205,15 @@ class Home extends Component {
   		
       return (
 		<div>
+			<img src="./assets/img/TestHeader.jpg" alt="Header" style={{width:"100%",  padding: "0 1.5rem", "margin-bottom":"2rem"}}></img>
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
 			<div className="row-for-home-grid">
-				<div className="column-for-home-grid">
+				<div className="column-for-home-grid" style={{ "padding-left":"0px"}}>
 					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="animation-card" align="center">
-							<img src="./assets/img/Testing1a.png" alt="Avatar" style={{width:"25%"}}></img>
+						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
+							<div className="card-top-coloring" style={{"background-color":"5da9d3"}}>
+
+							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
 							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., gender, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
 						</div>
@@ -218,30 +221,32 @@ class Home extends Component {
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="animation-card" align="center">
+						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
+							<div className="card-top-coloring" style={{"background-color":"cf5848"}}>
 
-							<img src="./assets/img/Testing2a.png" alt="Avatar" style={{width:"25%"}}></img>
+							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
 							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific gender, race, and ethnicity terms.</p>
 						</div>
 					</Link>
 				</div>
-				
-			</div>
-			<div className="row-for-home-grid">
 				<div className="column-for-home-grid">
 					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
-					<div className="animation-card" align="center">
-						<img src="./assets/img/Testing3a.png" alt="Avatar" style={{width:"25%"}}></img>
+					<div className="animation-card" style={{"background-color":"#c27600"}} align="center">
+						<div className="card-top-coloring" style={{"background-color":"ffbf58"}}>
+
+						</div>
 						<h2 class="card-header" align = "center">Cancer Counts</h2>
 						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by gender.</p>
 					</div>
 					</Link>
 				</div>
-				<div className="column-for-home-grid">
+				<div className="column-for-home-grid" style={{ "padding-right":"0px"}}>
 					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
-						<div className="animation-card" align="center">
-							<img src="./assets/img/Testing4a.png" alt="Avatar" style={{width:"25%"}}></img>
+						<div className="animation-card" style={{"background-color":"#588c35"}} align="center">
+							<div className="card-top-coloring" style={{"background-color":"99b883"}}>
+
+							</div>
 							<h2 class="card-header" align = "center">Biospecimen Counts</h2>
 							<p class="card-text"align = "center">Search biospecimens across cohorts with the option to specify the type of biospecimen and find specimens in participants diagnosed with specific cancer sites.</p>
 						</div>
