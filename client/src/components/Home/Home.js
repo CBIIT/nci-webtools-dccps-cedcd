@@ -207,11 +207,12 @@ class Home extends Component {
 		<div>
 			<img src="./assets/img/TestHeader.jpg" alt="Header" style={{width:"100%",  padding: "0 1.5rem", "margin-bottom":"2rem"}}></img>
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
-			<div className="row-for-home-grid">
+			<div className="row-for-home-grid" style={{"margin-bottom":"50px"}}>
 				<div className="column-for-home-grid" style={{ "padding-left":"0px"}}>
 					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"5da9d3"}}>
+								<img src="./assets/img/SampleImage1.png" alt="Header" style={{width:"100%"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
@@ -223,6 +224,7 @@ class Home extends Component {
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"cf5848"}}>
+							<img src="./assets/img/SampleImage2.png" alt="Header" style={{width:"100%"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
@@ -234,6 +236,7 @@ class Home extends Component {
 					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
 					<div className="animation-card" style={{"background-color":"#c27600"}} align="center">
 						<div className="card-top-coloring" style={{"background-color":"ffbf58"}}>
+						<img src="./assets/img/SampleImage3.png" alt="Header" style={{width:"100%"}}></img>
 
 						</div>
 						<h2 class="card-header" align = "center">Cancer Counts</h2>
@@ -245,6 +248,7 @@ class Home extends Component {
 					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#588c35"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"99b883"}}>
+							<img src="./assets/img/SampleImage4.png" alt="Header" style={{width:"100%"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center">Biospecimen Counts</h2>
