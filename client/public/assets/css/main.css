@@ -50,6 +50,7 @@ body {
   margin: 0 0 0 0;
   padding: 30px 0 30px 0;
   border-top: 3px #135B5D solid;
+  background-color:#135B5D;
 }
 .message-mid{
   width: 20%;

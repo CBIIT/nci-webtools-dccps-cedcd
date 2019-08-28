@@ -207,6 +207,7 @@ class Cancer extends Component {
       return (
         <div id="cedcd-main-content" className="row">
         <input id="tourable" type="hidden" />
+		<h1 className="welcome pg-title">Cancer Counts</h1>
         <p className="welcome">To display cancer counts across cohorts, specify Gender, Cancer Type(s), and Cohort(s) and then select the submit button.  All fields are required.  A table will display the number of cohort participants with the selected cancers.
         </p>
         <div id="filter-block" className="filter-block col-md-12">

@@ -246,6 +246,7 @@ class Enrollment extends Component {
       return (
       	<div>
       		<input id="tourable" type="hidden" />
+			  <h1 className="welcome pg-title">Enrollment Counts</h1>
       		<p className="welcome">Specify the Gender, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by gender, race and ethnicity across the selected cohorts.
       		</p>
 	        <div id="filter-block" className="filter-block col-md-12">
