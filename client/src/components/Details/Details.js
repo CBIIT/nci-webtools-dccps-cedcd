@@ -239,7 +239,16 @@ class Details extends Component {
 	}
 
 	goBack2Filter = () => {
-		this.filterData(this.state.pageInfo.page);
+		if(this.state.searchState){
+			this.filterData(this.state.pageInfo.page);
+
+		}
+		else{
+			this.setState({
+				advancedFocus: -1,
+			});
+			this.advancedFilterData(this.state.pageInfo.page);
+		}
 	}
 
 	//Handles when the filter button for the basic search is hit
@@ -991,28 +1000,28 @@ class Details extends Component {
 
 			if(currItem == "Gender"){
 				console.log("FALSE FOUND")
-				return <div className = "select-box gray-back"><GenderList focusThis="false" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><GenderList focusThis="false" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} /></div>;
 			}
 			else if(currItem == "Race"){
-				return <div className = "select-box gray-back"><RaceList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><RaceList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "Ethnicity"){
-				return <div className = "select-box gray-back"><EthnicityList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><EthnicityList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "Age"){
-				return <div className = "select-box gray-back"><AgeList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><AgeList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "State"){
-				return <div className = "select-box gray-back"><DiseaseStateList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><DiseaseStateList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "Categories"){
-				return <div className = "select-box gray-back"><CollectedDataList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><CollectedDataList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "Biospecimen"){
-				return <div className = "select-box gray-back"><CollectedSpecimensList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><CollectedSpecimensList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
 			}
 			else if(currItem == "Cancers"){
-				return <div className = "select-box gray-back"><CollectedCancersList focusThis="false" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
+				return <div className = "select-box gray-back"><CollectedCancersList focusThis="false" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
 			}
 		
 			if(index > 0){
@@ -1123,8 +1132,7 @@ class Details extends Component {
 		} 
 		else{
 			//{this.createSelectItems(index)}
-			const { items, itemText } = this.state;
-			console.log("RENDERING");
+			const { items, itemText } = this.state
 			const itemList = items.map((item, index) => (
 			<div>
 				<div className="grid-container">
