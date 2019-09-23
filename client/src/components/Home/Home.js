@@ -212,7 +212,8 @@ class Home extends Component {
 					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"5da9d3"}}>
-								<img src="./assets/img/SampleImage1.png" alt="Header" style={{width:"100%"}}></img>
+								{/*<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"100%"}}></img>*/}
+								<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"20px"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
@@ -224,7 +225,7 @@ class Home extends Component {
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"cf5848"}}>
-							<img src="./assets/img/SampleImage2.png" alt="Header" style={{width:"100%"}}></img>
+							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"30px" }}></img>
 
 							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
@@ -236,7 +237,7 @@ class Home extends Component {
 					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
 					<div className="animation-card" style={{"background-color":"#c27600"}} align="center">
 						<div className="card-top-coloring" style={{"background-color":"ffbf58"}}>
-						<img src="./assets/img/SampleImage3.png" alt="Header" style={{width:"100%"}}></img>
+						<img src="./assets/img/Cancer_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
 
 						</div>
 						<h2 class="card-header" align = "center">Cancer Counts</h2>
@@ -248,7 +249,7 @@ class Home extends Component {
 					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#588c35"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"99b883"}}>
-							<img src="./assets/img/SampleImage4.png" alt="Header" style={{width:"100%"}}></img>
+							<img src="./assets/img/Biospecimen_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center">Biospecimen Counts</h2>
