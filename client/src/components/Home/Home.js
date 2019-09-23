@@ -213,7 +213,7 @@ class Home extends Component {
 						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"5da9d3"}}>
 								{/*<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"100%"}}></img>*/}
-								<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"80%", "padding-top":"20px"}}></img>
+								<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"20px"}}></img>
 
 							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
@@ -225,7 +225,7 @@ class Home extends Component {
 					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
 						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"cf5848"}}>
-							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
+							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"30px" }}></img>
 
 							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
