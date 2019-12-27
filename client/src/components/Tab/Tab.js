@@ -41,7 +41,7 @@ class Tab extends Component {
     }
     let cls = this.props.value === this.props.currTab ? "active" : "";
     return (<li className={cls}>
-        <Link to={url}  onClick={this.props.onClick}><span>{name}</span></Link>
+        <Link to={url} id={this.props.id} onClick={this.props.onClick}><span>{name}</span></Link>
         <span className="arrow down"></span>
       </li>);
   }
