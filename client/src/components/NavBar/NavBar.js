@@ -14,6 +14,7 @@ class NavBar extends Component {
   render() {
     /*        {this.renderTab(7)}*/
     return (
+      /*
       <ul id="mainNav">
         {this.renderTab(0)}
         {this.renderTab(1)}
@@ -22,6 +23,16 @@ class NavBar extends Component {
         {this.renderTab(4)}
         {this.renderTab(5)}
         {this.renderTab(6)}
+        <TourBox currTab={this.props.currTab}/>
+      </ul>*/
+      <ul id="mainNav">
+        <Tab id="homeTab" value={0} currTab={this.props.currTab} onClick={() => this.props.onClick(0)}/>
+        <Tab id="searchCohortsTab" value={1} currTab={this.props.currTab} onClick={() => this.props.onClick(1)}/>
+        <Tab id="enrollmentCountTab" value={2} currTab={this.props.currTab} onClick={() => this.props.onClick(2)}/>
+        <Tab id="cancerCountTab" value={3} currTab={this.props.currTab} onClick={() => this.props.onClick(3)}/>
+        <Tab id="biospecimenCountTab" value={4} currTab={this.props.currTab} onClick={() => this.props.onClick(4)}/>
+        <Tab id="aboutTab" value={5} currTab={this.props.currTab} onClick={() => this.props.onClick(5)}/>
+        <Tab id="contactTab" value={6} currTab={this.props.currTab} onClick={() => this.props.onClick(6)}/>
         <TourBox currTab={this.props.currTab}/>
       </ul>
     );
