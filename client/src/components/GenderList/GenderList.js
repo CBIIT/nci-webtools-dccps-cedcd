@@ -102,7 +102,7 @@ class GenderList extends Component {
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id = {buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle gender-list-for-testing" id = {buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Gender&nbsp;
 				<span className="badge">{this.props.values.length}</span>
 				</button>
