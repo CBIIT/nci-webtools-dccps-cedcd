@@ -51,12 +51,14 @@ class GenderList extends Component {
   	const list = f_list.map((item, idx) => {
   		const key = "gender_"+idx;
 		let checked = (values.indexOf(item) > -1);
+		let genderId = 'gender_checkbox_' + key;
+		//console.log('gender_Id: ' + genderId);
 
 		return (
 			<li key={key}>
 				<label>
 					<span className="filter-component-input">
-						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
+						<input id={genderId} type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
 					{item}
 				</label>
