@@ -21,7 +21,7 @@
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
     "method-override": "^2.3.9",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.3",
     "moment": "^2.19.3",
     "mongodb": "^2.2.31",
     "morgan": "^1.8.2",
