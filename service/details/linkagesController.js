@@ -51,7 +51,7 @@ exports.run = function(req, res){
 					else{
 						v = v?"Yes":"No";
 					}
-					tmp["c_"+l.cohort_id] = v;
+					tmp["c_"+l.c_id] = v;
 				});
 				dt.list.push(tmp);
 		  	});
@@ -114,7 +114,7 @@ exports.run = function(req, res){
 					else{
 						v = v?"Yes":"No";
 					}
-					tmp["c_"+l.cohort_id] = v;
+					tmp["c_"+l.c_id] = v;
 				});
 				
 				dt.list.push(tmp);
@@ -166,14 +166,14 @@ exports.run = function(req, res){
 							v = v?"Yes":"No";
 						}
 					}
-					tmp["c_"+l.cohort_id] = v;
+					tmp["c_"+l.c_id] = v;
 				});
 				
 				dt.list.push(tmp);
 		  	});
 			list.forEach(function(l){
 				dt.cohorts.push({
-					cohort_id:l.cohort_id,
+					cohort_id:l.c_id,
 					cohort_name:l.cohort_name,
 					cohort_acronym:l.cohort_acronym
 				});

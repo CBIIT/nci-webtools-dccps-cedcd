@@ -140,10 +140,10 @@ class Home extends Component {
 		if(previousState){
 			let state = JSON.parse(previousState);
 			localStorage.removeItem('informationHistory_home');
-			this.search(state.paging.page, state.orderBy, state.searchText);
+			//this.search(state.paging.page, state.orderBy, state.searchText);
 		}
 		else{
-			this.search(this.state.pageInfo.page);
+			//this.search(this.state.pageInfo.page);
 		}
 		
 	}

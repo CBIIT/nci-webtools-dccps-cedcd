@@ -5,37 +5,8 @@ class CollectedDataList extends Component {
 		super(props);
 		this.state = {
 			list:[
-				"Alcohol Consumption",
-				"Anthropometry",
-				"Cancer Treatment",
-				"Cigarette Smoking",
-				"Cognitive Function",
-				"Complementary and Alternative Medicine",
-				"Depression",
-				"Dietary Intake",
-				"Dietary Supplement Use",
-				"Education Level",
-				"Employment Status",
-				"Environmental or Occupational Exposures",
-				"Fatigue",
-				"Genetic Information",
-				"Health Insurance Status",
-				"Language/Country of Origin",
-				"Marital Status",
-				"Non-Prescription Medication",
-				"Omics Data",
-				"Other Psychosocial Variables",
-				"Other Tobacco Products",
-				"Physical Activity",
-				"Prescription Medication Use",
-				"Quality of Life",
-				"Reproductive History",
-				"Residential Information",
-				"Self-Reported Health",
-				"Sleeping Habits",
-				"Social Support",
-				"Socio-Economic Status"
 			],
+			lookup:{},
 			open:props.startOpen === undefined?false:true,
 			focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 		};
@@ -63,9 +34,38 @@ class CollectedDataList extends Component {
 		}, 0);
 	}
 
+	componentDidMount(){
+		let reqBody = {
+			category:"domain"
+		};
+		fetch('./api/cohort/lookup',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let ethnicities = result.data.list;
+			let arr = [];
+			let dict = {};
+			ethnicities.forEach(function(element){
+				arr.push({domain:element.domain,id:element.id});
+				dict[element.id] = {domain:element.domain,id:element.id};
+			});
+			this.setState({
+					list: arr,
+					lookup: dict
+			});
+		});
+	}
+
   render() {
 
   	const values = this.props.values;
+  	let lookup = Object.assign({},this.state.lookup);
+  	
   	const list = this.state.list.map((item, idx) => {
   		const key = "cdata_"+idx;
   		let checked = (values.indexOf(item) > -1);
@@ -76,7 +76,7 @@ class CollectedDataList extends Component {
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
-					{item}
+					{item.domain}
 				</label>
 			</li>
 		);
@@ -98,9 +98,10 @@ class CollectedDataList extends Component {
 	  		}
   		}
   		else{
+  			const domain = lookup[item].domain;
   			return (
 	  			<li key={key}>
-					{item}
+					{domain}
 				</li>
 	  		);
   		}

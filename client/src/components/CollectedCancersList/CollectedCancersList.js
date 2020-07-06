@@ -5,32 +5,8 @@ class CollectedCancersList extends Component {
 		super(props);
 		this.state = {
 			list:[
-				"Bladder",
-				"Bone",
-				"Brain",
-				"Breast",
-				"Cervix",
-				"Colon",
-				"Corpus, body of uterus",
-				"Esophagus",
-				"Gall bladder and extrahepatic bile duct",
-				"Kidney and other unspecified urinary organs including renal pelvis, ureter, urethra",
-				"Leukemia",
-				"Liver and intrahepatic bile ducts",
-				"Lymphoma (HL and NHL)",
-				"Melanoma (excluding genital organs)",
-				"Myeloma",
-				"Oropharyngeal",
-				"Ovary, fallopian tube, broad ligament",
-				"Pancreas",
-				"Prostate",
-				"Rectum and anus",
-				"Small intestine",
-				"Stomach",
-				"Thyroid",
-				"Trachea, bronchus, and lung",
-				"All Other Cancers"
 			],
+			lookup:{},
 			open:props.startOpen === undefined?false:true,
 			focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 		};
@@ -58,44 +34,47 @@ class CollectedCancersList extends Component {
 		}, 0);
 	}
 
+	componentDidMount(){
+		let reqBody = {
+			category:"cancer"
+		};
+		fetch('./api/cohort/lookup',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let cancers = result.data.list;
+			let arr = [];
+			let dict = {};
+			cancers.forEach(function(element){
+				arr.push({cancer:element.cancer,id:element.id});
+				dict[element.id] = {cancer:element.cancer,id:element.id};
+			});
+			this.setState({
+					list: arr,
+					lookup: dict
+			});
+		});
+	}
+
   render() {
 
   	const values = this.props.values;
   	const title = this.props.title;
   	const innertitle = this.props.innertitle;
-  	const hasNoCancer = this.props.hasNoCancer;
   	let f_list = Object.assign([],this.state.list);
-  	
-  	let selectAll = "";
-  	if(this.props.hasSelectAll){
-  		selectAll = (
-	  		<li>
-				<label>
-					<span className="filter-component-input">
-						<input type="checkbox" id = "cancerAll" onClick={(e) => this.props.onClick(null,f_list,e)}/>
-					</span>
-					All Cancers
-				</label>
-			</li>
-		);
-  	}
-  	let hasNoCancer_opt =""
-  	if(hasNoCancer){
-  		let checked = (values.indexOf("No Cancer") > -1);
-  		hasNoCancer_opt =(<li  key={"cancer_0"}>
-				<label>
-					<span className="filter-component-input">
-						<input type="checkbox" onClick={() => this.props.onClick("No Cancer")} checked={checked}/>
-					</span>
-					{"No Cancer"}
-				</label>
-			</li>)
-  	}
-  	
+  	let lookup = Object.assign({},this.state.lookup);
 
+  	let allIds = [];
+  	
   	const list = f_list.map((item, idx) => {
+  		allIds.push(item.id);
   		const key = "cancer_"+idx+1;
-  		let checked = (values.indexOf(item) > -1);
+  		let checked = (values.indexOf(item.id) > -1);
 	
 		return (
 			<li key={key}>
@@ -103,7 +82,7 @@ class CollectedCancersList extends Component {
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
-					{item}
+					{item.cancer}
 				</label>
 			</li>
 		);
@@ -126,9 +105,10 @@ class CollectedCancersList extends Component {
 	  		}
   		}
   		else{
+  			const cancer = lookup[item].cancer;
   			return (
 	  			<li key={key}>
-					{item}
+					{cancer}
 				</li>
 	  		);
   		}
@@ -154,8 +134,14 @@ class CollectedCancersList extends Component {
 					<h4>{innertitle}</h4>
 					<button className="btn btn-primary pull-right" type="button" onClick={this.handleClick}>X</button>
 					<ul>
-						{hasNoCancer_opt}
-						{selectAll}
+						<li>
+							<label>
+								<span className="filter-component-input">
+									<input type="checkbox" id = "cancerAll" onClick={(e) => this.props.onClick(null,allIds,e)}/>
+								</span>
+								All Cancers
+							</label>
+						</li>
 						{list}
 					</ul>
 				</div>

@@ -31,7 +31,7 @@ class Biospecimen extends Component {
 	handleSpecimenClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.specimen.indexOf(v);
+			let idx = filter.specimen.indexOf(v.id);
 
 			if(idx > -1){
 				//remove element
@@ -39,7 +39,7 @@ class Biospecimen extends Component {
 			}
 			else{
 				//add element
-				filter.specimen.push(v);
+				filter.specimen.push(v.id);
 			}
 		}
 		else{
@@ -57,14 +57,14 @@ class Biospecimen extends Component {
 	handleCancerClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.cancer.indexOf(v);
+			let idx = filter.cancer.indexOf(v.id);
 			if(idx > -1){
 				//remove element
 				filter.cancer.splice(idx,1);
 			}
 			else{
 				//add element
-				filter.cancer.push(v);
+				filter.cancer.push(v.id);
 			}
 		}
 		else{
@@ -82,14 +82,14 @@ class Biospecimen extends Component {
 	handleCohortClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.cohort.indexOf(v);
+			let idx = filter.cohort.indexOf(v.id);
 			if(idx > -1){
 				//remove element
 				filter.cohort.splice(idx,1);
 			}
 			else{
 				//add element
-				filter.cohort.push(v);
+				filter.cohort.push(v.id);
 			}
 		}
 		else{

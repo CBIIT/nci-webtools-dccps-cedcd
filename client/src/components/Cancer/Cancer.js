@@ -30,7 +30,7 @@ class Cancer extends Component {
 
 	handleGenderClick = (v) =>{
 		let filter = Object.assign({},this.state.filter);
-		let idx = filter.gender.indexOf(v);
+		let idx = filter.gender.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -38,7 +38,7 @@ class Cancer extends Component {
 		}
 		else{
 			//add element
-			filter.gender.push(v);
+			filter.gender.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -48,14 +48,14 @@ class Cancer extends Component {
 	handleCancerClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.cancer.indexOf(v);
+			let idx = filter.cancer.indexOf(v.id);
 			if(idx > -1){
 				//remove element
 				filter.cancer.splice(idx,1);
 			}
 			else{
 				//add element
-				filter.cancer.push(v);
+				filter.cancer.push(v.id);
 			}
 		}
 		else{
@@ -73,14 +73,14 @@ class Cancer extends Component {
 	handleCohortClick = (v,allIds,e) =>{
 		let filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.cohort.indexOf(v);
+			let idx = filter.cohort.indexOf(v.id);
 			if(idx > -1){
 				//remove element
 				filter.cohort.splice(idx,1);
 			}
 			else{
 				//add element
-				filter.cohort.push(v);
+				filter.cohort.push(v.id);
 			}
 		}
 		else{

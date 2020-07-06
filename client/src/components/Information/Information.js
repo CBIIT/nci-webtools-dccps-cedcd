@@ -203,6 +203,23 @@ class Information extends Component {
   	else{
   		const info = this.state.info;
 	  	const mailto = "mailto:"+info.collab_email;
+	  	let pis = info.pis.map((item, idx) => {
+	  		let result;
+	  		let prop_1 = item.name;
+	  		let prop_2 = item.institution;
+	  		if(prop_1 && prop_1.trim() !== ""){
+	  			result = (
+		  			<li key={"pi_"+item.id}>
+		  				{prop_1} ({prop_2})
+		  			</li>
+		  		);
+	  		}
+	  		else{
+	  			result = "";
+	  		}
+	  		return result;
+	  	});
+	  	/*
 	  	let pis = [1,2,3,4,5,6].map((item, idx) => {
 	  		let result;
 	  		let prop_1 = "pi_name_"+item;
@@ -219,6 +236,8 @@ class Information extends Component {
 	  		}
 	  		return result;
 	  	});
+	  	*/
+
 	  	let website;
 	  	if(info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available"&& info.cohort_web_site.trim() !== ""){
 	  		website = (

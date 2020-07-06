@@ -6,14 +6,8 @@ class SpecimenList extends Component {
 		super(props);
 		this.state = {
 			list:[
-				"Buffy Coat and/or Lymphocytes",
-				"Feces",
-				"Saliva and/or Buccal",
-				"Serum and/or Plasma",
-				"Tumor Tissue: Fresh/Frozen",
-				"Tumor Tissue: FFPE",
-				"Urine"
 			],
+			lookup:{},
 			open:false
 		};
 
@@ -41,21 +35,49 @@ class SpecimenList extends Component {
 		}, 0);
 	}
 
+	componentDidMount(){
+		let reqBody = {
+			category:"specimen"
+		};
+		fetch('./api/cohort/lookup',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let specimens = result.data.list;
+			let arr = [];
+			let dict = {};
+			specimens.forEach(function(element){
+				arr.push({specimen:element.specimen,id:element.id});
+				dict[element.id] = {specimen:element.specimen,id:element.id};
+			});
+			this.setState({
+					list: arr,
+					lookup: dict
+			});
+		});
+	}
+
   render() {
   	const values = this.props.values;
   	let f_list = Object.assign([],this.state.list);
+  	let lookup = Object.assign({},this.state.lookup);
   	let allIds = [];
   	const list = f_list.map((item, idx) => {
   		const key = "specimen_"+idx;
   		allIds.push(item);
-  		let checked = (values.indexOf(item) > -1);
+  		let checked = (values.indexOf(item.id) > -1);
   		return (
   			<li key={key}>
 				<label>
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
-					{item}
+					{item.specimen}
 				</label>
 			</li>
   		);
@@ -77,9 +99,10 @@ class SpecimenList extends Component {
 	  		}
   		}
   		else{
+  			const specimen = lookup[item].specimen;
   			return (
 	  			<li key={key}>
-					{item}
+					{specimen}
 				</li>
 	  		);
   		}

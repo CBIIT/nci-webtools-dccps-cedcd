@@ -15,38 +15,32 @@ var specimenController = require('./details/specimenController');
 
 router.post('/list', function(req, res) {
 	let body = req.body;
-	let searchText = body.searchText || "";
-	let orderBy = body.orderBy || {};
-	let paging = body.paging || {};
-	let func = "cohort_published";
-	let params = [searchText];
-	if(orderBy){
-		params.push(orderBy.column);
-		params.push(orderBy.order);
-	}
-	else{
-		params.push("");
-		params.push("");
-	}
-	if(paging && paging.page != 0){
-		params.push((paging.page-1) * paging.pageSize);
-		params.push(paging.pageSize);
-	}
-	else{
-		params.push(-1);
-		params.push(-1);
-	}
+	//let searchText = body.searchText || "";
+	let func = "cohort_list";
+	let params = [];
+
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
 			dt.list = results[0];
-			dt.total = results[1][0].total;
+			dt.total = dt.list.length;
 			res.json({status:200, data:dt});
 		}
 		else{
 			res.json({status:200, data:{list:[],total:0}});
 		}
 	});
+});
+
+
+
+router.post('/lookup', function(req, res) {
+	let body = req.body;
+	let category = body.category || "";
+	let info = cache.getValue("lookup:"+category);
+	
+	res.json({status:200, data:{list: info}});
+	
 });
 
 router.post('/select', function(req, res) {
@@ -57,162 +51,30 @@ router.post('/select', function(req, res) {
 	let func = "cohort_select";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let race;
-	let ethnicity;
 	
-	gender = filter.participant.gender;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	if(gender.indexOf("Female") > -1 && gender.indexOf("Male") > -1){
-		params.push(0);
-	}
-	else if(gender.indexOf("Female") == -1 && gender.indexOf("Male") > -1){
-		params.push(2);
-	}
-	else if(gender.indexOf("Female") > -1 && gender.indexOf("Male") == -1){
-		params.push(1);
-	}
-	else{
-		params.push(-1)
-	}
-	race = filter.participant.race;
-	ethnicity = filter.participant.ethnicity;
-	let column_info = [];
-	let ethnicity_len = ethnicity.length;
-	let race_len = race.length;
-	let gender_len = gender.length;
-	if(ethnicity_len !== 0 || race_len !== 0 || gender_len !== 0){
-		if((ethnicity_len === Object.keys(config.ethnicity).length || ethnicity_len === 0) && (race_len === Object.keys(config.race).length || race_len === 0) && (gender_len === Object.keys(config.gender).length || gender_len === 0)){
-			column_info.push("race_total_total");
-		}
-		else{
-			if(race_len === config.gender.length || race_len === 0){
-				race = Object.keys(config.race);
-			}
-			if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
-				ethnicity = Object.keys(config.ethnicity);
-			}
-			if(gender_len === config.gender.length || gender_len === 0){
-				gender = Object.keys(config.gender);
-			}
-			race.forEach(function(r){
-				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
-						column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-					});
-				});
-			});
-			/*
-			if(race_len === config.race.length || race_len === 0){
-				let prefix = "race_total_";
-				if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
-					ethnicity = Object.keys(config.ethnicity);
-				}
-				else if(gender_len === config.gender.length || gender_len === 0){
-					gender = Object.keys(config.gender);
-				}
-				else{
-					
-				}
-				//go through the rest of the two arrays
-				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
-						column_info.push(prefix + config.ethnicity[eth] + "_" + config.gender[g]);
-					});
-				});
-			}
-			else{
-				if((ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					(gender_len === config.gender.length || gender_len === 0)){
-					let surfix = "_total";
-					race.forEach(function(r){
-						column_info.push("race_"+config.race[r]+surfix);
-					});
-				}
-				else if((ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					!(gender_len === config.gender.length || gender_len === 0)){
-					ethnicity = Object.keys(config.ethnicity);
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-				else if(!(ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					(gender_len === config.gender.length || gender_len === 0)){
-					gender = Object.keys(config.gender);
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-				else{
-					//go through all the columns and filter out the applied ones
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-			}*/
-		}
-		params.push(column_info.toString());
+	if(filter.participant.gender.length > 0){
+		params.push(filter.participant.gender.toString());
 	}
 	else{
 		params.push("");
 	}
 
+	if(filter.participant.race.length > 0){
+		params.push(filter.participant.race.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.participant.ethnicity.length > 0){
+		params.push(filter.participant.ethnicity.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.participant.age.length > 0){
 		params.push(filter.participant.age.toString());
-	}
-	else{
-		params.push("");
-	}
-	
-	if(filter.collect.cancer.length > 0){
-		let cancer_column = [];
-		let category = params[0];
-		filter.collect.cancer.forEach(function(cc){
-			if(category == -1 || category == 0){
-				cancer_column.push("ci_"+config.cancer[cc]+"_male");
-				cancer_column.push("ci_"+config.cancer[cc]+"_female");
-			}
-			else if(category == 2){
-				cancer_column.push("ci_"+config.cancer[cc]+"_male");
-			}
-			else{
-				cancer_column.push("ci_"+config.cancer[cc]+"_female");
-			}
-		});
-		params.push(cancer_column.toString());
-	}
-	else{
-		params.push("");
-	}
-	if(filter.collect.data.length > 0){
-		let data_columns = [];
-		filter.collect.data.forEach(function(cd){
-			data_columns.push(config.collected_data[cd]);
-		});
-		params.push(data_columns.toString());
-	}
-	else{
-		params.push("");
-	}
-	if(filter.collect.specimen.length > 0){
-		let specimen_columns = [];
-		filter.collect.specimen.forEach(function(cs){
-			specimen_columns.push(config.collected_specimen[cs]);
-		});
-		params.push(specimen_columns.toString());
 	}
 	else{
 		params.push("");
@@ -228,6 +90,33 @@ router.post('/select', function(req, res) {
 	else{
 		params.push("");
 	}
+
+	if(filter.collect.data.length > 0){
+		params.push(filter.collect.data.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.collect.specimen.length > 0){
+
+		let specimen_columns = [];
+		filter.collect.specimen.forEach(function(cs){
+			specimen_columns.push(config.collected_specimen[cs]);
+		});
+		params.push(specimen_columns.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.collect.cancer.length > 0){
+		params.push(filter.collect.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
+	
 	if(orderBy){
 		params.push(orderBy.column);
 		params.push(orderBy.order);
@@ -236,6 +125,7 @@ router.post('/select', function(req, res) {
 		params.push("");
 		params.push("");
 	}
+
 	if(paging && paging.page != 0){
 		params.push((paging.page-1) * paging.pageSize);
 		params.push(paging.pageSize);
@@ -546,105 +436,30 @@ router.post('/advancedSelect', function(req, res) {
 router.post('/enrollment', function(req, res) {
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_enrollment_count";
+	let func = "select_enrollment_counts";
 	let params = [];
 	//form filter into Strings
-	
-	let gender;
-	let race;
-	let ethnicity;
-	
-	gender = filter.gender;
-	if(gender.length == 0){
-		gender = ["Male", "Female", "Other/Unknown"];
+
+	if(filter.gender.length > 0){
+		params.push(filter.gender.toString());
+	}
+	else{
+		params.push("");
 	}
 
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	race = filter.race;
-	ethnicity = filter.ethnicity;
-
-	if(ethnicity.length == 0){
-		ethnicity = ["Hispanic/Latino",
-		"Non-Hispanic/Latino",
-		"Other/Unknown"];
+	if(filter.race.length > 0){
+		params.push(filter.race.toString());
+	}
+	else{
+		params.push("");
 	}
 
-	if(race.length == 0){
-		race = [
-			"American Indian / Alaska Native",
-			"Asian",
-			"Black or African-American",
-			"Native Hawaiian or Other Pacific Islander",
-			"White",
-			"Other/Unknown",
-			"More than one race"
-		];
+	if(filter.ethnicity.length > 0){
+		params.push(filter.ethnicity.toString());
 	}
-
-	if(filter.cohort == []){
-		filter.cohort = [ 52,
-			16,
-			39,
-			13,
-			76,
-			60,
-			17,
-			59,
-			53,
-			72,
-			73,
-			74,
-			70,
-			78,
-			18,
-			64,
-			20,
-			66,
-			56,
-			71,
-			68,
-			15,
-			61,
-			22,
-			51,
-			47,
-			46,
-			23,
-			24,
-			40,
-			41,
-			42,
-			43,
-			69,
-			25,
-			26,
-			27,
-			54,
-			44,
-			28,
-			45,
-			50,
-			29,
-			30,
-			77,
-			67,
-			31,
-			62,
-			65,
-			49,
-			55,
-			57,
-			75,
-			32,
-			58,
-			33,
-			63,
-			14,
-			48,
-			38,
-			34 ];
+	else{
+		params.push("");
 	}
-
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -655,43 +470,47 @@ router.post('/enrollment', function(req, res) {
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
+			let cache = {};
 			dt.list = [];
 			dt.cohorts = [];
+			let cohorts = [];
 			let list = results[0];
-			//parse enrollment data
-			gender.forEach(function(g){
-				ethnicity.forEach(function(eth){
-					race.forEach(function(r){
-						let column = "race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g];
-						let tmp = {};
-						let total = 0;
-						tmp.c0 = g;
-						tmp.c1 = eth;
-						tmp.c2 = r;
-						list.forEach(function(l){
-							let v = l[column];
-							let count = 0;
-							if(l[column] == -1){
-								v = "N/P";
-							}
-							else{
-								count = l[column];
-							}
-							tmp["c_"+l.cohort_id] = v;
-							total += count;
-						});
-						tmp.total = total;
-						dt.list.push(tmp);
-					});
-				});
-			});
 			list.forEach(function(l){
-				dt.cohorts.push({
-					cohort_id:l.cohort_id,
-					cohort_name:l.cohort_name,
-					cohort_acronym:l.cohort_acronym
-				});
+
+				if(cache[l.u_id] == null){
+					cache[l.u_id] = {};
+					cache[l.u_id].c0 = l.gender;
+					cache[l.u_id].c1 = l.ethnicity;
+					cache[l.u_id].c2 = l.race;
+					cache[l.u_id].total = 0;
+				}
+				if(cohorts.indexOf(l.cohort_id) == -1){
+					cohorts.push(l.cohort_id);
+					dt.cohorts.push({
+						cohort_id:l.cohort_id,
+						cohort_name: l.cohort_name,
+						cohort_acronym:l.cohort_acronym
+					});
+
+				}
+				let tmp = cache[l.u_id];
+				let count = 0;
+				if(l.enrollment_counts == -1){
+					tmp["c_"+l.cohort_id] = "N/P";
+					count = 0;
+				}
+				else{
+					tmp["c_"+l.cohort_id] = l.enrollment_counts;
+					count = l.enrollment_counts;
+				}
+				
+				tmp.total += count;
 			});
+
+			for(key in cache){
+				dt.list.push(cache[key]);
+			}
+			
 			res.json({status:200, data:dt});
 		}
 		else{
@@ -703,112 +522,23 @@ router.post('/enrollment', function(req, res) {
 router.post('/cancer', function(req, res) {
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_cancer_count";
+	let func = "select_cancer_counts";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let cancer;
+	if(filter.gender.length > 0){
+		params.push(filter.gender.toString());
+	}
+	else{
+		params.push("");
+	}
+
 	
-	gender = filter.gender;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	cancer = filter.cancer;
 
-	if(gender.length == 0){
-		gender = ["Male", "Female", "Other/Unknown"];
+	if(filter.cancer.length > 0){
+		params.push(filter.cancer.toString());
 	}
-	if(cancer.length == 0){
-		cancer = [
-			"Bladder",
-			"Bone",
-			"Brain",
-			"Breast",
-			"Cervix",
-			"Colon",
-			"Corpus, body of uterus",
-			"Esophagus",
-			"Gall bladder and extrahepatic bile duct",
-			"Kidney and other unspecified urinary organs including renal pelvis, ureter, urethra",
-			"Leukemia",
-			"Liver and intrahepatic bile ducts",
-			"Lymphoma (HL and NHL)",
-			"Melanoma (excluding genital organs)",
-			"Myeloma",
-			"Oropharyngeal",
-			"Ovary, fallopian tube, broad ligament",
-			"Pancreas",
-			"Prostate",
-			"Rectum and anus",
-			"Small intestine",
-			"Stomach",
-			"Thyroid",
-			"Trachea, bronchus, and lung",
-			"All Other Cancers"
-		];
-	}
-
-
-	if(filter.cohort == []){
-		filter.cohort = [ 52,
-			16,
-			39,
-			13,
-			76,
-			60,
-			17,
-			59,
-			53,
-			72,
-			73,
-			74,
-			70,
-			78,
-			18,
-			64,
-			20,
-			66,
-			56,
-			71,
-			68,
-			15,
-			61,
-			22,
-			51,
-			47,
-			46,
-			23,
-			24,
-			40,
-			41,
-			42,
-			43,
-			69,
-			25,
-			26,
-			27,
-			54,
-			44,
-			28,
-			45,
-			50,
-			29,
-			30,
-			77,
-			67,
-			31,
-			62,
-			65,
-			49,
-			55,
-			57,
-			75,
-			32,
-			58,
-			33,
-			63,
-			14,
-			48,
-			38,
-			34 ];
+	else{
+		params.push("");
 	}
 
 	if(filter.cohort.length > 0){
@@ -817,36 +547,44 @@ router.post('/cancer', function(req, res) {
 	else{
 		params.push("");
 	}
+
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
+			let cache = {};
 			dt.list = [];
 			dt.cohorts = [];
+			let cohorts = [];
 			let list = results[0];
-			//parse cancer data
-			cancer.forEach(function(c){
-				gender.forEach(function(g){
-					let column = "ci_" + config.cancer[c] + "_" + g.toLowerCase();
-					let tmp = {};
-					tmp.c1 = c;
-					tmp.c2 = g;
-					list.forEach(function(l){
-						let v = l[column];
-						if(l[column] == undefined || l[column] == -1){
-							v = "N/P";
-						}
-						tmp["c_"+l.cohort_id] = v;
-					});
-					dt.list.push(tmp);
-				});
-			});
 			list.forEach(function(l){
-				dt.cohorts.push({
-					cohort_id:l.cohort_id,
-					cohort_name:l.cohort_name,
-					cohort_acronym:l.cohort_acronym
-				});
+
+				if(cache[l.u_id] == null){
+					cache[l.u_id] = {};
+					cache[l.u_id].c1 = l.cancer;
+					cache[l.u_id].c2 = l.gender;
+				}
+				if(cohorts.indexOf(l.cohort_id) == -1){
+					cohorts.push(l.cohort_id);
+					dt.cohorts.push({
+						cohort_id:l.cohort_id,
+						cohort_name: l.cohort_name,
+						cohort_acronym:l.cohort_acronym
+					});
+
+				}
+				let tmp = cache[l.u_id];
+				if(l.cancer_counts == -1){
+					tmp["c_"+l.cohort_id] = "N/P";
+				}
+				else{
+					tmp["c_"+l.cohort_id] = l.cancer_counts;
+				}
 			});
+
+			for(key in cache){
+				dt.list.push(cache[key]);
+			}
+			
 			res.json({status:200, data:dt});
 		}
 		else{
@@ -858,15 +596,25 @@ router.post('/cancer', function(req, res) {
 router.post('/specimen', function(req, res) {
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_specimen_count";
+	let func = "select_specimen_counts";
 	let params = [];
 	//form filter into Strings
-	let specimen;
-	let cancer;
 	
-	specimen = filter.specimen;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	cancer = filter.cancer;
+	if(filter.specimen.length > 0){
+		params.push(filter.specimen.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	
+
+	if(filter.cancer.length > 0){
+		params.push(filter.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -874,142 +622,44 @@ router.post('/specimen', function(req, res) {
 	else{
 		params.push("");
 	}
-	
-	if(specimen.length == 0){
-		specimen = [
-			"Buffy Coat and/or Lymphocytes",
-			"Feces",
-			"Saliva and/or Buccal",
-			"Serum and/or Plasma",
-			"Tumor Tissue: Fresh/Frozen",
-			"Tumor Tissue: FFPE",
-			"Urine"
-		];
-	}
-	if(cancer.length == 0){
-		cancer = [
-			"Bladder",
-			"Bone",
-			"Brain",
-			"Breast",
-			"Cervix",
-			"Colon",
-			"Corpus, body of uterus",
-			"Esophagus",
-			"Gall bladder and extrahepatic bile duct",
-			"Kidney and other unspecified urinary organs including renal pelvis, ureter, urethra",
-			"Leukemia",
-			"Liver and intrahepatic bile ducts",
-			"Lymphoma (HL and NHL)",
-			"Melanoma (excluding genital organs)",
-			"Myeloma",
-			"Oropharyngeal",
-			"Ovary, fallopian tube, broad ligament",
-			"Pancreas",
-			"Prostate",
-			"Rectum and anus",
-			"Small intestine",
-			"Stomach",
-			"Thyroid",
-			"Trachea, bronchus, and lung",
-			"All Other Cancers",
-			"No Cancer"
-		];
-	}
 
-	if(filter.cohort.length == 0){
-		filter.cohort = [ 52,
-			16,
-			39,
-			13,
-			76,
-			60,
-			17,
-			59,
-			53,
-			72,
-			73,
-			74,
-			70,
-			78,
-			18,
-			64,
-			20,
-			66,
-			56,
-			71,
-			68,
-			15,
-			61,
-			22,
-			51,
-			47,
-			46,
-			23,
-			24,
-			40,
-			41,
-			42,
-			43,
-			69,
-			25,
-			26,
-			27,
-			54,
-			44,
-			28,
-			45,
-			50,
-			29,
-			30,
-			77,
-			67,
-			31,
-			62,
-			65,
-			49,
-			55,
-			57,
-			75,
-			32,
-			58,
-			33,
-			63,
-			14,
-			48,
-			38,
-			34 ];
-	}
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			let dt = {};
+			let cache = {};
 			dt.list = [];
 			dt.cohorts = [];
+			cohorts = [];
 			let list = results[0];
-			//parse specimen data
-			cancer.forEach(function(c){
-				specimen.forEach(function(s){
-					let column = "bio_" + config.cancer[c] + "_" + config.specimen[s];
-					let tmp = {};
-					tmp.c1 = s;
-					tmp.c2 = c;
-					list.forEach(function(l){
-						let v = l[column];
-						if(l[column] == -1 || l[column] == null){
-							v = "N/P";
-						}
-						tmp["c_"+l.cohort_id] = v;
-					});
-					dt.list.push(tmp);
-				});
-			});
 			list.forEach(function(l){
-				dt.cohorts.push({
-					cohort_id:l.cohort_id,
-					cohort_name:l.cohort_name,
-					cohort_acronym:l.cohort_acronym
-				});
+
+				if(cache[l.u_id] == null){
+					cache[l.u_id] = {};
+					cache[l.u_id].c1 = l.specimen;
+					cache[l.u_id].c2 = l.cancer;
+				}
+				if(cohorts.indexOf(l.cohort_id) == -1){
+					cohorts.push(l.cohort_id);
+					dt.cohorts.push({
+						cohort_id:l.cohort_id,
+						cohort_name: l.cohort_name,
+						cohort_acronym:l.cohort_acronym
+					});
+
+				}
+				let tmp = cache[l.u_id];
+				if(l.specimens_counts == -1){
+					tmp["c_"+l.cohort_id] = "N/P";
+				}
+				else{
+					tmp["c_"+l.cohort_id] = l.specimens_counts;
+				}
 			});
+
+			for(key in cache){
+				dt.list.push(cache[key]);
+			}
+			
 			res.json({status:200, data:dt});
 		}
 		else{
@@ -1022,7 +672,7 @@ router.get('/:id', function(req, res){
 	let id = req.params.id;
 	let info = cache.getValue("cohort:"+id);
 	if(info == undefined){
-		let func = "cohort_info";
+		let func = "cohort_description";
 		let params = [id];
 		mysql.callProcedure(func,params,function(results){
 			if(results && results[0] && results[0].length > 0){
@@ -1032,24 +682,26 @@ router.get('/:id', function(req, res){
 				info.cohort_name = basic.cohort_name;
 				info.cohort_acronym = basic.cohort_acronym;
 				info.update_time = basic.update_time;
-				info.collab_name = basic.collab_contact_name;
-				info.collab_position = basic.collab_contact_position;
-				info.collab_phone = basic.collab_contact_phone;
-				info.collab_email = basic.collab_contact_email;
-				// if(info.collab_name == null || info.collab_name.trim() == ""){
-				// 	if(basic.contact_name == null || basic.contact_name.trim() == ""){
-				// 		info.collab_name = basic.completed_by_name;
-				// 		info.collab_position = basic.completed_by_position;
-				// 		info.collab_phone = basic.completed_by_phone;
-				// 		info.collab_email = basic.completed_by_email;
-				// 	}
-				// 	else{
-				// 		info.collab_name = basic.contact_name;
-				// 		info.collab_position = basic.contact_position;
-				// 		info.collab_phone = basic.contact_phone;
-				// 		info.collab_email = basic.contact_email;
-				// 	}
-				// }
+
+				let persons = results[2];
+				info.pis = [];
+				persons.forEach(function(p){
+					if(p.category_id == 3){
+						let tmp = {};
+						tmp.id = p.id;
+						tmp.name = p.name;
+						tmp.institution = p.institution;
+						info.pis.push(tmp);
+					}
+					else if(p.category_id == 4){
+						info.collab_name = p.name;
+						info.collab_position = p.position;
+						info.collab_phone = p.phone;
+						info.collab_email = p.email;
+					}
+				});
+				
+				/*
 				if(basic.same_as_a3a == 1){
 					info.collab_name = basic.completed_by_name;
 					info.collab_position = basic.completed_by_position;
@@ -1068,18 +720,8 @@ router.get('/:id', function(req, res){
 					info.collab_phone = basic.collab_contact_phone;
 					info.collab_email = basic.collab_contact_email;
 				}
-				info.pi_name_1 = basic.pi_name_1;
-				info.pi_name_2 = basic.pi_name_2;
-				info.pi_name_3 = basic.pi_name_3;
-				info.pi_name_4 = basic.pi_name_4;
-				info.pi_name_5 = basic.pi_name_5;
-				info.pi_name_6 = basic.pi_name_6;
-				info.pi_institution_1 = basic.pi_institution_1;
-				info.pi_institution_2 = basic.pi_institution_2;
-				info.pi_institution_3 = basic.pi_institution_3;
-				info.pi_institution_4 = basic.pi_institution_4;
-				info.pi_institution_5 = basic.pi_institution_5;
-				info.pi_institution_6 = basic.pi_institution_6;
+				*/
+
 				info.cohort_web_site = basic.cohort_web_site;
 				info.cohort_description = basic.cohort_description;
 				info.request_procedures_web_url = "";

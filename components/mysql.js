@@ -146,7 +146,10 @@ var callProcedure = function(func, params, next){
             sql += '"'+p+'",';
           }
         });
-        sql = sql.substring(0, sql.length -1);
+        
+        if(params.length > 0){
+          sql = sql.substring(0, sql.length -1);
+        }
         sql += ")";
         logger.debug('sql:' + sql);
         connection.query(sql,function(err_1, rows){

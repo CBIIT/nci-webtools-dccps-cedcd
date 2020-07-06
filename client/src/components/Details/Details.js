@@ -298,7 +298,7 @@ class Details extends Component {
 		this.setState({
 			prevBasicParams:JSON.parse(JSON.stringify(reqBody)),
 		})
-		console.log(JSON.stringify(this.state.prevBasicParams));
+
 		fetch('./api/cohort/select',{
 			method: "POST",
 			body: JSON.stringify(reqBody),
@@ -481,7 +481,7 @@ class Details extends Component {
 						paging:{}
 					};*/
 					let reqBody = this.state.prevBasicParams;
-					console.log("HandleSelect Req: " + JSON.stringify(this.state.prevBasicParams));
+
 					reqBody.paging.page = 0;
 					fetch('./api/cohort/select',{
 						method: "POST",
@@ -562,7 +562,7 @@ class Details extends Component {
 
 	handleGenderClick = (v) =>{
 		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.gender.indexOf(v);
+		let idx = filter.participant.gender.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -570,7 +570,7 @@ class Details extends Component {
 		}
 		else{
 			//add element
-			filter.participant.gender.push(v);
+			filter.participant.gender.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -579,7 +579,7 @@ class Details extends Component {
 
 	handleRaceClick = (v) =>{
 		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.race.indexOf(v);
+		let idx = filter.participant.race.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -587,7 +587,7 @@ class Details extends Component {
 		}
 		else{
 			//add element
-			filter.participant.race.push(v);
+			filter.participant.race.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -596,7 +596,7 @@ class Details extends Component {
 
 	handleEthnicityClick = (v) =>{
 		const filter = Object.assign({},this.state.filter);
-		let idx = filter.participant.ethnicity.indexOf(v);
+		let idx = filter.participant.ethnicity.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -604,7 +604,7 @@ class Details extends Component {
 		}
 		else{
 			//add element
-			filter.participant.ethnicity.push(v);
+			filter.participant.ethnicity.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -630,7 +630,7 @@ class Details extends Component {
 
 	handleDataClick = (v) =>{
 		const filter = Object.assign({},this.state.filter);
-		let idx = filter.collect.data.indexOf(v);
+		let idx = filter.collect.data.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -638,7 +638,7 @@ class Details extends Component {
 		}
 		else{
 			//add element
-			filter.collect.data.push(v);
+			filter.collect.data.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -663,35 +663,9 @@ class Details extends Component {
 	}
 
 	handleCancerClick = (v,allIds,e) =>{
-		let filter = Object.assign({},this.state.filter);
-		if(v){
-			let idx = filter.collect.cancer.indexOf(v);
-			if(idx > -1){
-				//remove element
-				filter.collect.cancer.splice(idx,1);
-			}
-			else{
-				//add element
-				filter.collect.cancer.push(v);
-			}
-		}
-		else{
-			//click on the "all cohort"
-			filter.collect.cancer = [];
-			if(e.target.checked){
-				filter.collect.cancer = allIds;
-			}
-		}
-		this.setState({
-			filter:filter
-		});
-		console.log(JSON.stringify(this.state.prevBasicParams));
-	}
-
-	handleCancerClick = (v,allIds,e) =>{
 		const filter = Object.assign({},this.state.filter);
 		if(v){
-			let idx = filter.collect.cancer.indexOf(v);
+			let idx = filter.collect.cancer.indexOf(v.id);
 
 			if(idx > -1){
 				//remove element
@@ -699,7 +673,7 @@ class Details extends Component {
 			}
 			else{
 				//add element
-				filter.collect.cancer.push(v);
+				filter.collect.cancer.push(v.id);
 			}
 		}
 		else{
@@ -712,7 +686,6 @@ class Details extends Component {
 		this.setState({
 			filter:filter
 		});
-		console.log(JSON.stringify(this.state.prevBasicParams));
 
 	}
 
@@ -760,23 +733,23 @@ class Details extends Component {
 				selectionList:[[]]
 			});
 		}
-	  }
+	}
 	
-	  addItem(index) {
+	addItem(index) {
 		const { items, booleanStates, selectionList } = this.state;
-	  items.splice(index,0,'Select');
-	  booleanStates.splice(index,0,'AND');
-	  selectionList.splice(index,0,[]);
-	
+		  items.splice(index,0,'Select');
+		  booleanStates.splice(index,0,'AND');
+		  selectionList.splice(index,0,[]);
+
 		this.setState({
 		  items: items,
 		  booleanStates:booleanStates,
 		  selectionList: selectionList
 		});
 		this.itemInput = null;
-	  }
+	}
 	
-	  focus() {
+	focus() {
 		// Explicitly focus the text input using the raw DOM API
 		// Note: we're accessing "current" to get the DOM node
 		if(this.toFocus.current !== undefined){
@@ -788,26 +761,26 @@ class Details extends Component {
 			console.log('success!');
 			document.getElementById("focusMe").focus();
 		}
-	  }
+	}
 
-	  handleSelectChange(e, index){
-		  const { items, selectionList } = this.state;
-		  items[index]= e.target.value;
-		  const currSelect = selectionList[index];
-		  currSelect.splice(0, currSelect.length);
-		  selectionList[index] = currSelect;
-		  this.setState({
-			items: items,
-			selectionList: selectionList,
-			advancedFocus: index,
-		  }, ()=>{this.focus();});
-	  }
+	handleSelectChange(e, index){
+		const { items, selectionList } = this.state;
+		items[index]= e.target.value;
+		const currSelect = selectionList[index];
+		currSelect.splice(0, currSelect.length);
+		selectionList[index] = currSelect;
+		this.setState({
+		items: items,
+		selectionList: selectionList,
+		advancedFocus: index,
+		}, ()=>{this.focus();});
+	}
 	
-	  handleGeneralListClick(v, index){
+	handleGeneralListClick(v, index){
 		const {selectionList} = this.state;
 		const currList = selectionList[index];
 		let idx = selectionList[index].indexOf(v);
-		
+
 			if(idx > -1){
 				//remove element
 				currList.splice(idx,1);
@@ -820,33 +793,33 @@ class Details extends Component {
 			this.setState({
 				selectionList: selectionList
 		});
-		
-	  }
+
+	}
 	  
-		handleCancerClick (v,allIds,e,index){
-			const {selectionList} = this.state;
-			const currList = selectionList[index];
-	   
-		
-			if(v){
-				  let idx = selectionList[index].indexOf(v);
-				if(idx > -1){
-					//remove element
-					currList.splice(idx,1);
-				  }
-				  else{
-					//add element
-					currList.push(v);
-				  }
+	handleCancerClick (v,allIds,e,index){
+		const {selectionList} = this.state;
+		const currList = selectionList[index];
+   
+	
+		if(v){
+			  let idx = selectionList[index].indexOf(v.id);
+			if(idx > -1){
+				//remove element
+				currList.splice(idx,1);
+			  }
+			  else{
+				//add element
+				currList.push(v.id);
+			  }
+		}
+		else{
+			//click on the "all cohort"
+			currList.splice(0,currList.length);
+			if(e.target.checked){
+				allIds.forEach(function(element){
+					  currList.push(element );
+				});
 			}
-			else{
-				//click on the "all cohort"
-				currList.splice(0,currList.length);
-				if(e.target.checked){
-					allIds.forEach(function(element){
-						  currList.push(element );
-					});
-				}
 		}
 		selectionList[index] = currList;
 			this.setState({
@@ -854,79 +827,10 @@ class Details extends Component {
 			});
 			console.log(JSON.stringify(this.state.prevBasicParams));
 
-	  }
-	/*
-	  createSelectItems(index) {
+	}
 	
-		const {items,advancedFocus} = this.state;
-		const currItem = items[index];
-		let cls = "";
-		console.log('Indexing: ' + index + ", " + advancedFocus);
-		if(advancedFocus == index){
-			
-			if(currItem == "Gender"){
-				return <div className = "select-box gray-back"><GenderList autofocus="true" ref={(r) => this.toFocus = r} hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Race"){
-				return <div className = "select-box gray-back"><RaceList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Ethnicity"){
-				return <div className = "select-box gray-back"><EthnicityList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Age"){
-				return <div className = "select-box gray-back"><AgeList autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "State"){
-				return <div className = "select-box gray-back"><DiseaseStateList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Categories"){
-				return <div className = "select-box gray-back"><CollectedDataList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Biospecimen"){
-				return <div className = "select-box gray-back"><CollectedSpecimensList  autofocus="true" ref={(r) => this.toFocus = r} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Cancers"){
-				return <div className = "select-box gray-back"><CollectedCancersList autofocus="true"  ref={(r) => this.toFocus = r} hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
-			}
-		
-			return <div className="select-box gray-back"></div>;
-			
-		}
-		else{
-
-			if(currItem == "Gender"){
-				return <div className = "select-box gray-back"><GenderList hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Race"){
-				return <div className = "select-box gray-back"><RaceList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Ethnicity"){
-				return <div className = "select-box gray-back"><EthnicityList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Age"){
-				return <div className = "select-box gray-back"><AgeList values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "State"){
-				return <div className = "select-box gray-back"><DiseaseStateList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Categories"){
-				return <div className = "select-box gray-back"><CollectedDataList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Biospecimen"){
-				return <div className = "select-box gray-back"><CollectedSpecimensList values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Cancers"){
-				return <div className = "select-box gray-back"><CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
-			}
-		
-			return <div className={"select-box gray-back" + cls}></div>;
-
-		}
-		
 	
-	  }*/
-	
-	  createBoolean(index){
+	createBoolean(index){
 		const { booleanStates } = this.state;
 		if(index > 0){
 		  return <select className="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
@@ -935,10 +839,9 @@ class Details extends Component {
 		  </select>
 		}
 		return;
-	  }
+	}
 	
-	  createSelector(index){
-		  
+	createSelector(index){
 		const {items, advancedFocus} = this.state;
 		const currItem = items[index];
 		console.log('Indexing: ' + index + ", " + advancedFocus);
@@ -969,7 +872,7 @@ class Details extends Component {
 			else if(currItem == "Cancers"){
 				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedCancersList focusThis="true" ref={this.toFocus} hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
 			}
-		
+
 			if(index > 0){
 				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
 				  <option value="Select" selected disabled hidden>-Select Term-</option>
@@ -1023,7 +926,7 @@ class Details extends Component {
 			else if(currItem == "Cancers"){
 				return <div className = "select-box gray-back"><CollectedCancersList focusThis="false" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
 			}
-		
+
 			if(index > 0){
 				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
 				  <option value="Select" selected disabled hidden>-Select Term-</option>
@@ -1050,7 +953,7 @@ class Details extends Component {
 			  </select>
 		  
 		}
-		  if(index > 0){
+		if(index > 0){
 			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
 			  <option value="Select" selected disabled hidden>-Select Term-</option>
 			  <option value="Gender">Gender</option>
@@ -1062,27 +965,27 @@ class Details extends Component {
 			  <option value="Biospecimen">Types of Biospecimens Collected</option>
 			  <option value="Cancers">Cancers Collected</option>
 			</select>
-		  }
-		  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			<option value="Select" selected disabled hidden>-Select Term-</option>
-			  <option value="Gender">Gender</option>
-			  <option value="Race">Race</option>
-			  <option value="Ethnicity">Ethnicity</option>
-			  <option value="Age">Age at Baseline</option>
-			  <option value="State">Study Population</option>
-			  <option value="Categories">Categories of Data Collected</option>
-			  <option value="Biospecimen">Types of Biospecimens Collected</option>
-			  <option value="Cancers">Cancers Collected</option>
-		  </select>
-	  }
+		}
+		return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
+				<option value="Select" selected disabled hidden>-Select Term-</option>
+				<option value="Gender">Gender</option>
+				<option value="Race">Race</option>
+				<option value="Ethnicity">Ethnicity</option>
+				<option value="Age">Age at Baseline</option>
+				<option value="State">Study Population</option>
+				<option value="Categories">Categories of Data Collected</option>
+				<option value="Biospecimen">Types of Biospecimens Collected</option>
+				<option value="Cancers">Cancers Collected</option>
+		</select>
+	}
 	
-	  handleBooleanChange(e, index){
+	handleBooleanChange(e, index){
 		const { booleanStates } = this.state;
 		booleanStates[index] = e.target.value;
 		this.setState({
 		  booleanStates:booleanStates
 		});
-	  }
+	}
 	
 	renderSearchFilters(){
 		const {searchState} = this.state;
@@ -1172,6 +1075,7 @@ class Details extends Component {
 			<TableHeader width={width} value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
 		);
 	}
+
 	renderTableHeaderMiddle(title, width){
 		return (
 			<TableHeaderMiddle width={width} align="center" value={title} orderBy={this.state.orderBy} onClick={() => this.handleOrderBy(title)} />
@@ -1228,9 +1132,9 @@ class Details extends Component {
 		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	}
 
-  render() {
-  		if(this.state.comparasion){
-  			return (
+	render() {
+			if(this.state.comparasion){
+				return (
 			<div>
 				<div id="filterLabels" className="filter-block col-md-12 lockedFilter">
 					<div className="content-nav">
@@ -1252,11 +1156,11 @@ class Details extends Component {
 				</div>
 			</div>
 			);
-  		}
-  		else{
+			}
+			else{
 	  		const list = this.state.list;
 	  		let content = list.map((item, index) => {
-	  			let id = item.cohort_id;
+	  			let id = item.id;
 	  			let url = './cohort?id='+id;
 	  			let website = item.cohort_web_site;
 				if(!website.startsWith("http") && !website.startsWith("www")){
@@ -1280,7 +1184,7 @@ class Details extends Component {
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
-						<td align="center">{item.race_total_total > -1 ? this.numberWithCommas(item.race_total_total) : 0}</td>
+						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
 						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
@@ -1329,7 +1233,7 @@ class Details extends Component {
 							<Workbook.Sheet name="Cohort_Selection">
 							<Workbook.Column label="Cohort Name" value="cohort_name"/>
 							<Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-							<Workbook.Column label="Total Enrollments (n=)" value="race_total_total"/>
+							<Workbook.Column label="Total Enrollments (n=)" value="enrollment_total"/>
 							<Workbook.Column label="Website" value="cohort_web_site"/>
 							<Workbook.Column label="Last Updated" value="update_time"/>
 							</Workbook.Sheet>
@@ -1354,7 +1258,7 @@ class Details extends Component {
 									{this.renderSelectHeader("5%")}
 									{this.renderTableHeader("cohort_name","30%")}
 									{this.renderTableHeader("cohort_acronym","10%")}
-									{this.renderTableHeaderMiddle("race_total_total","20%")}
+									{this.renderTableHeaderMiddle("enrollment_total","20%")}
 									<th className="sortable" width="20%" scope="col">
 										<a href="javascript:void(0);" style={{cursor:'default'}}>Website
 										</a>
@@ -1388,7 +1292,7 @@ class Details extends Component {
 			</div>
 			</div>
 			);
-  		}
-  }
+			}
+	}
 }
 export default Details;

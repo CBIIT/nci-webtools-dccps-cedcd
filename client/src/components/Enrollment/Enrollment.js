@@ -32,7 +32,7 @@ class Enrollment extends Component {
 
 	handleGenderClick = (v) =>{
 		let filter = Object.assign(this.state.filter);
-		let idx = filter.gender.indexOf(v);
+		let idx = filter.gender.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -40,7 +40,7 @@ class Enrollment extends Component {
 		}
 		else{
 			//add element
-			filter.gender.push(v);
+			filter.gender.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -49,7 +49,7 @@ class Enrollment extends Component {
 
 	handleRaceClick = (v) =>{
 		let filter = Object.assign(this.state.filter);
-		let idx = filter.race.indexOf(v);
+		let idx = filter.race.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -57,7 +57,7 @@ class Enrollment extends Component {
 		}
 		else{
 			//add element
-			filter.race.push(v);
+			filter.race.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -66,7 +66,7 @@ class Enrollment extends Component {
 
 	handleEthnicityClick = (v) =>{
 		let filter = Object.assign(this.state.filter);
-		let idx = filter.ethnicity.indexOf(v);
+		let idx = filter.ethnicity.indexOf(v.id);
 
 		if(idx > -1){
 			//remove element
@@ -74,7 +74,7 @@ class Enrollment extends Component {
 		}
 		else{
 			//add element
-			filter.ethnicity.push(v);
+			filter.ethnicity.push(v.id);
 		}
 		this.setState({
 			filter:filter
@@ -84,14 +84,14 @@ class Enrollment extends Component {
 	handleCohortClick = (v,allIds,e) =>{
 		let filter = Object.assign(this.state.filter);
 		if(v){
-			let idx = filter.cohort.indexOf(v);
+			let idx = filter.cohort.indexOf(v.id);
 			if(idx > -1){
 				//remove element
 				filter.cohort.splice(idx,1);
 			}
 			else{
 				//add element
-				filter.cohort.push(v);
+				filter.cohort.push(v.id);
 			}
 		}
 		else{
@@ -188,7 +188,7 @@ class Enrollment extends Component {
 	  	let data_group = {};
 	  	data_group["Male"] = [];
 	  	data_group["Female"] = [];
-	  	data_group["Other/Unknown"] = [];
+	  	data_group["Unknown"] = [];
 	  	let data = Object.assign([], this.state.result.list);
 	  	data.forEach(function(element){
 	  		data_group[element.c0].push(element);
@@ -208,12 +208,12 @@ class Enrollment extends Component {
 	  	if(data_group["Female"].length > 0){
 	  		sections.push("Female");
 	  	}
-	  	if(data_group["Other/Unknown"].length > 0){
-	  		sections.push("Other/Unknown");
+	  	if(data_group["Unknown"].length > 0){
+	  		sections.push("Unknown");
 	  	}
 	  	content = sections.map((item, idx) => {
 	  		let key = "section_"+idx;
-	  		let label = item === "Other/Unknown"? item : item + "s";
+	  		let label = item === "Unknown"? item : item + "s";
 	  		return (
 	  			<div key={key}>
 		  			<label>

@@ -4,11 +4,8 @@ class EthnicityList extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
-			list:[
-				"Hispanic/Latino",
-				"Non-Hispanic/Latino",
-				"Other/Unknown"
-			],
+			list:[],
+			lookup:{},
 			open:props.startOpen === undefined?false:true,
 			focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 		};
@@ -36,12 +33,41 @@ class EthnicityList extends Component {
 		}, 0);
 	}
 
+	componentDidMount(){
+		let reqBody = {
+			category:"ethnicity"
+		};
+		fetch('./api/cohort/lookup',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let ethnicities = result.data.list;
+			let arr = [];
+			let dict = {};
+			ethnicities.forEach(function(element){
+				arr.push({ethnicity:element.ethnicity,id:element.id});
+				dict[element.id] = {ethnicity:element.ethnicity,id:element.id};
+			});
+			this.setState({
+					list: arr,
+					lookup: dict
+			});
+		});
+	}
+
   render() {
 
   	const values = this.props.values;
+  	let lookup = Object.assign({},this.state.lookup);
+
   	const list = this.state.list.map((item, idx) => {
-  		const key = "ethnicity_"+idx;
-  		let checked = (values.indexOf(item) > -1);
+  		const key = "ethnicity_"+item.id;
+  		let checked = (values.indexOf(item.id) > -1);
 
 		return (
 			<li key={key}>
@@ -49,7 +75,7 @@ class EthnicityList extends Component {
 					<span className="filter-component-input">
 						<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
-					{item}
+					{item.ethnicity}
 				</label>
 			</li>
 		);
@@ -71,9 +97,10 @@ class EthnicityList extends Component {
 	  		}
   		}
   		else{
+  			const ethnicity = lookup[item].ethnicity;
   			return (
 	  			<li key={key}>
-					{item}
+					{ethnicity}
 				</li>
 	  		);
   		}

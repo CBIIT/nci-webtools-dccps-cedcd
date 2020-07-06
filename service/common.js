@@ -5,6 +5,7 @@ var fs = require('fs');
 var ejs = require('ejs');
 var config = require('../config');
 var mysql = require('../components/mysql');
+var cache = require('../components/cache');
 var path = require('path');
 var moment = require('moment');
 var mail = require('../components/mail');
@@ -181,145 +182,30 @@ router.post('/export/select', function(req, res){
 	let func = "cohort_select";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let race;
-	let ethnicity;
-	
-	gender = filter.participant.gender;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	if(gender.indexOf("Female") > -1 && gender.indexOf("Male") > -1){
-		params.push(0);
-	}
-	else if(gender.indexOf("Female") == -1 && gender.indexOf("Male") > -1){
-		params.push(2);
-	}
-	else if(gender.indexOf("Female") > -1 && gender.indexOf("Male") == -1){
-		params.push(1);
-	}
-	else{
-		params.push(-1)
-	}
-	race = filter.participant.race;
-	ethnicity = filter.participant.ethnicity;
-	let column_info = [];
-	let ethnicity_len = ethnicity.length;
-	let race_len = race.length;
-	let gender_len = gender.length;
-	if(ethnicity_len !== 0 || race_len !== 0 || gender_len !== 0){
-		if(ethnicity_len === config.ethnicity.length && race_len === config.race.length && gender_len === config.gender.length){
-			column_info.push("race_total_total");
-		}
-		else{
-			if(race_len === config.race.length || race_len === 0){
-				let prefix = "race_total_";
-				if(ethnicity_len === config.ethnicity.length || ethnicity_len === 0){
-					ethnicity = Object.keys(config.ethnicity);
-				}
-				else if(gender_len === config.gender.length || gender_len === 0){
-					gender = Object.keys(config.gender);
-				}
-				else{
-					
-				}
-				//go through the rest of the two arrays
-				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
-						column_info.push(prefix + config.ethnicity[eth] + "_" + config.gender[g]);
-					});
-				});
-			}
-			else{
-				if((ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					(gender_len === config.gender.length || gender_len === 0)){
-					let surfix = "_total";
-					race.forEach(function(r){
-						column_info.push("race_"+config.race[r]+surfix);
-					});
-				}
-				else if((ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					!(gender_len === config.gender.length || gender_len === 0)){
-					ethnicity = Object.keys(config.ethnicity);
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-				else if(!(ethnicity_len === config.ethnicity.length || ethnicity_len === 0) && 
-					(gender_len === config.gender.length || gender_len === 0)){
-					gender = Object.keys(config.gender);
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-				else{
-					//go through all the columns and filter out the applied ones
-					race.forEach(function(r){
-						ethnicity.forEach(function(eth){
-							gender.forEach(function(g){
-								column_info.push("race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g]);
-							});
-						});
-					});
-				}
-			}
-		}
-		params.push(column_info.toString());
+
+	if(filter.participant.gender.length > 0){
+		params.push(filter.participant.gender.toString());
 	}
 	else{
 		params.push("");
 	}
 
+	if(filter.participant.race.length > 0){
+		params.push(filter.participant.race.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.participant.ethnicity.length > 0){
+		params.push(filter.participant.ethnicity.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.participant.age.length > 0){
 		params.push(filter.participant.age.toString());
-	}
-	else{
-		params.push("");
-	}
-	
-	if(filter.collect.cancer.length > 0){
-		let cancer_column = [];
-		let category = params[0];
-		filter.collect.cancer.forEach(function(cc){
-			if(category == -1 || category == 2){
-				cancer_column.push("ci_"+config.cancer[cc]+"_male");
-				cancer_column.push("ci_"+config.cancer[cc]+"_female");
-			}
-			else if(category == 0){
-				cancer_column.push("ci_"+config.cancer[cc]+"_male");
-			}
-			else{
-				cancer_column.push("ci_"+config.cancer[cc]+"_female");
-			}
-		});
-		params.push(cancer_column.toString());
-	}
-	else{
-		params.push("");
-	}
-	if(filter.collect.data.length > 0){
-		let data_columns = [];
-		filter.collect.data.forEach(function(cd){
-			data_columns.push(config.collected_data[cd]);
-		});
-		params.push(data_columns.toString());
-	}
-	else{
-		params.push("");
-	}
-	if(filter.collect.specimen.length > 0){
-		let specimen_columns = [];
-		filter.collect.specimen.forEach(function(cs){
-			specimen_columns.push(config.collected_specimen[cs]);
-		});
-		params.push(specimen_columns.toString());
 	}
 	else{
 		params.push("");
@@ -335,6 +221,33 @@ router.post('/export/select', function(req, res){
 	else{
 		params.push("");
 	}
+
+	if(filter.collect.data.length > 0){
+		params.push(filter.collect.data.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.collect.specimen.length > 0){
+
+		let specimen_columns = [];
+		filter.collect.specimen.forEach(function(cs){
+			specimen_columns.push(config.collected_specimen[cs]);
+		});
+		params.push(specimen_columns.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.collect.cancer.length > 0){
+		params.push(filter.collect.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
+	
 	if(orderBy){
 		params.push(orderBy.column);
 		params.push(orderBy.order);
@@ -343,6 +256,7 @@ router.post('/export/select', function(req, res){
 		params.push("");
 		params.push("");
 	}
+
 	if(paging && paging.page != 0){
 		params.push((paging.page-1) * paging.pageSize);
 		params.push(paging.pageSize);
@@ -351,25 +265,41 @@ router.post('/export/select', function(req, res){
 		params.push(-1);
 		params.push(-1);
 	}
+
 	data.list["Criteria"].header = [];
 	if(filter.participant.gender.length !== 0 || filter.participant.race.length !== 0 || filter.participant.ethnicity.length !== 0 || filter.participant.age.length !== 0){
 		data.list["Criteria"].header.push(["[Type of participant]"]);
 		if(filter.participant.gender.length !== 0){
+			let genders = cache.getValue("lookup:gender");
+			let dict = {};
+			genders.forEach(function(g){
+				dict[g.id] = g.gender;
+			});
 			data.list["Criteria"].header.push(["Gender:"]);
 			filter.participant.gender.forEach(function(g){
-				data.list["Criteria"].header.push([" - "+g]);
+				data.list["Criteria"].header.push([" - "+dict[g]]);
 			});
 		}
 		if(filter.participant.race.length !== 0){
+			let races = cache.getValue("lookup:race");
+			let dict = {};
+			races.forEach(function(r){
+				dict[r.id] = r.race;
+			});
 			data.list["Criteria"].header.push(["Race:"]);
 			filter.participant.race.forEach(function(r){
-				data.list["Criteria"].header.push([" - "+r]);
+				data.list["Criteria"].header.push([" - "+dict[r]]);
 			});
 		}
 		if(filter.participant.ethnicity.length !== 0){
+			let ethnicities = cache.getValue("lookup:ethnicity");
+			let dict = {};
+			ethnicities.forEach(function(eth){
+				dict[eth.id] = eth.ethnicity;
+			});
 			data.list["Criteria"].header.push(["Ethnicity:"]);
 			filter.participant.ethnicity.forEach(function(e){
-				data.list["Criteria"].header.push([" - "+e]);
+				data.list["Criteria"].header.push([" - "+dict[e]]);
 			});
 		}
 		if(filter.participant.age.length !== 0){
@@ -382,9 +312,14 @@ router.post('/export/select', function(req, res){
 	if(filter.collect.data.length !== 0 || filter.collect.specimen.length !== 0 || filter.collect.cancer.length !== 0){
 		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
 		if(filter.collect.data.length !== 0){
+			let domains = cache.getValue("lookup:domain");
+			let dict = {};
+			domains.forEach(function(d){
+				dict[d.id] = d.domain + (d.sub_domain? ": " + d.sub_domain : "");
+			});
 			data.list["Criteria"].header.push(["Data Collected:"]);
 			filter.collect.data.forEach(function(d){
-				data.list["Criteria"].header.push([" - "+d]);
+				data.list["Criteria"].header.push([" - "+dict[d]]);
 			});
 		}
 		if(filter.collect.specimen.length !== 0){
@@ -394,9 +329,14 @@ router.post('/export/select', function(req, res){
 			});
 		}
 		if(filter.collect.cancer.length !== 0){
+			let cancers = cache.getValue("lookup:cancer");
+			let dict = {};
+			cancers.forEach(function(c){
+				dict[c.id] = c.cancer;
+			});
 			data.list["Criteria"].header.push(["Cancers Collected:"]);
 			filter.collect.cancer.forEach(function(c){
-				data.list["Criteria"].header.push([" - "+c]);
+				data.list["Criteria"].header.push([" - "+dict[c]]);
 			});
 		}
 	}
@@ -757,17 +697,30 @@ router.post('/export/enrollment', function(req, res){
 							[]];
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_enrollment_count";
+	let func = "select_enrollment_counts";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let race;
-	let ethnicity;
-	
-	gender = filter.gender;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	race = filter.race;
-	ethnicity = filter.ethnicity;
+
+	if(filter.gender.length > 0){
+		params.push(filter.gender.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.race.length > 0){
+		params.push(filter.race.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.ethnicity.length > 0){
+		params.push(filter.ethnicity.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -777,44 +730,51 @@ router.post('/export/enrollment', function(req, res){
 	}
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
+			let lcache = {};
+			let cohorts = [];
 			let list = results[0];
-			//parse enrollment data
 			let male_rows = [];
 			let female_rows = [];
 			let unknown_rows = [];
-			race.forEach(function(r){
-				ethnicity.forEach(function(eth){
-					gender.forEach(function(g){
-						let column = "race_" + config.race[r] + "_" + config.ethnicity[eth] + "_" + config.gender[g];
-						let tmp = {};
-						let total = 0;
-						tmp.Ethnicity = eth;
-						tmp.Race = r;
-						list.forEach(function(l){
-							let v = l[column];
-							let count = 0;
-							if(l[column] == -1){
-								v = "N/P";
-							}
-							else{
-								count = l[column];
-							}
-							tmp[l.cohort_acronym] = v;
-							total += count;
-						});
-						tmp.total = total;
-						if(g === "Male"){
-							male_rows.push(tmp);
-						}
-						else if(g === "Female"){
-							female_rows.push(tmp);
-						}
-						else{
-							unknown_rows.push(tmp);
-						}
-					});
-				});
+			list.forEach(function(l){
+
+				if(lcache[l.u_id] == null){
+					lcache[l.u_id] = {};
+					lcache[l.u_id].gender = l.gender;
+					lcache[l.u_id].Ethnicity = l.ethnicity;
+					lcache[l.u_id].Race = l.race;
+					lcache[l.u_id].total = 0;
+				}
+				if(cohorts.indexOf(l.cohort_acronym) == -1){
+					cohorts.push(l.cohort_acronym);
+				}
+				let tmp = lcache[l.u_id];
+				let count = 0;
+				if(l.enrollment_counts == -1){
+					tmp[l.cohort_acronym] = "N/P";
+					count = 0;
+				}
+				else{
+					tmp[l.cohort_acronym] = l.enrollment_counts;
+					count = l.enrollment_counts;
+				}
+				
+				tmp.total += count;
 			});
+
+			for(key in lcache){
+				let dict = lcache[key];
+				if(dict.gender === "Male"){
+					male_rows.push(dict);
+				}
+				else if(dict.gender === "Female"){
+					female_rows.push(dict);
+				}
+				else{
+					unknown_rows.push(dict);
+				}
+			}
+
 			data.list["Enrollment_Counts"].sections = [];
 			if(male_rows.length > 0){
 				let tmp = {};
@@ -834,27 +794,39 @@ router.post('/export/enrollment', function(req, res){
 				tmp.rows = unknown_rows;
 				data.list["Enrollment_Counts"].sections.push(tmp);
 			}
-			let cohorts = [];
-			list.forEach(function(l){
-				cohorts.push(l.cohort_acronym);
-			});
+			
 			data.list["Criteria"].header = [];
 			if(filter.gender.length !== 0){
+				let genders = cache.getValue("lookup:gender");
+				let dict = {};
+				genders.forEach(function(g){
+					dict[g.id] = g.gender;
+				});
 				data.list["Criteria"].header.push(["Gender:"]);
 				filter.gender.forEach(function(g){
-					data.list["Criteria"].header.push([" - "+g]);
+					data.list["Criteria"].header.push([" - "+dict[g]]);
 				});
 			}
 			if(filter.race.length !== 0){
+				let races = cache.getValue("lookup:race");
+				let dict = {};
+				races.forEach(function(r){
+					dict[r.id] = r.race;
+				});
 				data.list["Criteria"].header.push(["Race:"]);
 				filter.race.forEach(function(r){
-					data.list["Criteria"].header.push([" - "+r]);
+					data.list["Criteria"].header.push([" - "+dict[r]]);
 				});
 			}
 			if(filter.ethnicity.length !== 0){
+				let ethnicities = cache.getValue("lookup:ethnicity");
+				let dict = {};
+				ethnicities.forEach(function(e){
+					dict[e.id] = e.ethnicity;
+				});
 				data.list["Criteria"].header.push(["Ethnicity:"]);
 				filter.ethnicity.forEach(function(e){
-					data.list["Criteria"].header.push([" - "+e]);
+					data.list["Criteria"].header.push([" - "+dict[e]]);
 				});
 			}
 			if(filter.cohort.length !== 0){
@@ -875,7 +847,6 @@ router.post('/export/enrollment', function(req, res){
 		}
 		res.json({status:200, data:data});
 	});
-	
 });
 
 router.post('/export/cancer', function(req, res){
@@ -889,15 +860,23 @@ router.post('/export/cancer', function(req, res){
 	data.list["Cancer_Counts"] = {};
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_cancer_count";
+	let func = "select_cancer_counts";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let cancer;
 	
-	gender = filter.gender;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	cancer = filter.cancer;
+	if(filter.gender.length > 0){
+		params.push(filter.gender.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.cancer.length > 0){
+		params.push(filter.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -905,6 +884,7 @@ router.post('/export/cancer', function(req, res){
 	else{
 		params.push("");
 	}
+
 	let website="";
 	if(config.env == 'prod'){
 		website = "cedcd.nci.nih.gov";
@@ -919,41 +899,56 @@ router.post('/export/cancer', function(req, res){
 		if(results && results[0] && results[0].length > 0){
 			let dt = [];
 			let list = results[0];
-			//parse cancer data
-			cancer.forEach(function(c){
-				gender.forEach(function(g){
-					let column = "ci_" + config.cancer[c] + "_" + g.toLowerCase();
-					let tmp = {};
-					tmp.Cancer = c;
-					tmp.Gender = g;
-					list.forEach(function(l){
-						let v = l[column];
-						if(l[column] == undefined || l[column] == -1){
-							v = "N/P";
-						}
-						tmp[l.cohort_acronym] = v;
-					});
-					dt.push(tmp);
-				});
-			});
-			data.list["Cancer_Counts"].rows = dt;
+			let lcache = {};
 			let cohorts = [];
 			list.forEach(function(l){
-				cohorts.push(l.cohort_acronym);
+
+				if(lcache[l.u_id] == null){
+					lcache[l.u_id] = {};
+					lcache[l.u_id].Cancer = l.cancer;
+					lcache[l.u_id].Gender = l.gender;
+				}
+				if(cohorts.indexOf(l.cohort_acronym) == -1){
+					cohorts.push(l.cohort_acronym);
+				}
+				let tmp = cache[l.u_id];
+				if(l.cancer_counts == -1){
+					tmp[l.cohort_acronym] = "N/P";
+				}
+				else{
+					tmp[l.cohort_acronym] = l.cancer_counts;
+				}
 			});
+
+			for(key in lcache){
+				dt.push(lcache[key]);
+			}
+
+			data.list["Cancer_Counts"].rows = dt;
+			
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Criteria"].header = [];
 			if(filter.gender.length !== 0){
+				let genders = cache.getValue("lookup:gender");
+				let dict = {};
+				genders.forEach(function(g){
+					dict[g.id] = g.gender;
+				});
 				data.list["Criteria"].header.push(["Gender:"]);
 				filter.gender.forEach(function(g){
 					data.list["Criteria"].header.push([" - "+g]);
 				});
 			}
 			if(filter.cancer.length !== 0){
+				let cancers = cache.getValue("lookup:cancer");
+				let dict = {};
+				cancers.forEach(function(c){
+					dict[c.id] = c.cancer;
+				});
 				data.list["Criteria"].header.push(["Cancer Type:"]);
 				filter.cancer.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+c]);
+					data.list["Criteria"].header.push([" - "+dict[c]]);
 				});
 			}
 			if(filter.cohort.length !== 0){
@@ -988,15 +983,23 @@ router.post('/export/biospecimen', function(req, res){
 	data.list["Biospecimen_Counts"] = {};
 	let body = req.body;
 	let filter = body.filter || {};
-	let func = "cohort_specimen_count";
+	let func = "select_specimen_counts";
 	let params = [];
 	//form filter into Strings
-	let specimen;
-	let cancer;
 	
-	specimen = filter.specimen;
-	//-1:[], 2:["Male"], 1:["Female"], 0: ["Male","Female"] 
-	cancer = filter.cancer;
+	if(filter.specimen.length > 0){
+		params.push(filter.specimen.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.cancer.length > 0){
+		params.push(filter.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
 
 	if(filter.cohort.length > 0){
 		params.push(filter.cohort.toString());
@@ -1004,6 +1007,7 @@ router.post('/export/biospecimen', function(req, res){
 	else{
 		params.push("");
 	}
+
 	let website="";
 	if(config.env == 'prod'){
 		website = "cedcd.nci.nih.gov";
@@ -1018,28 +1022,33 @@ router.post('/export/biospecimen', function(req, res){
 		if(results && results[0] && results[0].length > 0){
 			let dt = [];
 			let list = results[0];
-			//parse specimen data
-			specimen.forEach(function(s){
-				cancer.forEach(function(c){
-					let column = "bio_" + config.cancer[c] + "_" + config.specimen[s];
-					let tmp = {};
-					tmp["Specimens Type"] = s;
-					tmp.Cancer = c;
-					list.forEach(function(l){
-						let v = l[column];
-						if(l[column] == -1 || l[column] == null){
-							v = "N/P";
-						}
-						tmp[l.cohort_acronym] = v;
-					});
-					dt.push(tmp);
-				});
-			});
-			data.list["Biospecimen_Counts"].rows = dt;
+			let lcache = {};
 			let cohorts = [];
 			list.forEach(function(l){
-				cohorts.push(l.cohort_acronym);
+
+				if(lcache[l.u_id] == null){
+					lcache[l.u_id] = {};
+					lcache[l.u_id].Cancer = l.cancer;
+					lcache[l.u_id]["Specimens Type"] = l.specimen;
+				}
+				if(cohorts.indexOf(l.cohort_acronym) == -1){
+					cohorts.push(l.cohort_acronym);
+				}
+				let tmp = cache[l.u_id];
+				if(l.specimens_counts == -1){
+					tmp[l.cohort_acronym] = "N/P";
+				}
+				else{
+					tmp[l.cohort_acronym] = l.specimens_counts;
+				}
 			});
+
+			for(key in lcache){
+				dt.push(lcache[key]);
+			}
+
+			data.list["Biospecimen_Counts"].rows = dt;
+			
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Criteria"].header = [];

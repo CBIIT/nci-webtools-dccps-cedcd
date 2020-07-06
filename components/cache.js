@@ -13,7 +13,13 @@ var getValue = function(sid){
 };
 
 var setValue = function(key, value, ttl, next){
-	myCache.set(key, value, ttl);
+	if(ttl == -1){
+		myCache.set(key, value);
+	}
+	else{
+		myCache.set(key, value, ttl);
+	}
+	
 	if(next){
 		next();
 	}

@@ -7,9 +7,8 @@ class GenderList extends Component {
 			
 			this.state = {
 				list:[
-					"Male",
-					"Female"
 				],
+				lookup:{},
 				open:props.startOpen === undefined?false:true,
 				focusThis:this.props.focusThis === undefined?false:this.props.focusThis == "true"?true:false,
 			};
@@ -41,17 +40,49 @@ class GenderList extends Component {
 		}, 0);
 	}
 
+	componentDidMount(){
+		let reqBody = {
+			category:"gender"
+		};
+		fetch('./api/cohort/lookup',{
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+		        'Content-Type': 'application/json'
+		    }
+		})
+		.then(res => res.json())
+		.then(result => {
+			let genders = result.data.list;
+			let arr = [];
+			let dict = {};
+			genders.forEach(function(element){
+				arr.push({gender:element.gender,id:element.id});
+				dict[element.id] = {gender:element.gender,id:element.id};
+			});
+			this.setState({
+					list: arr,
+					lookup: dict
+			});
+		});
+	}
+
   render() {
   	const values = this.props.values;
+
+  	let lookup = Object.assign({},this.state.lookup);
+  	
   	const hasUnknown = this.props.hasUnknown;
   	let f_list = Object.assign([],this.state.list);
+  	/*
   	if(hasUnknown){
   		f_list.push("Other/Unknown");
   	}
+  	*/
   	const list = f_list.map((item, idx) => {
-  		const key = "gender_"+idx;
-		let checked = (values.indexOf(item) > -1);
-		let genderId = 'gender_checkbox_' + key;
+  		const key = "gender_"+item.id;
+		let checked = (values.indexOf(item.id) > -1);
+		let genderId = 'gender_checkbox_' + item.id;
 		//console.log('gender_Id: ' + genderId);
 
 		return (
@@ -60,14 +91,14 @@ class GenderList extends Component {
 					<span className="filter-component-input">
 						<input id={genderId} type="checkbox" onClick={() => this.props.onClick(item)} checked={checked}/>
 					</span>
-					{item}
+					{item.gender}
 				</label>
 			</li>
 		);
 		  
   	});
   	const displayMax = parseInt(this.props.displayMax);
-  	
+
   	const selectedList = values.map((item, idx) => {
   		const key = "s_gender_"+idx;
   		if(idx >= displayMax){
@@ -83,9 +114,10 @@ class GenderList extends Component {
 	  		}
   		}
   		else{
+  			const gender = lookup[item].gender;
   			return (
 	  			<li key={key}>
-					{item}
+					{gender}
 				</li>
 	  		);
   		}
