@@ -18,7 +18,7 @@
     "express": "^4.15.2",
     "express-fileupload": "^0.3.0",
     "express-session": "^1.15.6",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "method-override": "^2.3.9",
     "minimist": "^1.2.0",
