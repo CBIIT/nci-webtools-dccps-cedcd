@@ -25,7 +25,7 @@ class Cancer extends Component {
 		let item = {
 		  filter:state.filter
 		};
-		localStorage.setItem('informationHistory_cancer', JSON.stringify(item));
+		sessionStorage.setItem('informationHistory_cancer', JSON.stringify(item));
 	}
 
 	handleGenderClick = (v) =>{
@@ -101,13 +101,15 @@ class Cancer extends Component {
 			cancer:[],
 			cohort:[]
 		};
-		this.setState(prevState => ({
+		this.setState({
 			result:{},
 			filter: filter
-		}));
+		});
+		sessionStorage.removeItem('informationHistory_cancer');
 	}
 
 	toFilter = () =>{
+		this.saveHistory();
 		this.filterData();
 	}
 
@@ -139,10 +141,9 @@ class Cancer extends Component {
 	}
 
 	componentDidMount(){
-		const previousState = localStorage.getItem('informationHistory_cancer');
+		const previousState = sessionStorage.getItem('informationHistory_cancer');
 		if(previousState){
 			let state = JSON.parse(previousState);
-			localStorage.removeItem('informationHistory_cancer');
 			this.filterData(state.filter);
 		}
 	}

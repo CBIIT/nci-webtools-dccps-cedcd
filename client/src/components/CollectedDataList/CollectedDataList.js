@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 class CollectedDataList extends Component {
+
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -35,6 +38,7 @@ class CollectedDataList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"domain"
 		};
@@ -54,11 +58,17 @@ class CollectedDataList extends Component {
 				arr.push({domain:element.domain,id:element.id});
 				dict[element.id] = {domain:element.domain,id:element.id};
 			});
-			this.setState({
+			if (this._isMounted) {
+				this.setState({
 					list: arr,
 					lookup: dict
-			});
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -68,7 +78,7 @@ class CollectedDataList extends Component {
   	
   	const list = this.state.list.map((item, idx) => {
   		const key = "cdata_"+idx;
-  		let checked = (values.indexOf(item) > -1);
+  		let checked = (values.indexOf(item.id) > -1);
 
 		return (
 			<li key={key}>
@@ -98,12 +108,18 @@ class CollectedDataList extends Component {
 	  		}
   		}
   		else{
-  			const domain = lookup[item].domain;
-  			return (
-	  			<li key={key}>
-					{domain}
-				</li>
-	  		);
+  			if(lookup[item]){
+				const domain = lookup[item].domain;
+	  			return (
+		  			<li key={key}>
+						{domain}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
+  			
   		}
   		
   	});
@@ -116,10 +132,20 @@ class CollectedDataList extends Component {
 	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 		buttonId = "focusMe"
 	  }
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Categories of Data Collected&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

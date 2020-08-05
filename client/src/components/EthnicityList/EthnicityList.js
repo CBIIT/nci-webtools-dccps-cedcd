@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 class EthnicityList extends Component {
+
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -34,6 +37,7 @@ class EthnicityList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"ethnicity"
 		};
@@ -53,11 +57,17 @@ class EthnicityList extends Component {
 				arr.push({ethnicity:element.ethnicity,id:element.id});
 				dict[element.id] = {ethnicity:element.ethnicity,id:element.id};
 			});
-			this.setState({
-					list: arr,
-					lookup: dict
-			});
+			if (this._isMounted) {
+				this.setState({
+						list: arr,
+						lookup: dict
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -97,12 +107,17 @@ class EthnicityList extends Component {
 	  		}
   		}
   		else{
-  			const ethnicity = lookup[item].ethnicity;
-  			return (
-	  			<li key={key}>
-					{ethnicity}
-				</li>
-	  		);
+  			if(lookup[item]){
+  				const ethnicity = lookup[item].ethnicity;
+	  			return (
+		  			<li key={key}>
+						{ethnicity}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
   		}
   		
   	});
@@ -115,10 +130,20 @@ class EthnicityList extends Component {
 	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 		buttonId = "focusMe"
 	  }
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Ethnicity&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

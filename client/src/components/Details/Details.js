@@ -25,22 +25,13 @@ import { Collapse} from 'reactstrap';
 
 class Details extends Component {
 
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.toggle = this.toggle.bind(this);
 		this.state = {
 			list:[],
-			selectionList:[[],[],[]],
-			booleanStates:[
-				'AND',
-				'AND',
-				'AND'
-			],
-			items: [
-				'Select',
-				'Select',
-				'Select'
-			],
 			filter:{
 				participant:{
 					gender:[],
@@ -57,6 +48,18 @@ class Details extends Component {
 					state:[]
 				}
 			},
+			advancedFilter:{
+				gender:[],
+				age:[],
+				state:[],
+				race:[],
+				ethnicity:[],
+				cancer:[],
+				data:[],
+				specimen:[],
+				booleanOperationBetweenField: ["AND","AND","AND","AND","AND","AND","AND","AND"],
+				booleanOperationWithInField: ["OR","OR","OR","OR","OR","OR","OR","OR"]
+			},
 			orderBy:{
 				column:"cohort_name",
 				order:"asc"
@@ -70,16 +73,26 @@ class Details extends Component {
 			collapse: true,
 			searchState: true,
 			prevBasicParams:{},
-			prevAdvancedParam:{},
-			advancedFocus:-1,
+			prevAdvancedParam:{}
 		};
 		this.toFocus = React.createRef();
+	}
+
+	saveHistory = () =>{
+		const state = Object.assign({}, this.state);
+		let item = {
+			filter:state.filter,
+			advancedFilter: state.advancedFilter,
+			orderBy:state.orderBy
+		};
+		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
 
 	//Expand and collapse the filter-panel
 	toggle() {
 		this.setState(state => ({ collapse: !state.collapse }));
 	}
+
 	setAllToFalse(){
 		this.setState(state => ({selectAll: false}));
 	}
@@ -89,6 +102,7 @@ class Details extends Component {
 		const state = Object.assign({}, this.state);
 		let reqBody = {
 			filter: state.filter,
+			advancedFilter: state.advancedFilter,
 			selectionList: state.selectionList,
 			items: state.items,
 			booleanStates: state.booleanStates,
@@ -136,6 +150,7 @@ class Details extends Component {
 			this.pageData(i);
 		}
 	}
+
 	pageData(i, orderBy, filter,selected){
 		if(this.state.searchState == true){
 			const state = Object.assign({}, this.state);
@@ -196,7 +211,7 @@ class Details extends Component {
 					this.setState(prevState => (
 						{
 							list: list,
-							filter: reqBody.filter,
+							advancedFilter: reqBody.advancedFilter,
 							orderBy: reqBody.orderBy,
 							pageInfo: reqBody.paging,
 							lastPage: (i > -1? lastPage : i),
@@ -234,6 +249,16 @@ class Details extends Component {
 				state:[]
 			}
 		};
+		const previousState = sessionStorage.getItem('informationHistory_select');
+		if(previousState){
+			let state = JSON.parse(previousState);
+			let item = {
+				filter:filter,
+				advancedFilter: state.advancedFilter,
+				orderBy:orderBy
+			};
+			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
+		}
 		this.filterData(i, orderBy, filter,[]);
 		
 	}
@@ -244,9 +269,6 @@ class Details extends Component {
 
 		}
 		else{
-			this.setState({
-				advancedFocus: -1,
-			});
 			this.advancedFilterData(this.state.pageInfo.page);
 		}
 	}
@@ -255,6 +277,7 @@ class Details extends Component {
 	toFilter = () =>{
 		this.toggle();
 		this.setAllToFalse();
+		this.saveHistory();
 		this.filterData(1,null,null,[]);
 	}
 
@@ -264,15 +287,29 @@ class Details extends Component {
 			searchState: !this.state.searchState
 		});
 
-		if(this.state.searchState == true){
-			this.clearAdvancedFilter();
-			this.clearFilter();
-			this.advancedFilterData(1,null,null,[]);
+		const previousState = sessionStorage.getItem('informationHistory_select');
+		if(previousState){
+			
+			let state = JSON.parse(previousState);
+			console.log(this.state.searchState);
+			if(this.state.searchState == false){
+				this.filterData(1, state.orderBy, state.filter);
+			}
+			else{
+				this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+			}
 		}
 		else{
-			this.clearAdvancedFilter();
-			this.clearFilter();
+			if(this.state.searchState == false){
+				this.filterData(this.state.pageInfo.page);
+			}
+			else{
+				this.advancedFilterData(this.state.pageInfo.page);
+			}
 		}
+
+
+
 	}
 
 	filterData(i, orderBy, filter,selected){
@@ -310,50 +347,21 @@ class Details extends Component {
 			.then(result => {
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
-				this.setState(prevState => (
-					{
-						list: list,
-						filter: reqBody.filter,
-						orderBy: reqBody.orderBy,
-						pageInfo: reqBody.paging,
-						lastPage: (i > -1? lastPage : i),
-						selected:selected?selected:prevState.selected,
-						comparasion:false
-					}
-				));
+				if (this._isMounted) {
+					this.setState(prevState => (
+						{
+							list: list,
+							filter: reqBody.filter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1? lastPage : i),
+							selected:selected?selected:prevState.selected,
+							comparasion:false
+						}
+					));
+				}
 			});
 	}
-
-	handleAdvancedCancerClick (v,allIds,e,index){
-		const {selectionList} = this.state;
-    	const currList = selectionList[index];
-   
-    
-		if(v){
-      		let idx = selectionList[index].indexOf(v);
-			if(idx > -1){
-        		//remove element
-        		currList.splice(idx,1);
-      		}
-      		else{
-        		//add element
-        		currList.push(v);
-      		}
-		}
-		else{
-			//click on the "all cohort"
-			currList.splice(0,currList.length);
-			if(e.target.checked){
-        		allIds.forEach(function(element){
-          			currList.push(element );
-        		});
-			}
-    }
-    selectionList[index] = currList;
-		this.setState({
-			selectionList: selectionList
-		});
-  }
 
 	clearAdvancedFilter = () =>{
 		this.setAllToFalse();
@@ -361,40 +369,43 @@ class Details extends Component {
 				column:"cohort_name",
 				order:"asc"
 		};
-		this.state.selectionList = [[],[],[]];
-		this.state.booleanStates = ['AND', 'AND', 'AND'];
-		this.state.items = ['Select', 'Select', 'Select'];
-		this.setState({
-			selectionList:[[],[],[]],
-			booleanStates:[
-				'AND',
-				'AND',
-				'AND'
-			],
-			items: [
-				'Select',
-				'Select',
-				'Select'
-			]
-		});
-
-		this.advancedFilterData(1,null,null,[]);
+		let advancedFilter = {
+				gender:[],
+				age:[],
+				state:[],
+				race:[],
+				ethnicity:[],
+				cancer:[],
+				data:[],
+				specimen:[],
+				booleanOperationBetweenField: ["AND","AND","AND","AND","AND","AND","AND","AND"],
+				booleanOperationWithInField: ["OR","OR","OR","OR","OR","OR","OR","OR"]
+			};
+		const previousState = sessionStorage.getItem('informationHistory_select');
+		if(previousState){
+			let state = JSON.parse(previousState);
+			let item = {
+				filter:state.filter,
+				advancedFilter: advancedFilter,
+				orderBy:orderBy
+			};
+			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
+		}
+		this.advancedFilterData(1,orderBy,advancedFilter,[]);
 	}
 
 	toAdvancedFilter = () =>{
 		this.toggle();
 		this.setAllToFalse();
+		this.saveHistory();
 		this.advancedFilterData(1,null,null,[]);
 	}
 
-	advancedFilterData(i, orderBy, filter,selected){
+	advancedFilterData(i,orderBy, advancedFilter,selected){
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage: state.pageInfo.page;
 		let reqBody = {
-			filter: state.filter,
-			selectionList: state.selectionList,
-			items: state.items,
-			booleanStates: state.booleanStates,
+			advancedFilter: state.advancedFilter,
 			orderBy:state.orderBy,
 			paging:state.pageInfo
 		};
@@ -407,9 +418,9 @@ class Details extends Component {
 		if(orderBy){
 			reqBody.orderBy = orderBy;
 		}
-		/*if(filter){
-			reqBody.filter = filter;
-		}*/
+		if(advancedFilter){
+			reqBody.advancedFilter = advancedFilter;
+		}
 		this.setState({
 			prevAdvancedParam:JSON.parse(JSON.stringify(reqBody)),
 		})
@@ -424,28 +435,21 @@ class Details extends Component {
 			.then(result => {
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
-				this.setState(prevState => (
-					{
-						list: list,
-						filter: reqBody.filter,
-						orderBy: reqBody.orderBy,
-						pageInfo: reqBody.paging,
-						lastPage: (i > -1? lastPage : i),
-						selected:selected?selected:prevState.selected,
-						comparasion:false
-					}
-				));
+				if (this._isMounted) {
+					this.setState(prevState => (
+						{
+							list: list,
+							advancedFilter: reqBody.advancedFilter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1? lastPage : i),
+							selected:selected?selected:prevState.selected,
+							comparasion:false
+						}
+					));
+				}
 			});
 	}
-
-
-	searchChange(){
-		const {searchState} = this.state;
-		this.setState({ 
-			searchState: !searchState 
-		});
-	}
-
 
 	handleOrderBy(column){
 		let orderBy = Object.assign({}, this.state.orderBy);
@@ -706,305 +710,196 @@ class Details extends Component {
 		});
 	}
 
+	handleAdvancedGenderClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.gender.indexOf(v.id);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.gender.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.gender.push(v.id);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedRaceClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.race.indexOf(v.id);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.race.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.race.push(v.id);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedEthnicityClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.ethnicity.indexOf(v.id);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.ethnicity.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.ethnicity.push(v.id);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedAgeClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.age.indexOf(v);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.age.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.age.push(v);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedDataClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.data.indexOf(v.id);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.data.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.data.push(v.id);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedSpecimenClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.specimen.indexOf(v);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.specimen.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.specimen.push(v);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
+	handleAdvancedCancerClick = (v,allIds,e) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		if(v){
+			let idx = advancedFilter.cancer.indexOf(v.id);
+
+			if(idx > -1){
+				//remove element
+				advancedFilter.cancer.splice(idx,1);
+			}
+			else{
+				//add element
+				advancedFilter.cancer.push(v.id);
+			}
+		}
+		else{
+			//click on the "all cohort"
+			advancedFilter.cancer = [];
+			if(e.target.checked){
+				advancedFilter.cancer = allIds;
+			}
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+
+	}
+
+	handleAdvancedStateClick = (v) =>{
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		let idx = advancedFilter.state.indexOf(v);
+
+		if(idx > -1){
+			//remove element
+			advancedFilter.state.splice(idx,1);
+		}
+		else{
+			//add element
+			advancedFilter.state.push(v);
+		}
+		this.setState({
+			advancedFilter:advancedFilter
+		});
+	}
+
 	handleComparasion = () =>{
 		this.setState({
 			comparasion:true
 		});
 	}
-
-	removeItem(index) {
-		const { items, booleanStates, selectionList } = this.state;
-		if(items.length > 1){
-		  items.splice(index, 1);
-		  booleanStates.splice(index, 1);
-		  booleanStates[0] = "AND";
-		  selectionList.splice(index, 1);
-		  this.setState({ 
-			items: items,
-			booleanStates: booleanStates,
-			selectionList: selectionList
-		  });
-		  
-		}
-		else{
-			this.setState({
-				items:["Select"],
-				booleanStates:["AND"],
-				selectionList:[[]]
-			});
-		}
-	}
-	
-	addItem(index) {
-		const { items, booleanStates, selectionList } = this.state;
-		  items.splice(index,0,'Select');
-		  booleanStates.splice(index,0,'AND');
-		  selectionList.splice(index,0,[]);
-
-		this.setState({
-		  items: items,
-		  booleanStates:booleanStates,
-		  selectionList: selectionList
-		});
-		this.itemInput = null;
-	}
-	
-	focus() {
-		// Explicitly focus the text input using the raw DOM API
-		// Note: we're accessing "current" to get the DOM node
-		if(this.toFocus.current !== undefined){
-			console.log(this.toFocus.current);
-			//this.toFocus.current.focus();
-
-		}
-		if(document.getElementById("focusMe") !== null){
-			console.log('success!');
-			document.getElementById("focusMe").focus();
-		}
-	}
-
-	handleSelectChange(e, index){
-		const { items, selectionList } = this.state;
-		items[index]= e.target.value;
-		const currSelect = selectionList[index];
-		currSelect.splice(0, currSelect.length);
-		selectionList[index] = currSelect;
-		this.setState({
-		items: items,
-		selectionList: selectionList,
-		advancedFocus: index,
-		}, ()=>{this.focus();});
-	}
-	
-	handleGeneralListClick(v, index){
-		const {selectionList} = this.state;
-		const currList = selectionList[index];
-		let idx = selectionList[index].indexOf(v);
-
-			if(idx > -1){
-				//remove element
-				currList.splice(idx,1);
-			}
-			else{
-				//add element
-				currList.push(v);
-		}
-		selectionList[index] = currList;
-			this.setState({
-				selectionList: selectionList
-		});
-
-	}
-	  
-	handleCancerClick (v,allIds,e,index){
-		const {selectionList} = this.state;
-		const currList = selectionList[index];
-   
-	
-		if(v){
-			  let idx = selectionList[index].indexOf(v.id);
-			if(idx > -1){
-				//remove element
-				currList.splice(idx,1);
-			  }
-			  else{
-				//add element
-				currList.push(v.id);
-			  }
-		}
-		else{
-			//click on the "all cohort"
-			currList.splice(0,currList.length);
-			if(e.target.checked){
-				allIds.forEach(function(element){
-					  currList.push(element );
-				});
-			}
-		}
-		selectionList[index] = currList;
-			this.setState({
-				selectionList: selectionList
-			});
-			console.log(JSON.stringify(this.state.prevBasicParams));
-
-	}
-	
-	
-	createBoolean(index){
-		const { booleanStates } = this.state;
-		if(index > 0){
-		  return <select className="boolean-selector" value = {booleanStates[index]} onChange={e => this.handleBooleanChange(e,index)}>
-			<option value="AND">AND</option>
-			<option value="OR">OR</option>
-		  </select>
-		}
-		return;
-	}
-	
-	createSelector(index){
-		const {items, advancedFocus} = this.state;
-		const currItem = items[index];
-		console.log('Indexing: ' + index + ", " + advancedFocus);
-
-		if(advancedFocus == index){
-			console.log(index)
-			if(currItem == "Gender"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><GenderList focusThis="true" ref={this.toFocus} autofocus hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Race"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><RaceList focusThis="true" ref={this.toFocus} autofocus values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Ethnicity"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><EthnicityList focusThis="true" ref={this.toFocus} autofocus values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Age"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><AgeList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "State"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><DiseaseStateList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Categories"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedDataList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Biospecimen"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedSpecimensList focusThis="true" ref={this.toFocus} values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)} startOpen={true}/></div>;
-			}
-			else if(currItem == "Cancers"){
-				return <div id = "focusThis" tabIndex="0" className = "select-box gray-back"><CollectedCancersList focusThis="true" ref={this.toFocus} hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)} startOpen={true}/></div>;
-			}
-
-			if(index > 0){
-				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-				  <option value="Select" selected disabled hidden>-Select Term-</option>
-				  <option value="Gender">Gender</option>
-				  <option value="Race">Race</option>
-				  <option value="Ethnicity">Ethnicity</option>
-				  <option value="Age">Age at Baseline</option>
-				  <option value="State">Study Population</option>
-				  <option value="Categories">Categories of Data Collected</option>
-				  <option value="Biospecimen">Types of Biospecimens Collected</option>
-				  <option value="Cancers">Cancers Collected</option>
-				</select>
-			  }
-			  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-				<option value="Select" selected disabled hidden>-Select Term-</option>
-				  <option value="Gender">Gender</option>
-				  <option value="Race">Race</option>
-				  <option value="Ethnicity">Ethnicity</option>
-				  <option value="Age">Age at Baseline</option>
-				  <option value="State">Study Population</option>
-				  <option value="Categories">Categories of Data Collected</option>
-				  <option value="Biospecimen">Types of Biospecimens Collected</option>
-				  <option value="Cancers">Cancers Collected</option>
-			  </select>
-		  			
-		}
-		else{
-
-			if(currItem == "Gender"){
-				console.log("FALSE FOUND")
-				return <div className = "select-box gray-back"><GenderList focusThis="false" hasUnknown={true} values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)} /></div>;
-			}
-			else if(currItem == "Race"){
-				return <div className = "select-box gray-back"><RaceList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "Ethnicity"){
-				return <div className = "select-box gray-back"><EthnicityList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "Age"){
-				return <div className = "select-box gray-back"><AgeList focusThis="false" values={this.state.selectionList[index]} displayMax="3" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "State"){
-				return <div className = "select-box gray-back"><DiseaseStateList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "Categories"){
-				return <div className = "select-box gray-back"><CollectedDataList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "Biospecimen"){
-				return <div className = "select-box gray-back"><CollectedSpecimensList focusThis="false" values={this.state.selectionList[index]} displayMax="5" onClick={v => this.handleGeneralListClick(v, index)}/></div>;
-			}
-			else if(currItem == "Cancers"){
-				return <div className = "select-box gray-back"><CollectedCancersList focusThis="false" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.selectionList[index]} displayMax="5" onClick={(v,allIds,e) => this.handleAdvancedCancerClick(v, allIds, e, index)}/></div>;
-			}
-
-			if(index > 0){
-				return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-				  <option value="Select" selected disabled hidden>-Select Term-</option>
-				  <option value="Gender">Gender</option>
-				  <option value="Race">Race</option>
-				  <option value="Ethnicity">Ethnicity</option>
-				  <option value="Age">Age at Baseline</option>
-				  <option value="State">Study Population</option>
-				  <option value="Categories">Categories of Data Collected</option>
-				  <option value="Biospecimen">Types of Biospecimens Collected</option>
-				  <option value="Cancers">Cancers Collected</option>
-				</select>
-			  }
-			  return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-				<option value="Select" selected disabled hidden>-Select Term-</option>
-				  <option value="Gender">Gender</option>
-				  <option value="Race">Race</option>
-				  <option value="Ethnicity">Ethnicity</option>
-				  <option value="Age">Age at Baseline</option>
-				  <option value="State">Study Population</option>
-				  <option value="Categories">Categories of Data Collected</option>
-				  <option value="Biospecimen">Types of Biospecimens Collected</option>
-				  <option value="Cancers">Cancers Collected</option>
-			  </select>
-		  
-		}
-		if(index > 0){
-			return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-			  <option value="Select" selected disabled hidden>-Select Term-</option>
-			  <option value="Gender">Gender</option>
-			  <option value="Race">Race</option>
-			  <option value="Ethnicity">Ethnicity</option>
-			  <option value="Age">Age at Baseline</option>
-			  <option value="State">Study Population</option>
-			  <option value="Categories">Categories of Data Collected</option>
-			  <option value="Biospecimen">Types of Biospecimens Collected</option>
-			  <option value="Cancers">Cancers Collected</option>
-			</select>
-		}
-		return <select className="type-selector" value={this.state.items[index]} onChange={e => this.handleSelectChange(e,index)}>
-				<option value="Select" selected disabled hidden>-Select Term-</option>
-				<option value="Gender">Gender</option>
-				<option value="Race">Race</option>
-				<option value="Ethnicity">Ethnicity</option>
-				<option value="Age">Age at Baseline</option>
-				<option value="State">Study Population</option>
-				<option value="Categories">Categories of Data Collected</option>
-				<option value="Biospecimen">Types of Biospecimens Collected</option>
-				<option value="Cancers">Cancers Collected</option>
-		</select>
-	}
 	
 	handleBooleanChange(e, index){
-		const { booleanStates } = this.state;
-		booleanStates[index] = e.target.value;
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		advancedFilter.booleanOperationBetweenField[index] = e.target.value;
 		this.setState({
-		  booleanStates:booleanStates
+		  advancedFilter:advancedFilter
+		});
+	}
+
+	handleBooleanWithinChange(e, index){
+		const advancedFilter = Object.assign({},this.state.advancedFilter);
+		advancedFilter.booleanOperationWithInField[index] = e.target.value;
+		this.setState({
+		  advancedFilter:advancedFilter
 		});
 	}
 	
 	renderSearchFilters(){
 		const {searchState} = this.state;
 		if(searchState){
-			
 			return(
 				<div className="panel-body">
 			        <div className="filter row">
-			          <div className="col-sm-6 filterCol">
+			          <div className="col-sm-3 filterCol">
 			            <div className="filter-component">
 			              <h3>Eligibility Requirements</h3>
-			              <div className="col-sm-6">
+			              <div className="col-sm-12">
 			              	<GenderList hasUnknown={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick}/>
-			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
-			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
-			              </div>
-			              <div className="col-sm-6">
 			              	<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick}/>
 			              	<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick}/>
+			              </div>
+			            </div>
+			          </div>
+			          <div className="col-sm-3 filterCol">
+			            <div className="filter-component">
+			              <h3>Enrollments</h3>
+			              <div className="col-sm-12">
+			              	<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick}/>
+			              	<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick}/>
 			              </div>
 			            </div>
 			          </div>
@@ -1026,36 +921,194 @@ class Details extends Component {
 			          </div>
 			        </div>
 			        <div className="row" style={{"display":"flex"}}>
-			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
-					 	<a id="filterClear" className="btn-filter" style={{"margin-left":"auto"}} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>   
-			            <input type="submit" id="filterEngage" name="filterEngage" style={{"margin-right":"1rem"}} value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
+			            <a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{"marginTop":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
+					 	<a id="filterClear" className="btn-filter" style={{"marginLeft":"auto"}} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>   
+			            <input type="submit" id="filterEngage" name="filterEngage" style={{"marginRight":"1rem"}} value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter}/>
 			        </div>
 			      </div>
 			)
-		} 
+		}
 		else{
-			//{this.createSelectItems(index)}
-			const { items, itemText } = this.state
-			const itemList = items.map((item, index) => (
-			<div>
-				<div className="grid-container">
-						{this.createBoolean(index)}
-						{this.createSelector(index)}
-						<button className="add-button"onClick={e => this.addItem(index+1)}>+</button>
-						<button className="remove-button" onClick={e => this.removeItem(index)}>&times;</button>
-						
-					</div>
-			</div>
-			));
 			return(
-				<div className="panel-body panel-coloring">
+				<div className="panel-body">
+			        <div className="filter row">
+			          <div className="col-sm-12">
+			            <div className="filter-component">
+			              	<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Eligibility Requirements</b></div>
+			              	<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+									<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[0]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,0)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<GenderList hasUnknown={true} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[0]} title="Boolean operation between options in gender filter" onChange={e => this.handleBooleanWithinChange(e,0)}>
+								      	<option value="AND">AND</option>
+								      	<option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[1]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,1)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+									<div style={{"width":"92%", "float": "left"}}>
+								  		<AgeList rightBorderStyle="straight" values={this.state.advancedFilter.age} displayMax="3" onClick={this.handleAdvancedAgeClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[1]} title="Boolean operation between options in age filter" onChange={e => this.handleBooleanWithinChange(e,1)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[2]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,2)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<DiseaseStateList rightBorderStyle="straight" values={this.state.advancedFilter.state} displayMax="5" onClick={this.handleAdvancedStateClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[2]} title="Boolean operation between options in state filter" onChange={e => this.handleBooleanWithinChange(e,2)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+			            </div>
+			          </div>
+			        </div>
+			        <div className="filter row">
+			          <div className="col-sm-12">
+			            <div className="filter-component">
+			              	<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Enrollments</b></div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[3]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,3)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<RaceList rightBorderStyle="straight" values={this.state.advancedFilter.race} displayMax="3" onClick={this.handleAdvancedRaceClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[3]} title="Boolean operation between options in race filter" onChange={e => this.handleBooleanWithinChange(e,3)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[4]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,4)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<EthnicityList rightBorderStyle="straight" values={this.state.advancedFilter.ethnicity} displayMax="3" onClick={this.handleAdvancedEthnicityClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[4]} title="Boolean operation between options in ethnicity filter" onChange={e => this.handleBooleanWithinChange(e,4)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+			            </div>
+			          </div>
+			        </div>
+			        <div className="filter row">
+			          <div className="col-sm-12">
+			            <div className="filter-component">
+							<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Data and Specimens Collected</b></div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[5]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,5)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+									<div style={{"width":"92%", "float": "left"}}>
+								  		<CollectedDataList rightBorderStyle="straight" values={this.state.advancedFilter.data} displayMax="5" onClick={this.handleAdvancedDataClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[5]} title="Boolean operation between options in Data filter" onChange={e => this.handleBooleanWithinChange(e,5)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[6]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,6)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<CollectedSpecimensList rightBorderStyle="straight" values={this.state.advancedFilter.specimen} displayMax="5" onClick={this.handleAdvancedSpecimenClick}/>
+								  	</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[6]} title="Boolean operation between options in biospecimens filter"  onChange={e => this.handleBooleanWithinChange(e,6)}>
+									      <option value="AND">AND</option>
+									      <option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[7]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,7)}>
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+								  	<div style={{"width":"92%", "float": "left"}}>
+								  		<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick}/>
+									</div>
+								  	<div style={{"width":"8%", "float": "left"}}>
+								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e,7)}>
+								      	<option value="AND">AND</option>
+								      	<option value="OR">OR</option>
+								      </select>
+								    </div>
+								</div>
+							</div>
+			            </div>
+			          </div>
+			        </div>
 
-					<h3>Search Terms</h3>  
-					  {itemList}
 			        <div className="row" style={{"display":"flex"}}>
-			            <a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{"margin-top":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
-			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{"margin-left":"auto"}} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
-			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" style={{"margin-right":"1rem"}} onClick={this.toAdvancedFilter}/>
+			            <a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{"marginTop":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
+			            <a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{"marginLeft":"auto"}} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
+			            <input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" style={{"marginRight":"1rem"}} onClick={this.toAdvancedFilter}/>
 			        </div>
 			      </div>
 			)
@@ -1083,22 +1136,25 @@ class Details extends Component {
 	}
 
 	componentDidMount(){
-		const previousState = localStorage.getItem('informationHistory_select');
+		this._isMounted = true;
+		const previousState = sessionStorage.getItem('informationHistory_select');
 		if(previousState){
 			let state = JSON.parse(previousState);
-			localStorage.removeItem('informationHistory_select');
-			if(state.comparasion){
-				this.setState(state);
-			}
-			else{
-				if(this.state.searchState == true){
-					this.filterData(state.paging.page, state.orderBy, state.filter);
-				}
-				else{
-					this.advancedFilterData(state.paging.page, state.orderBy, state.filter);
-				}
+			if(this._isMounted){
+				this.setState({
+					filter: state.filter,
+					advancedFilter: state.advancedFilter,
+					orderBy: state.orderBy
+				});
 			}
 			
+			if(this.state.searchState == true){
+				this.filterData(1, state.orderBy, state.filter);
+			}
+			else{
+
+				this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+			}
 		}
 		else{
 			if(this.state.searchState == true){
@@ -1110,18 +1166,8 @@ class Details extends Component {
 		}
 	}
 
-	saveHistory = () =>{
-		const state = Object.assign({}, this.state);
-		let item = {
-			filter:state.filter,
-			orderBy:state.orderBy,
-			paging:state.pageInfo,
-			lastPage:state.lastPage,
-			selected:state.selected,
-			comparasion:state.comparasion,
-			currTab:state.currTab
-		};
-		localStorage.setItem('informationHistory_select', JSON.stringify(item));
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	handleTabClick(i){
@@ -1133,31 +1179,31 @@ class Details extends Component {
 	}
 
 	render() {
-			if(this.state.comparasion){
-				return (
-			<div>
-				<div id="filterLabels" className="filter-block col-md-12 lockedFilter">
-					<div className="content-nav">
-			            <a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to filter</span></a>
-					</div>
-				</div>
-				<div className="table-description">
-					<p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
-				</div>
-			  	<div id="data-table" className="level2 col-md-12">
-					<div id="table-header" className="">
-						<div>
-							<div id="cohortDetailTabs">
-								<TabBoard currTab={this.state.currTab} onClick={(i) => this.handleTabClick(i)}/>
-							</div>
+		if(this.state.comparasion){
+			return (
+				<div>
+					<div id="filterLabels" className="filter-block col-md-12 lockedFilter">
+						<div className="content-nav">
+				            <a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to filter</span></a>
 						</div>
 					</div>
-					<BoxBoard saveHistory={this.saveHistory} cohorts={this.state.selected} currTab={this.state.currTab} />
+					<div className="table-description">
+						<p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
+					</div>
+				  	<div id="data-table" className="level2 col-md-12">
+						<div id="table-header" className="">
+							<div>
+								<div id="cohortDetailTabs">
+									<TabBoard currTab={this.state.currTab} onClick={(i) => this.handleTabClick(i)}/>
+								</div>
+							</div>
+						</div>
+						<BoxBoard saveHistory={this.saveHistory} cohorts={this.state.selected} currTab={this.state.currTab} />
+					</div>
 				</div>
-			</div>
 			);
-			}
-			else{
+		}
+		else{
 	  		const list = this.state.list;
 	  		let content = list.map((item, index) => {
 	  			let id = item.id;
@@ -1190,109 +1236,108 @@ class Details extends Component {
 					</tr>
 	  			);
 	  		});
-	  		if(content.length === 0){
+  			if(content.length === 0){
 	  			content = (
 	  				<tr>
 						<td colSpan="3">Nothing to display</td>
 					</tr>
 	  			);
-			  }
-			  
+		  	}
+		  
 			return (
 				<div>
-				<input id="tourable" type="hidden" />
-				<h1 className="welcome pg-title">Search Cohorts</h1>
-				<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
-				</p>
-			  <div id="cedcd-home-filter" className="filter-block col-md-12">
-			    <div id="filter-panel" className="panel panel-default">
-					<div className="panel-heading" onClick={this.toggle}>
-						<h2 className="panel-title">Variables Collected in Cohort Study</h2>
+					<input id="tourable" type="hidden" />
+					<h1 className="welcome pg-title">Search Cohorts</h1>
+					<p className="welcome">Browse the list of cohorts or use the filter options to shorten the list of cohorts according to types of participants, data, and specimens.  Then select the cohorts about which you'd like to see details and select the Submit button.
+					</p>
+			  		<div id="cedcd-home-filter" className="filter-block col-md-12">
+			    		<div id="filter-panel" className="panel panel-default">
+							<div className="panel-heading" onClick={this.toggle}>
+								<h2 className="panel-title">Variables Collected in Cohort Study</h2>
 						
-						<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
-							<i className="fas fa-chevron-up" id="toggle-switch"></i>
-						</span>
-						<p className={`pull-right d-inline-block padded-string`}>
-							{this.state.collapse ? "Click to Collapse" : "Click to Expand"}
-						</p>
+								<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
+									<i className="fas fa-chevron-up" id="toggle-switch"></i>
+								</span>
+								<p className={`pull-right d-inline-block padded-string`}>
+									{this.state.collapse ? "Click to Collapse" : "Click to Expand"}
+								</p>
+							</div>
+							<Collapse isOpen={this.state.collapse}>
+					      		{this.renderSearchFilters()}
+						  	</Collapse>
+			    		</div>
+			  		</div>
+					<div className="filter-block home col-md-12">
+						<div className="row" style={{"display":"flex"}}>
+							<div id="tableControls" className="" style={{"paddingLeft":"15px"}}>
+								<ul className="table-controls">
+									<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
+								</ul>
+							</div>
+							<div id="tableExport" style={{"paddingLeft":"1rem", "paddingTop": "7px"}}>
+								<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
+									<Workbook.Sheet name="Cohort_Selection">
+									<Workbook.Column label="Cohort Name" value="cohort_name"/>
+									<Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
+									<Workbook.Column label="Total Enrollments (n=)" value="enrollment_total"/>
+									<Workbook.Column label="Website" value="cohort_web_site"/>
+									<Workbook.Column label="Last Updated" value="update_time"/>
+									</Workbook.Sheet>
+									<Workbook.Sheet name="Criteria">
+									</Workbook.Sheet>
+								</Workbook>
+							</div>
+							<div style={{ "marginLeft":"auto", "paddingLeft":"10px", "paddingRight":"1rem", "position":"relative", "paddingTop":"7px"}}>
+									<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
+							</div>
+							<div style={{"paddingRight":"15px", "paddingTop": "5px"}}>
+								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+							</div>
+						</div>
 					</div>
-					<Collapse isOpen={this.state.collapse}>
-			      {this.renderSearchFilters()}
-				  </Collapse>
-			    </div>
-			  </div>
-			  <div className="filter-block home col-md-12">
-				<div className="row" style={{"display":"flex"}}>
-					<div id="tableControls" className="" style={{"padding-left":"15px"}}>
-						<ul className="table-controls">
-							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
-						</ul>
+					<div className="table-inner col-md-12">
+						<div className="cedcd-table home">
+							<div>
+								<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
+									<thead>
+										<tr id="summaryHeader" className="col-header">
+											{this.renderSelectHeader("5%")}
+											{this.renderTableHeader("cohort_name","30%")}
+											{this.renderTableHeader("cohort_acronym","10%")}
+											{this.renderTableHeaderMiddle("enrollment_total","20%")}
+											<th className="sortable" width="20%" scope="col">
+												<a href="javascript:void(0);" style={{cursor:'default'}}>Website
+												</a>
+											</th>
+											{this.renderTableHeader("update_time","15%")}
+										</tr>
+									</thead>
+									<tbody>
+										{content}
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
-					<div id="tableExport" style={{"padding-left":"1rem", "padding-top": "7px"}}>
-						<Workbook dataSource={this.loadingData} element={<a id="exportTblBtn" href="javascript:void(0);">Export Table <i className="fas fa-file-export"></i></a>}>
-							<Workbook.Sheet name="Cohort_Selection">
-							<Workbook.Column label="Cohort Name" value="cohort_name"/>
-							<Workbook.Column label="Cohort Acronym" value="cohort_acronym"/>
-							<Workbook.Column label="Total Enrollments (n=)" value="enrollment_total"/>
-							<Workbook.Column label="Website" value="cohort_web_site"/>
-							<Workbook.Column label="Last Updated" value="update_time"/>
-							</Workbook.Sheet>
-							<Workbook.Sheet name="Criteria">
-							</Workbook.Sheet>
-						</Workbook>
-					</div>
-					<div style={{ "margin-left":"auto", "padding-left":"10px", "padding-right":"1rem", "position":"relative", "padding-top":"7px"}}>
-							<PageSummary pageInfo={this.state.pageInfo} mid="true"/>
-					</div>
-					<div style={{"padding-right":"15px", "padding-top": "5px"}}>
-						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+					<div className="filter-block home col-md-12">
+						<div className="row" style={{"display":"flex"}}>
+							<div id="tableControls" className="" style={{"paddingLeft":"15px"}}>
+								<ul className="table-controls">
+									<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
+								</ul>
+							</div>
+							<div style={{"marginLeft":"auto", "paddingRight":"1rem", "paddingTop": "7px" }}>
+								<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
+							</div>
+							
+							<div style={{"paddingRight":"15px",  "paddingTop": "5px"}}>
+								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
+							</div>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div className="table-inner col-md-12">
-				<div className="cedcd-table home">
-					<div>
-						<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
-							<thead>
-								<tr id="summaryHeader" className="col-header">
-									{this.renderSelectHeader("5%")}
-									{this.renderTableHeader("cohort_name","30%")}
-									{this.renderTableHeader("cohort_acronym","10%")}
-									{this.renderTableHeaderMiddle("enrollment_total","20%")}
-									<th className="sortable" width="20%" scope="col">
-										<a href="javascript:void(0);" style={{cursor:'default'}}>Website
-										</a>
-									</th>
-									{this.renderTableHeader("update_time","15%")}
-								</tr>
-							</thead>
-							<tbody>
-								{content}
-							</tbody>
-						</table>
-					</div>
-				</div>
-				
-				</div>
-				<div className="filter-block home col-md-12">
-				<div className="row" style={{"display":"flex"}}>
-					<div id="tableControls" className="" style={{"padding-left":"15px"}}>
-						<ul className="table-controls">
-							<FloatingSubmit onClick={this.handleComparasion} align ="true" values={this.state.selected} />
-						</ul>
-					</div>
-					<div style={{"margin-left":"auto", "padding-right":"1rem", "padding-top": "7px" }}>
-						<PageSummary pageInfo={this.state.pageInfo} mid = "true"/>
-					</div>
-					
-					<div style={{"padding-right":"15px",  "padding-top": "5px"}}>
-						<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)}/>
-					</div>
-				</div>
-			</div>
-			</div>
 			);
-			}
+		}
 	}
 }
 export default Details;

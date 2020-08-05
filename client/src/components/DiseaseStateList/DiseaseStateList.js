@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 class DiseaseStateList extends Component {
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -88,10 +89,21 @@ class DiseaseStateList extends Component {
 	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 		buttonId = "focusMe"
 	  }
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
+	  
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Study population&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

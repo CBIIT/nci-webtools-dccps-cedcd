@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 class RaceList extends Component {
+
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -36,6 +39,7 @@ class RaceList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"race"
 		};
@@ -55,11 +59,17 @@ class RaceList extends Component {
 				arr.push({race:element.race,id:element.id});
 				dict[element.id] = {race:element.race,id:element.id};
 			});
-			this.setState({
-					list: arr,
-					lookup: dict
-			});
+			if (this._isMounted) {
+				this.setState({
+						list: arr,
+						lookup: dict
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -98,12 +108,17 @@ class RaceList extends Component {
 	  		}
   		}
   		else{
-  			const race = lookup[item].race;
-  			return (
-	  			<li key={key}>
-					{race}
-				</li>
-	  		);
+  			if(lookup[item]){
+  				const race = lookup[item].race;
+	  			return (
+		  			<li key={key}>
+						{race}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
   		}
   		
   	});
@@ -116,10 +131,20 @@ class RaceList extends Component {
 	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 		buttonId = "focusMe"
 	  }
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Race&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 class SpecimenList extends Component {
 
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -36,6 +38,7 @@ class SpecimenList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"specimen"
 		};
@@ -55,11 +58,17 @@ class SpecimenList extends Component {
 				arr.push({specimen:element.specimen,id:element.id});
 				dict[element.id] = {specimen:element.specimen,id:element.id};
 			});
-			this.setState({
+			if (this._isMounted) {
+				this.setState({
 					list: arr,
 					lookup: dict
-			});
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -99,12 +108,18 @@ class SpecimenList extends Component {
 	  		}
   		}
   		else{
-  			const specimen = lookup[item].specimen;
-  			return (
-	  			<li key={key}>
-					{specimen}
-				</li>
-	  		);
+  			if(lookup[item]){
+  				const specimen = lookup[item].specimen;
+	  			return (
+		  			<li key={key}>
+						{specimen}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
+  			
   		}
   		
   	});
@@ -114,10 +129,20 @@ class SpecimenList extends Component {
   		cls = cls + " open";
   	}
   	let expanded = this.state.open? "true": "false";
+
+  	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Specimen Type&nbsp;
 				<span className="badge">{this.props.values.length}</span>
 				</button>

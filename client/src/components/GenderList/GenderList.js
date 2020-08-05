@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './GenderList.css';
 class GenderList extends Component {
 
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 			
@@ -41,6 +43,7 @@ class GenderList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"gender"
 		};
@@ -60,11 +63,17 @@ class GenderList extends Component {
 				arr.push({gender:element.gender,id:element.id});
 				dict[element.id] = {gender:element.gender,id:element.id};
 			});
-			this.setState({
-					list: arr,
-					lookup: dict
-			});
+			if (this._isMounted) {
+				this.setState({
+						list: arr,
+						lookup: dict
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -73,6 +82,7 @@ class GenderList extends Component {
   	let lookup = Object.assign({},this.state.lookup);
   	
   	const hasUnknown = this.props.hasUnknown;
+
   	let f_list = Object.assign([],this.state.list);
   	/*
   	if(hasUnknown){
@@ -114,12 +124,18 @@ class GenderList extends Component {
 	  		}
   		}
   		else{
-  			const gender = lookup[item].gender;
-  			return (
-	  			<li key={key}>
-					{gender}
-				</li>
-	  		);
+  			if(lookup[item]){
+  				const gender = lookup[item].gender;
+	  			return (
+		  			<li key={key}>
+						{gender}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
+  			
   		}
   		
   	});
@@ -133,10 +149,20 @@ class GenderList extends Component {
 	  if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 		buttonId = "focusMe"
 	  }
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle gender-list-for-testing" id = {buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle gender-list-for-testing" style={borderStyle} id = {buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				Gender&nbsp;
 				<span className="badge">{this.props.values.length}</span>
 				</button>

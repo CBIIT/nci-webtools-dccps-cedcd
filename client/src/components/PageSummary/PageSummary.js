@@ -26,7 +26,7 @@ class PageSummary extends Component {
     }
     else{
       return (
-        <span  style={{"display":"block", "text-align":"center"}} id="summaryCount">Viewing {pageStart}-{pageEnd} of {total}</span>
+        <span  style={{"display":"block", "textAlign":"center"}} id="summaryCount">Viewing {pageStart}-{pageEnd} of {total}</span>
       );
     }
   }

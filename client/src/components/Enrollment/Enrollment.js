@@ -27,7 +27,7 @@ class Enrollment extends Component {
 		let item = {
 		  filter:state.filter
 		};
-		localStorage.setItem('informationHistory_enrollment', JSON.stringify(item));
+		sessionStorage.setItem('informationHistory_enrollment', JSON.stringify(item));
 	}
 
 	handleGenderClick = (v) =>{
@@ -113,13 +113,17 @@ class Enrollment extends Component {
 			ethnicity:[],
 			cohort:[]
 		};
-		this.setState(prevState => ({
+
+		this.setState({
 			result:{},
 			filter: filter
-		}));
+		});
+		
+		sessionStorage.removeItem('informationHistory_enrollment');
 	}
 
 	toFilter = () =>{
+		this.saveHistory();
 		this.filterData();
 	}
 
@@ -151,10 +155,9 @@ class Enrollment extends Component {
 	}
 
 	componentDidMount(){
-		const previousState = localStorage.getItem('informationHistory_enrollment');
+		const previousState = sessionStorage.getItem('informationHistory_enrollment');
 		if(previousState){
 			let state = JSON.parse(previousState);
-			localStorage.removeItem('informationHistory_enrollment');
 			this.filterData(state.filter);
 		}
 	}

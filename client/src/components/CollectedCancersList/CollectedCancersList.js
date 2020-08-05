@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 class CollectedCancersList extends Component {
+
+	_isMounted = false;
+
 	constructor(props){
 		super(props);
 		this.state = {
@@ -35,6 +38,7 @@ class CollectedCancersList extends Component {
 	}
 
 	componentDidMount(){
+		this._isMounted = true;
 		let reqBody = {
 			category:"cancer"
 		};
@@ -54,11 +58,17 @@ class CollectedCancersList extends Component {
 				arr.push({cancer:element.cancer,id:element.id});
 				dict[element.id] = {cancer:element.cancer,id:element.id};
 			});
-			this.setState({
+			if (this._isMounted) {
+				this.setState({
 					list: arr,
 					lookup: dict
-			});
+				});
+			}
 		});
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
   render() {
@@ -105,12 +115,18 @@ class CollectedCancersList extends Component {
 	  		}
   		}
   		else{
-  			const cancer = lookup[item].cancer;
-  			return (
-	  			<li key={key}>
-					{cancer}
-				</li>
-	  		);
+  			
+	  		if(lookup[item]){
+				const cancer = lookup[item].cancer;
+	  			return (
+		  			<li key={key}>
+						{cancer}
+					</li>
+		  		);
+  			}
+  			else{
+  				return "";
+  			}
   		}
   		
   	});
@@ -123,10 +139,20 @@ class CollectedCancersList extends Component {
 	if(this.state.focusThis == true && this.props.focusThis == "true"){ 
 	buttonId = "focusMe"
 	}
+
+	let borderStyle = {};
+	const rightBorderStyle = this.props.rightBorderStyle || "curve";
+
+	if(rightBorderStyle == "straight"){
+		borderStyle = {
+			"borderTopRightRadius": "0px",
+			"borderBottomRightRadius": "0px"
+		};
+	}
     return (
 		<div className="filter-component-block">
 			<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-				<button className="btn btn-default dropdown-toggle" id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+				<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 				{title}&nbsp;
 				<span className="badge">{values.length}</span>
 				</button>

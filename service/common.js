@@ -175,6 +175,7 @@ router.post('/export/select', function(req, res){
 							["Export Date:",dt],
 							[],
 							[]];
+
 	let body = req.body;
 	let filter = body.filter || {};
 	let orderBy = body.orderBy || {};
@@ -185,20 +186,6 @@ router.post('/export/select', function(req, res){
 
 	if(filter.participant.gender.length > 0){
 		params.push(filter.participant.gender.toString());
-	}
-	else{
-		params.push("");
-	}
-
-	if(filter.participant.race.length > 0){
-		params.push(filter.participant.race.toString());
-	}
-	else{
-		params.push("");
-	}
-
-	if(filter.participant.ethnicity.length > 0){
-		params.push(filter.participant.ethnicity.toString());
 	}
 	else{
 		params.push("");
@@ -217,6 +204,20 @@ router.post('/export/select', function(req, res){
 			state_columns.push(config.eligible_disease_state[ss]);
 		});
 		params.push(state_columns.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.participant.race.length > 0){
+		params.push(filter.participant.race.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(filter.participant.ethnicity.length > 0){
+		params.push(filter.participant.ethnicity.toString());
 	}
 	else{
 		params.push("");
@@ -383,282 +384,255 @@ router.post('/export/advancedSelect', function(req, res){
 							["Export Date:",dt],
 							[],
 							[]];
+
+
 	let body = req.body;
-	let filter = body.filter || {};
+	let advancedFilter = body.advancedFilter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
-	let func = "cohort_select";
+	let func = "advanced_cohort_select";
 	let params = [];
 	//form filter into Strings
-	let gender;
-	let race;
-	let ethnicity;
 	
-	let selectionList = body.selectionList || {};
-	let items = body.items || {};
-	let booleanStates = body.booleanStates || {};
-	let first = true;
-	//form filter into Strings
-
-	
-	let sql = 'select sql_calc_found_rows cohort_id,cohort_name, cohort_acronym,cohort_web_site,update_time,race_total_total from cohort_summary where 1=1 ';
-	for(let i = 0; i < selectionList.length; i++){
-
-		let currItem = items[i];
-		let currState = booleanStates[i];
-		if(first == true){
-			currState = "AND"
-		}
-		
-		let currSelection = selectionList[i];
-		if(currItem == "Gender"){
-			let toAdd = "";
-			if(currSelection.includes("Male")){
-				if(currSelection.includes("Female")){
-					toAdd += " eligible_gender in (0,1,2) ";
-				}
-				else{
-					toAdd += " eligible_gender in (0,2) ";
-				}
-			}
-			else if(currSelection.includes("Female")){
-				toAdd += "eligible_gender in (0,1) ";
-			}
-			else{
-				toAdd += "";
-			}
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo(currSelection,[],[]);
-			let tempString = "";
-			for(let a = 0; a < enrollmentInfo.length; a++){
-				tempString += " " + enrollmentInfo[a] + " > 0 ";
-				if(a != enrollmentInfo.length - 1){
-					tempString += " or ";
-				}
-			}
-			if(tempString != "" && toAdd != ""){
-				sql += " " + currState + " (" + toAdd + " and (" + tempString + ")) ";
-				first = false;
-			}
-			else if(tempString == "" && toAdd != ""){
-				sql += " " + currState + " ( " + toAdd + ") ";
-				first = false;
-			}
-			else if(tempString != "" && toAdd == ""){
-				sql += " " + currState + " (" + tempString + ") "
-				first = false;
-			}
-		}
-		else if(currItem == "Race"){
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo([],currSelection,[]);
-			let tempString = "";
-			for(let a = 0; a < enrollmentInfo.length; a++){
-				tempString += " " + enrollmentInfo[a] + " > 0 ";
-				if(a != enrollmentInfo.length - 1){
-					tempString += " or ";
-				}
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") "
-				first = false;
-			}
-
-		}
-		else if(currItem == "Ethnicity"){
-			enrollmentInfo = EnrollmentFunctions.getEnrollmentInfo([],[],currSelection);
-			let tempString = "";
-			for(let a = 0; a < enrollmentInfo.length; a++){
-				tempString += " " + enrollmentInfo[a] + " > 0 ";
-				if(a != enrollmentInfo.length - 1){
-					tempString += " or ";
-				}
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") "
-				first = false;
-			}
-
-		}
-		else if(currItem == "Age"){
-			let tempString = "";
-			for(let a = 0; a < currSelection.length; a++){
-				let curr = currSelection[a]; 
-				if(curr == "0-14"){
-					tempString += " enrollment_age_min <= 14 ";
-				}
-				else if(curr == "15-19"){
-					tempString += " ((enrollment_age_min >= 15 and enrollment_age_min <= 19) or (enrollment_age_max >= 15 and enrollment_age_max <= 19) or (enrollment_age_min <= 15 and enrollment_age_max >= 19)) ";
-				}
-				else if(curr == "20-24"){
-					tempString += " ((enrollment_age_min >= 20 and enrollment_age_min <= 24) or (enrollment_age_max >= 20 and enrollment_age_max <= 24) or (enrollment_age_min <= 20 and enrollment_age_max >= 24)) ";
-				}
-				else if(curr == "25-29"){
-					tempString += " ((enrollment_age_min >= 25 and enrollment_age_min <= 29) or (enrollment_age_max >= 25 and enrollment_age_max <= 29) or (enrollment_age_min <= 25 and enrollment_age_max >= 29)) ";
-				}
-				else if(curr == "30-34"){
-					tempString += " ((enrollment_age_min >= 30 and enrollment_age_min <= 34) or (enrollment_age_max >= 30 and enrollment_age_max <= 34) or (enrollment_age_min <= 30 and enrollment_age_max >= 34)) ";
-				}
-				else if(curr == "35-39"){
-					tempString += " ((enrollment_age_min >= 35 and enrollment_age_min <= 39) or (enrollment_age_max >= 35 and enrollment_age_max <= 39) or (enrollment_age_min <= 35 and enrollment_age_max >= 39)) ";
-				}
-				else if(curr == "40-44"){
-					tempString += " ((enrollment_age_min >= 40 and enrollment_age_min <= 44) or (enrollment_age_max >= 40 and enrollment_age_max <= 44) or (enrollment_age_min <= 40 and enrollment_age_max >= 44)) ";
-				}
-				else if(curr == "45-49"){
-					tempString += " ((enrollment_age_min >= 45 and enrollment_age_min <= 49) or (enrollment_age_max >= 45 and enrollment_age_max <= 49) or (enrollment_age_min <= 45 and enrollment_age_max >= 49)) ";
-				}
-				else if(curr == "50-54"){
-					tempString += " ((enrollment_age_min >= 50 and enrollment_age_min <= 54) or (enrollment_age_max >= 50 and enrollment_age_max <= 54) or (enrollment_age_min <= 50 and enrollment_age_max >= 54)) ";
-				}
-				else if(curr == "55-59"){
-					tempString += " ((enrollment_age_min >= 55 and enrollment_age_min <= 59) or (enrollment_age_max >= 55 and enrollment_age_max <= 59) or (enrollment_age_min <= 55 and enrollment_age_max >= 59)) ";
-				}
-				else if(curr == "60-64"){
-					tempString += " ((enrollment_age_min >= 60 and enrollment_age_min <= 64) or (enrollment_age_max >= 60 and enrollment_age_max <= 64) or (enrollment_age_min <= 60 and enrollment_age_max >= 64)) ";
-				}
-				else if(curr == "65-69"){
-					tempString += " ((enrollment_age_min >= 65 and enrollment_age_min <= 69) or (enrollment_age_max >= 65 and enrollment_age_max <= 69) or (enrollment_age_min <= 65 and enrollment_age_max >= 69)) ";
-				}
-				else if(curr == "70-74"){
-					tempString += " ((enrollment_age_min >= 70 and enrollment_age_min <= 74) or (enrollment_age_max >= 70 and enrollment_age_max <= 74) or (enrollment_age_min <= 70 and enrollment_age_max >= 74)) ";
-				}
-				else if(curr == "75-79"){
-					tempString += " ((enrollment_age_min >= 75 and enrollment_age_min <= 79) or (enrollment_age_max >= 75 and enrollment_age_max <= 79) or (enrollment_age_min <= 75 and enrollment_age_max >= 79)) ";
-				}
-				else if(curr == "80-85+"){
-					tempString += " (enrollment_age_min >= 80) "
-				}
-				else{
-					tempString += "";
-				}
-				if(a != currSelection.length - 1){
-					tempString += " or ";
-				}
-
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") ";
-				first = false;
-			}
-			
-
-		}
-		else if(currItem == "Cancers"){
-			let tempString = "";
-			for(let a = 0; a < currSelection.length; a++){
-				let cancerType = config.cancer[currSelection[a]];
-				tempString += " ci_" + cancerType + "_male > 0 ";
-				tempString += " or ci_" + cancerType + "_female > 0 ";
-				if(a != currSelection.length - 1){
-					tempString += " or ";
-				}
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") ";
-				first = false;
-			}
-		}
-		else if(currItem == "Categories"){
-			let tempString = "";
-			for(let a = 0; a < currSelection.length; a++){
-				let dataType = config.collected_data[currSelection[a]];
-				let data = dataType.split(",");
-				for(let b = 0; b < data.length; b++){
-					tempString += " " + data[b] + " = 1 ";
-					if(a != currSelection.length - 1 || b != data.length-1){
-						tempString += " or ";
-					}
-				}
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") ";
-				first = false;
-			}
-			
-		}
-		else if(currItem == "Biospecimen"){
-			let tempString = "";
-			for(let a = 0; a < currSelection.length; a++){
-				let specimenType = config.collected_specimen[currSelection[a]];
-				let specimen = specimenType.split(",");
-				for(let b = 0; b < specimen.length; b++){
-					tempString += " " + specimen[b] + " = 1 ";
-					if(a != currSelection.length - 1 || b != specimen.length-1){
-						tempString += " or ";
-					}
-				}
-				
-			}
-			if(tempString != ""){
-				sql += " " + currState + " (" + tempString + ") ";
-				first = false;
-			}
-			
-		}
-		else if(currItem == "State"){
-			let tempString = "";
-			for(let a = 0; a < currSelection.length; a++){
-				tempString += " " + config.eligible_disease_state[currSelection[a]] + " ";
-				if(a != currSelection.length - 1){
-					tempString += ", "
-				}
-			}
-			if(tempString != ""){
-				sql += " " + currState + " eligible_disease in (" + tempString + ") ";
-				first = false;
-			}
-		}
-
+	if(advancedFilter.gender.length > 0){
+		params.push(advancedFilter.gender.toString());
+	}
+	else{
+		params.push("");
 	}
 
-	let orderString = "";
+	if(advancedFilter.age.length > 0){
+		params.push(advancedFilter.age.toString());
+	}
+	else{
+		params.push("");
+	}
 
+	if(advancedFilter.state.length > 0){
+		let state_columns = [];
+		advancedFilter.state.forEach(function(ss){
+			state_columns.push(config.eligible_disease_state[ss]);
+		});
+		params.push(state_columns.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.race.length > 0){
+		params.push(advancedFilter.race.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.ethnicity.length > 0){
+		params.push(advancedFilter.ethnicity.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.data.length > 0){
+		params.push(advancedFilter.data.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.specimen.length > 0){
+
+		let specimen_columns = [];
+		advancedFilter.specimen.forEach(function(cs){
+			specimen_columns.push(config.collected_specimen[cs]);
+		});
+		params.push(specimen_columns.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.cancer.length > 0){
+		params.push(advancedFilter.cancer.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.booleanOperationBetweenField.length > 0){
+		params.push(advancedFilter.booleanOperationBetweenField.toString());
+	}
+	else{
+		params.push("");
+	}
+
+	if(advancedFilter.booleanOperationWithInField.length > 0){
+		params.push(advancedFilter.booleanOperationWithInField.toString());
+	}
+	else{
+		params.push("");
+	}
+	
 	if(orderBy){
-
-		orderString += " order by " + orderBy.column + " " + orderBy.order, " ";
-
+		params.push(orderBy.column);
+		params.push(orderBy.order);
 	}
 	else{
-		
-		orderString += " order by cohort_name asc "
-
+		params.push("");
+		params.push("");
 	}
 
-	let pagingString = "";
-	let pIndex = (paging.page-1) * paging.pageSize
 	if(paging && paging.page != 0){
-		pagingString += " limit " + pIndex + " , " + paging.pageSize + " ";
+		params.push((paging.page-1) * paging.pageSize);
+		params.push(paging.pageSize);
 	}
 	else{
-		pagingString += "";
+		params.push(-1);
+		params.push(-1);
 	}
 
-	sql += " " + orderString + " " + pagingString + " ";
-
-	sql += ';'
-	params = [];
-	params.push(sql);
-	func = "advanced_cohort_select";
 	data.list["Criteria"].header = [];
-	first = true;
-	for(let i = 0; i < selectionList.length; i++){
+	if(advancedFilter.gender.length !== 0 || advancedFilter.race.length !== 0 || advancedFilter.ethnicity.length !== 0 || advancedFilter.age.length !== 0){
+		data.list["Criteria"].header.push(["[Type of participant]"]);
+		if(advancedFilter.gender.length !== 0){
+			let genders = cache.getValue("lookup:gender");
+			let dict = {};
+			genders.forEach(function(g){
+				dict[g.id] = g.gender;
+			});
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[0]);
+			str.push("Gender");
+			str.push("=");
 
-		if(items[i] != "Select"){
-			if(first == true){
-				first = false;
-				data.list["Criteria"].header.push(["Search Criteria Used:"])
-			}
-			else{
-				data.list["Criteria"].header.push([booleanStates[i]]);
-			}
-			data.list["Criteria"].header.push([items[i] + ":"]);
-			for(let a = 0; a < selectionList[i].length; a++){
-				data.list["Criteria"].header.push([" - " + selectionList[i][a]])
-			}
+			let tmp = [];
+			advancedFilter.gender.forEach(function(g){
+				tmp.push(dict[g]);
+			});
+			str.push(tmp.join(" OR "));
+			data.list["Criteria"].header.push(str);
 		}
-		
+		if(advancedFilter.race.length !== 0){
+			let races = cache.getValue("lookup:race");
+			let dict = {};
+			races.forEach(function(r){
+				dict[r.id] = r.race;
+			});
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[3]);
+			str.push("Race");
+			str.push("=");
+			let tmp = [];
 
+			advancedFilter.race.forEach(function(r){
+				//data.list["Criteria"].header.push([" - "+dict[r]]);
+				tmp.push(dict[r]);
+			});
+			str.push(tmp.join(" OR "));
+			data.list["Criteria"].header.push(str);
+		}
+		if(advancedFilter.ethnicity.length !== 0){
+			let ethnicities = cache.getValue("lookup:ethnicity");
+			let dict = {};
+			ethnicities.forEach(function(eth){
+				dict[eth.id] = eth.ethnicity;
+			});
+
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[4]);
+			str.push("Ethnicity");
+			str.push("=");
+			let tmp = [];
+
+			advancedFilter.ethnicity.forEach(function(e){
+				//data.list["Criteria"].header.push([" - "+dict[r]]);
+				tmp.push(dict[e]);
+			});
+			str.push(tmp.join(" OR "));
+			data.list["Criteria"].header.push(str);
+		}
+		if(advancedFilter.age.length !== 0){
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[1]);
+			str.push("Age");
+			str.push("=");
+			let tmp = [];
+
+			advancedFilter.age.forEach(function(a){
+				tmp.push(a);
+			});
+			str.push(tmp.join(" OR "));
+			data.list["Criteria"].header.push(str);
+		}
 	}
-	
+	if(advancedFilter.data.length !== 0 || advancedFilter.specimen.length !== 0 || advancedFilter.cancer.length !== 0){
+		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
+		if(advancedFilter.data.length !== 0){
+			let domains = cache.getValue("lookup:domain");
+			let dict = {};
+			domains.forEach(function(d){
+				dict[d.id] = d.domain + (d.sub_domain? ": " + d.sub_domain : "");
+			});
+
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[5]);
+			str.push("Data Collected");
+			str.push("=");
+			let tmp = [];
+
+			advancedFilter.data.forEach(function(d){
+				tmp.push(dict[d]);
+			});
+			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[5]+" "));
+			data.list["Criteria"].header.push(str);
+		}
+		if(advancedFilter.specimen.length !== 0){
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[6]);
+			str.push("Specimens Collected");
+			str.push("=");
+			let tmp = [];
+
+			advancedFilter.specimen.forEach(function(s){
+				tmp.push(s);
+			});
+			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[6]+" "));
+			data.list["Criteria"].header.push(str);
+		}
+		if(advancedFilter.cancer.length !== 0){
+			let cancers = cache.getValue("lookup:cancer");
+			let dict = {};
+			cancers.forEach(function(c){
+				dict[c.id] = c.cancer;
+			});
+			let str = [];
+			str.push(advancedFilter.booleanOperationBetweenField[7]);
+			str.push("Cancers Collected");
+			str.push("=");
+			let tmp = [];
+
+			advancedFilter.cancer.forEach(function(c){
+				tmp.push(dict[c]);
+			});
+			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[7]+" "));
+			data.list["Criteria"].header.push(str);
+		}
+	}
+	if(advancedFilter.state.length !== 0){
+		data.list["Criteria"].header.push(["[Study Design]"]);
+		let str = [];
+		str.push(advancedFilter.booleanOperationBetweenField[3]);
+		str.push("Eligible Disease State");
+		str.push("=");
+		let tmp = [];
+
+		advancedFilter.state.forEach(function(s){
+			tmp.push(s);
+		});
+		str.push(tmp.join(" OR "));
+		data.list["Criteria"].header.push(str);
+	}
+
 	mysql.callProcedure(func,params,function(results){
 		if(results && results[0] && results[0].length > 0){
 			results[0].forEach(function(entry){

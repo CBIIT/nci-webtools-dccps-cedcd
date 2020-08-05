@@ -97,12 +97,17 @@ class CohortList extends Component {
 	  		}
   		}
   		else{
-  			const acronym = lookup[item].acronym;
-  			return (
-	  			<li key={key}>
-					{acronym}
-				</li>
-	  		);
+  			if(lookup[item]){
+  				const acronym = lookup[item].acronym;
+	  			return (
+		  			<li key={key}>
+						{acronym}
+					</li>
+		  		);
+  			}
+  			else{
+
+  			}
   		}
   		
   	});

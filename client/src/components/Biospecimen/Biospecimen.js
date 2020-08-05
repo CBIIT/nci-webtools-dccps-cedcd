@@ -25,7 +25,7 @@ class Biospecimen extends Component {
 		let item = {
 		  filter:state.filter
 		};
-		localStorage.setItem('informationHistory_specimen', JSON.stringify(item));
+		sessionStorage.setItem('informationHistory_specimen', JSON.stringify(item));
 	}
 
 	handleSpecimenClick = (v,allIds,e) =>{
@@ -110,13 +110,15 @@ class Biospecimen extends Component {
 			cancer:[],
 			cohort:[]
 		};
-		this.setState(prevState => ({
+		this.setState({
 			result:{},
 			filter: filter
-		}));
+		});
+		sessionStorage.removeItem('informationHistory_specimen');
 	}
 
 	toFilter = () =>{
+		this.saveHistory();
 		this.filterData();
 	}
 
@@ -148,10 +150,9 @@ class Biospecimen extends Component {
 	}
 
 	componentDidMount(){
-		const previousState = localStorage.getItem('informationHistory_specimen');
+		const previousState = sessionStorage.getItem('informationHistory_specimen');
 		if(previousState){
 			let state = JSON.parse(previousState);
-			localStorage.removeItem('informationHistory_specimen');
 			this.filterData(state.filter);
 		}
 	}
