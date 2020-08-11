@@ -5,6 +5,7 @@
 /Logs/*
 /Uploads/*
 package-lock.json
+yarn.lock
 node_modules
 .DS_Store
 npm-debug.log
