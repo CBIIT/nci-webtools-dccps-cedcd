@@ -12,6 +12,7 @@ var cancerController = require('./details/cancerController');
 var mortalityController = require('./details/mortalityController');
 var linkagesController = require('./details/linkagesController');
 var specimenController = require('./details/specimenController');
+const { join } = require('lodash');
 
 router.post('/list', function(req, res) {
 	let body = req.body;
@@ -153,6 +154,7 @@ router.post('/advancedSelect', function(req, res) {
 	let advancedFilter = body.advancedFilter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
+	let advancedCondition = body.advancedCondition || "";
 	let func = "advanced_cohort_select";
 	let params = [];
 	//form filter into Strings
@@ -222,13 +224,16 @@ router.post('/advancedSelect', function(req, res) {
 		params.push("");
 	}
 
+	advancedFilter.booleanOperationBetweenField = advancedCondition == 'AND' ? Array(8).fill('AND') : Array(8).fill('OR')
+	params.push(advancedFilter.booleanOperationBetweenField.toString())
+	/*
 	if(advancedFilter.booleanOperationBetweenField.length > 0){
 		params.push(advancedFilter.booleanOperationBetweenField.toString());
 	}
 	else{
 		params.push("");
 	}
-
+	*/
 	if(advancedFilter.booleanOperationWithInField.length > 0){
 		params.push(advancedFilter.booleanOperationWithInField.toString());
 	}

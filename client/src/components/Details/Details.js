@@ -73,7 +73,8 @@ class Details extends Component {
 			collapse: true,
 			searchState: true,
 			prevBasicParams:{},
-			prevAdvancedParam:{}
+			prevAdvancedParam:{},
+			advancedCondition: "AND"
 		};
 		this.toFocus = React.createRef();
 	}
@@ -407,7 +408,8 @@ class Details extends Component {
 		let reqBody = {
 			advancedFilter: state.advancedFilter,
 			orderBy:state.orderBy,
-			paging:state.pageInfo
+			paging:state.pageInfo,
+			advancedCondition: state.advancedCondition
 		};
 		if(i == -1){
 			reqBody.paging.page = state.lastPage;
@@ -870,6 +872,10 @@ class Details extends Component {
 		});
 	}
 
+	handleBooleanFilterChange(e){
+		this.setState({advancedCondition: e.target.value})
+	}
+
 	handleBooleanWithinChange(e, index){
 		const advancedFilter = Object.assign({},this.state.advancedFilter);
 		advancedFilter.booleanOperationWithInField[index] = e.target.value;
@@ -931,179 +937,176 @@ class Details extends Component {
 		else{
 			return(
 				<div className="panel-body">
-			        <div className="filter row">
-			          <div className="col-sm-12">
-			            <div className="filter-component">
-			              	<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Eligibility Requirements</b></div>
-			              	<div className="row">
-								<div className="col-sm-1" style={{"width":"10%"}}>
-									<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[0]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,0)}>
-										<option value="AND">AND</option>
-										<option value="OR">OR</option>
-									</select>
-								</div>
+					<div className="filter row">
+						<div className="col-sm-12">
+						<div className="filter-component">
+								<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Eligibility Requirements</b></div>
+								<div className="row">
+							
+								<div className="col-sm-1" style={{"width":"10%"}}></div>
+								
 								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<GenderList hasUnknown={true} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[0]} title="Boolean operation between options in gender filter" onChange={e => this.handleBooleanWithinChange(e,0)}>
-								      	<option value="AND">AND</option>
-								      	<option value="OR">OR</option>
-								      </select>
-								    </div>
+										<div style={{"width":"92%", "float": "left"}}>
+											<GenderList hasUnknown={true} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[0]} title="Boolean operation between options in gender filter" onChange={e => this.handleBooleanWithinChange(e,0)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div className="row">
 								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[1]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,1)}>
+										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" onChange={e => this.handleBooleanFilterChange(e)}>
 										<option value="AND">AND</option>
 										<option value="OR">OR</option>
 									</select>
 								</div>
 								<div className="col-sm-11" style={{"width":"90%"}}>
 									<div style={{"width":"92%", "float": "left"}}>
-								  		<AgeList rightBorderStyle="straight" values={this.state.advancedFilter.age} displayMax="3" onClick={this.handleAdvancedAgeClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[1]} title="Boolean operation between options in age filter" onChange={e => this.handleBooleanWithinChange(e,1)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
+											<AgeList rightBorderStyle="straight" values={this.state.advancedFilter.age} displayMax="3" onClick={this.handleAdvancedAgeClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[1]} title="Boolean operation between options in age filter" onChange={e => this.handleBooleanWithinChange(e,1)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div className="row">
 								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[2]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,2)}>
+										<select className="btn btn-default"  value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 										<option value="AND">AND</option>
 										<option value="OR">OR</option>
 									</select>
 								</div>
 								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<DiseaseStateList rightBorderStyle="straight" values={this.state.advancedFilter.state} displayMax="5" onClick={this.handleAdvancedStateClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[2]} title="Boolean operation between options in state filter" onChange={e => this.handleBooleanWithinChange(e,2)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
+										<div style={{"width":"92%", "float": "left"}}>
+											<DiseaseStateList rightBorderStyle="straight" values={this.state.advancedFilter.state} displayMax="5" onClick={this.handleAdvancedStateClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[2]} title="Boolean operation between options in state filter" onChange={e => this.handleBooleanWithinChange(e,2)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
 								</div>
 							</div>
-			            </div>
-			          </div>
-			        </div>
-			        <div className="filter row">
-			          <div className="col-sm-12">
-			            <div className="filter-component">
-			              	<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Enrollments</b></div>
+						</div>
+						</div>
+					</div>
+					<div className="filter row">
+						<div className="col-sm-12">
+						<div className="filter-component">
+								<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Enrollments</b></div>
 							<div className="row">
 								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[3]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,3)}>
+										<select className="btn btn-default"  value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 										<option value="AND">AND</option>
 										<option value="OR">OR</option>
 									</select>
 								</div>
 								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<RaceList rightBorderStyle="straight" values={this.state.advancedFilter.race} displayMax="3" onClick={this.handleAdvancedRaceClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[3]} title="Boolean operation between options in race filter" onChange={e => this.handleBooleanWithinChange(e,3)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
+										<div style={{"width":"92%", "float": "left"}}>
+											<RaceList rightBorderStyle="straight" values={this.state.advancedFilter.race} displayMax="3" onClick={this.handleAdvancedRaceClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[3]} title="Boolean operation between options in race filter" onChange={e => this.handleBooleanWithinChange(e,3)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
 								</div>
 							</div>
 							<div className="row">
 								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[4]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,4)}>
+										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters"  disabled="disabled">
 										<option value="AND">AND</option>
 										<option value="OR">OR</option>
 									</select>
 								</div>
 								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<EthnicityList rightBorderStyle="straight" values={this.state.advancedFilter.ethnicity} displayMax="3" onClick={this.handleAdvancedEthnicityClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" disabled="disabled" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[4]} title="Boolean operation between options in ethnicity filter" onChange={e => this.handleBooleanWithinChange(e,4)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
+										<div style={{"width":"92%", "float": "left"}}>
+											<EthnicityList rightBorderStyle="straight" values={this.state.advancedFilter.ethnicity} displayMax="3" onClick={this.handleAdvancedEthnicityClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderColor":"#ccc","borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[4]} title="Boolean operation between options in ethnicity filter" onChange={e => this.handleBooleanWithinChange(e,4)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
 								</div>
 							</div>
-			            </div>
-			          </div>
-			        </div>
-			        <div className="filter row">
-			          <div className="col-sm-12">
-			            <div className="filter-component">
+						</div>
+						</div>
+					</div>
+					<div className="filter row">
+						<div className="col-sm-12">
+						<div className="filter-component">
 							<div className="row" style={{"marginLeft":"calc(10% + 2px)","fontSize":"1.8rem", "marginBottom":"1rem"}}><b>Data and Specimens Collected</b></div>
 							<div className="row">
 								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[5]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,5)}>
+										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters"  disabled="disabled">
 										<option value="AND">AND</option>
 										<option value="OR">OR</option>
 									</select>
 								</div>
 								<div className="col-sm-11" style={{"width":"90%"}}>
 									<div style={{"width":"92%", "float": "left"}}>
-								  		<CollectedDataList rightBorderStyle="straight" values={this.state.advancedFilter.data} displayMax="5" onClick={this.handleAdvancedDataClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[5]} title="Boolean operation between options in Data filter" onChange={e => this.handleBooleanWithinChange(e,5)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default"  value={this.state.advancedFilter.booleanOperationBetweenField[6]} title="Boolean Operation between filters"  onChange={e => this.handleBooleanChange(e,6)}>
-										<option value="AND">AND</option>
-										<option value="OR">OR</option>
-									</select>
-								</div>
-								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<CollectedSpecimensList rightBorderStyle="straight" values={this.state.advancedFilter.specimen} displayMax="5" onClick={this.handleAdvancedSpecimenClick}/>
-								  	</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[6]} title="Boolean operation between options in biospecimens filter"  onChange={e => this.handleBooleanWithinChange(e,6)}>
-									      <option value="AND">AND</option>
-									      <option value="OR">OR</option>
-								      </select>
-								    </div>
-								</div>
-							</div>
-							<div className="row">
-								<div className="col-sm-1" style={{"width":"10%"}}>
-								  	<select className="btn btn-default" value={this.state.advancedFilter.booleanOperationBetweenField[7]} title="Boolean Operation between filters" onChange={e => this.handleBooleanChange(e,7)}>
-										<option value="AND">AND</option>
-										<option value="OR">OR</option>
-									</select>
-								</div>
-								<div className="col-sm-11" style={{"width":"90%"}}>
-								  	<div style={{"width":"92%", "float": "left"}}>
-								  		<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick}/>
+											<CollectedDataList rightBorderStyle="straight" values={this.state.advancedFilter.data} displayMax="5" onClick={this.handleAdvancedDataClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[5]} title="Boolean operation between options in Data filter" onChange={e => this.handleBooleanWithinChange(e,5)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
 									</div>
-								  	<div style={{"width":"8%", "float": "left"}}>
-								      <select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e,7)}>
-								      	<option value="AND">AND</option>
-								      	<option value="OR">OR</option>
-								      </select>
-								    </div>
 								</div>
 							</div>
-			            </div>
-			          </div>
-			        </div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+										<select className="btn btn-default"  value={this.state.advancedCondition} title="Boolean Operation between filters"  disabled="disabled">
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+										<div style={{"width":"92%", "float": "left"}}>
+											<CollectedSpecimensList rightBorderStyle="straight" values={this.state.advancedFilter.specimen} displayMax="5" onClick={this.handleAdvancedSpecimenClick}/>
+										</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[6]} title="Boolean operation between options in biospecimens filter"  onChange={e => this.handleBooleanWithinChange(e,6)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div className="row">
+								<div className="col-sm-1" style={{"width":"10%"}}>
+										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters"  disabled="disabled">
+										<option value="AND">AND</option>
+										<option value="OR">OR</option>
+									</select>
+								</div>
+								<div className="col-sm-11" style={{"width":"90%"}}>
+										<div style={{"width":"92%", "float": "left"}}>
+											<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"  hasSelectAll={true} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick}/>
+									</div>
+										<div style={{"width":"8%", "float": "left"}}>
+										<select className="btn btn-default" style={{"borderTopLeftRadius": "0px","borderBottomLeftRadius": "0px"}} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e,7)}>
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						</div>
+					</div>
 
 			        <div className="row" style={{"display":"flex"}}>
 			            <a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{"marginTop":"2rem"}} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
