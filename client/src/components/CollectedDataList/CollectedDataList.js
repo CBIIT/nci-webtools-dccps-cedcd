@@ -60,13 +60,18 @@ class CollectedDataList extends Component {
 			});
 			if (this._isMounted) {
 				this.setState({
-					list: arr,
+					list: [...arr].sort(this.compareDomains),
 					lookup: dict
 				});
 			}
 		});
 	}
 
+	compareDomains(d1, d2){
+		let domainA = d1.domain.toLowerCase()
+		let domainB = d2.domain.toLowerCase()
+		return (domainA != domainB) ? domainA > domainB ? 1 : -1 : 0
+	}
 	componentWillUnmount() {
 		this._isMounted = false;
 	}
