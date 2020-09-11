@@ -83,7 +83,7 @@ class SpecimenList extends Component {
   	let allIds = [];
   	const list = f_list.map((item, idx) => {
   		const key = "specimen_"+idx;
-  		allIds.push(item);
+  		allIds.push(item.id);
   		let checked = (values.indexOf(item.id) > -1);
   		return (
   			<li key={key}>
