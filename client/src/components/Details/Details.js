@@ -500,7 +500,7 @@ class Details extends Component {
 						.then(result => {
 							let list = result.data.list;
 							list.forEach(function(t){
-								selected.push(t.cohort_id);
+								selected.push(t.id);
 							});
 							this.setState({
 								selected: selected,
@@ -532,7 +532,7 @@ class Details extends Component {
 						.then(result => {
 							let list = result.data.list;
 							list.forEach(function(t){
-								selected.push(t.cohort_id);
+								selected.push(t.id);
 							});
 							this.setState({
 								selected: selected,
