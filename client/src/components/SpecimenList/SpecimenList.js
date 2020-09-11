@@ -73,7 +73,12 @@ class SpecimenList extends Component {
 
   render() {
   	const values = this.props.values;
-  	let f_list = Object.assign([],this.state.list);
+	  //let f_list = Object.assign([],this.state.list);
+	let f_list = [...this.state.list].sort((s1, s2)=>{
+		let specimen1 = s1.specimen.toLowerCase()
+		let specimen2 = s2.specimen.toLowerCase()
+		return specimen1 != specimen2 ? specimen1 > specimen2 ? 1 : - 1 : 0
+	})
   	let lookup = Object.assign({},this.state.lookup);
   	let allIds = [];
   	const list = f_list.map((item, idx) => {
