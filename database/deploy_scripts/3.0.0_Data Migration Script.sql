@@ -444,14 +444,17 @@ BEGIN
     
     set @gender_query = "";
     if gender != "" then
+		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
+			set gender = concat(gender, ",4");
+		end if;
 		set @gender_query = concat("cs.gender_id in (",gender,") ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',1)),',',1));
-        if tmp = "AND" then
+		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',1)),',',1));
+		if tmp = "AND" then
 			set @and_query = concat(@and_query, " and ", @gender_query);
 		else
 			set @or_query = concat(@or_query, " or ", @gender_query);
-        end if;
-    end if;
+		end if;
+	end if;
 
     set i = 0;
     set @age_query = "";
@@ -811,6 +814,13 @@ BEGIN
     end if;
     
     set @cohort_query = "";
+	if gender != "" then
+		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
+			set gender = concat(gender, ",4");
+		end if;
+		set @cohort_query = concat(@cohort_query, "and cs.gender_id in (",gender,") ");
+	end if;
+
     if gender != "" then
 		set @cohort_query = concat(@cohort_query, "and cs.gender_id in (",gender,") ");
     end if;

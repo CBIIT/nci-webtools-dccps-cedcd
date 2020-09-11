@@ -151,7 +151,7 @@ var callProcedure = function(func, params, next){
           sql = sql.substring(0, sql.length -1);
         }
         sql += ")";
-        logger.debug('sql:' + sql);
+        logger.debug('sql: ' + sql);
         connection.query(sql,function(err_1, rows){
             connection.release();
             if(err_1){
