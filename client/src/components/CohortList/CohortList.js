@@ -131,7 +131,7 @@ class CohortList extends Component {
 						<li>
 							<label>
 								<span className="filter-component-input">
-									<input type="checkbox" onClick={(e) => this.props.onClick(null,allIds,e)}/>
+									<input type="checkbox" onClick={(e) => this.props.onClick(null,allIds,e)} checked={this.props.all_cohorts}/>
 								</span>
 								All Cohorts
 							</label>

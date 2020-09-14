@@ -13,6 +13,9 @@ class Biospecimen extends Component {
 		this.state = {
 			result:{},
 			filter:{
+				allTyps: false,
+				allCancers: false,
+				allCohorts: false,
 				specimen:[],
 				cancer:[],
 				cohort:[]
@@ -43,7 +46,8 @@ class Biospecimen extends Component {
 			}
 		}
 		else{
-			//click on the "all Types"
+			//click on the "all Types"\
+			filter.allTypes = true
 			filter.specimen = [];
 			if(e.target.checked){
 				filter.specimen = allIds;
@@ -69,6 +73,7 @@ class Biospecimen extends Component {
 		}
 		else{
 			//click on the "all cohort"
+			filter.allCancers = true
 			filter.cancer = [];
 			if(e.target.checked){
 				filter.cancer = allIds;
@@ -94,6 +99,7 @@ class Biospecimen extends Component {
 		}
 		else{
 			//click on the "all cohort"
+			filter.allCohorts = true
 			filter.cohort = [];
 			if(e.target.checked){
 				filter.cohort = allIds;
@@ -106,6 +112,9 @@ class Biospecimen extends Component {
 
 	clearFilter = () =>{
 		let filter = {
+			allTypes: false,
+			allCancers: false,
+			allCohorts: false,
 			specimen:[],
 			cancer:[],
 			cohort:[]
@@ -230,16 +239,16 @@ class Biospecimen extends Component {
                 <div className="col-sm-4 filterCol">
                   <div id="gender_area" className="filter-component">
                     <h3>Specimen Type</h3>
-					<SpecimenList values={this.state.filter.specimen} displayMax="4" onClick={this.handleSpecimenClick}/>
+					<SpecimenList values={this.state.filter.specimen} all_types={this.state.filter.allTypes} displayMax="4" onClick={this.handleSpecimenClick}/>
                   </div>
                 </div>
                 <div className="col-sm-4 filterCol">
                   <h3>Cancer Type</h3>
-                  <CollectedCancersList hasNoCancer={true} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={true} values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick}/>
+                  <CollectedCancersList hasNoCancer={true} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={true} values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick} all_cancers={this.state.filter.allCancers}/>
                 </div>
                 <div className="col-sm-4 filterCol last">
                   <h3>Cohorts</h3>
-                  <CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick}/>
+                  <CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts}/>
                 </div>
               </div>
               <div className="row">
