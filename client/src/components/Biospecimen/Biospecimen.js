@@ -47,7 +47,7 @@ class Biospecimen extends Component {
 		}
 		else{
 			//click on the "all Types"\
-			filter.allTypes = true
+			filter.allTypes = !this.state.filter.allTypes;
 			filter.specimen = [];
 			if(e.target.checked){
 				filter.specimen = allIds;
@@ -73,7 +73,7 @@ class Biospecimen extends Component {
 		}
 		else{
 			//click on the "all cohort"
-			filter.allCancers = true
+			filter.allCancers = !this.state.filter.allCancers;
 			filter.cancer = [];
 			if(e.target.checked){
 				filter.cancer = allIds;
@@ -99,7 +99,7 @@ class Biospecimen extends Component {
 		}
 		else{
 			//click on the "all cohort"
-			filter.allCohorts = true
+			filter.allCohorts = !this.state.filter.allCohorts;
 			filter.cohort = [];
 			if(e.target.checked){
 				filter.cohort = allIds;
