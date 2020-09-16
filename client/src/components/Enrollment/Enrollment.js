@@ -17,7 +17,8 @@ class Enrollment extends Component {
 				gender:[],
 				race:[],
 				ethnicity:[],
-				cohort:[]
+				cohort:[],
+				allCohorts: false
 			}
 		};
 	}
@@ -96,6 +97,7 @@ class Enrollment extends Component {
 		}
 		else{
 			//click on the "all cohort"
+			filter.allCohorts = !this.state.filter.allCohorts;
 			filter.cohort = [];
 			if(e.target.checked){
 				filter.cohort = allIds;
@@ -111,7 +113,8 @@ class Enrollment extends Component {
 			gender:[],
 			race:[],
 			ethnicity:[],
-			cohort:[]
+			cohort:[],
+			allCohorts: false
 		};
 
 		this.setState({
@@ -279,7 +282,7 @@ class Enrollment extends Component {
 	                </div>
 	                <div className="col-sm-3 filterCol last">
 	                  	<h3>Cohorts</h3>
-						<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick}/>
+						<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts}/>
 	                </div>
 	              </div>
 	              <div className="row">
