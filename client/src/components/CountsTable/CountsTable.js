@@ -59,7 +59,8 @@ class CountsTable extends Component {
 
     const c_len = column_2_tmp.length;
   	
-  	const column_1_content = column_1.map((item, idx) => {
+  	const column_1_content = [...column_1].sort().map((item, idx) => {
+		console.dir(column_1)
   		const key = "c_1_"+idx;
   		let style = {};
   		style.height = (c_len * 36)+"px";

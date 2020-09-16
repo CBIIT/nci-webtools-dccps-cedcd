@@ -2286,7 +2286,8 @@ BEGIN
 		set @queryString = concat(@queryString, "and ec.cohort_id in (",cohort,") ");
     end if;
     
-    set @query = concat(@queryString, " order by ec.gender_id, ec.ethnicity_id, ec.race_id, cs.cohort_acronym");
+    -- set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
+	set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
