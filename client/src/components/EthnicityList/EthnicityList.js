@@ -69,13 +69,20 @@ class EthnicityList extends Component {
 	componentWillUnmount() {
 		this._isMounted = false;
 	}
+	
+	sortEnthnicity(a, b){
+		let aeth = a.ethnicity.toLowerCase()
+		let beth = b.ethnicity.toLowerCase()
+
+		return aeth != beth ? aeth > beth ? 1 : -1 : 0
+	}
 
   render() {
 
   	const values = this.props.values;
   	let lookup = Object.assign({},this.state.lookup);
-
-  	const list = this.state.list.map((item, idx) => {
+	let e_list = [...this.state.list].sort(this.sortEnthnicity)
+  	const list = e_list.map((item, idx) => {
   		const key = "ethnicity_"+item.id;
   		let checked = (values.indexOf(item.id) > -1);
 
