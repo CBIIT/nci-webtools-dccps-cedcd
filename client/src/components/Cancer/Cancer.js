@@ -15,7 +15,9 @@ class Cancer extends Component {
 			filter:{
 				gender:[],
 				cancer:[],
-				cohort:[]
+				cohort:[],
+				allCancers: false,
+				allCohorts: false
 			}
 		};
 	}
@@ -60,6 +62,7 @@ class Cancer extends Component {
 		}
 		else{
 			//click on the "all cohort"
+			filter.allCancers = !this.state.filter.allCancers;
 			filter.cancer = [];
 			if(e.target.checked){
 				filter.cancer = allIds;
@@ -85,6 +88,7 @@ class Cancer extends Component {
 		}
 		else{
 			//click on the "all cohort"
+			filter.allCohorts = !this.state.filter.allCohorts;
 			filter.cohort = [];
 			if(e.target.checked){
 				filter.cohort = allIds;
@@ -99,7 +103,9 @@ class Cancer extends Component {
 		let filter = {
 			gender:[],
 			cancer:[],
-			cohort:[]
+			cohort:[],
+			allCancers: false,
+			allCohorts: false
 		};
 		this.setState({
 			result:{},
@@ -226,11 +232,11 @@ class Cancer extends Component {
                 </div>
                 <div className="col-sm-4 filterCol">
                   <h3>Cancer Type</h3>
-                  <CollectedCancersList hasNoCancer={false} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={true} values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick}/>
+                  <CollectedCancersList hasNoCancer={false} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={true} values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick} all_cancers={this.state.filter.allCancers} />
                 </div>
                 <div className="col-sm-4 filterCol last">
                   <h3>Cohorts</h3>
-                  <CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick}/>
+                  <CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts} />
                 </div>
               </div>
               <div className="row">
