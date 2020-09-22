@@ -643,6 +643,7 @@ BEGIN
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
 END ;;
+
 DROP PROCEDURE IF EXISTS `cohort_baseline_data`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_baseline_data`(in cohort_info text)
 BEGIN
@@ -659,6 +660,7 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END ;;
+
 DROP PROCEDURE IF EXISTS `cohort_basic_info`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_basic_info`(in cohort_info text)
 BEGIN
@@ -740,6 +742,7 @@ BEGIN
 	select id, cohort_name, cohort_acronym from cohorts order by cohort_acronym;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_lookup`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_lookup`()
 BEGIN
 	select * from lu_gender;
@@ -927,6 +930,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `Migrate_cancer_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_cancer_counts`()
 BEGIN
 	-- Bladder
@@ -1390,7 +1394,7 @@ BEGIN
 END ;;
 
 
-DROP PROCEDURE IF EXISTS
+DROP PROCEDURE IF EXISTS `Migrate_person`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_person`()
 BEGIN
 	insert into person (cohort_id,category_id,name,position,institution,phone,email)
@@ -2256,7 +2260,7 @@ BEGIN
 END ;;
 
 
-DROP PROCEDURE IF EXISTS
+DROP PROCEDURE IF EXISTS `select_cancer_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
 BEGIN
     set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts from cancer_counts cc, cohorts cs, lu_gender lg, lu_cancers lc
