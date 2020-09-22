@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `lu_cancers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -422,7 +423,7 @@ CREATE TABLE `user` (
   CONSTRAINT `user_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+SET FOREIGN_KEY_CHECKS = 1;
 /* 
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDUREs
 */
