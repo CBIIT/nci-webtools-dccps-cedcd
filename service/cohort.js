@@ -525,18 +525,20 @@ router.get('/:id', function(req, res){
 				let persons = results[2];
 				info.pis = [];
 				persons.forEach(function(p){
-					if(p.category_id == 3){
-						let tmp = {};
-						tmp.id = p.id;
-						tmp.name = p.name;
-						tmp.institution = p.institution;
-						info.pis.push(tmp);
-					}
-					else if(p.category_id == 4){
-						info.collab_name = p.name;
-						info.collab_position = p.position;
-						info.collab_phone = p.phone;
-						info.collab_email = p.email;
+					if(p.name){
+						if(p.category_id == 3){
+							let tmp = {};
+							tmp.id = p.id;
+							tmp.name = p.name;
+							tmp.institution = p.institution;
+							info.pis.push(tmp);
+						}
+						else if(p.category_id in [1, 4]){ 
+							info.collab_name = p.name;
+							info.collab_position = p.position;
+							info.collab_phone = p.phone;
+							info.collab_email = p.email;
+						}
 					}
 				});
 				

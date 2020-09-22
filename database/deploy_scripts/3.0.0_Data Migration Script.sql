@@ -700,7 +700,7 @@ CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_description`(in c_id int(11))
 BEGIN
 	select * from cohorts where id = c_id;
     select * from attachment where cohort_id = c_id;
-    select * from person where cohort_id = c_id and category_id in (3,4);
+    select * from person where cohort_id = c_id and category_id in (1,3,4);
 END ;;
 DROP PROCEDURE IF EXISTS `cohort_followup_data`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_followup_data`(in cohort_info text)
