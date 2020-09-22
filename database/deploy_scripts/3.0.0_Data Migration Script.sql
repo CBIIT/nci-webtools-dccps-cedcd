@@ -428,6 +428,7 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDUREs
 */
 DELIMITER ;;
+DROP PROCEDURE IF EXISTS `advanced_cohort_select`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `advanced_cohort_select`(in gender text, in age_info varchar(100), in study_population text,
 									in race text, in ethnicity text, 
 									in domain text,in collected_specimen varchar(200),in cancer text,
@@ -642,7 +643,7 @@ BEGIN
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
 END ;;
-
+DROP PROCEDURE IF EXISTS `cohort_baseline_data`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_baseline_data`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -658,7 +659,7 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END ;;
-
+DROP PROCEDURE IF EXISTS `cohort_basic_info`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_basic_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -675,6 +676,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_cancer_info`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_cancer_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -691,13 +693,14 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_description`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_description`(in c_id int(11))
 BEGIN
 	select * from cohorts where id = c_id;
     select * from attachment where cohort_id = c_id;
     select * from person where cohort_id = c_id and category_id in (3,4);
 END ;;
-
+DROP PROCEDURE IF EXISTS `cohort_followup_data`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_followup_data`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -714,6 +717,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_linkages_technology`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_linkages_technology`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -730,6 +734,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_list`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_list`()
 BEGIN
 	select id, cohort_name, cohort_acronym from cohorts order by cohort_acronym;
@@ -745,6 +750,7 @@ BEGIN
     select * from lu_specimens;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_mortality`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_mortality`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -761,6 +767,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `cohort_select`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_select`(in gender text,in age_info varchar(100), in study_population text, 
 									in race text, in ethnicity text, 
 									in domain text,in collected_specimen varchar(200),in cancer text,
@@ -902,6 +909,8 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+
+DROP PROCEDURE IF EXISTS `cohort_specimen_overview`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_specimen_overview`(in cohort_info text)
 BEGIN
 	set @queryString = "";
@@ -1157,6 +1166,8 @@ BEGIN
 	from cedcd.cohort_cancer;
 END ;;
 
+
+DROP PROCEDURE IF EXISTS `Migrate_enrollment_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_enrollment_counts`()
 BEGIN
 	set @i = 1;
@@ -1210,6 +1221,8 @@ BEGIN
 	end while;
 END ;;
 
+
+DROP PROCEDURE IF EXISTS `Migrate_major_content`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_major_content`()
 BEGIN
 	-- 1-Socio-economic Status (e.g., income)
@@ -1376,6 +1389,8 @@ BEGIN
 		from cedcd.cohort_major_content;
 END ;;
 
+
+DROP PROCEDURE IF EXISTS
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_person`()
 BEGIN
 	insert into person (cohort_id,category_id,name,position,institution,phone,email)
@@ -1450,6 +1465,7 @@ BEGIN
 	from cedcd.cohort_basic;
 END ;;
 
+DROP PROCEDURE IF EXISTS `Migrate_specimens_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_specimens_counts`()
 BEGIN
 	-- Bladder
@@ -2239,6 +2255,8 @@ BEGIN
 
 END ;;
 
+
+DROP PROCEDURE IF EXISTS
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
 BEGIN
     set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts from cancer_counts cc, cohorts cs, lu_gender lg, lu_cancers lc
@@ -2264,6 +2282,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `select_enrollment_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_enrollment_counts`(in gender text, in race text,in ethnicity text,in cohort text)
 BEGIN
     set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts from enrollment_counts ec, cohorts cs, lu_gender lg, lu_ethnicity le, lu_race lr
@@ -2295,6 +2314,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END ;;
 
+DROP PROCEDURE IF EXISTS `select_specimen_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in cohort text)
 BEGIN
     set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts from specimens_counts sc, cohorts cs, lu_specimens ls, lu_cancers lc
