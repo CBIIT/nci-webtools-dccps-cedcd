@@ -1,4 +1,21 @@
 SET FOREIGN_KEY_CHECKS = 0;
+
+/*
+*   convert table name in singular style 
+*   drop tables with name confusions
+*
+*/
+
+DROP TABLE IF EXISTS `lu_cancers`;
+DROP TABLE IF EXISTS `lu_domainss`;
+DROP TABLE IF EXISTS `cedcd_new`.`lu_specimens`;
+DROP TABLE IF EXISTS `cedcd_new`.`cohorts`;
+DROP TABLE IF EXISTS `cedcd_new`.`contacts`;
+DROP TABLE IF EXISTS `cedcd_new`.`specimens`;
+DROP TABLE IF EXISTS `cedcd_new`.`cancer_counts`;
+DROP TABLE IF EXISTS `cedcd_new`.`enrollment_counts`;
+DROP TABLE IF EXISTS `cedcd_new`.`specimens_counts`;
+
 DROP TABLE IF EXISTS `lu_cancer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -127,7 +144,7 @@ CREATE TABLE `cohort_basic` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
   PRIMARY KEY (`id`),
-  KEY `cohort_gender_id_idx` (`id`,`gender_id`),
+  KEY `cohort_gender_id_idx` (`cohort_id`,`gender_id`),
   KEY `cohort_gender_id_idx_idx` (`gender_id`),
   KEY `cohort_basic_id` (`cohort_id`),
   CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
