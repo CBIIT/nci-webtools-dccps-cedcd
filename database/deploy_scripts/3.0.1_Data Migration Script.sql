@@ -84,15 +84,26 @@ CREATE TABLE `lu_specimen` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `lu_case_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_case_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `case_type` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `cohort`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort` (
   `cohort_id` int(11) NOT NULL AUTO_INCREMENT,
-  `cohort_name` varchar(500) NOT NULL,
-  `cohort_acronym` varchar(100) NOT NULL,
-  `cohort_admin` varchar(100) DEFAULT NULL,
+  `name` varchar(500) NOT NULL,
+  `acronym` varchar(100) NOT NULL,
   `status` varchar(50) NOT NULL,
+  `publish_by` varchar(100) DEFAULT NULL,
+  `create_by` varchar(100) DEFAULT NULL,
+  `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`cohort_id`)
@@ -177,6 +188,7 @@ CREATE TABLE `cancer_count` (
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) NOT NULL,
   `gender_id` int(11) NOT NULL COMMENT '0-Both 1-Female 2-Male 3-Unknown',
+  `case_type_id` int(4),
   `cancer_counts` int(10) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -186,6 +198,7 @@ CREATE TABLE `cancer_count` (
   KEY `cancer_count_cohort_id` (`cohort_id`),
   CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -433,7 +446,7 @@ CREATE TABLE `technology` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `technology_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user`;
@@ -490,6 +503,25 @@ CREATE TABLE `cohort_user_mapping` (
   CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `cohort_edit_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_edit_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohort_id` int(11) NOT NULL,
+  `cohort_basic_status` varchar(10) DEFAULT 'draft',
+  `enrollment_status` varchar(10) DEFAULT 'draft',
+  `major_content_status` varchar(10) DEFAULT 'draft',
+  `cancer_status` varchar(10) DEFAULT 'draft',
+  `mortality_status` varchar(10) DEFAULT 'draft',
+  `dlh_status` varchar(10) DEFAULT 'draft',
+  `specimens_status` varchar(10) DEFAULT 'draft',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `cohort_edit_chhort_id` (`cohort_id`),
+  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
 /* 
@@ -2421,6 +2453,13 @@ insert into lu_gender(gender) values ("Unknown");
 insert into lu_gender(gender) values ("Both");
 
 /*
+Generate data for lookup table lu_cast_type
+*/
+insert into lu_case_type(case_type) values ("incident");
+insert into lu_case_type(case_type) values ("prevalent");
+
+
+/*
 Generate data for lookup table lu_cancer
 */
 insert into lu_cancer(icd9,icd10,cancer) 
@@ -2554,7 +2593,7 @@ insert into user(last_name,  first_name,  access_level, active_status, email) va
 /*
 Generate data for major table cohort from old cedcd schema
 */
-insert into cohort (cohort_id, cohort_name, cohort_acronym, cohort_admin, status, create_time, update_time)
+insert into cohort (cohort_id, name, acronym, create_by, status, create_time, update_time)
 select cohort_id,
 cohort_name,
 cohort_acronym,
