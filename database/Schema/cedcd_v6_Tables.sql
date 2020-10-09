@@ -3,7 +3,7 @@
 --   Database: cedcd
 -- ------------------------------------------------------
 -- Server version	5.1.73
--- revised according to questionnaire v6 in 2020
+-- revised according to questionnarire v6 in 2020 =====
 --  the order is not strictly alphabetical order, 
 --  it is considering relationship constraints
 -- 
