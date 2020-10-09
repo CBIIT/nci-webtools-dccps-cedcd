@@ -503,25 +503,33 @@ CREATE TABLE `cohort_user_mapping` (
   CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cohort_edit_status`;
+DROP TABLE IF EXISTS `cohort_page_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_page_mapping` (
+  `page_code` varchar(2) NOT NULL,
+  `page_info` varchar(50) NOT NULL,
+   PRIMARY KEY (`page_code`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ DROP TABLE IF EXISTS `cohort_edit_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort_edit_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
-  `cohort_basic_status` varchar(10) DEFAULT 'draft',
-  `enrollment_status` varchar(10) DEFAULT 'draft',
-  `major_content_status` varchar(10) DEFAULT 'draft',
-  `cancer_status` varchar(10) DEFAULT 'draft',
-  `mortality_status` varchar(10) DEFAULT 'draft',
-  `dlh_status` varchar(10) DEFAULT 'draft',
-  `specimens_status` varchar(10) DEFAULT 'draft',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
+  `page_code` varchar(2) NOT NULL,
+  `status` varchar(10) NOT NULL,
+   PRIMARY KEY (`id`),
+  UNIQUE KEY `cohort_edit_unique_page` (`cohort_id`,`page_code`),
   KEY `cohort_edit_chhort_id` (`cohort_id`),
   CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 /* 
@@ -2573,6 +2581,17 @@ insert into lu_category(category) values ("Person who completed the form");
 insert into lu_category(category) values ("Contact Person for clarification of the form");
 insert into lu_category(category) values ("Cohort Principal Investigator");
 insert into lu_category(category) values ("Person to contact if an investigator is interested");
+
+/*
+Generate data for lookup table cohort_page_mapping
+*/
+insert into cohort_page_mapping values('A', 'cohort basic');
+insert into cohort_page_mapping values('B', 'enrollment counts');
+insert into cohort_page_mapping values('C', 'major content domains');
+insert into cohort_page_mapping values('D', 'cancer info');
+insert into cohort_page_mapping values('E', 'mortality');
+insert into cohort_page_mapping values('F', 'data linkage and harmonization');
+insert into cohort_page_mapping values('G', 'specimens collected');
 
 /*
 Generate default users 
