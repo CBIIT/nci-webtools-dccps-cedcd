@@ -9,6 +9,7 @@ import Biospecimen from '../Biospecimen/Biospecimen';
 import About from '../About/About';
 import Information from '../Information/Information';
 import Contact from '../Contact/Contact';
+import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
 
 class MainContent extends Component {
   
@@ -33,8 +34,11 @@ class MainContent extends Component {
         <Route path={match+'/cancer'} component={Cancer}/>
         <Route path={match+'/biospecimen'} component={Biospecimen}/>
         <Route path={match+'/about'} component={About}/>
-        <Route path={match+'/cohort'} component={Information}/>
         <Route path={match+'/contact'} component={Contact}/>
+        <Switch>
+          <Route exact path='/cohort/questionnaire' component={QuestionnaireLoader} />
+          <Route path={match+'/cohort'} component={Information}/>
+        </Switch>
       </Switch>
     );
   }

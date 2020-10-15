@@ -9,31 +9,35 @@ class Tab extends Component {
     let url;
     if(this.props.value === 0){
       name="Home";
-      url="home";
+      url="/home";
     }
     else if(this.props.value === 1){
       name="Search Cohorts";
-      url="select";
+      url="/select";
     }
     else if(this.props.value === 2){
       name="Enrollment Counts";
-      url="enrollment";
+      url="/enrollment";
     }
     else if(this.props.value === 3){
       name="Cancer Counts";
-      url="cancer";
+      url="/cancer";
     }
     else if(this.props.value === 4){
       name="Biospecimen Counts";
-      url="biospecimen";
+      url="/biospecimen";
     }
     else if(this.props.value === 5){
       name="About";
-      url="about";
+      url="/about";
     }
     else if(this.props.value === 6){
       name="Contact Us";
-      url="contact"
+      url="/contact"
+    }
+    else if(this.props.value === 7){
+      name="Questionnaire"
+      url="/cohort/questionnaire"
     }
     else{
       name="Home";
