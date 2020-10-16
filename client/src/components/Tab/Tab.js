@@ -37,7 +37,7 @@ class Tab extends Component {
     }
     else if(this.props.value === 7){
       name="Questionnaire"
-      url="/cohort/questionnaire"
+      url = "/cohort/questionnaire"
     }
     else{
       name="Home";

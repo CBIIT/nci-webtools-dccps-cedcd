@@ -35,10 +35,8 @@ class MainContent extends Component {
         <Route path={match+'/biospecimen'} component={Biospecimen}/>
         <Route path={match+'/about'} component={About}/>
         <Route path={match+'/contact'} component={Contact}/>
-        <Switch>
-          <Route exact path='/cohort/questionnaire' component={QuestionnaireLoader} />
-          <Route path={match+'/cohort'} component={Information}/>
-        </Switch>
+        <Route exact path={match+'/cohort/questionnaire'} component={QuestionnaireLoader} /> 
+        <Route path={match+'/cohort'} component={Information} />
       </Switch>
     );
   }
