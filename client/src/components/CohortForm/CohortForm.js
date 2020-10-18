@@ -18,15 +18,16 @@ const CohortForm = ({...props}) => {
     },[errors])
     
     const handleSave = () => {
-        fetch('/api/questionnaire/update_cohort_basic',{
+        let id= 79
+        fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
 			method: "POST",
-			body: JSON.stringify({url: "mynewsite.com"}),
+			body: JSON.stringify(cohort),
 			headers: {
 		        'Content-Type': 'application/json'
 		    }
 		})
             .then(res => res.json())
-            .then(result => {console.log(result.message)})
+            .then(result => {console.dir(result)})
     }
 
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge) => validator.minAgeValidator(value, requiredOrNot, maxAge)

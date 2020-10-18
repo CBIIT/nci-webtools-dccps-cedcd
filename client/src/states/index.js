@@ -74,7 +74,12 @@ const InitialStates ={
         mainCohortFile: true,
         dataFile: true,
         specimenFile: true,
-        publicationFile: true
+        publicationFile: true,
+        questionnaireUrl: '',
+        mainCohortUrl: '',
+        dataUrl: '',
+        specimenUrl: '',
+        publicationUrl: ''
     },
     enrollmentCount: {
         '111': 50,
