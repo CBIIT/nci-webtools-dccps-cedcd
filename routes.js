@@ -28,7 +28,7 @@ module.exports = function(app){
 	app.use('/api/cohort', m_cohort);
 	app.use('/api/user', m_user);
 	app.use('/api/questionnaire', m_questionnaire);
-
+	
 	// All other routes should redirect to error page
     app.get('/*', function (req, res) {
 	  res.sendFile(path.join(config.root, 'client/www', 'index.html'));

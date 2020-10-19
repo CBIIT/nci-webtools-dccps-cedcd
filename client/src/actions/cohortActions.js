@@ -225,29 +225,24 @@ const setMostRecentYear = (y) => ({
     year: y
 })
 
-const setCollectedInPerson = (v) => ({
-    type: t.setCollectedInPerson,
-    inPerson: v
+const setCollectedInPerson = () => ({
+    type: t.setCollectedInPerson
 })
 
-const setCollectedPhone = (v) => ({
-    type: t.setCollectedPhone,
-    byPhone: v
+const setCollectedPhone = () => ({
+    type: t.setCollectedPhone
 })
 
-const setCollectedPaper = (v) => ({
-    type: t.setCollectedPaper,
-    byPaper: v
+const setCollectedPaper = () => ({
+    type: t.setCollectedPaper
 })
 
-const setCollectedWeb = (v) => ({
-    type: t.setCollectedWeb,
-    onWeb: v
+const setCollectedWeb = () => ({
+    type: t.setCollectedWeb
 })
 
-const setCollectedOther = (v) => ({
-    type: t.setCollectedOther,
-    other: v
+const setCollectedOther = () => ({
+    type: t.setCollectedOther
 })
 
 const setOtherMeans = (v) => ({

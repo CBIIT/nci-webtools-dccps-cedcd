@@ -37,7 +37,7 @@ const CohortForm = ({...props}) => {
             })
     }
     const handleSave = () => {
-        if(Object.entries(errors).length === 0 || window.confirm('there are errors, are you sure to save?'))
+        if(Object.entries(errors).length === 0 || window.confirm('there are validation errors, are you sure to save?'))
         {saveCohort(79)}
     }
 
@@ -437,54 +437,40 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-7' style={{flexGrow: '7'}}>                               
                                 <div className='col-md-12'>
                                     <div className='col-md-12'>
+                                        <span className='col-md-1'>
+                                            <input type='checkbox' name='collectedInPerson' checked={cohort.collectedInPerson}  onChange={() => dispatch(allactions.cohortActions.setCollectedInPerson())} />{' '}
+                                        </span>
                                         <span className='col-md-4'>In person</span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedInPerson' value='0' checked={cohort.collectedInPerson === '0'}  onChange={() => dispatch(allactions.cohortActions.setCollectedInPerson('0'))} />{' '} No
-                                        </span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedInPerson' value='1'  checked={cohort.collectedInPerson === '1'}  onChange={() => dispatch(allactions.cohortActions.setCollectedInPerson('1'))} />{' '} Yes
-                                        </span>
+                                        
                                     </div>
                                     <div className='col-md-12'>
+                                        <span className='col-md-1'>
+                                            <input type='checkbox' name='collectedPhone' checked={cohort.collectedPhone}  onChange={() => dispatch(allactions.cohortActions.setCollectedPhone())} />{' '}
+                                        </span>
                                         <span className='col-md-4'>Phone interview</span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedPhone' value='0' checked={cohort.collectedPhone === '0'}  onChange={() => dispatch(allactions.cohortActions.setCollectedPhone('0'))}/>{' '} No
-                                        </span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedPhone' value='1' checked={cohort.collectedPhone === '1'}  onChange={() => dispatch(allactions.cohortActions.setCollectedPhone('1'))}/>{' '} Yes
-                                        </span>
                                     </div>
                                     <div className='col-md-12'>
+                                    <span className='col-md-1'>
+                                            <input type='checkbox' name='collectedPaper' checked={cohort.collectedPaper}  onChange={() => dispatch(allactions.cohortActions.setCollectedPaper())}/>{' '} 
+                                        </span>
                                         <span className='col-md-8'>Self-administered via paper</span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedPaper' value='0' checked={cohort.collectedPaper === '0'}  onChange={() => dispatch(allactions.cohortActions.setCollectedPaper('0'))}/>{' '} No
-                                        </span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedPaper' value='1' checked={cohort.collectedPaper === '1'}  onChange={() => dispatch(allactions.cohortActions.setCollectedPaper('1'))}/>{' '} Yes
-                                        </span>
                                     </div>
                                     <div className='col-md-12'>
-                                        <span className='col-md-8'>Self-administered via web-based device</span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedWeb' value='0' checked={cohort.collectedWeb === '0'}  onChange={() => dispatch(allactions.cohortActions.setCollectedWeb('0'))}/>{' '} No
+                                        <span className='col-md-1'>
+                                            <input type='checkbox' name='collectedWeb' checked={cohort.collectedWeb}  onChange={() => dispatch(allactions.cohortActions.setCollectedWeb())}/>{' '}
                                         </span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedWeb' value='1' checked={cohort.collectedWeb === '1'}  onChange={() => dispatch(allactions.cohortActions.setCollectedWeb('1'))}/>{' '} Yes
-                                        </span>
+                                        <span className='col-md-9'>Self-administered via web-based device</span>
                                     </div>
                                     <div className='col-md-12'>
-                                        <span className='col-md-2'>Other</span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedOther' value='0' checked={cohort.collectedOther === '0'}  onChange={() => dispatch(allactions.cohortActions.setCollectedOther('0'))}/>{' '} No
+                                        <span className='col-md-1'>
+                                            <input type='checkbox' name='collectedOther' checked={cohort.collectedOther}  onChange={() => dispatch(allactions.cohortActions.setCollectedOther())}/>{' '}
                                         </span>
-                                        <span className='col-md-2'>
-                                            <input type='radio' name='collectedOther' value='1' checked={cohort.collectedOther === '1'}  onChange={() => dispatch(allactions.cohortActions.setCollectedOther('1'))}/>{' '} Yes
-                                        </span>                                   
+                                        <span className='col-md-2'>Other</span>                               
                                     </div>
                                     {
-                                        cohort.collectedOther === '1' ?
+                                        cohort.collectedOther ?
                                         <div className='col-md-12'>
-                                            <span className='col-md-5' style={{lineHeight: '2em'}}>If yes, please specify</span>
+                                            <span className='col-md-offset-1 col-md-5' style={{lineHeight: '2em'}}>If yes, please specify</span>
                                             <span  className='col-md-6' >
                                                 <input name='collectedOtherSpecify' className='form-control' value={cohort.collectedOtherSpecify} onChange={e=>dispatch(allactions.cohortActions.setOtherMeans(e.target.value))} /> 
                                             </span>
