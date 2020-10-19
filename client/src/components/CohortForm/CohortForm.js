@@ -16,18 +16,37 @@ const CohortForm = ({...props}) => {
     useEffect(() => {
         if(cohort.contacterRight === '0') setContacters([0]) 
     },[errors])
-    
-    const handleSave = () => {
-        let id= 79
+    const saveCohort = (id = 79, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
-			method: "POST",
-			body: JSON.stringify(cohort),
-			headers: {
-		        'Content-Type': 'application/json'
-		    }
-		})
+            method: "POST",
+            body: JSON.stringify(cohort),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then(res => res.json())
-            .then(result => {console.dir(result)})
+            .then(result => {
+                if(result.status === 200){
+                    if(!proceed)
+                        console.dir(result)
+                    else
+                        props.sectionPicker('B')
+                }else{
+                    alert(result.message)
+                }
+            })
+    }
+    const handleSave = () => {
+        if(Object.entries(errors).length === 0 || window.confirm('there are errors, are you sure to save?'))
+        {saveCohort(79)}
+    }
+
+    const handleSaveContinue = () => {
+        if(Object.entries(errors).length === 0){
+            saveCohort(79, true)
+        }else{
+            alert('Please fix errors before saving')
+        }
     }
 
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge) => validator.minAgeValidator(value, requiredOrNot, maxAge)
@@ -602,7 +621,7 @@ const CohortForm = ({...props}) => {
                 <span onClick={handleSave}>
                     <input type='button' className='btn btn-primary' value='Save' />
                 </span>
-                <span onClick={() => props.sectionPicker('B')}>
+                <span onClick={handleSaveContinue}>
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
             </div>  
