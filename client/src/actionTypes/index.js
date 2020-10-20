@@ -1,7 +1,6 @@
 const actionTypes = {
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
-    setUrl: 'SET_COHORT_URL',
     setCompletionDate: 'SET_COHORT_COMPLETION_DATE',
     setCompleterName: 'SET_COHORT_COMPLETER_NAME',
     setCompleterPosition: 'SET_COHORT_COMPLETER_POSITION',

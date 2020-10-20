@@ -12,11 +12,13 @@ const CohortForm = ({...props}) => {
     const [contacters, setContacters] = useState([])
     const [needurl, setNeedurl] = useState(false)
     const [errors, setErrors] = useState({})
+    const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
     useEffect(() => {
         if(cohort.contacterRight === '0') setContacters([0]) 
     },[errors])
-    const saveCohort = (id = 79, proceed=false) => {
+
+    const saveCohort = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -28,7 +30,7 @@ const CohortForm = ({...props}) => {
             .then(result => {
                 if(result.status === 200){
                     if(!proceed)
-                        console.dir(result)
+                        alert('Data was successfully saved')
                     else
                         props.sectionPicker('B')
                 }else{
@@ -37,16 +39,18 @@ const CohortForm = ({...props}) => {
             })
     }
     const handleSave = () => {
-        if(Object.entries(errors).length === 0 || window.confirm('there are validation errors, are you sure to save?'))
-        {saveCohort(79)}
+        if(Object.entries(errors).length === 0)
+            saveCohort(79)
+        else{
+            setDisplay('block')
+            if(window.confirm('there are validation errors, are you sure to save?'))
+                saveCohort(79)
+        }
     }
 
     const handleSaveContinue = () => {
-        if(Object.entries(errors).length === 0){
-            saveCohort(79, true)
-        }else{
-            alert('Please fix errors before saving')
-        }
+        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
+            saveCohort(79, true)}
     }
 
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge) => validator.minAgeValidator(value, requiredOrNot, maxAge)
@@ -182,7 +186,7 @@ const CohortForm = ({...props}) => {
                             <span className='col-md-5'>
                                 <input className='form-control' name='cohortName' value={cohort.name} onChange={e => dispatch(allactions.cohortActions.setCohortName(e.target.value))} onBlur={(e) => {populateErrors('cohortName', e.target.value, true, 'string')}}/>
                             </span>
-                            {errors.cohortName ? <span className='col-md-3' style={{color: 'red'}}>{errors.cohortName}</span> : ''}
+                            {errors.cohortName ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.cohortName}</span> : ''}
                         </div>
                         <div className='form-group col-md-12'>
                             <label htmlFor='cohortAcronym' className='col-md-4'>A.1b Cohort Abbreviation</label>
@@ -190,19 +194,12 @@ const CohortForm = ({...props}) => {
                                 <span  style={{paddingLeft: '10px'}}>{cohort.acronym}</span>
                             </span>
                         </div>
-                        <div className='form-group col-md-12'>
-                            <label htmlFor='cohortUrl' className='col-md-4'>A.1c Cohort Website (if applicable)</label>
-                            <span className='col-md-5'>
-                                <input className='form-control' name='cohortUrl' value={cohort.url} onChange={e => dispatch(allactions.cohortActions.setUrl(e.target.value))} onBlur={(e) => {populateErrors('cohortUrl', e.target.value, true, 'string')}}/>
-                            </span>
-                            {errors.cohortUrl ? <span className='col-md-3' style={{color: 'red'}}>{errors.cohortUrl}</span> : ''}
-                        </div>
                         <div className='form-group col-md-12' style={{paddingBottom: '10px', borderBottom: '1px solid grey'}}>
                             <label htmlFor='completionDate' className='col-md-4'>A.2 Date Form Completed</label>
                             <span className='col-md-5'>
                                 <input className='form-control' name='completionDate' value={cohort.completionDate} onChange={e => dispatch(allactions.cohortActions.setCompletionDate(e.target.value))} onBlur={(e) => {populateErrors('completionDate', e.target.value, true, 'date')}}/>
                             </span>
-                            {errors.completionDate ? <span className='col-md-3' style={{color: 'red'}}>{errors.completionDate}</span> : ''}
+                            {errors.completionDate ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.completionDate}</span> : ''}
                         </div>
                         <div id='question3' className='col-md-12' style={{display: 'flex', flexDirection: 'row', borderBottom: '1px solid grey', paddingBottom: '10px'}}>
                             <div id='a3a' className='col-md-6' style={{borderRight: '1px solid grey', flexGrow: '5', paddingLeft: '0'}}>
@@ -271,7 +268,7 @@ const CohortForm = ({...props}) => {
                                     <span className='col-md-4' style={{lineHeight: '1.5em', margin: '0', padding: '0'}}>{' '} Please specify website</span>
                                     <span className='col-md-3' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.setWebSite(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
                                     </span>
-                                    {errors.websiteurl ? <span className='col-md-5' style={{color: 'red'}}>{errors.websiteurl}</span> : ''}
+                                    {errors.websiteurl ? <span className='col-md-5' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span> : ''}
                                 </span>
                             </div>
                             <div className='col-md-12'>

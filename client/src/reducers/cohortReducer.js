@@ -4,7 +4,6 @@ import t from '../actionTypes'
 const actions = {}
 actions[t.setCohortName] = (state, action) => ({...state, name: action.name})
 actions[t.setAcronym] = (state, action) => ({...state, acronym: action.acronym})
-actions[t.setUrl] = (state, action) => ({...state, url: action.url})
 actions[t.setCompletionDate] = (state, action) => ({...state, completionDate: action.completionDate})
 actions[t.setCompleterName] = (state, action) => ({...state, completerName: action.completerName})
 actions[t.setCompleterPosition] = (state, action) => ({...state, completerPosition: action.completerPosition})

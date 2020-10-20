@@ -2,7 +2,6 @@ const InitialStates ={
     cohort: {
         name: 'joe',
         acronym: 'HWS',
-        url: 'hws.com',
         completionDate: '05/19/2020',
         completerName: 'Joe',
         completerPosition: 'Developer',

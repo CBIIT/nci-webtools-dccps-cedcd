@@ -9,11 +9,6 @@ const setAcronym = (n) => ({
     acronym: n
 })
 
-const setUrl = (n) => ({
-    type: t.setUrl,
-    url: n
-})
-
 const setCompletionDate = (d) => ({
     type: t.setCompletionDate,
     completionDate: d
@@ -288,7 +283,6 @@ const setMainCohortFile = () => ({type: t.setMainCohortFile})
 export default {
     setCohortName,
     setAcronym,
-    setUrl,
     setCompletionDate,
     setCompleterName,
     setCompleterPosition,
