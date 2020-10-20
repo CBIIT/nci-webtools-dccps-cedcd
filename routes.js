@@ -7,6 +7,7 @@ var express = require('express');
 var m_cohort = require('./service/cohort');
 var m_common = require('./service/common');
 var m_user = require('./service/user');
+var m_questionnaire = require('./service/questionnaire')
 var config = require('./config');
 var path = require('path');
 
@@ -26,7 +27,8 @@ module.exports = function(app){
 	app.use('/api/', m_common);
 	app.use('/api/cohort', m_cohort);
 	app.use('/api/user', m_user);
-
+	app.use('/api/questionnaire', m_questionnaire);
+	
 	// All other routes should redirect to error page
     app.get('/*', function (req, res) {
 	  res.sendFile(path.join(config.root, 'client/www', 'index.html'));

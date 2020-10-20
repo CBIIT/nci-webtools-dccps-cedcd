@@ -34,6 +34,7 @@ class NavBar extends Component {
         <Tab id="aboutTab" value={5} currTab={this.props.currTab} onClick={() => this.props.onClick(5)}/>
         <Tab id="contactTab" value={6} currTab={this.props.currTab} onClick={() => this.props.onClick(6)}/>
         <TourBox currTab={this.props.currTab}/>
+        <Tab id="newCohortTab" value={7} currTab={this.props.currTab} onClick={() => this.props.onClick(7)}/>
       </ul>
     );
   }

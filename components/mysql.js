@@ -125,6 +125,45 @@ var execute = function(sql, next){
   	});
 };
 
+var callJsonProcedure = function(func, params, next){
+	pool.getConnection(function(err,connection){
+        if(err){
+          logger.error(err);
+          next(null);
+		}
+		let sql = "CALL "+func+"(";
+        params.forEach(function(p){
+        	let t = typeof p;
+          if(t === "string"){
+            p = p.replace(/'/g,"''");
+            sql += "'"+p+"',";
+          }
+          else if(t === "number"){
+            sql += ""+p+",";
+          }
+          else{
+            sql += "'"+p+"',";
+          }
+        });
+        
+        if(params.length > 0){
+          sql = sql.substring(0, sql.length -1);
+        }
+        sql += ")";
+        logger.debug('sql: ' + sql);
+        connection.query(sql,function(err_1, rows){
+            connection.release();
+            if(err_1){
+	          logger.error(err_1);
+	          next(null);
+	        }
+	        else{
+            next(rows);
+	        }           
+        })
+	})
+}
+
 var callProcedure = function(func, params, next){
 	pool.getConnection(function(err,connection){
         if(err){
@@ -178,5 +217,6 @@ module.exports = {
 	queryWithLimit,
 	execute,
 	callProcedure,
+	callJsonProcedure,
 	close
 };

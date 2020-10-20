@@ -130,6 +130,17 @@ body {
     -o-transition: all .3s ease-out;
     transition: all .3s ease-out;
 }
+
+.inputWriter{
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: transparent;
+
+}
+
+
 .pop-close{
   min-width:10px;
   padding:4px 10px;
