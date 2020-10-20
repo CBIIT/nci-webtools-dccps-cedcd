@@ -1,107 +1,179 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-us">
-<head>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-10"></script>
-  <script defer src="https://use.fontawesome.com/releases/v5.1.0/js/all.js" integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9" crossorigin="anonymous"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-62346354-10"
+    ></script>
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.1.0/js/all.js"
+      integrity="sha384-3LK/3kTpDE/Pkp8gTNp2gR/2gOiwQ6QaO7Td0zV76UFJVhqLl4Vl3KL1We6q6wR9"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-    gtag('config', 'UA-62346354-10');
-  </script>
-  <script>
-    function detectIE() {
-      // var ua = window.navigator.userAgent;
-      // var result = 0;
-      // var msie = ua.indexOf('MSIE ');
-      // if (msie > 0) {
-      //   // IE 10 or older => return version number
-      //   result =  parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-      // }
-
-      // var trident = ua.indexOf('Trident/');
-      // if (trident > 0) {
-      //   // IE 11 => return version number
-      //   var rv = ua.indexOf('rv:');
-      //   result =  parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-      // }
-      // if(result){
-      //     document.getElementById("compatibleInfo").className = "alert alert-info";
-      // }
-      // else{
-      //     document.getElementById("compatibleInfo").className = "hidden-section";
-      // }
-    }
-  </script>
-  <script src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
-  <title>
-    Cancer Epidemiology Descriptive Cohort Database (CEDCD)
-  </title>
-  
+      gtag("config", "UA-62346354-10");
+    </script>
+    <script>
+      function detectIE() {
+        // var ua = window.navigator.userAgent;
+        // var result = 0;
+        // var msie = ua.indexOf('MSIE ');
+        // if (msie > 0) {
+        //   // IE 10 or older => return version number
+        //   result =  parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        // }
+        // var trident = ua.indexOf('Trident/');
+        // if (trident > 0) {
+        //   // IE 11 => return version number
+        //   var rv = ua.indexOf('rv:');
+        //   result =  parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        // }
+        // if(result){
+        //     document.getElementById("compatibleInfo").className = "alert alert-info";
+        // }
+        // else{
+        //     document.getElementById("compatibleInfo").className = "hidden-section";
+        // }
+      }
+    </script>
+    <script src="//assets.adobedtm.com/f1bfa9f7170c81b1a9a9ecdcc6c5215ee0b03c84/satelliteLib-4b219b82c4737db0e1797b6c511cf10c802c95cb.js"></script>
+    <title>Cancer Epidemiology Descriptive Cohort Database (CEDCD)</title>
 
     <!-- style links -->
     <!-- <link href="/css/bootstrap-tour.css" rel="stylesheet" type="text/css"> -->
-    <link href="./assets/css/bootstrap.css" rel="Stylesheet" type="text/css">
-    <link href="./assets/css/main.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700" rel="stylesheet" type="text/css">
-</head>
-<body style='' id="selectPage" onload="detectIE()">
-   <a class="sr-only sr-only-focusable" href="#root">Skip to main content</a>
-  <div id="compatibleInfo" class="hidden-section">
-          Hey, You are using Internet Explorer, an unsupported browser. Please upgrade to a modern browser such as Chrome, Firefox, or Edge. 
-  </div>
-  <div id="wrapper-inner">
-    <!-- HEADER-NCI -->
-    <div id="header-nci-bg">
+    <link href="/assets/css/bootstrap.css" rel="Stylesheet" type="text/css" />
+    <link href="/assets/css/main.css" rel="stylesheet" type="text/css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=PT+Sans:400,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
+  <body style="" id="selectPage" onload="detectIE()">
+    <a class="sr-only sr-only-focusable" href="#root">Skip to main content</a>
+    <div id="compatibleInfo" class="hidden-section">
+      You are using Internet Explorer, an unsupported browser. Please upgrade to
+      a modern browser such as Chrome, Firefox, or Edge.
+    </div>
+    <div id="wrapper-inner">
+      <!-- HEADER-NCI -->
+      <div id="header-nci-bg">
         <div id="header-nci">
-            <img src="./assets/img/NIH_NCI_Logo_Grey.svg" alt="National Cancer Institute">
-        </div><!-- header-nci-->
-    </div><!-- header-nci-bg-->
-    <div id="cedcd-bg-wrapper"> <!--for bg color/pattern-->
-      <!-- HEADER-CEDCD -->
-      <div id="header">
-        <div id="header-inner">
-        <h1><a href="./" style="border:0px;"><img src="./assets/img/logo_CEDCD_white.png" id="ctl09_mastLogo" alt="Cancer Epidemiology Descriptive Cohort Database" style="margin-left: 0px; margin-top: 6px;"></a></h1>
+          <img
+            src="/assets/img/NIH_NCI_Logo_Grey.svg"
+            alt="National Cancer Institute"
+          />
+        </div>
+        <!-- header-nci-->
+      </div>
+      <!-- header-nci-bg-->
+      <div id="cedcd-bg-wrapper">
+        <!--for bg color/pattern-->
+        <!-- HEADER-CEDCD -->
+        <div id="header">
+          <div id="header-inner">
+            <h1>
+              <a href="/" style="border: 0px"
+                ><img
+                  src="/assets/img/logo_CEDCD_white.png"
+                  id="ctl09_mastLogo"
+                  alt="Cancer Epidemiology Descriptive Cohort Database"
+                  style="margin-left: 0px; margin-top: 6px"
+              /></a>
+            </h1>
+          </div>
+
+          <a
+            class="login-button"
+            href="/cohort/questionnaire"
+            style="margin-left: 10%; margin-top: 20px"
+            >Cohort Login</a
+          >
+          <a class="login-button" href="/admin/managecohort">Admin Login</a>
+        </div>
+        <!-- header-->
+        <div id="root"></div>
+        <div class="clearFix"></div>
+        <div class="clearFix"></div>
+
+        <!-- FOOTER -->
+        <div id="footer">
+          <ul class="footer-nav">
+            <li>
+              <a
+                href="mailto:CEDCDWebAdmin@mail.nih.gov?subject=CEDCD%20Technical%20Support"
+                target="_top"
+                >Support</a
+              >
+            </li>
+            <li>
+              <a
+                href="http://www.cancer.gov/global/web/policies"
+                target="_blank"
+                >Policies</a
+              >
+            </li>
+            <li>
+              <a
+                href="http://www.cancer.gov/global/web/policies/accessibility"
+                target="_blank"
+                >Accessibility</a
+              >
+            </li>
+            <li>
+              <a
+                href="http://www.cancer.gov/global/web/policies/foia"
+                target="_blank"
+                >FOIA</a
+              >
+            </li>
+            <li class="no-right">
+              <a href="http://get.adobe.com/reader/" target="_blank"
+                >Get Adobe Reader</a
+              >
+            </li>
+          </ul>
+          <ul class="footer-nav external-links">
+            <li>
+              <a href="http://www.hhs.gov" target="_blank"
+                >U.S. Department of Health and Human Services</a
+              >
+            </li>
+            <li>
+              <a href="http://www.nih.gov" target="_blank"
+                >National Institutes of Health</a
+              >
+            </li>
+            <li>
+              <a href="http://www.cancer.gov" target="_blank"
+                >National Cancer Institute</a
+              >
+            </li>
+            <li class="no-right">
+              <a href="http://www.usa.gov" target="_blank">USA.gov</a>
+            </li>
+          </ul>
+          <p style="color: white">NIH....Turning Discovery into Health®</p>
 
           <div class="clearFix"></div>
         </div>
-      </div><!-- header-->
-      <div id="root">
-        
-      </div>     
-      <div class="clearFix"></div>
-      <div class="clearFix"></div>
-  
-      <!-- FOOTER -->
-      <div id="footer">
+        <!-- footer-->
 
-          <ul class="footer-nav">
-            <li><a href="mailto:CEDCDWebAdmin@mail.nih.gov?subject=CEDCD%20Technical%20Support" target="_top">Support</a></li>
-            <li><a href="http://www.cancer.gov/global/web/policies"  target="_blank">Policies</a></li>
-            <li><a href="http://www.cancer.gov/global/web/policies/accessibility" target="_blank">Accessibility</a></li>
-            <li><a href="http://www.cancer.gov/global/web/policies/foia" target="_blank">FOIA</a></li>
-              <li class="no-right"><a href="http://get.adobe.com/reader/" target="_blank">Get Adobe Reader</a></li>
-          </ul>
-          <ul class="footer-nav external-links">
-            <li><a href="http://www.hhs.gov" target="_blank">U.S. Department of Health and Human Services</a></li>
-            <li><a href="http://www.nih.gov" target="_blank">National Institutes of Health</a></li>
-            <li><a href="http://www.cancer.gov" target="_blank">National Cancer Institute</a></li>
-            <li class="no-right"><a href="http://www.usa.gov" target="_blank">USA.gov</a></li>
-          </ul>
-          <p style="color:white">NIH....Turning Discovery into Health®</p>
-
-          <div class="clearFix"></div>
-
-      </div><!-- footer-->
-
-
-      <div class="clearFix"></div>
+        <div class="clearFix"></div>
+      </div>
+      <!--cedcd-bg-wrapper-->
     </div>
-    <!--cedcd-bg-wrapper-->      
-  </div>
-  <script type="text/javascript">_satellite.pageBottom();</script>
-</body>
+    <script type="text/javascript">
+      _satellite.pageBottom();
+    </script>
+  </body>
 </html>
