@@ -608,48 +608,33 @@ values ("prevalent");
  */
 insert into lu_cancer(icd9, icd10, cancer)
 values ("", "", "All Other Cancers"),
-  ("188", "C67", "Bladder"),
-  ("170", "C40", "Bone"),
-  ("191", "C71", "Brain"),
-  ("174-175", "C50", "Breast"),
-  ("233", "D05", "Carcinoma"),
-  ("180", "C53", "Cervix"),
-  ("153", "C18", "Colon"),
-  ("182", "C54", "Corpus, body of uterus"),
-  ("150", "C15", "Esophagus"),
-  (
-    "156",
-    "C23, C24",
-    "Gall bladder and extrahepatic bile duct"
-  ),
-  (
-    "189",
-    "C64-C66, C68",
-    "Kidney and other unspecified urinary organs"
-  ),
-  ("204-208", "C91-95", "Leukemia"),
-  ("155", "C22", "Liver and intrahepatic bile ducts"),
-  ("201", "C81-84", "Hodgkin Lymphoma"),
-  (
-    "172",
-    "C43",
-    "Melanoma (excluding genital organs)"
-  ),
-  ("203", "C90", "Myeloma"),
-  ("200, 202", "C85", "Non-Hodgkin Lymphoma"),
   ("141-149", "C00-C14", "Oropharyngeal"),
-  (
-    "183",
-    "C56",
-    "Ovary, fallopian tube, broad ligament"
-  ),
-  ("157", "C25", "Pancreas"),
-  ("185", "C61", "Prostate"),
-  ("154", "C19-C21", "Rectum and anus"),
-  ("152", "C17", "Small intestine"),
+  ("150", "C15", "Esophagus"),
   ("151", "C16", "Stomach"),
+  ("152", "C17", "Small intestine"),
+  ("153", "C18", "Colon"),
+  ("154", "C19-C21", "Rectum and anus"),
+  ("155", "C22", "Liver and intrahepatic bile ducts"),
+  ("156","C23, C24","Gall bladder and extrahepatic bile ducts"),
+  ("157", "C25", "Pancreas"),
+  ("162", "C34", "Lung and bronchus"),
+  ("170", "C40,C41", "Bone"),
+  ("172", "C43", "Melanoma (excluding mucosal sites)"),
+  ("174-175", "C50", "Invasive Breast Cancer"),
+  ("233","D05.1","Ductal carcinoma in situ of breast"),
+  ("180","C53","Cervix (Squamous cell carcinoma, Adenocarcinoma)"),
+  ("233","D06.1","Cervical carcinoma in situ (CIN II/III, CIS, AIS)"),
+  ("182", "C54", "Corpus, body of uterus"),
+  ("183","C56","Ovary, fallopian tube, broad ligament"),
+  ("185", "C61", "Prostate"),
+  ("188", "C67", "Bladder"),
+  ("189","C64-C66, C68","Kidney and other unspecified urinary organs"),
+  ("191", "C71", "Brain"),
   ("193", "C73", "Thyroid"),
-  ("162", "C34", "Trachea, bronchus, and lung"),
+  ("201", "C82-C85", "Hodgkin Lymphoma"),
+  ("200, 202", "C85", "Non-Hodgkin Lymphoma"),
+  ("203", "C90", "Myeloma"),
+  ("204-208", "C91-95", "Leukemia"),
   ("", "", "No Cancer");
 /*
  Generate data for lookup table lu_domain
