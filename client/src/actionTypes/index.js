@@ -71,6 +71,9 @@ const actionTypes = {
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
 
+    setSeStatusBaseLine: 'SET_MC_SESTATUS_BSASELINE',
+    setSeStatusFollowUp: 'SET_MC_SESTATUS_FOLLOWUP',
+
     setSectionStatus: 'SET_COHORT_SECTION_STATUS'
 }
 
