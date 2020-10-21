@@ -1,8 +1,25 @@
 SET FOREIGN_KEY_CHECKS = 0;
+
+/*
+*   convert table name in singular style 
+*   drop tables with name confusions
+*
+*/
+
 DROP TABLE IF EXISTS `lu_cancers`;
+DROP TABLE IF EXISTS `lu_domainss`;
+DROP TABLE IF EXISTS `cedcd_new`.`lu_specimens`;
+DROP TABLE IF EXISTS `cedcd_new`.`cohorts`;
+DROP TABLE IF EXISTS `cedcd_new`.`contacts`;
+DROP TABLE IF EXISTS `cedcd_new`.`specimens`;
+DROP TABLE IF EXISTS `cedcd_new`.`cancer_counts`;
+DROP TABLE IF EXISTS `cedcd_new`.`enrollment_counts`;
+DROP TABLE IF EXISTS `cedcd_new`.`specimens_counts`;
+
+DROP TABLE IF EXISTS `lu_cancer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_cancers` (
+CREATE TABLE `lu_cancer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `icd9` varchar(20) NOT NULL,
   `icd10` varchar(20) NOT NULL,
@@ -21,10 +38,10 @@ CREATE TABLE `lu_category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `lu_domains`;
+DROP TABLE IF EXISTS `lu_domain`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_domains` (
+CREATE TABLE `lu_domain` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `domain` varchar(500) NOT NULL,
   `sub_domain` varchar(500) DEFAULT NULL,
@@ -58,20 +75,47 @@ CREATE TABLE `lu_race` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `lu_specimens`;
+DROP TABLE IF EXISTS `lu_specimen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_specimens` (
+CREATE TABLE `lu_specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `specimen` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cohorts`;
+DROP TABLE IF EXISTS `lu_case_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cohorts` (
+CREATE TABLE `lu_case_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `case_type` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cohort`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort` (
+  `cohort_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(500) NOT NULL,
+  `acronym` varchar(100) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `publish_by` varchar(100) DEFAULT NULL,
+  `create_by` varchar(100) DEFAULT NULL,
+  `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`cohort_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+DROP TABLE IF EXISTS `cohort_basic`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_basic` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohort_id` int(11) NOT NULL,
   `cohort_name` varchar(500) DEFAULT NULL,
   `cohort_acronym` varchar(100) DEFAULT NULL,
   `cohort_web_site` varchar(200) DEFAULT NULL,
@@ -80,9 +124,10 @@ CREATE TABLE `cohorts` (
   `request_procedures_web_url` varchar(300) DEFAULT NULL,
   `request_procedures_pdf` int(1) DEFAULT NULL,
   `request_procedures_none` int(1) DEFAULT NULL,
+  `sameAsSomeone` int(1) DEFAULT NULL,
   `cohort_description` varchar(5000) DEFAULT NULL,
   `gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
-  `eligible_disease` int(1) DEFAULT NULL,
+  `eligible_disease` int(1) DEFAULT NULL, -- hasCancerSite
   `eligible_disease_cancer_specify` varchar(100) DEFAULT NULL,
   `eligible_disease_other_specify` varchar(100) DEFAULT NULL,
   `enrollment_total` int(10) DEFAULT NULL,
@@ -95,6 +140,10 @@ CREATE TABLE `cohorts` (
   `enrollment_age_max` int(3) DEFAULT NULL,
   `enrollment_age_median` int(3) DEFAULT NULL,
   `enrollment_age_mean` int(3) DEFAULT NULL,
+  `current_age_min` int(3) DEFAULT NULL,
+  `current_age_max` int(3) DEFAULT NULL,
+  `current_age_median` int(3) DEFAULT NULL,
+  `current_age_mean` int(3) DEFAULT NULL,
   `time_interval` varchar(200) DEFAULT NULL,
   `most_recent_year` int(4) DEFAULT NULL,
   `data_collected_in_person` int(1) DEFAULT NULL,
@@ -107,12 +156,31 @@ CREATE TABLE `cohorts` (
   `other_tools_specify` varchar(200) DEFAULT NULL,
   `restrictions` varchar(500) DEFAULT NULL,
   `restrictions_other_specify` varchar(200) DEFAULT NULL,
+  `strategy_routine` bit DEFAULT NULL,
+  `strategy_mailing` bit DEFAULT NULL,
+  `strategy_aggregate_study` bit DEFAULT NULL,
+  `strategy_individual_study` bit DEFAULT NULL,
+  `strategy_invitation` bit DEFAULT NULL,
+  `strategy_other` bit DEFAULT NULL,
+  `strategy_other_specify` varchar(200) DEFAULT NULL,
+  `questionnaire_file_attached` bit DEFAULT NULL,
+  `main_cohort_file_attached` bit DEFAULT NULL,
+  `data_file_attached` bit DEFAULT NULL,
+  `specimen_file_attached` bit DEFAULT NULL,
+  `publication_file_attached` bit DEFAULT NULL,
+  `questionnaire_url` varchar(100) DEFAULT NULL,
+  `main_cohort_url` varchar(100) DEFAULT NULL,
+  `data_url` varchar(100) NULL,
+  `specimen_url` varchar(100) NULL,
+  `publication_url` varchar(100) NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
   PRIMARY KEY (`id`),
-  KEY `cohort_gender_id_idx` (`id`,`gender_id`),
+  KEY `cohort_gender_id_idx` (`cohort_id`,`gender_id`),
   KEY `cohort_gender_id_idx_idx` (`gender_id`),
+  KEY `cohort_basic_id` (`cohort_id`),
+  CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -131,26 +199,28 @@ CREATE TABLE `attachment` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `attachment_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `attachment_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `attachment_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `cancer_counts`;
+DROP TABLE IF EXISTS `cancer_count`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cancer_counts` (
+CREATE TABLE `cancer_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) NOT NULL,
   `gender_id` int(11) NOT NULL COMMENT '0-Both 1-Female 2-Male 3-Unknown',
+  `case_type_id` int(4),
   `cancer_counts` int(10) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `cancer_counts_cancer_id_idx` (`cancer_id`),
-  KEY `cancer_counts_gender_id_idx` (`gender_id`),
-  KEY `cancer_counts_cohort_id` (`cohort_id`),
-  CONSTRAINT `cancer_counts_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancers` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `cancer_count_cancer_id_idx` (`cancer_id`),
+  KEY `cancer_count_gender_id_idx` (`gender_id`),
+  KEY `cancer_count_cohort_id` (`cohort_id`),
+  CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -199,13 +269,13 @@ CREATE TABLE `cancer_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `cancer_info_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `contacts`;
+DROP TABLE IF EXISTS `contact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `contacts` (
+CREATE TABLE `contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
@@ -238,13 +308,13 @@ CREATE TABLE `dlh` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `dlh_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `enrollment_counts`;
+DROP TABLE IF EXISTS `enrollment_count`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `enrollment_counts` (
+CREATE TABLE `enrollment_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `race_id` int(11) NOT NULL,
@@ -254,14 +324,14 @@ CREATE TABLE `enrollment_counts` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `enrollment_counts_cohort_id_idx` (`cohort_id`),
-  KEY `enrollment_counts_race_id_idx` (`race_id`),
-  KEY `enrollment_counts_ethnicity_id_idx` (`ethnicity_id`),
-  KEY `enrollment_counts_gender_id_idx` (`gender_id`),
-  CONSTRAINT `enrollment_counts_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `enrollment_counts_ethnicity_id` FOREIGN KEY (`ethnicity_id`) REFERENCES `lu_ethnicity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `enrollment_counts_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `enrollment_counts_race_id` FOREIGN KEY (`race_id`) REFERENCES `lu_race` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `enrollment_count_cohort_id_idx` (`cohort_id`),
+  KEY `enrollment_count_race_id_idx` (`race_id`),
+  KEY `enrollment_count_ethnicity_id_idx` (`ethnicity_id`),
+  KEY `enrollment_count_gender_id_idx` (`gender_id`),
+  CONSTRAINT `enrollment_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `enrollment_count_ethnicity_id` FOREIGN KEY (`ethnicity_id`) REFERENCES `lu_ethnicity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `enrollment_count_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `enrollment_count_race_id` FOREIGN KEY (`race_id`) REFERENCES `lu_race` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `major_content`;
@@ -280,8 +350,8 @@ CREATE TABLE `major_content` (
   PRIMARY KEY (`id`),
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`domain_id`),
-  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `mc_domain_id` FOREIGN KEY (`domain_id`) REFERENCES `lu_domains` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `mc_domain_id` FOREIGN KEY (`domain_id`) REFERENCES `lu_domain` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `mortality`;
@@ -307,7 +377,7 @@ CREATE TABLE `mortality` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `mortality_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `person`;
@@ -328,13 +398,13 @@ CREATE TABLE `person` (
   KEY `person_cohort_id_idx` (`cohort_id`),
   KEY `person_category_id_idx` (`category_id`),
   CONSTRAINT `person_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `person_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `person_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `specimens`;
+DROP TABLE IF EXISTS `specimen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `specimens` (
+CREATE TABLE `specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `bio_blood_baseline` int(1) DEFAULT NULL,
@@ -360,14 +430,14 @@ CREATE TABLE `specimens` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `specimens_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `specimens_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `specimen_new_cohort_id_idx` (`cohort_id`),
+  CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `specimens_counts`;
+DROP TABLE IF EXISTS `specimen_count`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `specimens_counts` (
+CREATE TABLE `specimen_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) DEFAULT NULL,
@@ -376,12 +446,12 @@ CREATE TABLE `specimens_counts` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `specimens_counts_cohort_id_idx` (`cohort_id`),
-  KEY `specimens_counts_cancer_id_idx_idx` (`cancer_id`),
-  KEY `specimens_counts_specimen_id_idx_idx` (`specimen_id`),
-  CONSTRAINT `specimens_counts_cancer_id_idx` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancers` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `specimens_counts_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `specimens_counts_specimen_id_idx` FOREIGN KEY (`specimen_id`) REFERENCES `lu_specimens` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `specimen_count_cohort_id_idx` (`cohort_id`),
+  KEY `specimen_count_cancer_id_idx_idx` (`cancer_id`),
+  KEY `specimen_count_specimen_id_idx_idx` (`specimen_id`),
+  CONSTRAINT `specimen_count_cancer_id_idx` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `specimen_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `specimen_count_specimen_id_idx` FOREIGN KEY (`specimen_id`) REFERENCES `lu_specimen` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `technology`;
@@ -398,7 +468,7 @@ CREATE TABLE `technology` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `technology_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `user`;
@@ -406,22 +476,82 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `display_name` varchar(100) NOT NULL,
-  `access_level` int(3) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
   `session_id` varchar(50) DEFAULT NULL,
-  `lock` int(1) DEFAULT NULL,
+  `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
   `last_login` datetime DEFAULT NULL,
   `lock_date` datetime DEFAULT NULL,
   `password_date` datetime DEFAULT NULL,
   `email` varchar(50) NOT NULL,
-  `cohort_id` int(11) DEFAULT NULL,
   `salt` varchar(50) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cohort_activity_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_activity_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohort_id` int(11) NOT NULL,
+  `cohort_user_id` int(11) NOT NULL,
+  `activitiy` varchar(50) NOT NULL,
+  `notes` varchar(250),
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  KEY `user_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `user_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohorts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  KEY `cohort_logs_chhort_id` (`cohort_id`),
+  KEY `cohort_logs_user_id` (`cohort_user_id`),
+  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_master` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cohort_user_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_user_mapping` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohort_id` int(11) NOT NULL,
+  `cohort_user_id` int(11) NOT NULL,
+  `active` varchar(10) NOT NULL DEFAULT 'yes',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `cohort_user_chhort_id` (`cohort_id`),
+  KEY `cohort_user_user_id` (`cohort_user_id`),
+  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `cohort_page_mapping`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_page_mapping` (
+  `page_code` varchar(2) NOT NULL,
+  `page_info` varchar(50) NOT NULL,
+   PRIMARY KEY (`page_code`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ DROP TABLE IF EXISTS `cohort_edit_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cohort_edit_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohort_id` int(11) NOT NULL,
+  `page_code` varchar(2) NOT NULL,
+  `status` varchar(10) NOT NULL,
+   PRIMARY KEY (`id`),
+  UNIQUE KEY `cohort_edit_unique_page` (`cohort_id`,`page_code`),
+  KEY `cohort_edit_chhort_id` (`cohort_id`),
+  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
+
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 /* 
@@ -526,7 +656,7 @@ BEGIN
     
     set @enrollment_race_query = "";
     if race != "" then
-		set @enrollment_race_query = concat("cs.id in (select distinct cohort_id from enrollment_counts where race_id in (",race,") and enrollment_counts > 0)");
+		set @enrollment_race_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where race_id in (",race,") and enrollment_counts > 0)");
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',4)),',',1));
         if tmp = "AND" then
 			set @and_query = concat(@and_query, " and ", @enrollment_race_query);
@@ -537,7 +667,7 @@ BEGIN
     
     set @enrollment_ethnicity_query = "";
     if ethnicity != "" then
-		set @enrollment_ethnicity_query = concat("cs.id in (select distinct cohort_id from enrollment_counts where ethnicity_id in (",ethnicity,") and enrollment_counts > 0)");
+		set @enrollment_ethnicity_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where ethnicity_id in (",ethnicity,") and enrollment_counts > 0)");
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',5)),',',1));
         if tmp = "AND" then
 			set @and_query = concat(@and_query, " and ", @enrollment_ethnicity_query);
@@ -548,7 +678,7 @@ BEGIN
     
     set @major_content_query = "";
     if domain != "" then
-		set @major_content_query = concat("cs.id in (select cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) group by cohort_id ");
+		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) group by cohort_id ");
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
         if tmp = "AND" then
 			set @len = LENGTH(domain) - LENGTH(REPLACE(domain, ',', '')) + 1;
@@ -579,7 +709,7 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.id in (select cohort_id from specimens where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
         
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',7)),',',1));
         if tmp = "AND" then
@@ -594,10 +724,10 @@ BEGIN
     if cancer != "" then
 		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1));
         if tmp = "OR" then
-			set @cancer_query = concat("and cs.id in (select distinct cohort_id from cancer_counts where cancer_id in (",cancer,") and cancer_counts > 0 ");
+			set @cancer_query = concat("and cs.cohort_id in (select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ");
 		elseif tmp = "AND" then
 			set @len = LENGTH(cancer) - LENGTH(REPLACE(cancer, ',', '')) + 1;
-			set @cancer_query = concat("and cs.id in (select t.cohort_id from ( select cohort_id, cancer_id from cancer_counts where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
+			set @cancer_query = concat("and cs.cohort_id in (select t.cohort_id from ( select cohort_id, cancer_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
 			set @cancer_query = concat(@cancer_query, " having sum(1) >= ", @len);
         end if;
 		set @cancer_query = concat(@cancer_query,") ");
@@ -610,7 +740,7 @@ BEGIN
         end if;
     end if;
     
-    set @query = "select sql_calc_found_rows cs.id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohorts cs, enrollment_counts ec WHERE cs.id = ec.cohort_id ";
+    set @query = "select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec WHERE cs.cohort_id = ec.cohort_id ";
     
     if @and_query = "" and @or_query = "" then
 		set @query = concat(@query, " ");
@@ -623,7 +753,7 @@ BEGIN
 		set @query = concat(@query, @and_query, @or_query);
     end if;
     
-    set @groupBy = " group by cs.id ";
+    set @groupBy = " group by cs.cohort_id ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -650,12 +780,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline from cohorts cs, major_content mc, lu_domains ld where cs.id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline from cohort_basic cs, major_content mc, lu_domain ld where cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -667,12 +797,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, " and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, " and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup from cohorts cs, cancer_info ci, mortality m, lu_gender lg where cs.id = ci.cohort_id and cs.id = m.cohort_id and cs.gender_id = lg.id",@queryString);
+    set @query = concat("select cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup from cohort_basic cs, cancer_info ci, mortality m, lu_gender lg where cs.cohort_id = ci.cohort_id and cs.cohort_id = m.cohort_id and cs.gender_id = lg.id",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -684,12 +814,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id as c_id,cs.cohort_name,cs.cohort_acronym,ci.* from cohorts cs, cancer_info ci where cs.id = ci.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,ci.* from cohort_basic cs, cancer_info ci where cs.cohort_id = ci.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -698,7 +828,7 @@ END ;;
 DROP PROCEDURE IF EXISTS `cohort_description`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_description`(in c_id int(11))
 BEGIN
-	select * from cohorts where id = c_id;
+	select * from cohort_basic where cohort_id = c_id;
     select * from attachment where cohort_id = c_id;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END ;;
@@ -708,12 +838,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup from cohorts cs, major_content mc, lu_domains ld where cs.id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup from cohort_basic cs, major_content mc, lu_domain ld where cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -725,12 +855,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* from cohorts cs, dlh cd, technology ct where cs.id = cd.cohort_id and cs.id = ct.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* from cohort_basic cs, dlh cd, technology ct where cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -739,18 +869,18 @@ END ;;
 DROP PROCEDURE IF EXISTS `cohort_list`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_list`()
 BEGIN
-	select id, cohort_name, cohort_acronym from cohorts order by cohort_acronym;
+	select id, cohort_name, cohort_acronym from cohort_basic order by cohort_acronym;
 END ;;
 
 DROP PROCEDURE IF EXISTS `cohort_lookup`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_lookup`()
 BEGIN
 	select * from lu_gender;
-    select * from lu_cancers;
-    select * from lu_domains;
+    select * from lu_cancer;
+    select * from lu_domain;
     select * from lu_ethnicity;
     select * from lu_race;
-    select * from lu_specimens;
+    select * from lu_specimen;
 END ;;
 
 DROP PROCEDURE IF EXISTS `cohort_mortality`;
@@ -759,12 +889,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id as c_id,cs.cohort_name,cs.cohort_acronym,cm.* from cohorts cs, mortality cm where cs.id = cm.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cm.* from cohort_basic cs, mortality cm where cs.cohort_id = cm.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -784,7 +914,7 @@ BEGIN
     
     set @enrollment_query = "";
     if race != "" || ethnicity != "" then
-		set @enrollment_query = "and cs.id in (select cohort_id from enrollment_counts where 1=1 ";
+		set @enrollment_query = "and cs.cohort_id in (select cohort_id from enrollment_count where 1=1 ";
         
 		if race != "" then
 			set @enrollment_query = concat(@enrollment_query, "and race_id in (",race,") ");
@@ -798,7 +928,7 @@ BEGIN
     
     set @major_content_query = "";
     if domain != "" then
-		set @major_content_query = concat("and cs.id in (select distinct cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) )");
+		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) )");
     end if;
     
     set @specimen_query = "";
@@ -813,13 +943,13 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.id in (select cohort_id from specimens where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
 	end if;
         
         
 	set @cancer_query = "";
     if cancer != "" then
-		set @cancer_query = concat("and cs.id in (select distinct cohort_id from cancer_counts where cancer_id in (",cancer,") and cancer_counts > 0 ");
+		set @cancer_query = concat("and cs.cohort_id in (select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ");
         
         set @cancer_query = concat(@cancer_query,") ");
     end if;
@@ -890,7 +1020,7 @@ BEGIN
 		set @cohort_query = concat(@cohort_query, "and cs.eligible_disease in (",study_population,") ");
     end if;
     
-    set @groupBy = " group by cs.id ";
+    set @groupBy = " group by cs.cohort_id ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -904,7 +1034,7 @@ BEGIN
 		set @paging = "";
     end if;
     
-    set @query = concat("select sql_calc_found_rows cs.id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohorts cs, enrollment_counts ec WHERE cs.id = ec.cohort_id ",@enrollment_query,@major_content_query,@specimen_query,@cancer_query);
+    set @query = concat("select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec WHERE cs.cohort_id = ec.cohort_id ",@enrollment_query,@major_content_query,@specimen_query,@cancer_query);
     set @query = concat(@query, @cohort_query,@groupBy, @orderBy, @paging);
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
@@ -919,12 +1049,12 @@ BEGIN
 	set @queryString = "";
     
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.id in (",cohort_info,") ");
+		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
     end if;
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.id as c_id,cs.cohort_name,cs.cohort_acronym,s.* from cohorts cs, specimens s where cs.id = s.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* from cohort_basic cs, specimen s where cs.cohort_id = s.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -934,239 +1064,239 @@ DROP PROCEDURE IF EXISTS `Migrate_cancer_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_cancer_counts`()
 BEGIN
 	-- Bladder
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),2,ci_bladder_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),2,ci_bladder_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),1,ci_bladder_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),1,ci_bladder_female
 	from cedcd.cohort_cancer;
 
 	-- Bone
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),2,ci_bone_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),2,ci_bone_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),1,ci_bone_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),1,ci_bone_female
 	from cedcd.cohort_cancer;
 
 	-- Brain
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),2,ci_brain_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),2,ci_brain_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),1,ci_brain_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),1,ci_brain_female
 	from cedcd.cohort_cancer;
 
 	-- Breast
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),2,ci_breast_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),2,ci_breast_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),1,ci_breast_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),1,ci_breast_female
 	from cedcd.cohort_cancer;
 
 	-- Carcinoma
 
 	-- Cervix
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),2,ci_cervix_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),2,ci_cervix_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),1,ci_cervix_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),1,ci_cervix_female
 	from cedcd.cohort_cancer;
 
 	-- Colon
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),2,ci_colon_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),2,ci_colon_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),1,ci_colon_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),1,ci_colon_female
 	from cedcd.cohort_cancer;
 
 	-- Corpus, body of uterus
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),2,ci_corpus_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),2,ci_corpus_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),1,ci_corpus_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),1,ci_corpus_female
 	from cedcd.cohort_cancer;
 
 	-- Esophagus
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),2,ci_esophagus_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),2,ci_esophagus_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),1,ci_esophagus_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),1,ci_esophagus_female
 	from cedcd.cohort_cancer;
 
 	-- Gall bladder and extrahepatic bile duct
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),2,ci_gall_bladder_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),2,ci_gall_bladder_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),1,ci_gall_bladder_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),1,ci_gall_bladder_female
 	from cedcd.cohort_cancer;
 
 	-- Kidney and other unspecified urinary organs
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),2,ci_kidney_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),2,ci_kidney_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),1,ci_kidney_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),1,ci_kidney_female
 	from cedcd.cohort_cancer;
 
 	-- Leukemia
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),2,ci_leukemia_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),2,ci_leukemia_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),1,ci_leukemia_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),1,ci_leukemia_female
 	from cedcd.cohort_cancer;
 
 	-- Liver and intrahepatic bile ducts
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),2,ci_liver_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),2,ci_liver_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),1,ci_liver_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),1,ci_liver_female
 	from cedcd.cohort_cancer;
 
 	-- Hodgkin Lymphoma
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),2,ci_lymphoma_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),2,ci_lymphoma_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),1,ci_lymphoma_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),1,ci_lymphoma_female
 	from cedcd.cohort_cancer;
 
 	-- Melanoma (excluding genital organs)
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),2,ci_melanoma_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),2,ci_melanoma_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),1,ci_melanoma_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),1,ci_melanoma_female
 	from cedcd.cohort_cancer;
 
 	-- Myeloma
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),2,ci_myeloma_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),2,ci_myeloma_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),1,ci_myeloma_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),1,ci_myeloma_female
 	from cedcd.cohort_cancer;
 
 	-- Non-Hodgkin Lymphoma
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),2,ci_lymphoma_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),2,ci_lymphoma_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),1,ci_lymphoma_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),1,ci_lymphoma_female
 	from cedcd.cohort_cancer;
 
 	-- Oropharyngeal
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),2,ci_oropharyngeal_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),2,ci_oropharyngeal_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),1,ci_oropharyngeal_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),1,ci_oropharyngeal_female
 	from cedcd.cohort_cancer;
 
 	-- Ovary, fallopian tube, broad ligament
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),2,ci_ovary_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),2,ci_ovary_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),1,ci_ovary_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),1,ci_ovary_female
 	from cedcd.cohort_cancer;
 
 	-- Pancreas
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),2,ci_pancreas_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),2,ci_pancreas_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),1,ci_pancreas_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),1,ci_pancreas_female
 	from cedcd.cohort_cancer;
 
 	-- Prostate
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),2,ci_prostate_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),2,ci_prostate_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),1,ci_prostate_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),1,ci_prostate_female
 	from cedcd.cohort_cancer;
 
 	-- Rectum and anus
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),2,ci_rectum_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),2,ci_rectum_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),1,ci_rectum_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),1,ci_rectum_female
 	from cedcd.cohort_cancer;
 
 	-- Small intestine
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),2,ci_small_intestine_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),2,ci_small_intestine_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),1,ci_small_intestine_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),1,ci_small_intestine_female
 	from cedcd.cohort_cancer;
 
 	-- Stomach
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),2,ci_stomach_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),2,ci_stomach_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),1,ci_stomach_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),1,ci_stomach_female
 	from cedcd.cohort_cancer;
 
 	-- Thyroid
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),2,ci_thyroid_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),2,ci_thyroid_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),1,ci_thyroid_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),1,ci_thyroid_female
 	from cedcd.cohort_cancer;
 
 	-- Trachea, bronchus, and lung
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),2,ci_lung_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),2,ci_lung_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),1,ci_lung_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),1,ci_lung_female
 	from cedcd.cohort_cancer;
 
 	-- All Other Cancers
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),2,ci_all_other_cancers_male
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),2,ci_all_other_cancers_male
 	from cedcd.cohort_cancer;
 
-	insert into cancer_counts (cohort_id,cancer_id,gender_id,cancer_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),1,ci_all_other_cancers_female
+	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),1,ci_all_other_cancers_female
 	from cedcd.cohort_cancer;
 END ;;
 
@@ -1204,7 +1334,7 @@ BEGIN
 			set @k = 1;
 			while @k < 4 do
 				set @field = SUBSTRING(@fs, 1,  LOCATE(',', @fs) -1);
-                set @query = concat("insert into enrollment_counts(cohort_id,race_id,ethnicity_id,gender_id,enrollment_counts) select cohort_id," , @i);
+                set @query = concat("insert into enrollment_count(cohort_id,race_id,ethnicity_id,gender_id,enrollment_counts) select cohort_id," , @i);
                 set @query = concat(@query, ",");
                 set @query = concat(@query, @j);
                 set @query = concat(@query, ",");
@@ -1473,788 +1603,788 @@ DROP PROCEDURE IF EXISTS `Migrate_specimens_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_specimens_counts`()
 BEGIN
 	-- Bladder
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),1,bio_bladder_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),1,bio_bladder_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),2,bio_bladder_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),2,bio_bladder_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),3,bio_bladder_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),3,bio_bladder_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),4,bio_bladder_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),4,bio_bladder_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),5,bio_bladder_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),5,bio_bladder_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),6,bio_bladder_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),6,bio_bladder_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bladder"),7,bio_bladder_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bladder"),7,bio_bladder_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Bone
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),1,bio_bone_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),1,bio_bone_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),2,bio_bone_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),2,bio_bone_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),3,bio_bone_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),3,bio_bone_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),4,bio_bone_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),4,bio_bone_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),5,bio_bone_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),5,bio_bone_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),6,bio_bone_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),6,bio_bone_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Bone"),7,bio_bone_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Bone"),7,bio_bone_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Brain
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),1,bio_brain_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),1,bio_brain_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),2,bio_brain_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),2,bio_brain_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),3,bio_brain_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),3,bio_brain_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),4,bio_brain_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),4,bio_brain_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),5,bio_brain_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),5,bio_brain_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),6,bio_brain_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),6,bio_brain_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Brain"),7,bio_brain_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Brain"),7,bio_brain_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Breast
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),1,bio_breast_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),1,bio_breast_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),2,bio_breast_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),2,bio_breast_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),3,bio_breast_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),3,bio_breast_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),4,bio_breast_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),4,bio_breast_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),5,bio_breast_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),5,bio_breast_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),6,bio_breast_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),6,bio_breast_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Breast"),7,bio_breast_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Breast"),7,bio_breast_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Carcinoma
 
 	-- Cervix
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),1,bio_cervix_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),1,bio_cervix_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),2,bio_cervix_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),2,bio_cervix_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),3,bio_cervix_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),3,bio_cervix_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),4,bio_cervix_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),4,bio_cervix_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),5,bio_cervix_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),5,bio_cervix_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),6,bio_cervix_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),6,bio_cervix_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Cervix"),7,bio_cervix_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Cervix"),7,bio_cervix_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Colon
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),1,bio_colon_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),1,bio_colon_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),2,bio_colon_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),2,bio_colon_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),3,bio_colon_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),3,bio_colon_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),4,bio_colon_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),4,bio_colon_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),5,bio_colon_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),5,bio_colon_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),6,bio_colon_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),6,bio_colon_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Colon"),7,bio_colon_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Colon"),7,bio_colon_tumor_tissue_2
 	from cedcd.cohort_specimens;
     
 	-- Corpus, body of uterus
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),1,bio_corpus_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),1,bio_corpus_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),2,bio_corpus_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),2,bio_corpus_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),3,bio_corpus_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),3,bio_corpus_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),4,bio_corpus_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),4,bio_corpus_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),5,bio_corpus_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),5,bio_corpus_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),6,bio_corpus_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),6,bio_corpus_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Corpus, body of uterus"),7,bio_corpus_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Corpus, body of uterus"),7,bio_corpus_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Esophagus
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),1,bio_esophagus_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),1,bio_esophagus_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),2,bio_esophagus_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),2,bio_esophagus_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),3,bio_esophagus_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),3,bio_esophagus_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),4,bio_esophagus_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),4,bio_esophagus_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),5,bio_esophagus_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),5,bio_esophagus_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),6,bio_esophagus_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),6,bio_esophagus_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Esophagus"),7,bio_esophagus_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Esophagus"),7,bio_esophagus_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Gall bladder and extrahepatic bile duct
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),1,bio_gall_bladder_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),1,bio_gall_bladder_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),2,bio_gall_bladder_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),2,bio_gall_bladder_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),3,bio_gall_bladder_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),3,bio_gall_bladder_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),4,bio_gall_bladder_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),4,bio_gall_bladder_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),5,bio_gall_bladder_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),5,bio_gall_bladder_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),6,bio_gall_bladder_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),6,bio_gall_bladder_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Gall bladder and extrahepatic bile duct"),7,bio_gall_bladder_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Gall bladder and extrahepatic bile duct"),7,bio_gall_bladder_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Kidney and other unspecified urinary organs
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),1,bio_kidney_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),1,bio_kidney_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),2,bio_kidney_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),2,bio_kidney_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),3,bio_kidney_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),3,bio_kidney_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),4,bio_kidney_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),4,bio_kidney_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),5,bio_kidney_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),5,bio_kidney_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),6,bio_kidney_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),6,bio_kidney_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Kidney and other unspecified urinary organs"),7,bio_kidney_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Kidney and other unspecified urinary organs"),7,bio_kidney_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Leukemia
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),1,bio_leukemia_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),1,bio_leukemia_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),2,bio_leukemia_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),2,bio_leukemia_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),3,bio_leukemia_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),3,bio_leukemia_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),4,bio_leukemia_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),4,bio_leukemia_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),5,bio_leukemia_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),5,bio_leukemia_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),6,bio_leukemia_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),6,bio_leukemia_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Leukemia"),7,bio_leukemia_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Leukemia"),7,bio_leukemia_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Liver and intrahepatic bile ducts
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),1,bio_liver_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),1,bio_liver_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),2,bio_liver_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),2,bio_liver_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),3,bio_liver_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),3,bio_liver_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),4,bio_liver_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),4,bio_liver_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),5,bio_liver_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),5,bio_liver_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),6,bio_liver_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),6,bio_liver_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Liver and intrahepatic bile ducts"),7,bio_liver_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Liver and intrahepatic bile ducts"),7,bio_liver_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Hodgkin Lymphoma
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),1,bio_lymphoma_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),1,bio_lymphoma_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),2,bio_lymphoma_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),2,bio_lymphoma_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),3,bio_lymphoma_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),3,bio_lymphoma_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),4,bio_lymphoma_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),4,bio_lymphoma_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),5,bio_lymphoma_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),5,bio_lymphoma_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),6,bio_lymphoma_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),6,bio_lymphoma_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Hodgkin Lymphoma"),7,bio_lymphoma_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Hodgkin Lymphoma"),7,bio_lymphoma_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Melanoma (excluding genital organs)
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),1,bio_melanoma_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),1,bio_melanoma_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),2,bio_melanoma_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),2,bio_melanoma_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),3,bio_melanoma_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),3,bio_melanoma_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),4,bio_melanoma_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),4,bio_melanoma_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),5,bio_melanoma_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),5,bio_melanoma_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),6,bio_melanoma_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),6,bio_melanoma_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Melanoma (excluding genital organs)"),7,bio_melanoma_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Melanoma (excluding genital organs)"),7,bio_melanoma_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Myeloma
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),1,bio_myeloma_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),1,bio_myeloma_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),2,bio_myeloma_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),2,bio_myeloma_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),3,bio_myeloma_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),3,bio_myeloma_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),4,bio_myeloma_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),4,bio_myeloma_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),5,bio_myeloma_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),5,bio_myeloma_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),6,bio_myeloma_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),6,bio_myeloma_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Myeloma"),7,bio_myeloma_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Myeloma"),7,bio_myeloma_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Non-Hodgkin Lymphoma
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),1,bio_lymphoma_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),1,bio_lymphoma_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),2,bio_lymphoma_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),2,bio_lymphoma_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),3,bio_lymphoma_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),3,bio_lymphoma_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),4,bio_lymphoma_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),4,bio_lymphoma_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),5,bio_lymphoma_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),5,bio_lymphoma_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),6,bio_lymphoma_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),6,bio_lymphoma_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Non-Hodgkin Lymphoma"),7,bio_lymphoma_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Non-Hodgkin Lymphoma"),7,bio_lymphoma_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Oropharyngeal
-    insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),1,bio_oropharyngeal_serum
+    insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),1,bio_oropharyngeal_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),2,bio_oropharyngeal_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),2,bio_oropharyngeal_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),3,bio_oropharyngeal_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),3,bio_oropharyngeal_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),4,bio_oropharyngeal_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),4,bio_oropharyngeal_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),5,bio_oropharyngeal_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),5,bio_oropharyngeal_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),6,bio_oropharyngeal_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),6,bio_oropharyngeal_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Oropharyngeal"),7,bio_oropharyngeal_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Oropharyngeal"),7,bio_oropharyngeal_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Ovary, fallopian tube, broad ligament
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),1,bio_ovary_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),1,bio_ovary_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),2,bio_ovary_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),2,bio_ovary_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),3,bio_ovary_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),3,bio_ovary_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),4,bio_ovary_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),4,bio_ovary_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),5,bio_ovary_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),5,bio_ovary_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),6,bio_ovary_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),6,bio_ovary_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Ovary, fallopian tube, broad ligament"),7,bio_ovary_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Ovary, fallopian tube, broad ligament"),7,bio_ovary_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Pancreas
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),1,bio_pancreas_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),1,bio_pancreas_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),2,bio_pancreas_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),2,bio_pancreas_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),3,bio_pancreas_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),3,bio_pancreas_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),4,bio_pancreas_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),4,bio_pancreas_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),5,bio_pancreas_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),5,bio_pancreas_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),6,bio_pancreas_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),6,bio_pancreas_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Pancreas"),7,bio_pancreas_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Pancreas"),7,bio_pancreas_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Prostate
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),1,bio_prostate_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),1,bio_prostate_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),2,bio_prostate_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),2,bio_prostate_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),3,bio_prostate_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),3,bio_prostate_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),4,bio_prostate_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),4,bio_prostate_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),5,bio_prostate_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),5,bio_prostate_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),6,bio_prostate_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),6,bio_prostate_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Prostate"),7,bio_prostate_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Prostate"),7,bio_prostate_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Rectum and anus
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),1,bio_rectum_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),1,bio_rectum_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),2,bio_rectum_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),2,bio_rectum_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),3,bio_rectum_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),3,bio_rectum_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),4,bio_rectum_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),4,bio_rectum_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),5,bio_rectum_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),5,bio_rectum_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),6,bio_rectum_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),6,bio_rectum_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Rectum and anus"),7,bio_rectum_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Rectum and anus"),7,bio_rectum_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Small intestine
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),1,bio_small_intestine_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),1,bio_small_intestine_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),2,bio_small_intestine_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),2,bio_small_intestine_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),3,bio_small_intestine_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),3,bio_small_intestine_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),4,bio_small_intestine_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),4,bio_small_intestine_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),5,bio_small_intestine_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),5,bio_small_intestine_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),6,bio_small_intestine_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),6,bio_small_intestine_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Small intestine"),7,bio_small_intestine_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Small intestine"),7,bio_small_intestine_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Stomach
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),1,bio_stomach_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),1,bio_stomach_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),2,bio_stomach_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),2,bio_stomach_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),3,bio_stomach_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),3,bio_stomach_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),4,bio_stomach_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),4,bio_stomach_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),5,bio_stomach_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),5,bio_stomach_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),6,bio_stomach_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),6,bio_stomach_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Stomach"),7,bio_stomach_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Stomach"),7,bio_stomach_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Thyroid
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),1,bio_thyroid_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),1,bio_thyroid_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),2,bio_thyroid_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),2,bio_thyroid_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),3,bio_thyroid_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),3,bio_thyroid_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),4,bio_thyroid_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),4,bio_thyroid_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),5,bio_thyroid_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),5,bio_thyroid_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),6,bio_thyroid_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),6,bio_thyroid_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Thyroid"),7,bio_thyroid_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Thyroid"),7,bio_thyroid_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 	-- Trachea, bronchus, and lung
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),1,bio_lung_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),1,bio_lung_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),2,bio_lung_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),2,bio_lung_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),3,bio_lung_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),3,bio_lung_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),4,bio_lung_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),4,bio_lung_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),5,bio_lung_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),5,bio_lung_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),6,bio_lung_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),6,bio_lung_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "Trachea, bronchus, and lung"),7,bio_lung_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "Trachea, bronchus, and lung"),7,bio_lung_tumor_tissue_2
 	from cedcd.cohort_specimens;
     
 	-- All Other Cancers
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),1,bio_all_other_cancers_serum
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),1,bio_all_other_cancers_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),2,bio_all_other_cancers_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),2,bio_all_other_cancers_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),3,bio_all_other_cancers_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),3,bio_all_other_cancers_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),4,bio_all_other_cancers_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),4,bio_all_other_cancers_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),5,bio_all_other_cancers_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),5,bio_all_other_cancers_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),6,bio_all_other_cancers_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),6,bio_all_other_cancers_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "All Other Cancers"),7,bio_all_other_cancers_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "All Other Cancers"),7,bio_all_other_cancers_tumor_tissue_2
 	from cedcd.cohort_specimens;
     
     -- No Cancer
-    insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),1,bio_no_cancer_serum
+    insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),1,bio_no_cancer_serum
 	from cedcd.cohort_specimens;
 
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),2,bio_no_cancer_buffy
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),2,bio_no_cancer_buffy
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),3,bio_no_cancer_saliva
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),3,bio_no_cancer_saliva
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),4,bio_no_cancer_urine
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),4,bio_no_cancer_urine
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),5,bio_no_cancer_feces
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),5,bio_no_cancer_feces
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),6,bio_no_cancer_tumor_tissue_1
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),6,bio_no_cancer_tumor_tissue_1
 	from cedcd.cohort_specimens;
     
-	insert into specimens_counts (cohort_id,cancer_id,specimen_id,specimens_counts)
-	select cohort_id,(select id from lu_cancers where cancer = "No Cancer"),7,bio_no_cancer_tumor_tissue_2
+	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
+	select cohort_id,(select id from lu_cancer where cancer = "No Cancer"),7,bio_no_cancer_tumor_tissue_2
 	from cedcd.cohort_specimens;
 
 END ;;
@@ -2263,8 +2393,8 @@ END ;;
 DROP PROCEDURE IF EXISTS `select_cancer_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
 BEGIN
-    set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts from cancer_counts cc, cohorts cs, lu_gender lg, lu_cancers lc
-						where cc.cohort_id = cs.id 
+    set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts from cancer_count cc, cohort_basic cs, lu_gender lg, lu_cancer lc
+						where cc.cohort_id = cs.cohort_id 
 						and cc.gender_id = lg.id
 						and cc.cancer_id = lc.id ";
     
@@ -2289,8 +2419,8 @@ END ;;
 DROP PROCEDURE IF EXISTS `select_enrollment_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_enrollment_counts`(in gender text, in race text,in ethnicity text,in cohort text)
 BEGIN
-    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts from enrollment_counts ec, cohorts cs, lu_gender lg, lu_ethnicity le, lu_race lr
-						where ec.cohort_id = cs.id 
+    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts from enrollment_count ec, cohort_basic cs, lu_gender lg, lu_ethnicity le, lu_race lr
+						where ec.cohort_id = cs.cohort_id 
 						and ec.gender_id = lg.id
 						and ec.ethnicity_id = le.id
 						and ec.race_id = lr.id ";
@@ -2321,8 +2451,8 @@ END ;;
 DROP PROCEDURE IF EXISTS `select_specimen_counts`;
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in cohort text)
 BEGIN
-    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts from specimens_counts sc, cohorts cs, lu_specimens ls, lu_cancers lc
-						where sc.cohort_id = cs.id 
+    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts from specimen_count sc, cohort_basic cs, lu_specimen ls, lu_cancer lc
+						where sc.cohort_id = cs.cohort_id 
 						and sc.specimen_id = ls.id
 						and sc.cancer_id = lc.id ";
     
@@ -2343,7 +2473,80 @@ BEGIN
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END;;
+
+DROP PROCEDURE IF EXISTS updateCohort_basic;
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE updateCohort_basic(in id int(11), in info JSON)
+BEGIN 
+	UPDATE `cohort_basic` 
+	SET 
+		cohort_name = JSON_UNQUOTE(JSON_EXTRACT(info, '$.name')),
+		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.url')),
+        sameAsSomeone = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')),
+        cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
+        gender_id = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')),
+        eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.hasCancerSite')) = 'true', 1 , 0),
+        eligible_disease_cancer_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites')),
+        eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibilityCriteriaOther')),
+        enrollment_total = JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrolledTotal')),
+        enrollment_year_start = JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollStartYear')),
+        enrollment_year_end = JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollEndYear')),
+        enrollment_ongoing = CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollOnGoing')) AS SIGNED),
+        enrollment_target = JSON_UNQUOTE(JSON_EXTRACT(info, '$.numOfPlans')),
+        enrollment_year_complete = JSON_UNQUOTE(JSON_EXTRACT(info, '$.yearToComplete')),
+        enrollment_age_min = JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMinAge')),
+        enrollment_age_max = JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMaxAge')),
+        enrollment_age_median = JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMedianAge')),
+        enrollment_age_mean = JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMeanAge')),
+        current_age_min = JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMinAge')),
+        current_age_max = JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMaxAge')),
+        current_age_median = JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge')),
+        current_age_mean = JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge')),
+        time_interval = JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval')),
+        most_recent_year = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear')),
+        data_collected_in_person = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson')) = 'true', 1, 0),
+        data_collected_phone = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPhone')) = 'true', 1, 0),
+        data_collected_paper = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper')) = 'true', 1, 0),
+        data_collected_web = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedWeb')) = 'true', 1, 0),
+        data_collected_other = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOther')) = 'true', 1, 0),
+        data_collected_other_specify = IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOtherSpecify')), ''),
+        restrictions = IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 'true', '0_0_0_0_0_0_0_0',
+						   CONCAT('0_', IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone'))= 'true', '1_', '0_'),
+										IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb'))= 'true', '1_', '0_'),
+                                        IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData'))= 'true', '1_', '0_'),
+                                        IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo'))= 'true', '1_', '0_'),
+                                        IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb'))= 'true', '1_', '0_'),
+                                        IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))= 'true', '1_', '0_'),
+                                        IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 'true', '1', '0'))),
+		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 'true', JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
+        strategy_routine = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyRoutine')) = 'true', 1, 0),
+        strategy_mailing = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyMailing')) = 'true', 1, 0),
+        strategy_aggregate_study = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyAggregateStudy')) = 'true', 1, 0),
+        strategy_individual_study = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyIndividualStudy')) = 'true', 1, 0),
+        strategy_invitation = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation')) = 'true', 1, 0),
+        strategy_other = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther')) = 'true', 1, 0),
+        strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOtherSpecify')), ''),
+        questionnaire_file_attached = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFile')) = 'true', 1, 0),
+        main_cohort_file_attached = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortFile')) = 'true', 1, 0),
+        data_file_attached = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFile')) = 'true', 1, 0),
+        specimen_file_attached = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFile')) = 'true', 1, 0),
+        publication_file_attached = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFile')) = 'true', 1, 0),
+        questionnaire_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl')),
+        main_cohort_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl')),
+        data_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl')),
+        specimen_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl')),
+        publication_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')),
+        update_time = NOW()
+	    WHERE cohort_id = `id`;
+        
+	SET @rowcount = ROW_COUNT();
+    SELECT @rowcount AS rowsAffacted;
+END ;;
 DELIMITER ;
+
+
+
+
+
 /*
 Generate data for lookup table lu_gender
 */
@@ -2353,9 +2556,16 @@ insert into lu_gender(gender) values ("Unknown");
 insert into lu_gender(gender) values ("Both");
 
 /*
-Generate data for lookup table lu_cancers
+Generate data for lookup table lu_cast_type
 */
-insert into lu_cancers(icd9,icd10,cancer) 
+insert into lu_case_type(case_type) values ("incident");
+insert into lu_case_type(case_type) values ("prevalent");
+
+
+/*
+Generate data for lookup table lu_cancer
+*/
+insert into lu_cancer(icd9,icd10,cancer) 
 values ("","","All Other Cancers"),
 ("188","C67","Bladder"),
 ("170","C40","Bone"),
@@ -2386,59 +2596,59 @@ values ("","","All Other Cancers"),
 ("","","No Cancer");
 
 /*
-Generate data for lookup table lu_domains
+Generate data for lookup table lu_domain
 */
-insert into lu_domains(domain, sub_domain) values ("Socio-economic Status (e.g., income)","");
-insert into lu_domains(domain, sub_domain) values ("Education Level","");
-insert into lu_domains(domain, sub_domain) values ("Marital Status","");
-insert into lu_domains(domain, sub_domain) values ("Language/Country of Origin","");
-insert into lu_domains(domain, sub_domain) values ("Employment Status","");
-insert into lu_domains(domain, sub_domain) values ("Health Insurance Status","");
-insert into lu_domains(domain, sub_domain) values ("Anthropometry (e.g., weight, height, waist circumference)","");
-insert into lu_domains(domain, sub_domain) values ("Dietary Intake","");
-insert into lu_domains(domain, sub_domain) values ("Dietary Supplement Use","");
-insert into lu_domains(domain, sub_domain) values ("Complementary and Alternative Medicine","");
-insert into lu_domains(domain, sub_domain) values ("Prescription Medication Use (not related to cancer treatment)","");
-insert into lu_domains(domain, sub_domain) values ("Non-prescription Medication Use (not related to cancer treatment)","");
-insert into lu_domains(domain, sub_domain) values ("Alcohol Consumption","");
-insert into lu_domains(domain, sub_domain) values ("Cigarette Smoking","");
-insert into lu_domains(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Cigars");
-insert into lu_domains(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Pipes");
-insert into lu_domains(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Chewing tobacco");
-insert into lu_domains(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","E-Cigarettes");
-insert into lu_domains(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Other");
-insert into lu_domains(domain, sub_domain) values ("Physical Activity","");
-insert into lu_domains(domain, sub_domain) values ("Sleep Habits","");
-insert into lu_domains(domain, sub_domain) values ("Reproductive History","");
-insert into lu_domains(domain, sub_domain) values ("Self-Reported Health","");
-insert into lu_domains(domain, sub_domain) values ("Quality of Life",""); 
-insert into lu_domains(domain, sub_domain) values ("Social Support","");
-insert into lu_domains(domain, sub_domain) values ("Cognitive Function","");
-insert into lu_domains(domain, sub_domain) values ("Depression","");
-insert into lu_domains(domain, sub_domain) values ("Other Psychosocial Variables","");
-insert into lu_domains(domain, sub_domain) values ("Fatigue","");
-insert into lu_domains(domain, sub_domain) values ("Family History of Cancer","");
-insert into lu_domains(domain, sub_domain) values ("Family History of Cancer with Pedigrees","");
-insert into lu_domains(domain, sub_domain) values ("Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)","");
-insert into lu_domains(domain, sub_domain) values ("Residential history Information (zip code, GIS) over time?","");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Diabetes");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Stroke");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","COPD and/or Emphysema");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Cardiovascular Disease");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Osteoporosis");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Mental Health");
-insert into lu_domains(domain, sub_domain) values ("Other Medical Conditions","Cognitive Decline");
+insert into lu_domain(domain, sub_domain) values ("Socio-economic Status (e.g., income)","");
+insert into lu_domain(domain, sub_domain) values ("Education Level","");
+insert into lu_domain(domain, sub_domain) values ("Marital Status","");
+insert into lu_domain(domain, sub_domain) values ("Language/Country of Origin","");
+insert into lu_domain(domain, sub_domain) values ("Employment Status","");
+insert into lu_domain(domain, sub_domain) values ("Health Insurance Status","");
+insert into lu_domain(domain, sub_domain) values ("Anthropometry (e.g., weight, height, waist circumference)","");
+insert into lu_domain(domain, sub_domain) values ("Dietary Intake","");
+insert into lu_domain(domain, sub_domain) values ("Dietary Supplement Use","");
+insert into lu_domain(domain, sub_domain) values ("Complementary and Alternative Medicine","");
+insert into lu_domain(domain, sub_domain) values ("Prescription Medication Use (not related to cancer treatment)","");
+insert into lu_domain(domain, sub_domain) values ("Non-prescription Medication Use (not related to cancer treatment)","");
+insert into lu_domain(domain, sub_domain) values ("Alcohol Consumption","");
+insert into lu_domain(domain, sub_domain) values ("Cigarette Smoking","");
+insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Cigars");
+insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Pipes");
+insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Chewing tobacco");
+insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","E-Cigarettes");
+insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Other");
+insert into lu_domain(domain, sub_domain) values ("Physical Activity","");
+insert into lu_domain(domain, sub_domain) values ("Sleep Habits","");
+insert into lu_domain(domain, sub_domain) values ("Reproductive History","");
+insert into lu_domain(domain, sub_domain) values ("Self-Reported Health","");
+insert into lu_domain(domain, sub_domain) values ("Quality of Life",""); 
+insert into lu_domain(domain, sub_domain) values ("Social Support","");
+insert into lu_domain(domain, sub_domain) values ("Cognitive Function","");
+insert into lu_domain(domain, sub_domain) values ("Depression","");
+insert into lu_domain(domain, sub_domain) values ("Other Psychosocial Variables","");
+insert into lu_domain(domain, sub_domain) values ("Fatigue","");
+insert into lu_domain(domain, sub_domain) values ("Family History of Cancer","");
+insert into lu_domain(domain, sub_domain) values ("Family History of Cancer with Pedigrees","");
+insert into lu_domain(domain, sub_domain) values ("Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)","");
+insert into lu_domain(domain, sub_domain) values ("Residential history Information (zip code, GIS) over time?","");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Diabetes");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Stroke");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","COPD and/or Emphysema");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Cardiovascular Disease");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Osteoporosis");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Mental Health");
+insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Cognitive Decline");
 
 /*
-Generate data for lookup table lu_specimens
+Generate data for lookup table lu_specimen
 */
-insert into lu_specimens(specimen) values ("Serum and/or Plasma");
-insert into lu_specimens(specimen) values ("Buffy Coat and/or Lymphocytes");
-insert into lu_specimens(specimen) values ("Saliva and/or Buccal");
-insert into lu_specimens(specimen) values ("Urine");
-insert into lu_specimens(specimen) values ("Feces");
-insert into lu_specimens(specimen) values ("Tumor Tissue Fresh/Frozen");
-insert into lu_specimens(specimen) values ("Tumor Tissue FFPE");
+insert into lu_specimen(specimen) values ("Serum and/or Plasma");
+insert into lu_specimen(specimen) values ("Buffy Coat and/or Lymphocytes");
+insert into lu_specimen(specimen) values ("Saliva and/or Buccal");
+insert into lu_specimen(specimen) values ("Urine");
+insert into lu_specimen(specimen) values ("Feces");
+insert into lu_specimen(specimen) values ("Tumor Tissue Fresh/Frozen");
+insert into lu_specimen(specimen) values ("Tumor Tissue FFPE");
 
 
 /*
@@ -2468,10 +2678,52 @@ insert into lu_category(category) values ("Cohort Principal Investigator");
 insert into lu_category(category) values ("Person to contact if an investigator is interested");
 
 /*
-Migrate data from table cohort_basic to cohorts
+Generate data for lookup table cohort_page_mapping
 */
-insert into cohorts (
+insert into cohort_page_mapping values('A', 'cohort basic');
+insert into cohort_page_mapping values('B', 'enrollment counts');
+insert into cohort_page_mapping values('C', 'major content domains');
+insert into cohort_page_mapping values('D', 'cancer info');
+insert into cohort_page_mapping values('E', 'mortality');
+insert into cohort_page_mapping values('F', 'data linkage and harmonization');
+insert into cohort_page_mapping values('G', 'specimens collected');
+
+/*
+Generate default users 
+*/
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
+insert into user(last_name,  first_name,  access_level, active_status, email) values
+('Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
+
+/*
+Generate data for major table cohort from old cedcd schema
+*/
+insert into cohort (cohort_id, name, acronym, create_by, status, create_time, update_time)
+select cohort_id,
+cohort_name,
+cohort_acronym,
+'system_admin',
+'published',
+create_time,
+update_time
+from cedcd.cohort_basic;
+
+
+/*
+Migrate data from table cohort_basic to cohort_basic
+*/
+insert into cohort_basic (
 id,
+cohort_id,
 cohort_name,
 cohort_acronym,
 cohort_web_site,
@@ -2511,7 +2763,7 @@ status,
 create_time,
 update_time
 )
-select cohort_id,
+select cohort_id,cohort_id,
 cohort_name,
 cohort_acronym,
 cohort_web_site,
@@ -2584,7 +2836,7 @@ update_time
 from cedcd.cohort_attachment;
 
 /*
-Migrate data from table cohort_basic to cohort_contacts
+Migrate data from table cohort_basic to cohort_contact
 */
 CALL Migrate_person();
 
@@ -2761,7 +3013,7 @@ from cedcd.cohort_mortality;
 /*
 Migrate data from table cohort_specimens to cohort_specimens_new
 */
-insert into specimens (
+insert into specimen (
 cohort_id,
 bio_blood_baseline,
 bio_blood_baseline_serum,
