@@ -140,6 +140,15 @@ body {
 
 }
 
+.inputUnderscore{
+  font-size: 1.2rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid grey;
+  outline: none;
+  background: transparent;
+}
 
 .pop-close{
   min-width:10px;
