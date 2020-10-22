@@ -440,7 +440,7 @@ const CohortForm = ({...props}) => {
                         <div id='question12' className='col-md-12' style={{borderBottom: '1px solid grey', paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
                             <div className='col-md-4' style={{marginBottom: '10px', flexGrow: '3',  borderRight: '1px solid grey'}}>
                                 <label style={{paddingLeft: '0', marginTop: '40px'}}>A.12{' '}How was information from the questionnaire administered/collected?  (select all that apply) </label>
-                            {(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther) ? '' : <span style={{color: 'red', display:displayStyle}}>{errors.dataCollection='Please select one'}</span>}
+                            {(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther) ? delete errors.dataCollection : <span style={{color: 'red', display:displayStyle}}>{errors.dataCollection='Please select one'}</span>}
                             </div>
                             <div className='col-md-7' style={{flexGrow: '7'}}>                               
                                 <div className='col-md-12'>
@@ -494,7 +494,7 @@ const CohortForm = ({...props}) => {
                         <div className='col-md-12' style={{marginBottom: '10px'}}>
                             <label style={{paddingLeft: '0'}}>A.13{' '}Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?</label>
                         </div>
-                        {(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) ? '' : <div className='col-md-12'><span style={{color: 'red', display:displayStyle}}>{errors.requirements = 'Please select one'}</span></div>}
+                        {(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) ? delete errors.requirements : <div className='col-md-12'><span style={{color: 'red', display:displayStyle}}>{errors.requirements = 'Please select one'}</span></div>}
                         <div>
                             <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='requireNone' checked={cohort.requireNone} onChange={() => dispatch(allactions.cohortActions.setRequireNone())} /></span>
                             <span style={{lineHeight: '1.4em'}}>None</span>
@@ -537,7 +537,7 @@ const CohortForm = ({...props}) => {
                         <div className='col-md-12' style={{marginBottom: '10px'}}>
                             <label style={{paddingLeft: '0'}}>A.14{' '}What strategies does your cohort use to engage participants? </label>
                         </div>
-                        {(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther) ? '' : <div className='col-md-12'><span style={{color: 'red', display:displayStyle}}>{errors.strategy = 'Please select one'}</span></div>}
+                        {(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther) ? delete errors.strategy : <div className='col-md-12'><span style={{color: 'red', display:displayStyle}}>{errors.strategy = 'Please select one'}</span></div>}
                         <div>
                             <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='strategyRoutine' checked={cohort.strategyRoutine} onChange={() => dispatch(allactions.cohortActions.setStrategyRoutine())}  /></span>
                             <span style={{lineHeight: '1.4em'}}>Nothing beyond mailing questionnaires or other routine contacts </span>
