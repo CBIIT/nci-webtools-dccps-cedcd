@@ -29,6 +29,15 @@ CREATE TABLE `lu_category` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
+DROP TABLE IF EXISTS `lu_cohort_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_cohort_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cohortstatus` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+
 DROP TABLE IF EXISTS `lu_domain`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -552,6 +561,17 @@ insert into cohort_page_mapping values('D', 'cancer info');
 insert into cohort_page_mapping values('E', 'mortality');
 insert into cohort_page_mapping values('F', 'data linkage and harmonization');
 insert into cohort_page_mapping values('G', 'specimens collected');
+
+/*
+Generate data for lookup table lu_cohort_status
+*/
+insert into lu_cohort_status values (1,"New");
+insert into lu_cohort_status values (2, "Draft");
+insert into lu_cohort_status values (3,"Submitted");
+insert into lu_cohort_status values (4,"In Rview");
+insert into lu_cohort_status values (5,"Published");
+insert into lu_cohort_status values (6,"Returned");
+
 /*
  Generate data for lookup table lu_gender
  */
@@ -559,11 +579,13 @@ insert into lu_gender(gender) values ("Female");
 insert into lu_gender(gender) values ("Male");
 insert into lu_gender(gender) values ("Unknown");
 insert into lu_gender(gender) values ("Both");
+
 /*
  Generate data for lookup table lu_cast_type
  */
 insert into lu_case_type(case_type) values ("incident");
 insert into lu_case_type(case_type) values ("prevalent");
+
 /*
  Generate data for lookup table lu_cancer
  */
