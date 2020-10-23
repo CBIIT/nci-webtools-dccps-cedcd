@@ -18,6 +18,13 @@ const CohortForm = ({...props}) => {
         if(cohort.contacterRight === '0') setContacters([0]) 
     },[errors])
 
+    useEffect(() => {
+        fetch(`/api/questionnaire/cohort_basic_info/${cohort.cohortId}`, {
+            method: 'POST',
+        }).then(res => res.json())
+          .then(result => console.log(result))
+    }, [])
+
     const saveCohort = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
@@ -212,8 +219,8 @@ const CohortForm = ({...props}) => {
                                     <span>Is this the person to contact with questions about this form?</span>
                                 </div>
                                 <div className='col-md-12' style={{textAlign: 'center'}}>
-                                    <span className='col-md-3'><input type='radio' name='contacterRight' value='0' checked={cohort.contacterRight === '0'} onClick={() => {dispatch(allactions.cohortActions.setContacterRight('0')); setContacters([0])}} />No</span>
-                                    <span className='col-md-3'><input type='radio' name='contacterRight' value='1' checked={cohort.contacterRight === '1'} onClick={() => {dispatch(allactions.cohortActions.setContacterRight('1')); setContacters([])}} />Yes</span>
+                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 0} onClick={() => {dispatch(allactions.cohortActions.setContacterRight(0)); setContacters([0])}} />No</span>
+                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 1} onClick={() => {dispatch(allactions.cohortActions.setContacterRight(1)); setContacters([])}} />Yes</span>
                                 </div>
                                 <div id='contacterInfo'>
                                     {
