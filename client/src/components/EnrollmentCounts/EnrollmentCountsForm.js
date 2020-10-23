@@ -181,7 +181,7 @@ const EnrollmentCountsForm = ({...props}) => {
                     </table>
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='confirmDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='confirmDate'  style={{fontSize: '1.2rem', borderTop: 'none', borderLeft: 'none', borderRight: 'none', borderBottom: '1px solid grey', outline: 'none', background: 'transparent'}} placeholder='(MM/DD/YYYY)'/></span>
+                        <span><input name='confirmDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)'/></span>
                     </div>
 
                 </form>

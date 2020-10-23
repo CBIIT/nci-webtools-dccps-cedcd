@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import Questionnaire from '../Questionnaire/Questionnaire'
 import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
+import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import Message from '../Message/Message'
 const content = (currentSection, handleClick) => {
     switch(currentSection){
@@ -12,6 +13,10 @@ const content = (currentSection, handleClick) => {
         case 'B':
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <EnrollmentCountsForm />
+            </Questionnaire>
+        case 'C':
+            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <MajorContentForm />
             </Questionnaire>
         default :
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
