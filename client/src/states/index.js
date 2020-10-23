@@ -1,5 +1,6 @@
 const InitialStates ={
     cohort: {
+        cohortId: 79,
         name: 'joe',
         acronym: 'HWS',
         completionDate: '05/19/2020',
@@ -7,7 +8,7 @@ const InitialStates ={
         completerPosition: 'Developer',
         completerPhone: '225-125-3344',
         completerEmail: 'joez@hws.com',
-        contacterRight: '0',
+        contacterRight: 0,
         contacterName: 'anna',
         contacterPosition: 'manager',
         contacterPhone: '225-255-5555',
