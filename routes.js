@@ -8,18 +8,19 @@ var m_cohort = require('./service/cohort');
 var m_common = require('./service/common');
 var m_user = require('./service/user');
 var m_questionnaire = require('./service/questionnaire')
+var m_admin = require('./service/admin')
 var config = require('./config');
 var path = require('path');
 
-module.exports = function(app){
+module.exports = function (app) {
 
 	//allows CrossDomainAccess to API
-	app.use(function(req, res, next){
+	app.use(function (req, res, next) {
 		res.header('Access-Control-Allow-Origin', '*');
 		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
 		res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-		if(next){
+		if (next) {
 			next();
 		}
 	});
@@ -28,9 +29,10 @@ module.exports = function(app){
 	app.use('/api/cohort', m_cohort);
 	app.use('/api/user', m_user);
 	app.use('/api/questionnaire', m_questionnaire);
-	
+	app.use('/api/managecohort', m_admin);
+
 	// All other routes should redirect to error page
-    app.get('/*', function (req, res) {
-	  res.sendFile(path.join(config.root, 'client/www', 'index.html'));
+	app.get('/*', function (req, res) {
+		res.sendFile(path.join(config.root, 'client/www', 'index.html'));
 	});
 };

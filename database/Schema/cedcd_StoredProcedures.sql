@@ -368,7 +368,7 @@ END //
 DROP PROCEDURE IF EXISTS `cohort_list` //
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_list`()
 BEGIN
-	select id, cohort_name, cohort_acronym from cohort_basic order by cohort_acronym;
+	select cohort_id as id, cohort_name, cohort_acronym from cohort_basic order by cohort_acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -384,6 +384,7 @@ BEGIN
     select * from lu_ethnicity;
     select * from lu_race;
     select * from lu_specimen;
+	select * from lu_cohort_status;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
