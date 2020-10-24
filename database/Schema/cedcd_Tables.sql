@@ -505,7 +505,7 @@ CREATE TABLE `cohort_activity_log` (
   PRIMARY KEY (`id`),
   KEY `cohort_logs_chhort_id` (`cohort_id`),
   KEY `cohort_logs_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_master` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 

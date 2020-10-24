@@ -11,6 +11,8 @@ import Information from '../Information/Information';
 import Contact from '../Contact/Contact';
 import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
 import ManageCohort from '../Admin/ManageCohort'
+import NewCohort from '../Admin/AddNewCohort'
+import NewUser from '../Admin/AddNewUser'
 
 class MainContent extends Component {
 
@@ -39,6 +41,8 @@ class MainContent extends Component {
         <Route exact path={match + '/questionnaire'} component={QuestionnaireLoader} />
         <Route path={match + '/cohort'} component={Information} />
         <Route path={match + '/managecohort'} component={ManageCohort} />
+        <Route path={match + '/newcohort'} component={NewCohort} />
+        <Route path={match + '/newuser'} component={NewUser} />
       </Switch>
     );
   }
