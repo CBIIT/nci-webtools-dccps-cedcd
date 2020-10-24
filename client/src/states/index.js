@@ -1,5 +1,6 @@
 const InitialStates ={
     cohort: {
+        cohortId: 79,
         name: 'joe',
         acronym: 'HWS',
         completionDate: '05/19/2020',
@@ -7,7 +8,7 @@ const InitialStates ={
         completerPosition: 'Developer',
         completerPhone: '225-125-3344',
         completerEmail: 'joez@hws.com',
-        contacterRight: '0',
+        contacterRight: 0,
         contacterName: 'anna',
         contacterPosition: 'manager',
         contacterPhone: '225-255-5555',
@@ -220,8 +221,8 @@ const InitialStates ={
         'cognitionFollowUp': 0,
         'depressionBaseLine': 1,
         'depressionFollowUp': 1,
-        'phychosocialBaseLine': 1,
-        'phychosocialFollowUp': 0,
+        'psychosocialBaseLine': 1,
+        'psychosocialFollowUp': 0,
         'fatigueBaseLine': 1,
         'fatigueFollowUp': 0,
         'cancerHistoryBaseLine': 1,

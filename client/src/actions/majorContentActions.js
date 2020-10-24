@@ -57,8 +57,8 @@ const setCognitionBaseLine = (v) => ({type: t.setCognitionBaseLine, value: v})
 const setCognitionFollowUp  = (v) => ({type: t.setCognitionFollowUp , value: v})
 const setDepressionBaseLine = (v) => ({type: t.setDepressionBaseLine, value: v})
 const setDepressionFollowUp = (v) => ({type: t.setDepressionFollowUp, value: v})
-const setPhychosocialBaseLine = (v) => ({type: t.setPhychosocialBaseLine, value: v})
-const setPhychosocialFollowUp  = (v) => ({type: t.setPhychosocialFollowUp , value: v})
+const setPsychosocialBaseLine = (v) => ({type: t.setPsychosocialBaseLine, value: v})
+const setPsychosocialFollowUp  = (v) => ({type: t.setPsychosocialFollowUp , value: v})
 const setFatigueBaseLine = (v) => ({type: t.setFatigueBaseLine, value: v})
 const setFatigueFollowUp  = (v) => ({type: t.setFatigueFollowUp , value: v})
 const setCancerHistoryBaseLine = (v) => ({type: t.setCancerHistoryBaseLine, value: v})
@@ -147,8 +147,8 @@ export default {
     setCognitionFollowUp ,
     setDepressionBaseLine,
     setDepressionFollowUp,
-    setPhychosocialBaseLine,
-    setPhychosocialFollowUp ,
+    setPsychosocialBaseLine,
+    setPsychosocialFollowUp ,
     setFatigueBaseLine,
     setFatigueFollowUp ,
     setCancerHistoryBaseLine,

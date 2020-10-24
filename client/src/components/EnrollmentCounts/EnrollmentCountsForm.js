@@ -8,7 +8,7 @@ const EnrollmentCountsForm = ({...props}) => {
     //const [cell811, setCell811] = useState(enrollmentCount['811'])
     const dispatch = useDispatch()
     //const {handleSubmit, register, errors} = useForm()
-    
+    const [errors, setErrors] = useState({})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -26,9 +26,42 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
 
-    const handleSave = () => {
-
+    const saveEnrollment = (id=79, proceed=false) => {
+        fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
+            method: "POST",
+            body: JSON.stringify(enrollmentCount),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if(result.status === 200){
+                    if(!proceed)
+                        alert('Data was successfully saved')
+                    else
+                        props.sectionPicker('C')
+                }else{
+                    alert(result.message)
+                }
+            })
     }
+    const handleSave = () => {
+        if(Object.entries(errors).length === 0)
+            saveEnrollment(79)
+        else{
+            //setDisplay('block')
+            if(window.confirm('there are validation errors, are you sure to save?'))
+                saveEnrollment(79)
+        }
+    }
+
+    const handleSaveContinue = () => {
+        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
+            saveEnrollment(79, true)}
+    }
+
+
     return <div id='enrollmentCountContainer' className='col-md-12'>
             <div className='col-md-offset-1 col-md-10' style={{display: 'flex', flexDirection: 'column'}}>
                 <h1 style={{marginTop: '10px', color: 'blue'}}>Enrollment Counts</h1>
@@ -194,7 +227,7 @@ const EnrollmentCountsForm = ({...props}) => {
                 <span onClick={handleSave}>
                     <input type='button' className='btn btn-primary' value='Save' />
                 </span>
-                <span onClick={() => props.sectionPicker('C')}>
+                <span onClick={handleSaveContinue}>
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
                 </span>

@@ -10,15 +10,15 @@
 
 #dropHeader {
   padding-bottom: 0;
-  height: 78%;
   /*border: 1px solid red;*/
+  height: inherit;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
-  --left: -21px;
-  right: -21px;
+  left: -93px; 
+  /*right: -42px; */
   margin-top: 10px;
   background-color: #62269e;
   opacity: 0.5;

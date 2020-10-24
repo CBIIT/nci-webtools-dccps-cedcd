@@ -80,8 +80,8 @@ class NavBar extends Component {
         />
 
         <li className="dropdown">
-          <div className="dropdown" style={{ marginTop: "8px" }}>
-            <a href="/managecohort" className="dropbtn">
+          <div id="dropHeader" style={{ marginTop: "8px" }}>
+            <a href="/managecohort"  className="dropbtn">
               Admin
             </a>
             <div className="dropdown-content">
