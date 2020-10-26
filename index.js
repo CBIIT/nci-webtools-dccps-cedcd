@@ -12,7 +12,7 @@ require('./routes')(app);
 //setup mysql connection
 mysql.connect(config.mysql, function (result) {
 	if (result) {
-		let func = "cohort_lookup";
+		let func = "select_cohort_lookup";
 
 		mysql.callProcedure(func, [], function (results) {
 			if (results && results[0] && results[0].length > 0) {

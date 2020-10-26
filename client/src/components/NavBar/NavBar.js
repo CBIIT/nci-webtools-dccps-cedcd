@@ -81,13 +81,13 @@ class NavBar extends Component {
 
         <li className="dropdown">
           <div id="dropHeader" style={{ marginTop: "8px" }}>
-            <a href="/managecohort"  className="dropbtn">
+            <a href="/managecohort" className="dropbtn">
               Admin
             </a>
             <div className="dropdown-content">
-              <a href="/admin-new-cohort">Add New Cohort</a>
+              <a href="/newcohort">Add New Cohort</a>
               <a href="/managecohort">Manage Cohorts</a>
-              <a href="/admin-new-user">Add Cohort Owners</a>
+              <a href="/newuser">Add Cohort Owners</a>
             </div>
           </div>
         </li>

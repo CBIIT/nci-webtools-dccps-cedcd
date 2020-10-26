@@ -3,19 +3,19 @@
 -- === mysql v 8.0 =====
 /* 
  CREATE DEFINER=`cedcd_admin`@`%` PROCEDUREs
- 1. advanced_cohort_select
- 2. cohort_baseline_data
- 3. cohort_basic_info
- 4. cohort_cancer_info
- 5. cohort_description
- 6. cohort_followup_data
- 7. cohort_linkages_technology
- 8. cohort_list
- 9. cohort_lookup
-10. cohort_mortality
-11. cohort_select
-12. cohort_specimen_overview
-13. contact_us
+ 1. select_advanced_cohort
+ 2. select_cohort_baseline_data
+ 3. select_cohort_basic_info
+ 4. select_cohort_cancer_info
+ 5. select_cohort_description
+ 6. select_cohort_followup_data
+ 7. select_cohort_linkages_technology
+ 8. select_cohort_list
+ 9. select_cohort_lookup
+10. select_cohort_mortality
+11. select_cohort
+12. select_cohort_specimen_overview
+13. insert_contact_us
 14. select_cancer_counts
 15. select_enrollment_counts
 16. select_specimen_counts
@@ -29,8 +29,25 @@
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS `advanced_cohort_select` //
+DROP PROCEDURE IF EXISTS `cohort_basic_info` //
+DROP PROCEDURE IF EXISTS `cohort_baseline_data` //
+DROP PROCEDURE IF EXISTS `cohort_cancer_info` //
+DROP PROCEDURE IF EXISTS `cohort_description` //
+DROP PROCEDURE IF EXISTS `cohort_followup_data` //
+DROP PROCEDURE IF EXISTS `cohort_linkages_technology` //
+DROP PROCEDURE IF EXISTS `cohort_list` //
+DROP PROCEDURE IF EXISTS `cohort_lookup` //
+DROP PROCEDURE IF EXISTS `cohort_mortality` //
+DROP PROCEDURE IF EXISTS `cohort_select` //
+DROP PROCEDURE IF EXISTS `cohort_specimen_overview` //
+DROP PROCEDURE IF EXISTS `updateCohort_basic` //
+DROP PROCEDURE IF EXISTS `contact_us` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `advanced_cohort_select`(in gender text, in age_info varchar(100), in study_population text,
+
+
+DROP PROCEDURE IF EXISTS `select_advanced_cohort` //
+
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population text,
 									in race text, in ethnicity text, 
 									in domain text,in collected_specimen varchar(200),in cancer text,
                                     in booleanOperationBetweenField text, in booleanOperationWithInField text,
@@ -211,7 +228,9 @@ BEGIN
         end if;
     end if;
     
-    set @query = "select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec WHERE cs.cohort_id = ec.cohort_id ";
+    set @query = "select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,
+	sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status) = 'published' and cs.cohort_id = ec.cohort_id  ";
     
     if @and_query = "" and @or_query = "" then
 		set @query = concat(@query, " ");
@@ -248,9 +267,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_baseline_data
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_baseline_data` //
+DROP PROCEDURE IF EXISTS `select_cohort_baseline_data` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_baseline_data`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_baseline_data`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -260,7 +279,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline from cohort_basic cs, major_content mc, lu_domain ld where cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline 
+	from cohort_basic cs, major_content mc, lu_domain ld, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -269,9 +290,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_basic_info
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_basic_info` //
+DROP PROCEDURE IF EXISTS `select_cohort_basic_info` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_basic_info`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_basic_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -281,7 +302,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup from cohort_basic cs, cancer_info ci, mortality m, lu_gender lg where cs.cohort_id = ci.cohort_id and cs.cohort_id = m.cohort_id and cs.gender_id = lg.id",@queryString);
+    set @query = concat("select cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup 
+	from cohort_basic cs, cancer_info ci, mortality m, lu_gender lg , cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ci.cohort_id and cs.cohort_id = m.cohort_id and cs.gender_id = lg.id",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -290,9 +313,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_cancer_info
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_cancer_info` //
+DROP PROCEDURE IF EXISTS `select_cohort_cancer_info` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_cancer_info`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_cancer_info`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -302,7 +325,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,ci.* from cohort_basic cs, cancer_info ci where cs.cohort_id = ci.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,ci.* 
+	from cohort_basic cs, cancer_info ci , cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ci.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -311,9 +336,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_description
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_description` //
+DROP PROCEDURE IF EXISTS `select_cohort_description` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_description`(in c_id int(11))
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
 	select * from cohort_basic where cohort_id = c_id;
     select * from attachment where cohort_id = c_id;
@@ -323,9 +348,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_followup_data
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_followup_data` //
+DROP PROCEDURE IF EXISTS `select_cohort_followup_data` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_followup_data`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_followup_data`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -335,7 +360,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup from cohort_basic cs, major_content mc, lu_domain ld where cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup 
+	from cohort_basic cs, major_content mc, lu_domain ld , cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -344,9 +371,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_linkages_technology
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_linkages_technology` //
+DROP PROCEDURE IF EXISTS `select_cohort_linkages_technology` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_linkages_technology`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_linkages_technology`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -356,7 +383,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* from cohort_basic cs, dlh cd, technology ct where cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* 
+	from cohort_basic cs, dlh cd, technology ct , cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -364,19 +393,23 @@ END //
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_list
+-- original features for published cohort only
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_list` //
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_list`()
+
+DROP PROCEDURE IF EXISTS `select_cohort_list` //
+
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_list`()
 BEGIN
-	select cohort_id as id, cohort_name, cohort_acronym from cohort_basic order by cohort_acronym;
+	select cs.cohort_id as id, cs.cohort_name, cs.cohort_acronym from cohort_basic cs, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' order by cs.cohort_acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_lookup
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_lookup` //
+DROP PROCEDURE IF EXISTS `select_cohort_lookup` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_lookup`()
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_lookup`()
 BEGIN
 	select * from lu_gender;
     select * from lu_cancer;
@@ -390,9 +423,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_mortality` //
+DROP PROCEDURE IF EXISTS `select_cohort_mortality` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_mortality`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_mortality`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -402,7 +435,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cm.* from cohort_basic cs, mortality cm where cs.cohort_id = cm.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cm.* 
+	from cohort_basic cs, mortality cm , cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cm.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -411,9 +446,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_select
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_select` //
+DROP PROCEDURE IF EXISTS `select_cohort` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_select`(in gender text,in age_info varchar(100), in study_population text, 
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population text, 
 									in race text, in ethnicity text, 
 									in domain text,in collected_specimen varchar(200),in cancer text,
                                     in columnName varchar(40), in columnOrder varchar(10),
@@ -546,7 +581,9 @@ BEGIN
 		set @paging = "";
     end if;
     
-    set @query = concat("select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec WHERE cs.cohort_id = ec.cohort_id ",@enrollment_query,@major_content_query,@specimen_query,@cancer_query);
+    set @query = concat("select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,sum(ec.enrollment_counts) as enrollment_total 
+	FROM cohort_basic cs, enrollment_count ec, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ec.cohort_id ",@enrollment_query,@major_content_query,@specimen_query,@cancer_query);
     set @query = concat(@query, @cohort_query,@groupBy, @orderBy, @paging);
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
@@ -557,9 +594,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_specimen_overview
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `cohort_specimen_overview` //
+DROP PROCEDURE IF EXISTS `select_cohort_specimen_overview` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `cohort_specimen_overview`(in cohort_info text)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cohort_specimen_overview`(in cohort_info text)
 BEGIN
 	set @queryString = "";
     
@@ -569,7 +606,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* from cohort_basic cs, specimen s where cs.cohort_id = s.cohort_id ",@queryString);
+    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* 
+	from cohort_basic cs, specimen s, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = s.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -579,9 +618,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: contact_us
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `contact_us` //
+DROP PROCEDURE IF EXISTS `insert_contact_us` //
 
-CREATE PROCEDURE `contact_us`(in firstname varchar(50), in lastname varchar(50), in organization varchar(100), 
+CREATE PROCEDURE `insert_contact_us`(in firstname varchar(50), in lastname varchar(50), in organization varchar(100), 
 														in phone varchar(20), in email varchar(50), in topic int(3), in message text)
 BEGIN
 	set @queryString = concat("('",firstname,"','",lastname,"','",organization,"','",phone,"','",email,"',",topic,",'",message,"',now(),now())");
@@ -600,10 +639,9 @@ END //
 DROP PROCEDURE IF EXISTS `select_cancer_counts` //
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
 BEGIN
-    set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts from cancer_count cc, cohort_basic cs, lu_gender lg, lu_cancer lc
-						where cc.cohort_id = cs.cohort_id 
-						and cc.gender_id = lg.id
-						and cc.cancer_id = lc.id ";
+    set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts 
+	from cancer_count cc, cohort_basic cs, lu_gender lg, lu_cancer lc, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cc.cohort_id = cs.cohort_id and cc.gender_id = lg.id and cc.cancer_id = lc.id ";
     
     if gender != "" then
 		set @queryString = concat(@queryString, "and cc.gender_id in (",gender,") ");
@@ -630,11 +668,9 @@ DROP PROCEDURE IF EXISTS `select_enrollment_counts` //
 
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_enrollment_counts`(in gender text, in race text,in ethnicity text,in cohort text)
 BEGIN
-    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts from enrollment_count ec, cohort_basic cs, lu_gender lg, lu_ethnicity le, lu_race lr
-						where ec.cohort_id = cs.cohort_id 
-						and ec.gender_id = lg.id
-						and ec.ethnicity_id = le.id
-						and ec.race_id = lr.id ";
+    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts 
+	from enrollment_count ec, cohort_basic cs, lu_gender lg, lu_ethnicity le, lu_race lr, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and ec.cohort_id = cs.cohort_id and ec.gender_id = lg.id and ec.ethnicity_id = le.id and ec.race_id = lr.id ";
     
     if gender != "" then
 		set @queryString = concat(@queryString, "and ec.gender_id in (",gender,") ");
@@ -666,10 +702,9 @@ DROP PROCEDURE IF EXISTS `select_specimen_counts` //
 
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in cohort text)
 BEGIN
-    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts from specimen_count sc, cohort_basic cs, lu_specimen ls, lu_cancer lc
-						where sc.cohort_id = cs.cohort_id 
-						and sc.specimen_id = ls.id
-						and sc.cancer_id = lc.id ";
+    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts 
+	from specimen_count sc, cohort_basic cs, lu_specimen ls, lu_cancer lc, cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and sc.cohort_id = cs.cohort_id and sc.specimen_id = ls.id and sc.cancer_id = lc.id ";
     
     if specimen != "" then
 		set @queryString = concat(@queryString, "and sc.specimen_id in (",specimen,") ");
@@ -692,9 +727,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: updateCohort_basic
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS `updateCohort_basic` //
+DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE updateCohort_basic(in id int(11), in info JSON)
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE update_cohort_basic(in id int(11), in info JSON)
 BEGIN 
 	UPDATE `cohort_basic` 
 	SET 

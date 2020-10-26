@@ -97,7 +97,7 @@ DROP TABLE IF EXISTS `cohort`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort` (
-  `cohort_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
   `acronym` varchar(100) NOT NULL,
   `status` varchar(50) NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE `cohort` (
   `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`cohort_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `cohort_basic`;
@@ -180,7 +180,7 @@ CREATE TABLE `cohort_basic` (
   KEY `cohort_gender_id_idx` (`cohort_id`, `gender_id`),
   KEY `cohort_gender_id_idx_idx` (`gender_id`),
   KEY `cohort_basic_id` (`cohort_id`),
-  CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -219,7 +219,7 @@ CREATE TABLE `cancer_count` (
   KEY `cancer_count_gender_id_idx` (`gender_id`),
   KEY `cancer_count_cohort_id` (`cohort_id`),
   CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
@@ -269,7 +269,7 @@ CREATE TABLE `cancer_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `cancer_info_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `contact`;
@@ -308,7 +308,7 @@ CREATE TABLE `dlh` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `dlh_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `enrollment_count`;
@@ -329,7 +329,7 @@ CREATE TABLE `enrollment_count` (
   KEY `enrollment_count_race_id_idx` (`race_id`),
   KEY `enrollment_count_ethnicity_id_idx` (`ethnicity_id`),
   KEY `enrollment_count_gender_id_idx` (`gender_id`),
-  CONSTRAINT `enrollment_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `enrollment_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_ethnicity_id` FOREIGN KEY (`ethnicity_id`) REFERENCES `lu_ethnicity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_race_id` FOREIGN KEY (`race_id`) REFERENCES `lu_race` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -351,7 +351,7 @@ CREATE TABLE `major_content` (
   PRIMARY KEY (`id`),
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`domain_id`),
-  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `mc_domain_id` FOREIGN KEY (`domain_id`) REFERENCES `lu_domain` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -378,7 +378,7 @@ CREATE TABLE `mortality` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `mortality_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `person`;
@@ -432,7 +432,7 @@ CREATE TABLE `specimen` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `specimen_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `specimen_count`;
@@ -451,7 +451,7 @@ CREATE TABLE `specimen_count` (
   KEY `specimen_count_cancer_id_idx_idx` (`cancer_id`),
   KEY `specimen_count_specimen_id_idx_idx` (`specimen_id`),
   CONSTRAINT `specimen_count_cancer_id_idx` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `specimen_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `specimen_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `specimen_count_specimen_id_idx` FOREIGN KEY (`specimen_id`) REFERENCES `lu_specimen` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -505,7 +505,7 @@ CREATE TABLE `cohort_activity_log` (
   PRIMARY KEY (`id`),
   KEY `cohort_logs_chhort_id` (`cohort_id`),
   KEY `cohort_logs_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -522,7 +522,7 @@ CREATE TABLE `cohort_user_mapping` (
   PRIMARY KEY (`id`),
   KEY `cohort_user_chhort_id` (`cohort_id`),
   KEY `cohort_user_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -546,7 +546,7 @@ CREATE TABLE `cohort_edit_status` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `cohort_edit_unique_page` (`cohort_id`, `page_code`),
   KEY `cohort_edit_chhort_id` (`cohort_id`),
-  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 -- ======== end table definations ===============
