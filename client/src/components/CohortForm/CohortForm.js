@@ -187,21 +187,21 @@ const CohortForm = ({...props}) => {
         }
     }
 
-    const addError = (errorname,msg) => {
-        if(!errors[errorname]){
-            let shadow = {...errors}
-            shadow[errorname] = msg
-            setErrors(shadow)
+    const updateWebSiteError =(errorToAdd, errorToRemove, dispatchname, v) => {
+        dispatch(allactions.cohortActions[dispatchname](v))
+        let changed = false
+        let shadow = {...errors}
+        for(let e of errorToRemove){
+            if(errors[e]){
+                delete shadow[e]
+                changed = true
+            }
         }
-    }
-
-
-    const removeError = (errorname) => {
-        if(errors[errorname]){
-            let shadow = {...errors}
-            delete shadow[errorname]
-            setErrors(shadow)
+        if(errorToAdd && !errors[errorToAdd]){
+            shadow[errorToAdd] = 'please provide a value'
+            changed = true
         }
+        if(changed) setErrors(shadow)
     }
 
     const removeEligbleGenderError = (v) => {
@@ -354,11 +354,7 @@ const CohortForm = ({...props}) => {
                             {errors.hasAWebSite && <div className='col-md-12'><span style={{color: 'red', display: displayStyle}}>{errors.hasAWebSite}</span></div>}
                             <div className='col-md-12' style={{marginTop: '10px'}}>
                                 <span className='col-md-2' style={{marginRight: '0'}}>
-                                    <input type='radio' name='website'  value='1' checked={cohort.hasAWebSite === 1} onChange={() => {
-                                        dispatch(allactions.cohortActions.setHasAWebSite(1))
-                                        removeError('hasAWebSite')
-                                        addError('websiteurl', 'please provide a value')
-                                    }}/>{' '} Yes
+                                    <input type='radio' name='website'  value='1' checked={cohort.hasAWebSite === 1} onChange={() => updateWebSiteError('websiteurl', ['hasAWebSite'], 'setHasAWebSite', 1)}/>{' '} Yes
                                 </span>
                                 {
                                     cohort.hasAWebSite === 1 ?
@@ -372,7 +368,7 @@ const CohortForm = ({...props}) => {
                             </div>
                             <div className='col-md-12'>
                             <span className='col-md-2' style={{marginRight: '0'}}>
-                                <input type='radio' name='website'  value='0' checked={cohort.hasAWebSite === 0} onChange={() => {dispatch(allactions.cohortActions.setHasAWebSite(0)); dispatch(allactions.cohortActions.setWebSite('')); removeError('hasAWebSite'); removeError('websiteurl')}}/>{' '} No
+                                <input type='radio' name='website'  value='0' checked={cohort.hasAWebSite === 0} onChange={() => updateWebSiteError('', ['hasAWebSite','websiteurl'], 'setHasAWebSite', 0)} />{' '} No
                                 </span>
                             </div>
                         </div>

@@ -5,7 +5,7 @@ var logger = require('../components/logger');
 
 router.post('/update_cohort_basic/:id', function(req, res){
     let body = JSON.stringify(req.body)
-    let proc = 'updateCohort_basic'
+    let proc = 'update_cohort_basic'
     let params = []
     params.push(req.params.id)
     params.push(body)
