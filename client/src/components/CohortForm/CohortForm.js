@@ -11,11 +11,11 @@ const CohortForm = ({...props}) => {
     const dispatch = useDispatch()
     const [contacters, setContacters] = useState([])
     
-    const [needurl, setNeedurl] = useState(false)
-    const [errors, setErrors] = useState({eligibleGender: 'please select an eligible gender', dataCollection: 'please select at least one value', strategy: 'please select at least one value' })
+    const [errors, setErrors] = useState({hasAWebSite: 'please choose one', websiteurl: 'please provide a value', collectedOtherSpecify: 'please specify', eligibleGender: 'please select an eligible gender', dataCollection: 'please select at least one value', strategy: 'please select at least one value', collectedOtherSpecify: 'please specify', restrictOtherSpecify: 'please specify', strategyOtherSpecify: 'please specify' })
    
     const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
+
     useEffect(() => {
         if(cohort.contacterRight === '0') setContacters([0]) 
     },[errors])
@@ -29,6 +29,16 @@ const CohortForm = ({...props}) => {
 */
     useEffect(() => {
         let shadow = {...errors}
+        if(cohort.hasAWebSite)
+            delete shadow.hasAWebSite
+        if(cohort.websiteurl || cohort.hasAWebSite === '0' || !cohort.hasAWebSite)
+            delete shadow.websiteurl
+        if(cohort.collectedOtherSpecify)
+            delete shadow.collectedOtherSpecify
+        if(cohort.restrictOtherSpecify)
+            delete shadow.restrictOtherSpecify
+        if(cohort.strategyOtherSpecify)
+            delete shadow.strategyOtherSpecify
         if(cohort.eligibleGender in ['4', '2', '1']) delete shadow.eligibilityCriteriaOther
         if(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther)
             delete shadow.dataCollection
@@ -177,6 +187,23 @@ const CohortForm = ({...props}) => {
         }
     }
 
+    const addError = (errorname,msg) => {
+        if(!errors[errorname]){
+            let shadow = {...errors}
+            shadow[errorname] = msg
+            setErrors(shadow)
+        }
+    }
+
+
+    const removeError = (errorname) => {
+        if(errors[errorname]){
+            let shadow = {...errors}
+            delete shadow[errorname]
+            setErrors(shadow)
+        }
+    }
+
     const removeEligbleGenderError = (v) => {
         if(errors.eligibleGender){
             let shadow = {...errors}
@@ -186,24 +213,41 @@ const CohortForm = ({...props}) => {
         dispatch(allactions.cohortActions.setEligibleGender(v))
     }
 
-    const updateErrors = (event, errorname, allfields=[], dispatchname='') => {
+    const updateErrors = (event, errorname, allfields=[], dispatchname='', otherFieldName='', furtherProcessing= false) => {
         dispatch(allactions.cohortActions[dispatchname]());
         let currentState = false
         for (let f of allfields) currentState = currentState || cohort[f] 
         currentState = currentState || event.target.checked
-        if(currentState){//if any of the is checked remove error
+        let changed = false
+        let shadow = {...errors}
+        if(currentState){//if any of the checkboxes is checked remove error
             if(errors[errorname]){
-                let shadow = {...errors}
                 delete shadow[errorname]
-                setErrors(shadow)
+                changed = true
             }
         }else{// if none of them is checked
             if(!errors[errorname]){
-                let shadow = {...errors}
                 shadow[errorname] = 'please select at lease one value'
-                setErrors(shadow)
+                changed = true
             }
         }
+
+        if(furtherProcessing){
+            if(!event.target.checked){
+                if(errors[otherFieldName]){
+                    delete shadow[otherFieldName]
+                    changed = true
+                }
+            }else{
+                if(!errors[otherFieldName]){
+                    let shadow = {...errors}
+                    shadow[otherFieldName] = 'please provide a value'
+                    setErrors(shadow)
+                }
+            }
+        }
+
+        if(changed) setErrors(shadow)
     }
 
     function setCollaborator(e, n,p,tel,eml, checkedValue){
@@ -233,7 +277,7 @@ const CohortForm = ({...props}) => {
                             <span className='col-md-5'>
                                 <input className='form-control' name='cohortName' value={cohort.name} onChange={e => dispatch(allactions.cohortActions.setCohortName(e.target.value))} onBlur={(e) => {populateErrors('cohortName', e.target.value, true, 'string')}}/>
                             </span>
-                            {errors.cohortName ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.cohortName}</span> : ''}
+                            {errors.cohortName && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.cohortName}</span> }
                         </div>
                         <div className='form-group col-md-12'>
                             <label htmlFor='cohortAcronym' className='col-md-4'>A.1b Cohort Abbreviation</label>
@@ -304,23 +348,31 @@ const CohortForm = ({...props}) => {
                             </div>                        
                         </div>
                         <div id='question6' className='col-md-12' style={{paddingTop: '10px', borderBottom: '1px solid grey', paddingBottom: '10px'}}>
-                            <div className='col-md-12' style={{marginBottom: '10px'}}>
+                            <div className='col-md-12'>
                                 <label style={{paddingLeft: '0'}}>A.6{' '}Does the cohort have a website ? </label>
                             </div>
-                            <div className='col-md-12'>
+                            {errors.hasAWebSite && <div className='col-md-12'><span style={{color: 'red', display: displayStyle}}>{errors.hasAWebSite}</span></div>}
+                            <div className='col-md-12' style={{marginTop: '10px'}}>
                                 <span className='col-md-2' style={{marginRight: '0'}}>
-                                    <input type='radio' name='website'  value='1' checked={cohort.hasAWebSite === '1'} onChange={() => {dispatch(allactions.cohortActions.setHasAWebSite('1')); setNeedurl(true)}}/>{' '} Yes
+                                    <input type='radio' name='website'  value='1' checked={cohort.hasAWebSite === 1} onChange={() => {
+                                        dispatch(allactions.cohortActions.setHasAWebSite(1))
+                                        removeError('hasAWebSite')
+                                        addError('websiteurl', 'please provide a value')
+                                    }}/>{' '} Yes
                                 </span>
-                                <span className='col-md-10' style={{marginLeft: '0'}}>
-                                    <span className='col-md-4' style={{lineHeight: '1.5em', margin: '0', padding: '0'}}>{' '} Please specify website</span>
-                                    <span className='col-md-3' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.setWebSite(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
-                                    </span>
-                                    {errors.websiteurl ? <span className='col-md-5' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span> : ''}
-                                </span>
+                                {
+                                    cohort.hasAWebSite === 1 ?
+                                    <span className='col-md-10' style={{marginLeft: '0'}}>
+                                        <span className='col-md-4' style={{lineHeight: '1.5em', margin: '0', padding: '0'}}>{' '} Please specify website</span>
+                                        <span className='col-md-3' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.setWebSite(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
+                                        </span>
+                                        {errors.websiteurl && <span className='col-md-5' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span>}
+                                    </span> : ''
+                                }
                             </div>
                             <div className='col-md-12'>
                             <span className='col-md-2' style={{marginRight: '0'}}>
-                                <input type='radio' name='website'  value='0' checked={cohort.hasAWebSite === '0'} onChange={() => {dispatch(allactions.cohortActions.setHasAWebSite('0')); setNeedurl(false); dispatch(allactions.cohortActions.setWebSite(''))}}/>{' '} No
+                                <input type='radio' name='website'  value='0' checked={cohort.hasAWebSite === 0} onChange={() => {dispatch(allactions.cohortActions.setHasAWebSite(0)); dispatch(allactions.cohortActions.setWebSite('')); removeError('hasAWebSite'); removeError('websiteurl')}}/>{' '} No
                                 </span>
                             </div>
                         </div>
@@ -520,7 +572,7 @@ const CohortForm = ({...props}) => {
                                     </div>
                                     <div className='col-md-12'>
                                         <span className='col-md-1'>
-                                            <input type='checkbox' name='collectedOther' checked={cohort.collectedOther}  onChange={(e) => updateErrors(e,'dataCollection', ['collectedInPerson', 'collectedPhone', 'collectedPaper', 'collectedWeb'], 'setCollectedOther')}/>{' '}
+                                            <input type='checkbox' name='collectedOther' checked={cohort.collectedOther}  onChange={(e) => updateErrors(e,'dataCollection', ['collectedInPerson', 'collectedPhone', 'collectedPaper', 'collectedWeb'], 'setCollectedOther', 'collectedOtherSpecify', true)}/>{' '}
                                         </span>
                                         <span className='col-md-2'>Other</span>                               
                                     </div>
@@ -529,8 +581,11 @@ const CohortForm = ({...props}) => {
                                         <div className='col-md-12'>
                                             <span className='col-md-offset-1 col-md-5' style={{lineHeight: '2em'}}>If yes, please specify</span>
                                             <span  className='col-md-6' >
-                                                <input name='collectedOtherSpecify' className='form-control' value={cohort.collectedOtherSpecify} onChange={e=>dispatch(allactions.cohortActions.setOtherMeans(e.target.value))} /> 
+                                                <input name='collectedOtherSpecify' className='form-control' value={cohort.collectedOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.setOtherMeans(e.target.value)); populateErrors('collectedOtherSpecify', e.target.value, true, 'string')}}/> 
                                             </span>
+                                            {
+                                                errors.collectedOtherSpecify ? <span className='col-md-offset-6 col-md-4' style={{color: 'red', display: displayStyle}}>{errors.collectedOtherSpecify}</span> : ''
+                                            }
                                         </div> : ''   
                                     }           
                                 </div> 
@@ -573,12 +628,13 @@ const CohortForm = ({...props}) => {
                             <span style={{lineHeight: '1.4em'}}>Restrictions on commercial use</span>
                         </div>
                         <div>
-                            <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='restrictOther' checked={cohort.restrictOther} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'setRestrictOther')} /></span>
+                            <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='restrictOther' checked={cohort.restrictOther} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'setRestrictOther', 'restrictOtherSpecify', true)} /></span>
                             <span className='col-md-1' style={{lineHeight: '1.4em', padding: '0', margin: '0'}}>Other</span>
                             {
                                 cohort.restrictOther ? 
-                                <span className='col-md-5' style={{margin: '0'}}><input className='form-control' name='restrictOtherSpecify' value={cohort.restrictOtherSpecify} onChange={e=>dispatch(allactions.cohortActions.setRestrictOtherSpecify(e.target.value))} /></span> : ''
+                                <span className='col-md-5' style={{margin: '0'}}><input className='form-control' name='restrictOtherSpecify' value={cohort.restrictOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.setRestrictOtherSpecify(e.target.value)); populateErrors('restrictOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                             }
+                            {errors.restrictOtherSpecify ?  <span style={{color: 'red', display: displayStyle}}>{errors.restrictOtherSpecify}</span> : ''}
                         </div>
                     </div>
 
@@ -586,7 +642,7 @@ const CohortForm = ({...props}) => {
                         <div className='col-md-12' style={{marginBottom: '10px'}}>
                             <label style={{paddingLeft: '0'}}>A.14{' '}What strategies does your cohort use to engage participants? </label>
                         </div>
-                        {(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther) ? '' : <div className='col-md-12'><span style={{color: 'red', display:displayStyle}}>{errors.strategy}</span></div>}
+                        {errors.strategy ? <div><span style={{color: 'red', display:displayStyle}}>{errors.strategy}</span></div> : ''}
                         <div>
                             <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='strategyRoutine' checked={cohort.strategyRoutine} onChange={(e) => updateErrors(e, 'strategy', ['strategyMailing', 'strategyAggregateStudy', 'strategyIndividualStudy', 'strategyInvitation', 'strategyOther'], 'setStrategyRoutine')} /></span>
                             <span style={{lineHeight: '1.4em'}}>Nothing beyond mailing questionnaires or other routine contacts </span>
@@ -608,12 +664,13 @@ const CohortForm = ({...props}) => {
                             <span style={{lineHeight: '1.4em'}}>Invite participation on research committees</span>
                         </div>
                         <div>
-                            <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='strategyOther' checked={cohort.strategyOther} onChange={(e) => updateErrors(e, 'strategy', ['strategyMailing', 'strategyAggregateStudy', 'strategyIndividualStudy', 'strategyInvitation', 'strategyRoutine'], 'setStrategyOther')} /></span>
+                            <span className='col-md-1' style={{paddingRight: '0', marginRight: '0', width: '50px'}}><input type='checkbox' name='strategyOther' checked={cohort.strategyOther} onChange={(e) => updateErrors(e, 'strategy', ['strategyMailing', 'strategyAggregateStudy', 'strategyIndividualStudy', 'strategyInvitation', 'strategyRoutine'], 'setStrategyOther', 'strategyOtherSpecify', true)} /></span>
                             <span className='col-md-1' style={{lineHeight: '1.4em', padding: '0', margin: '0'}}>Other</span>
                             {
                                 cohort.strategyOther ? 
-                                <span className='col-md-5' style={{margin: '0'}}><input className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} onChange= {e=> dispatch(allactions.cohortActions.setStrategyOtherSepcify(e.target.value))}/></span> : ''
+                                <span className='col-md-5' style={{margin: '0'}}><input className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} onChange={e => {dispatch(allactions.cohortActions.setStrategyOtherSepcify(e.target.value)); populateErrors('strategyOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                             }
+                            {errors.strategyOtherSpecify ? <span style={{color: 'red', display: displayStyle}}>{errors.strategyOtherSpecify}</span> : ''}
                         </div>
                     </div>
                     <div id='question15' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
