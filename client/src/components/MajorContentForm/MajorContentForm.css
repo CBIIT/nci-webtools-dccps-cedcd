@@ -1,0 +1,30 @@
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+.active, .accordion:hover {
+    background-color: #ccc;
+}
+
+.panellet {
+    padding: 0 0;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
+
+.panel-active {
+    padding: 0 0;
+    background-color: white;
+    display: block;
+    overflow: hidden;
+}
