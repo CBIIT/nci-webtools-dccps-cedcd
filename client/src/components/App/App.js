@@ -54,7 +54,12 @@ class App extends Component {
       setTimeout(() => {
         this.setState({ currTab: 5 });
       }, 100);
-    } else if (path.indexOf("/managecohort") >= 0) {
+    } else if (path.indexOf("/cohort/questionnaire") >= 0) {
+      setTimeout(() => {
+        this.setState({ currTab: 7 });
+      }, 100);
+    }
+     else if (path.indexOf("/admin/managecohort") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 8 });
       }, 100);

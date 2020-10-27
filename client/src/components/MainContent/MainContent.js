@@ -38,11 +38,11 @@ class MainContent extends Component {
         <Route path={match + '/biospecimen'} component={Biospecimen} />
         <Route path={match + '/about'} component={About} />
         <Route path={match + '/contact'} component={Contact} />
-        <Route exact path={match + '/questionnaire'} component={QuestionnaireLoader} />
-        <Route path={match + '/cohort'} component={Information} />
-        <Route path={match + '/managecohort'} component={ManageCohort} />
-        <Route path={match + '/newcohort'} component={NewCohort} />
-        <Route path={match + '/newuser'} component={NewUser} />
+        <Route exact path={match + '/cohort/questionnaire'} component={QuestionnaireLoader} />
+        <Route exact path={match + '/cohort'} component={Information} />
+        <Route path={match + '/admin/managecohort'} component={ManageCohort} />
+        <Route path={match + '/admin/newcohort'} component={NewCohort} />
+        <Route path={match + '/admin/newuser'} component={NewUser} />
       </Switch>
     );
   }
