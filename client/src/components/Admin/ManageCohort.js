@@ -169,11 +169,14 @@ class ManageCohort extends Component {
 
 
 	loadingData = (next) => {
-
 		const state = Object.assign({}, this.state);
 		let reqBody = {
-			filter: state.filter
+			filter: state.filter,
+			items: state.items,
+			orderBy: state.orderBy,
+			paging: state.pageInfo
 		};
+		reqBody.paging.page = 0;
 	}
 
 	handleOrderBy(column) {
@@ -199,20 +202,25 @@ class ManageCohort extends Component {
 	render() {
 		const list = this.state.list;
 		let content = list.map((item, index) => {
-			let id = item.id;
-			let url = './cohort?id=' + id;
+			let id = item.cohort_id;
+			let view_url = '/cohort?id=' + id;
+			let review_url = '/managecohort';
+			let view = "View";
+			let review = "Review";
 
 			let select_id = "select_" + id;
 			return (
 				<tr key={id}>
 					<td>
-						<Link to={url} onClick={this.saveHistory}>{item.name}</Link>
+						<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
 					</td>
-					<td><Link to={url} onClick={this.saveHistory}>{item.acronym}</Link></td>
-					<td >{item.status}</td>
+					<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
+					<td>{item.status}</td>
 					<td>{item.create_by}</td>
 					<td>{item.update_time}</td>
-					<td><Link to={url} onClick={this.saveHistory}>{item.acronym === 'published' ? 'View' : null}</Link></td>
+					<td>
+						<Link to={view_url} onClick={this.saveHistory}>{item.status === 'published' ? view : review}</Link>
+					</td>
 				</tr>
 			);
 		});

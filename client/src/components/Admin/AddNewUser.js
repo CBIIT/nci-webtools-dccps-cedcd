@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './AddNewUser.css';
 
-class Contact extends Component {
+class AddNewUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -222,7 +222,7 @@ class Contact extends Component {
             </div>
             <div id="contact-col-2" className="col-md-6 contact-col">
               <h2>General Instructions</h2>
-              <p>For new CEDCD users,  * fileds information are required. </p>
+              <p>For new CEDCD users, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required. </p>
             </div>
           </div>
         </div>
