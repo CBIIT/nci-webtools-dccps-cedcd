@@ -28,7 +28,7 @@ const InitialStates ={
         description: 'this is a description demo',
         hasAWebSite: 1,
         webSite: 'mycohort.com',
-        eligibleGender: '4',
+        eligibleGender: '',
         hasCancerSite: true,
         cancerSites: 'cancersite.com, cancerSites.org',
         eligibilityCriteriaOther: 'BMI',
@@ -48,7 +48,7 @@ const InitialStates ={
         currentMeanAge: 35,
         timeInterval: 'twice a year',
         mostRecentYear: 2010,
-        collectedInPerson: true,
+        collectedInPerson: false,
         collectedPhone: true,
         collectedPaper: true,
         collectedWeb: true,
@@ -229,8 +229,10 @@ const InitialStates ={
         'cancerHistoryFollowUp': 0,
         'cancerPedigreeBaseLine': 1,
         'cancerPedigreeFollowUp': 1,
+        /*
         'physicalMeasureBaseLine': 1,
         'physicalMeasureFollowUp': 1,
+        */
         'exposureBaseLine': 1,
         'exposureFollowUp': 1,
         'residenceBaseLine': 1,

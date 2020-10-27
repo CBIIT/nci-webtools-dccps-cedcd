@@ -17,7 +17,7 @@ const QuestionnaireHeader = ({...props}) => {
     const sectionStatus = useSelector(state => state.sectionReducer)
     //const regularStyle={flex: '1', width: '37px', height: '37px', border: '3px solid grey', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto'}
     //const activeStyle = {flex: '1', width: '37px', height: '37px', border: '3px solid #f0f', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto'}
-    const activeStyle = {color: 'blue', borderBottom: '2px solid blue'}
+    const activeStyle = {fontWeight: 'bold', color: 'blue', borderBottom: '2px solid blue'}
 
     return <div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
