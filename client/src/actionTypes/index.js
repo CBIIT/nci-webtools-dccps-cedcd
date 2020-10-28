@@ -161,6 +161,9 @@ const actionTypes = {
     setCancerOther: 'SET_MC_CANCER_OTHER',
     setCancerOtherSpecify: 'SET_MC_CANCER_OTHER_SPECIFY',
 
+    /* section D */
+    setCancerCount: 'SET_CANCER_COUNT',
+    setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS'
 }
 

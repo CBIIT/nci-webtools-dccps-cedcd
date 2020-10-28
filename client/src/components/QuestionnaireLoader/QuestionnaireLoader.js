@@ -3,6 +3,7 @@ import Questionnaire from '../Questionnaire/Questionnaire'
 import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
 import MajorContentForm from '../MajorContentForm/MajorContentForm'
+import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 const content = (currentSection, handleClick) => {
     switch(currentSection){
@@ -17,6 +18,10 @@ const content = (currentSection, handleClick) => {
         case 'C':
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <MajorContentForm />
+            </Questionnaire>
+        case 'D':
+            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <CancerInfoForm />
             </Questionnaire>
         default :
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
