@@ -1,0 +1,15 @@
+/* Bootstrap 4 text input with search icon */
+/* Styles for wrapping the search box */
+
+
+.has-search .form-control-feedback {
+    right: initial;
+    left: 0;
+    color: #ccc;
+}
+
+.has-search .form-control {
+    padding-right: 12px;
+    padding-left: 34px;
+}
+

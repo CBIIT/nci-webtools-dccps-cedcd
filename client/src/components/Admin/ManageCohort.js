@@ -4,6 +4,8 @@ import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
 import TableHeaderManageCohort from './TableHeaderManageCohort';
+import './ManageCohort.css';
+import { filter } from 'lodash';
 
 class ManageCohort extends Component {
 
@@ -14,10 +16,11 @@ class ManageCohort extends Component {
 			list: [],
 			filter: {
 				cohortstatus: [],
-				allCohorts: false
+				cohortSearch: "",
+				cohortType: "name",
 			},
 			orderBy: {
-				column: "cohort_id",
+				column: "id",
 				order: "desc"
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
@@ -53,10 +56,18 @@ class ManageCohort extends Component {
 		});
 	}
 
+	handleCohortTypeChange = (changeEvent) => {
+		filter.cohortType = changeEvent.target.value;
+		this.setState({
+			filter: filter
+		});
+	}
+
 	clearFilter = () => {
 		let filter = {
 			cohortstatus: [],
-			allCohorts: false
+			cohortSearch: "",
+			cohortType: "name",
 		};
 
 		this.setState({
@@ -202,7 +213,7 @@ class ManageCohort extends Component {
 	render() {
 		const list = this.state.list;
 		let content = list.map((item, index) => {
-			let id = item.cohort_id;
+			let id = item.id;
 			let view_url = '/cohort?id=' + id;
 			let review_url = '/managecohort';
 			let view = "View";
@@ -215,7 +226,7 @@ class ManageCohort extends Component {
 						<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
 					</td>
 					<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
-					<td>{item.status}</td>
+					<td class="text-capitalize">{item.status}</td>
 					<td>{item.create_by}</td>
 					<td>{item.update_time}</td>
 					<td>
@@ -244,12 +255,27 @@ class ManageCohort extends Component {
 						</div>
 						<div className="panel-body">
 							<div className="filter row">
+								<div className="col-sm-4 filterCol">
+									<div><h3><strong>Search Cohort :</strong>
+										<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name:&nbsp;&nbsp;<input value="name" name="cohortType" type="radio" checked={'name' === this.state.filter.cohortType}
+											onChange={this.handleCohortTypeChange} />
+										</label>
+										<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Acronym:&nbsp;&nbsp;<input value="acronym" name="cohortType" type="radio" checked={'acronym' === this.state.filter.cohortType}
+											onChange={this.handleCohortTypeChange} />
+										</label></h3>
+									</div>
+									<div class="form-group has-feedback has-search">
+										<span class="glyphicon glyphicon-search form-control-feedback"></span>
+										<input type="text" class="form-control" placeholder="Search" />
+									</div>
+								</div>
 								<div className="col-sm-3 filterCol">
 									<div id="cohortstatus" className="filter-component">
-										<h3>Status</h3>
+										<h3><strong>Status</strong></h3>
 										<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 									</div>
 								</div>
+
 							</div>
 							<div className="row">
 								<div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
