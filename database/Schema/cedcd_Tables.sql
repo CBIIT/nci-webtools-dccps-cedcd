@@ -7,6 +7,27 @@
 --  the order is not strictly alphabetical order, 
 --  it is considering relationship constraints
 -- 
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
+  `session_id` varchar(50) DEFAULT NULL,
+  `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
+  `last_login` datetime DEFAULT NULL,
+  `lock_date` datetime DEFAULT NULL,
+  `password_date` datetime DEFAULT NULL,
+  `email` varchar(50) NOT NULL,
+  `salt` varchar(50) DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
 DROP TABLE IF EXISTS `lu_cancer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -101,12 +122,16 @@ CREATE TABLE `cohort` (
   `name` varchar(500) NOT NULL,
   `acronym` varchar(100) NOT NULL,
   `status` varchar(50) NOT NULL,
-  `publish_by` varchar(100) DEFAULT NULL,
-  `create_by` varchar(100) DEFAULT NULL,
+  `publish_by` int(11) DEFAULT NULL,
+  `create_by` int(11) DEFAULT NULL,
   `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `cohort_create_id` (`create_by`),
+  KEY `cohort_publish_id` (`publish_by`),
+  CONSTRAINT `cohort_create_id` FOREIGN KEY (`create_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_publish_id` FOREIGN KEY (`publish_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `cohort_basic`;
@@ -472,26 +497,6 @@ CREATE TABLE `technology` (
   CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
-  `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
-  `session_id` varchar(50) DEFAULT NULL,
-  `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
-  `last_login` datetime DEFAULT NULL,
-  `lock_date` datetime DEFAULT NULL,
-  `password_date` datetime DEFAULT NULL,
-  `email` varchar(50) NOT NULL,
-  `salt` varchar(50) DEFAULT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
 DROP TABLE IF EXISTS `cohort_activity_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -704,16 +709,18 @@ insert into lu_category(id, category) values (4, "Person to contact if an invest
 Generate default users 
 */
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(1, 'Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
+(1, 'Admin', 'System', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(2, 'Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
+(2, 'Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(3, 'Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
+(3, 'Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(4, 'Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
+(4, 'Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(5, 'Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
+(5, 'Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
 insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(6, 'Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
+(6, 'Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(7, 'Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
 
 -- ======== end table data ===============

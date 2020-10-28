@@ -821,7 +821,7 @@ BEGIN
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
 	else
-		set @orderBy = "order by ch.cohort_id desc";
+		set @orderBy = "order by ch.id desc";
     end if;
     
     if pageIndex > -1 then
@@ -830,9 +830,10 @@ BEGIN
 		set @paging = "";
     end if;
     
-    set @query = concat("select sql_calc_found_rows ch.cohort_id, ch.name, ch.acronym,ch.status, create_by,
-    (case when lower(status) in (\"in review\",\"submitted\", \"published\") and update_time is not null then DATE_FORMAT(update_time, '%m/%d/%Y') else null end) as update_time
-    FROM cohort ch WHERE 1=1 ", @status_query);
+    set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status, concat(u1.first_name, ' ', u1.last_name) create_by, 
+	 (case when ch.publish_by is null then null else (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.id) end) publish_by,
+	 (case when lower(ch.status) in (\"in review\",\"submitted\", \"published\") and ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time 
+	 FROM cohort ch, user u1 WHERE ch.create_by=u", @status_query);
     set @query = concat(@query, @orderBy, @paging);
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
