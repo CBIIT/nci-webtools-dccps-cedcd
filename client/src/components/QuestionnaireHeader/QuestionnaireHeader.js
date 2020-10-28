@@ -18,6 +18,7 @@ const QuestionnaireHeader = ({...props}) => {
     //const regularStyle={flex: '1', width: '37px', height: '37px', border: '3px solid grey', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto'}
     //const activeStyle = {flex: '1', width: '37px', height: '37px', border: '3px solid #f0f', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto'}
     const activeStyle = {fontWeight: 'bold', color: 'blue', borderBottom: '2px solid blue'}
+    const specialHeader = {fontWeight: 'bold', color: 'blue', borderBottom: '2px solid blue', paddingLeft: '0', paddingRight: '0', marginLeft: '0', marginRight: '0'}
 
     return <div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -71,7 +72,7 @@ const QuestionnaireHeader = ({...props}) => {
                 </div>
                 <div style={{flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0'}}></div>
             </div>
-            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'D' ? activeStyle : {}}>Data Linkage & Harmonization</span></div>
+            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
         </div>
         <div id='sectionE' style={{flex: '1', textAlign: 'center'}} onClick={() => props.handler('E')}>
             <div style={{display: 'flex'}}>
@@ -83,7 +84,7 @@ const QuestionnaireHeader = ({...props}) => {
                 </div>
                 <div style={{flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0'}}></div>
             </div>
-            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'E' ? activeStyle : {}}>Cancer Information</span></div>
+            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span></div>
         </div>
         <div id='sectionF' style={{flex: '1', textAlign: 'center'}} onClick={() => props.handler('F')}>
             <div style={{display: 'flex'}}>
@@ -95,7 +96,7 @@ const QuestionnaireHeader = ({...props}) => {
                 </div>
                 <div style={{flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0'}}></div>
             </div>
-            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'F' ? activeStyle : {}}>Cancer Counts</span></div>
+            <div style={{marginTop: '5px', paddingLeft: '0', paddingRight: '0', width: '214px'}}><span style={props.activeSection === 'F' ? specialHeader : {}}>Data Linkage & Harmonization</span></div>
         </div>
         <div id='sectionG' style={{flex: '1', textAlign: 'center'}} onClick={() => props.handler('G')}>
             <div style={{display: 'flex'}}>
