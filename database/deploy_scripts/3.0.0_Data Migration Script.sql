@@ -1361,7 +1361,7 @@ insert into cohort (id, name, acronym, create_by, status, create_time, update_ti
 select cohort_id,
 cohort_name,
 cohort_acronym,
-'system_admin',
+1,
 'published',
 create_time,
 update_time

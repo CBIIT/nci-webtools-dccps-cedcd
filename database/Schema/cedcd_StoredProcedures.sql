@@ -19,7 +19,8 @@
 14. select_cancer_counts
 15. select_enrollment_counts
 16. select_specimen_counts
-17. updateCohort_basic
+17. update_cohort_basic
+18. select_admin_cohortlist
 *
  */
 
@@ -795,3 +796,49 @@ BEGIN
 	SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
 END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_admin_cohortlist
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_admin_cohortlist` //
+
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `select_admin_cohortlist`(in status text,
+                                    in columnName varchar(40), in columnOrder varchar(10),
+									in pageIndex int, in pageSize int)
+BEGIN
+	declare tmp text default '';
+    declare v text default ''; 
+	declare i int default 0;
+    declare tmp_count int default 0; 
+    
+    set @status_query = " and lower(ch.status) in (select lower(cohortstatus) from lu_cohort_status where 1=1 ";
+    if status != "" then
+        set @status_query = concat(@status_query, " and id in (",status,") ) ");
+	else
+        set @status_query = concat(@status_query,") ");
+	end if;
+    
+    if columnName != "" then
+		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+	else
+		set @orderBy = "order by ch.id desc";
+    end if;
+    
+    if pageIndex > -1 then
+		set @paging = concat(' limit ',pageIndex,',',pageSize,' ');
+	else
+		set @paging = "";
+    end if;
+    
+    set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status, concat(u1.first_name, ' ', u1.last_name) create_by, 
+	 (case when ch.publish_by is null then null else (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.id) end) publish_by,
+	 (case when lower(ch.status) in (\"in review\",\"submitted\", \"published\") and ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time 
+	 FROM cohort ch, user u1 WHERE ch.create_by=u", @status_query);
+    set @query = concat(@query, @orderBy, @paging);
+	PREPARE stmt FROM @query;
+	EXECUTE stmt;
+    select found_rows() as total;
+	DEALLOCATE PREPARE stmt;
+END //
+
+DELIMITER ;
