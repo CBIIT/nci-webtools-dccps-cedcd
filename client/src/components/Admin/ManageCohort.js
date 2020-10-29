@@ -76,8 +76,10 @@ class ManageCohort extends Component {
 	}
 
 	handleCohortPageSizeChange = (e) => {
+		console.dir(this.state.pageInfo)
 		let pageInfo = Object.assign({}, this.state.pageInfo);
 		pageInfo.pageSize = e.target.value;
+		console.dir(pageInfo)
 		this.setState({
 			pageInfo: pageInfo
 		});
@@ -100,7 +102,8 @@ class ManageCohort extends Component {
 
 	toFilter = () => {
 		this.saveHistory();
-		this.filterData();
+		this.filterData(1, null, null);
+
 	}
 
 	filterData(i, orderBy, filter) {
@@ -177,7 +180,7 @@ class ManageCohort extends Component {
 		this.pageData(i);
 	}
 
-	pageData(i, orderBy, filter, selected) {
+	pageData(i, orderBy, filter) {
 
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;

@@ -6,9 +6,7 @@ class PageSummary extends Component {
 
   render() {
     const total = this.props.pageInfo.total;
-    //const page = this.props.pageInfo.page;
-    const page = 1;
-    alert("total: " + total + "page: " + page)
+    const page = this.props.pageInfo.page;
     let pageStart;
     let pageEnd;
     if (page === 0) {

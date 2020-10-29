@@ -15,7 +15,6 @@ class Paging extends Component {
     }
     else {
       let totalPage = Math.ceil(pageInfo.total / pageInfo.pageSize);
-
       let previous;
       if (pageInfo.page > 1) {
         const idx = pageInfo.page - 1;
@@ -44,9 +43,8 @@ class Paging extends Component {
           pages.push(i);
         }
       }
-      if (!pages) pages = [1, 2, 3, 4, 5]
+
       const pagesHtml = pages.map((item, index) => {
-        console.log(item)
         const cls = item == pageInfo.page ? "active" : "";
         return (
           <a key={item} className={cls} href="javascript:void(0);" onClick={() => this.props.onClick(item)}>{item}</a>
