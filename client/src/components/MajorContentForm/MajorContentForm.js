@@ -238,17 +238,18 @@ const MajorContentForm = ({...props}) => {
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
                                         <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine())} /></span>
-                                        <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Other</span>
+                                        <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
+                                        {
+                                            majorContent.noncigarOtherBaseLine ? 
+                                            <span className='col-sm-8'>
+                                                <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
+                                                <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
+                                                    <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))} />
+                                                </span>
+                                            </span> : ''
+                                        }
                                     </div>
-                                    {
-                                        majorContent.noncigarOtherBaseLine ? 
-                                        <div className='col-sm-offset-2 col-sm-10'>
-                                            <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
-                                            <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))} />
-                                            </span>
-                                        </div> : ''
-                                    }   
+                                       
                                 </td>
                                 <td style={{verticalAlign: 'middle'}}> 
                                 <div className='col-sm-offset-2 col-sm-10'>
@@ -274,17 +275,17 @@ const MajorContentForm = ({...props}) => {
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
                                         <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp())} /></span>
-                                        <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Other</span>
+                                        <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
+                                        {
+                                            majorContent.noncigarOtherFollowUp ? 
+                                            <div className='col-sm-8'>
+                                                <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
+                                                <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
+                                                    <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))} />
+                                                </span>
+                                            </div> : ''
+                                        }   
                                     </div>
-                                    {
-                                        majorContent.noncigarOtherFollowUp ? 
-                                        <div className='col-sm-offset-2 col-sm-10'>
-                                            <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
-                                            <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))} />
-                                            </span>
-                                        </div> : ''
-                                    }   
                                 </td>
                             </tr>
 
