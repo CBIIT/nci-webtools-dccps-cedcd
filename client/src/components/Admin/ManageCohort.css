@@ -13,3 +13,175 @@
     padding-left: 34px;
 }
 
+.panel-title{
+    display:inline;
+}
+.Accordion.Toggle:hover{
+    background-color:#4CAF50;
+    border:none;
+    color:Black;
+
+}
+
+#filterEngage{
+    background-color:#782FC1;
+}
+#filterEngage:hover{
+    background-color:#62269e;
+}
+#filterEngage:focus{
+    background-color:#782FC1;
+}
+#filterEngage:hover:active{
+    background-color:#782FC1;
+}
+
+.panel-heading:hover{
+    cursor:pointer;
+}
+
+.d-inline-block {
+    display: inline-block;
+}
+
+.toggle-down {
+    transform: rotate(180deg);
+    margin: 5px 0 10px 0;
+}
+  
+  
+.toggle-up {
+    transform: rotate(0deg);
+    margin: 5px 0 10px 0;
+}
+  
+.padded-string {
+    color: white;
+    padding-top: 2px;
+    padding-right: 10px;
+}
+
+/*#filter-panel{
+    margin:0 1.5rem;
+}*/
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 10% 30% 30% 5% 5% 5% 5%;
+    grid-gap: 10px;
+    padding: 5px;
+    background-color: inherit;
+  }
+  
+  .grid-container > * {
+    padding: 0 0;
+    font-size: 15px;
+    background-color: inherit;
+  }
+
+  .grid-container > p {
+    background-color: #F5F5F5;
+    padding: 0 25px;
+    font-size: 15px;
+  }
+.boolean-selector {
+    grid-column: 1/2;
+    margin: 0;
+    height:26.7833;
+    min-height:26.7833;
+    background-color: white;
+  }
+.type-selector{
+    grid-column:2/4;
+    background-color: white;
+}
+.add-button{
+    height:26.7833;
+    min-height:26.7833;
+    grid-column:5/6;
+}
+.remove-button{
+    height:26.7833;
+    min-height:26.7833;
+    grid-column:7/8;
+}
+.select-box{
+    grid-column:2/4;
+    
+    background-color: blue;
+}
+.panel-coloring{
+    background-color: #F5F5F5;
+}
+
+.switchSearchButtonToAdvanced{
+    text-decoration: underline;
+}
+.switchSearchButtonToBasic{
+    text-decoration: underline;
+}
+.gray-back{
+    background-color: #f5f5f5;
+}
+.filter-component-block{
+    background-color: inherit;
+}
+.picked-options{
+    background-color: inherit;
+    border-color: #f5f5f5
+}
+.select-box{
+    background-color: inherit;
+}
+h1.welcome{
+    margin-bottom: 2rem;
+    margin-top:0;
+    padding: 0 1.5rem;
+}
+
+/* Dropdown Button */
+.pagesizedropbtn {
+    background-color: white;
+    color: black;
+    padding: 1px;
+    font-size: 14px;
+    border: 1px solid black ;
+    cursor: pointer;
+  }
+  
+  /* Dropdown button on hover & focus */
+.pagesizedropbtn:hover, .dropbtn:focus {
+    background-color: #2980B9;
+  }
+  
+  /* The container <div> - needed to position the dropdown content */
+  .pageSize {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Dropdown Content (Hidden by Default) */
+  .pagesizedropbtn-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Links inside the dropdown */
+  .pagesizedropbtn-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Change color of dropdown links on hover */
+  .pagesizedropbtn-content a:hover {background-color: #ddd}
+  
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+  .pagesizedropbtnshow {display:block;}
+

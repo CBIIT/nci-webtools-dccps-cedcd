@@ -29,10 +29,10 @@ class TableHeaderManageCohort extends Component {
     let cls;
     if (this.props.value === this.props.orderBy.column) {
       if (this.props.orderBy.order === 'asc') {
-        cls = (<img src="./assets/img/arrow-up.png" className="tableArrow" alt="change the sort order to [Z-A] "></img>);
+        cls = (<img src="/assets/img/arrow-up.png" className="tableArrow" alt="change the sort order to [Z-A] "></img>);
       }
       else {
-        cls = (<img src="./assets/img/arrow-down.png" className="tableArrow" alt="change the sort order to [A-Z] "></img>);
+        cls = (<img src="/assets/img/arrow-down.png" className="tableArrow" alt="change the sort order to [A-Z] "></img>);
       }
     }
     else {

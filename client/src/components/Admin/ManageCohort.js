@@ -5,7 +5,7 @@ import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
 import TableHeaderManageCohort from './TableHeaderManageCohort';
 import './ManageCohort.css';
-import { filter } from 'lodash';
+import { filter, size } from 'lodash';
 
 class ManageCohort extends Component {
 
@@ -16,8 +16,8 @@ class ManageCohort extends Component {
 			list: [],
 			filter: {
 				cohortstatus: [],
-				cohortSearch: "",
-				cohortType: "name",
+				cohortSearch: '',
+				cohortType: 'name',
 			},
 			orderBy: {
 				column: "id",
@@ -34,10 +34,12 @@ class ManageCohort extends Component {
 		const state = Object.assign({}, this.state);
 		let item = {
 			filter: state.filter,
-			orderBy: state.orderBy
+			orderBy: state.orderBy,
+			pageInfo: state.pageInfo
 		};
 		sessionStorage.setItem('informationHistory_adminmanage', JSON.stringify(item));
 	}
+
 
 	handleCohortStatusClick = (v) => {
 		let filter = Object.assign(this.state.filter);
@@ -56,18 +58,35 @@ class ManageCohort extends Component {
 		});
 	}
 
+	handleCohortSearchChange(changeEvent) {
+		let filter = Object.assign(this.state.filter);
+		filter.cohortSearch = changeEvent.target.value;
+		this.setState({
+			filter: filter
+		});
+	}
+
 	handleCohortTypeChange = (changeEvent) => {
+		let filter = Object.assign(this.state.filter);
 		filter.cohortType = changeEvent.target.value;
 		this.setState({
 			filter: filter
 		});
 	}
 
+	handleCohortPageSizeChange = (e) => {
+		let pageInfo = Object.assign({}, this.state.pageInfo);
+		pageInfo.pageSize = e.target.value;
+		this.setState({
+			pageInfo: pageInfo
+		});
+	}
+
 	clearFilter = () => {
 		let filter = {
 			cohortstatus: [],
-			cohortSearch: "",
-			cohortType: "name",
+			cohortSearch: '',
+			cohortType: "name"
 		};
 
 		this.setState({
@@ -256,7 +275,7 @@ class ManageCohort extends Component {
 						<div className="panel-body">
 							<div className="filter row">
 								<div className="col-sm-4 filterCol">
-									<div><h3><strong>Search Cohort :</strong>
+									<div className="cohortTypeRadio"><h3><strong>Search Cohort :</strong>
 										<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name:&nbsp;&nbsp;<input value="name" name="cohortType" type="radio" checked={'name' === this.state.filter.cohortType}
 											onChange={this.handleCohortTypeChange} />
 										</label>
@@ -266,7 +285,7 @@ class ManageCohort extends Component {
 									</div>
 									<div class="form-group has-feedback has-search">
 										<span class="glyphicon glyphicon-search form-control-feedback"></span>
-										<input type="text" class="form-control" placeholder="Search" />
+										<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search" onChange={(e) => this.handleCohortSearchChange(e)} />
 									</div>
 								</div>
 								<div className="col-sm-3 filterCol">
@@ -282,7 +301,7 @@ class ManageCohort extends Component {
 									<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
 										<i className="fas fa-times"></i> Clear All </a>
 									<input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary"
-										onClick={this.toFilter} disabled={this.state.filter.cohortstatus.length === 0} />
+										onClick={this.toFilter} />
 								</div>
 							</div>
 						</div>
@@ -322,9 +341,23 @@ class ManageCohort extends Component {
 				</div>
 
 				<div className="filter-block home col-md-12">
+
 					<div className="row" style={{ "display": "flex" }}>
+						<div class="pageSize">
+							Page Size: <select name="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
+								<option>Page Size</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+							</select>
+						</div>
 						<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
-							<PageSummary pageInfo={this.state.pageInfo} mid="true" />
+
+							<div>
+								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
+							</div>
+
 						</div>
 
 						<div style={{ "paddingRight": "15px", "paddingTop": "5px" }}>
