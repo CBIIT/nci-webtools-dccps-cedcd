@@ -9,6 +9,7 @@ import { filter, size } from 'lodash';
 
 class ManageCohort extends Component {
 
+	_isMounted = false;
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -137,25 +138,39 @@ class ManageCohort extends Component {
 			.then(result => {
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
-
-				this.setState(prevState => (
-					{
-						list: list,
-						filter: reqBody.filter,
-						orderBy: reqBody.orderBy,
-						pageInfo: reqBody.paging,
-						lastPage: (i > -1 ? lastPage : i)
-					}
-				));
+				if (this._isMounted) {
+					this.setState(prevState => (
+						{
+							list: list,
+							filter: reqBody.filter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1 ? lastPage : i)
+						}
+					));
+				}
 			});
 	}
 
 	componentDidMount() {
+		this._isMounted = true;
 		const previousState = sessionStorage.getItem('informationHistory_adminmanage');
 		if (previousState) {
 			let state = JSON.parse(previousState);
-			this.filterData(state.filter);
+			if (this._isMounted) {
+				this.setState({
+					filter: state.filter,
+					orderBy: state.orderBy
+				});
+			}
+			this.filterData(1, state.orderBy, state.filter);
+		} else {
+			this.filterData(this.state.pageInfo.page);
 		}
+	}
+
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 
 	gotoPage(i) {
