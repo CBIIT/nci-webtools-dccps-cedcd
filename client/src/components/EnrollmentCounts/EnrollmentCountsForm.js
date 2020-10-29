@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 //import {useForm} from 'react-hook-form'
 import {useSelector, useDispatch} from 'react-redux'
 import allactions from '../../actions'
+import validator from '../../validators'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
     //const [cell141, setCell141] = useState(enrollmentCount['141'])
@@ -211,8 +212,9 @@ const EnrollmentCountsForm = ({...props}) => {
                         </tbody>
                     </table>
                     <div style={{marginTop: '10px'}}>
-                        <span><label htmlFor='confirmDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='confirmDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)'/></span>
+                        <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
+                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {e => {let r = validator.dateValidator(e.target.value, false); if(r){setErrors({...errors, mostRecentDate: r})}else{if(errors.mostRecentDate) delete errors.mostRecentDate}}}/></span>
+                        {errors.mostRecentDate && <span style={{color: 'red'}}>{errors.mostRecentDate}</span>}
                     </div>
 
                 </form>

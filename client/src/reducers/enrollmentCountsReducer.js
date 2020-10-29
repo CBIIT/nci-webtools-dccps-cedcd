@@ -12,6 +12,11 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
             let stateCopy = {...state}
             stateCopy[action.cell] = action.value
             return stateCopy
+        case t.updateMostRecentDate:
+            return {
+                ...state,
+                mostRecentDate: action.dateString
+            }
         default:
             return state
     }
