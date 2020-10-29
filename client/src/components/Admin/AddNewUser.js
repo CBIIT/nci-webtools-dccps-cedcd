@@ -20,7 +20,7 @@ class AddNewUser extends Component {
       organization: "",
       phone: "",
       email: "",
-      topic: "1",
+      type: "CohortOwner",
       message: ""
     };
   }
@@ -51,7 +51,7 @@ class AddNewUser extends Component {
       organization: "",
       phone: "",
       email: "",
-      topic: "1",
+      type: "CohortOwner",
       message: ""
     });
   }
@@ -105,7 +105,7 @@ class AddNewUser extends Component {
         organization: state.organization,
         phone: state.phone,
         email: state.email,
-        topic: state.topic,
+        type: state.type,
         message: state.message
       };
       fetch('./api/contact/add', {
@@ -139,7 +139,7 @@ class AddNewUser extends Component {
           organization: "",
           phone: "",
           email: "",
-          topic: "1",
+          type: "CohortOwner",
           message: ""
         });
       }, 1500);
@@ -154,12 +154,12 @@ class AddNewUser extends Component {
       cls.push("open");
       shadow = "shadow";
     }
-    let firstname_cls = this.state.firstname_required ? "contact-us-field field-required" : "contact-us-field";
-    let lastname_cls = this.state.lastname_required ? "contact-us-field field-required" : "contact-us-field";
-    let org_cls = this.state.org_required ? "contact-us-field field-required" : "contact-us-field";
-    let email_cls = this.state.email_required ? "contact-us-field field-required" : (this.state.email_invalid ? "contact-us-field field-invalid" : "contact-us-field");
-    let message_cls = this.state.message_required ? "contact-us-field field-required" : "contact-us-field";
-    let phone_cls = this.state.phone_invalid ? "contact-us-field field-invalid" : "contact-us-field"
+    let firstname_cls = this.state.firstname_required ? "newUser-field field-required" : "newUser-field";
+    let lastname_cls = this.state.lastname_required ? "newUser-field field-required" : "newUser-field";
+    let org_cls = this.state.org_required ? "newUser-field field-required" : "newUser-field";
+    let email_cls = this.state.email_required ? "newUser-field field-required" : (this.state.email_invalid ? "newUser-field field-invalid" : "newUser-field");
+    let message_cls = this.state.message_required ? "newUser-field field-required" : "newUser-field";
+    let phone_cls = this.state.phone_invalid ? "newUser-field field-invalid" : "newUser-field"
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
     return (
@@ -203,11 +203,11 @@ class AddNewUser extends Component {
                   <label className="oneLineLabel" htmlFor="cu_email">Email <span className="required">*</span></label>
                   <input name="cu_email" type="text" id="cu_email" value={this.state.email} onChange={(e) => this.handleChange("email", e)} />
                 </div>
-                <div id="div_topic" className="contact-us-field">
-                  <label className="oneLineLabel" htmlFor="cu_topic">User Type <span className="required">*</span></label>
-                  <select name="cu_topic" id="cu_topic" className="textEntrySmall" value={this.state.topic} onChange={(e) => this.handleChange("topic", e)}>
-                    <option value="1">Cohort Owner </option>
-                    <option value="2">Cohort Admin </option>
+                <div id="div_type" className="newUser-field">
+                  <label className="oneLineLabel" htmlFor="cu_type">User Type <span className="required">*</span></label>
+                  <select name="cu_type" id="cu_type" className="textEntrySmall" value={this.state.type} onChange={(e) => this.handleChange("type", e)}>
+                    <option value="CohortOwner">Cohort Owner </option>
+                    <option value="CohortAdmin">Cohort Admin </option>
                   </select>
                 </div>
                 <div id="ctl11_div_message" className={message_cls}>

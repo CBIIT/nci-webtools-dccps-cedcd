@@ -23,6 +23,20 @@ router.post('/admincohortlist', function (req, res) {
 		params.push("");
 	}
 
+	if (filter.cohortSearch) {
+		params.push(filter.cohortSearch);
+	}
+	else {
+		params.push("");
+	}
+
+	if (filter.cohortType) {
+		params.push(filter.cohortType);
+	}
+	else {
+		params.push("");
+	}
+
 
 	if (orderBy) {
 		params.push(orderBy.column);
@@ -34,7 +48,7 @@ router.post('/admincohortlist', function (req, res) {
 	}
 
 	if (paging && paging.page != 0) {
-		params.push(0);
+		params.push((paging.page - 1) * paging.pageSize);
 		params.push(paging.pageSize);
 	}
 	else {
