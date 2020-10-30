@@ -68,7 +68,7 @@ BEGIN
 		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
 			set gender = concat(gender, ",4");
 		end if;
-		set @gender_query = concat("cs.gender_id in (",gender,") ");
+		set @gender_query = concat("cs.eligible_gender_id in (",gender,") ");
 		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',1)),',',1));
 		if tmp = "AND" then
 			set @and_query = concat(@and_query, " and ", @gender_query);
@@ -167,7 +167,7 @@ BEGIN
     
     set @major_content_query = "";
     if domain != "" then
-		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) group by cohort_id ");
+		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where domain_id  in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) group by cohort_id ");
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
         if tmp = "AND" then
 			set @len = LENGTH(domain) - LENGTH(REPLACE(domain, ',', '')) + 1;
@@ -281,8 +281,8 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline 
-	from cohort_basic cs, major_content mc, lu_domain ld, cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+	from cohort_basic cs, major_content mc, lu_domain ld, cohort ch, v_lu_domain vld
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -305,7 +305,7 @@ BEGIN
     
     set @query = concat("select cs.*,lg.gender, ci.ci_confirmed_cancer_year,m.mort_year_mortality_followup 
 	from cohort_basic cs, cancer_info ci, mortality m, lu_gender lg , cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ci.cohort_id and cs.cohort_id = m.cohort_id and cs.gender_id = lg.id",@queryString);
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ci.cohort_id and cs.cohort_id = m.cohort_id and cs.eligible_gender_id = lg.id",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -362,8 +362,8 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup 
-	from cohort_basic cs, major_content mc, lu_domain ld , cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id ",@queryString);
+	from cohort_basic cs, major_content mc, lu_domain ld , cohort ch, v_lu_domain vld
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -414,7 +414,7 @@ CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	select * from lu_gender;
     select * from lu_cancer;
-    select * from lu_domain;
+    select * from v_lu_domain;
     select * from lu_ethnicity;
     select * from lu_race;
     select * from lu_specimen;
@@ -476,7 +476,7 @@ BEGIN
     
     set @major_content_query = "";
     if domain != "" then
-		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where domain_id in (",domain,") ", " and (baseline=1 or followup = 1) )");
+		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where domain_id in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) )");
     end if;
     
     set @specimen_query = "";
@@ -507,7 +507,7 @@ BEGIN
 		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
 			set gender = concat(gender, ",4");
 		end if;
-		set @cohort_query = concat(@cohort_query, "and cs.gender_id in (",gender,") ");
+		set @cohort_query = concat(@cohort_query, "and cs.eligible_gender_id in (",gender,") ");
 	end if;
 
 	/*
@@ -738,7 +738,7 @@ BEGIN
 		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.url')),
         sameAsSomeone = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')),
         cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
-        gender_id = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')),
+        eligible_gender_id = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')),
         eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.hasCancerSite')) = 'true', 1 , 0),
         eligible_disease_cancer_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites')),
         eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibilityCriteriaOther')),

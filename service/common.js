@@ -390,7 +390,7 @@ router.post('/export/advancedSelect', function (req, res) {
 	let advancedFilter = body.advancedFilter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
-	let func = "select_advanced_cohort_select";
+	let func = "select_advanced_cohort";
 	let params = [];
 	//form filter into Strings
 

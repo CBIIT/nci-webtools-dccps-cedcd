@@ -143,6 +143,7 @@ CREATE TABLE `cohort_basic` (
   `cohort_name` varchar(500) DEFAULT NULL,
   `cohort_acronym` varchar(100) DEFAULT NULL,
   `cohort_web_site` varchar(200) DEFAULT NULL,
+  `date_completed` date DEFAULT NULL,
   `clarification_contact` int(1) DEFAULT NULL,
   `request_procedures_web` int(1) DEFAULT NULL,
   `request_procedures_web_url` varchar(300) DEFAULT NULL,
@@ -150,7 +151,7 @@ CREATE TABLE `cohort_basic` (
   `request_procedures_none` int(1) DEFAULT NULL,
   `sameAsSomeone` int(1) DEFAULT NULL,
   `cohort_description` varchar(5000) DEFAULT NULL,
-  `gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
+  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
   `eligible_disease` int(1) DEFAULT NULL,
   -- hasCancerSite
   `eligible_disease_cancer_specify` varchar(100) DEFAULT NULL,
@@ -202,11 +203,11 @@ CREATE TABLE `cohort_basic` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
   PRIMARY KEY (`id`),
-  KEY `cohort_gender_id_idx` (`cohort_id`, `gender_id`),
-  KEY `cohort_gender_id_idx_idx` (`gender_id`),
+  KEY `cohort_gender_id_idx` (`cohort_id`, `eligible_gender_id`),
+  KEY `cohort_gender_id_idx_idx` (`eligible_gender_id`),
   KEY `cohort_basic_id` (`cohort_id`),
   CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`eligible_gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `attachment`;

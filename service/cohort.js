@@ -155,7 +155,7 @@ router.post('/advancedSelect', function (req, res) {
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
 	let advancedCondition = body.advancedCondition || "";
-	let func = "select_advanced_cohort_select";
+	let func = "select_advanced_cohort";
 	let params = [];
 	//form filter into Strings
 
