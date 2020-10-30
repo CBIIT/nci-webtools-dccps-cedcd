@@ -254,25 +254,41 @@ class ManageCohort extends Component {
 		let content = list.map((item, index) => {
 			let id = item.id;
 			let view_url = '/cohort?id=' + id;
-			let review_url = '/managecohort';
+			let review_url = '/cohort/questionnaire';
 			let view = "View";
 			let review = "Review";
 
 			let select_id = "select_" + id;
-			return (
-				<tr key={id}>
-					<td>
-						<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
-					</td>
-					<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
-					<td class="text-capitalize">{item.status}</td>
-					<td>{item.create_by}</td>
-					<td>{item.update_time}</td>
-					<td>
-						<Link to={view_url} onClick={this.saveHistory}>{item.status === 'published' ? view : review}</Link>
-					</td>
-				</tr>
-			);
+			if (item.status === 'published') {
+				return (
+					<tr key={id}>
+						<td>
+							<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
+						</td>
+						<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
+						<td class="text-capitalize">{item.status}</td>
+						<td>{item.create_by}</td>
+						<td>{item.update_time}</td>
+						<td>
+							<Link to={view_url} onClick={this.saveHistory}>{review}</Link>
+						</td>
+					</tr>
+				);
+			} else {
+				return (
+					<tr key={id}>
+						<td>{item.name}</td>
+						<td>{item.acronym}</td>
+						<td class="text-capitalize">{item.status}</td>
+						<td>{item.create_by}</td>
+						<td>{item.update_time}</td>
+						<td>
+							<Link to={review_url} onClick={this.saveHistory}>{item.status != 'new' ? view : null}</Link>
+						</td>
+					</tr>
+				);
+
+			}
 		});
 		if (content.length === 0) {
 			content = (
