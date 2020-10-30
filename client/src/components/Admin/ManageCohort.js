@@ -24,11 +24,11 @@ class ManageCohort extends Component {
 				column: "id",
 				order: "desc"
 			},
-			pageInfo: { page: 1, pageSize: 15, total: 0 },
+			pageInfo: { page: 1, pageSize: 10, total: 0 },
 			lastPage: 1,
 			prevBasicParams: {}
 		};
-		this.toFocus = React.createRef();
+		this.toFocus = React.createRef()
 	}
 
 	saveHistory = () => {
@@ -76,13 +76,7 @@ class ManageCohort extends Component {
 	}
 
 	handleCohortPageSizeChange = (e) => {
-		console.dir(this.state.pageInfo)
-		let pageInfo = Object.assign({}, this.state.pageInfo);
-		pageInfo.pageSize = e.target.value;
-		console.dir(pageInfo)
-		this.setState({
-			pageInfo: pageInfo
-		});
+		this.pageData(1, null, null, e.target.value);
 	}
 
 	clearFilter = () => {
@@ -126,6 +120,7 @@ class ManageCohort extends Component {
 		if (filter) {
 			reqBody.filter = filter;
 		}
+
 		this.setState({
 			prevBasicParams: JSON.parse(JSON.stringify(reqBody)),
 		})
@@ -158,17 +153,19 @@ class ManageCohort extends Component {
 	componentDidMount() {
 		this._isMounted = true;
 		const previousState = sessionStorage.getItem('informationHistory_adminmanage');
+
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			if (this._isMounted) {
 				this.setState({
 					filter: state.filter,
-					orderBy: state.orderBy
+					orderBy: state.orderBy,
+					pageInfo: state.pageInfo
 				});
 			}
 			this.filterData(1, state.orderBy, state.filter);
 		} else {
-			this.filterData(this.state.pageInfo.page);
+			this.filterData(1, this.state.orderBy, this.state.filter);
 		}
 	}
 
@@ -180,11 +177,16 @@ class ManageCohort extends Component {
 		this.pageData(i);
 	}
 
-	pageData(i, orderBy, filter) {
+	pageData(i, orderBy, filter, pagesize = -1) {
 
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
 		let reqBody = this.state.prevBasicParams;
+
+		if (pagesize != -1) {
+			reqBody.paging.pageSize = pagesize;
+		}
+
 		if (i == -1) {
 			reqBody.paging.page = state.lastPage;
 		}
@@ -303,7 +305,7 @@ class ManageCohort extends Component {
 									</div>
 									<div class="form-group has-feedback has-search">
 										<span class="glyphicon glyphicon-search form-control-feedback"></span>
-										<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search" onChange={(e) => this.handleCohortSearchChange(e)} />
+										<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 									</div>
 								</div>
 								<div className="col-sm-3 filterCol">

@@ -8,18 +8,13 @@ class AddNewCohort extends Component {
       open: false,
       submitted: false,
       background_gray: false,
-      firstname_required: false,
-      lastname_required: false,
+      cohortName_required: false,
+      cohortAcronym_required: false,
       org_required: false,
-      email_required: false,
       message_required: false,
-      email_invalid: false,
-      phone_invalid: false,
-      firstname: "",
-      lastname: "",
+      cohortName: "",
+      cohortAcronym: "",
       organization: "",
-      phone: "",
-      email: "",
       topic: "1",
       message: ""
     };
@@ -39,18 +34,13 @@ class AddNewCohort extends Component {
 
   handleClear = () => {
     this.setState({
-      firstname_required: false,
-      lastname_required: false,
+      cohortName_required: false,
+      cohortAcronym_required: false,
       org_required: false,
-      email_required: false,
       message_required: false,
-      email_invalid: false,
-      phone_invalid: false,
-      firstname: "",
-      lastname: "",
+      cohortName: "",
+      cohortAcronym: "",
       organization: "",
-      phone: "",
-      email: "",
       topic: "1",
       message: ""
     });
@@ -66,45 +56,22 @@ class AddNewCohort extends Component {
     event.preventDefault();
     //check required field
     const state = Object.assign({}, this.state);
-    state.firstname_required = state.firstname.trim() === "";
-    state.lastname_required = state.lastname.trim() === "";
+    state.cohortName_required = state.cohortName.trim() === "";
+    state.cohortAcronym_required = state.cohortAcronym.trim() === "";
     state.org_required = state.organization.trim() === "";
-    state.email_required = state.email.trim() === "";
     state.message_required = state.message.trim() === "";
 
-    //Check validity of email and phone number
-    if (state.email.trim().search(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/) === -1) {
-
-      state.email_invalid = true;
-
-    }
-    else {
-      state.email_invalid = false;
-    }
-
-    //Check validity of phone number if one is given
-    //if(state.phone.trim() !== "" && state.phone.trim().search(/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/) === -1){
 
 
-    if (state.phone.trim().search(/^[+]?([0-9]|[-])*$/) === -1 || state.phone.length > 20) {
-
-      state.phone_invalid = true;
-    }
-    else {
-      state.phone_invalid = false;
-    }
-
-    if (state.firstname_required || state.lastname_required || state.org_required || state.email_required || state.message_required || state.email_invalid || state.phone_invalid) {
+    if (state.cohortName_required || state.cohortAcronym_required || state.org_required || state.email_required || state.message_required) {
       this.setState(state);
     }
     else {
       //submit
       let reqBody = {
-        firstname: state.firstname,
-        lastname: state.lastname,
+        cohortName: state.cohortName,
+        cohortAcronym: state.cohortAcronym,
         organization: state.organization,
-        phone: state.phone,
-        email: state.email,
         topic: state.topic,
         message: state.message
       };
@@ -127,18 +94,13 @@ class AddNewCohort extends Component {
         this.setState({
           submitted: !this.state.submitted,
           background_gray: true,
-          firstname_required: false,
-          lastname_required: false,
+          cohortName_required: false,
+          cohortAcronym_required: false,
           org_required: false,
-          email_required: false,
           message_required: false,
-          email_invalid: false,
-          phone_invalid: false,
-          firstname: "",
-          lastname: "",
+          cohortName: "",
+          cohortAcronym: "",
           organization: "",
-          phone: "",
-          email: "",
           topic: "1",
           message: ""
         });
@@ -154,12 +116,10 @@ class AddNewCohort extends Component {
       cls.push("open");
       shadow = "shadow";
     }
-    let firstname_cls = this.state.firstname_required ? "contact-us-field field-required" : "contact-us-field";
-    let lastname_cls = this.state.lastname_required ? "contact-us-field field-required" : "contact-us-field";
+    let cohortName_cls = this.state.cohortName_required ? "contact-us-field field-required" : "contact-us-field";
+    let cohortAcronym_cls = this.state.lastcohortName_required ? "contact-us-field field-required" : "contact-us-field";
     let org_cls = this.state.org_required ? "contact-us-field field-required" : "contact-us-field";
-    let email_cls = this.state.email_required ? "contact-us-field field-required" : (this.state.email_invalid ? "contact-us-field field-invalid" : "contact-us-field");
     let message_cls = this.state.message_required ? "contact-us-field field-required" : "contact-us-field";
-    let phone_cls = this.state.phone_invalid ? "contact-us-field field-invalid" : "contact-us-field"
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
     return (
@@ -175,21 +135,21 @@ class AddNewCohort extends Component {
             </div>
           </div>
         </div>
-        <div id="contactForm" className="row pop-form">
+        <div id="newCohortForm" className="row pop-form">
           <div id="contact-main" className="col">
-            <div id="contact-header" className="col-md-12">
+            <div id="contactt-header" className="col-md-12">
               <h1 className="pg-title">New Cohort</h1>
             </div>
             <div id="contact-col-1" className="col-md-6 contact-col">
               <form onSubmit={this.handleSubmit}>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                <div id="ctl11_div_firstname" className={firstname_cls}>
+                <div id="ctl11_div_cohortName" className={cohortName_cls}>
                   <label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name <span className="required">*</span></label>
-                  <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.firstname} onChange={(e) => this.handleChange("firstname", e)} />
+                  <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
                 </div>
-                <div id="ctl11_div_lastname" className={lastname_cls}>
+                <div id="ctl11_div_cohortAcronym" className={cohortAcronym_cls}>
                   <label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym <span className="required">*</span></label>
-                  <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.lastname} onChange={(e) => this.handleChange("lastname", e)} />
+                  <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
                 </div>
                 <div id="ctl11_div_organization" className={org_cls}>
                   <label className="oneLineLabel" htmlFor="cu_organization">Select Cohort Owners <span className="required">*</span></label>
@@ -207,7 +167,7 @@ class AddNewCohort extends Component {
             </div>
             <div id="contact-col-2" className="col-md-6 contact-col">
               <h2>General Instructions</h2>
-              <p>For new CEDCD users, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required.</p>
+              <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required.</p>
             </div>
           </div>
         </div>

@@ -171,7 +171,7 @@ class AddNewUser extends Component {
               <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-              <h3>Message sent successfully!</h3>
+              <h3>New User is created successfully! User has to request login credential if he/she doesn't have yet.</h3>
             </div>
           </div>
         </div>
@@ -223,6 +223,7 @@ class AddNewUser extends Component {
             <div id="contact-col-2" className="col-md-6 contact-col">
               <h2>General Instructions</h2>
               <p>For new CEDCD users, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required. </p>
+              <p> Once new user is created successfully in CEDCD system, new user has to request login credential if he/she doesn't have yet</p>
             </div>
           </div>
         </div>

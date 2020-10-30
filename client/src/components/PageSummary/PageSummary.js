@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Alert } from 'reactstrap';
 import './PageSummary.css';
 
 class PageSummary extends Component {
@@ -7,6 +8,7 @@ class PageSummary extends Component {
   render() {
     const total = this.props.pageInfo.total;
     const page = this.props.pageInfo.page;
+
     let pageStart;
     let pageEnd;
     if (page === 0) {
@@ -15,7 +17,7 @@ class PageSummary extends Component {
     }
     else {
       pageStart = (page - 1) * this.props.pageInfo.pageSize + 1;
-      pageEnd = pageStart + this.props.pageInfo.pageSize - 1;
+      pageEnd = parseInt(pageStart) + parseInt(this.props.pageInfo.pageSize) - 1;
       pageEnd = pageEnd > total ? total : pageEnd;
     }
     if (this.props.mid === undefined) {
