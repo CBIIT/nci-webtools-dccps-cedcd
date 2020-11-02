@@ -151,7 +151,8 @@ class ManageCohort extends Component {
 	}
 
 	componentDidMount() {
-		this._isMounted = true;
+		//console.dir(this.props)
+		this.props.setAdmin(1)
 		const previousState = sessionStorage.getItem('informationHistory_adminmanage');
 
 		if (previousState) {

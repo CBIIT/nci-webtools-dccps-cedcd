@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Questionnaire from '../Questionnaire/Questionnaire'
 import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
@@ -30,8 +30,11 @@ const content = (currentSection, handleClick) => {
     }
 }
 
-const QuestionnaireLoader = () => {
+const QuestionnaireLoader = (props) => {
     const [current, setCurrent] = useState('A')
+    useEffect(() => {
+        props.setAdmin(2)
+    }, [])
     return content(current, setCurrent)
 }
 
