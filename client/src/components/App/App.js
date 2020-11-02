@@ -9,7 +9,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currTab: 0
+      currTab: 0,
+      admin: 0
     };
   }
 
@@ -18,6 +19,9 @@ class App extends Component {
     this.setState({ currTab: i });
   }
 
+  handleAdmin(v) {
+    this.setState({admin: v})
+  }
   componentDidMount() {
     this.updateTab();
     window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100);
@@ -80,12 +84,12 @@ class App extends Component {
         <ScrollToTop />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
-            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />
+            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} isAdmin={this.state.admin}/>
           </div>
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          {content}
+          <MainContent setAdmin={(x) => this.handleAdmin(x)}/>
           <div className="clearFix"></div>
         </div>
       </div>

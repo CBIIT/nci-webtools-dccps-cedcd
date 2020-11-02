@@ -67,6 +67,9 @@ const actionTypes = {
     setStrategyOtherSepcify: 'SET_STRATEGY_OTHER_SPECIFY',
     setQuestionnaireFile: 'SET_COHORT_QUESTIONNAIRE_FILE',
     setMainCohortFile: 'SET_COHORT_MAIN_FILE',
+    setDataFile: 'SET_COHORT_DATA_FILE',
+    setSpecimenFile: 'SET_COHORT_SPECIMEN_FILE',
+    setPublicationFile: 'SET_COHORT_PUBLICATION_FILE',
     /*section B*/
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',

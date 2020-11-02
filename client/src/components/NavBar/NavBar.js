@@ -4,6 +4,11 @@ import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
 
 class NavBar extends Component {
+  constructor(props){
+    super(props)
+  }
+
+
   renderTab(i) {
     return (
       <Tab
@@ -72,14 +77,17 @@ class NavBar extends Component {
           onClick={() => this.props.onClick(6)}
         />
         <TourBox currTab={this.props.currTab} />
+        {
+          this.props.isAdmin === 2 ?
         <Tab
           id="newCohortTab"
           value={7}
           currTab={this.props.currTab}
           onClick={() => this.props.onClick(7)}
-        />
-
+        /> : ''
+        }
         {/* use target=_self to enforce apache login rules (force normal navigation) */}
+        { this.props.isAdmin === 1 ? 
         <li className="dropdown">
           <div id="dropHeader" style={{ marginTop: "8px" }}>
             <a target="_self" href="/admin/managecohort" className="dropbtn">
@@ -91,7 +99,8 @@ class NavBar extends Component {
               <a target="_self" href="/admin/newuser">Add Cohort Owners</a>
             </div>
           </div>
-        </li>
+        </li> : ''
+        }
       </ul>
     );
   }
