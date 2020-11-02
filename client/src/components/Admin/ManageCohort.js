@@ -152,6 +152,7 @@ class ManageCohort extends Component {
 
 	componentDidMount() {
 		//console.dir(this.props)
+		this._isMounted = true;
 		this.props.setAdmin(1)
 		const previousState = sessionStorage.getItem('informationHistory_adminmanage');
 
@@ -260,7 +261,7 @@ class ManageCohort extends Component {
 			let review = "Review";
 
 			let select_id = "select_" + id;
-			if (item.status === 'published') {
+			if (item.status === 'published' || item.status === 'draft') {
 				return (
 					<tr key={id}>
 						<td>
@@ -271,7 +272,7 @@ class ManageCohort extends Component {
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={view_url} onClick={this.saveHistory}>{review}</Link>
+							<Link to={view_url} onClick={this.saveHistory}>{view}</Link>
 						</td>
 					</tr>
 				);
@@ -284,7 +285,7 @@ class ManageCohort extends Component {
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.status != 'new' ? view : null}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{item.status != 'new' ? review : null}</Link>
 						</td>
 					</tr>
 				);

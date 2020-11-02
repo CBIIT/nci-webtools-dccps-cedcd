@@ -21,6 +21,7 @@
 16. select_specimen_counts
 17. update_cohort_basic
 18. select_admin_cohortlist
+19. upsert_enrollment_count
 *
  */
 
@@ -43,6 +44,8 @@ DROP PROCEDURE IF EXISTS `cohort_select` //
 DROP PROCEDURE IF EXISTS `cohort_specimen_overview` //
 DROP PROCEDURE IF EXISTS `updateCohort_basic` //
 DROP PROCEDURE IF EXISTS `contact_us` //
+
+DROP PROCEDURE IF EXISTS `upsertEnrollment_count` //
 
 
 
@@ -849,6 +852,220 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
+END //
+
+DROP PROCEDURE IF EXISTS upsert_enrollment_count //
+
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE upsert_enrollment_count(in id int(11), in info JSON)
+BEGIN
+	IF EXISTS (SELECT * FROM enrollment_count WHERE cohort_id = `id`) THEN
+		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
+        race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')) where
+        race_id=1 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')) where
+        race_id=1 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."121"')) where
+        race_id=1 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."122"')) where
+        race_id=1 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."123"')) where
+        race_id=1 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."131"')) where
+        race_id=1 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."132"')) where
+        race_id=1 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."133"')) where
+        race_id=1 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."211"')) where
+        race_id=2 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."212"')) where
+        race_id=2 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."213"')) where
+        race_id=2 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."221"')) where
+        race_id=2 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."222"')) where
+        race_id=2 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."223"')) where
+        race_id=2 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."231"')) where
+        race_id=2 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."232"')) where
+        race_id=2 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."233"')) where
+        race_id=2 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."311"')) where
+        race_id=3 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."312"')) where
+        race_id=3 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."313"')) where
+        race_id=3 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."321"')) where
+        race_id=3 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."322"')) where
+        race_id=3 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."323"')) where
+        race_id=3 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."331"')) where
+        race_id=3 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."332"')) where
+        race_id=3 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."333"')) where
+        race_id=3 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."411"')) where
+        race_id=4 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."412"')) where
+        race_id=4 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."413"')) where
+        race_id=4 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."421"')) where
+        race_id=4 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."422"')) where
+        race_id=4 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."423"')) where
+        race_id=4 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."431"')) where
+        race_id=4 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."432"')) where
+        race_id=4 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."433"')) where
+        race_id=4 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."511"')) where
+        race_id=5 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."512"')) where
+        race_id=5 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."513"')) where
+        race_id=5 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."521"')) where
+        race_id=5 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."522"')) where
+        race_id=5 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."523"')) where
+        race_id=5 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."531"')) where
+        race_id=5 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."532"')) where
+        race_id=5 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."533"')) where
+        race_id=5 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."611"')) where
+        race_id=6 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."612"')) where
+        race_id=6 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."613"')) where
+        race_id=6 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."621"')) where
+        race_id=6 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."622"')) where
+        race_id=6 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."623"')) where
+        race_id=6 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."631"')) where
+        race_id=6 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."632"')) where
+        race_id=6 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."633"')) where
+        race_id=6 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."711"')) where
+        race_id=7 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."712"')) where
+        race_id=7 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."713"')) where
+        race_id=7 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."721"')) where
+        race_id=7 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."722"')) where
+        race_id=7 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."723"')) where
+        race_id=7 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')) where
+        race_id=7 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')) where
+        race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')) where
+        race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+	ELSE 
+		INSERT enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
+        VALUES 
+        (`id`, 1, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')), now(), now()),
+        (`id`, 1, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')), now(), now()),
+        (`id`, 1, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')), now(), now()),
+        (`id`, 1, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."121"')), now(), now()),
+        (`id`, 1, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."122"')), now(), now()),
+        (`id`, 1, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."123"')), now(), now()),
+        (`id`, 1, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."131"')), now(), now()),
+        (`id`, 1, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."132"')), now(), now()),
+        (`id`, 1, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."133"')), now(), now()),
+        
+        (`id`, 2, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."211"')), now(), now()),
+        (`id`, 2, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."212"')), now(), now()),
+        (`id`, 2, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."213"')), now(), now()),
+        (`id`, 2, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."221"')), now(), now()),
+        (`id`, 2, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."222"')), now(), now()),
+        (`id`, 2, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."223"')), now(), now()),
+        (`id`, 2, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."231"')), now(), now()),
+        (`id`, 2, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."232"')), now(), now()),
+        (`id`, 2, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."233"')), now(), now()),
+        
+        (`id`, 3, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."311"')), now(), now()),
+        (`id`, 3, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."312"')), now(), now()),
+        (`id`, 3, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."313"')), now(), now()),
+        (`id`, 3, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."321"')), now(), now()),
+        (`id`, 3, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."322"')), now(), now()),
+        (`id`, 3, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."323"')), now(), now()),
+        (`id`, 3, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."331"')), now(), now()),
+        (`id`, 3, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."332"')), now(), now()),
+        (`id`, 3, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."333"')), now(), now()),
+        
+        (`id`, 4, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."411"')), now(), now()),
+        (`id`, 4, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."412"')), now(), now()),
+        (`id`, 4, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."413"')), now(), now()),
+        (`id`, 4, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."421"')), now(), now()),
+        (`id`, 4, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."422"')), now(), now()),
+        (`id`, 4, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."423"')), now(), now()),
+        (`id`, 4, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."431"')), now(), now()),
+        (`id`, 4, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."432"')), now(), now()),
+        (`id`, 4, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."433"')), now(), now()),
+        
+        (`id`, 5, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."511"')), now(), now()),
+        (`id`, 5, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."512"')), now(), now()),
+        (`id`, 5, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."513"')), now(), now()),
+        (`id`, 5, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."521"')), now(), now()),
+        (`id`, 5, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."522"')), now(), now()),
+        (`id`, 5, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."523"')), now(), now()),
+        (`id`, 5, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."531"')), now(), now()),
+        (`id`, 5, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."532"')), now(), now()),
+        (`id`, 5, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."533"')), now(), now()),
+        
+        (`id`, 6, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."611"')), now(), now()),
+        (`id`, 6, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."612"')), now(), now()),
+        (`id`, 6, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."613"')), now(), now()),
+        (`id`, 6, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."621"')), now(), now()),
+        (`id`, 6, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."622"')), now(), now()),
+        (`id`, 6, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."623"')), now(), now()),
+        (`id`, 6, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."631"')), now(), now()),
+        (`id`, 6, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."632"')), now(), now()),
+        (`id`, 6, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."633"')), now(), now()),
+        
+        (`id`, 7, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."711"')), now(), now()),
+        (`id`, 7, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."712"')), now(), now()),
+        (`id`, 7, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."713"')), now(), now()),
+        (`id`, 7, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."721"')), now(), now()),
+        (`id`, 7, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."722"')), now(), now()),
+        (`id`, 7, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."723"')), now(), now()),
+        (`id`, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
+        (`id`, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
+        (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
+    END IF;
+    SET @rowcount = ROW_COUNT();
+    SELECT @rowcount AS rowsAffacted;
 END //
 
 DELIMITER ;
