@@ -54,6 +54,7 @@ class CollectedDataList extends Component {
 			let ethnicities = result.data.list;
 			let arr = [];
 			let dict = {};
+			
 			ethnicities.forEach(function(element){
 				arr.push({domain:element.domain,id:element.id});
 				dict[element.id] = {domain:element.domain,id:element.id};

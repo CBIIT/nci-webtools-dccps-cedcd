@@ -87,6 +87,11 @@ actions[t.setStrategyOther] = (state) => ({...state, strategyOther: !state.strat
 actions[t.setStrategyOtherSepcify] = (state, action) => ({...state, strategyOtherSpecify: action.details})
 actions[t.setQuestionnaireFile] = (state) => ({...state, questionnaireFile: !state.questionnaireFile})
 actions[t.setMainCohortFile] = (state) => ({...state, mainCohortFile: !state.mainCohortFile})
+
+actions[t.setDataFile] = (state) => ({...state, dataFile: !state.dataFile})
+actions[t.setSpecimenFile] = (state) => ({...state, specimenFile: !state.specimenFile})
+actions[t.setPublicationFile] = (state) => ({...state, publicationFile: !state.publicationFile})
+
 const getResult = feedState => feedAction => (actions[feedAction.type] && actions[feedAction.type](feedState, feedAction)) || feedState
 const cohortReducer = (state=InitialStates.cohort, action={}) => getResult(state)(action)
     

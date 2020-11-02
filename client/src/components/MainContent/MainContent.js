@@ -15,6 +15,9 @@ import NewCohort from '../Admin/AddNewCohort'
 import NewUser from '../Admin/AddNewUser'
 
 class MainContent extends Component {
+  constructor(props){
+    super(props)
+  }
 
   render() {
     let match = window.location.pathname;
@@ -38,9 +41,9 @@ class MainContent extends Component {
         <Route path={match + '/biospecimen'} component={Biospecimen} />
         <Route path={match + '/about'} component={About} />
         <Route path={match + '/contact'} component={Contact} />
-        <Route exact path={match + '/cohort/questionnaire'} component={QuestionnaireLoader} />
+        <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} /> }/>
         <Route exact path={match + '/cohort'} component={Information} />
-        <Route path={match + '/admin/managecohort'} component={ManageCohort} />
+        <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />}/>
         <Route path={match + '/admin/newcohort'} component={NewCohort} />
         <Route path={match + '/admin/newuser'} component={NewUser} />
       </Switch>
