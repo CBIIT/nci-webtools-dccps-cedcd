@@ -867,7 +867,7 @@ BEGIN
         ,clarification_contact
         ,sameAsSomeone
         ,cohort_description
-        ,gender_id
+        ,eligible_gender_id
         ,eligible_disease
         ,eligible_disease_cancer_specify
         ,eligible_disease_other_specify
