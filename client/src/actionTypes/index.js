@@ -1,4 +1,5 @@
 const actionTypes = {
+    setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
     setCompletionDate: 'SET_COHORT_COMPLETION_DATE',
@@ -11,6 +12,7 @@ const actionTypes = {
     setContacterPosition: 'SET_COHORT_CONTACTER_POSITION',
     setContacterPhone: 'SET_COHORT_CONTACTER_PHONE',
     setContacterEmail: 'SET_COHORT_CONTACTER_EMAIL',
+    setInvestigators: 'SET_COHORT_INVESTIGATORS',
     setInvestigatorName: 'SET_COHORT_INVESTIGATOR_NAME',
     setInvestigatorInstitution: 'SET_COHORT_INVESTIGATOR_INSTITUTION',
     setInvestigatorEmail: 'SET_COHORT_INVESTIGATOR_EMAIL',

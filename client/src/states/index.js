@@ -1,5 +1,6 @@
 const InitialStates ={
     cohort: {
+        hasLoaded: false,
         cohortId: 79,
         name: 'joe',
         acronym: 'HWS',

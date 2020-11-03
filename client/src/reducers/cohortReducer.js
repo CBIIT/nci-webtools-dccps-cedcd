@@ -2,6 +2,7 @@ import InitialStates from '../states'
 import t from '../actionTypes'
 
 const actions = {}
+actions[t.setHasLoaded] = (state, action) => ({...state, hasLoaded: action.loaded})
 actions[t.setCohortName] = (state, action) => ({...state, name: action.name})
 actions[t.setAcronym] = (state, action) => ({...state, acronym: action.acronym})
 actions[t.setCompletionDate] = (state, action) => ({...state, completionDate: action.completionDate})
@@ -14,7 +15,7 @@ actions[t.setContacterName] = (state, action) => ({...state, contacterName: acti
 actions[t.setContacterPosition] = (state, action) => ({...state, contacterPosition: action.contacterPosition})
 actions[t.setContacterPhone] = (state, action) => ({...state, contacterPhone: action.contacterPhone})
 actions[t.setContacterEmail] = (state, action) => ({...state, contacterEmail: action.contacterEmail})
-
+actions[t.setInvestigators] = (state, action) => ({...state, investigators: action.values})
 actions[t.setInvestigatorName] = (state, action) => {
     let clone = {...state}
     clone.investigators[action.index].name = action.investigatorName

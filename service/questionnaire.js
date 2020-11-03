@@ -3,7 +3,6 @@ var router = express.Router();
 var mysql = require('../components/mysql');
 var logger = require('../components/logger');
 
-
 router.post('/update_cohort_basic/:id', function(req, res){
     let body = JSON.stringify(req.body)
     let proc = 'update_cohort_basic'
@@ -40,11 +39,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
         basic_info.completer = results[1][0]
         basic_info.contacter = results[2][0]
         results[3].map((item) => {
-            if(item.investigatorName){
-               let temp = {}
-                temp.piName = item.investigatorName
-                temp.piInstitution = item.investigatorInstitution
-                temp.piEmail = item.investigatorEmail
+            if(item.name){
                 basic_info.investigators.push(item)
             }
         })

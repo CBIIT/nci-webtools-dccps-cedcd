@@ -1,4 +1,10 @@
 import t from '../actionTypes'
+
+const setHasLoaded = (v) => ({
+    type: t.setHasLoaded,
+    loaded: v
+})
+
 const cohort_name = (n) => ({
     type: t.setCohortName,
     name: n
@@ -59,6 +65,11 @@ const contacterEmail = (eml) => ({
     contacterEmail: eml
 })
 
+const setInvestigators = (invs) => ({
+    type: t.setInvestigators,
+    values: invs
+})
+
 const investigatorName = (idx, n) => ({
     type: t.setInvestigatorName,
     investigatorName: n,
@@ -86,22 +97,22 @@ const sameAsSomeone = (v) => ({
     value: v
 })
 
-const setCollaboratorName = (n) => ({
+const collaboratorName = (n) => ({
     type: t.setCollaboratorName,
     collaboratorName: n
 })
 
-const setCollaboratorPosition = (p) => ({
+const collaboratorPosition = (p) => ({
     type: t.setCollaboratorPosition,
     collaboratorPosition: p
 })
 
-const setCollaboratorPhone = (tel) => ({
+const collaboratorPhone = (tel) => ({
     type: t.setCollaboratorPhone,
     collaboratorPhone: tel
 })
 
-const setCollaboratorEmail = (eml) => ({
+const collaboratorEmail = (eml) => ({
     type: t.setCollaboratorEmail,
     collaboratorEmail: eml
 })
@@ -287,6 +298,7 @@ const specimen_file_attached = () => ({type: t.setSpecimenFile})
 
 const publication_file_attached = () => ({type: t.setPublicationFile})
 export default {
+    setHasLoaded,
     cohort_name,
     cohort_acronym,
     setCompletionDate,
@@ -299,15 +311,16 @@ export default {
     contacterPosition,
     contacterPhone,
     contacterEmail,
+    setInvestigators,
     investigatorName,
     investigatorInstitution,
     investigatorEmail,
     addInvestigator,
     sameAsSomeone,
-    setCollaboratorName,
-    setCollaboratorPosition,
-    setCollaboratorPhone,
-    setCollaboratorEmail,
+    collaboratorName,
+    collaboratorPosition,
+    collaboratorPhone,
+    collaboratorEmail,
     cohort_description,
     setHasAWebSite,
     cohort_web_site,
