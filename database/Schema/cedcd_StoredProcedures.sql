@@ -20,11 +20,8 @@
 15. select_enrollment_counts
 16. select_specimen_counts
 17. update_cohort_basic
-<<<<<<< HEAD
 18. select_admin_cohortlist
-=======
 18. get_cohort_basic_info
->>>>>>> cedcd-new-feature
 19. upsert_enrollment_count
 *
  */
@@ -804,7 +801,6 @@ BEGIN
     SELECT @rowcount AS rowsAffacted;
 END //
 
-<<<<<<< HEAD
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_admin_cohortlist
 -- -----------------------------------------------------------------------------------------------------------
@@ -857,17 +853,12 @@ END //
 
 
 -- -----------------------------------------------------------------------------------------------------------
--- Stored Procedure: upsert_enrollment_count
+-- Stored Procedure: get_cohort_basic_info
 -- -----------------------------------------------------------------------------------------------------------
-DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE upsert_enrollment_count(in id int(11), in info JSON)
-BEGIN
-	IF EXISTS (SELECT * FROM enrollment_count WHERE cohort_id = `id`) THEN
-=======
 DROP PROCEDURE IF EXISTS `get_cohort_basic_info` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `get_cohort_basic_info`(in `targetID` int)
+CREATE PROCEDURE `get_cohort_basic_info`(in `targetID` int)
 BEGIN
 	SELECT 
 		cohort_id
@@ -946,10 +937,9 @@ END //
 
 DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
+CREATE PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
 BEGIN
 	if exists (select * from enrollment_count where cohort_id = `id`) then
->>>>>>> cedcd-new-feature
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
         race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')) where
@@ -1082,15 +1072,9 @@ BEGIN
         race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')) where
         race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
-<<<<<<< HEAD
 	ELSE 
 		INSERT enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
         VALUES 
-=======
-	else 
-		insert enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
-        values 
->>>>>>> cedcd-new-feature
         (`id`, 1, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')), now(), now()),
         (`id`, 1, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')), now(), now()),
         (`id`, 1, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')), now(), now()),
@@ -1160,16 +1144,10 @@ BEGIN
         (`id`, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
         (`id`, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
         (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
-<<<<<<< HEAD
     END IF;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
 END //
 
+
 DELIMITER ;
-=======
-    end if;
-    SET @rowcount = ROW_COUNT();
-    SELECT @rowcount AS rowsAffacted;
-END //
->>>>>>> cedcd-new-feature
