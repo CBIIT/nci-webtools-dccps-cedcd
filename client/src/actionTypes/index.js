@@ -1,4 +1,5 @@
 const actionTypes = {
+    setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
     setCompletionDate: 'SET_COHORT_COMPLETION_DATE',
@@ -11,6 +12,7 @@ const actionTypes = {
     setContacterPosition: 'SET_COHORT_CONTACTER_POSITION',
     setContacterPhone: 'SET_COHORT_CONTACTER_PHONE',
     setContacterEmail: 'SET_COHORT_CONTACTER_EMAIL',
+    setInvestigators: 'SET_COHORT_INVESTIGATORS',
     setInvestigatorName: 'SET_COHORT_INVESTIGATOR_NAME',
     setInvestigatorInstitution: 'SET_COHORT_INVESTIGATOR_INSTITUTION',
     setInvestigatorEmail: 'SET_COHORT_INVESTIGATOR_EMAIL',
@@ -67,9 +69,18 @@ const actionTypes = {
     setStrategyOtherSepcify: 'SET_STRATEGY_OTHER_SPECIFY',
     setQuestionnaireFile: 'SET_COHORT_QUESTIONNAIRE_FILE',
     setMainCohortFile: 'SET_COHORT_MAIN_FILE',
+    setDataFile: 'SET_COHORT_DATA_FILE',
+    setSpecimenFile: 'SET_COHORT_SPECIMEN_FILE',
+    setPublicationFile: 'SET_COHORT_PUBLICATION_FILE',
+    setQuestionnaireUrl: 'SET_COHORT_QUESTIONNAIRE_URL',
+    setMainCohortUrl: 'SET_COHORT_MAIN_URL',
+    setDataUrl: 'SET_COHORT_DATA_URL',
+    setSpecimenUrl: 'SET_COHORT_SPECIMENT_URL',
+    setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*section B*/
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
+    updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',
     /*section C*/
     setSeStatusBaseLine: 'SET_MC_SESTATUS_BSASELINE',
     setSeStatusFollowUp: 'SET_MC_SESTATUS_FOLLOWUP',
@@ -127,8 +138,8 @@ const actionTypes = {
     setCognitionFollowUp : 'SET_MC_COGNITION_FOLLOWUP',
     setDepressionBaseLine: 'SET_MC_DEPRESSION_BASELINE',
     setDepressionFollowUp: 'SET_MC_DEPRESSION_FOLLOWUP',
-    setPhychosocialBaseLine: 'SET_MC_PHYCHOSOCIAL_BASELINE',
-    setPhychosocialFollowUp : 'SET_MC_PHYCHOSOCIAL_FOLLOWUP',
+    setPsychosocialBaseLine: 'SET_MC_PSYCHOSOCIAL_BASELINE',
+    setPsychosocialFollowUp : 'SET_MC_PSYCHOSOCIAL_FOLLOWUP',
     setFatigueBaseLine: 'SET_MC_FATIGUE_BASELINE',
     setFatigueFollowUp : 'SET_MC_FATIGUE_FOLLOWUP',
     setCancerHistoryBaseLine: 'SET_MC_CANCERHISTORY_BASELINE',
@@ -161,6 +172,9 @@ const actionTypes = {
     setCancerOther: 'SET_MC_CANCER_OTHER',
     setCancerOtherSpecify: 'SET_MC_CANCER_OTHER_SPECIFY',
 
+    /* section D */
+    setCancerCount: 'SET_CANCER_COUNT',
+    setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS'
 }
 

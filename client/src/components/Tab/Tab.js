@@ -7,6 +7,7 @@ class Tab extends Component {
   render() {
     let name;
     let url;
+    let target;
     if(this.props.value === 0){
       name="Home";
       url="/home";
@@ -37,7 +38,8 @@ class Tab extends Component {
     }
     else if(this.props.value === 7){
       name="Questionnaire"
-      url = "/questionnaire"
+      url = "/cohort/questionnaire/13"
+      target = "_self"
     }
     else{
       name="Home";
@@ -45,7 +47,8 @@ class Tab extends Component {
     }
     let cls = this.props.value === this.props.currTab ? "active" : "";
     return (<li className={cls}>
-        <Link to={url} id={this.props.id} onClick={this.props.onClick}><span>{name}</span></Link>
+        {!target && <Link to={url} id={this.props.id} onClick={this.props.onClick}><span>{name}</span></Link>}
+        {target && <a href={url} target={target}><span>{name}</span></a>}
         <span className="arrow down"></span>
       </li>);
   }

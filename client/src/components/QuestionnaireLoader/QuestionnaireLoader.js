@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import Questionnaire from '../Questionnaire/Questionnaire'
 import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
 import MajorContentForm from '../MajorContentForm/MajorContentForm'
+import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 const content = (currentSection, handleClick) => {
     switch(currentSection){
@@ -18,6 +19,10 @@ const content = (currentSection, handleClick) => {
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <MajorContentForm />
             </Questionnaire>
+        case 'D':
+            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <CancerInfoForm />
+            </Questionnaire>
         default :
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <Message />
@@ -25,8 +30,11 @@ const content = (currentSection, handleClick) => {
     }
 }
 
-const QuestionnaireLoader = () => {
+const QuestionnaireLoader = (props) => {
     const [current, setCurrent] = useState('A')
+    useEffect(() => {
+        props.setAdmin(2)
+    }, [])
     return content(current, setCurrent)
 }
 

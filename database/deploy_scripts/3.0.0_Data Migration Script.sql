@@ -14,13 +14,13 @@
 *
 */
 /* 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDUREs
+CREATE PROCEDUREs
 */
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS `Migrate_cancer_counts` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_cancer_counts`()
+CREATE PROCEDURE `Migrate_cancer_counts`()
 BEGIN
 	-- Bladder
 	insert into cancer_count (cohort_id,cancer_id,gender_id,cancer_counts)
@@ -262,7 +262,7 @@ END //
 
 DROP PROCEDURE IF EXISTS `Migrate_enrollment_counts` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_enrollment_counts`()
+CREATE PROCEDURE `Migrate_enrollment_counts`()
 BEGIN
 	set @i = 1;
 	set @j = 1;
@@ -318,7 +318,7 @@ END //
 
 DROP PROCEDURE IF EXISTS `Migrate_major_content` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_major_content`()
+CREATE PROCEDURE `Migrate_major_content`()
 BEGIN
 	-- 1-Socio-economic Status (e.g., income)
 	insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
@@ -487,7 +487,7 @@ END //
 
 DROP PROCEDURE IF EXISTS `Migrate_person` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_person`()
+CREATE PROCEDURE `Migrate_person`()
 BEGIN
 	insert into person (cohort_id,category_id,name,position,institution,phone,email)
 	select cohort_id,1,completed_by_name,completed_by_position,'',completed_by_phone,completed_by_email
@@ -563,7 +563,7 @@ END //
 
 DROP PROCEDURE IF EXISTS `Migrate_specimens_counts` //
 
-CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `Migrate_specimens_counts`()
+CREATE PROCEDURE `Migrate_specimens_counts`()
 BEGIN
 	-- Bladder
 	insert into specimen_count (cohort_id,cancer_id,specimen_id,specimens_counts)
@@ -1357,11 +1357,11 @@ DELIMITER ;
 /*
 Generate data for major table cohort from old cedcd schema
 */
-insert into cohort (cohort_id, name, acronym, create_by, status, create_time, update_time)
+insert into cohort (id, name, acronym, create_by, status, create_time, update_time)
 select cohort_id,
 cohort_name,
 cohort_acronym,
-'system_admin',
+1,
 'published',
 create_time,
 update_time
@@ -1382,7 +1382,7 @@ request_procedures_web_url,
 request_procedures_pdf,
 request_procedures_none,
 cohort_description,
-gender_id,
+eligible_gender_id,
 eligible_disease,
 eligible_disease_cancer_specify,
 eligible_disease_other_specify,

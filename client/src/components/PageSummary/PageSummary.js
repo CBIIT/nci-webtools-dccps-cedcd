@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Alert } from 'reactstrap';
 import './PageSummary.css';
 
 class PageSummary extends Component {
@@ -7,30 +8,31 @@ class PageSummary extends Component {
   render() {
     const total = this.props.pageInfo.total;
     const page = this.props.pageInfo.page;
+
     let pageStart;
     let pageEnd;
-    if(page === 0){
+    if (page === 0) {
       pageStart = 1;
       pageEnd = total;
     }
-    else{
-      pageStart = (page -1 ) * this.props.pageInfo.pageSize + 1;
-      pageEnd = pageStart + this.props.pageInfo.pageSize -1;
+    else {
+      pageStart = (page - 1) * this.props.pageInfo.pageSize + 1;
+      pageEnd = parseInt(pageStart) + parseInt(this.props.pageInfo.pageSize) - 1;
       pageEnd = pageEnd > total ? total : pageEnd;
     }
-    if(this.props.mid === undefined){
+    if (this.props.mid === undefined) {
       return (
         <li className="total">
-              <span id="summaryCount">{pageStart}-{pageEnd} of {total}</span>
+          <span id="summaryCount">{pageStart}-{pageEnd} of {total}</span>
         </li>);
     }
-    else{
+    else {
       return (
-        <span  style={{"display":"block", "textAlign":"center"}} id="summaryCount">Viewing {pageStart}-{pageEnd} of {total}</span>
+        <span style={{ "display": "block", "textAlign": "center" }} id="summaryCount">Viewing {pageStart}-{pageEnd} of {total}</span>
       );
     }
   }
-  
+
 }
 
 export default PageSummary;

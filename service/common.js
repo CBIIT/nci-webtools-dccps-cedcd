@@ -11,11 +11,11 @@ var moment = require('moment');
 var mail = require('../components/mail');
 const XlsxPopulate = require('xlsx-populate');
 
-router.get('/', function(req, res, next) {
-	res.json({status:200,data:'Welcome to CEDCD API Center.'});
+router.get('/', function (req, res, next) {
+	res.json({ status: 200, data: 'Welcome to CEDCD API Center.' });
 });
 
-router.post('/contact/add', function(req, res, next){
+router.post('/contact/add', function (req, res, next) {
 	//save to mysql and sent email to admin
 	let body = req.body;
 	let firstname = body.firstname || "";
@@ -25,10 +25,10 @@ router.post('/contact/add', function(req, res, next){
 	let email = body.email || "";
 	let topic = parseInt(body.topic || "1");
 	let message = body.message || "";
-	let func = "contact_us";
-	let params = [firstname,lastname,organization,phone,email,topic,message];
-	mysql.callProcedure(func,params, async function(results){
-		if(results && results[0] && results[0].length > 0){
+	let func = "insert_contact_us";
+	let params = [firstname, lastname, organization, phone, email, topic, message];
+	mysql.callProcedure(func, params, async function (results) {
+		if (results && results[0] && results[0].length > 0) {
 			let value = {};
 			value.firstname = firstname;
 			value.lastname = lastname;
@@ -40,13 +40,13 @@ router.post('/contact/add', function(req, res, next){
 			let message_text = ejs.render(config.email_contact, value);
 
 			try {
-				await mail.sendMail(config.mail.from,config.mail.to,"CEDCD Website Contact Us Message", "", message_text);
-				message_text = ejs.render(config.email_contact_recieved,{});
-				await mail.sendMail(config.mail.from,email,"CEDCD Website Recieved Email Message", "", message_text);
-				res.json({status:200,data:'sent'});
-				
+				await mail.sendMail(config.mail.from, config.mail.to, "CEDCD Website Contact Us Message", "", message_text);
+				message_text = ejs.render(config.email_contact_recieved, {});
+				await mail.sendMail(config.mail.from, email, "CEDCD Website Recieved Email Message", "", message_text);
+				res.json({ status: 200, data: 'sent' });
+
 			} catch (e) {
-				res.json({status:200,data:'failed'});
+				res.json({ status: 200, data: 'failed' });
 			}
 
 			/*
@@ -68,113 +68,113 @@ router.post('/contact/add', function(req, res, next){
 				
 			});*/
 		}
-		else{
-			res.json({status:200,data:'failed'});
-		}		
+		else {
+			res.json({ status: 200, data: 'failed' });
+		}
 	});
-	
+
 });
 
-router.get('/download/:filename', function(req, res, next) {
+router.get('/download/:filename', function (req, res, next) {
 	let filename = req.params.filename;
 	let filePath = path.format({
 		dir: config.file_path,
 		base: filename
 	});
-    fs.readFile(filePath, function (err,data){
-        res.contentType("application/pdf");
-        res.send(data);
-    });
+	fs.readFile(filePath, function (err, data) {
+		res.contentType("application/pdf");
+		res.send(data);
+	});
 });
 
-router.post('/export/home', function(req, res){
+router.post('/export/home', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "cohortselect_"+ds+".xlsx";
+	const filename = "cohortselect_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
 	data.list["Criteria"] = {};
 	data.list["Cohort_Selection"] = {};
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Cohort Selection"],
-							["Export Date:",dt],
-							[],
-							[]];
+	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Cohort Selection"],
+	["Export Date:", dt],
+	[],
+	[]];
 	let body = req.body;
 	let searchText = body.searchText || "";
-	if(searchText == ""){
+	if (searchText == "") {
 		data.list["Criteria"].header = [["Search Text:"]
-							];
+		];
 	}
-	else{
-		data.list["Criteria"].header = [["Search Text:",searchText]
-							];
+	else {
+		data.list["Criteria"].header = [["Search Text:", searchText]
+		];
 	}
-	
+
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
 	let func = "cohort_published";
 	let params = [searchText];
-	if(orderBy){
+	if (orderBy) {
 		params.push(orderBy.column);
 		params.push(orderBy.order);
 	}
-	else{
+	else {
 		params.push("");
 		params.push("");
 	}
-	if(paging && paging.page != 0){
-		params.push((paging.page-1) * paging.pageSize);
+	if (paging && paging.page != 0) {
+		params.push((paging.page - 1) * paging.pageSize);
 		params.push(paging.pageSize);
 	}
-	else{
+	else {
 		params.push(-1);
 		params.push(-1);
 	}
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
-			results[0].forEach(function(entry){
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			results[0].forEach(function (entry) {
 				entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
 			});
 			data.list["Cohort_Selection"].rows = results[0];
 		}
-		else{
+		else {
 			data.list["Cohort_Selection"].rows = [];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
-	
+
 });
 
-router.post('/export/select', function(req, res){
+router.post('/export/select', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "cohortselect_"+ds+".xlsx";
+	const filename = "cohortselect_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
 	data.list["Criteria"] = {};
 	data.list["Cohort_Selection"] = {};
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Cohort Selection"],
-							["Export Date:",dt],
-							[],
-							[]];
+	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Cohort Selection"],
+	["Export Date:", dt],
+	[],
+	[]];
 
 	let body = req.body;
 	let filter = body.filter || {};
@@ -184,320 +184,320 @@ router.post('/export/select', function(req, res){
 	let params = [];
 	//form filter into Strings
 
-	if(filter.participant.gender.length > 0){
+	if (filter.participant.gender.length > 0) {
 		params.push(filter.participant.gender.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.participant.age.length > 0){
+	if (filter.participant.age.length > 0) {
 		params.push(filter.participant.age.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.study.state.length > 0){
+	if (filter.study.state.length > 0) {
 		let state_columns = [];
-		filter.study.state.forEach(function(ss){
+		filter.study.state.forEach(function (ss) {
 			state_columns.push(config.eligible_disease_state[ss]);
 		});
 		params.push(state_columns.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.participant.race.length > 0){
+	if (filter.participant.race.length > 0) {
 		params.push(filter.participant.race.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.participant.ethnicity.length > 0){
+	if (filter.participant.ethnicity.length > 0) {
 		params.push(filter.participant.ethnicity.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.collect.data.length > 0){
+	if (filter.collect.data.length > 0) {
 		params.push(filter.collect.data.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.collect.specimen.length > 0){
+	if (filter.collect.specimen.length > 0) {
 
 		let specimen_columns = [];
-		filter.collect.specimen.forEach(function(cs){
+		filter.collect.specimen.forEach(function (cs) {
 			specimen_columns.push(config.collected_specimen[cs]);
 		});
 		params.push(specimen_columns.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.collect.cancer.length > 0){
+	if (filter.collect.cancer.length > 0) {
 		params.push(filter.collect.cancer.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
-	
-	if(orderBy){
+
+	if (orderBy) {
 		params.push(orderBy.column);
 		params.push(orderBy.order);
 	}
-	else{
+	else {
 		params.push("");
 		params.push("");
 	}
 
-	if(paging && paging.page != 0){
-		params.push((paging.page-1) * paging.pageSize);
+	if (paging && paging.page != 0) {
+		params.push((paging.page - 1) * paging.pageSize);
 		params.push(paging.pageSize);
 	}
-	else{
+	else {
 		params.push(-1);
 		params.push(-1);
 	}
 
 	data.list["Criteria"].header = [];
-	if(filter.participant.gender.length !== 0 || filter.participant.race.length !== 0 || filter.participant.ethnicity.length !== 0 || filter.participant.age.length !== 0){
+	if (filter.participant.gender.length !== 0 || filter.participant.race.length !== 0 || filter.participant.ethnicity.length !== 0 || filter.participant.age.length !== 0) {
 		data.list["Criteria"].header.push(["[Type of participant]"]);
-		if(filter.participant.gender.length !== 0){
+		if (filter.participant.gender.length !== 0) {
 			let genders = cache.getValue("lookup:gender");
 			let dict = {};
-			genders.forEach(function(g){
+			genders.forEach(function (g) {
 				dict[g.id] = g.gender;
 			});
 			data.list["Criteria"].header.push(["Gender:"]);
-			filter.participant.gender.forEach(function(g){
-				data.list["Criteria"].header.push([" - "+dict[g]]);
+			filter.participant.gender.forEach(function (g) {
+				data.list["Criteria"].header.push([" - " + dict[g]]);
 			});
 		}
-		if(filter.participant.race.length !== 0){
+		if (filter.participant.race.length !== 0) {
 			let races = cache.getValue("lookup:race");
 			let dict = {};
-			races.forEach(function(r){
+			races.forEach(function (r) {
 				dict[r.id] = r.race;
 			});
 			data.list["Criteria"].header.push(["Race:"]);
-			filter.participant.race.forEach(function(r){
-				data.list["Criteria"].header.push([" - "+dict[r]]);
+			filter.participant.race.forEach(function (r) {
+				data.list["Criteria"].header.push([" - " + dict[r]]);
 			});
 		}
-		if(filter.participant.ethnicity.length !== 0){
+		if (filter.participant.ethnicity.length !== 0) {
 			let ethnicities = cache.getValue("lookup:ethnicity");
 			let dict = {};
-			ethnicities.forEach(function(eth){
+			ethnicities.forEach(function (eth) {
 				dict[eth.id] = eth.ethnicity;
 			});
 			data.list["Criteria"].header.push(["Ethnicity:"]);
-			filter.participant.ethnicity.forEach(function(e){
-				data.list["Criteria"].header.push([" - "+dict[e]]);
+			filter.participant.ethnicity.forEach(function (e) {
+				data.list["Criteria"].header.push([" - " + dict[e]]);
 			});
 		}
-		if(filter.participant.age.length !== 0){
+		if (filter.participant.age.length !== 0) {
 			data.list["Criteria"].header.push(["Age:"]);
-			filter.participant.age.forEach(function(a){
-				data.list["Criteria"].header.push([" - "+a]);
+			filter.participant.age.forEach(function (a) {
+				data.list["Criteria"].header.push([" - " + a]);
 			});
 		}
 	}
-	if(filter.collect.data.length !== 0 || filter.collect.specimen.length !== 0 || filter.collect.cancer.length !== 0){
+	if (filter.collect.data.length !== 0 || filter.collect.specimen.length !== 0 || filter.collect.cancer.length !== 0) {
 		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
-		if(filter.collect.data.length !== 0){
+		if (filter.collect.data.length !== 0) {
 			let domains = cache.getValue("lookup:domain");
 			let dict = {};
-			domains.forEach(function(d){
-				dict[d.id] = d.domain + (d.sub_domain? ": " + d.sub_domain : "");
+			domains.forEach(function (d) {
+				dict[d.id] = d.domain + (d.sub_domain ? ": " + d.sub_domain : "");
 			});
 			data.list["Criteria"].header.push(["Data Collected:"]);
-			filter.collect.data.forEach(function(d){
-				data.list["Criteria"].header.push([" - "+dict[d]]);
+			filter.collect.data.forEach(function (d) {
+				data.list["Criteria"].header.push([" - " + dict[d]]);
 			});
 		}
-		if(filter.collect.specimen.length !== 0){
+		if (filter.collect.specimen.length !== 0) {
 			data.list["Criteria"].header.push(["Specimens Collected:"]);
-			filter.collect.specimen.forEach(function(s){
-				data.list["Criteria"].header.push([" - "+s]);
+			filter.collect.specimen.forEach(function (s) {
+				data.list["Criteria"].header.push([" - " + s]);
 			});
 		}
-		if(filter.collect.cancer.length !== 0){
+		if (filter.collect.cancer.length !== 0) {
 			let cancers = cache.getValue("lookup:cancer");
 			let dict = {};
-			cancers.forEach(function(c){
+			cancers.forEach(function (c) {
 				dict[c.id] = c.cancer;
 			});
 			data.list["Criteria"].header.push(["Cancers Collected:"]);
-			filter.collect.cancer.forEach(function(c){
-				data.list["Criteria"].header.push([" - "+dict[c]]);
+			filter.collect.cancer.forEach(function (c) {
+				data.list["Criteria"].header.push([" - " + dict[c]]);
 			});
 		}
 	}
-	if(filter.study.state.length !== 0){
+	if (filter.study.state.length !== 0) {
 		data.list["Criteria"].header.push(["[Study Design]"]);
 		data.list["Criteria"].header.push(["Eligible Disease State:"]);
-		filter.study.state.forEach(function(s){
-			data.list["Criteria"].header.push([" - "+s]);
+		filter.study.state.forEach(function (s) {
+			data.list["Criteria"].header.push([" - " + s]);
 		});
 	}
-	
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
-			results[0].forEach(function(entry){
+
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			results[0].forEach(function (entry) {
 				entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
 			});
 			data.list["Cohort_Selection"].rows = results[0];
 		}
-		else{
+		else {
 			data.list["Cohort_Selection"].rows = [];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
 });
 
-router.post('/export/advancedSelect', function(req, res){
+router.post('/export/advancedSelect', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "cohortselect_"+ds+".xlsx";
+	const filename = "cohortselect_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
 	data.list["Criteria"] = {};
 	data.list["Cohort_Selection"] = {};
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Cohort Selection"],
-							["Export Date:",dt],
-							[],
-							[]];
+	data.list["Cohort_Selection"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Cohort Selection"],
+	["Export Date:", dt],
+	[],
+	[]];
 
 
 	let body = req.body;
 	let advancedFilter = body.advancedFilter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
-	let func = "advanced_cohort_select";
+	let func = "select_advanced_cohort";
 	let params = [];
 	//form filter into Strings
-	
-	if(advancedFilter.gender.length > 0){
+
+	if (advancedFilter.gender.length > 0) {
 		params.push(advancedFilter.gender.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.age.length > 0){
+	if (advancedFilter.age.length > 0) {
 		params.push(advancedFilter.age.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.state.length > 0){
+	if (advancedFilter.state.length > 0) {
 		let state_columns = [];
-		advancedFilter.state.forEach(function(ss){
+		advancedFilter.state.forEach(function (ss) {
 			state_columns.push(config.eligible_disease_state[ss]);
 		});
 		params.push(state_columns.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.race.length > 0){
+	if (advancedFilter.race.length > 0) {
 		params.push(advancedFilter.race.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.ethnicity.length > 0){
+	if (advancedFilter.ethnicity.length > 0) {
 		params.push(advancedFilter.ethnicity.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.data.length > 0){
+	if (advancedFilter.data.length > 0) {
 		params.push(advancedFilter.data.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.specimen.length > 0){
+	if (advancedFilter.specimen.length > 0) {
 
 		let specimen_columns = [];
-		advancedFilter.specimen.forEach(function(cs){
+		advancedFilter.specimen.forEach(function (cs) {
 			specimen_columns.push(config.collected_specimen[cs]);
 		});
 		params.push(specimen_columns.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.cancer.length > 0){
+	if (advancedFilter.cancer.length > 0) {
 		params.push(advancedFilter.cancer.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.booleanOperationBetweenField.length > 0){
+	if (advancedFilter.booleanOperationBetweenField.length > 0) {
 		params.push(advancedFilter.booleanOperationBetweenField.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(advancedFilter.booleanOperationWithInField.length > 0){
+	if (advancedFilter.booleanOperationWithInField.length > 0) {
 		params.push(advancedFilter.booleanOperationWithInField.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
-	
-	if(orderBy){
+
+	if (orderBy) {
 		params.push(orderBy.column);
 		params.push(orderBy.order);
 	}
-	else{
+	else {
 		params.push("");
 		params.push("");
 	}
 
-	if(paging && paging.page != 0){
-		params.push((paging.page-1) * paging.pageSize);
+	if (paging && paging.page != 0) {
+		params.push((paging.page - 1) * paging.pageSize);
 		params.push(paging.pageSize);
 	}
-	else{
+	else {
 		params.push(-1);
 		params.push(-1);
 	}
 
 	data.list["Criteria"].header = [];
-	if(advancedFilter.gender.length !== 0 || advancedFilter.race.length !== 0 || advancedFilter.ethnicity.length !== 0 || advancedFilter.age.length !== 0){
+	if (advancedFilter.gender.length !== 0 || advancedFilter.race.length !== 0 || advancedFilter.ethnicity.length !== 0 || advancedFilter.age.length !== 0) {
 		data.list["Criteria"].header.push(["[Type of participant]"]);
-		if(advancedFilter.gender.length !== 0){
+		if (advancedFilter.gender.length !== 0) {
 			let genders = cache.getValue("lookup:gender");
 			let dict = {};
-			genders.forEach(function(g){
+			genders.forEach(function (g) {
 				dict[g.id] = g.gender;
 			});
 			let str = [];
@@ -506,16 +506,16 @@ router.post('/export/advancedSelect', function(req, res){
 			str.push("=");
 
 			let tmp = [];
-			advancedFilter.gender.forEach(function(g){
+			advancedFilter.gender.forEach(function (g) {
 				tmp.push(dict[g]);
 			});
 			str.push(tmp.join(" OR "));
 			data.list["Criteria"].header.push(str);
 		}
-		if(advancedFilter.race.length !== 0){
+		if (advancedFilter.race.length !== 0) {
 			let races = cache.getValue("lookup:race");
 			let dict = {};
-			races.forEach(function(r){
+			races.forEach(function (r) {
 				dict[r.id] = r.race;
 			});
 			let str = [];
@@ -524,17 +524,17 @@ router.post('/export/advancedSelect', function(req, res){
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.race.forEach(function(r){
+			advancedFilter.race.forEach(function (r) {
 				//data.list["Criteria"].header.push([" - "+dict[r]]);
 				tmp.push(dict[r]);
 			});
 			str.push(tmp.join(" OR "));
 			data.list["Criteria"].header.push(str);
 		}
-		if(advancedFilter.ethnicity.length !== 0){
+		if (advancedFilter.ethnicity.length !== 0) {
 			let ethnicities = cache.getValue("lookup:ethnicity");
 			let dict = {};
-			ethnicities.forEach(function(eth){
+			ethnicities.forEach(function (eth) {
 				dict[eth.id] = eth.ethnicity;
 			});
 
@@ -544,34 +544,34 @@ router.post('/export/advancedSelect', function(req, res){
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.ethnicity.forEach(function(e){
+			advancedFilter.ethnicity.forEach(function (e) {
 				//data.list["Criteria"].header.push([" - "+dict[r]]);
 				tmp.push(dict[e]);
 			});
 			str.push(tmp.join(" OR "));
 			data.list["Criteria"].header.push(str);
 		}
-		if(advancedFilter.age.length !== 0){
+		if (advancedFilter.age.length !== 0) {
 			let str = [];
 			str.push(advancedFilter.booleanOperationBetweenField[1]);
 			str.push("Age");
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.age.forEach(function(a){
+			advancedFilter.age.forEach(function (a) {
 				tmp.push(a);
 			});
 			str.push(tmp.join(" OR "));
 			data.list["Criteria"].header.push(str);
 		}
 	}
-	if(advancedFilter.data.length !== 0 || advancedFilter.specimen.length !== 0 || advancedFilter.cancer.length !== 0){
+	if (advancedFilter.data.length !== 0 || advancedFilter.specimen.length !== 0 || advancedFilter.cancer.length !== 0) {
 		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
-		if(advancedFilter.data.length !== 0){
+		if (advancedFilter.data.length !== 0) {
 			let domains = cache.getValue("lookup:domain");
 			let dict = {};
-			domains.forEach(function(d){
-				dict[d.id] = d.domain + (d.sub_domain? ": " + d.sub_domain : "");
+			domains.forEach(function (d) {
+				dict[d.id] = d.domain + (d.sub_domain ? ": " + d.sub_domain : "");
 			});
 
 			let str = [];
@@ -580,29 +580,29 @@ router.post('/export/advancedSelect', function(req, res){
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.data.forEach(function(d){
+			advancedFilter.data.forEach(function (d) {
 				tmp.push(dict[d]);
 			});
-			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[5]+" "));
+			str.push(tmp.join(" " + advancedFilter.booleanOperationWithInField[5] + " "));
 			data.list["Criteria"].header.push(str);
 		}
-		if(advancedFilter.specimen.length !== 0){
+		if (advancedFilter.specimen.length !== 0) {
 			let str = [];
 			str.push(advancedFilter.booleanOperationBetweenField[6]);
 			str.push("Specimens Collected");
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.specimen.forEach(function(s){
+			advancedFilter.specimen.forEach(function (s) {
 				tmp.push(s);
 			});
-			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[6]+" "));
+			str.push(tmp.join(" " + advancedFilter.booleanOperationWithInField[6] + " "));
 			data.list["Criteria"].header.push(str);
 		}
-		if(advancedFilter.cancer.length !== 0){
+		if (advancedFilter.cancer.length !== 0) {
 			let cancers = cache.getValue("lookup:cancer");
 			let dict = {};
-			cancers.forEach(function(c){
+			cancers.forEach(function (c) {
 				dict[c.id] = c.cancer;
 			});
 			let str = [];
@@ -611,14 +611,14 @@ router.post('/export/advancedSelect', function(req, res){
 			str.push("=");
 			let tmp = [];
 
-			advancedFilter.cancer.forEach(function(c){
+			advancedFilter.cancer.forEach(function (c) {
 				tmp.push(dict[c]);
 			});
-			str.push(tmp.join(" "+advancedFilter.booleanOperationWithInField[7]+" "));
+			str.push(tmp.join(" " + advancedFilter.booleanOperationWithInField[7] + " "));
 			data.list["Criteria"].header.push(str);
 		}
 	}
-	if(advancedFilter.state.length !== 0){
+	if (advancedFilter.state.length !== 0) {
 		data.list["Criteria"].header.push(["[Study Design]"]);
 		let str = [];
 		str.push(advancedFilter.booleanOperationBetweenField[3]);
@@ -626,207 +626,207 @@ router.post('/export/advancedSelect', function(req, res){
 		str.push("=");
 		let tmp = [];
 
-		advancedFilter.state.forEach(function(s){
+		advancedFilter.state.forEach(function (s) {
 			tmp.push(s);
 		});
 		str.push(tmp.join(" OR "));
 		data.list["Criteria"].header.push(str);
 	}
 
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
-			results[0].forEach(function(entry){
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			results[0].forEach(function (entry) {
 				entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
 			});
 			data.list["Cohort_Selection"].rows = results[0];
 		}
-		else{
+		else {
 			data.list["Cohort_Selection"].rows = [];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
 });
 
 
-router.post('/export/enrollment', function(req, res){
+router.post('/export/enrollment', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "enrollment_"+ds+".xlsx";
+	const filename = "enrollment_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
 	data.list["Criteria"] = {};
 	data.list["Enrollment_Counts"] = {};
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Enrollment_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Enrollment Counts"],
-							["Export Date:",dt],
-							[],
-							[]];
+	data.list["Enrollment_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Enrollment Counts"],
+	["Export Date:", dt],
+	[],
+	[]];
 	let body = req.body;
 	let filter = body.filter || {};
 	let func = "select_enrollment_counts";
 	let params = [];
 	//form filter into Strings
 
-	if(filter.gender.length > 0){
+	if (filter.gender.length > 0) {
 		params.push(filter.gender.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.race.length > 0){
+	if (filter.race.length > 0) {
 		params.push(filter.race.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.ethnicity.length > 0){
+	if (filter.ethnicity.length > 0) {
 		params.push(filter.ethnicity.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.cohort.length > 0){
+	if (filter.cohort.length > 0) {
 		params.push(filter.cohort.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
 			let lcache = {};
 			let cohorts = [];
 			let list = results[0];
 			let male_rows = [];
 			let female_rows = [];
 			let unknown_rows = [];
-			list.forEach(function(l){
+			list.forEach(function (l) {
 
-				if(lcache[l.u_id] == null){
+				if (lcache[l.u_id] == null) {
 					lcache[l.u_id] = {};
 					lcache[l.u_id].gender = l.gender;
 					lcache[l.u_id].Ethnicity = l.ethnicity;
 					lcache[l.u_id].Race = l.race;
 					lcache[l.u_id].total = 0;
 				}
-				if(cohorts.indexOf(l.cohort_acronym) == -1){
+				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
 				}
 				let tmp = lcache[l.u_id];
 				let count = 0;
-				if(l.enrollment_counts == -1){
+				if (l.enrollment_counts == -1) {
 					tmp[l.cohort_acronym] = "N/P";
 					count = 0;
 				}
-				else{
+				else {
 					tmp[l.cohort_acronym] = l.enrollment_counts;
 					count = l.enrollment_counts;
 				}
-				
+
 				tmp.total += count;
 			});
 
-			for(key in lcache){
+			for (key in lcache) {
 				let dict = lcache[key];
-				if(dict.gender === "Male"){
+				if (dict.gender === "Male") {
 					male_rows.push(dict);
 				}
-				else if(dict.gender === "Female"){
+				else if (dict.gender === "Female") {
 					female_rows.push(dict);
 				}
-				else{
+				else {
 					unknown_rows.push(dict);
 				}
 			}
 
 			data.list["Enrollment_Counts"].sections = [];
-			if(male_rows.length > 0){
+			if (male_rows.length > 0) {
 				let tmp = {};
 				tmp.header = [["Enrollment: Males"]];
 				tmp.rows = male_rows;
 				data.list["Enrollment_Counts"].sections.push(tmp);
 			}
-			if(female_rows.length > 0){
+			if (female_rows.length > 0) {
 				let tmp = {};
 				tmp.header = [["Enrollment: Females"]];
 				tmp.rows = female_rows;
 				data.list["Enrollment_Counts"].sections.push(tmp);
 			}
-			if(unknown_rows.length > 0){
+			if (unknown_rows.length > 0) {
 				let tmp = {};
 				tmp.header = [["Enrollment: Unknown"]];
 				tmp.rows = unknown_rows;
 				data.list["Enrollment_Counts"].sections.push(tmp);
 			}
-			
+
 			data.list["Criteria"].header = [];
-			if(filter.gender.length !== 0){
+			if (filter.gender.length !== 0) {
 				let genders = cache.getValue("lookup:gender");
 				let dict = {};
-				genders.forEach(function(g){
+				genders.forEach(function (g) {
 					dict[g.id] = g.gender;
 				});
 				data.list["Criteria"].header.push(["Gender:"]);
-				filter.gender.forEach(function(g){
-					data.list["Criteria"].header.push([" - "+dict[g]]);
+				filter.gender.forEach(function (g) {
+					data.list["Criteria"].header.push([" - " + dict[g]]);
 				});
 			}
-			if(filter.race.length !== 0){
+			if (filter.race.length !== 0) {
 				let races = cache.getValue("lookup:race");
 				let dict = {};
-				races.forEach(function(r){
+				races.forEach(function (r) {
 					dict[r.id] = r.race;
 				});
 				data.list["Criteria"].header.push(["Race:"]);
-				filter.race.forEach(function(r){
-					data.list["Criteria"].header.push([" - "+dict[r]]);
+				filter.race.forEach(function (r) {
+					data.list["Criteria"].header.push([" - " + dict[r]]);
 				});
 			}
-			if(filter.ethnicity.length !== 0){
+			if (filter.ethnicity.length !== 0) {
 				let ethnicities = cache.getValue("lookup:ethnicity");
 				let dict = {};
-				ethnicities.forEach(function(e){
+				ethnicities.forEach(function (e) {
 					dict[e.id] = e.ethnicity;
 				});
 				data.list["Criteria"].header.push(["Ethnicity:"]);
-				filter.ethnicity.forEach(function(e){
-					data.list["Criteria"].header.push([" - "+dict[e]]);
+				filter.ethnicity.forEach(function (e) {
+					data.list["Criteria"].header.push([" - " + dict[e]]);
 				});
 			}
-			if(filter.cohort.length !== 0){
+			if (filter.cohort.length !== 0) {
 				data.list["Criteria"].header.push(["Cohorts:"]);
-				cohorts.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+c]);
+				cohorts.forEach(function (c) {
+					data.list["Criteria"].header.push([" - " + c]);
 				});
 			}
 		}
-		else{
+		else {
 			data.list["Enrollment_Counts"].sections = [];
 			data.list["Criteria"].header = [
-							["Gender:"],
-							["Race:"],
-							["Ethnicity:"],
-							["Cohorts:"]
-							];
+				["Gender:"],
+				["Race:"],
+				["Ethnicity:"],
+				["Cohorts:"]
+			];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
 });
 
-router.post('/export/cancer', function(req, res){
+router.post('/export/cancer', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "cancer_"+ds+".xlsx";
+	const filename = "cancer_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
@@ -837,119 +837,119 @@ router.post('/export/cancer', function(req, res){
 	let func = "select_cancer_counts";
 	let params = [];
 	//form filter into Strings
-	
-	if(filter.gender.length > 0){
+
+	if (filter.gender.length > 0) {
 		params.push(filter.gender.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.cancer.length > 0){
+	if (filter.cancer.length > 0) {
 		params.push(filter.cancer.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.cohort.length > 0){
+	if (filter.cohort.length > 0) {
 		params.push(filter.cohort.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Cancer_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Cancer Counts"],
-							["Export Date:",dt]];
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
+	data.list["Cancer_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Cancer Counts"],
+	["Export Date:", dt]];
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
 			let dt = [];
 			let list = results[0];
 			let lcache = {};
 			let cohorts = [];
-			list.forEach(function(l){
+			list.forEach(function (l) {
 
-				if(lcache[l.u_id] == null){
+				if (lcache[l.u_id] == null) {
 					lcache[l.u_id] = {};
 					lcache[l.u_id].Cancer = l.cancer;
 					lcache[l.u_id].Gender = l.gender;
 				}
-				if(cohorts.indexOf(l.cohort_acronym) == -1){
+				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
 				}
 				let tmp = cache[l.u_id];
-				if(l.cancer_counts == -1){
+				if (l.cancer_counts == -1) {
 					tmp[l.cohort_acronym] = "N/P";
 				}
-				else{
+				else {
 					tmp[l.cohort_acronym] = l.cancer_counts;
 				}
 			});
 
-			for(key in lcache){
+			for (key in lcache) {
 				dt.push(lcache[key]);
 			}
 
 			data.list["Cancer_Counts"].rows = dt;
-			
+
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Criteria"].header = [];
-			if(filter.gender.length !== 0){
+			if (filter.gender.length !== 0) {
 				let genders = cache.getValue("lookup:gender");
 				let dict = {};
-				genders.forEach(function(g){
+				genders.forEach(function (g) {
 					dict[g.id] = g.gender;
 				});
 				data.list["Criteria"].header.push(["Gender:"]);
-				filter.gender.forEach(function(g){
-					data.list["Criteria"].header.push([" - "+g]);
+				filter.gender.forEach(function (g) {
+					data.list["Criteria"].header.push([" - " + g]);
 				});
 			}
-			if(filter.cancer.length !== 0){
+			if (filter.cancer.length !== 0) {
 				let cancers = cache.getValue("lookup:cancer");
 				let dict = {};
-				cancers.forEach(function(c){
+				cancers.forEach(function (c) {
 					dict[c.id] = c.cancer;
 				});
 				data.list["Criteria"].header.push(["Cancer Type:"]);
-				filter.cancer.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+dict[c]]);
+				filter.cancer.forEach(function (c) {
+					data.list["Criteria"].header.push([" - " + dict[c]]);
 				});
 			}
-			if(filter.cohort.length !== 0){
+			if (filter.cohort.length !== 0) {
 				data.list["Criteria"].header.push(["Cohorts:"]);
-				cohorts.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+c]);
+				cohorts.forEach(function (c) {
+					data.list["Criteria"].header.push([" - " + c]);
 				});
 			}
 		}
-		else{
+		else {
 			data.list["Cancer_Counts"].rows = [];
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Criteria"].header = [["Gender:"],
-							["Cancer Type:"],
-							["Cohorts:"]
-							];
+			["Cancer Type:"],
+			["Cohorts:"]
+			];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
-	
+
 });
 
-router.post('/export/biospecimen', function(req, res){
+router.post('/export/biospecimen', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
 	const dt = moment().format('MM/DD/YYYY');
-	const filename = "biospecimen_"+ds+".xlsx";
+	const filename = "biospecimen_" + ds + ".xlsx";
 	const data = {};
 	data.filename = filename;
 	data.list = {};
@@ -960,103 +960,103 @@ router.post('/export/biospecimen', function(req, res){
 	let func = "select_specimen_counts";
 	let params = [];
 	//form filter into Strings
-	
-	if(filter.specimen.length > 0){
+
+	if (filter.specimen.length > 0) {
 		params.push(filter.specimen.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.cancer.length > 0){
+	if (filter.cancer.length > 0) {
 		params.push(filter.cancer.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	if(filter.cohort.length > 0){
+	if (filter.cohort.length > 0) {
 		params.push(filter.cohort.toString());
 	}
-	else{
+	else {
 		params.push("");
 	}
 
-	let website="";
-	if(config.env == 'prod'){
+	let website = "";
+	if (config.env == 'prod') {
 		website = "cedcd.nci.nih.gov";
 	}
-	else{
-		website = "cedcd-"+config.env+".nci.nih.gov";
+	else {
+		website = "cedcd-" + config.env + ".nci.nih.gov";
 	}
-	data.list["Biospecimen_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website ("+website+")"],
-							["Table Name:","Biospecimen Counts"],
-							["Export Date:",dt]];
-	mysql.callProcedure(func,params,function(results){
-		if(results && results[0] && results[0].length > 0){
+	data.list["Biospecimen_Counts"].header = [["Cohort Data Export Generated from the CEDCD Website (" + website + ")"],
+	["Table Name:", "Biospecimen Counts"],
+	["Export Date:", dt]];
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
 			let dt = [];
 			let list = results[0];
 			let lcache = {};
 			let cohorts = [];
-			list.forEach(function(l){
+			list.forEach(function (l) {
 
-				if(lcache[l.u_id] == null){
+				if (lcache[l.u_id] == null) {
 					lcache[l.u_id] = {};
 					lcache[l.u_id].Cancer = l.cancer;
 					lcache[l.u_id]["Specimens Type"] = l.specimen;
 				}
-				if(cohorts.indexOf(l.cohort_acronym) == -1){
+				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
 				}
 				let tmp = cache[l.u_id];
-				if(l.specimens_counts == -1){
+				if (l.specimens_counts == -1) {
 					tmp[l.cohort_acronym] = "N/P";
 				}
-				else{
+				else {
 					tmp[l.cohort_acronym] = l.specimens_counts;
 				}
 			});
 
-			for(key in lcache){
+			for (key in lcache) {
 				dt.push(lcache[key]);
 			}
 
 			data.list["Biospecimen_Counts"].rows = dt;
-			
+
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Criteria"].header = [];
-			if(filter.specimen.length !== 0){
+			if (filter.specimen.length !== 0) {
 				data.list["Criteria"].header.push(["Specimen Type:"]);
-				filter.specimen.forEach(function(s){
-					data.list["Criteria"].header.push([" - "+s]);
+				filter.specimen.forEach(function (s) {
+					data.list["Criteria"].header.push([" - " + s]);
 				});
 			}
-			if(filter.cancer.length !== 0){
+			if (filter.cancer.length !== 0) {
 				data.list["Criteria"].header.push(["Cancer Type:"]);
-				filter.cancer.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+c]);
+				filter.cancer.forEach(function (c) {
+					data.list["Criteria"].header.push([" - " + c]);
 				});
 			}
-			if(filter.cohort.length !== 0){
+			if (filter.cohort.length !== 0) {
 				data.list["Criteria"].header.push(["Cohorts:"]);
-				cohorts.forEach(function(c){
-					data.list["Criteria"].header.push([" - "+c]);
+				cohorts.forEach(function (c) {
+					data.list["Criteria"].header.push([" - " + c]);
 				});
 			}
 		}
-		else{
+		else {
 			data.list["Biospecimen_Counts"].rows = [];
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Biospecimen_Counts"].header.push([]);
 			data.list["Criteria"].header = [["Specimen Type:"],
-							["Cancer Type:"],
-							["Cohorts:"]
-							];
+			["Cancer Type:"],
+			["Cohorts:"]
+			];
 		}
-		res.json({status:200, data:data});
+		res.json({ status: 200, data: data });
 	});
-	
+
 });
 
 module.exports = router;

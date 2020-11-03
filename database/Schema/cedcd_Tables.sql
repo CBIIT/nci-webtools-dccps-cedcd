@@ -7,6 +7,27 @@
 --  the order is not strictly alphabetical order, 
 --  it is considering relationship constraints
 -- 
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
+  `session_id` varchar(50) DEFAULT NULL,
+  `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
+  `last_login` datetime DEFAULT NULL,
+  `lock_date` datetime DEFAULT NULL,
+  `password_date` datetime DEFAULT NULL,
+  `email` varchar(50) NOT NULL,
+  `salt` varchar(50) DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+
 DROP TABLE IF EXISTS `lu_cancer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -97,16 +118,20 @@ DROP TABLE IF EXISTS `cohort`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort` (
-  `cohort_id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
   `acronym` varchar(100) NOT NULL,
   `status` varchar(50) NOT NULL,
-  `publish_by` varchar(100) DEFAULT NULL,
-  `create_by` varchar(100) DEFAULT NULL,
+  `publish_by` int(11) DEFAULT NULL,
+  `create_by` int(11) DEFAULT NULL,
   `publish_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`cohort_id`)
+  PRIMARY KEY (`id`),
+  KEY `cohort_create_id` (`create_by`),
+  KEY `cohort_publish_id` (`publish_by`),
+  CONSTRAINT `cohort_create_id` FOREIGN KEY (`create_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_publish_id` FOREIGN KEY (`publish_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `cohort_basic`;
@@ -118,6 +143,7 @@ CREATE TABLE `cohort_basic` (
   `cohort_name` varchar(500) DEFAULT NULL,
   `cohort_acronym` varchar(100) DEFAULT NULL,
   `cohort_web_site` varchar(200) DEFAULT NULL,
+  `date_completed` date DEFAULT NULL,
   `clarification_contact` int(1) DEFAULT NULL,
   `request_procedures_web` int(1) DEFAULT NULL,
   `request_procedures_web_url` varchar(300) DEFAULT NULL,
@@ -125,7 +151,7 @@ CREATE TABLE `cohort_basic` (
   `request_procedures_none` int(1) DEFAULT NULL,
   `sameAsSomeone` int(1) DEFAULT NULL,
   `cohort_description` varchar(5000) DEFAULT NULL,
-  `gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
+  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
   `eligible_disease` int(1) DEFAULT NULL,
   -- hasCancerSite
   `eligible_disease_cancer_specify` varchar(100) DEFAULT NULL,
@@ -173,15 +199,16 @@ CREATE TABLE `cohort_basic` (
   `data_url` varchar(100) NULL,
   `specimen_url` varchar(100) NULL,
   `publication_url` varchar(100) NULL,
+  `enrollment_most_recent_date` date DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
   PRIMARY KEY (`id`),
-  KEY `cohort_gender_id_idx` (`cohort_id`, `gender_id`),
-  KEY `cohort_gender_id_idx_idx` (`gender_id`),
+  KEY `cohort_gender_id_idx` (`cohort_id`, `eligible_gender_id`),
+  KEY `cohort_gender_id_idx_idx` (`eligible_gender_id`),
   KEY `cohort_basic_id` (`cohort_id`),
-  CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cohort_basic_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_gender_id_idx` FOREIGN KEY (`eligible_gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `attachment`;
@@ -219,7 +246,7 @@ CREATE TABLE `cancer_count` (
   KEY `cancer_count_gender_id_idx` (`gender_id`),
   KEY `cancer_count_cohort_id` (`cohort_id`),
   CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
@@ -269,7 +296,7 @@ CREATE TABLE `cancer_info` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `cancer_info_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `contact`;
@@ -304,11 +331,17 @@ CREATE TABLE `dlh` (
   `dlh_nih_dbgap` int(1) DEFAULT NULL,
   `dlh_nih_biolincc` int(1) DEFAULT NULL,
   `dlh_nih_other` int(1) DEFAULT NULL,
+  `dlh_procedure_online` int(1) DEFAULT NULL,
+  `dlh_procedure_website` int(1) DEFAULT NULL,
+  `dlh_procedure_url` varchar(300) DEFAULT NULL,
+  `dlh_procedure_attached` varchar(300) DEFAULT NULL,
+  `dlh_procedure_enclave` int(1) DEFAULT NULL,
+  `dlh_enclave_location` varchar(300) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `dlh_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `enrollment_count`;
@@ -329,7 +362,7 @@ CREATE TABLE `enrollment_count` (
   KEY `enrollment_count_race_id_idx` (`race_id`),
   KEY `enrollment_count_ethnicity_id_idx` (`ethnicity_id`),
   KEY `enrollment_count_gender_id_idx` (`gender_id`),
-  CONSTRAINT `enrollment_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `enrollment_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_ethnicity_id` FOREIGN KEY (`ethnicity_id`) REFERENCES `lu_ethnicity` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `enrollment_count_race_id` FOREIGN KEY (`race_id`) REFERENCES `lu_race` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -351,7 +384,7 @@ CREATE TABLE `major_content` (
   PRIMARY KEY (`id`),
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`domain_id`),
-  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `mc_domain_id` FOREIGN KEY (`domain_id`) REFERENCES `lu_domain` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -378,7 +411,7 @@ CREATE TABLE `mortality` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `mortality_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `person`;
@@ -422,17 +455,41 @@ CREATE TABLE `specimen` (
   `bio_buccal_saliva_other_time` int(1) DEFAULT NULL,
   `bio_tissue_baseline` int(1) DEFAULT NULL,
   `bio_tissue_other_time` int(1) DEFAULT NULL,
+  `bio_urine_baseline` int(1) DEFAULT NULL,
+  `bio_urine_other_time` int(1) DEFAULT NULL,
+  `bio_feces_baseline` int(1) DEFAULT NULL,
+  `bio_feces_other_time` int(1) DEFAULT NULL,
+  `bio_other_baseline` int(1) DEFAULT NULL,
+  `bio_other_baseline_specify` varchar(200) DEFAULT NULL,
+  `bio_other_other_time` int(1) DEFAULT NULL,
+  `bio_other_other_time_specify` varchar(200) DEFAULT NULL,
+  `bio_repeated_sample_same_individual` int(1) DEFAULT NULL,
   `bio_tumor_block_info` int(1) DEFAULT NULL,
   `bio_genotyping_data` int(1) DEFAULT NULL,
   `bio_sequencing_data_exome` int(1) DEFAULT NULL,
   `bio_sequencing_data_whole_genome` int(1) DEFAULT NULL,
   `bio_epigenetic_or_metabolic_markers` int(1) DEFAULT NULL,
   `bio_other_omics_data` int(1) DEFAULT NULL,
+  `bio_transcriptomics_data` int(1) DEFAULT NULL,
+  `bio_microbiome_data` int(1) DEFAULT NULL,
+  `bio_metabolomic_data` int(1) DEFAULT NULL,
+  `bio_meta_fasting_sample` int(1) DEFAULT NULL,
+  `bio_meta_outcomes_in_cancer_study` int(1) DEFAULT NULL,
+  `bio_meta_outcomes_in_cvd_study` int(1) DEFAULT NULL,
+  `bio_meta_outcomes_in_other_study` int(1) DEFAULT NULL,
+  `bio_meta_outcomes_other_study_specify` varchar(200)DEFAULT NULL,
+  `bio_member_of_metabolomics_studies` int(1) DEFAULT NULL,
+  `bio_member_in_study` int(10) DEFAULT NULL,
+  `bio_labs_used_for_analysis` varchar(200) DEFAULT NULL,
+  `bio_analytical_platform` varchar(200) DEFAULT NULL,
+  `bio_separation_platform` varchar(200) DEFAULT NULL,
+  `bio_number_metabolites_measured` int(10) DEFAULT NULL,
+  `bio_year_samples_sent` int(5) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `specimen_new_cohort_id_idx` (`cohort_id`),
-  CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `specimen_count`;
@@ -451,7 +508,7 @@ CREATE TABLE `specimen_count` (
   KEY `specimen_count_cancer_id_idx_idx` (`cancer_id`),
   KEY `specimen_count_specimen_id_idx_idx` (`specimen_id`),
   CONSTRAINT `specimen_count_cancer_id_idx` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `specimen_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `specimen_count_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `specimen_count_specimen_id_idx` FOREIGN KEY (`specimen_id`) REFERENCES `lu_specimen` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -472,26 +529,6 @@ CREATE TABLE `technology` (
   CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
-  `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
-  `session_id` varchar(50) DEFAULT NULL,
-  `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
-  `last_login` datetime DEFAULT NULL,
-  `lock_date` datetime DEFAULT NULL,
-  `password_date` datetime DEFAULT NULL,
-  `email` varchar(50) NOT NULL,
-  `salt` varchar(50) DEFAULT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
-
 DROP TABLE IF EXISTS `cohort_activity_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -505,7 +542,7 @@ CREATE TABLE `cohort_activity_log` (
   PRIMARY KEY (`id`),
   KEY `cohort_logs_chhort_id` (`cohort_id`),
   KEY `cohort_logs_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_master` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -522,7 +559,7 @@ CREATE TABLE `cohort_user_mapping` (
   PRIMARY KEY (`id`),
   KEY `cohort_user_chhort_id` (`cohort_id`),
   KEY `cohort_user_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -546,7 +583,7 @@ CREATE TABLE `cohort_edit_status` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `cohort_edit_unique_page` (`cohort_id`, `page_code`),
   KEY `cohort_edit_chhort_id` (`cohort_id`),
-  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 -- ======== end table definations ===============
@@ -568,152 +605,154 @@ Generate data for lookup table lu_cohort_status
 insert into lu_cohort_status values (1,"New");
 insert into lu_cohort_status values (2, "Draft");
 insert into lu_cohort_status values (3,"Submitted");
-insert into lu_cohort_status values (4,"In Rview");
+insert into lu_cohort_status values (4,"In Review");
 insert into lu_cohort_status values (5,"Published");
 insert into lu_cohort_status values (6,"Returned");
 
 /*
  Generate data for lookup table lu_gender
  */
-insert into lu_gender(gender) values ("Female");
-insert into lu_gender(gender) values ("Male");
-insert into lu_gender(gender) values ("Unknown");
-insert into lu_gender(gender) values ("Both");
+insert into lu_gender(id, gender) values (1, "Female");
+insert into lu_gender(id, gender) values (2, "Male");
+insert into lu_gender(id, gender) values (3, "Unknown");
+insert into lu_gender(id, gender) values (4, "Both");
 
 /*
  Generate data for lookup table lu_cast_type
  */
-insert into lu_case_type(case_type) values ("incident");
-insert into lu_case_type(case_type) values ("prevalent");
+insert into lu_case_type(id, case_type) values (1, "incident");
+insert into lu_case_type(id, case_type) values (2, "prevalent");
 
 /*
  Generate data for lookup table lu_cancer
  */
-insert into lu_cancer(icd9, icd10, cancer)
-values ("", "", "All Other Cancers"),
-  ("141-149", "C00-C14", "Oropharyngeal"),
-  ("150", "C15", "Esophagus"),
-  ("151", "C16", "Stomach"),
-  ("152", "C17", "Small intestine"),
-  ("153", "C18", "Colon"),
-  ("154", "C19-C21", "Rectum and anus"),
-  ("155", "C22", "Liver and intrahepatic bile ducts"),
-  ("156","C23, C24","Gall bladder and extrahepatic bile ducts"),
-  ("157", "C25", "Pancreas"),
-  ("162", "C34", "Lung and bronchus"),
-  ("170", "C40,C41", "Bone"),
-  ("172", "C43", "Melanoma (excluding mucosal sites)"),
-  ("174-175", "C50", "Invasive Breast Cancer"),
-  ("233","D05.1","Ductal carcinoma in situ of breast"),
-  ("180","C53","Cervix (Squamous cell carcinoma, Adenocarcinoma)"),
-  ("233","D06.1","Cervical carcinoma in situ (CIN II/III, CIS, AIS)"),
-  ("182", "C54", "Corpus, body of uterus"),
-  ("183","C56","Ovary, fallopian tube, broad ligament"),
-  ("185", "C61", "Prostate"),
-  ("188", "C67", "Bladder"),
-  ("189","C64-C66, C68","Kidney and other unspecified urinary organs"),
-  ("191", "C71", "Brain"),
-  ("193", "C73", "Thyroid"),
-  ("201", "C81", "Hodgkin Lymphoma"),
-  ("200, 202", "C82-C85", "Non-Hodgkin Lymphoma"),
-  ("203", "C90", "Myeloma"),
-  ("204-208", "C91-95", "Leukemia"),
-  ("", "", "No Cancer");
+insert into lu_cancer(id,icd9, icd10, cancer)
+values (1,"", "", "All Other Cancers"),
+  (2,"141-149", "C00-C14", "Oropharyngeal"),
+  (3,"150", "C15", "Esophagus"),
+  (4,"151", "C16", "Stomach"),
+  (5,"152", "C17", "Small intestine"),
+  (6,"153", "C18", "Colon"),
+  (7,"154", "C19-C21", "Rectum and anus"),
+  (8,"155", "C22", "Liver and intrahepatic bile ducts"),
+  (9,"156","C23, C24","Gall bladder and extrahepatic bile ducts"),
+  (10,"157", "C25", "Pancreas"),
+  (11,"162", "C34", "Lung and bronchus"),
+  (12,"170", "C40,C41", "Bone"),
+  (13,"172", "C43", "Melanoma (excluding mucosal sites)"),
+  (14,"174-175", "C50", "Invasive Breast Cancer"),
+  (15,"233","D05.1","Ductal carcinoma in situ of breast"),
+  (16,"180","C53","Cervix (Squamous cell carcinoma, Adenocarcinoma)"),
+  (17,"233","D06.1","Cervical carcinoma in situ (CIN II/III, CIS, AIS)"),
+  (18,"182", "C54", "Corpus, body of uterus"),
+  (19,"183","C56","Ovary, fallopian tube, broad ligament"),
+  (20,"185", "C61", "Prostate"),
+  (21,"188", "C67", "Bladder"),
+  (22,"189","C64-C66, C68","Kidney and other unspecified urinary organs"),
+  (23,"191", "C71", "Brain"),
+  (24,"193", "C73", "Thyroid"),
+  (25,"201", "C81", "Hodgkin Lymphoma"),
+  (26,"200, 202", "C82-C85", "Non-Hodgkin Lymphoma"),
+  (27,"203", "C90", "Myeloma"),
+  (28,"204-208", "C91-95", "Leukemia"),
+  (29,"", "", "No Cancer");
 
 /*
  Generate data for lookup table lu_domain
  */
-insert into lu_domain(domain, sub_domain) values ("Socio-economic Status (e.g., income)","");
-insert into lu_domain(domain, sub_domain) values ("Education Level","");
-insert into lu_domain(domain, sub_domain) values ("Marital Status","");
-insert into lu_domain(domain, sub_domain) values ("Language/Country of Origin","");
-insert into lu_domain(domain, sub_domain) values ("Employment Status","");
-insert into lu_domain(domain, sub_domain) values ("Health Insurance Status","");
-insert into lu_domain(domain, sub_domain) values ("Anthropometry (e.g., weight, height, waist circumference)","");
-insert into lu_domain(domain, sub_domain) values ("Dietary Intake","");
-insert into lu_domain(domain, sub_domain) values ("Dietary Supplement Use","");
-insert into lu_domain(domain, sub_domain) values ("Complementary and Alternative Medicine","");
-insert into lu_domain(domain, sub_domain) values ("Prescription Medication Use (not related to cancer treatment)","");
-insert into lu_domain(domain, sub_domain) values ("Non-prescription Medication Use (not related to cancer treatment)","");
-insert into lu_domain(domain, sub_domain) values ("Alcohol Consumption","");
-insert into lu_domain(domain, sub_domain) values ("Cigarette Smoking","");
-insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Cigars");
-insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Pipes");
-insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Chewing tobacco");
-insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","E-Cigarettes");
-insert into lu_domain(domain, sub_domain) values ("Use of Tobacco Products Other than Cigarettes","Other");
-insert into lu_domain(domain, sub_domain) values ("Physical Activity","");
-insert into lu_domain(domain, sub_domain) values ("Sleep Habits","");
-insert into lu_domain(domain, sub_domain) values ("Reproductive History","");
-insert into lu_domain(domain, sub_domain) values ("Self-Reported Health","");
-insert into lu_domain(domain, sub_domain) values ("Quality of Life",""); 
-insert into lu_domain(domain, sub_domain) values ("Social Support","");
-insert into lu_domain(domain, sub_domain) values ("Cognitive Function","");
-insert into lu_domain(domain, sub_domain) values ("Depression","");
-insert into lu_domain(domain, sub_domain) values ("Other Psychosocial Variables","");
-insert into lu_domain(domain, sub_domain) values ("Fatigue","");
-insert into lu_domain(domain, sub_domain) values ("Family History of Cancer","");
-insert into lu_domain(domain, sub_domain) values ("Family History of Cancer with Pedigrees","");
-insert into lu_domain(domain, sub_domain) values ("Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)","");
-insert into lu_domain(domain, sub_domain) values ("Residential history Information (zip code, GIS) over time?","");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Diabetes");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Stroke");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","COPD and/or Emphysema");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Cardiovascular Disease");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Osteoporosis");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Mental Health");
-insert into lu_domain(domain, sub_domain) values ("Other Medical Conditions","Cognitive Decline");
+insert into lu_domain(id, domain, sub_domain) values (1, "Socio-economic Status","");
+insert into lu_domain(id, domain, sub_domain) values (2, "Education Level","");
+insert into lu_domain(id, domain, sub_domain) values (3, "Marital Status","");
+insert into lu_domain(id, domain, sub_domain) values (4, "Language/Country of Origin","");
+insert into lu_domain(id, domain, sub_domain) values (5, "Employment Status","");
+insert into lu_domain(id, domain, sub_domain) values (6, "Health Insurance Status","");
+insert into lu_domain(id, domain, sub_domain) values (7, "Anthropometry","");
+insert into lu_domain(id, domain, sub_domain) values (8, "Dietary Intake","");
+insert into lu_domain(id, domain, sub_domain) values (9, "Dietary Supplement Use","");
+insert into lu_domain(id, domain, sub_domain) values (10, "Complementary and Alternative Medicine","");
+insert into lu_domain(id, domain, sub_domain) values (11, "Prescription Medication Use","");
+insert into lu_domain(id, domain, sub_domain) values (12, "Non-prescription Medication","");
+insert into lu_domain(id, domain, sub_domain) values (13, "Alcohol Consumption","");
+insert into lu_domain(id, domain, sub_domain) values (14, "Cigarette Smoking","");
+insert into lu_domain(id, domain, sub_domain) values (15, "Other Tobacco Products","Cigars");
+insert into lu_domain(id, domain, sub_domain) values (16, "Other Tobacco Products","Pipes");
+insert into lu_domain(id, domain, sub_domain) values (17, "Other Tobacco Products","Chewing tobacco");
+insert into lu_domain(id, domain, sub_domain) values (18, "Other Tobacco Products","E-Cigarettes");
+insert into lu_domain(id, domain, sub_domain) values (19, "Other Tobacco Products","Other");
+insert into lu_domain(id, domain, sub_domain) values (20, "Physical Activity","");
+insert into lu_domain(id, domain, sub_domain) values (21, "Sleep Habits","");
+insert into lu_domain(id, domain, sub_domain) values (22, "Reproductive History","");
+insert into lu_domain(id, domain, sub_domain) values (23, "Self-Reported Health","");
+insert into lu_domain(id, domain, sub_domain) values (24, "Quality of Life",""); 
+insert into lu_domain(id, domain, sub_domain) values (25, "Social Support","");
+insert into lu_domain(id, domain, sub_domain) values (26, "Cognitive Function","");
+insert into lu_domain(id, domain, sub_domain) values (27, "Depression","");
+insert into lu_domain(id, domain, sub_domain) values (28, "Other Psychosocial Variables","");
+insert into lu_domain(id, domain, sub_domain) values (29, "Fatigue","");
+insert into lu_domain(id, domain, sub_domain) values (30, "Family History of Cancer","");
+insert into lu_domain(id, domain, sub_domain) values (31, "Family History of Cancer with Pedigrees","");
+insert into lu_domain(id, domain, sub_domain) values (32, "Environmental or Occupational Exposures","");
+insert into lu_domain(id, domain, sub_domain) values (33, "Residential Information","");
+insert into lu_domain(id, domain, sub_domain) values (34, "Other Medical Conditions","Diabetes");
+insert into lu_domain(id, domain, sub_domain) values (35, "Other Medical Conditions","Stroke");
+insert into lu_domain(id, domain, sub_domain) values (36, "Other Medical Conditions","COPD and/or Emphysema");
+insert into lu_domain(id, domain, sub_domain) values (37, "Other Medical Conditions","Cardiovascular Disease");
+insert into lu_domain(id, domain, sub_domain) values (38, "Other Medical Conditions","Osteoporosis");
+insert into lu_domain(id, domain, sub_domain) values (39, "Other Medical Conditions","Mental Health");
+insert into lu_domain(id, domain, sub_domain) values (40, "Other Medical Conditions","Cognitive Decline");
 
 /*
  Generate data for lookup table lu_specimen
  */
-insert into lu_specimen(specimen) values ("Serum and/or Plasma");
-insert into lu_specimen(specimen) values ("Buffy Coat and/or Lymphocytes");
-insert into lu_specimen(specimen) values ("Saliva and/or Buccal");
-insert into lu_specimen(specimen) values ("Urine");
-insert into lu_specimen(specimen) values ("Feces");
-insert into lu_specimen(specimen) values ("Tumor Tissue Fresh/Frozen");
-insert into lu_specimen(specimen) values ("Tumor Tissue FFPE");
+insert into lu_specimen(id, specimen) values (1, "Serum and/or Plasma");
+insert into lu_specimen(id, specimen) values (2, "Buffy Coat and/or Lymphocytes");
+insert into lu_specimen(id, specimen) values (3, "Saliva and/or Buccal");
+insert into lu_specimen(id, specimen) values (4, "Urine");
+insert into lu_specimen(id, specimen) values (5, "Feces");
+insert into lu_specimen(id, specimen) values (6, "Tumor Tissue Fresh/Frozen");
+insert into lu_specimen(id, specimen) values (7, "Tumor Tissue FFPE");
 /*
  Generate data for lookup table lu_race
  */
-insert into lu_race(race) values ("American Indian/Alaska Native");
-insert into lu_race(race) values ("Asian");
-insert into lu_race(race) values ("Native Hawaiian or Other Pacific Islander");
-insert into lu_race(race) values ("Black or African American");
-insert into lu_race(race) values ("White");
-insert into lu_race(race) values ("More Than One Race");
-insert into lu_race(race) values ("Unknown or Not Reported");
+insert into lu_race(id, race) values (1, "American Indian/Alaska Native");
+insert into lu_race(id, race) values (2, "Asian");
+insert into lu_race(id, race) values (3, "Native Hawaiian or Other Pacific Islander");
+insert into lu_race(id, race) values (4, "Black or African American");
+insert into lu_race(id, race) values (5, "White");
+insert into lu_race(id, race) values (6, "More Than One Race");
+insert into lu_race(id, race) values (7, "Unknown or Not Reported");
 
 /*
  Generate data for lookup table lu_ethnicity
  */
-insert into lu_ethnicity(ethnicity) values ("Not Hispanic or Latino");
-insert into lu_ethnicity(ethnicity) values ("Hispanic or Latino");
-insert into lu_ethnicity(ethnicity) values ("Unknown/Not Reported Ethnicity");
+insert into lu_ethnicity(id, ethnicity) values (1, "Not Hispanic or Latino");
+insert into lu_ethnicity(id, ethnicity) values (2, "Hispanic or Latino");
+insert into lu_ethnicity(id, ethnicity) values (3, "Unknown/Not Reported Ethnicity");
 
 /*
  Generate data for lookup table lu_category
  */
-insert into lu_category(category) values ("Person who completed the form");
-insert into lu_category(category) values ("Contact Person for clarification of the form");
-insert into lu_category(category) values ("Cohort Principal Investigator");
-insert into lu_category(category) values ("Person to contact if an investigator is interested");
+insert into lu_category(id, category) values (1, "Person who completed the form");
+insert into lu_category(id, category) values (2, "Contact Person for clarification of the form");
+insert into lu_category(id, category) values (3, "Cohort Principal Investigator");
+insert into lu_category(id, category) values (4, "Person to contact if an investigator is interested");
 
 /*
 Generate default users 
 */
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
-insert into user(last_name,  first_name,  access_level, active_status, email) values
-('Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(1, 'Admin', 'System', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(2, 'Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(3, 'Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(4, 'Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(5, 'Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(6, 'Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
+insert into user(id, last_name,  first_name,  access_level, active_status, email) values
+(7, 'Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
 
 -- ======== end table data ===============

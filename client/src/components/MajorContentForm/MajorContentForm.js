@@ -7,14 +7,33 @@ const MajorContentForm = ({...props}) => {
     const majorContent = useSelector(state => state.majorContentReducer)
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
-    return <div>
-        <div className='col-md-offset-1 col-md-10' style={{display: 'flex', flexDirection: 'column', width: '80%'}}>           
-            <h1 style={{marginTop: '10px', color: 'blue'}}>Data on Major Content Domains</h1>
-            <div style={{backgroundColor: 'grey', color: 'white', marginBottom: '20px'}}>
-                C.{' '} Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+    
+    const handleSave = () => {
+       /* if(Object.entries(errors).length === 0)
+            saveEnrollment(79)
+        else{
+            //setDisplay('block')
+            if(window.confirm('there are validation errors, are you sure to save?'))
+                saveEnrollment(79)
+        }*/
+    }
+
+    const handleSaveContinue = () => {
+        /*
+        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
+            saveEnrollment(79, true)}
+            */
+    }
+
+    return <div className='col-md-12'>
+        <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>           
+            <div style={{marginTop: '20px', marginBottom: '20px'}}>
+                <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
             </div>
             <div>
                 <form>
+                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Question C1 through C14</div>
+                    <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{padding: 0}}>
                     <table className='table table-stripe table-responsive table-borderless'>
                         <thead>
                             <tr>
@@ -179,6 +198,20 @@ const MajorContentForm = ({...props}) => {
                                     <span className='col-sm-4'><input type='radio' name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setCigaretteFollowUp(1))} />{' '} Yes</span>
                                 </td>
                             </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Question C15 through C29</div>
+                        <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{padding: 0}}>
+                        <table className='table table-stripe table-responsive table-borderless'>
+                            <thead>
+                                <tr>
+                                    <th className='col-sm-5' style={{textAlign: 'center'}}>Did you collect data on</th>
+                                    <th className='col-sm-3' style={{textAlign: 'center'}}>Collected at baseline</th>
+                                    <th className='col-sm-3' style={{textAlign: 'center'}}>Collected during follow-up</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             <tr>
                                 <td><span style={{fontSize: '1.4rem'}}>C. 15 Use of tobacco products other than cigarettes</span></td>
                                 <td> 
@@ -205,17 +238,18 @@ const MajorContentForm = ({...props}) => {
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
                                         <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine())} /></span>
-                                        <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Other</span>
+                                        <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
+                                        {
+                                            majorContent.noncigarOtherBaseLine ? 
+                                            <span className='col-sm-8'>
+                                                <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
+                                                <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
+                                                    <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))} />
+                                                </span>
+                                            </span> : ''
+                                        }
                                     </div>
-                                    {
-                                        majorContent.noncigarOtherBaseLine ? 
-                                        <div className='col-sm-offset-2 col-sm-10'>
-                                            <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
-                                            <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))} />
-                                            </span>
-                                        </div> : ''
-                                    }   
+                                       
                                 </td>
                                 <td style={{verticalAlign: 'middle'}}> 
                                 <div className='col-sm-offset-2 col-sm-10'>
@@ -241,22 +275,326 @@ const MajorContentForm = ({...props}) => {
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
                                         <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp())} /></span>
-                                        <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Other</span>
+                                        <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
+                                        {
+                                            majorContent.noncigarOtherFollowUp ? 
+                                            <div className='col-sm-8'>
+                                                <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
+                                                <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
+                                                    <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))} />
+                                                </span>
+                                            </div> : ''
+                                        }   
                                     </div>
-                                    {
-                                        majorContent.noncigarOtherFollowUp ? 
-                                        <div className='col-sm-offset-2 col-sm-10'>
-                                            <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
-                                            <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))} />
-                                            </span>
-                                        </div> : ''
-                                    }   
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>C.16 Physical activity</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='physicalBaseLine' checked={majorContent.physicalBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setPhysicalBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setPhysicalBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='physicalFollowUp' checked={majorContent.physicalFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setPhysicalFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setPhysicalFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.17 Sleep habits</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='sleepBaseLine' checked={majorContent.sleepBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setSleepBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setSleepBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='sleepFollowUp' checked={majorContent.sleepFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setSleepFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setSleepFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.18 Reproductive history</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setReproduceBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setReproduceBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setReproduceFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setReproduceFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.19 Self-reported health</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setReportedHealthBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setReportedHealthBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setReportedHealthFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setReportedHealthFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.20 Quality of life</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='lifeBaseLine' checked={majorContent.lifeBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setLifeBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setLifeBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='lifeFollowUp' checked={majorContent.lifeFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setLifeFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setLifeFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.21 Social support</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setSocialSupportBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setSocialSupportBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setSocialSupportFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setSocialSupportFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>C.22 Cognitive function</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setCognitionBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setCognitionBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setCognitionFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setCognitionFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.23 Depression</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='depressionBaseLine' checked={majorContent.depressionBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setDepressionBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setDepressionBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='depressionFollowUp' checked={majorContent.depressionFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setDepressionFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setDepressionFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.24 Other psycosocial variables</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setPsychosocialBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setPsychosocialBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setPsychosocialFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setPsychosocialFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>C.25 Fatigue</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setFatigueBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setFatigueBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setFatigueFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setFatigueFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>C.26 Family history of cancer</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.canCerHistoryFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>C.27 Family history of cancer with pedigrees</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cancerPedigreeFollowUp' checked={majorContent.cancerPedigreeFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='depressionFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style={{fontSize: '1.4rem'}}>C.28 Environmental or occupational exposures(e.g. air contaminants/quality, occupational exposures and history, water source)</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='exposureBaseLine' checked={majorContent.exposureBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setExposureBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setExposureBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='exposureFollowUp' checked={majorContent.exposureFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setExposureFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='exposureFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setExposureFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style={{fontSize: '1.4rem'}}>C.29 Residential history information(zip code, GIS) over time</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='residenceBaseLine' checked={majorContent.residenceBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setResidenceBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setResidenceBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='residenceFollowUp' checked={majorContent.residenceFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setResidenceFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setResidenceFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                            </table>
+                            </div>
+                            <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}>Question C30 & C31</div>
+                            <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{padding: 0}}>
+                            <table className='table table-stripe table-responsive table-borderless'>
+                            
+                            <tbody>
+                            <tr style={{backgroundColor: '#01857b', color: 'white'}}>
+                                <th colSpan='3'>
+                                    <span>C.30 Other Medical Conditions</span>
+                                </th>
+                            </tr>
+                            <tr style={{backgroundColor: '#01857b', color: 'white'}}>
+                                <th className='col-sm-5' style={{textAlign: 'center'}}>Did you collect data on</th>
+                                <th className='col-sm-3' style={{textAlign: 'center'}}>Collected at baseline</th>
+                                <th className='col-sm-3' style={{textAlign: 'center'}}>Collected during follow-up</th>
+                            </tr>
+
+                            <tr>
+                                <td><span>a. Diabetes</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setDiabetesBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setDiabetesBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setDiabetesFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setDiabetesFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>b. Stroke</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='strokeBaseLine' checked={majorContent.strokeBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setStrokeBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setStrokeBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='strokeFollowUp' checked={majorContent.strokeFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setStrokeFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='depressstrokeFollowUpionFollowUp' checked={majorContent.strokeFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setStrokeFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>c. COPD and/or emphysema</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='copdBaseLine' checked={majorContent.copdBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setCopdBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='copdBaseLine' checked={majorContent.copdBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setCopdBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='copdFollowUp' checked={majorContent.copdFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setCopdFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='copdFollowUp' checked={majorContent.copdFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setCopdFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>d. Cardiovascular disease</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setCardiovascularBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setCardiovascularBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setCardiovascularFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setCardiovascularFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td><span>e. Osteoporosis</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.canOsteoporosisFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span>f. Mental health</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='mentalBaseLine' checked={majorContent.mentalBaseLine === 0} onChange = {() => dispatch(allactions.majorContentActions.setMentalBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1} onChange = {() => dispatch(allactions.majorContentActions.setMentalBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='mentalFollowUp' checked={majorContent.mentalFollowUp === 0} onChange = {() => dispatch(allactions.majorContentActions.setMentalFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1} onChange = {() => dispatch(allactions.majorContentActions.setMentalFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span style={{fontSize: '1.4rem'}}>g. Cognitive decline</span></td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 0} onClick = {() => dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1} onClick = {() => dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(1))} />{' '} Yes</span>
+                                </td>
+                                <td> 
+                                    <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 0} onClick = {() => dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(0))} />{' '} No</span>
+                                    <span className='col-sm-4'><input type='radio' name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1} onClick = {() => dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(1))} />{' '} Yes</span>
+                                </td>
+                            </tr>
+                            <tr style={{backgroundColor: '#01857b', color: 'white'}}>
+                                <th colSpan='3'>
+                                    <span>C.31 Cancer related conditions</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td colSpan='3'>
+                                    <div><span>Do you have information on the following cancer related conditions?</span></div>
+                                    <div>
+                                        <span className='col-sm-7' style={{paddingLeft: '0'}}>Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
+                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerToxicity === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerToxicity(0))}/>{'  '} No</span>
+                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerToxicity === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerToxicity(1))}/>{'  '} Yes</span>
+                                    </div>
+                                    <div>
+                                        <span className='col-sm-7' style={{paddingLeft: '0'}}>Late effects of treatment (e.g., cardiotoxicity, lymphedema)</span>
+                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerLateEffects === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerLateEffects(0))}/>{'  '} No</span>
+                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerLateEffects === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerLateEffects(1))}/>{'  '} Yes</span>
+                                    </div>
+                                    <div>
+                                        <span className='col-sm-7' style={{paddingLeft: '0'}}>Symptom management (e.g., fatigue, pain, sexual dysfunction)</span>
+                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerSymptom === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerSymptom(0))}/>{'  '} No</span>
+                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerSymptom === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerSymptom(1))}/>{'  '} Yes</span>
+                                    </div>
+                                    <div>
+                                        <span className='col-sm-5' style={{paddingLeft: '0'}}>Other</span>
+                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerOther === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerOther(0))}/>{'  '} No</span>
+                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerOther === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerOther(1))}/>{'  '} Yes</span>
+                                        {
+                                            majorContent.cancerOther === 1 ? 
+                                            <span className='col-sm-3'><input className='inputUnderscore' name='cancerOtherSpecify' onChange={(e) => dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))} /></span> : ''
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    </div>
                 </form>
+                <div style={{position: 'relative'}}>
+                    <span  onClick={() => props.sectionPicker('B')} style={{position: 'relative', float: 'left'}}>
+                        <input type='button' className='btn btn-primary' value='Go Back' />
+                    </span>
+                    <span style={{position: 'relative', float: 'right'}}>
+                        <span onClick={handleSave}>
+                            <input type='button' className='btn btn-primary' value='Save' />
+                        </span>
+                        <span onClick={handleSaveContinue}>
+                            <input type='button' className='btn btn-primary' value='Save & Continue' />
+                        </span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>

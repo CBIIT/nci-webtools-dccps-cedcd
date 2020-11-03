@@ -2,6 +2,7 @@ import InitialStates from '../states'
 import t from '../actionTypes'
 
 const actions = {}
+actions[t.setHasLoaded] = (state, action) => ({...state, hasLoaded: action.loaded})
 actions[t.setCohortName] = (state, action) => ({...state, name: action.name})
 actions[t.setAcronym] = (state, action) => ({...state, acronym: action.acronym})
 actions[t.setCompletionDate] = (state, action) => ({...state, completionDate: action.completionDate})
@@ -14,7 +15,7 @@ actions[t.setContacterName] = (state, action) => ({...state, contacterName: acti
 actions[t.setContacterPosition] = (state, action) => ({...state, contacterPosition: action.contacterPosition})
 actions[t.setContacterPhone] = (state, action) => ({...state, contacterPhone: action.contacterPhone})
 actions[t.setContacterEmail] = (state, action) => ({...state, contacterEmail: action.contacterEmail})
-
+actions[t.setInvestigators] = (state, action) => ({...state, investigators: action.values})
 actions[t.setInvestigatorName] = (state, action) => {
     let clone = {...state}
     clone.investigators[action.index].name = action.investigatorName
@@ -87,6 +88,17 @@ actions[t.setStrategyOther] = (state) => ({...state, strategyOther: !state.strat
 actions[t.setStrategyOtherSepcify] = (state, action) => ({...state, strategyOtherSpecify: action.details})
 actions[t.setQuestionnaireFile] = (state) => ({...state, questionnaireFile: !state.questionnaireFile})
 actions[t.setMainCohortFile] = (state) => ({...state, mainCohortFile: !state.mainCohortFile})
+
+actions[t.setDataFile] = (state) => ({...state, dataFile: !state.dataFile})
+actions[t.setSpecimenFile] = (state) => ({...state, specimenFile: !state.specimenFile})
+actions[t.setPublicationFile] = (state) => ({...state, publicationFile: !state.publicationFile})
+
+actions[t.setQuestionnaireUrl] = (state, action) => ({...state, questionnaireUrl: action.url})
+actions[t.setMainCohortUrl] = (state, action) => ({...state, mainCohortUrl: action.url})
+actions[t.setDataUrl] = (state, action) => ({...state, dataUrl: action.url})
+actions[t.setSpecimenUrl] = (state, action) => ({...state, specimenUrl: action.url})
+actions[t.setPublicationUrl] = (state, action) => ({...state, publicationUrl: action.url})
+
 const getResult = feedState => feedAction => (actions[feedAction.type] && actions[feedAction.type](feedState, feedAction)) || feedState
 const cohortReducer = (state=InitialStates.cohort, action={}) => getResult(state)(action)
     

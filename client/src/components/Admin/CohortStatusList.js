@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import './GenderList.css';
-class GenderList extends Component {
+
+class CohortStatusList extends Component {
 
 	_isMounted = false;
 
@@ -45,9 +45,9 @@ class GenderList extends Component {
 	componentDidMount() {
 		this._isMounted = true;
 		let reqBody = {
-			category: "gender"
+			category: "cohortstatus"
 		};
-		fetch('./api/cohort/lookup', {
+		fetch('/api/cohort/lookup', {
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -56,12 +56,12 @@ class GenderList extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				let genders = result.data.list;
+				let cohortstatuses = result.data.list;
 				let arr = [];
 				let dict = {};
-				genders.forEach(function (element) {
-					arr.push({ gender: element.gender, id: element.id });
-					dict[element.id] = { gender: element.gender, id: element.id };
+				cohortstatuses.forEach(function (element) {
+					arr.push({ cohortstatus: element.cohortstatus, id: element.id });
+					dict[element.id] = { cohortstatus: element.cohortstatus, id: element.id };
 				});
 				if (this._isMounted) {
 					this.setState({
@@ -83,30 +83,25 @@ class GenderList extends Component {
 
 		const hasUnknown = this.props.hasUnknown;
 
-		const hasBoth = this.props.hasBoth;
-
 		let f_list = Object.assign([], this.state.list);
-
-		if (!hasUnknown) {
-			f_list = f_list.filter(r => r.gender != "Unknown");
+		/*
+		if(hasUnknown){
+			f_list.push("Other/Unknown");
 		}
-		if (!hasBoth) {
-			f_list = f_list.filter(r => r.gender != "Both");
-		}
-		/*f_list.forEach(alert(r => r.gender))*/
+		*/
 		const list = f_list.map((item, idx) => {
-			const key = "gender_" + item.id;
+			const key = "cohortstatus_" + item.id;
 			let checked = (values.indexOf(item.id) > -1);
-			let genderId = 'gender_checkbox_' + item.id;
+			let cohortstatusId = 'cohortstatus_checkbox_' + item.id;
 			//console.log('gender_Id: ' + genderId);
 
 			return (
 				<li key={key}>
 					<label>
 						<span className="filter-component-input">
-							<input id={genderId} type="checkbox" onClick={() => this.props.onClick(item)} checked={checked} />
+							<input id={cohortstatusId} type="checkbox" onClick={() => this.props.onClick(item)} checked={checked} />
 						</span>
-						{item.gender}
+						{item.cohortstatus}
 					</label>
 				</li>
 			);
@@ -115,7 +110,7 @@ class GenderList extends Component {
 		const displayMax = parseInt(this.props.displayMax);
 
 		const selectedList = values.map((item, idx) => {
-			const key = "s_gender_" + idx;
+			const key = "s_cohortstatus_" + idx;
 			if (idx >= displayMax) {
 				if (idx === values.length - 1 && displayMax < values.length) {
 					return (
@@ -130,10 +125,10 @@ class GenderList extends Component {
 			}
 			else {
 				if (lookup[item]) {
-					const gender = lookup[item].gender;
+					const cohortstatus = lookup[item].cohortstatus;
 					return (
 						<li key={key}>
-							{gender}
+							{cohortstatus}
 						</li>
 					);
 				}
@@ -167,12 +162,12 @@ class GenderList extends Component {
 		return (
 			<div className="filter-component-block">
 				<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-					<button className="btn btn-default dropdown-toggle gender-list-for-testing" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
-						Gender&nbsp;
+					<button className="btn btn-default dropdown-toggle cohortstatus-list-for-testing" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+						Status&nbsp;
 				<span className="badge">{this.props.values.length}</span>
 					</button>
 					<div className="dropdown-menu filter-component-dropdown">
-						<h4>Gender</h4>
+						<h4>Status</h4>
 						<button className="btn btn-primary pull-right" type="button" onClick={this.handleClick}>X</button>
 						<ul>
 							{list}
@@ -187,4 +182,4 @@ class GenderList extends Component {
 	}
 }
 
-export default GenderList;
+export default CohortStatusList;
