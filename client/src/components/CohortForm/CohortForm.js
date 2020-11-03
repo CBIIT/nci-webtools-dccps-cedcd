@@ -283,6 +283,29 @@ const CohortForm = ({...props}) => {
         
     }
 
+    const handleUpload = (fileData, dispatchname) => {
+        const formData = new FormData(); 
+     
+      // Update the formData object 
+        formData.append( 
+            'cohortFile', 
+            fileData, 
+            fileData.name 
+        ); 
+        fetch('/api/questionnaire/upload/13',{
+            method: "POST",
+            body: formData
+        }).then(res => res.json())
+          .then((result) => {
+                if(result.status === 200){
+                    dispatch(allactions.cohortActions[dispatchname](true))
+                    console.log('upload successfully')
+                }
+                else
+                    console.log('upload failed')
+            })
+    }
+
     return <div id='cohortContainer' className='col-md-12'>
         <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>           
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
@@ -706,28 +729,32 @@ const CohortForm = ({...props}) => {
                                 <tbody>
                                     <tr>
                                        <td>Questionnaires</td> 
-                                       <td style={{textAlign: 'center', verticalAlign: 'middle'}}><input type='checkbox' name='questionnaireFile' checked={cohort.questionnaireFile} onChange={() => {dispatch(allactions.cohortActions.questionnaire_file_attached())}} /></td>
-                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFile} /></td>
+                                       <td style={{verticalAlign: 'middle'}}>
+                                           <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'questionnaire_file_attached')} disabled={cohort.questionnaireUrl}/>
+                                       </td>
+                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFile} value={cohort.questionnaireUrl} onChange={e => dispatch(allactions.cohortActions.questionnaireUrl(e.target.value))} /></td>
                                     </tr>
                                     <tr>
                                        <td>Main cohort protocol</td> 
-                                       <td style={{textAlign: 'center', verticalAlign: 'middle'}}><input type='checkbox' name='mainCohortFile' checked={cohort.mainCohortFile} onChange={() => dispatch(allactions.cohortActions.main_cohort_file_attached())} /></td>
-                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainCohortFile} /></td>
+                                       <td style={{verticalAlign: 'middle'}}>
+                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'main_cohort_file_attached')} disabled={cohort.mainCohortUrl}/>
+                                       </td>
+                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainCohortFile}  value={cohort.mainCohortUrl} onChange={e => dispatch(allactions.cohortActions.mainCohortUrl(e.target.value))} /></td>
                                     </tr>
                                     <tr>
                                        <td>Data sharing policy</td> 
-                                       <td style={{textAlign: 'center', verticalAlign: 'middle'}}><input type='checkbox' name='dataFile'  checked={cohort.dataFile} onChange={() => dispatch(allactions.cohortActions.data_file_attached())} /></td>
-                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFile} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'data_file_attached')} disabled={cohort.dataUrl}/></td>
+                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFile}  value={cohort.dataUrl} onChange={e => dispatch(allactions.cohortActions.dataUrl(e.target.value))} /></td>
                                     </tr>
                                     <tr>
                                        <td>Biospecimen sharing policy</td> 
-                                       <td style={{textAlign: 'center'}}><input type='checkbox' name='specimenFile' checked={cohort.specimenFile} onChange={() => dispatch(allactions.cohortActions.setSpecimenFile())} /></td>
-                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFile} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'specimen_file_attached')} disabled={cohort.specimenUrl}/></td>
+                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFile}  value={cohort.specimenUrl} onChange={e => dispatch(allactions.cohortActions.specimenUrl(e.target.value))} /></td>
                                     </tr>
                                     <tr>
                                        <td>Publication(authorship) policy</td> 
-                                       <td style={{textAlign: 'center', verticalAlign: 'middle'}}><input type='checkbox' name='publicationFile' checked={cohort.publicationFile} onChange={() => dispatch(allactions.cohortActions.setPublicationFile())} /></td>
-                                       <td><input className='inputWriter' name='publicationUrl' id='publicationUrl' disabled={cohort.publicationFile} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'publication_file_attached')} disabled={cohort.publicationUrl}/></td>
+                                       <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFile} onChange={e => dispatch(allactions.cohortActions.publicationUrl(e.target.value))} /></td>
                                     </tr>
                                 </tbody>
                             </table>

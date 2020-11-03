@@ -72,6 +72,11 @@ const actionTypes = {
     setDataFile: 'SET_COHORT_DATA_FILE',
     setSpecimenFile: 'SET_COHORT_SPECIMEN_FILE',
     setPublicationFile: 'SET_COHORT_PUBLICATION_FILE',
+    setQuestionnaireUrl: 'SET_COHORT_QUESTIONNAIRE_URL',
+    setMainCohortUrl: 'SET_COHORT_MAIN_URL',
+    setDataUrl: 'SET_COHORT_DATA_URL',
+    setSpecimenUrl: 'SET_COHORT_SPECIMENT_URL',
+    setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*section B*/
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
