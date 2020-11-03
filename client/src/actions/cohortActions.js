@@ -297,6 +297,16 @@ const data_file_attached = ()=> ({type: t.setDataFie})
 const specimen_file_attached = () => ({type: t.setSpecimenFile})
 
 const publication_file_attached = () => ({type: t.setPublicationFile})
+
+const questionnaireUrl = (v) => ({type: t.setQuestionnaireUrl, url: v})
+
+const mainCohortUrl = (v) => ({type: t.setMainCohortUrl, url: v})
+
+const dataUrl = (v) => ({type: t.setDataUrl, url: v})
+
+const specimenUrl = (v) => ({type: t.setSpecimenUrl, url: v})
+
+const publicationUrl = (v) => ({type: t.setPublicationUrl, url: v})
 export default {
     setHasLoaded,
     cohort_name,
@@ -371,5 +381,9 @@ export default {
     data_file_attached,
     specimen_file_attached,
     publication_file_attached,
-
+    questionnaireUrl,
+    mainCohortUrl,
+    dataUrl,
+    specimenUrl,
+    publicationUrl
 }

@@ -93,6 +93,12 @@ actions[t.setDataFile] = (state) => ({...state, dataFile: !state.dataFile})
 actions[t.setSpecimenFile] = (state) => ({...state, specimenFile: !state.specimenFile})
 actions[t.setPublicationFile] = (state) => ({...state, publicationFile: !state.publicationFile})
 
+actions[t.setQuestionnaireUrl] = (state, action) => ({...state, questionnaireUrl: action.url})
+actions[t.setMainCohortUrl] = (state, action) => ({...state, mainCohortUrl: action.url})
+actions[t.setDataUrl] = (state, action) => ({...state, dataUrl: action.url})
+actions[t.setSpecimenUrl] = (state, action) => ({...state, specimenUrl: action.url})
+actions[t.setPublicationUrl] = (state, action) => ({...state, publicationUrl: action.url})
+
 const getResult = feedState => feedAction => (actions[feedAction.type] && actions[feedAction.type](feedState, feedAction)) || feedState
 const cohortReducer = (state=InitialStates.cohort, action={}) => getResult(state)(action)
     

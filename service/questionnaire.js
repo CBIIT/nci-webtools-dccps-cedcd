@@ -2,6 +2,23 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('../components/mysql');
 var logger = require('../components/logger');
+var fs = require('fs')
+
+router.post('/upload/:id', async function(req, res, next) {
+    let cohortFile = req.files.cohortFile
+    //logger.debug(cohortFile.name)
+    fs.access(`FileBank/CohortID_${req.params.id}`, (err)=>{
+        if(err){
+            fs.mkdirSync(`FileBank/CohortID_${req.params.id}`, { recursive: true }, (err) => {
+                if (err) res.json({status: 500})
+            });
+            cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
+        }
+        else
+            cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
+    })
+    res.json({status: 200})
+})
 
 router.post('/update_cohort_basic/:id', function(req, res){
     let body = JSON.stringify(req.body)
@@ -46,6 +63,10 @@ router.post('/cohort_basic_info/:id', function(req, res){
         basic_info.collaborator = results[4][0]
         res.json({status:200, data: basic_info})
     })
+})
+
+router.post('/upload/files', function(req, res){
+    
 })
 
 router.post('/upsert_enrollment_counts/:id', function(req, res){
