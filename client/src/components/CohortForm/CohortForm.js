@@ -229,7 +229,7 @@ const CohortForm = ({...props}) => {
             delete shadow['eligibleGender'] 
             setErrors(shadow) 
         }
-        dispatch(allactions.cohortActions.gender_id(v))
+        dispatch(allactions.cohortActions.eligible_gender_id(v))
     }
 
     const updateErrors = (event, errorname, allfields=[], dispatchname='', otherFieldName='', furtherProcessing= false) => {

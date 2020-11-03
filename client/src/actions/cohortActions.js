@@ -132,7 +132,7 @@ const cohort_web_site = (url) => ({
     url: url
 })
 
-const gender_id = (gender) => ({
+const eligible_gender_id = (gender) => ({
     type: t.setEligibleGender,
     eligibleGender: gender
 })
@@ -334,7 +334,7 @@ export default {
     cohort_description,
     setHasAWebSite,
     cohort_web_site,
-    gender_id,
+    eligible_gender_id,
     eligible_disease,
     eligible_disease_cancer_specify,
     eligible_disease_other_specify,
