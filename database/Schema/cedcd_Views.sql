@@ -16,7 +16,7 @@ DROP VIEW IF EXISTS `cohort_summary` ;
 DROP VIEW IF EXISTS `v_lu_domain` ;
 
 CREATE VIEW v_lu_domain AS
- select min(id) as id , doamin from lu_domain group by domain order by id;
+ select min(id) as id , domain from lu_domain group by domain order by id;
 
 
 -- ======== end View script ===============

@@ -30,14 +30,6 @@ router.post('/admincohortlist', function (req, res) {
 		params.push("");
 	}
 
-	if (filter.cohortType) {
-		params.push(filter.cohortType);
-	}
-	else {
-		params.push("");
-	}
-
-
 	if (orderBy) {
 		params.push(orderBy.column);
 		params.push(orderBy.order);

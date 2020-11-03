@@ -805,8 +805,8 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_admin_cohortlist` //
 
-CREATE PROCEDURE `select_admin_cohortlist`(in status text, in cohortSearch text, in cohortType varchar(100),
-                                    in columnName varchar(40), in columnOrder varchar(10),
+CREATE PROCEDURE `select_admin_cohortlist`(in status text, in cohortSearch text,
+                  in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN
 	declare tmp text default '';
@@ -822,12 +822,8 @@ BEGIN
         set @status_query = concat(@status_query,") ");
 	end if;
     
-    if cohortSearch != "" then
-       if cohortType = "name" then
-          set @status_query = concat(" and lower(name) like lower('%", cohortSearch, "%') ", @status_query);
-       else 
-          set @status_query = concat(" and lower(acronym) like lower('%", cohortSearch, "%') ", @status_query);
-    end if;
+   if cohortSearch != "" then
+          set @status_query = concat(" and ( lower(acronym) like lower('%", cohortSearch, "%') or lower(name) like lower('%", cohortSearch, "%')) ", @status_query);
     end if;
     
     

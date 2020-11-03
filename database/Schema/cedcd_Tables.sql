@@ -199,7 +199,7 @@ CREATE TABLE `cohort_basic` (
   `data_url` varchar(100) NULL,
   `specimen_url` varchar(100) NULL,
   `publication_url` varchar(100) NULL,
-  `enrollment_most_recent_date` date DEFAULT NULL;
+  `enrollment_most_recent_date` date DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
@@ -660,25 +660,25 @@ values (1,"", "", "All Other Cancers"),
 /*
  Generate data for lookup table lu_domain
  */
-insert into lu_domain(id, domain, sub_domain) values (1, "Socio-economic Status (e.g., income)","");
+insert into lu_domain(id, domain, sub_domain) values (1, "Socio-economic Status","");
 insert into lu_domain(id, domain, sub_domain) values (2, "Education Level","");
 insert into lu_domain(id, domain, sub_domain) values (3, "Marital Status","");
 insert into lu_domain(id, domain, sub_domain) values (4, "Language/Country of Origin","");
 insert into lu_domain(id, domain, sub_domain) values (5, "Employment Status","");
 insert into lu_domain(id, domain, sub_domain) values (6, "Health Insurance Status","");
-insert into lu_domain(id, domain, sub_domain) values (7, "Anthropometry (e.g., weight, height, waist circumference)","");
+insert into lu_domain(id, domain, sub_domain) values (7, "Anthropometry","");
 insert into lu_domain(id, domain, sub_domain) values (8, "Dietary Intake","");
 insert into lu_domain(id, domain, sub_domain) values (9, "Dietary Supplement Use","");
 insert into lu_domain(id, domain, sub_domain) values (10, "Complementary and Alternative Medicine","");
-insert into lu_domain(id, domain, sub_domain) values (11, "Prescription Medication Use (not related to cancer treatment)","");
-insert into lu_domain(id, domain, sub_domain) values (12, "Non-prescription Medication Use (not related to cancer treatment)","");
+insert into lu_domain(id, domain, sub_domain) values (11, "Prescription Medication Use","");
+insert into lu_domain(id, domain, sub_domain) values (12, "Non-prescription Medication","");
 insert into lu_domain(id, domain, sub_domain) values (13, "Alcohol Consumption","");
 insert into lu_domain(id, domain, sub_domain) values (14, "Cigarette Smoking","");
-insert into lu_domain(id, domain, sub_domain) values (15, "Use of Tobacco Products Other than Cigarettes","Cigars");
-insert into lu_domain(id, domain, sub_domain) values (16, "Use of Tobacco Products Other than Cigarettes","Pipes");
-insert into lu_domain(id, domain, sub_domain) values (17, "Use of Tobacco Products Other than Cigarettes","Chewing tobacco");
-insert into lu_domain(id, domain, sub_domain) values (18, "Use of Tobacco Products Other than Cigarettes","E-Cigarettes");
-insert into lu_domain(id, domain, sub_domain) values (19, "Use of Tobacco Products Other than Cigarettes","Other");
+insert into lu_domain(id, domain, sub_domain) values (15, "Other Tobacco Products","Cigars");
+insert into lu_domain(id, domain, sub_domain) values (16, "Other Tobacco Products","Pipes");
+insert into lu_domain(id, domain, sub_domain) values (17, "Other Tobacco Products","Chewing tobacco");
+insert into lu_domain(id, domain, sub_domain) values (18, "Other Tobacco Products","E-Cigarettes");
+insert into lu_domain(id, domain, sub_domain) values (19, "Other Tobacco Products","Other");
 insert into lu_domain(id, domain, sub_domain) values (20, "Physical Activity","");
 insert into lu_domain(id, domain, sub_domain) values (21, "Sleep Habits","");
 insert into lu_domain(id, domain, sub_domain) values (22, "Reproductive History","");
@@ -691,8 +691,8 @@ insert into lu_domain(id, domain, sub_domain) values (28, "Other Psychosocial Va
 insert into lu_domain(id, domain, sub_domain) values (29, "Fatigue","");
 insert into lu_domain(id, domain, sub_domain) values (30, "Family History of Cancer","");
 insert into lu_domain(id, domain, sub_domain) values (31, "Family History of Cancer with Pedigrees","");
-insert into lu_domain(id, domain, sub_domain) values (32, "Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)","");
-insert into lu_domain(id, domain, sub_domain) values (33, "Residential history Information (zip code, GIS) over time?","");
+insert into lu_domain(id, domain, sub_domain) values (32, "Environmental or Occupational Exposures","");
+insert into lu_domain(id, domain, sub_domain) values (33, "Residential Information","");
 insert into lu_domain(id, domain, sub_domain) values (34, "Other Medical Conditions","Diabetes");
 insert into lu_domain(id, domain, sub_domain) values (35, "Other Medical Conditions","Stroke");
 insert into lu_domain(id, domain, sub_domain) values (36, "Other Medical Conditions","COPD and/or Emphysema");

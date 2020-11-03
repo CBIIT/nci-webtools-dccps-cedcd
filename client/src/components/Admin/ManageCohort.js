@@ -18,7 +18,6 @@ class ManageCohort extends Component {
 			filter: {
 				cohortstatus: [],
 				cohortSearch: '',
-				cohortType: 'name',
 			},
 			orderBy: {
 				column: "id",
@@ -29,16 +28,6 @@ class ManageCohort extends Component {
 			prevBasicParams: {}
 		};
 		this.toFocus = React.createRef()
-	}
-
-	saveHistory = () => {
-		const state = Object.assign({}, this.state);
-		let item = {
-			filter: state.filter,
-			orderBy: state.orderBy,
-			pageInfo: state.pageInfo
-		};
-		sessionStorage.setItem('informationHistory_adminmanage', JSON.stringify(item));
 	}
 
 
@@ -57,6 +46,7 @@ class ManageCohort extends Component {
 		this.setState({
 			filter: filter
 		});
+		this.filterData(1, null, null);
 	}
 
 	handleCohortSearchChange(changeEvent) {
@@ -65,14 +55,7 @@ class ManageCohort extends Component {
 		this.setState({
 			filter: filter
 		});
-	}
-
-	handleCohortTypeChange = (changeEvent) => {
-		let filter = Object.assign(this.state.filter);
-		filter.cohortType = changeEvent.target.value;
-		this.setState({
-			filter: filter
-		});
+		this.filterData(1, null, null);
 	}
 
 	handleCohortPageSizeChange = (e) => {
@@ -82,20 +65,14 @@ class ManageCohort extends Component {
 	clearFilter = () => {
 		let filter = {
 			cohortstatus: [],
-			cohortSearch: '',
-			cohortType: "name"
+			cohortSearch: ''
 		};
 
-		this.setState({
-			result: {},
-			filter: filter
-		});
-
-		sessionStorage.removeItem('informationHistory_adminmanage');
+		this.filterData(1, null, filter);
 	}
 
 	toFilter = () => {
-		this.saveHistory();
+
 		this.filterData(1, null, null);
 
 	}
@@ -120,10 +97,6 @@ class ManageCohort extends Component {
 		if (filter) {
 			reqBody.filter = filter;
 		}
-
-		this.setState({
-			prevBasicParams: JSON.parse(JSON.stringify(reqBody)),
-		})
 
 		fetch('/api/managecohort/admincohortlist', {
 			method: "POST",
@@ -153,22 +126,10 @@ class ManageCohort extends Component {
 	componentDidMount() {
 		//console.dir(this.props)
 		this._isMounted = true;
-		this.props.setAdmin(1)
-		const previousState = sessionStorage.getItem('informationHistory_adminmanage');
+		this.props.setAdmin(1);
 
-		if (previousState) {
-			let state = JSON.parse(previousState);
-			if (this._isMounted) {
-				this.setState({
-					filter: state.filter,
-					orderBy: state.orderBy,
-					pageInfo: state.pageInfo
-				});
-			}
-			this.filterData(1, state.orderBy, state.filter);
-		} else {
-			this.filterData(1, this.state.orderBy, this.state.filter);
-		}
+		this.filterData(1, this.state.orderBy, this.state.filter);
+
 	}
 
 	componentWillUnmount() {
@@ -305,44 +266,22 @@ class ManageCohort extends Component {
 				<p className="welcome">Browse the list of cohorts or use the filter options to search cohorts according to cohort status.
 				Then select the cohorts about which one you'd like to see the details or select the proper action to take on the cohort.
       		    </p>
-				<div id="filter-block" className="filter-block col-md-12">
-					<div id="filter-panel" className="panel panel-default">
-						<div className="panel-heading">
-							<h2 className="panel-title">Specify Filter Criteria</h2>
+				<div className="filter-block col-md-12">
+					<div className="col-sm-4 ">
+						<div class="form-group has-feedback has-search">
+							<span class="glyphicon glyphicon-search form-control-feedback"></span>
+							<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 						</div>
-						<div className="panel-body">
-							<div className="filter row">
-								<div className="col-sm-4 filterCol">
-									<div className="cohortTypeRadio"><h3><strong>Search Cohort :</strong>
-										<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name:&nbsp;&nbsp;<input value="name" name="cohortType" type="radio" checked={'name' === this.state.filter.cohortType}
-											onChange={this.handleCohortTypeChange} />
-										</label>
-										<label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Acronym:&nbsp;&nbsp;<input value="acronym" name="cohortType" type="radio" checked={'acronym' === this.state.filter.cohortType}
-											onChange={this.handleCohortTypeChange} />
-										</label></h3>
-									</div>
-									<div class="form-group has-feedback has-search">
-										<span class="glyphicon glyphicon-search form-control-feedback"></span>
-										<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
-									</div>
-								</div>
-								<div className="col-sm-3 filterCol">
-									<div id="cohortstatus" className="filter-component">
-										<h3><strong>Status</strong></h3>
-										<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
-									</div>
-								</div>
+					</div>
+					<div className="col-sm-3 ">
+						<div id="cohortstatus" className="filter-component">
+							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
+						</div>
+					</div>
+					<div className="col-sm-3 ">
+						<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
+							<i className="fas fa-times"></i> Clear All </a>
 
-							</div>
-							<div className="row">
-								<div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-									<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
-										<i className="fas fa-times"></i> Clear All </a>
-									<input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary"
-										onClick={this.toFilter} />
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 				<div className="filter-block home col-md-12">
