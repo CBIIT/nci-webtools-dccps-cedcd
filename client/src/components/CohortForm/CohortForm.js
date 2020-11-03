@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector, useDispatch, batch} from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
 import Person from '../Person/Person'
@@ -21,20 +21,29 @@ const CohortForm = ({...props}) => {
     },[errors])
      */
     useEffect(() => {
-        fetch('/api/questionnaire/cohort_basic_info/13', {
-            method: 'POST',
-        }).then(res => res.json())
-          .then(result => {
-              for(let k of Object.keys(result.data.cohort).slice(1, 52)){
-                  dispatch(allactions.cohortActions[k](result.data.cohort[k]))
-              }
-              for(let k of Object.keys(result.data.completer)){
-                dispatch(allactions.cohortActions[k](result.data.completer[k]))
-              }
-              for(let k of Object.keys(result.data.contacter)){
-                dispatch(allactions.cohortActions[k](result.data.contacter[k]))
-              }
+        if(!cohort.hasLoaded){
+            fetch('/api/questionnaire/cohort_basic_info/13', {
+                method: 'POST',
+            }).then(res => res.json())
+            .then(result => {
+                batch(() =>{
+                for(let k of Object.keys(result.data.cohort).slice(1, 47)){
+                    dispatch(allactions.cohortActions[k](result.data.cohort[k]))
+                }
+                for(let k of Object.keys(result.data.completer)){
+                    dispatch(allactions.cohortActions[k](result.data.completer[k]))
+                }
+                for(let k of Object.keys(result.data.contacter)){
+                    dispatch(allactions.cohortActions[k](result.data.contacter[k]))
+                }
+                for(let k of Object.keys(result.data.collaborator)){
+                    dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
+                }
+                dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
+                dispatch(allactions.cohortActions.setHasLoaded(true))
+                })
             })
+        }
     }, [])
 
     useEffect(() => {
@@ -265,6 +274,7 @@ const CohortForm = ({...props}) => {
         let position = e.target.checked ? p : ''
         let phone = e.target.checked ? tel : ''
         let email = e.target.checked ? eml : ''
+
         dispatch(allactions.cohortActions.setCollaboratorName(name))
         dispatch(allactions.cohortActions.setCollaboratorPosition(position))
         dispatch(allactions.cohortActions.setCollaboratorPhone(phone))
