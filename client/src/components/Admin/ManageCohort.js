@@ -72,9 +72,7 @@ class ManageCohort extends Component {
 	}
 
 	toFilter = () => {
-
 		this.filterData(1, null, null);
-
 	}
 
 	filterData(i, orderBy, filter) {
@@ -144,7 +142,11 @@ class ManageCohort extends Component {
 
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
-		let reqBody = this.state.prevBasicParams;
+		let reqBody = {
+			filter: state.filter,
+			orderBy: state.orderBy,
+			paging: state.pageInfo
+		};
 
 		if (pagesize != -1) {
 			reqBody.paging.pageSize = pagesize;
