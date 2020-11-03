@@ -20,7 +20,11 @@
 15. select_enrollment_counts
 16. select_specimen_counts
 17. update_cohort_basic
+<<<<<<< HEAD
 18. select_admin_cohortlist
+=======
+18. get_cohort_basic_info
+>>>>>>> cedcd-new-feature
 19. upsert_enrollment_count
 *
  */
@@ -800,6 +804,7 @@ BEGIN
     SELECT @rowcount AS rowsAffacted;
 END //
 
+<<<<<<< HEAD
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_admin_cohortlist
 -- -----------------------------------------------------------------------------------------------------------
@@ -855,6 +860,92 @@ DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE upsert_enrollment_count(in id int(11), in info JSON)
 BEGIN
 	IF EXISTS (SELECT * FROM enrollment_count WHERE cohort_id = `id`) THEN
+=======
+DROP PROCEDURE IF EXISTS `get_cohort_basic_info` //
+
+CREATE DEFINER=`cedcd_admin`@`%` PROCEDURE `get_cohort_basic_info`(in `targetID` int)
+BEGIN
+	SELECT 
+		cohort_id
+        ,cohort_name
+        ,cohort_acronym
+        ,clarification_contact
+        ,sameAsSomeone
+        ,cohort_description
+        ,gender_id
+        ,eligible_disease
+        ,eligible_disease_cancer_specify
+        ,eligible_disease_other_specify
+        ,enrollment_total
+        ,enrollment_year_start
+        ,enrollment_year_end
+        ,enrollment_ongoing
+        ,enrollment_target
+        ,enrollment_year_complete
+        ,enrollment_age_min
+        ,enrollment_age_max
+        ,enrollment_age_median
+        ,enrollment_age_mean
+        ,current_age_min
+        ,current_age_max
+        ,current_age_median
+        ,current_age_mean
+        ,time_interval
+        ,most_recent_year
+        ,data_collected_in_person
+        ,data_collected_phone
+        ,data_collected_paper
+        ,data_collected_web
+        ,data_collected_other
+        ,data_collected_other_specify
+        ,substring(restrictions, 1, 1) as requireNone
+        ,substring(restrictions, 3, 1) as requireCollab
+        ,substring(restrictions, 5, 1) as requireIrb
+        ,substring(restrictions, 7, 1) as requireData
+        ,substring(restrictions, 9, 1) as restrictGenoInfo
+        ,substring(restrictions, 11, 1) as restrictOtherDb
+        ,substring(restrictions, 13, 1) as restrictCommercial
+        ,substring(restrictions, 15, 1) as restrictOther
+        ,restrictions_other_specify
+        ,strategy_routine
+        ,strategy_mailing
+        ,strategy_aggregate_study
+        ,strategy_individual_study
+        ,strategy_invitation
+        ,strategy_other
+        ,strategy_other_specify
+        ,questionnaire_file_attached
+        ,main_cohort_file_attached
+        ,data_file_attached
+        ,specimen_file_attached
+        ,publication_file_attached
+        ,questionnaire_url
+        ,main_cohort_url
+        ,data_url
+        ,specimen_url
+        ,publication_url
+	FROM cohort_basic WHERE id = `targetID`;
+    
+    select `name` as completerName, `position` as completerPosition, phone as completerPhone, email as completerEmail 
+    from person where category_id = 1 and cohort_id = `targetID`;
+    
+    select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, email as contacterEmail 
+    from person where category_id = 2 and cohort_id = `targetID`;
+    
+    select `name` as `name`, institution as institution, email as email 
+    from person where category_id = 3 and cohort_id = `targetID`;
+    
+    select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, email as collaboratorEmail 
+    from person where category_id = 4 and cohort_id = `targetID`;
+END //
+
+
+DROP PROCEDURE IF EXISTS upsert_enrollment_count //
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
+BEGIN
+	if exists (select * from enrollment_count where cohort_id = `id`) then
+>>>>>>> cedcd-new-feature
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
         race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')) where
@@ -987,9 +1078,15 @@ BEGIN
         race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')) where
         race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+<<<<<<< HEAD
 	ELSE 
 		INSERT enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
         VALUES 
+=======
+	else 
+		insert enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
+        values 
+>>>>>>> cedcd-new-feature
         (`id`, 1, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')), now(), now()),
         (`id`, 1, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')), now(), now()),
         (`id`, 1, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')), now(), now()),
@@ -1059,9 +1156,16 @@ BEGIN
         (`id`, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
         (`id`, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
         (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
+<<<<<<< HEAD
     END IF;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
 END //
 
 DELIMITER ;
+=======
+    end if;
+    SET @rowcount = ROW_COUNT();
+    SELECT @rowcount AS rowsAffacted;
+END //
+>>>>>>> cedcd-new-feature
