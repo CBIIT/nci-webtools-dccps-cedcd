@@ -15,6 +15,7 @@ class ManageCohort extends Component {
 		this.state = {
 			result: {},
 			list: [],
+			dataList: [],
 			filter: {
 				cohortstatus: [],
 				cohortSearch: '',
@@ -25,7 +26,7 @@ class ManageCohort extends Component {
 			},
 			pageInfo: { page: 1, pageSize: 10, total: 0 },
 			lastPage: 1,
-			prevBasicParams: {}
+			//prevBasicParams: {}
 		};
 		this.toFocus = React.createRef()
 	}
@@ -50,12 +51,28 @@ class ManageCohort extends Component {
 	}
 
 	handleCohortSearchChange(changeEvent) {
-		let filter = Object.assign(this.state.filter);
+		const state = Object.assign({}, this.state);
+		let filter = state.filter;
+		let list = state.dataList;
+		let paging = state.pageInfo;
+
 		filter.cohortSearch = changeEvent.target.value;
+
+		list = list.filter(function (item) {
+			if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+			if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+			return false;
+		}
+		);
+
+		paging.total = list.length;
+
 		this.setState({
-			filter: filter
+			filter: filter,
+			list: list,
+			pageInfo: paging
 		});
-		this.filterData(1, null, null);
+
 	}
 
 	handleCohortPageSizeChange = (e) => {
@@ -63,17 +80,23 @@ class ManageCohort extends Component {
 	}
 
 	clearFilter = () => {
+		const state = Object.assign({}, this.state);
+
+		let list = state.dataList;
 		let filter = {
 			cohortstatus: [],
 			cohortSearch: ''
 		};
-
-		this.filterData(1, null, filter);
+		let paging = state.pageInfo;
+		paging.total = list.length;
+		paging.page = 1;
+		this.setState({
+			filter: filter,
+			list: list.slice(0, paging.pageSize),
+			pageInfo: paging
+		});
 	}
 
-	toFilter = () => {
-		this.filterData(1, null, null);
-	}
 
 	filterData(i, orderBy, filter) {
 		const state = Object.assign({}, this.state);
@@ -122,11 +145,10 @@ class ManageCohort extends Component {
 	}
 
 	componentDidMount() {
-		//console.dir(this.props)
 		this._isMounted = true;
 		this.props.setAdmin(1);
 
-		this.filterData(1, this.state.orderBy, this.state.filter);
+		this.loadingData();
 
 	}
 
@@ -187,12 +209,38 @@ class ManageCohort extends Component {
 		const state = Object.assign({}, this.state);
 		let reqBody = {
 			filter: state.filter,
-			items: state.items,
 			orderBy: state.orderBy,
 			paging: state.pageInfo
 		};
-		reqBody.paging.page = 0;
+
+		reqBody.paging.page = -1;
+
+		fetch('/api/managecohort/admincohortlist', {
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(res => res.json())
+			.then(result => {
+				let list = result.data.list;
+				reqBody.paging.total = result.data.total;
+				reqBody.paging.page = 1;
+				if (this._isMounted) {
+					alert("here!")
+					this.setState(prevState => (
+						{
+							list: list.slice(0, reqBody.paging.pageSize),
+							dataList: list,
+							filter: reqBody.filter,
+							pageInfo: reqBody.paging
+						}
+					));
+				}
+			});
 	}
+
 
 	handleOrderBy(column) {
 		let orderBy = Object.assign({}, this.state.orderBy);
