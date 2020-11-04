@@ -25,7 +25,6 @@ router.post('/update_cohort_basic/:id', function(req, res){
     req.body.description = req.body.description.replace(/\n/g, '\\n')
     let body = JSON.stringify(req.body)
     logger.debug('after replace: '+ body)
-    //body[1].description.replace(/\\n/g, '\\\\n')
     let proc = 'update_cohort_basic'
     let params = []
     params.push(req.params.id)
