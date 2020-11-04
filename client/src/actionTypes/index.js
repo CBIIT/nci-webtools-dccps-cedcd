@@ -78,6 +78,7 @@ const actionTypes = {
     setSpecimenUrl: 'SET_COHORT_SPECIMENT_URL',
     setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*section B*/
+    enrollmentCountLoaded: 'SET_ENROLLMENT_COUNT_LOADED',
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
     updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',

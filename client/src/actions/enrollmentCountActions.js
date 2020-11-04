@@ -12,12 +12,18 @@ const updateTotals = (cellid, amount) => ({
     
 })
 
+const setHasLoaded = (v) => ({
+    type: t.enrollmentCountLoaded,
+    value: v
+})
+
 const updateMostRecentDate = (v) => ({
-    type: t.updateMostRecentdate,
+    type: t.updateMostRecentDate,
     dateString: v
 })
 export default {
     updateEnrollmentCounts,
     updateTotals,
-    updateMostRecentDate
+    updateMostRecentDate,
+    setHasLoaded
 }

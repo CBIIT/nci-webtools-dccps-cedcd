@@ -11,15 +11,11 @@ const CohortForm = ({...props}) => {
     const dispatch = useDispatch()
 
     
-    const [errors, setErrors] = useState({hasAWebSite: 'please choose one', websiteurl: 'please provide a value', collectedOtherSpecify: 'please specify', eligibleGender: 'please select an eligible gender', dataCollection: 'please select at least one value', strategy: 'please select at least one value', collectedOtherSpecify: 'please specify', restrictOtherSpecify: 'please specify', strategyOtherSpecify: 'please specify' })
-   
+    const [errors, setErrors] = useState({hasAWebSite: 'please choose one', websiteurl: 'please provide a value', collectedOtherSpecify: 'please specify', eligibleGender: 'please select an eligible gender', dataCollection: 'please select at least one value', strategy: 'please select at least one value', collectedOtherSpecify: 'please specify', restrictOtherSpecify: 'please specify', strategyOtherSpecify: 'please specify', questionnaire: false, main: false, data: false, specimen: false, publication: false})
+
     const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
-/*
-    useEffect(() => {
-        if(cohort.contacterRight === '0') setContacters([0]) 
-    },[errors])
-     */
+
     useEffect(() => {
         if(!cohort.hasLoaded){
             fetch('/api/questionnaire/cohort_basic_info/13', {
@@ -67,7 +63,7 @@ const CohortForm = ({...props}) => {
             delete shadow.strategy
         setErrors(shadow)
     }, [])
-    const saveCohort = (id=79, proceed=false) => {
+    const saveCohort = (id=13, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -88,12 +84,26 @@ const CohortForm = ({...props}) => {
             })
     }
     const handleSave = () => {
+        let shadow = {...errors}
+        let changed = false
+        if(!(cohort.questionnaire_file_attached || cohort.questionnaireUrl))
+        {shadow.questionnaire = true; changed = true}
+        if(!(cohort.main_cohort_file_attached || cohort.mainCohortUrl))
+        {shadow.main = true; changed = true}
+        if(!(cohort.specimen_file_attached || cohort.specimenUrl))
+        {shadow.specimen = true; changed = true}
+        if(!(cohort.data_file_attached || cohort.dataUrl))
+        {shadow.data = true; changed = true}
+        if(!(cohort.publication_file_attached || cohort.publicationUrl))
+        {shadow.publication = true; changed = true}
+        if(changed) setErrors(shadow)
+
         if(Object.entries(errors).length === 0)
-            saveCohort(79)
+            saveCohort(13)
         else{
             setDisplay('block')
             if(window.confirm('there are validation errors, are you sure to save?'))
-                saveCohort(79)
+                saveCohort(13)
         }
     }
 
@@ -284,9 +294,9 @@ const CohortForm = ({...props}) => {
     }
 
     const handleUpload = (fileData, dispatchname) => {
+        alert(dispatchname.split('_')[0])
+        if(fileData.name){let shadow = {...errors}; delete shadow[dispatchname.split('_')[0]]; setErrors(shadow)}
         const formData = new FormData(); 
-     
-      // Update the formData object 
         formData.append( 
             'cohortFile', 
             fileData, 
@@ -346,8 +356,8 @@ const CohortForm = ({...props}) => {
                                     <span>Is this the person to contact with questions about this form?</span>
                                 </div>
                                 <div className='col-md-12' style={{textAlign: 'center'}}>
-                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />No</span>
-                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />Yes</span>
+                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span>
+                                    <span className='col-md-3'><input type='radio' name='contacterRight' checked={cohort.contacterRight === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span>
                                 </div>
                                 <div id='contacterInfo'>
                                     {
@@ -357,10 +367,10 @@ const CohortForm = ({...props}) => {
                                 </div>
                             </div>
                         </div>
-                        <div id='question4' className='col-md-12' style={{paddingTop: '10px', borderBottom: '1px solid grey'}}>
+                        <div id='question4' className='col-md-12' style={{paddingTop: '10px'}}>
                         <div className='col-md-12' style={{marginBottom: '10px'}}>
                             <label className='col-md-6'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
-                            <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator())}} style={{position: 'absolute', right: 0}}>add new investigator</button></span>
+                            <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator())}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
                         </div>
                         <div className='col-md-12' style={{paddingLeft: '0'}}>
                             {
@@ -421,10 +431,10 @@ const CohortForm = ({...props}) => {
                                 <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description: Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</label>
                             </div>
                             <div>
-                                <span className='col-md-10'><textarea className='form-control' name='cohortDes' cols='20' rows='5' value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
+                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='5' value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
                             </div>
                         </div>
-                        <div id='question8' className='col-md-12' style={{borderBottom: '1px solid grey', paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
+                        <div id='question8' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
                             <div className='col-md-4' style={{marginBottom: '10px', flexGrow: '3', lineHeight: '16em', borderRight: '1px solid grey'}}>
                                 <label style={{paddingLeft: '0'}}>A.8{' '}Eligibility Criteria</label>
                             </div>
@@ -577,7 +587,7 @@ const CohortForm = ({...props}) => {
                                 {errors.yearDataCollected ? <span className='col-md-3'  style={{color: 'red', display: displayStyle}}>{errors.yearDataCollected}</span> : ''}
                             </div>
                         </div>
-                        <div id='question12' className='col-md-12' style={{borderBottom: '1px solid grey', paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
+                        <div id='question12' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
                             <div className='col-md-4' style={{marginBottom: '10px', flexGrow: '3',  borderRight: '1px solid grey'}}>
                                 <label style={{paddingLeft: '0', marginTop: '40px'}}>A.12{' '}How was information from the questionnaire administered/collected?  (select all that apply) </label>
                                 {errors.dataCollection ? <span style={{color: 'red', display:displayStyle}}>{errors.dataCollection}</span> : '' }
@@ -727,34 +737,34 @@ const CohortForm = ({...props}) => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
+                                    <tr className={errors.questionnaire ? 'errorBackground' : ''}>
                                        <td>Questionnaires</td> 
                                        <td style={{verticalAlign: 'middle'}}>
                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'questionnaire_file_attached')} disabled={cohort.questionnaireUrl}/>
                                        </td>
-                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFile} value={cohort.questionnaireUrl} onChange={e => dispatch(allactions.cohortActions.questionnaireUrl(e.target.value))} /></td>
+                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFile} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaireUrl(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
                                     </tr>
-                                    <tr>
+                                    <tr className={errors.main ? 'errorBackground' : ''}>
                                        <td>Main cohort protocol</td> 
                                        <td style={{verticalAlign: 'middle'}}>
                                             <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'main_cohort_file_attached')} disabled={cohort.mainCohortUrl}/>
                                        </td>
-                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainCohortFile}  value={cohort.mainCohortUrl} onChange={e => dispatch(allactions.cohortActions.mainCohortUrl(e.target.value))} /></td>
+                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainCohortFile}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.mainCohortUrl(e.target.value)); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
                                     </tr>
-                                    <tr>
+                                    <tr className={errors.data ? 'errorBackground' : ''}>
                                        <td>Data sharing policy</td> 
                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'data_file_attached')} disabled={cohort.dataUrl}/></td>
-                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFile}  value={cohort.dataUrl} onChange={e => dispatch(allactions.cohortActions.dataUrl(e.target.value))} /></td>
+                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFile}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.dataUrl(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
                                     </tr>
-                                    <tr>
+                                    <tr className={errors.specimen ? 'errorBackground' : ''}>
                                        <td>Biospecimen sharing policy</td> 
                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'specimen_file_attached')} disabled={cohort.specimenUrl}/></td>
-                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFile}  value={cohort.specimenUrl} onChange={e => dispatch(allactions.cohortActions.specimenUrl(e.target.value))} /></td>
+                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFile}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimenUrl(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
                                     </tr>
-                                    <tr>
+                                    <tr className={errors.publication ? 'errorBackground' : ''}>
                                        <td>Publication(authorship) policy</td> 
                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'publication_file_attached')} disabled={cohort.publicationUrl}/></td>
-                                       <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFile} onChange={e => dispatch(allactions.cohortActions.publicationUrl(e.target.value))} /></td>
+                                       <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFile} onChange={e => {dispatch(allactions.cohortActions.publicationUrl(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
                                     </tr>
                                 </tbody>
                             </table>

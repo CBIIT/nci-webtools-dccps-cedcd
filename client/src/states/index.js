@@ -1,7 +1,7 @@
 const InitialStates ={
     cohort: {
         hasLoaded: false,
-        cohortId: 79,
+        cohortId: 13,
         name: 'joe',
         acronym: 'HWS',
         completionDate: '05/19/2020',
@@ -83,6 +83,7 @@ const InitialStates ={
         publicationUrl: ''
     },
     enrollmentCount: {
+        hasLoaded: false,
         '111': 50,
         '112': 50,
         '113': 50,

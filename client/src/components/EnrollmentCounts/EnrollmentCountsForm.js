@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from 'react'
 //import {useForm} from 'react-hook-form'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector, useDispatch, batch} from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
-    //const [cell141, setCell141] = useState(enrollmentCount['141'])
-    //const [cell811, setCell811] = useState(enrollmentCount['811'])
     const dispatch = useDispatch()
-    //const {handleSubmit, register, errors} = useForm()
-    const [errors, setErrors] = useState({})
+    const [displayStyle, setDisplay] = useState('0')
+    const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -27,7 +25,29 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
 
-    const saveEnrollment = (id=79, proceed=false) => {
+    useEffect(() => {
+        if(!enrollmentCount.hasLoaded){
+            fetch('/api/questionnaire/enrollment_counts/13', {
+                method: 'POST',
+            }).then(res => res.json())
+              .then(result => {
+                console.dir(result.data.mostRecentDate)
+                batch(()=> {
+                    for(let i = 0; i < result.data.details.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
+                    for(let i = 0; i < result.data.rowTotals.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateTotals(result.data.rowTotals[i].rowId+'41', result.data.rowTotals[i].rowTotal))
+                    for(let i = 0; i < result.data.colTotals.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateTotals('8'+result.data.colTotals[i].colId, result.data.colTotals[i].colTotal))
+                    dispatch(allactions.enrollmentCountActions.updateTotals('841', result.data.grandTotal.grandTotal))
+                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(result.data.mostRecentDate.mostRecentDate))
+                    dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
+                })//end of batch
+            })// end of then
+        }
+    }, [])
+
+    const saveEnrollment = (id=13, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -49,17 +69,17 @@ const EnrollmentCountsForm = ({...props}) => {
     }
     const handleSave = () => {
         if(Object.entries(errors).length === 0)
-            saveEnrollment(79)
+            saveEnrollment(13)
         else{
-            //setDisplay('block')
+            setDisplay('1')
             if(window.confirm('there are validation errors, are you sure to save?'))
-                saveEnrollment(79)
+                saveEnrollment(13)
         }
     }
 
     const handleSaveContinue = () => {
         if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
+            saveEnrollment(13, true)}
     }
 
 
@@ -213,8 +233,8 @@ const EnrollmentCountsForm = ({...props}) => {
                     </table>
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {e => {let r = validator.dateValidator(e.target.value, false); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
-                        {errors.mostRecentDate && <span style={{color: 'red'}}>{errors.mostRecentDate}</span>}
+                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' value={enrollmentCount.mostRecentDate}  onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {e => {let r = validator.dateValidator(e.target.value, false); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
+                        {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>
 
                 </form>

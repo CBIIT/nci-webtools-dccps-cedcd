@@ -21,12 +21,15 @@ router.post('/upload/:id', async function(req, res, next) {
 })
 
 router.post('/update_cohort_basic/:id', function(req, res){
+    logger.debug("req body: "+req.body.description)
+    req.body.description = req.body.description.replace(/\n/g, '\\n')
     let body = JSON.stringify(req.body)
+    logger.debug('after replace: '+ body)
+    //body[1].description.replace(/\\n/g, '\\\\n')
     let proc = 'update_cohort_basic'
     let params = []
     params.push(req.params.id)
     params.push(body)
-    //logger.debug(params)
     
     mysql.callJsonProcedure(proc, params, function(result){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
@@ -71,11 +74,10 @@ router.post('/upload/files', function(req, res){
 
 router.post('/upsert_enrollment_counts/:id', function(req, res){
     let body = JSON.stringify(req.body)
-    let proc = 'upsertEnrollment_count'
+    let proc = 'upsert_enrollment_count'
     let params = []
     params.push(req.params.id)
     params.push(body)
-    logger.debug(params)
     
     mysql.callJsonProcedure(proc, params, function(result){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
@@ -84,6 +86,24 @@ router.post('/upsert_enrollment_counts/:id', function(req, res){
             res.json({status:500, message:'update failed'})
     })
     
+})
+
+router.post('/enrollment_counts/:id', function(req, res){
+    let id = req.params.id
+    let func = 'get_enrollment_counts'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function(result){
+        logger.debug(result[4])
+        const enrollmentCounts = {}
+        enrollmentCounts.details = result[0]
+        enrollmentCounts.rowTotals = result[1]
+        enrollmentCounts.colTotals = result[2]
+        enrollmentCounts.grandTotal = result[3][0]
+        enrollmentCounts.mostRecentDate = result[4][0]
+        res.json({data: enrollmentCounts})
+    })
+
 })
 
 module.exports = router
