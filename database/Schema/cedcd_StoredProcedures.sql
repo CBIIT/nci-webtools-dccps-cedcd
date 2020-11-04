@@ -934,6 +934,9 @@ BEGIN
     from person where category_id = 4 and cohort_id = `targetID`;
 END //
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: upsert_enrollment_count
+-- -----------------------------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 
@@ -1149,5 +1152,37 @@ BEGIN
     SELECT @rowcount AS rowsAffacted;
 END //
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: get_enrollment_counts
+-- -----------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `get_enrollment_counts`
+
+CREATE PROCEDURE `get_enrollment_counts`(in targetID int)
+BEGIN
+	SELECT 
+		CONCAT(CAST(race_id AS CHAR), CAST(ethnicity_id AS CHAR),
+    CAST(gender_id AS CHAR)) AS cellId, CAST(enrollment_counts AS CHAR) AS cellCount
+	FROM cedcd_new.enrollment_count WHERE cohort_id = `targetID`
+	ORDER BY race_id, ethnicity_id, gender_id;
+    
+  SELECT CAST(race_id as CHAR) AS rowId, SUM(enrollment_counts) AS rowTotal 
+  from cedcd_new.enrollment_count 
+  where cohort_id = `targetID` group by race_id ;
+
+	select concat(cast(t.ethnicity_id as char), cast(t.gender_id as char)) as colId, sum(t.enrollment_counts) as colTotal
+	from (select enrollment_counts, race_id, ethnicity_id, gender_id 
+	from cedcd_new.enrollment_count
+	where cohort_id = `targetID`
+	group by  ethnicity_id, gender_id, race_id 
+	order by ethnicity_id, gender_id, race_id) as t
+	group by t.ethnicity_id, t.gender_id;
+	 
+	select sum(enrollment_counts)  as grandTotal
+  from cedcd_new.enrollment_count
+  where cohort_id = `targetID`;
+     
+  select date_format(enrollment_most_recent_date, '%m/%d/%Y') as mostRecentDate from cohort_basic where cohort_id = `targetID`;
+END //
 
 DELIMITER ;
