@@ -536,7 +536,7 @@ CREATE TABLE `cohort_activity_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cohort_user_id` int(11) NOT NULL,
-  `activitiy` varchar(50) NOT NULL,
+  `activity` varchar(50) NOT NULL,
   `notes` varchar(250),
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
