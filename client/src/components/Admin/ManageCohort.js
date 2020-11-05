@@ -21,8 +21,8 @@ class ManageCohort extends Component {
 				cohortSearch: '',
 			},
 			orderBy: {
-				column: "id",
-				order: "desc"
+				column: "acronym",
+				order: "asc"
 			},
 			pageInfo: { page: 1, pageSize: 10, total: 0 },
 			lastPage: 1,
@@ -287,7 +287,7 @@ class ManageCohort extends Component {
 			let review = "Review";
 
 			let select_id = "select_" + id;
-			if (item.status === 'published' || item.status === 'draft') {
+			if (item.status.toLowerCase() === 'published' || item.status.toLowerCase() === 'draft') {
 				return (
 					<tr key={id}>
 						<td>
@@ -311,7 +311,7 @@ class ManageCohort extends Component {
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.status != 'new' ? review : null}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{item.status.toLowerCase() != 'new' ? review : null}</Link>
 						</td>
 					</tr>
 				);
