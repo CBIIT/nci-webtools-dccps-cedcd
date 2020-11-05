@@ -26,14 +26,16 @@ class ManageCohort extends Component {
 			},
 			pageInfo: { page: 1, pageSize: 10, total: 0 },
 			lastPage: 1,
-			//prevBasicParams: {}
 		};
 		this.toFocus = React.createRef()
 	}
 
 
 	handleCohortStatusClick = (v) => {
-		let filter = Object.assign(this.state.filter);
+		const state = Object.assign({}, this.state);
+		let filter = state.filter;
+		let list = state.dataList;
+		let paging = state.pageInfo;
 		let idx = filter.cohortstatus.indexOf(v.id);
 
 		if (idx > -1) {
@@ -44,10 +46,23 @@ class ManageCohort extends Component {
 			//add element
 			filter.cohortstatus.push(v.id);
 		}
+
+		list = list.filter(function (item) {
+			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
+			if (!filter.cohortSearch || (item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+			if (!filter.cohortSearch || (item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+			return false;
+		}
+		);
+
+		paging.total = list.length;
+
 		this.setState({
-			filter: filter
+			filter: filter,
+			list: list,
+			pageInfo: paging
 		});
-		this.filterData(1, null, null);
+
 	}
 
 	handleCohortSearchChange(changeEvent) {
@@ -59,6 +74,7 @@ class ManageCohort extends Component {
 		filter.cohortSearch = changeEvent.target.value;
 
 		list = list.filter(function (item) {
+			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
 			if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
 			if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
 			return false;
@@ -228,7 +244,6 @@ class ManageCohort extends Component {
 				reqBody.paging.total = result.data.total;
 				reqBody.paging.page = 1;
 				if (this._isMounted) {
-					alert("here!")
 					this.setState(prevState => (
 						{
 							list: list.slice(0, reqBody.paging.pageSize),
