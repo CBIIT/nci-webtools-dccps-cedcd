@@ -1,5 +1,6 @@
 const actionTypes = {
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
+    setCohortId: 'SET_COHORT_ID',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
     setCompletionDate: 'SET_COHORT_COMPLETION_DATE',

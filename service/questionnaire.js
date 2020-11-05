@@ -43,14 +43,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function(results){
-        results[0][0].requireNone = results[0][0].requireNone === '1'
-        results[0][0].requireCollab = results[0][0].requireCollab === '1'
-        results[0][0].requireIrb = results[0][0].requireIrb === '1'
-        results[0][0].requireData = results[0][0].requireData === '1'
-        results[0][0].restrictGenoInfo = results[0][0].restrictGenoInfo === '1'
-        results[0][0].restrictOtherDb = results[0][0].restrictOtherDb === '1'
-        results[0][0].restrictCommercial = results[0][0].restrictCommercial === '1'
-        results[0][0].restrictOther = results[0][0].restrictOther === '1'
+        logger.debug(results)
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
