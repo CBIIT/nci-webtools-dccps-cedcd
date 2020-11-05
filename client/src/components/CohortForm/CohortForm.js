@@ -44,11 +44,11 @@ const CohortForm = ({...props}) => {
 
     useEffect(() => {
         let shadow = {...errors}
-        if(!cohort.collectedOther)
+        if(cohort.collectedOther !== 1)
             delete shadow.collectedOtherSpecify
-        if(!cohort.restrictOther)
+        if(cohort.restrictOther !== 1)
             delete shadow.restrictOtherSpecify
-        if(!cohort.strategyOther)
+        if(cohort.strategyOther !== 1)
             delete shadow.strategyOtherSpecify
         if(cohort.eligibleGender in ['4', '2', '1']) delete shadow.eligibilityCriteriaOther
         if(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther)
