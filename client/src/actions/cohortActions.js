@@ -5,6 +5,11 @@ const setHasLoaded = (v) => ({
     loaded: v
 })
 
+const setSectionAStatus = (v) => ({
+    type: t.setSectionAStatus,
+    value: v
+})
+
 const cohort_id = (v) => ({
     type: t.setCohortId,
     id: v
@@ -329,6 +334,7 @@ const specimen_url = (v) => ({type: t.setSpecimenUrl, url: v})
 const publication_url = (v) => ({type: t.setPublicationUrl, url: v})
 export default {
     setHasLoaded,
+    setSectionAStatus,
     cohort_id,
     cohort_name,
     cohort_acronym,

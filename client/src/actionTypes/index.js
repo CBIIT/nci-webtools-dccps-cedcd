@@ -1,5 +1,6 @@
 const actionTypes = {
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
+    setSectionAStatus: 'SET_COHORT_STATUS',
     setCohortId: 'SET_COHORT_ID',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
@@ -182,6 +183,7 @@ const actionTypes = {
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
     setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
+
     setSectionStatus: 'SET_COHORT_SECTION_STATUS'
 }
 

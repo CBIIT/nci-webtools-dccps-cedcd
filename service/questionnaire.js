@@ -4,7 +4,7 @@ var mysql = require('../components/mysql');
 var logger = require('../components/logger');
 var fs = require('fs')
 
-router.post('/upload/:id', async function(req, res, next) {
+router.post('/upload/:id/:category', async function(req, res, next) {
     let cohortFile = req.files.cohortFile
     //logger.debug(cohortFile.name)
     fs.access(`FileBank/CohortID_${req.params.id}`, (err)=>{
@@ -17,11 +17,17 @@ router.post('/upload/:id', async function(req, res, next) {
         else
             cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
     })
+    let proc = 'add_file_attachment'
+    let params = []
+    params.push(req.params.id)
+    params.push(req.params.category)
+    params.push(cohortFile.name)
+    mysql.callProcedure(proc, params, function(result){})
     res.json({status: 200})
 })
 
 router.post('/update_cohort_basic/:id', function(req, res){
-    logger.debug("req body: "+req.body.description)
+    logger.debug(req.body)
     req.body.description = req.body.description.replace(/\n/g, '\\n')
     let body = JSON.stringify(req.body)
     let proc = 'update_cohort_basic'
