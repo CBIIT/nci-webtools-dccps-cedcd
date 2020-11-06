@@ -4,7 +4,7 @@ var mysql = require('../components/mysql');
 var logger = require('../components/logger');
 var fs = require('fs')
 
-router.post('/upload/:id', async function(req, res, next) {
+router.post('/upload/:id/:category', async function(req, res, next) {
     let cohortFile = req.files.cohortFile
     //logger.debug(cohortFile.name)
     fs.access(`FileBank/CohortID_${req.params.id}`, (err)=>{
@@ -17,16 +17,23 @@ router.post('/upload/:id', async function(req, res, next) {
         else
             cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
     })
+    let proc = 'add_file_attachment'
+    let params = []
+    params.push(req.params.id)
+    params.push(req.params.category)
+    params.push(cohortFile.name)
+    mysql.callProcedure(proc, params, function(result){})
     res.json({status: 200})
 })
 
 router.post('/update_cohort_basic/:id', function(req, res){
+    logger.debug(req.body)
+    req.body.description = req.body.description.replace(/\n/g, '\\n')
     let body = JSON.stringify(req.body)
     let proc = 'update_cohort_basic'
     let params = []
     params.push(req.params.id)
     params.push(body)
-    //logger.debug(params)
     
     mysql.callJsonProcedure(proc, params, function(result){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
@@ -42,14 +49,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function(results){
-        results[0][0].requireNone = results[0][0].requireNone === '1'
-        results[0][0].requireCollab = results[0][0].requireCollab === '1'
-        results[0][0].requireIrb = results[0][0].requireIrb === '1'
-        results[0][0].requireData = results[0][0].requireData === '1'
-        results[0][0].restrictGenoInfo = results[0][0].restrictGenoInfo === '1'
-        results[0][0].restrictOtherDb = results[0][0].restrictOtherDb === '1'
-        results[0][0].restrictCommercial = results[0][0].restrictCommercial === '1'
-        results[0][0].restrictOther = results[0][0].restrictOther === '1'
+        logger.debug(results)
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
@@ -71,11 +71,10 @@ router.post('/upload/files', function(req, res){
 
 router.post('/upsert_enrollment_counts/:id', function(req, res){
     let body = JSON.stringify(req.body)
-    let proc = 'upsertEnrollment_count'
+    let proc = 'upsert_enrollment_count'
     let params = []
     params.push(req.params.id)
     params.push(body)
-    logger.debug(params)
     
     mysql.callJsonProcedure(proc, params, function(result){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
@@ -84,6 +83,24 @@ router.post('/upsert_enrollment_counts/:id', function(req, res){
             res.json({status:500, message:'update failed'})
     })
     
+})
+
+router.post('/enrollment_counts/:id', function(req, res){
+    let id = req.params.id
+    let func = 'get_enrollment_counts'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function(result){
+        logger.debug(result[4])
+        const enrollmentCounts = {}
+        enrollmentCounts.details = result[0]
+        enrollmentCounts.rowTotals = result[1]
+        enrollmentCounts.colTotals = result[2]
+        enrollmentCounts.grandTotal = result[3][0]
+        enrollmentCounts.mostRecentDate = result[4][0]
+        res.json({data: enrollmentCounts})
+    })
+
 })
 
 module.exports = router

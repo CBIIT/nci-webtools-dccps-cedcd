@@ -1,5 +1,7 @@
 const actionTypes = {
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
+    setSectionAStatus: 'SET_COHORT_STATUS',
+    setCohortId: 'SET_COHORT_ID',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',
     setCompletionDate: 'SET_COHORT_COMPLETION_DATE',
@@ -72,12 +74,18 @@ const actionTypes = {
     setDataFile: 'SET_COHORT_DATA_FILE',
     setSpecimenFile: 'SET_COHORT_SPECIMEN_FILE',
     setPublicationFile: 'SET_COHORT_PUBLICATION_FILE',
+    setQuestionnaireFileName: 'SET_COHORT_QUESTIONNIRE_FILE_NAME',
+    setMainFileName: 'SET_COHORT_MAIN_FILE_NAME',
+    setDataFileName: 'SET_COHORT_DATA_FILE_NAME',
+    setSpecimenFileName: 'SET_COHORT_SPECIMEN_FILE_NAME',
+    setPublicationFileName: 'SET_COHORT_PUBLICATION_FILE_NAME',
     setQuestionnaireUrl: 'SET_COHORT_QUESTIONNAIRE_URL',
     setMainCohortUrl: 'SET_COHORT_MAIN_URL',
     setDataUrl: 'SET_COHORT_DATA_URL',
     setSpecimenUrl: 'SET_COHORT_SPECIMENT_URL',
     setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*section B*/
+    enrollmentCountLoaded: 'SET_ENROLLMENT_COUNT_LOADED',
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
     updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',
@@ -175,6 +183,7 @@ const actionTypes = {
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
     setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
+
     setSectionStatus: 'SET_COHORT_SECTION_STATUS'
 }
 
