@@ -82,15 +82,15 @@ const CohortForm = ({...props}) => {
     const handleSave = () => {
         let shadow = {...errors}
         let changed = false
-        if(!(cohort.questionnaire_file_attached || cohort.questionnaireUrl))
+        if(!(cohort.questionnaireFileName || cohort.questionnaireUrl))
         {shadow.questionnaire = true; changed = true}
-        if(!(cohort.main_cohort_file_attached || cohort.mainCohortUrl))
+        if(!(cohort.mainFileName || cohort.mainCohortUrl))
         {shadow.main = true; changed = true}
-        if(!(cohort.specimen_file_attached || cohort.specimenUrl))
+        if(!(cohort.specimenFileName || cohort.specimenUrl))
         {shadow.specimen = true; changed = true}
-        if(!(cohort.data_file_attached || cohort.dataUrl))
+        if(!(cohort.dataFileName || cohort.dataUrl))
         {shadow.data = true; changed = true}
-        if(!(cohort.publication_file_attached || cohort.publicationUrl))
+        if(!(cohort.publicationFileName || cohort.publicationUrl))
         {shadow.publication = true; changed = true}
         if(changed) setErrors(shadow)
 
@@ -289,26 +289,23 @@ const CohortForm = ({...props}) => {
         
     }
 
-    const handleUpload = (fileData, dispatchname) => {
-        if(fileData.name){let shadow = {...errors}; delete shadow[dispatchname.split('_')[0]]; setErrors(shadow)}
-        const formData = new FormData(); 
-        formData.append( 
-            'cohortFile', 
-            fileData, 
-            fileData.name 
-        ); 
-        fetch('/api/questionnaire/upload/13',{
-            method: "POST",
-            body: formData
-        }).then(res => res.json())
-          .then((result) => {
+    const handleUpload = (fileData, errorName) => {
+        if(fileData.name){    
+            const formData = new FormData(); 
+            formData.append( 
+                'cohortFile', 
+                fileData, 
+                fileData.name 
+            ); 
+            fetch('/api/questionnaire/upload/13',{
+                method: "POST",
+                body: formData
+            }).then(res => res.json())
+            .then((result) => {
                 if(result.status === 200){
-                    dispatch(allactions.cohortActions[dispatchname](1))
-                    console.log('upload successfully')
                 }
-                else
-                    console.log('upload failed')
             })
+        }
     }
 
     return <div id='cohortContainer' className='col-md-12'>
@@ -722,31 +719,31 @@ const CohortForm = ({...props}) => {
                                     <tr className={errors.questionnaire ? 'errorBackground' : ''}>
                                        <td>Questionnaires</td> 
                                        <td style={{verticalAlign: 'middle'}}>
-                                           <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'questionnaire_file_attached')} disabled={cohort.questionnaireUrl}/>
+                                           <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 'questionnaire'); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); if('questionnaire' in errors){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} disabled={cohort.questionnaireUrl} />
                                        </td>
-                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFile} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaireUrl(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
+                                       <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFileName} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
                                     </tr>
                                     <tr className={errors.main ? 'errorBackground' : ''}>
                                        <td>Main cohort protocol</td> 
                                        <td style={{verticalAlign: 'middle'}}>
-                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'main_cohort_file_attached')} disabled={cohort.mainCohortUrl}/>
+                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 'main_cohort_file_attached'); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); if('main' in errors){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} disabled={cohort.mainCohortUrl}/>
                                        </td>
-                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainCohortFile}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.mainCohortUrl(e.target.value)); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
+                                       <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainFileName}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
                                     </tr>
                                     <tr className={errors.data ? 'errorBackground' : ''}>
                                        <td>Data sharing policy</td> 
-                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'data_file_attached')} disabled={cohort.dataUrl}/></td>
-                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFile}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.dataUrl(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 'data_file_attached'); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); if('data' in errors){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}}disabled={cohort.dataUrl}/></td>
+                                       <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFileName}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
                                     </tr>
                                     <tr className={errors.specimen ? 'errorBackground' : ''}>
                                        <td>Biospecimen sharing policy</td> 
-                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'specimen_file_attached')} disabled={cohort.specimenUrl}/></td>
-                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFile}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimenUrl(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 'specimen_file_attached'); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); if('specimen' in errors){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} disabled={cohort.specimenUrl}/></td>
+                                       <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFileName}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
                                     </tr>
                                     <tr className={errors.publication ? 'errorBackground' : ''}>
                                        <td>Publication(authorship) policy</td> 
-                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => handleUpload(e.target.files[0], 'publication_file_attached')} disabled={cohort.publicationUrl}/></td>
-                                       <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFile} onChange={e => {dispatch(allactions.cohortActions.publicationUrl(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
+                                       <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 'publication_file_attached'); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); if('publication' in errors){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} disabled={cohort.publicationUrl}/></td>
+                                       <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
                                     </tr>
                                 </tbody>
                             </table>
