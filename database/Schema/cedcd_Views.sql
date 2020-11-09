@@ -3,7 +3,7 @@
 -- === mysql v 8.0 =====
 /* 
  *  CREATE Views:
- * 1. v_lu_domian (list top level domain for dropdown list)
+ * 1. v_lu_domian (list top level category for dropdown list)
  *
  */
 -- -----------------------------------------------------------------------------------------------------------
@@ -11,12 +11,12 @@
 DROP VIEW IF EXISTS `cohort_summary` ;
 
 -- -----------------------------------------------------------------------------------------------------------
--- View: v_lu_domain
+-- View: v_lu_data_collected_category
 -- -----------------------------------------------------------------------------------------------------------
-DROP VIEW IF EXISTS `v_lu_domain` ;
+DROP VIEW IF EXISTS `v_lu_data_collected_category` ;
 
-CREATE VIEW v_lu_domain AS
- select min(id) as id , domain from lu_domain group by domain order by id;
+CREATE VIEW v_lu_data_collected_category AS
+ select min(id) as id , category from lu_data_collected_category group by category order by id;
 
 
 -- ======== end View script ===============

@@ -321,165 +321,165 @@ DROP PROCEDURE IF EXISTS `Migrate_major_content` //
 CREATE PROCEDURE `Migrate_major_content`()
 BEGIN
 	-- 1-Socio-economic Status (e.g., income)
-	insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+	insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,1,mdc_income_baseline,mdc_income_followup,"",""  
     from cedcd.cohort_major_content;
 	-- 2-Education Level
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,2,mdc_education_baseline,mdc_education_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 3-Marital Status
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,3,mdc_marital_status_baseline,mdc_marital_status_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 4-Language/Country of Origin
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,4,mdc_language_origin_baseline,mdc_language_origin_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 5-Employment Status
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,5,mdc_employment_baseline,mdc_employment_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 6-Health Insurance Status
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,6,mdc_health_insurance_baseline,mdc_health_insurance_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 7-Anthropometry (e.g., weight, height, waist circumference)
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,7,mdc_anthropometry_baseline,mdc_anthropometry_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 8-Dietary Intake
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,8,mdc_dietary_intake_baseline,mdc_dietary_intake_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 9-Dietary Supplement Use
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,9,mdc_dietary_supplement_baseline,mdc_dietary_supplement_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 10-Complementary and Alternative Medicine
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,10,mdc_alternative_medicine_baseline,mdc_alternative_medicine_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 11-Prescription Medication Use (not related to cancer treatment)
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,11,mdc_prescription_drug_use_baseline,mdc_prescription_drug_use_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 12-Non-prescription Medication Use (not related to cancer treatment)
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,12,mdc_nonprescription_drug_use_baseline,mdc_nonprescription_drug_use_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 13-Alcohol Consumption
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,13,mdc_alcohol_baseline,mdc_alcohol_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 14-Cigarette Smoking
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,14,mdc_cigarette_baseline,mdc_cigarette_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 15-Use of Tobacco Products Other than Cigarettes
 		-- 1-Cigars
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,15,mdc_other_tobacco_cigars_baseline,mdc_other_tobacco_cigars_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 2-Pipes
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,16,mdc_other_tobacco_pipes_baseline,mdc_other_tobacco_pipes_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 3-Chewing tobacco
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,17,mdc_other_tobacco_chewing_baseline,mdc_other_tobacco_chewing_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 4-E-Cigarettes
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,18,mdc_other_tobacco_ecigarette_baseline,mdc_other_tobacco_ecigarette_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 5-Other
-		insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+		insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,19,mdc_other_tobacco_other_baseline,mdc_other_tobacco_other_followup,mdc_other_tobacco_other_specify_baseline,mdc_other_tobacco_other_specify_followup 
 		from cedcd.cohort_major_content;
 	-- 16-Physical Activity
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,20,mdc_physical_activity_baseline,mdc_physical_activity_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 17-Sleep Habits
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,21,mdc_sleep_habits_baseline,mdc_sleep_habits_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 18-Reproductive History
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,22,mdc_reproductive_history_baseline,mdc_reproductive_history_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 19-Self-Reported Health
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,23,mdc_self_reported_health_baseline,mdc_self_reported_health_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 20-Quality of Life 
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,24,mdc_quality_of_life_baseline,mdc_quality_of_life_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 21-Social Support
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,25,mdc_social_support_baseline,mdc_social_support_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 22-Cognitive Function
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,26,mdc_cognitive_function_baseline,mdc_cognitive_function_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 23-Depression
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,27,mdc_depression_baseline,mdc_depression_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 24-Other Psychosocial Variables
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,28,mdc_other_psychosocial_baseline,mdc_other_psychosocial_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 25-Fatigue
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,29,mdc_fatigue_baseline,mdc_fatigue_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 26-Family History of Cancer
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,30,mdc_family_hsitory_of_cancer_baseline,mdc_family_hsitory_of_cancer_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 27-Family History of Cancer with Pedigrees
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,31,mdc_family_hsitory_of_cancer_pedigrees_baseline,mdc_family_hsitory_of_cancer_pedigrees_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 28-Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,32,mdc_environment_baseline,mdc_environment_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 29-Residential history Information (zip code, GIS) over time?
-    insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+    insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
     select cohort_id,33,mdc_residential_infomation_baseline,mdc_residential_infomation_followup,"","" 
     from cedcd.cohort_major_content;
 	-- 30-Other Medical Conditions
 		-- 6-Diabetes
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,34,mdc_diabetes_baseline,mdc_diabetes_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 7-Stroke
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,35,mdc_stroke_baseline,mdc_stroke_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 8-COPD and/or Emphysema
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,36,mdc_copd_baseline,mdc_copd_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 9-Cardiovascular Disease
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,37,mdc_cardiovascular_disease_baseline,mdc_cardiovascular_disease_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 10-Osteoporosis
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,38,mdc_osteoporosis_baseline,mdc_osteoporosis_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 11-Mental Health
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,39,mdc_mental_health_baseline,mdc_mental_health_followup,"","" 
 		from cedcd.cohort_major_content;
 		-- 12-Cognitive Decline
-        insert into major_content(cohort_id,domain_id,baseline,followup,other_specify_baseline,other_specify_followup) 
+        insert into major_content(cohort_id,category_id,baseline,followup,other_specify_baseline,other_specify_followup) 
 		select cohort_id,40,mdc_cognitive_decline_baseline,mdc_cognitive_decline_followup,"","" 
 		from cedcd.cohort_major_content;
 END //

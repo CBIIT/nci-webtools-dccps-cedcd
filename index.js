@@ -18,14 +18,14 @@ mysql.connect(config.mysql, function (result) {
 			if (results && results[0] && results[0].length > 0) {
 				let gender = results[0];
 				let cancer = results[1];
-				let domain = results[2];
+				let data_category = results[2];
 				let ethnicity = results[3];
 				let race = results[4];
 				let specimen = results[5];
 				let cohortstatus = results[6];
 				cache.setValue("lookup:gender", gender, -1);
 				cache.setValue("lookup:cancer", cancer, -1);
-				cache.setValue("lookup:domain", domain, -1);
+				cache.setValue("lookup:data_category", data_category, -1);
 				cache.setValue("lookup:ethnicity", ethnicity, -1);
 				cache.setValue("lookup:race", race, -1);
 				cache.setValue("lookup:specimen", specimen, -1);

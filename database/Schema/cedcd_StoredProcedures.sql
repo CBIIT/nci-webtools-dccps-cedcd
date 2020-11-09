@@ -54,7 +54,7 @@ DROP PROCEDURE IF EXISTS `select_advanced_cohort` //
 
 CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population text,
 									in race text, in ethnicity text, 
-									in domain text,in collected_specimen varchar(200),in cancer text,
+									in category text,in collected_specimen varchar(200),in cancer text,
                                     in booleanOperationBetweenField text, in booleanOperationWithInField text,
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -170,11 +170,11 @@ BEGIN
     end if;
     
     set @major_content_query = "";
-    if domain != "" then
-		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where domain_id  in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) group by cohort_id ");
+    if category != "" then
+		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where category_id  in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) group by cohort_id ");
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
         if tmp = "AND" then
-			set @len = LENGTH(domain) - LENGTH(REPLACE(domain, ',', '')) + 1;
+			set @len = LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1;
 			set @major_content_query = concat(@major_content_query, " having sum(1) >= ", @len);
         end if;
         set @major_content_query = concat(@major_content_query, " )");
@@ -284,9 +284,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline 
-	from cohort_basic cs, major_content mc, lu_domain ld, cohort ch, v_lu_domain vld
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
+	from cohort_basic cs, major_content mc, lu_data_collected_category ld, cohort ch, v_lu_data_collected_category vld
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -365,9 +365,9 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup 
-	from cohort_basic cs, major_content mc, lu_domain ld , cohort ch, v_lu_domain vld
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
+	from cohort_basic cs, major_content mc, lu_data_collected_category ld , cohort ch, v_lu_data_collected_category vld
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -418,7 +418,7 @@ CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	select * from lu_gender;
     select * from lu_cancer;
-    select * from v_lu_domain;
+    select * from v_lu_data_collected_category;
     select * from lu_ethnicity;
     select * from lu_race;
     select * from lu_specimen;
@@ -455,7 +455,7 @@ DROP PROCEDURE IF EXISTS `select_cohort` //
 
 CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population text, 
 									in race text, in ethnicity text, 
-									in domain text,in collected_specimen varchar(200),in cancer text,
+									in category text,in collected_specimen varchar(200),in cancer text,
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN
@@ -479,8 +479,8 @@ BEGIN
 	end if;
     
     set @major_content_query = "";
-    if domain != "" then
-		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where domain_id in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) )");
+    if category != "" then
+		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
     end if;
     
     set @specimen_query = "";

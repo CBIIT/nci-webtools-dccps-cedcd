@@ -313,10 +313,10 @@ router.post('/export/select', function (req, res) {
 	if (filter.collect.data.length !== 0 || filter.collect.specimen.length !== 0 || filter.collect.cancer.length !== 0) {
 		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
 		if (filter.collect.data.length !== 0) {
-			let domains = cache.getValue("lookup:domain");
+			let categories = cache.getValue("lookup:data_category");
 			let dict = {};
-			domains.forEach(function (d) {
-				dict[d.id] = d.domain + (d.sub_domain ? ": " + d.sub_domain : "");
+			categories.forEach(function (d) {
+				dict[d.id] = d.data_category + (d.sub_category ? ": " + d.sub_category : "");
 			});
 			data.list["Criteria"].header.push(["Data Collected:"]);
 			filter.collect.data.forEach(function (d) {
@@ -568,10 +568,10 @@ router.post('/export/advancedSelect', function (req, res) {
 	if (advancedFilter.data.length !== 0 || advancedFilter.specimen.length !== 0 || advancedFilter.cancer.length !== 0) {
 		data.list["Criteria"].header.push(["[Data and Specimens Collected]"]);
 		if (advancedFilter.data.length !== 0) {
-			let domains = cache.getValue("lookup:domain");
+			let categories = cache.getValue("lookup:data_category");
 			let dict = {};
-			domains.forEach(function (d) {
-				dict[d.id] = d.domain + (d.sub_domain ? ": " + d.sub_domain : "");
+			categories.forEach(function (d) {
+				dict[d.id] = d.data_category + (d.sub_category ? ": " + d.sub_category : "");
 			});
 
 			let str = [];
