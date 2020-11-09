@@ -6,14 +6,22 @@ import {useSelector, useDispatch} from 'react-redux'
 const Investigator = ({id, name, institution, email, isRequired, callback, errors, displayStyle}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
-            case 'string':
-                return validator.stringValidator(value, requiredOrNot)
+            case 'phone':
+                return validator.phoneValidator(value)
+            /*
             case 'date': 
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
+            case 'url': 
+                return validator.urlValidator(value)
+            */
+            case 'email':
+                return validator.emailValidator(value)
+            default: 
+                return validator.stringValidator(value, requiredOrNot)
         }
     }
     
@@ -54,7 +62,7 @@ const Investigator = ({id, name, institution, email, isRequired, callback, error
                 <div  className='col-md-12' style={{marginBottom: '4px'}}>
                     <span className='col-md-2'  style={{lineHeight: '2em', paddingLeft: '0'}}>Email</span>
                     <span className='col-md-6'>
-                        <input className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, isRequired, 'string')}}/>
+                        <input className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, isRequired, 'email')}}/>
                     </span>
                     {errors[email] ? <span className='col-md-4' style={{color: 'red', display: displayStyle}}>{errors[email]}</span> : ''}
                 </div>

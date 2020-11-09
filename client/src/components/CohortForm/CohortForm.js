@@ -12,7 +12,25 @@ const CohortForm = ({...props}) => {
     const dispatch = useDispatch()
 
     
-    const [errors, setErrors] = useState({collectedOtherSpecify: 'please specify', eligibleGender: 'please select an eligible gender', dataCollection: 'please select at least one value', strategy: 'please select at least one value', collectedOtherSpecify: 'please specify', restrictOtherSpecify: 'please specify', strategyOtherSpecify: 'please specify', questionnaire: false, main: false, data: false, specimen: false, publication: false})
+    const [errors, setErrors] = useState({
+        collectedOtherSpecify: 'please specify',
+        eligibleGender: 'please select an eligible gender',
+        enrollOnGoing: 'please select one',
+        numOfPlans: 'please specify',
+        yearToComplete: 'please specify',
+        timeInterval: 'please provide a value',
+        mostRecentYear: 'please provide a value',
+        dataCollection: 'please select at least one value', 
+        strategy: 'please select at least one value', 
+        collectedOtherSpecify: 'please specify', 
+        restrictOtherSpecify: 'please specify', 
+        strategyOtherSpecify: 'please specify', 
+        questionnaire: false, 
+        main: false, 
+        data: false, 
+        specimen: false, 
+        publication: false
+    })
 
     const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
@@ -45,19 +63,17 @@ const CohortForm = ({...props}) => {
 
     useEffect(() => {
         let shadow = {...errors}
-        if(cohort.collectedOther !== 1)
-            delete shadow.collectedOtherSpecify
-        if(cohort.restrictOther !== 1)
-            delete shadow.restrictOtherSpecify
-        if(cohort.strategyOther !== 1)
-            delete shadow.strategyOtherSpecify
+        if(cohort.collectedOther !== 1) delete shadow.collectedOtherSpecify
+        if(cohort.restrictOther !== 1) delete shadow.restrictOtherSpecify
+        if(cohort.enrollOnGoing) delete shadow.enrollOnGoing
+        else { delete shadow.numOfPlans; delete shadow.yearToComplete }
+        if(cohort.timeInterval) delete shadow.timeInterval
+        if(cohort.mostRecentYear) delete shadow.mostRecentYear
+        if(cohort.strategyOther !== 1) delete shadow.strategyOtherSpecify
         if(cohort.eligibleGender in ['4', '2', '1']) delete shadow.eligibilityCriteriaOther
-        if(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther)
-            delete shadow.dataCollection
-        if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther)
-            delete shadow.requirements
-        if(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther)
-            delete shadow.strategy
+        if(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther) delete shadow.dataCollection
+        if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) delete shadow.requirements
+        if(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther) delete shadow.strategy
         setErrors(shadow)
     }, [])
     const saveCohort = (id=13, proceed=false) => {
@@ -209,14 +225,20 @@ const CohortForm = ({...props}) => {
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
-            case 'string':
-                return validator.stringValidator(value, requiredOrNot)
+            case 'phone':
+                return validator.phoneValidator(value)
             case 'date': 
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
+            case 'url': 
+                return validator.urlValidator(value)
+            case 'email':
+                return validator.emailValidator(value)
+            default: 
+                return validator.stringValidator(value, requiredOrNot)
         }
     }
     //will be removed from this file later
@@ -289,9 +311,8 @@ const CohortForm = ({...props}) => {
                 }
             }else{
                 if(!errors[otherFieldName]){
-                    let shadow = {...errors}
                     shadow[otherFieldName] = 'please provide a value'
-                    setErrors(shadow)
+                    changed = true
                 }
             }
         }
@@ -505,28 +526,29 @@ const CohortForm = ({...props}) => {
                                 {errors.enrollEndYear ? errors.enrollStartYear ? <span className='col-md-offset-2 col-md-3' style={{color: 'red', fontSize: '1.3rem', display: displayStyle}}>{errors.enrollEndYear}</span> : <span className='col-md-offset-8 col-md-3' style={{color: 'red', fontSize: '1.3rem'}}>{errors.enrollEndYear}</span>:  ''}
                             </div>
                             <div className='col-md-12'>
-                                <span  className='col-md-4' style={{paddingLeft: '0'}}>Is enrollment ongoing?</span>
-                                <span className='col-md-3'><input type='radio' name='enrollmentCurrent' value='0' checked={cohort.enrollOnGoing === '0'} onChange={e => dispatch(allactions.cohortActions.enrollment_ongoing('0'))} /> No</span>
-                                <span className='col-md-3'><input type='radio' name='enrollmentCurrent' value='1' checked={cohort.enrollOnGoing === '1'} onChange={e => dispatch(allactions.cohortActions.enrollment_ongoing('1'))} /> Yes</span>
+                                <span  className='col-md-3' style={{paddingLeft: '0'}}>Is enrollment ongoing?</span>
+                                <span className='col-md-2'><input type='radio' name='enrollmentCurrent' value='0' checked={cohort.enrollOnGoing === 0} onChange={e => dispatch(allactions.cohortActions.enrollment_ongoing('0'))} /> No</span>
+                                <span className='col-md-3'><input type='radio' name='enrollmentCurrent' value='1' checked={cohort.enrollOnGoing === 1} onChange={e => dispatch(allactions.cohortActions.enrollment_ongoing('1'))} /> Yes</span>
+                                {errors.enrollOnGoing && <span className='col-md-2' style={{color: 'red', display: displayStyle}}>{errors.enrollOnGoing}</span>}
                             </div>
                             <div  className='col-md-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-9' style={{lineHeight: '2em'}}>
                                     If still enrolling, please specify the target number of plan to enroll
                                 </span>
                                 <span className='col-md-2'>
-                                    <input className='form-control' name='targetNumber' value={cohort.numOfPlans} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => {populateErrors('targetNumber', e.target.value, true, 'number')}}/>
+                                    <input className='form-control' name='targetNumber' value={cohort.numOfPlans} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => {populateErrors('numOfPlans', e.target.value, true, 'number')}}/>
                                 </span>
-                                {errors.targetNumber ? <span className='col-md-offset-9 col-md-2' style={{color: 'red', fontSize: '1.3rem', display: displayStyle}}>{errors.targetNumber}</span> : ''}
                             </div>
+                            {errors.numOfPlans && <div><span className='col-md-offset-9 col-md-2' style={{color: 'red', fontSize: '1.3rem', display: displayStyle}}>{errors.numOfPlans}</span></div>}
                             <div  className='col-md-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-9' style={{lineHeight: '2em'}}>
                                     If still enrolling, please specify when you plan to complete enrollment
                                 </span>
                                 <span className='col-md-2'>
                                     <input className='form-control' name='yearToComplete' placeholder='yyyy' value={cohort.yearToComplete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))}  onBlur={(e) => {populateErrors('yearToComplete', e.target.value, true, 'year')}}/>
-                                </span>
-                                {errors.yearToComplete ? <span className='col-md-offset-9 col-md-2' style={{color: 'red', fontSize: '1.3rem', display: displayStyle}}>{errors.yearToComplete}</span> : ''}
+                                </span>                               
                             </div>
+                            {errors.yearToComplete && <div><span className='col-md-offset-9 col-md-2' style={{color: 'red', fontSize: '1.3rem', display: displayStyle}}>{errors.yearToComplete}</span></div>}
                             <div className='col-md-12'  style={{paddingLeft: '0'}}>
                                 <div>
                                     <span className='col-md-6' style={{lineHeight: '2em'}}>Baseline age range of enrolled subjects</span>
@@ -586,8 +608,8 @@ const CohortForm = ({...props}) => {
                                 <label style={{paddingLeft: '0'}}>A.11{' '}Most recent year when questionnaire data were collected</label>
                             </div>
                             <div>
-                                <span className='col-md-6'><input className='form-control' name='yearDataCollected' value={cohort.mostRecentYear} onChange={e=>dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => {populateErrors('yearDataCollected', e.target.value, true, 'year')}}/></span>
-                                {errors.yearDataCollected ? <span className='col-md-3'  style={{color: 'red', display: displayStyle}}>{errors.yearDataCollected}</span> : ''}
+                                <span className='col-md-6'><input className='form-control' name='mostRecentYear' value={cohort.mostRecentYear} onChange={e=>dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => {populateErrors('mostRecentYear', e.target.value, true, 'year')}}/></span>
+                                {errors.mostRecentYear && <span className='col-md-3'  style={{color: 'red', display: displayStyle}}>{errors.mostRecentYear}</span> }
                             </div>
                         </div>
                         <div id='question12' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'row'}}>
@@ -687,7 +709,7 @@ const CohortForm = ({...props}) => {
                                 cohort.restrictOther === 1 ? 
                                 <span className='col-md-5' style={{margin: '0'}}><input className='form-control' name='restrictOtherSpecify' value={cohort.restrictOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value)); populateErrors('restrictOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                             }
-                            {errors.restrictOtherSpecify ?  <span style={{color: 'red', display: displayStyle}}>{errors.restrictOtherSpecify}</span> : ''}
+                            {errors.restrictOtherSpecify && <span style={{color: 'red', display: displayStyle}}>{errors.restrictOtherSpecify}</span> }
                         </div>
                     </div>
 

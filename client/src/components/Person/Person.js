@@ -6,14 +6,20 @@ import {useSelector, useDispatch} from 'react-redux'
 const Person =({id, name, position, phone, email, colWidth, callback, errors, displayStyle}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
-            case 'string':
-                return validator.stringValidator(value, requiredOrNot)
+            case 'phone':
+                return validator.phoneValidator(value)
             case 'date': 
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
+            case 'url': 
+                return validator.urlValidator(value)
+            case 'email':
+                return validator.emailValidator(value)
+            default: 
+                return validator.stringValidator(value, requiredOrNot)
         }
     }
     
@@ -46,28 +52,28 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
                     <input className='form-control' name={name} value={cohort[name]} onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/>
                 </span>
             </div>
-            {errors[name] ? <div><span className='col-md-offset-4 col-md-8' style={{color: 'red', display: displayStyle}}>{errors[name]}</span></div> : ''}
+            {errors[name] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[name]}</span></div> : ''}
             <div  className='col-md-12' style={{marginBottom: '4px'}}>
                 <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Position with the cohort</span>
                 <span className='col-md-7'>
                     <input className='form-control' name={position} value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}}/>
                 </span>
             </div>
-            {errors[position] ? <div><span className='col-md-offset-4 col-md-8' style={{color: 'red', display: displayStyle}}>{errors[position]}</span></div> : ''}
+            {errors[position] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[position]}</span></div> : ''}
             <div  className='col-md-12' style={{marginBottom: '4px'}}>
                 <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Phone</span>
                 <span className='col-md-7'>
-                    <input className='form-control' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](e.target.value))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'string')}}/>
+                    <input className='form-control' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](e.target.value))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone')}}/>
                 </span>
             </div>
-            {errors[phone] ? <div><span className='col-md-offset-4 col-md-8' style={{color: 'red', display: displayStyle}}>{errors[phone]}</span></div> : ''}
+            {errors[phone] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[phone]}</span></div> : ''}
             <div className='col-md-12'>
                 <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Email</span>
                 <span className='col-md-7'>
-                    <input className='form-control' type='phone' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'string')}}/>
+                    <input className='form-control' type='phone' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}/>
                 </span>
             </div>
-            {errors[email] ? <div><span className='col-md-offset-4 col-md-8' style={{color: 'red', display: displayStyle}}>{errors[email]}</span></div> : ''} 
+            {errors[email] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[email]}</span></div> : ''} 
         </div>
 }
 
