@@ -47,14 +47,14 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
 
     return <div id={id} className={'col-md-'+colWidth}>                           
             <div className='col-md-12' style={{marginBottom: '4px'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Name</span>
+                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                 <span className='col-md-7'>
                     <input className='form-control' name={name} value={cohort[name]} onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/>
                 </span>
             </div>
             {errors[name] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[name]}</span></div> : ''}
             <div  className='col-md-12' style={{marginBottom: '4px'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Position with the cohort</span>
+                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Position with the cohort<span style={{color: 'red'}}>*</span></span>
                 <span className='col-md-7'>
                     <input className='form-control' name={position} value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}}/>
                 </span>
@@ -68,7 +68,7 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
             </div>
             {errors[phone] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[phone]}</span></div> : ''}
             <div className='col-md-12'>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Email</span>
+                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Email<span style={{color: 'red'}}>*</span></span>
                 <span className='col-md-7'>
                     <input className='form-control' type='phone' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}/>
                 </span>
