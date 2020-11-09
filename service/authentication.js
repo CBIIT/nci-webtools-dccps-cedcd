@@ -1,3 +1,5 @@
+var { getConnectionAsync, queryAsync } = require('../components/mysql');
+
 module.exports = {
     authenticationMiddleware,
     getUserSession,
@@ -11,7 +13,7 @@ const authRoutes = [
     // '^/login/external\/?$',
 ].map(pattern => new RegExp(pattern));
 
-function authenticationMiddleware(request, response, next) {
+async function authenticationMiddleware(request, response, next) {
     const { url, headers, session } = request;
     const nodeEnv = process.env.NODE_ENV;
 
@@ -20,26 +22,49 @@ function authenticationMiddleware(request, response, next) {
         session.user = {
             type: 'admin',
             name: 'dev_admin',
-            role: 'admin',
+            role: 'SystemAdmin',
         };
+        next();
     } else if (authRoutes.some(regex => regex.test(url))) {
-        // otherwise, update user-session variable when hitting authRoutes
-        const { 
-            user_auth_type: userAuthType, 
-            fed_email: fedEmail, 
-            sm_user: smUser
-        } = headers;
-        
-        const isFederated = userAuthType === 'federated';
+        try {
+            // otherwise, update user-session variable when hitting authRoutes
+            const { 
+                user_auth_type: userAuthType, 
+                fed_email: fedEmail, 
+                sm_user: smUser
+            } = headers;
+            
+            const isFederated = userAuthType === 'federated';
+            const userType = isFederated ? 'external' : 'internal';
+            const userName = isFederated ? fedEmail : smUser;
 
-        session.user = {
-            type: isFederated ? 'external' : 'internal',
-            name: isFederated ? fedEmail : smUser,
-            role: 'admin',
-        };
+            const { results } = await queryAsync(
+                await getConnectionAsync(),
+                `SELECT 
+                    email, 
+                    access_level as accessLevel 
+                FROM user where email = ?`,
+                [userName]
+            );
+
+            if (results.length) {
+                session.user = {
+                    type: userType,
+                    name: userName,
+                    role: results[0].accessLevel, // SystemAdmin or CohortAdmin
+                };
+                next();
+            } else {
+                throw('Unauthorized');
+            }
+        } catch (e) {
+            request.session.user = null;
+            logger.error(e);
+            next();
+        }
+    } else {
+        next();
     }
-
-    next();
 }
 
 // note: both federated NIH Auth use siteminder under the hood to authenticate users
