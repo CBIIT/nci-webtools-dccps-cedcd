@@ -13,7 +13,6 @@ const authRoutes = [
 
 function authenticationMiddleware(request, response, next) {
     const { url, headers, session } = request;
-    
     const nodeEnv = process.env.NODE_ENV;
 
     if (nodeEnv === 'development') {
@@ -22,24 +21,20 @@ function authenticationMiddleware(request, response, next) {
             name: 'dev_admin',
             role: 'admin',
         };
-    } else if (nodeEnv === 'production' && headers.sm_user) {
+    } else if (authRoutes.some(regex => regex.test(url))) {
+        const { 
+            user_auth_type: userAuthType, 
+            fed_email: fedEmail, 
+            sm_user: smUser
+        } = headers;
+        
+        const isFederated = userAuthType === 'federated';
 
-        if (authRoutes.some(regex => regex.test(url))) {
-            const { 
-                user_auth_type: userAuthType, 
-                fed_email: fedEmail, 
-                sm_user: smUser 
-            } = headers;
-
-            const userType = userAuthType === 'federated' ? 'external' : 'internal';
-            const userName = userType === 'external' ? fedEmail : smUser;
-
-            session.user = {
-                type: userType,
-                name: userName,
-                role: 'admin',
-            };
-        }
+        session.user = {
+            type: isFederated ? 'external' : 'internal',
+            name: isFederated ? fedEmail : smUser,
+            role: 'admin',
+        };
     }
 
     next();
