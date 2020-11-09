@@ -41,6 +41,20 @@ var getConnection = function(next){
 	});
 };
 
+var getConnectionAsync = () => new Promise((resolve, reject) => {
+	pool.getConnection((error, connection) => {
+		if (error) reject(error);
+		else resolve(connection);
+	})
+});
+
+var queryAsync = (connection, sql, values) => new Promise((resolve, reject) => {
+	connection.query({sql, values}, (error, results, fields) => {
+		if (error) reject(error);
+		else resolve({results, fields});
+	});
+})
+
 var query = function(sql, next){
 	pool.getConnection(function(err,connection){
         if(err){
@@ -220,5 +234,7 @@ module.exports = {
 	execute,
 	callProcedure,
 	callJsonProcedure,
-	close
+	close,
+	getConnectionAsync,
+	queryAsync,
 };
