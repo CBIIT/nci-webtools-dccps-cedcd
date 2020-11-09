@@ -11,7 +11,9 @@ var pool = null;
 
 var connect = function(config, next){
 	pool = mysql.createPool({
-	    connectionLimit : config.connectionLimit, 
+		connectionLimit : config.connectionLimit, 
+		connectTimeout: config.connectTimeout || (1000 * 60 * 20),
+		acquireTimeout: config.acquireTimeout || (1000 * 60 * 20),
 	    host     : config.host,
       	port     : config.port,
 	    user     : config.user,
