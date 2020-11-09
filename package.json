@@ -2,8 +2,10 @@
   "name": "cedcd_server",
   "version": "1.0.0",
   "description": "Cancer Epidemiology Descriptive Cohort Database",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
+    "start:dev": "NODE_ENV=development && node index.js",
+    "start": "NODE_ENV=production && node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
@@ -20,6 +22,7 @@
     "express-session": "^1.15.6",
     "lodash": "^4.17.4",
     "md5": "^2.2.1",
+    "memorystore": "^1.6.4",
     "method-override": "^2.3.9",
     "minimist": "^1.2.0",
     "moment": "^2.19.3",
