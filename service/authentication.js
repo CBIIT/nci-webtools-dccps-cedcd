@@ -68,10 +68,12 @@ async function authenticationMiddleware(request, response, next) {
 // note: both federated NIH Auth use siteminder under the hood to authenticate users
 // so we can use the global siteminder agent logout route to invalidate our current session
 function logout(request, response) {
-    request.session.user = null;
-    response.redirect(301, 'https://auth.nih.gov/siteminderagent/smlogout.asp');
+    request.session.destroy(error => {
+        // to ensure the proper session is destroyed, always visit the logout route from the application
+        response.redirect(301, 'https://auth.nih.gov/siteminderagent/smlogout.asp');
+    })
 }
 
 function getUserSession(request, response) {
-    response.json(request.session.user);
+    response.json(request.session.user || null);
 }
