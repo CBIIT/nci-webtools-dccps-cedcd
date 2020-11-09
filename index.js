@@ -6,8 +6,6 @@ var mysql = require('./components/mysql');
 var cache = require('./components/cache');
 var app = express();
 
-app.use(require('./service/session'));
-app.use(require('./service/authentication').authenticationMiddleware);
 require('./config/express')(app);
 require('./routes')(app);
 

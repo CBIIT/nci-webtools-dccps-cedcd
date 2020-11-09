@@ -29,7 +29,8 @@ module.exports = function(app){
     app.use(fileUpload());
     app.use(methodOverride());
     app.use(cookieParser());
-    app.use(session({secret: 'cedcd token', cookie: {maxAge: config.maxAge}, resave: true, saveUninitialized: true }));
+    app.use(require('../service/session'));
+    app.use(require('../service/authentication').authenticationMiddleware);
 
     app.use(express.static(path.join(config.root, 'client/www')));
     
