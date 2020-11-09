@@ -1,11 +1,13 @@
-var session = require('express-session');
-var MemoryStore = require('memorystore')(session);
+const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+const maxSessionAge = 86400000;
 
 module.exports = session({
-    cookie: { maxAge: 86400000 },
+    cookie: { maxAge: maxSessionAge },
     store: new MemoryStore({
-      checkPeriod: 86400000 // prune expired entries every 24h
+      checkPeriod: maxSessionAge
     }),
     resave: false,
+    saveUninitialized: true,
     secret: process.env.SESSION_SECRET || 'default session store secret'
 });

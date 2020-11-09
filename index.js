@@ -6,10 +6,10 @@ var mysql = require('./components/mysql');
 var cache = require('./components/cache');
 var app = express();
 
-require('./config/express')(app);
-require('./routes')(app);
 app.use(require('./service/session'));
 app.use(require('./service/authentication').authenticationMiddleware);
+require('./config/express')(app);
+require('./routes')(app);
 
 //setup mysql connection
 mysql.connect(config.mysql, function (result) {
