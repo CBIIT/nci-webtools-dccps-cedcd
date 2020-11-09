@@ -307,7 +307,7 @@ const questionnaire_file_attached = (v) => ({type: t.setQuestionnaireFile, value
 
 const main_cohort_file_attached = (v) => ({type: t.setMainCohortFile, value: v})
 
-const data_file_attached = (v)=> ({type: t.setDataFie, value: v})
+const data_file_attached = (v)=> ({type: t.setDataFile, value: v})
 
 const specimen_file_attached = (v) => ({type: t.setSpecimenFile, value: v})
 
