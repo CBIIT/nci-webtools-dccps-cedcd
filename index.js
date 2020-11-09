@@ -8,6 +8,8 @@ var app = express();
 
 require('./config/express')(app);
 require('./routes')(app);
+app.use(require('./service/session'));
+app.use(require('./service/authentication').authenticationMiddleware);
 
 //setup mysql connection
 mysql.connect(config.mysql, function (result) {
