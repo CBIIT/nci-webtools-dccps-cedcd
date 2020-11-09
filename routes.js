@@ -8,7 +8,8 @@ var m_cohort = require('./service/cohort');
 var m_common = require('./service/common');
 var m_user = require('./service/user');
 var m_questionnaire = require('./service/questionnaire')
-var m_admin = require('./service/admin')
+var m_admin = require('./service/admin');
+var { getUserSession, logout } = require('./service/authentication');
 var config = require('./config');
 var path = require('path');
 
@@ -30,6 +31,8 @@ module.exports = function (app) {
 	app.use('/api/user', m_user);
 	app.use('/api/questionnaire', m_questionnaire);
 	app.use('/api/managecohort', m_admin);
+	app.use('/api/user-session', getUserSession);
+	app.use('/api/logout', logout);
 
 	// All other routes should redirect to error page
 	app.get('/*', function (req, res) {
