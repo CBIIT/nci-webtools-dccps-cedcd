@@ -57,6 +57,7 @@ const CohortForm = ({...props}) => {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
+                console.dir(result.data.sectionStatus)
                 batch(() =>{
                 for(let k of Object.keys(result.data.cohort)){
                     dispatch(allactions.cohortActions[k](result.data.cohort[k]))
@@ -69,6 +70,9 @@ const CohortForm = ({...props}) => {
                 }
                 for(let k of Object.keys(result.data.collaborator)){
                     dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
+                }
+                for(let k of result.data.sectionStatus){
+                    dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                 }
                 dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
                 dispatch(allactions.cohortActions.setHasLoaded(true))
