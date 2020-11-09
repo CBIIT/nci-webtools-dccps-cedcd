@@ -40,10 +40,8 @@ async function authenticationMiddleware(request, response, next) {
 
             const { results } = await queryAsync(
                 await getConnectionAsync(),
-                `SELECT 
-                    email, 
-                    access_level as accessLevel 
-                FROM user where email = ?`,
+                `SELECT access_level as accessLevel 
+                FROM user where user_name = ?`,
                 [userName]
             );
 
