@@ -13,7 +13,7 @@ export default function Header({ props }) {
     return (
         <div id="header">
 
-            <div id="header-inner" style={{display: 'flex'}}>
+            <div id="header-inner" style={{display: 'flex', justifyContent: 'space-between'}}>
                 <a href="/" style={{ border: '0' }}>
                     <img
                         src="/assets/img/logo_CEDCD_white.png"
