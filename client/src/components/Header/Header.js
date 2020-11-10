@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { UserSessionContext } from '../../index';
+
 
 export default function Header({ props }) {
+    const userSession = useContext(UserSessionContext);
+    const logout = async e => {
+        e.preventDefault();
+        await fetch('/api/logout');
+        window.location.href = 'https://auth.nih.gov/siteminderagent/smlogout.asp'
+    }
 
     return (
         <div id="header">
@@ -16,20 +24,31 @@ export default function Header({ props }) {
                 </a>
 
                 <div style={{marginLeft: '10%', marginTop: '20px'}}>
-                    <a
-                        className="login-button"
-                        href="/cohort/questionnaire/13"
-                        style={{ margin: '5px' }}
-                        target="_self">
-                        Cohort Login
-                    </a>
-                    <a
-                        className="login-button"
-                        href="/admin/managecohort"
-                        style={{ margin: '5px' }}
-                        target="_self">
-                        Admin Login
-                </a>
+                    {userSession && <>
+                        <a
+                            className="login-button"
+                            href="#"
+                            onClick={logout}
+                            style={{ margin: '5px' }}
+                            target="_self">
+                            Logout
+                        </a>
+                    </> || <>
+                        <a
+                            className="login-button"
+                            href="/cohort/questionnaire/13"
+                            style={{ margin: '5px' }}
+                            target="_self">
+                            Cohort Login
+                        </a>
+                        <a
+                            className="login-button"
+                            href="/admin/managecohort"
+                            style={{ margin: '5px' }}
+                            target="_self">
+                            Admin Login
+                        </a>
+                    </>}
             </div>
 
         </div>

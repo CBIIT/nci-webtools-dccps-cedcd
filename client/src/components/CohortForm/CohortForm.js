@@ -71,8 +71,13 @@ const CohortForm = ({...props}) => {
                 for(let k of Object.keys(result.data.collaborator)){
                     dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
                 }
-                for(let k of result.data.sectionStatus){
-                    dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
+
+                if (Array.isArray(result.data.sectionStatus)) {
+                    for(let k of result.data.sectionStatus){
+                        dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
+                    }
+                } else {
+                    console.warn('result.data.sectionStatus', result.data.sectionStatus)
                 }
                 dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
                 dispatch(allactions.cohortActions.setHasLoaded(true))

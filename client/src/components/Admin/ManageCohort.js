@@ -4,6 +4,8 @@ import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
 import TableHeaderManageCohort from './TableHeaderManageCohort';
+import { UserSessionContext } from '../../index';
+import Unauthorized from '../Unauthorized/Unauthorized';
 import './ManageCohort.css';
 import { filter, size } from 'lodash';
 
@@ -325,7 +327,11 @@ class ManageCohort extends Component {
 				</tr>
 			);
 		}
-		return (
+
+		return <UserSessionContext.Consumer>
+		{userSession => (
+			!(process.env.NODE_ENV === 'development2' || (userSession && userSession.role === 'SystemAdmin')) &&
+			<Unauthorized /> ||
 			<div>
 				<h1 className="welcome pg-title">Manage Cohorts</h1>
 				<p className="welcome">Browse the list of cohorts or use the filter options to search cohorts according to cohort status.
@@ -408,7 +414,7 @@ class ManageCohort extends Component {
 					</div>
 				</div>
 			</div>
-		);
+		)}</UserSessionContext.Consumer>;
 	}
 }
 

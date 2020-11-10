@@ -9,11 +9,25 @@ import {createStore} from 'redux';
 import rootReducer from './reducers';
 const history = createBrowserHistory();
 const store = createStore(rootReducer);
-ReactDOM.render((
-	<Provider store={store}>
-		<BrowserRouter history={history}>
-			<App />
-		</BrowserRouter>
-	</Provider>), document.getElementById('root'));
-	
-unregister()
+export const UserSessionContext = React.createContext(null);
+
+(async function main() {
+	const response = await fetch('/api/user-session');
+	const userSession = await response.json();
+
+	ReactDOM.render(
+		<UserSessionContext.Provider value={userSession}>
+			<Provider store={store}>
+				<BrowserRouter history={history}>
+					<App />
+				</BrowserRouter>
+			</Provider>
+		</UserSessionContext.Provider>, 
+		document.getElementById('root')
+	);
+		
+	unregister();
+})();
+
+
+
