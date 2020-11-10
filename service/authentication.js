@@ -48,22 +48,19 @@ async function authenticationMiddleware(request, response, next) {
                 [userName]
             );
 
-            if (results.length) {
-                session.user = {
-                    type: userType,
-                    name: userName,
-                    role: results[0].accessLevel, // SystemAdmin or CohortAdmin
-                };
-                next();
-            } else {
-                throw new Error('Unauthorized');
-            }
+            session.user = {
+                type: userType,
+                name: userName,
+                role: results[0] && results[0].accessLevel, // SystemAdmin or CohortAdmin
+            };
+       
         } catch (e) {
             request.session.destroy(error => {
                 request.session.user = null;
                 console.error(e);
-                next();
             })
+        } finally {
+            next();
         }
     } else {
         next();
