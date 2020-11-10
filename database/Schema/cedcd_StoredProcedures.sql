@@ -54,8 +54,8 @@ DROP PROCEDURE IF EXISTS `upsertEnrollment_count` //
 DROP PROCEDURE IF EXISTS `select_advanced_cohort` //
 
 CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population text,
-									in race text, in ethnicity text, 
-									in domain text,in collected_specimen varchar(200),in cancer text,
+		in race text, in ethnicity text, 
+									in category text,in collected_specimen varchar(200),in cancer text,
                                     in booleanOperationBetweenField text, in booleanOperationWithInField text,
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -171,11 +171,25 @@ BEGIN
     end if;
     
     set @major_content_query = "";
-    if domain != "" then
-		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where domain_id  in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) group by cohort_id ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
+    if category != "" then
+      if category = "41" then
+        set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+      elseif locate("41", category) > 0 then
+        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
+        union
+        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+      else
+		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
+      end if;
+	
+  
+       set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
         if tmp = "AND" then
-			set @len = LENGTH(domain) - LENGTH(REPLACE(domain, ',', '')) + 1;
+			set @len = LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1;
 			set @major_content_query = concat(@major_content_query, " having sum(1) >= ", @len);
         end if;
         set @major_content_query = concat(@major_content_query, " )");
@@ -203,7 +217,7 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat(" cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
         
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',7)),',',1));
         if tmp = "AND" then
@@ -249,7 +263,7 @@ BEGIN
 		set @query = concat(@query, @and_query, @or_query);
     end if;
     
-    set @groupBy = " group by cs.cohort_id ";
+    set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -268,6 +282,7 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
+
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -285,10 +300,11 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.baseline, mc.other_specify_baseline 
-	from cohort_basic cs, major_content mc, lu_domain ld, cohort ch, v_lu_domain vld
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
-    PREPARE stmt FROM @query;
+    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
+	    from cohort_basic cs, major_content mc, lu_data_collected_category ld, cohort ch, v_lu_data_collected_category vld
+	    WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
+  
+  PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END //
@@ -366,10 +382,11 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.domain_id, ld.domain, ld.sub_domain, mc.followup, mc.other_specify_followup 
-	from cohort_basic cs, major_content mc, lu_domain ld , cohort ch, v_lu_domain vld
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.domain_id = ld.id and ld.domain = vld.domain ",@queryString);
-    PREPARE stmt FROM @query;
+     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
+	from cohort_basic cs, major_content mc, lu_data_collected_category ld , cohort ch, v_lu_data_collected_category vld
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
+     
+  PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
 END //
@@ -419,7 +436,7 @@ CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	select * from lu_gender;
     select * from lu_cancer where id < 29 order by case when id=1 then 'zzz' else cancer end, cancer;
-    select * from v_lu_domain;
+    select * from v_lu_data_collected_category;
     select * from lu_ethnicity;
     select * from lu_race;
     select * from lu_specimen where id < 10;
@@ -456,7 +473,7 @@ DROP PROCEDURE IF EXISTS `select_cohort` //
 
 CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population text, 
 									in race text, in ethnicity text, 
-									in domain text,in collected_specimen varchar(200),in cancer text,
+									in category text,in collected_specimen varchar(200),in cancer text,
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN
@@ -480,8 +497,20 @@ BEGIN
 	end if;
     
     set @major_content_query = "";
-    if domain != "" then
-		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where domain_id in ( select ld.id from lu_domain ld , v_lu_domain vld where ld.domain=vld.domain and vld.id in (",domain,")) ", " and (baseline=1 or followup = 1) )");
+    if category != "" then
+      if category = "41" then
+       set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1) ");
+      elseif locate("41", category) > 0 then
+       set @major_content_query = concat(" and cs.cohort_id in ( select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
+        union
+        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 )");
+      else
+		    set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
+      end if;
     end if;
     
     set @specimen_query = "";
@@ -496,7 +525,7 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
 	end if;
         
         
@@ -573,7 +602,7 @@ BEGIN
 		set @cohort_query = concat(@cohort_query, "and cs.eligible_disease in (",study_population,") ");
     end if;
     
-    set @groupBy = " group by cs.cohort_id ";
+    set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -591,6 +620,7 @@ BEGIN
 	FROM cohort_basic cs, enrollment_count ec, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = ec.cohort_id ",@enrollment_query,@major_content_query,@specimen_query,@cancer_query);
     set @query = concat(@query, @cohort_query,@groupBy, @orderBy, @paging);
+
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
@@ -999,6 +1029,8 @@ BEGIN
     SELECT @rowcount AS rowsAffacted;
 END //
 
+
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_admin_cohortlist
 -- -----------------------------------------------------------------------------------------------------------
@@ -1385,23 +1417,23 @@ BEGIN
 	SELECT 
 		CONCAT(CAST(race_id AS CHAR), CAST(ethnicity_id AS CHAR),
     CAST(gender_id AS CHAR)) AS cellId, CAST(enrollment_counts AS CHAR) AS cellCount
-	FROM  enrollment_count WHERE cohort_id = `targetID`
+	FROM cedcd_new.enrollment_count WHERE cohort_id = `targetID`
 	ORDER BY race_id, ethnicity_id, gender_id;
     
 	SELECT CAST(race_id as CHAR) AS rowId, SUM(enrollment_counts) AS rowTotal 
-	from  enrollment_count 
+	from cedcd_new.enrollment_count 
 	where cohort_id = `targetID` group by race_id ;
 
 	select concat(cast(t.ethnicity_id as char), cast(t.gender_id as char)) as colId, sum(t.enrollment_counts) as colTotal
 	from (select enrollment_counts, race_id, ethnicity_id, gender_id 
-	from  enrollment_count
+	from cedcd_new.enrollment_count
 	where cohort_id = `targetID`
 	group by  ethnicity_id, gender_id, race_id 
 	order by ethnicity_id, gender_id, race_id) as t
 	group by t.ethnicity_id, t.gender_id;
 	 
 	select sum(enrollment_counts)  as grandTotal
-	from  enrollment_count
+	from cedcd_new.enrollment_count
 	where cohort_id = `targetID`;
      
 	select date_format(enrollment_most_recent_date, '%m/%d/%Y') as mostRecentDate from cohort_basic where cohort_id = `targetID`;
