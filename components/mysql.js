@@ -11,7 +11,9 @@ var pool = null;
 
 var connect = function(config, next){
 	pool = mysql.createPool({
-	    connectionLimit : config.connectionLimit, 
+		connectionLimit : config.connectionLimit, 
+		connectTimeout: config.connectTimeout || (1000 * 60 * 20),
+		acquireTimeout: config.acquireTimeout || (1000 * 60 * 20),
 	    host     : config.host,
       	port     : config.port,
 	    user     : config.user,
@@ -38,6 +40,20 @@ var getConnection = function(next){
         next(connection);
 	});
 };
+
+var getConnectionAsync = () => new Promise((resolve, reject) => {
+	pool.getConnection((error, connection) => {
+		if (error) reject(error);
+		else resolve(connection);
+	})
+});
+
+var queryAsync = (connection, sql, values) => new Promise((resolve, reject) => {
+	connection.query({sql, values}, (error, results, fields) => {
+		if (error) reject(error);
+		else resolve({results, fields});
+	});
+})
 
 var query = function(sql, next){
 	pool.getConnection(function(err,connection){
@@ -218,5 +234,7 @@ module.exports = {
 	execute,
 	callProcedure,
 	callJsonProcedure,
-	close
+	close,
+	getConnectionAsync,
+	queryAsync,
 };

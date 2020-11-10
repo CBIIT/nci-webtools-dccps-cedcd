@@ -1,7 +1,7 @@
 .login-button {
   display: inline-block;
   text-align: center;
-  vertical-align: bottom;
+  /* vertical-align: bottom; */
   padding: 8px 16px;
   border: 1px solid #9b9999;
   border-radius: 8px;

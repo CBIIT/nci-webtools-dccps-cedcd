@@ -5,6 +5,16 @@ const setHasLoaded = (v) => ({
     loaded: v
 })
 
+const setSectionAStatus = (v) => ({
+    type: t.setSectionAStatus,
+    value: v
+})
+
+const cohort_id = (v) => ({
+    type: t.setCohortId,
+    id: v
+})
+
 const cohort_name = (n) => ({
     type: t.setCohortName,
     name: n
@@ -15,7 +25,7 @@ const cohort_acronym = (n) => ({
     acronym: n
 })
 
-const setCompletionDate = (d) => ({
+const completionDate = (d) => ({
     type: t.setCompletionDate,
     completionDate: d
 })
@@ -231,24 +241,29 @@ const most_recent_year = (y) => ({
     year: y
 })
 
-const data_collected_in_person = () => ({
-    type: t.setCollectedInPerson
+const data_collected_in_person = (v) => ({
+    type: t.setCollectedInPerson,
+    value: v
 })
 
-const data_collected_phone = () => ({
-    type: t.setCollectedPhone
+const data_collected_phone = (v) => ({
+    type: t.setCollectedPhone,
+    value: v
 })
 
-const data_collected_paper = () => ({
-    type: t.setCollectedPaper
+const data_collected_paper = (v) => ({
+    type: t.setCollectedPaper,
+    value: v
 })
 
-const data_collected_web = () => ({
-    type: t.setCollectedWeb
+const data_collected_web = (v) => ({
+    type: t.setCollectedWeb,
+    value: v
 })
 
-const data_collected_other = () => ({
-    type: t.setCollectedOther
+const data_collected_other = (v) => ({
+    type: t.setCollectedOther,
+    value: v
 })
 
 const data_collected_other_specify = (v) => ({
@@ -256,62 +271,74 @@ const data_collected_other_specify = (v) => ({
     otherMeans: v
 })
 
-const requireNone = () => ({type: t.setRequireNone})
+const requireNone = (v) => ({type: t.setRequireNone, value: v})
 
-const requireCollab = () => ({type: t.setRequireCollab})
+const requireCollab = (v) => ({type: t.setRequireCollab, value: v})
 
-const requireIrb = () => ({type: t.setRequireIrb})
+const requireIrb = (v) => ({type: t.setRequireIrb, value: v})
 
-const requireData = () => ({type: t.setRequireData})
+const requireData = (v) => ({type: t.setRequireData, value: v})
 
-const restrictGenoInfo = () => ({type: t.setRestrictGenoInfo})
+const restrictGenoInfo = (v) => ({type: t.setRestrictGenoInfo, value: v})
 
-const restrictOtherDb = () => ({type: t.setRestrictOtherDb})
+const restrictOtherDb = (v) => ({type: t.setRestrictOtherDb, value: v})
 
-const restrictCommercial = () => ({type: t.setRestrictCommercial})
+const restrictCommercial = (v) => ({type: t.setRestrictCommercial, value: v})
 
-const restrictOther = () => ({type: t.setRestrictOther})
+const restrictOther = (v) => ({type: t.setRestrictOther, value: v})
 
 const restrictions_other_specify = (d) => ({type: t.setRestrictOtherSpecify, details: d})
 
-const strategy_routine = () => ({type: t.setStrategyRoutine})
+const strategy_routine = (v) => ({type: t.setStrategyRoutine, value: v})
 
-const strategy_mailing = () => ({type: t.setStrategyMailing})
+const strategy_mailing = (v) => ({type: t.setStrategyMailing, value: v})
 
-const strategy_aggregate_study = () => ({type: t.setStrategyAggregateStudy})
+const strategy_aggregate_study = (v) => ({type: t.setStrategyAggregateStudy, value: v})
 
-const strategy_individual_study = () => ({type: t.setStrategyIndividualStudy})
+const strategy_individual_study = (v) => ({type: t.setStrategyIndividualStudy, value: v})
 
-const strategy_invitation = () => ({type: t.setStrategyInvitation})
+const strategy_invitation = (v) => ({type: t.setStrategyInvitation, value: v})
 
-const strategy_other = () => ({type: t.setStrategyOther})
+const strategy_other = (v) => ({type: t.setStrategyOther, value: v})
 
-const strategy_other_sepcify = (d) => ({type: t.setStrategyOtherSepcify, details: d})
+const strategy_other_specify = (d) => ({type: t.setStrategyOtherSepcify, details: d})
 
-const questionnaire_file_attached = () => ({type: t.setQuestionnaireFile})
+const questionnaire_file_attached = (v) => ({type: t.setQuestionnaireFile, value: v})
 
-const main_cohort_file_attached = () => ({type: t.setMainCohortFile})
+const main_cohort_file_attached = (v) => ({type: t.setMainCohortFile, value: v})
 
-const data_file_attached = ()=> ({type: t.setDataFie})
+const data_file_attached = (v)=> ({type: t.setDataFile, value: v})
 
-const specimen_file_attached = () => ({type: t.setSpecimenFile})
+const specimen_file_attached = (v) => ({type: t.setSpecimenFile, value: v})
 
-const publication_file_attached = () => ({type: t.setPublicationFile})
+const publication_file_attached = (v) => ({type: t.setPublicationFile, value: v})
 
-const questionnaireUrl = (v) => ({type: t.setQuestionnaireUrl, url: v})
+const questionnaire_file = (v) => ({type: t.setQuestionnaireFileName, value: v})
 
-const mainCohortUrl = (v) => ({type: t.setMainCohortUrl, url: v})
+const main_file = (v) => ({type: t.setMainFileName, value: v})
 
-const dataUrl = (v) => ({type: t.setDataUrl, url: v})
+const specimen_file = (v) => ({type: t.setSpecimenFileName, value: v})
 
-const specimenUrl = (v) => ({type: t.setSpecimenUrl, url: v})
+const publication_file = (v) => ({type: t.setPublicationFileName, value: v})
 
-const publicationUrl = (v) => ({type: t.setPublicationUrl, url: v})
+const data_file = (v) => ({type: t.setDataFileName, value: v})
+
+const questionnaire_url = (v) => ({type: t.setQuestionnaireUrl, url: v})
+
+const main_cohort_url = (v) => ({type: t.setMainCohortUrl, url: v})
+
+const data_url = (v) => ({type: t.setDataUrl, url: v})
+
+const specimen_url = (v) => ({type: t.setSpecimenUrl, url: v})
+
+const publication_url = (v) => ({type: t.setPublicationUrl, url: v})
 export default {
     setHasLoaded,
+    setSectionAStatus,
+    cohort_id,
     cohort_name,
     cohort_acronym,
-    setCompletionDate,
+    completionDate,
     completerName,
     completerPosition,
     completerEmail,
@@ -375,15 +402,20 @@ export default {
     strategy_individual_study,
     strategy_invitation, 
     strategy_other,
-    strategy_other_sepcify,
+    strategy_other_specify,
     questionnaire_file_attached,
     main_cohort_file_attached,
     data_file_attached,
     specimen_file_attached,
     publication_file_attached,
-    questionnaireUrl,
-    mainCohortUrl,
-    dataUrl,
-    specimenUrl,
-    publicationUrl
+    questionnaire_file,
+    main_file,
+    data_file,
+    specimen_file,
+    publication_file,
+    questionnaire_url,
+    main_cohort_url,
+    data_url,
+    specimen_url,
+    publication_url
 }

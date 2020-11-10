@@ -26,12 +26,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:prod": "react-scripts build && cp -rf build www",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "homepage": "/",
   "//": "proxy attribute below is only for development purpose",
-  "proxy": "http://localhost:9000",
+  "proxy": "http://localhost:8221",
   "browserslist": {
     "production": [
       ">0.2%",

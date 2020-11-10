@@ -1,15 +1,13 @@
 import React, {useState, useEffect} from 'react'
 //import {useForm} from 'react-hook-form'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector, useDispatch, batch} from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
-    //const [cell141, setCell141] = useState(enrollmentCount['141'])
-    //const [cell811, setCell811] = useState(enrollmentCount['811'])
     const dispatch = useDispatch()
-    //const {handleSubmit, register, errors} = useForm()
-    const [errors, setErrors] = useState({})
+    const [displayStyle, setDisplay] = useState('0')
+    const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -27,7 +25,38 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
 
-    const saveEnrollment = (id=79, proceed=false) => {
+    useEffect(() => {
+        if(!enrollmentCount.hasLoaded){
+            fetch('/api/questionnaire/enrollment_counts/13', {
+                method: 'POST',
+            }).then(res => res.json())
+              .then(result => {
+                if(result.data.mostRecentDate.mostRecentDate)
+                {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}
+                batch(()=> {
+                    for(let i = 0; i < result.data.details.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
+                    for(let i = 0; i < result.data.rowTotals.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateTotals(result.data.rowTotals[i].rowId+'41', result.data.rowTotals[i].rowTotal))
+                    for(let i = 0; i < result.data.colTotals.length; i++)
+                        dispatch(allactions.enrollmentCountActions.updateTotals('8'+result.data.colTotals[i].colId, result.data.colTotals[i].colTotal))
+                    dispatch(allactions.enrollmentCountActions.updateTotals('841', result.data.grandTotal.grandTotal))
+                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(result.data.mostRecentDate.mostRecentDate))
+                    dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
+                })//end of batch
+            })// end of then
+        }
+    }, [])
+
+    /*
+    useEffect(() => {
+        if(enrollmentCount.mostRecentDate){
+            alert(enrollmentCount.mostRecentDate)
+            let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)
+        }
+    }, [])
+    */
+    const saveEnrollment = (id=13, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -38,6 +67,11 @@ const EnrollmentCountsForm = ({...props}) => {
             .then(res => res.json())
             .then(result => {
                 if(result.status === 200){
+                    if(Object.entries(errors).length === 0)
+                        dispatch(allactions.sectionActions.setSectionStatus('B', 'complete'))
+                    else{
+                        dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
+                    }
                     if(!proceed)
                         alert('Data was successfully saved')
                     else
@@ -48,18 +82,24 @@ const EnrollmentCountsForm = ({...props}) => {
             })
     }
     const handleSave = () => {
-        if(Object.entries(errors).length === 0)
-            saveEnrollment(79)
+        if(Object.entries(errors).length === 0){
+            enrollmentCount.sectionBStatus='complete'
+            dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
+            saveEnrollment(13)  
+        }
         else{
-            //setDisplay('block')
-            if(window.confirm('there are validation errors, are you sure to save?'))
-                saveEnrollment(79)
+            setDisplay('1')
+            if(window.confirm('there are validation errors, are you sure to save?')){
+                enrollmentCount.sectionBStatus='incomplete'
+                dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
+                saveEnrollment(13)
+            }
         }
     }
 
     const handleSaveContinue = () => {
         if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
+            saveEnrollment(13, true)}
     }
 
 
@@ -109,7 +149,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='131'  value={enrollmentCount['131']} onChange={(e) => updateCells('131', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='132'  value={enrollmentCount['132']} onChange={(e) => updateCells('132', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='133'  value={enrollmentCount['133']} onChange={(e) => updateCells('133', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='141'  value={enrollmentCount['141']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='141'  value={enrollmentCount['141']} /></td>
                             </tr>
 
                             <tr>
@@ -123,7 +163,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='231'  value={enrollmentCount['231']} onChange={(e) => updateCells('231', e.target.value)}/></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='232'  value={enrollmentCount['232']} onChange={(e) => updateCells('232', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='233'  value={enrollmentCount['233']} onChange={(e) => updateCells('233', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='241'  value={enrollmentCount['241']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='241'  value={enrollmentCount['241']} /></td>
                             </tr>
 
                             <tr>
@@ -137,7 +177,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='331'  value={enrollmentCount['331']} onChange={(e) => updateCells('331', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='332'  value={enrollmentCount['332']} onChange={(e) => updateCells('332', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='333'  value={enrollmentCount['333']} onChange={(e) => updateCells('333', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='341'  value={enrollmentCount['341']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='341'  value={enrollmentCount['341']} /></td>
                             </tr>
 
                             <tr>
@@ -151,7 +191,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='431'  value={enrollmentCount['431']} onChange={(e) => updateCells('431', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='432'  value={enrollmentCount['432']} onChange={(e) => updateCells('432', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='433'  value={enrollmentCount['433']} onChange={(e) => updateCells('433', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='441'  value={enrollmentCount['441']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='441'  value={enrollmentCount['441']} /></td>
                             </tr>
 
                             <tr>
@@ -165,7 +205,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='531'  value={enrollmentCount['531']} onChange={(e) => updateCells('531', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='532'  value={enrollmentCount['532']} onChange={(e) => updateCells('532', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='533'  value={enrollmentCount['533']} onChange={(e) => updateCells('533', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='541'  value={enrollmentCount['541']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='541'  value={enrollmentCount['541']} /></td>
                             </tr>
 
                             <tr>
@@ -179,7 +219,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='631'  value={enrollmentCount['631']} onChange={(e) => updateCells('631', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='632'  value={enrollmentCount['632']} onChange={(e) => updateCells('632', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='633'  value={enrollmentCount['633']} onChange={(e) => updateCells('633', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='641'  value={enrollmentCount['641']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='641'  value={enrollmentCount['641']} /></td>
                             </tr>
 
                             <tr>
@@ -193,28 +233,28 @@ const EnrollmentCountsForm = ({...props}) => {
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='731'  value={enrollmentCount['731']} onChange={(e) => updateCells('731', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='732'  value={enrollmentCount['732']} onChange={(e) => updateCells('732', e.target.value)} /></td>
                                 <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='733'  value={enrollmentCount['733']} onChange={(e) => updateCells('733', e.target.value)} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='741'  value={enrollmentCount['741']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='741'  value={enrollmentCount['741']} /></td>
                             </tr>
 
                             <tr>
                                 <th style={{backgroundColor: '01857b', color: 'white'}}>Total</th>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='811'  value={enrollmentCount['811']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='812'  value={enrollmentCount['812']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='813'  value={enrollmentCount['813']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='821'  value={enrollmentCount['821']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='822'  value={enrollmentCount['822']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='823'  value={enrollmentCount['823']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='831'  value={enrollmentCount['831']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='832'  value={enrollmentCount['832']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='833'  value={enrollmentCount['833']} /></td>
-                                <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='841'  value={enrollmentCount['841']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='811'  value={enrollmentCount['811']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='812'  value={enrollmentCount['812']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='813'  value={enrollmentCount['813']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='821'  value={enrollmentCount['821']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='822'  value={enrollmentCount['822']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='823'  value={enrollmentCount['823']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='831'  value={enrollmentCount['831']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='832'  value={enrollmentCount['832']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='833'  value={enrollmentCount['833']} /></td>
+                                <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='841'  value={enrollmentCount['841']} /></td>
                             </tr>                            
                         </tbody>
                     </table>
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {e => {let r = validator.dateValidator(e.target.value, false); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
-                        {errors.mostRecentDate && <span style={{color: 'red'}}>{errors.mostRecentDate}</span>}
+                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' value={enrollmentCount.mostRecentDate}  onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {() => {let r = validator.dateValidator(enrollmentCount.mostRecentDate, true); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
+                        {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>
 
                 </form>

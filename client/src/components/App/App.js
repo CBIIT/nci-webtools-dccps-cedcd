@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Header from '../Header/Header';
 import NavBar from '../NavBar/NavBar';
 import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
@@ -82,6 +83,7 @@ class App extends Component {
     return (
       <div>
         <ScrollToTop />
+        <Header />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
             <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} isAdmin={this.state.admin}/>

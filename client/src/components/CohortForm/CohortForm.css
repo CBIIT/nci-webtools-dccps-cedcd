@@ -35,3 +35,6 @@
     overflow: hidden;
 }
 
+.errorBackground {
+    background-color: #f66;
+}
