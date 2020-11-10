@@ -92,7 +92,7 @@ router.post('/enrollment_counts/:id', function(req, res){
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function(result){
-        logger.debug(result[4])
+        logger.debug(result)
         const enrollmentCounts = {}
         enrollmentCounts.details = result[0]
         enrollmentCounts.rowTotals = result[1]

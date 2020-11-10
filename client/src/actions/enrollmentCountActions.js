@@ -21,9 +21,15 @@ const updateMostRecentDate = (v) => ({
     type: t.updateMostRecentDate,
     dateString: v
 })
+
+const setSectionBStatus = (v) => ({
+    type: t.setSectionBStatus,
+    value: v
+})
 export default {
     updateEnrollmentCounts,
     updateTotals,
     updateMostRecentDate,
-    setHasLoaded
+    setHasLoaded,
+    setSectionBStatus
 }

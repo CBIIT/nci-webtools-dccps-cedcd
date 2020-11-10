@@ -22,6 +22,11 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
                 ...state,
                 hasLoaded: action.value
             }
+        case t.setSectionBStatus:
+            return {
+                ...state,
+                sectionBStatus: action.value
+            }
         default:
             return state
     }

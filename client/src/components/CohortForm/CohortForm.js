@@ -57,7 +57,7 @@ const CohortForm = ({...props}) => {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
-                console.dir(result.data.sectionStatus)
+                //console.dir(result.data.sectionStatus)
                 batch(() =>{
                 for(let k of Object.keys(result.data.cohort)){
                     dispatch(allactions.cohortActions[k](result.data.cohort[k]))
@@ -125,14 +125,14 @@ const CohortForm = ({...props}) => {
             .then(res => res.json())
             .then(result => {
                 if(result.status === 200){
-                    if(!proceed){
-                        alert('Data was successfully saved')
-                        if(Object.entries(errors).length === 0)
-                            dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
-                        else{
-                            dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
-                        }
+                    if(Object.entries(errors).length === 0)
+                        dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
+                    else{
+                        dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
+
+                    if(!proceed)
+                        alert('Data was successfully saved')
                     else
                         props.sectionPicker('B')
                 }else{
@@ -173,8 +173,11 @@ const CohortForm = ({...props}) => {
 
     const handleSaveContinue = () => {
         if(Object.entries(errors).length === 0){
-            cohort.sectionAStatus='complete'
-            dispatch(allactions.cohortActions.setSectionAStatus('complete'))
+            if(Object.entries(errors).length === 0)
+                            dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
+                        else{
+                            dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
+                        }
             saveCohort(13, true)
         }
         else{
@@ -433,9 +436,11 @@ const CohortForm = ({...props}) => {
                                 </span> 
                             </div>
                         </div>
-                        <div className='form-group col-md-12' style={{paddingBottom: '10px'}}>
+                        <div className='form-group col-md-12'>
                             <label htmlFor='completionDate' className='col-md-4'>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
-                            <span className='col-md-5'>
+                        </div>
+                        <div className='form-group col-md-12' style={{paddingBottom: '10px'}}>
+                            <span className='col-md-12'>
                                 <input className='form-control' name='completionDate' value={cohort.completionDate} onChange={e => dispatch(allactions.cohortActions.completionDate(e.target.value))} onBlur={(e) => {populateErrors('completionDate', e.target.value, true, 'date')}}/>
                             </span>
                             {errors.completionDate ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.completionDate}</span> : ''}
