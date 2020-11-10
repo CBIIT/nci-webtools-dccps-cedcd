@@ -5,6 +5,9 @@ import yearValidator from './yearValidator'
 import minAgeValidator from './minAgeValidator'
 import maxAgeValidator from './maxAgeValidator'
 import medianAgeValidator from './medianAgeValidator'
+import phoneValidator from './phoneValidator'
+import urlValidator from './urlValidator'
+import emailValidator from './emailValidator'
 export default {
     dateValidator,
     stringValidator,
@@ -12,5 +15,8 @@ export default {
     yearValidator,
     minAgeValidator,
     maxAgeValidator,
-    medianAgeValidator
+    medianAgeValidator,
+    phoneValidator,
+    urlValidator,
+    emailValidator
 }
