@@ -23,6 +23,7 @@
 18. select_admin_cohortlist
 18. get_cohort_basic_info
 19. upsert_enrollment_count
+20. add_file_attachment
 *
  */
 
@@ -734,14 +735,20 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 
-CREATE PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+    SET @validDate = false;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
     SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
-    SET @completionMonth = SUBSTRING(@completionDate, 1, 2);
-    SET @completionDay = SUBSTRING(@completionDate, 4, 2);
-    SET @completionYear = SUBSTRING(@completionDate, 7, 4);
+    if (@completionDate is not null and length(@completionDate) = 10) then
+    begin
+		SET @validDate = true;
+		SET @completionMonth = SUBSTRING(@completionDate, 1, 2);
+		SET @completionDay = SUBSTRING(@completionDate, 4, 2);
+		SET @completionYear = SUBSTRING(@completionDate, 7, 4);
+    end;
+    end if;
     SET @latest_cohort = targetID;
     IF @cohort_status <> 'published' THEN
 		BEGIN
@@ -749,7 +756,7 @@ BEGIN
 			SET 
 				cohort_name = JSON_UNQUOTE(JSON_EXTRACT(info, '$.name')),
 				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')),
-                date_completed = STR_TO_DATE(CONCAT(@completionDay, ', ', @completionMonth, ', ', @completionYear), '%d, %m, %Y'),
+                date_completed = if(@validDate, STR_TO_DATE(CONCAT(@completionDay, ', ', @completionMonth, ', ', @completionYear), '%d, %m, %Y'), null),
                 clarification_contact = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight')),
 				sameAsSomeone = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')),
 				cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
@@ -807,7 +814,11 @@ BEGIN
 				publication_url = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')),
 				update_time = NOW()
 				WHERE cohort_id = `targetID`;
-                
+                -- update section status
+                IF ROW_COUNT() > 0 THEN
+					UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
+                    WHERE cohort_id = `targetID` AND page_code = 'A';
+				END IF;
                 UPDATE person 
 				SET `name` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName')),
 					`position` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')),
@@ -862,7 +873,8 @@ BEGIN
 					questionnaire_url, main_cohort_url, data_url, specimen_url, publication_url, create_time, update_time)
 				VALUES
 					(
-						@latest_cohort, (JSON_EXTRACT(info, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.acronym')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')), STR_TO_DATE(CONCAT(@completionDay, ', ', @completionMonth, ', ', @completionYear), '%d, %m, %Y'),
+						@latest_cohort, (JSON_EXTRACT(info, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.acronym')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')),
+                        if(@validDate, STR_TO_DATE(CONCAT(@completionDay, ', ', @completionMonth, ', ', @completionYear), '%d, %m, %Y'), null),
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')), IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.hasCancerSite')) = 'true', 1 , 0), 
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibilityCriteriaOther')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrolledTotal')),
@@ -1053,6 +1065,8 @@ BEGIN
 		cohort_id
         ,cohort_name
         ,cohort_acronym
+        ,cohort_web_site
+        ,date_format(date_completed, '%m/%d/%Y') as completionDate
         ,clarification_contact
         ,sameAsSomeone
         ,cohort_description
@@ -1082,32 +1096,28 @@ BEGIN
         ,data_collected_web
         ,data_collected_other
         ,data_collected_other_specify
-        ,substring(restrictions, 1, 1) as requireNone
-        ,substring(restrictions, 3, 1) as requireCollab
-        ,substring(restrictions, 5, 1) as requireIrb
-        ,substring(restrictions, 7, 1) as requireData
-        ,substring(restrictions, 9, 1) as restrictGenoInfo
-        ,substring(restrictions, 11, 1) as restrictOtherDb
-        ,substring(restrictions, 13, 1) as restrictCommercial
-        ,substring(restrictions, 15, 1) as restrictOther
+        ,cast(substring(restrictions, 1, 1) as signed) as requireNone
+        ,cast(substring(restrictions, 3, 1) as signed) as requireCollab
+        ,cast(substring(restrictions, 5, 1) as signed) as requireIrb
+        ,cast(substring(restrictions, 7, 1) as signed) as requireData
+        ,cast(substring(restrictions, 9, 1) as signed) as restrictGenoInfo
+        ,cast(substring(restrictions, 11, 1) as signed) as restrictOtherDb
+        ,cast(substring(restrictions, 13, 1) as signed) as restrictCommercial
+        ,cast(substring(restrictions, 15, 1) as signed) as restrictOther
         ,restrictions_other_specify
-        ,strategy_routine
-        ,strategy_mailing
-        ,strategy_aggregate_study
-        ,strategy_individual_study
-        ,strategy_invitation
-        ,strategy_other
+        ,strategy_routine 
+        ,strategy_mailing 
+        ,strategy_aggregate_study 
+        ,strategy_individual_study 
+        ,strategy_invitation 
+        ,strategy_other 
         ,strategy_other_specify
-        ,questionnaire_file_attached
-        ,main_cohort_file_attached
-        ,data_file_attached
-        ,specimen_file_attached
-        ,publication_file_attached
         ,questionnaire_url
         ,main_cohort_url
         ,data_url
         ,specimen_url
         ,publication_url
+        
 	FROM cohort_basic WHERE id = `targetID`;
     
     select `name` as completerName, `position` as completerPosition, phone as completerPhone, email as completerEmail 
@@ -1116,11 +1126,13 @@ BEGIN
     select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, email as contacterEmail 
     from person where category_id = 2 and cohort_id = `targetID`;
     
-    select `name` as `name`, institution as institution, email as email 
-    from person where category_id = 3 and cohort_id = `targetID`;
+    select id as personId, `name` as `name`, institution as institution, email as email 
+    from person where (`name` is not null and `name` <> '') and category_id = 3 and cohort_id = `targetID`;
     
     select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, email as collaboratorEmail 
     from person where category_id = 4 and cohort_id = `targetID`;
+    
+    select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1131,6 +1143,16 @@ DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 
 CREATE PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
 BEGIN
+	SET @recentDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentDate'));
+    SET @validDate = false;
+    if (@recentDate is not null and length(@recentDate) = 10) then
+    begin
+		SET @validDate = true;
+		SET @recentMonth = SUBSTRING(@recentDate, 1, 2);
+		SET @recentDay = SUBSTRING(@recentDate, 4, 2);
+		SET @recentYear = SUBSTRING(@recentDate, 7, 4);
+    end;
+    end if;
 	if exists (select * from enrollment_count where cohort_id = `id`) then
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
         race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
@@ -1264,6 +1286,9 @@ BEGIN
         race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')) where
         race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        
+        update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')) where 
+        cohort_id = `id` and page_code = 'B';
 	ELSE 
 		INSERT enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
         VALUES 
@@ -1336,7 +1361,15 @@ BEGIN
         (`id`, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
         (`id`, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
         (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
+        
+        insert into cohort_edit_status (cohort_id, page_code, `status`) 
+        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionBStatus')));
     END IF;
+    
+    update cohort_basic 
+    set enrollment_most_recent_date = if(@validDate, 
+		STR_TO_DATE(CONCAT(@recentDay, ', ', @recentMonth, ', ', @recentYear), '%d, %m, %Y'), null)
+	where cohort_id = `id`;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
 END //
@@ -1345,7 +1378,7 @@ END //
 -- Stored Procedure: get_enrollment_counts
 -- -----------------------------------------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS `get_enrollment_counts`
+DROP PROCEDURE IF EXISTS `get_enrollment_counts` //
 
 CREATE PROCEDURE `get_enrollment_counts`(in targetID int)
 BEGIN
@@ -1355,9 +1388,9 @@ BEGIN
 	FROM cedcd_new.enrollment_count WHERE cohort_id = `targetID`
 	ORDER BY race_id, ethnicity_id, gender_id;
     
-  SELECT CAST(race_id as CHAR) AS rowId, SUM(enrollment_counts) AS rowTotal 
-  from cedcd_new.enrollment_count 
-  where cohort_id = `targetID` group by race_id ;
+	SELECT CAST(race_id as CHAR) AS rowId, SUM(enrollment_counts) AS rowTotal 
+	from cedcd_new.enrollment_count 
+	where cohort_id = `targetID` group by race_id ;
 
 	select concat(cast(t.ethnicity_id as char), cast(t.gender_id as char)) as colId, sum(t.enrollment_counts) as colTotal
 	from (select enrollment_counts, race_id, ethnicity_id, gender_id 
@@ -1368,10 +1401,18 @@ BEGIN
 	group by t.ethnicity_id, t.gender_id;
 	 
 	select sum(enrollment_counts)  as grandTotal
-  from cedcd_new.enrollment_count
-  where cohort_id = `targetID`;
+	from cedcd_new.enrollment_count
+	where cohort_id = `targetID`;
      
-  select date_format(enrollment_most_recent_date, '%m/%d/%Y') as mostRecentDate from cohort_basic where cohort_id = `targetID`;
+	select date_format(enrollment_most_recent_date, '%m/%d/%Y') as mostRecentDate from cohort_basic where cohort_id = `targetID`;
 END //
+
+DROP PROCEDURE IF EXISTS add_file_attachment //
+
+CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in fileName varchar(150))
+begin
+	insert into attachment (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
+    values (targetID, 1, categoryType, fileName, '', 1, NOW(), NOW());
+end
 
 DELIMITER ;

@@ -31,7 +31,8 @@ const EnrollmentCountsForm = ({...props}) => {
                 method: 'POST',
             }).then(res => res.json())
               .then(result => {
-                console.dir(result.data.mostRecentDate)
+                if(result.data.mostRecentDate.mostRecentDate)
+                {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}
                 batch(()=> {
                     for(let i = 0; i < result.data.details.length; i++)
                         dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
@@ -47,6 +48,14 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
 
+    /*
+    useEffect(() => {
+        if(enrollmentCount.mostRecentDate){
+            alert(enrollmentCount.mostRecentDate)
+            let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)
+        }
+    }, [])
+    */
     const saveEnrollment = (id=13, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
@@ -58,6 +67,11 @@ const EnrollmentCountsForm = ({...props}) => {
             .then(res => res.json())
             .then(result => {
                 if(result.status === 200){
+                    if(Object.entries(errors).length === 0)
+                        dispatch(allactions.sectionActions.setSectionStatus('B', 'complete'))
+                    else{
+                        dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
+                    }
                     if(!proceed)
                         alert('Data was successfully saved')
                     else
@@ -68,12 +82,18 @@ const EnrollmentCountsForm = ({...props}) => {
             })
     }
     const handleSave = () => {
-        if(Object.entries(errors).length === 0)
-            saveEnrollment(13)
+        if(Object.entries(errors).length === 0){
+            enrollmentCount.sectionBStatus='complete'
+            dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
+            saveEnrollment(13)  
+        }
         else{
             setDisplay('1')
-            if(window.confirm('there are validation errors, are you sure to save?'))
+            if(window.confirm('there are validation errors, are you sure to save?')){
+                enrollmentCount.sectionBStatus='incomplete'
+                dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
                 saveEnrollment(13)
+            }
         }
     }
 
@@ -233,7 +253,7 @@ const EnrollmentCountsForm = ({...props}) => {
                     </table>
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' value={enrollmentCount.mostRecentDate}  onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {e => {let r = validator.dateValidator(e.target.value, false); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
+                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' value={enrollmentCount.mostRecentDate}  onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {() => {let r = validator.dateValidator(enrollmentCount.mostRecentDate, true); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
                         {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>
 
