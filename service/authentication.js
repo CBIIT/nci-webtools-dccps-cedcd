@@ -57,7 +57,7 @@ async function authenticationMiddleware(request, response, next) {
             }
         } catch (e) {
             request.session.user = null;
-            logger.error(e);
+            console.error(e);
             next();
         }
     } else {
