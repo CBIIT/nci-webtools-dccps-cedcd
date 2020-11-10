@@ -8,7 +8,7 @@ import './CohortForm.css'
 
 const CohortForm = ({...props}) => {
     const cohort = useSelector(state => state.cohortReducer)
-    const section = useSelector(state => state)
+    const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch()
 
     const errorMsg = 'please provide a value'
@@ -852,6 +852,7 @@ const CohortForm = ({...props}) => {
                 <span onClick={handleSaveContinue}>
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
+                {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span onClick={() => alert('submitted')}><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
             </div>  
         </div>
   </div>

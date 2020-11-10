@@ -735,7 +735,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
+CREATE PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
     SET @validDate = false;
