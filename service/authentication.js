@@ -1,3 +1,4 @@
+const compression = require('compression');
 var { getConnectionAsync, queryAsync } = require('../components/mysql');
 
 module.exports = {
@@ -17,16 +18,18 @@ async function authenticationMiddleware(request, response, next) {
     const { url, headers, session } = request;
     const nodeEnv = process.env.NODE_ENV;
 
-    if (nodeEnv === 'development') {
-        // when developing locally, assign full privileges from authRoutes
-        session.user = {
-            type: 'admin',
-            name: 'dev_admin',
-            role: 'SystemAdmin',
-        };
-        next();
-    } else if (authRoutes.some(regex => regex.test(url))) {
-        try {
+    if (authRoutes.some(regex => regex.test(url))) {
+
+        if (nodeEnv === 'development') {
+            session.user = {
+                type: 'admin',
+                name: 'dev_admin',
+                role: 'CohortAdmin',
+            };
+            next();
+        }
+
+        else try {
             // otherwise, update user-session variable when hitting authRoutes
             const { 
                 user_auth_type: userAuthType, 
@@ -53,12 +56,14 @@ async function authenticationMiddleware(request, response, next) {
                 };
                 next();
             } else {
-                throw('Unauthorized');
+                throw new Error('Unauthorized');
             }
         } catch (e) {
-            request.session.user = null;
-            console.error(e);
-            next();
+            request.session.destroy(error => {
+                request.session.user = null;
+                console.error(e);
+                next();
+            })
         }
     } else {
         next();
@@ -69,9 +74,8 @@ async function authenticationMiddleware(request, response, next) {
 // so we can use the global siteminder agent logout route to invalidate our current session
 function logout(request, response) {
     request.session.destroy(error => {
-        // to ensure the proper session is destroyed, always visit the logout route from the application
-        response.redirect(301, 'https://auth.nih.gov/siteminderagent/smlogout.asp');
-    })
+        response.json(true);
+    });
 }
 
 function getUserSession(request, response) {
