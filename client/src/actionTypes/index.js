@@ -89,6 +89,7 @@ const actionTypes = {
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',
     updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',
+    setSectionBStatus: 'SET_ENROLLMENT_COUNT_STATUS',
     /*section C*/
     setSeStatusBaseLine: 'SET_MC_SESTATUS_BSASELINE',
     setSeStatusFollowUp: 'SET_MC_SESTATUS_FOLLOWUP',

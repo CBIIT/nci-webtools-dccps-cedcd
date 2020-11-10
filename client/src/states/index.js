@@ -90,7 +90,7 @@ const InitialStates ={
         publicationUrl: ''
     },
     enrollmentCount: {
-        hasLoaded: false,
+        'hasLoaded': false,
         '111': 50,
         '112': 50,
         '113': 50,
@@ -171,7 +171,8 @@ const InitialStates ={
         '832': 350,
         '833': 350,
         '841': 3150,
-        'mostRecentDate': ''
+        'mostRecentDate': '',
+        'sectionBStatus': ''
     },
     majorContent: {
         'seStatusBaseLine': 1,
@@ -238,6 +239,7 @@ const InitialStates ={
         'cancerHistoryFollowUp': 0,
         'cancerPedigreeBaseLine': 1,
         'cancerPedigreeFollowUp': 1,
+        'sectionCStatus': '',
         /*
         'physicalMeasureBaseLine': 1,
         'physicalMeasureFollowUp': 1,
