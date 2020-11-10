@@ -12,7 +12,7 @@ CREATE TABLE `lu_data_collected_category` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-alter table lu_specimen add  sub_category varchar(100) NULL after specomen;
+alter table lu_specimen add  sub_category varchar(100) NULL after specoimen;
 
 create table major_content_bk as select * from major_content;
 DROP TABLE IF EXISTS `major_content`;
