@@ -1413,6 +1413,6 @@ CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in 
 begin
 	insert into attachment (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
     values (targetID, 1, categoryType, fileName, '', 1, NOW(), NOW());
-end
+end //
 
 DELIMITER ;
