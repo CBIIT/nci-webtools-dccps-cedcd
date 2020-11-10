@@ -1352,6 +1352,92 @@ BEGIN
 
 END //
 
+DROP PROCEDURE IF EXISTS `Migrate_specimens_collected` //
+
+CREATE PROCEDURE `Migrate_specimens_collected`()
+BEGIN
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_baseline"),bio_blood_baseline
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_baseline_serum"),bio_blood_baseline_serum
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_baseline_plasma"),bio_blood_baseline_plasma
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_baseline_buffy_coat"),bio_blood_baseline_buffy_coat
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_baseline_other_derivative"),bio_blood_baseline_other_derivative
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_other_time"),bio_blood_other_time
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_other_time_serum"),bio_blood_other_time_serum
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_other_time_plasma"),bio_blood_other_time_plasma
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_other_time_buffy_coat"),bio_blood_other_time_buffy_coat
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_blood_other_time_other_derivative"),bio_blood_other_time_other_derivative
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_buccal_saliva_baseline"),bio_buccal_saliva_baseline
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_buccal_saliva_other_time"),bio_buccal_saliva_other_time
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_tissue_baseline"),bio_tissue_baseline
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_tissue_other_time"),bio_tissue_other_time
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_tumor_block_info"),bio_tumor_block_info
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_genotyping_data"),bio_genotyping_data
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_sequencing_data_exome"),bio_sequencing_data_exome
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_sequencing_data_whole_genome"),bio_sequencing_data_whole_genome
+	from cedcd.cohort_specimens;
+
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_epigenetic_or_metabolic_markers"),bio_epigenetic_or_metabolic_markers
+	from cedcd.cohort_specimens;
+    
+    insert into specimen_collected_type (cohort_id,specimen_id,collected_yn)
+	select cohort_id,(select id from lu_specimen where sub_category = "bio_other_omics_data"),bio_other_omics_data
+	from cedcd.cohort_specimens;
+
+END //
+
 DELIMITER ;
 
 /*
@@ -1663,55 +1749,17 @@ from cedcd.cohort_mortality;
 Migrate data from table cohort_specimens to cohort_specimens_new
 */
 insert into specimen (
-cohort_id,
-bio_blood_baseline,
-bio_blood_baseline_serum,
-bio_blood_baseline_plasma,
-bio_blood_baseline_buffy_coat,
-bio_blood_baseline_other_derivative,
-bio_blood_other_time,
-bio_blood_other_time_serum,
-bio_blood_other_time_plasma,
-bio_blood_other_time_buffy_coat,
-bio_blood_other_time_other_derivative,
-bio_buccal_saliva_baseline,
-bio_buccal_saliva_other_time,
-bio_tissue_baseline,
-bio_tissue_other_time,
-bio_tumor_block_info,
-bio_genotyping_data,
-bio_sequencing_data_exome,
-bio_sequencing_data_whole_genome,
-bio_epigenetic_or_metabolic_markers,
-bio_other_omics_data
+cohort_id
 )
-select cohort_id,
-bio_blood_baseline,
-bio_blood_baseline_serum,
-bio_blood_baseline_plasma,
-bio_blood_baseline_buffy_coat,
-bio_blood_baseline_other_derivative,
-bio_blood_other_time,
-bio_blood_other_time_serum,
-bio_blood_other_time_plasma,
-bio_blood_other_time_buffy_coat,
-bio_blood_other_time_other_derivative,
-bio_buccal_saliva_baseline,
-bio_buccal_saliva_other_time,
-bio_tissue_baseline,
-bio_tissue_other_time,
-bio_tumor_block_info,
-bio_genotyping_data,
-bio_sequencing_data_exome,
-bio_sequencing_data_whole_genome,
-bio_epigenetic_or_metabolic_markers,
-bio_other_omics_data
+select cohort_id
 from cedcd.cohort_specimens;
 
 /*
 Migrate data from table cohort_specimens to cohort_specimens_counts
 */
 CALL Migrate_specimens_counts();
+
+CALL Migrate_specimens_collected();
 
 /*
 Migrate data from table cohort_technology to technology

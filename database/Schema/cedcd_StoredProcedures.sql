@@ -171,8 +171,22 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-		set @major_content_query = concat("cs.cohort_id in (select cohort_id from major_content where category_id  in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) group by cohort_id ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
+      if category = "41" then
+        set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+      elseif locate("41", category) > 0 then
+        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
+        union
+        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+      else
+		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
+      end if;
+	
+  
+       set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
         if tmp = "AND" then
 			set @len = LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1;
 			set @major_content_query = concat(@major_content_query, " having sum(1) >= ", @len);
@@ -202,7 +216,7 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat(" cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
         
         set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',7)),',',1));
         if tmp = "AND" then
@@ -248,7 +262,7 @@ BEGIN
 		set @query = concat(@query, @and_query, @or_query);
     end if;
     
-    set @groupBy = " group by cs.cohort_id ";
+    set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -417,11 +431,11 @@ DROP PROCEDURE IF EXISTS `select_cohort_lookup` //
 CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	select * from lu_gender;
-    select * from lu_cancer;
-    select * from v_lu_data_collected_category;
-    select * from lu_ethnicity;
-    select * from lu_race;
-    select * from lu_specimen;
+  select * FROM lu_cancer where id <29 order by case when id=1 then 'zzz' else cancer end, cancer;
+  select * from v_lu_data_collected_category;
+  select * from lu_ethnicity;
+  select * from lu_race;
+  select * from lu_specimen;
 	select * from lu_cohort_status;
 END //
 
@@ -480,7 +494,19 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-		set @major_content_query = concat("and cs.cohort_id in (select distinct cohort_id from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
+      if category = "41" then
+       set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1) ");
+      elseif locate("41", category) > 0 then
+       set @major_content_query = concat(" and cs.cohort_id in ( select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
+        union
+        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 )");
+      else
+		    set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id 
+        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
+      end if;
     end if;
     
     set @specimen_query = "";
@@ -495,7 +521,7 @@ BEGIN
             end if;
 		end while;
 
-		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from specimen where 1=1 ", "and (",tmp,") )");
+		set @specimen_query = concat("and cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
 	end if;
         
         
@@ -572,7 +598,7 @@ BEGIN
 		set @cohort_query = concat(@cohort_query, "and cs.eligible_disease in (",study_population,") ");
     end if;
     
-    set @groupBy = " group by cs.cohort_id ";
+    set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
     if columnName != "" then
 		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
@@ -612,7 +638,7 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* 
-	from cohort_basic cs, specimen s, cohort ch
+	from cohort_basic cs, v_specimen s, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = s.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;

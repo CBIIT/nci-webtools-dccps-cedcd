@@ -102,6 +102,7 @@ DROP TABLE IF EXISTS `lu_specimen`;
 CREATE TABLE `lu_specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `specimen` varchar(100) NOT NULL,
+  `sub_category` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -383,9 +384,9 @@ CREATE TABLE `major_content` (
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
-  KEY `major_content_category_id_idx_idx` (`category_id`),
+  KEY `major_content_domain_id_idx_idx` (`category_id`),
   CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `mc_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_collected_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mc_domain_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_collected_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `mortality`;
@@ -441,44 +442,9 @@ DROP TABLE IF EXISTS `specimen`;
 CREATE TABLE `specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
-  `bio_blood_baseline` int(1) DEFAULT NULL,
-  `bio_blood_baseline_serum` int(1) DEFAULT NULL,
-  `bio_blood_baseline_plasma` int(1) DEFAULT NULL,
-  `bio_blood_baseline_buffy_coat` int(1) DEFAULT NULL,
-  `bio_blood_baseline_other_derivative` int(1) DEFAULT NULL,
-  `bio_blood_other_time` int(1) DEFAULT NULL,
-  `bio_blood_other_time_serum` int(1) DEFAULT NULL,
-  `bio_blood_other_time_plasma` int(1) DEFAULT NULL,
-  `bio_blood_other_time_buffy_coat` int(1) DEFAULT NULL,
-  `bio_blood_other_time_other_derivative` int(1) DEFAULT NULL,
-  `bio_buccal_saliva_baseline` int(1) DEFAULT NULL,
-  `bio_buccal_saliva_other_time` int(1) DEFAULT NULL,
-  `bio_tissue_baseline` int(1) DEFAULT NULL,
-  `bio_tissue_other_time` int(1) DEFAULT NULL,
-  `bio_urine_baseline` int(1) DEFAULT NULL,
-  `bio_urine_other_time` int(1) DEFAULT NULL,
-  `bio_feces_baseline` int(1) DEFAULT NULL,
-  `bio_feces_other_time` int(1) DEFAULT NULL,
-  `bio_other_baseline` int(1) DEFAULT NULL,
   `bio_other_baseline_specify` varchar(200) DEFAULT NULL,
-  `bio_other_other_time` int(1) DEFAULT NULL,
   `bio_other_other_time_specify` varchar(200) DEFAULT NULL,
-  `bio_repeated_sample_same_individual` int(1) DEFAULT NULL,
-  `bio_tumor_block_info` int(1) DEFAULT NULL,
-  `bio_genotyping_data` int(1) DEFAULT NULL,
-  `bio_sequencing_data_exome` int(1) DEFAULT NULL,
-  `bio_sequencing_data_whole_genome` int(1) DEFAULT NULL,
-  `bio_epigenetic_or_metabolic_markers` int(1) DEFAULT NULL,
-  `bio_other_omics_data` int(1) DEFAULT NULL,
-  `bio_transcriptomics_data` int(1) DEFAULT NULL,
-  `bio_microbiome_data` int(1) DEFAULT NULL,
-  `bio_metabolomic_data` int(1) DEFAULT NULL,
-  `bio_meta_fasting_sample` int(1) DEFAULT NULL,
-  `bio_meta_outcomes_in_cancer_study` int(1) DEFAULT NULL,
-  `bio_meta_outcomes_in_cvd_study` int(1) DEFAULT NULL,
-  `bio_meta_outcomes_in_other_study` int(1) DEFAULT NULL,
   `bio_meta_outcomes_other_study_specify` varchar(200)DEFAULT NULL,
-  `bio_member_of_metabolomics_studies` int(1) DEFAULT NULL,
   `bio_member_in_study` int(10) DEFAULT NULL,
   `bio_labs_used_for_analysis` varchar(200) DEFAULT NULL,
   `bio_analytical_platform` varchar(200) DEFAULT NULL,
@@ -491,6 +457,23 @@ CREATE TABLE `specimen` (
   KEY `specimen_new_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+
+DROP TABLE IF EXISTS `specimen_collected_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `specimen_collected_type` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cohort_id` int NOT NULL,
+  `specimen_id` int NOT NULL,
+  `collected_yn` int NOT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `specimen_collected__cohort_id_idx` (`cohort_id`),
+  KEY `specimen_collected_type_idx` (`specimen_id`),
+  CONSTRAINT `specimen_collected__cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`),
+  CONSTRAINT `specimen_collected_type_idx` FOREIGN KEY (`specimen_id`) REFERENCES `lu_specimen` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1324 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `specimen_count`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -593,7 +576,7 @@ CREATE TABLE `cohort_edit_status` (
  */
 insert into cohort_page_mapping values('A', 'cohort basic');
 insert into cohort_page_mapping values('B', 'enrollment counts');
-insert into cohort_page_mapping values('C', 'major content categorys');
+insert into cohort_page_mapping values('C', 'major content domains');
 insert into cohort_page_mapping values('D', 'cancer info');
 insert into cohort_page_mapping values('E', 'mortality');
 insert into cohort_page_mapping values('F', 'data linkage and harmonization');
@@ -689,8 +672,8 @@ insert into lu_data_collected_category(id, category, sub_category) values (26, "
 insert into lu_data_collected_category(id, category, sub_category) values (27, "Depression","");
 insert into lu_data_collected_category(id, category, sub_category) values (28, "Other Psychosocial Variables","");
 insert into lu_data_collected_category(id, category, sub_category) values (29, "Fatigue","");
-insert into lu_data_collected_category(id, category, sub_category) values (30, "Family History of Cancer","");
-insert into lu_data_collected_category(id, category, sub_category) values (31, "Family History of Cancer with Pedigrees","");
+insert into lu_data_collected_category(id, category, sub_category) values (30, "Family History of Cancer","Family History of Cancer");
+insert into lu_data_collected_category(id, category, sub_category) values (31, "Family History of Cancer","Family History of Cancer with Pedigrees");
 insert into lu_data_collected_category(id, category, sub_category) values (32, "Environmental or Occupational Exposures","");
 insert into lu_data_collected_category(id, category, sub_category) values (33, "Residential Information","");
 insert into lu_data_collected_category(id, category, sub_category) values (34, "Other Medical Conditions","Diabetes");
@@ -700,6 +683,7 @@ insert into lu_data_collected_category(id, category, sub_category) values (37, "
 insert into lu_data_collected_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
 insert into lu_data_collected_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
 insert into lu_data_collected_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
+insert into lu_data_collected_category(id, category, sub_category) values (41, "Cancer Treatment","");
 
 /*
  Generate data for lookup table lu_specimen
@@ -711,6 +695,48 @@ insert into lu_specimen(id, specimen) values (4, "Urine");
 insert into lu_specimen(id, specimen) values (5, "Feces");
 insert into lu_specimen(id, specimen) values (6, "Tumor Tissue Fresh/Frozen");
 insert into lu_specimen(id, specimen) values (7, "Tumor Tissue FFPE");
+
+/*
+* add for specimen data collected category
+*/
+insert into lu_specimen(id, specimen, sub_category) 
+values (11,"Blood","bio_blood_baseline"),
+(12,"Blood","bio_blood_baseline_serum"),
+(13,"Blood","bio_blood_baseline_plasma"),
+(14,"Blood","bio_blood_baseline_buffy_coat"),
+(15,"Blood","bio_blood_baseline_other_derivative"),
+(16,"Blood","bio_blood_other_time"),
+(17,"Blood","bio_blood_other_time_serum"),
+(18,"Blood","bio_blood_other_time_plasma"),
+(19,"Blood","bio_blood_other_time_buffy_coat"),
+(20,"Blood","bio_blood_other_time_other_derivative"),
+(21,"Buccal/Saliva","bio_buccal_saliva_baseline"),
+(22,"Buccal/Saliva","bio_buccal_saliva_other_time"),
+(23,"Tissue (includes tumor and/or normal)","bio_tissue_baseline"),
+(24,"Tissue (includes tumor and/or normal)","bio_tissue_other_time"),
+(25,"Urine","bio_urine_baseline"),
+(26,"Urine","bio_urine_other_time"),
+(27,"Feces","bio_feces_baseline"),
+(28,"Feces","bio_feces_other_time"),
+(29,"Other","bio_other_baseline"),
+(30,"Other","bio_other_other_time"),
+(31,"Repeated_Sample","bio_repeated_sample_same_individual"),
+(32,"Tumor_Block","bio_tumor_block_info"),
+(33,"Genetic Information","bio_genotyping_data"),
+(34,"Genetic Information","bio_sequencing_data_exome"),
+(35,"Genetic Information","bio_sequencing_data_whole_genome"),
+(36,"Genetic Information","bio_epigenetic_or_metabolic_markers"),
+(37,"Omics","bio_other_omics_data"),
+(38,"Transcriptomics","bio_transcriptomics_data"),
+(39,"Microbiome","bio_microbiome_data"),
+(40,"Metabolomic","bio_metabolomic_data"),
+(41,"Metabolomic","bio_meta_fasting_sample"),
+(42,"Metabolomic","bio_meta_outcomes_in_cancer_study"),
+(43,"Metabolomic","bio_meta_outcomes_in_cvd_study"),
+(44,"Metabolomic","bio_meta_outcomes_in_other_study"),
+(45,"Metabolomic","bio_member_of_metabolomics_studies");
+
+
 /*
  Generate data for lookup table lu_race
  */
