@@ -31,7 +31,7 @@ const InitialStates ={
         description: 'this is a description demo',
         hasAWebSite: null,
         webSite: '',
-        eligibleGender: '',
+        eligibleGender: null,
         hasCancerSite: true,
         cancerSites: 'cancersite.com, cancerSites.org',
         eligibilityCriteriaOther: 'BMI',

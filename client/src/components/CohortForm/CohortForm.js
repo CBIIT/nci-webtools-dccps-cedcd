@@ -36,7 +36,8 @@ const CohortForm = ({...props}) => {
         currentMedianAge: errorMsg,
         timeInterval: errorMsg,
         mostRecentYear: errorMsg,
-        dataCollection: 'please select at least one value', 
+        dataCollection: 'please select at least one value',
+        requirements: 'please select at least one value', 
         strategy: 'please select at least one value', 
         collectedOtherSpecify: 'please specify', 
         restrictOtherSpecify: 'please specify', 
@@ -53,62 +54,65 @@ const CohortForm = ({...props}) => {
 
     useEffect(() => {
         if(!cohort.hasLoaded){
+            let shadow = {...errors}
             fetch('/api/questionnaire/cohort_basic_info/13', {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
-                //console.dir(result.data.sectionStatus)
+                let cohort = result.data.cohort, changed = false
                 batch(() =>{
-                for(let k of Object.keys(result.data.cohort)){
-                    dispatch(allactions.cohortActions[k](result.data.cohort[k]))
-                }
-                for(let k of Object.keys(result.data.completer)){
-                    dispatch(allactions.cohortActions[k](result.data.completer[k]))
-                }
-                for(let k of Object.keys(result.data.contacter)){
-                    dispatch(allactions.cohortActions[k](result.data.contacter[k]))
-                }
-                for(let k of Object.keys(result.data.collaborator)){
-                    dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
-                }
-                for(let k of result.data.sectionStatus){
-                    dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
-                }
-                dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
-                dispatch(allactions.cohortActions.setHasLoaded(true))
-                })
+                    for(let k of Object.keys(result.data.cohort)){
+                        console.log(k+': '+ result.data.cohort[k])
+                        dispatch(allactions.cohortActions[k](result.data.cohort[k]))
+                    }
+                    
+                    for(let k of Object.keys(result.data.completer)){
+                        dispatch(allactions.cohortActions[k](result.data.completer[k]))
+                    }
+                    for(let k of Object.keys(result.data.contacter)){
+                        dispatch(allactions.cohortActions[k](result.data.contacter[k]))
+                    }
+                    for(let k of Object.keys(result.data.collaborator)){
+                        dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
+                    }
+                    for(let k of result.data.sectionStatus){
+                        dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
+                    }
+                    dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
+                    dispatch(allactions.cohortActions.setHasLoaded(true))
+                }) 
+                
+                if(cohort.cohort_name) {delete shadow.cohortName; changed=true}
+                if(cohort.completionDate) {delete shadow.completionDate; changed = true}
+                if(cohort.clarification_contact in [0,1]) {delete shadow.contacterRight; changed=true}
+                if(cohort.data_collected_other !== 1) {delete shadow.collectedOtherSpecify; changed=true}
+                if(cohort.restrictOther !== 1) {delete shadow.restrictOtherSpecify; changed=true}
+                if(cohort.enrollment_year_start) {delete shadow.enrollStartYear; changed=true}
+                if(cohort.enrollment_year_end) {delete shadow.enrollEndYear; changed=true}
+                if(cohort.enrollment_ongoing in [0, 1]) {delete shadow.enrollOnGoing; changed=true}
+                if(cohort.enrollment_ongoing === 0) { delete shadow.numOfPlans; delete shadow.yearToComplete; changed=true }
+                if(cohort.enrollment_age_min) {delete shadow.baseLineMinAge; changed=true}
+                if(cohort.enrollment_age_max) {delete shadow.baseLineMaxAge; changed=true}
+                if(cohort.enrollment_age_mean) {delete shadow.baseLineMeanAge; changed=true}
+                if(cohort.enrollment_age_median) {delete shadow.baseLineMedianAge; changed=true}
+                if(cohort.current_age_min) {delete shadow.currentMinAge; changed=true}
+                if(cohort.current_age_max) {delete shadow.currentMaxAge; changed=true}
+                if(cohort.current_age_mean) {delete shadow.currentMeanAge; changed=true}
+                if(cohort.current_age_median) {delete shadow.currentMedianAge; changed=true}
+                if(cohort.time_interval) {delete shadow.timeInterval; changed=true}
+                if(cohort.most_recent_year) {delete shadow.mostRecentYear; changed = true}
+                if(cohort.strategy_other !== 1) {delete shadow.strategyOtherSpecify; changed=true}
+                if(cohort.eligible_gender_id in [4, 2, 1]) {delete shadow.eligibleGender; changed=true}
+                if(cohort.data_collected_in_person || cohort.data_collected_phone || cohort.data_collected_paper || cohort.data_collected_web || cohort.data_collected_other) {delete shadow.dataCollection; changed=true}
+                if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) {delete shadow.requirements; changed=true}
+                if(cohort.strategy_routine || cohort.strategy_mailing || cohort.strategy_aggregate_study || cohort.strategy_individual_study || cohort.strategy_invitation || cohort.strategy_other) {delete shadow.strategy; changed=true}
+
+                if(changed) setErrors(shadow)
+                
             })
         }
     }, [])
 
-    useEffect(() => {
-        let shadow = {...errors}
-        if(cohort.name) delete shadow.cohortName
-        if(cohort.completionDate) delete shadow.completionDate
-        if(!cohort.contacterRight in [0,1]) delete shadow.contacterRight
-        if(cohort.collectedOther !== 1) delete shadow.collectedOtherSpecify
-        if(cohort.restrictOther !== 1) delete shadow.restrictOtherSpecify
-        if(cohort.enrollStartYear) delete shadow.enrollStartYear
-        if(cohort.enrollEndYear) delete shadow.enrollEndYear
-        if(cohort.enrollOnGoing) delete shadow.enrollOnGoing
-        else { delete shadow.numOfPlans; delete shadow.yearToComplete }
-        if(cohort.baseLineMinAge) delete shadow.baseLineMinAge
-        if(cohort.baseLineMaxAge) delete shadow.baseLineMaxAge
-        if(cohort.baseLineMeanAge) delete shadow.baseLineMeanAge
-        if(cohort.baseLineMedianAge) delete shadow.baseLineMedian
-        if(cohort.currentMinAge) delete shadow.currentMinAge
-        if(cohort.currentMaxAge) delete shadow.currentMaxAge
-        if(cohort.currentMeanAge) delete shadow.currentMeanAge
-        if(cohort.currentMedianAge) delete shadow.currentMedian
-        if(cohort.timeInterval) delete shadow.timeInterval
-        if(cohort.mostRecentYear) delete shadow.mostRecentYear
-        if(cohort.strategyOther !== 1) delete shadow.strategyOtherSpecify
-        if(cohort.eligibleGender in ['4', '2', '1']) delete shadow.eligibilityCriteriaOther
-        if(cohort.collectedInPerson || cohort.collectedPhone || cohort.collectedPaper || cohort.collectedWeb || cohort.collectedOther) delete shadow.dataCollection
-        if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) delete shadow.requirements
-        if(cohort.strategyRoutine || cohort.strategyMailing || cohort.strategyAggregateStudy || cohort.strategyIndividualStudy || cohort.strategyInvitation || cohort.strategyOther) delete shadow.strategy
-        setErrors(shadow)
-    }, [])
     const saveCohort = (id=13, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
@@ -511,13 +515,13 @@ const CohortForm = ({...props}) => {
                                 </div>
                                 <div className='col-md-12' style={{display: 'flex', flexDirection: 'row', marginBottom: '20px'}}>
                                     <span className='col-md-4' style={{marginRight: '0'}}>
-                                        <input type='radio' name='eligibleGender'  value='4' checked={cohort.eligibleGender === '4'} onChange={() => removeEligbleGenderError('4')} />{' '} Both genders
+                                        <input type='radio' name='eligibleGender'  value='4' checked={cohort.eligibleGender === 4} onChange={() => removeEligbleGenderError(4)} />{' '} Both genders
                                     </span>
                                     <span className='col-md-4' style={{marginRight: '0'}}>
-                                        <input type='radio' name='eligibleGender'  value='2' checked={cohort.eligibleGender === '2'} onChange={() => removeEligbleGenderError('2')} />{' '} Males only
+                                        <input type='radio' name='eligibleGender'  value='2' checked={cohort.eligibleGender === 2} onChange={() => removeEligbleGenderError(2)} />{' '} Males only
                                     </span>
                                     <span className='col-md-4' style={{marginRight: '0'}}>
-                                        <input type='radio' name='eligibleGender'  value='1' checked={cohort.eligibleGender === '1'} onChange={() => removeEligbleGenderError('1')} />{' '} Females only
+                                        <input type='radio' name='eligibleGender'  value='1' checked={cohort.eligibleGender === 1} onChange={() => removeEligbleGenderError(1)} />{' '} Females only
                                     </span>
                                 </div> 
                                 <div className='col-md-12' style={{marginBottom: '10px'}}>
