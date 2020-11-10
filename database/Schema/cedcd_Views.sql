@@ -16,7 +16,7 @@ DROP VIEW IF EXISTS `cohort_summary` ;
 DROP VIEW IF EXISTS `v_lu_data_collected_category` ;
 
 CREATE VIEW v_lu_data_collected_category AS
- select min(id) as id , category from lu_data_collected_category group by category order by id;
+ select min(id) as id , category as data_category from lu_data_collected_category group by category order by id;
 
 -- -----------------------------------------------------------------------------------------------------------
 -- View: v_specimen
