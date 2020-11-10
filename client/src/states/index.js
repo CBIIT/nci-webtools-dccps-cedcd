@@ -238,12 +238,9 @@ const InitialStates ={
         'cancerHistoryBaseLine': 1,
         'cancerHistoryFollowUp': 0,
         'cancerPedigreeBaseLine': 1,
-        'cancerPedigreeFollowUp': 1,
-        'sectionCStatus': '',
-        /*
+        'cancerPedigreeFollowUp': 1, 
         'physicalMeasureBaseLine': 1,
         'physicalMeasureFollowUp': 1,
-        */
         'exposureBaseLine': 1,
         'exposureFollowUp': 1,
         'residenceBaseLine': 1,
@@ -266,7 +263,8 @@ const InitialStates ={
         'cancerLateEffects': 1,
         'cancerSymptom': 0,
         'cancerOther': 1,
-        'cancerOtherSpecify': ''
+        'cancerOtherSpecify': '',
+        'sectionCStatus': '',
 
     },
     cancerCount: {
@@ -385,12 +383,12 @@ const InitialStates ={
     },
     sectionStatus:{
         'A': 'complete',
-        'B': 'incomplete',
-        'C': 'new',
-        'D': 'incomplete',
-        'E': 'new',
-        'F': 'new',
-        'G': 'new'
+        'B': 'complete',
+        'C': 'complete',
+        'D': 'complete',
+        'E': 'complete',
+        'F': 'complete',
+        'G': 'incomplete'
     }
 }
 
