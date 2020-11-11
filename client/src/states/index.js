@@ -10,7 +10,7 @@ const InitialStates ={
         completerPosition: 'Developer',
         completerPhone: '225-125-3344',
         completerEmail: 'joez@hws.com',
-        contacterRight: null,
+        contacterRight: 0,
         contacterName: 'anna',
         contacterPosition: 'manager',
         contacterPhone: '225-255-5555',
