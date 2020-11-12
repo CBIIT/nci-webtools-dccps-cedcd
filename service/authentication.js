@@ -24,7 +24,9 @@ async function authenticationMiddleware(request, response, next) {
             session.user = {
                 type: 'admin',
                 name: 'dev_admin',
-                role: 'CohortAdmin',
+                role: /^\/admin/.test(url) 
+                    ? 'SystemAdmin' 
+                    : 'CohortAdmin',
             };
             next();
         }
