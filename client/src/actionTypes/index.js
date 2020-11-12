@@ -19,6 +19,7 @@ const actionTypes = {
     setInvestigatorInstitution: 'SET_COHORT_INVESTIGATOR_INSTITUTION',
     setInvestigatorEmail: 'SET_COHORT_INVESTIGATOR_EMAIL',
     addInvestigator: 'ADD_NEW_INVESTIGATOR',
+    removeInvestigator: 'REMOVE_COHORT_INVESTIGATOR',
     setCollaboratorName: 'SET_COLLABORATOR_NAME',
     setCollaboratorPosition: 'SET_COLLABORATOR_POSITION',
     setCollaboratorPhone: 'SET_COLLABORATOR_PHONE',

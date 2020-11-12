@@ -102,6 +102,11 @@ const addInvestigator = () => ({
     type: t.addInvestigator
 })
 
+const removeInvestigator = (idx) => ({
+    type: t.removeInvestigator,
+    value: idx
+})
+
 const sameAsSomeone = (v) => ({
     type: t.setSameAsSomeone,
     value: v
@@ -353,6 +358,7 @@ export default {
     investigatorInstitution,
     investigatorEmail,
     addInvestigator,
+    removeInvestigator,
     sameAsSomeone,
     collaboratorName,
     collaboratorPosition,

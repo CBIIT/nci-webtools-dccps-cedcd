@@ -18,7 +18,10 @@ const CohortForm = ({...props}) => {
         completionDate: errorMsg,
         contacterRight: 'please choose one',
         collectedOtherSpecify: 'please specify',
-        eligibleGender: 'please select an eligible gender',
+        investigator_name_0: errorMsg,
+        investigator_inst_0: errorMsg,
+        investigator_email_0: errorMsg,
+        eligibleGender: 'please select one',
         enrollOnGoing: 'please select one',
         enrollTotal: errorMsg,
         enrollStartYear: errorMsg,
@@ -59,7 +62,8 @@ const CohortForm = ({...props}) => {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
-                let cohort = result.data.cohort, changed = false
+                let cohort = result.data.cohort, changed = false,
+                    investigators = result.data.investigators
                 batch(() =>{
                     for(let k of Object.keys(result.data.cohort)){
                         console.log(k+': '+ result.data.cohort[k])
@@ -107,7 +111,10 @@ const CohortForm = ({...props}) => {
                 if(cohort.data_collected_in_person || cohort.data_collected_phone || cohort.data_collected_paper || cohort.data_collected_web || cohort.data_collected_other) {delete shadow.dataCollection; changed=true}
                 if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) {delete shadow.requirements; changed=true}
                 if(cohort.strategy_routine || cohort.strategy_mailing || cohort.strategy_aggregate_study || cohort.strategy_individual_study || cohort.strategy_invitation || cohort.strategy_other) {delete shadow.strategy; changed=true}
-
+                //just need to remove the first investigator error on load, since only investigator 0 has errors initially
+                if(investigators[0].name){delete shadow.investigator_name_0; changed=true}
+                if(investigators[0].institution){delete shadow.investigator_inst_0; changed=true}
+                if(investigators[0].email){delete shadow.investigator_email_0; changed=true}
                 if(changed) setErrors(shadow)
                 
             })
@@ -316,6 +323,16 @@ const CohortForm = ({...props}) => {
         if(changed) setErrors(shadow)
     }
 
+    const removeInvestigator = (idx) => {
+        dispatch(allactions.cohortActions.removeInvestigator(idx))
+        //remove investigator also remove the errors
+        let changed = false, shadow = {...errors}
+        if(errors['investigator_name_'+idx]) {delete shadow['investigator_name_'+idx]; changed=true}
+        if(errors['investigator_inst_'+idx]) {delete shadow['investigator_inst_'+idx]; changed=true}
+        if(errors['investigator_email_'+idx]) {delete shadow['investigator_email_'+idx]; changed=true}
+        if(changed) setErrors(shadow)
+    }
+
     const removeEligbleGenderError = (v) => {
         if(errors.eligibleGender){
             let shadow = {...errors}
@@ -471,11 +488,11 @@ const CohortForm = ({...props}) => {
                         <div id='question4' className='col-md-12' style={{paddingTop: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '10px'}}>
                                 <label className='col-md-6'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
-                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator())}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
+                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; shadow['investigator_name_'+idx]=errorMsg; shadow['investigator_inst_'+idx]=errorMsg; shadow['investigator_email_'+idx]=errorMsg; setErrors(shadow); console.dir(errors)}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
                             </div>
                             <div className='col-md-12' style={{paddingLeft: '0'}}>
                                 {
-                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_'+idx} name={'investigator_name_'+idx} institution={'investigator_inst_'+idx} email={'investigator_email_'+idx} isRequired={idx === 0 ? true : false} callback={setErrors} errors={errors} investigator={item}  displayStyle={displayStyle}/></div>
+                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_'+idx} name={'investigator_name_'+idx} institution={'investigator_inst_'+idx} email={'investigator_email_'+idx} isRequired={idx === 0 ? true : false} callback={setErrors} handleRemove={removeInvestigator} errors={errors} investigator={item}  displayStyle={displayStyle}/></div>
                                     )
                                 }
                             </div>
