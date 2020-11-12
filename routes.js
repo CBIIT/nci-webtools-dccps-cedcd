@@ -27,6 +27,9 @@ module.exports = function (app) {
 	});
 
 	app.use('/api/', m_common);
+
+	// note: remember to check user authentication state in the following routes
+	// eg: if (request.session.user.role !== 'SystemAdmin') return response.status(400).json('Unauthorized');
 	app.use('/api/cohort', m_cohort);
 	app.use('/api/user', m_user);
 	app.use('/api/questionnaire', m_questionnaire);
