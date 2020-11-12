@@ -18,9 +18,15 @@ const CohortForm = ({...props}) => {
         completionDate: errorMsg,
         contacterRight: 'please choose one',
         collectedOtherSpecify: 'please specify',
-        investigator_name_0: errorMsg,
-        investigator_inst_0: errorMsg,
-        investigator_email_0: errorMsg,
+        completerName: errorMsg,
+        completerPosition: errorMsg,
+        completerEmail: errorMsg,
+        contacterName: errorMsg,
+        contacterPosition: errorMsg,
+        contacterEmail: errorMsg,
+        collaboratorName: errorMsg,
+        collaboratorPosition: errorMsg,
+        collaboratorEmail: errorMsg,
         eligibleGender: 'please select one',
         enrollOnGoing: 'please select one',
         enrollTotal: errorMsg,
@@ -62,27 +68,35 @@ const CohortForm = ({...props}) => {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
-                let cohort = result.data.cohort, changed = false,
-                    investigators = result.data.investigators
+                let cohort = result.data.cohort, changed = false, investigators = result.data.investigators, startChange = false,
+                    completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator
+                console.log(investigators)
+                for(let i=0; i < investigators.length; i++){
+                    shadow['investigator_name_'+i] = errorMsg
+                    shadow['investigator_inst_'+i] = errorMsg
+                    shadow['investigator_email_'+i] = errorMsg
+                    startChange = true
+                }
+                if(startChange) setErrors(shadow)
                 batch(() =>{
-                    for(let k of Object.keys(result.data.cohort)){
-                        console.log(k+': '+ result.data.cohort[k])
-                        dispatch(allactions.cohortActions[k](result.data.cohort[k]))
+                    for(let k of Object.keys(cohort)){
+                        console.log(k+': '+ cohort[k])
+                        dispatch(allactions.cohortActions[k](cohort[k]))
                     }
                     
-                    for(let k of Object.keys(result.data.completer)){
-                        dispatch(allactions.cohortActions[k](result.data.completer[k]))
+                    for(let k of Object.keys(completer)){
+                        dispatch(allactions.cohortActions[k](completer[k]))
                     }
-                    for(let k of Object.keys(result.data.contacter)){
-                        dispatch(allactions.cohortActions[k](result.data.contacter[k]))
+                    for(let k of Object.keys(contacter)){
+                        dispatch(allactions.cohortActions[k](contacter[k]))
                     }
-                    for(let k of Object.keys(result.data.collaborator)){
-                        dispatch(allactions.cohortActions[k](result.data.collaborator[k]))
+                    for(let k of Object.keys(collaborator)){
+                        dispatch(allactions.cohortActions[k](collaborator[k]))
                     }
                     for(let k of result.data.sectionStatus){
                         dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                     }
-                    dispatch(allactions.cohortActions.setInvestigators(result.data.investigators))
+                    dispatch(allactions.cohortActions.setInvestigators(investigators))
                     dispatch(allactions.cohortActions.setHasLoaded(true))
                 }) 
                 
@@ -112,9 +126,23 @@ const CohortForm = ({...props}) => {
                 if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) {delete shadow.requirements; changed=true}
                 if(cohort.strategy_routine || cohort.strategy_mailing || cohort.strategy_aggregate_study || cohort.strategy_individual_study || cohort.strategy_invitation || cohort.strategy_other) {delete shadow.strategy; changed=true}
                 //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                if(investigators[0].name){delete shadow.investigator_name_0; changed=true}
-                if(investigators[0].institution){delete shadow.investigator_inst_0; changed=true}
-                if(investigators[0].email){delete shadow.investigator_email_0; changed=true}
+                if(completer.completerName) {delete shadow.completerName; changed=true}
+                if(completer.completerPosition) {delete shadow.completerPosition; changed=true}
+                if(completer.completerEmail) {delete shadow.completerEmail; changed=true}
+                if(contacter.contacterName) {delete shadow.contacterName; changed=true}
+                if(contacter.contacterPosition) {delete shadow.contacterPosition; changed=true}
+                if(contacter.contacterEmail) {delete shadow.contacterEmail; changed=true}
+
+                if(collaborator.collaboratorName) {delete shadow.collaboratorName; changed=true}
+                if(collaborator.collaboratorPosition) {delete shadow.collaboratorPosition; changed=true}
+                if(collaborator.collaboratorEmail) {delete shadow.collaboratorEmail; changed=true}
+
+                for(let i=0; i < investigators.length; i++){
+                    if(investigators[i].name){delete shadow['investigator_name_'+i]; changed=true}
+                    if(investigators[i].institution){delete shadow['investigator_inst_'+i]; changed=true}
+                    if(investigators[i].email){delete shadow['investigator_email_'+i]; changed=true}
+                }
+                
                 if(changed) setErrors(shadow)
                 
             })
