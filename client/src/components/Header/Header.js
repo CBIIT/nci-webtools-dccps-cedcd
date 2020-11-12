@@ -4,11 +4,6 @@ import { UserSessionContext } from '../../index';
 
 export default function Header({ props }) {
     const userSession = useContext(UserSessionContext);
-    const logout = async e => {
-        e.preventDefault();
-        await fetch('/api/logout');
-        window.location.href = 'https://auth.nih.gov/siteminderagent/smlogout.asp'
-    }
 
     return (
         <div id="header">
@@ -27,8 +22,7 @@ export default function Header({ props }) {
                     {userSession && <>
                         <a
                             className="login-button"
-                            href="#"
-                            onClick={logout}
+                            href="/api/logout"
                             style={{ margin: '5px' }}
                             target="_self">
                             Logout

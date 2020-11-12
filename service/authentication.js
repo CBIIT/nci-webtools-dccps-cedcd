@@ -1,4 +1,4 @@
-const compression = require('compression');
+const settings = require('../config/cedcd.settings')
 var { getConnectionAsync, queryAsync } = require('../components/mysql');
 
 module.exports = {
@@ -71,7 +71,7 @@ async function authenticationMiddleware(request, response, next) {
 // so we can use the global siteminder agent logout route to invalidate our current session
 function logout(request, response) {
     request.session.destroy(error => {
-        response.json(true);
+        response.redirect(301, settings.logoutUrl || '/');
     });
 }
 
