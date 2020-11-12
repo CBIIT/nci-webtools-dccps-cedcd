@@ -65,12 +65,11 @@ const CohortForm = ({...props}) => {
         if(!cohort.hasLoaded){
             let shadow = {...errors}
             fetch('/api/questionnaire/cohort_basic_info/13', {
-                method: 'POST',
+                method: 'POST'
             }).then(res => res.json())
             .then(result => {
                 let cohort = result.data.cohort, changed = false, investigators = result.data.investigators, startChange = false,
                     completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator
-                console.log(investigators)
                 for(let i=0; i < investigators.length; i++){
                     shadow['investigator_name_'+i] = errorMsg
                     shadow['investigator_inst_'+i] = errorMsg
@@ -80,7 +79,6 @@ const CohortForm = ({...props}) => {
                 if(startChange) setErrors(shadow)
                 batch(() =>{
                     for(let k of Object.keys(cohort)){
-                        console.log(k+': '+ cohort[k])
                         dispatch(allactions.cohortActions[k](cohort[k]))
                     }
                     
@@ -516,7 +514,7 @@ const CohortForm = ({...props}) => {
                         <div id='question4' className='col-md-12' style={{paddingTop: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '10px'}}>
                                 <label className='col-md-6'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
-                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; shadow['investigator_name_'+idx]=errorMsg; shadow['investigator_inst_'+idx]=errorMsg; shadow['investigator_email_'+idx]=errorMsg; setErrors(shadow); console.dir(errors)}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
+                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; shadow['investigator_name_'+idx]=errorMsg; shadow['investigator_inst_'+idx]=errorMsg; shadow['investigator_email_'+idx]=errorMsg; setErrors(shadow)}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
                             </div>
                             <div className='col-md-12' style={{paddingLeft: '0'}}>
                                 {

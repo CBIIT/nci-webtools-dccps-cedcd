@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import {useSelector, useDispatch, batch} from 'react-redux'
 import allactions from '../../actions'
 
 
@@ -8,6 +8,100 @@ const MajorContentForm = ({...props}) => {
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
     
+    useEffect(() => {
+        fetch('/api/questionnaire/major_content/13', {
+            method: 'POST'
+        }).then(res => res.json())
+          .then(result => {
+              let content = result.data
+              //console.dir(content)
+              batch(()=> {
+                  dispatch(allactions.majorContentActions.setSeStatusBaseLine(content[0].baseline))
+                  dispatch(allactions.majorContentActions.setSeStatusFollowUp(content[0].followup))
+                  dispatch(allactions.majorContentActions.setEducationBaseLine(content[1].baseline))
+                  dispatch(allactions.majorContentActions.setEducationFollowUp(content[1].followup))
+                  dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(content[2].baseline))
+                  dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(content[2].followup))
+                  dispatch(allactions.majorContentActions.setOriginBaseLine(content[3].baseline))
+                  dispatch(allactions.majorContentActions.setOriginFollowUp(content[3].followup))
+                  dispatch(allactions.majorContentActions.setEmpStatusBaseLine(content[4].baseline))
+                  dispatch(allactions.majorContentActions.setEmpStatusFollowUp(content[4].followup))
+                  dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(content[5].baseline))
+                  dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(content[5].followup))
+                  dispatch(allactions.majorContentActions.setAnthropometryBaseLine(content[6].baseline))
+                  dispatch(allactions.majorContentActions.setAnthropometryFollowUp(content[6].followup))
+                  dispatch(allactions.majorContentActions.setDietaryBaseLine(content[7].baseline))
+                  dispatch(allactions.majorContentActions.setDietaryFollowUp(content[7].followup))
+                  dispatch(allactions.majorContentActions.setSupplementBaseLine(content[8].baseline))
+                  dispatch(allactions.majorContentActions.setSupplementFollowUp(content[8].followup))
+                  dispatch(allactions.majorContentActions.setMedicineBaseLine(content[9].baseline))
+                  dispatch(allactions.majorContentActions.setMedicineFollowUp(content[9].followup))
+                  dispatch(allactions.majorContentActions.setPrescriptionBaseLine(content[10].baseline))
+                  dispatch(allactions.majorContentActions.setPrescriptionFollowUp(content[10].followup))
+                  dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(content[11].baseline))
+                  dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(content[11].followup))
+                  dispatch(allactions.majorContentActions.setAlcoholBaseLine(content[12].baseline))
+                  dispatch(allactions.majorContentActions.setAlcoholFollowUp(content[12].followup))
+                  dispatch(allactions.majorContentActions.setCigaretteBaseLine(content[13].baseline))
+                  dispatch(allactions.majorContentActions.setCigaretteFollowUp(content[13].followup))
+                  dispatch(allactions.majorContentActions.setCigarBaseLine(content[14].baseline))
+                  dispatch(allactions.majorContentActions.setCigarFollowUp(content[14].followup))
+                  dispatch(allactions.majorContentActions.setPipeBaseLine(content[15].baseline))
+                  dispatch(allactions.majorContentActions.setPipeFollowUp(content[15].followup))
+
+                  dispatch(allactions.majorContentActions.setTobaccoBaseLine(content[16].baseline))
+                  dispatch(allactions.majorContentActions.setTobaccoFollowUp(content[16].followup))
+                  dispatch(allactions.majorContentActions.setEcigarBaseLine(content[17].baseline))
+                  dispatch(allactions.majorContentActions.setEcigarFollowUp(content[17].followup))
+                  dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(content[18].baseline))
+                  dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(content[18].followup))
+                  dispatch(allactions.majorContentActions.setPhysicalBaseLine(content[19].baseline))
+                  dispatch(allactions.majorContentActions.setPhysicalFollowUp(content[19].followup))
+                  dispatch(allactions.majorContentActions.setSleepBaseLine(content[20].baseline))
+                  dispatch(allactions.majorContentActions.setSleepFollowUp(content[20].followup))
+                  dispatch(allactions.majorContentActions.setReproduceBaseLine(content[21].baseline))
+                  dispatch(allactions.majorContentActions.setReproduceFollowUp(content[21].followup))
+                  dispatch(allactions.majorContentActions.setReportedHealthBaseLine(content[22].baseline))
+                  dispatch(allactions.majorContentActions.setReportedHealthFollowUp(content[22].followup))
+                  dispatch(allactions.majorContentActions.setLifeBaseLine(content[23].baseline))
+                  dispatch(allactions.majorContentActions.setLifeFollowUp(content[23].followup))
+                  dispatch(allactions.majorContentActions.setSocialSupportBaseLine(content[24].baseline))
+                  dispatch(allactions.majorContentActions.setSocialSupportFollowUp(content[24].followup))
+                  dispatch(allactions.majorContentActions.setCognitionBaseLine(content[25].baseline))
+                  dispatch(allactions.majorContentActions.setCognitionFollowUp(content[25].followup))
+                  dispatch(allactions.majorContentActions.setDepressionBaseLine(content[26].baseline))
+                  dispatch(allactions.majorContentActions.setDepressionFollowUp(content[26].followup))
+                  dispatch(allactions.majorContentActions.setPsychosocialBaseLine(content[27].baseline))
+                  dispatch(allactions.majorContentActions.setPsychosocialFollowUp(content[27].followup))
+                  dispatch(allactions.majorContentActions.setFatigueBaseLine(content[28].baseline))
+                  dispatch(allactions.majorContentActions.setFatigueFollowUp(content[28].followup))
+                  dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(content[29].baseline))
+                  dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(content[29].followup))
+                  dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(content[30].baseline))
+                  dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(content[30].followup))
+                  dispatch(allactions.majorContentActions.setExposureBaseLine(content[31].baseline))
+                  dispatch(allactions.majorContentActions.setExposureFollowUp(content[31].followup))
+
+                  dispatch(allactions.majorContentActions.setResidenceBaseLine(content[32].baseline))
+                  dispatch(allactions.majorContentActions.setResidenceFollowUp(content[32].followup))
+                  dispatch(allactions.majorContentActions.setDiabetesBaseLine(content[33].baseline))
+                  dispatch(allactions.majorContentActions.setDiabetesFollowUp(content[33].followup))
+                  dispatch(allactions.majorContentActions.setStrokeBaseLine(content[34].baseline))
+                  dispatch(allactions.majorContentActions.setStrokeFollowUp(content[34].followup))
+                  dispatch(allactions.majorContentActions.setCopdBaseLine(content[35].baseline))
+                  dispatch(allactions.majorContentActions.setCopdFollowUp(content[35].followup))
+                  dispatch(allactions.majorContentActions.setCardiovascularBaseLine(content[36].baseline))
+                  dispatch(allactions.majorContentActions.setCardiovascularFollowUp(content[36].followup))
+                  dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(content[37].baseline))
+                  dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(content[37].followup))
+                  dispatch(allactions.majorContentActions.setMentalBaseLine(content[38].baseline))
+                  dispatch(allactions.majorContentActions.setMentalFollowUp(content[38].followup))
+                  dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(content[39].baseline))
+                  dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))     
+              })
+          })
+    }, [])
+
     const handleSave = () => {
        /* if(Object.entries(errors).length === 0)
             saveEnrollment(79)
@@ -217,27 +311,27 @@ const MajorContentForm = ({...props}) => {
                                 <td> 
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='cigarBaseLine' checked={majorContent.cigarBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setCigarBaseLine())} /></span>
+                                        <input type='checkbox' name='cigarBaseLine' checked={majorContent.cigarBaseLine === 1} onClick = {(e) => dispatch(allactions.majorContentActions.setCigarBaseLine(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10'>Cigars</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setPipeBaseLine())} /></span>
+                                        <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine === 1} onClick = {(e) => dispatch(allactions.majorContentActions.setPipeBaseLine(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10'>Pipes</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setTobaccoBaseLine())} /></span>
+                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick = {(e) => dispatch(allactions.majorContentActions.setTobaccoBaseLine(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Chewing Tabacco</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setEcigarBaseLine())} /></span>
+                                        <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick = {(e) => dispatch(allactions.majorContentActions.setEcigarBaseLine(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10' style={{fontSize: '1.4rem'}}>E-cigarettes</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine())} /></span>
+                                        <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick = {(e) => dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
                                         {
                                             majorContent.noncigarOtherBaseLine ? 
@@ -254,27 +348,27 @@ const MajorContentForm = ({...props}) => {
                                 <td style={{verticalAlign: 'middle'}}> 
                                 <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='cigarFollowUp' checked={majorContent.cigarFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setCigarFollowUp())} /></span>
+                                        <input type='checkbox' name='cigarFollowUp' checked={majorContent.cigarFollowUp} onClick = {(e) => dispatch(allactions.majorContentActions.setCigarFollowUp(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10'>Cigars</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setPipeFollowUp())} /></span>
+                                        <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick = {(e) => dispatch(allactions.majorContentActions.setPipeFollowUp(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10'>Pipes</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setTobaccoFollowUp())} /></span>
+                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick = {(e) => dispatch(allactions.majorContentActions.setTobaccoFollowUp(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10' style={{fontSize: '1.4rem'}}>Chewing Tabacco</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setEcigarFollowUp())} /></span>
+                                        <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick = {(e) => dispatch(allactions.majorContentActions.setEcigarFollowUp(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-10' style={{fontSize: '1.4rem'}}>E-cigarettes</span>
                                     </div>
                                     <div className='col-sm-offset-2 col-sm-10'>
                                         <span className='col-sm-1' style={{paddingLeft: '0'}}>
-                                        <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick = {() => dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp())} /></span>
+                                        <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick = {(e) => dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0))} /></span>
                                         <span className='col-sm-2' style={{fontSize: '1.4rem'}}>Other</span>
                                         {
                                             majorContent.noncigarOtherFollowUp ? 

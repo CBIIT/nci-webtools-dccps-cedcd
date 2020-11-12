@@ -104,4 +104,18 @@ router.post('/enrollment_counts/:id', function(req, res){
 
 })
 
+router.post('/major_content/:id', function(req, res){
+    let id = req.params.id
+    let func = 'get_major_content'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function(result){
+        logger.debug(result)
+        if(result[0])
+            res.json({status: 200, data: result[0]})
+        else
+            res.json({status: 500, message: 'failed to load data'})
+    })
+})
+
 module.exports = router
