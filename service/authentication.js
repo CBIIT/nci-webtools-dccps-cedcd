@@ -73,7 +73,7 @@ async function authenticationMiddleware(request, response, next) {
 // so we can use the global siteminder agent logout route to invalidate our current session
 function logout(request, response) {
     request.session.destroy(error => {
-        response.redirect(301, settings.logoutUrl || '/');
+        response.json(settings.logoutUrl || '/');
     });
 }
 

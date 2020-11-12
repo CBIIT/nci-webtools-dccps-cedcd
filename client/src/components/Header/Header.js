@@ -4,6 +4,12 @@ import { UserSessionContext } from '../../index';
 
 export default function Header({ props }) {
     const userSession = useContext(UserSessionContext);
+    const logout = async e => {
+        e.preventDefault();
+        // can not use normal 301 response, since session is not properly cleared
+        const response = await fetch('/api/logout');
+        window.location.href = await response.json();
+    }
 
     return (
         <div id="header">
@@ -22,7 +28,8 @@ export default function Header({ props }) {
                     {userSession && <>
                         <a
                             className="login-button"
-                            href="/api/logout"
+                            href="#"
+                            onClick={logout}
                             style={{ margin: '5px' }}
                             target="_self">
                             Logout
