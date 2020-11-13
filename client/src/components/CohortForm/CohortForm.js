@@ -4,6 +4,9 @@ import allactions from '../../actions'
 import validator from '../../validators'
 import Person from '../Person/Person'
 import Investigator from '../Investigator/Investigator'
+import DatePicker from 'react-datepicker';
+
+import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.css'
 
 const CohortForm = ({...props}) => {
@@ -481,10 +484,12 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12'>
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-3' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='completionDate' value={cohort.completionDate} onChange={e => dispatch(allactions.cohortActions.completionDate(e.target.value))} onBlur={(e) => {populateErrors('completionDate', e.target.value, true, 'date')}}/>
-                                    </span>
-                                </span> 
-                                {errors.completionDate ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.completionDate}</span> : ''}
+                                   
+                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
+                                        let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
+                                    }}} /></span> 
+                                </span>
+                                <span>{errors.completionDate ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.completionDate}</span> : ''}</span>
                             </div>
                         </div>
                         <div id='question3' className='col-md-12' style={{display: 'flex', flexDirection: 'column', paddingBottom: '10px'}}>
