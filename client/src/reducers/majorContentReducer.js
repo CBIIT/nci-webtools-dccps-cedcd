@@ -1,6 +1,7 @@
 import t from '../actionTypes'
 import InitialStates from '../states'
 const actions = {}
+actions[t.majorContentLoaded] = (state, action) => ({...state, hasLoaded: action.value})
 actions[t.setSeStatusBaseLine] = (state, action) => ({...state, seStatusBaseLine: action.value})
 actions[t.setSeStatusFollowUp] = (state, action) => ({...state, seStatusFollowUp: action.value})
 actions[t.setEducationBaseLine] = (state, action) => ({...state, educationBaseLine: action.value})
@@ -33,16 +34,16 @@ actions[t.setAlcoholBaseLine] = (state, action) => ({...state, alcoholBaseLine: 
 actions[t.setAlcoholFollowUp] = (state, action) => ({...state, alcoholFollowUp: action.value})
 actions[t.setCigaretteBaseLine] = (state, action) => ({...state, cigaretteBaseLine: action.value})
 actions[t.setCigaretteFollowUp] = (state, action) => ({...state, cigaretteFollowUp: action.value})
-actions[t.setCigarBaseLine] = (state) => ({...state, cigarBaseLine: !state.cigarBaseLine})
-actions[t.setCigarFollowUp] = (state) => ({...state, cigarFollowUp: !state.cigarFollowUp})
-actions[t.setPipeBaseLine] = (state) => ({...state, pipeBaseLine: !state.pipeBaseLine})
-actions[t.setPipeFollowUp] = (state) => ({...state, pipeFollowUp: !state.pipeFollowUp})
-actions[t.setTobaccoBaseLine] = (state) => ({...state, tobaccoBaseLine: !state.tobaccoBaseLine})
-actions[t.setTobaccoFollowUp] = (state) => ({...state, tobaccoFollowUp : !state.tobaccoFollowUp})
-actions[t.setEcigarBaseLine] = (state) => ({...state, ecigarBaseLine: !state.ecigarBaseLine})
-actions[t.setEcigarFollowUp] = (state) => ({...state, ecigarFollowUp: !state.ecigarFollowUp})
-actions[t.setNoncigarOtherBaseLine] = (state) => ({...state, noncigarOtherBaseLine: !state.noncigarOtherBaseLine})
-actions[t.setNoncigarOtherFollowUp] = (state) => ({...state, noncigarOtherFollowUp: !state.noncigarOtherFollowUp})
+actions[t.setCigarBaseLine] = (state, action) => ({...state, cigarBaseLine: action.value})
+actions[t.setCigarFollowUp] = (state, action) => ({...state, cigarFollowUp: action.value})
+actions[t.setPipeBaseLine] = (state, action) => ({...state, pipeBaseLine: action.value})
+actions[t.setPipeFollowUp] = (state, action) => ({...state, pipeFollowUp: action.value})
+actions[t.setTobaccoBaseLine] = (state, action) => ({...state, tobaccoBaseLine: action.value})
+actions[t.setTobaccoFollowUp] = (state, action) => ({...state, tobaccoFollowUp : action.value})
+actions[t.setEcigarBaseLine] = (state, action) => ({...state, ecigarBaseLine: action.value})
+actions[t.setEcigarFollowUp] = (state, action) => ({...state, ecigarFollowUp: action.value})
+actions[t.setNoncigarOtherBaseLine] = (state, action) => ({...state, noncigarOtherBaseLine: action.value})
+actions[t.setNoncigarOtherFollowUp] = (state, action) => ({...state, noncigarOtherFollowUp: action.value})
 actions[t.setNoncigarBaseLineSpecify] = (state, action) => ({...state, noncigarBaseLineSpecify: action.value})
 actions[t.setNoncigarFollowUpSpecify] = (state, action) => ({...state, noncigarFollowUpSpecify: action.value})
 actions[t.setPhysicalBaseLine] = (state, action) => ({...state, physicalBaseLine: action.value})
@@ -66,7 +67,7 @@ actions[t.setPsychosocialFollowUp] = (state, action) => ({...state, psychosocial
 actions[t.setFatigueBaseLine] = (state, action) => ({...state, fatigueBaseLine: action.value})
 actions[t.setFatigueFollowUp] = (state, action) => ({...state, fatigueFollowUp : action.value})
 actions[t.setCancerHistoryBaseLine] = (state, action) => ({...state, cancerHistoryBaseLine: action.value})
-actions[t.setCancerHistoryFollowUp] = (state, action) => ({...state, cancerHistoryFollowUp : action.value})
+actions[t.setCancerHistoryFollowUp] = (state, action,) => ({...state, cancerHistoryFollowUp : action.value})
 actions[t.setCancerPedigreeBaseLine] = (state, action) => ({...state, cancerPedigreeBaseLine: action.value})
 actions[t.setCancerPedigreeFollowUp] = (state, action) => ({...state, cancerPedigreeFollowUp: action.value})
 actions[t.setPhysicalMeasureBaseLine] = (state, action) => ({...state, physicalMeasureBaseLine: action.value})
@@ -94,7 +95,7 @@ actions[t.setCancerLateEffects] = (state, action) => ({...state, cancerLateEffec
 actions[t.setCancerSymptom] = (state, action) => ({...state, cancerSymptom : action.value})
 actions[t.setCancerOther] = (state, action) => ({...state, cancerOther: action.value})
 actions[t.setCancerOtherSpecify] = (state, action) => ({...state, cancerOtherSpecify: action.value})
-
+actions[t.setSectionCStatus] = (state, action) => ({...state, sectionCStatus: action.value})
 const getResult = feedState => feedAction => actions[feedAction.type] && actions[feedAction.type](feedState, feedAction) || feedState
 const majorContent = (state=InitialStates.majorContent, action={}) => getResult(state)(action)
 

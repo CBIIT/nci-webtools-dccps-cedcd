@@ -3,7 +3,7 @@ import validator from '../../validators'
 import allactions from '../../actions'
 import {useSelector, useDispatch} from 'react-redux'
 
-const Person =({id, name, position, phone, email, colWidth, callback, errors, displayStyle}) => {
+const Person =({id, name, position, phone, email, colWidth, callback, errors, displayStyle, leftPadding}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
             case 'phone':
@@ -45,7 +45,7 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
         dispatch(allactions.cohortActions.completerName(cohort.completerName))
     }, [])
 
-    return <div id={id} className={'col-md-'+colWidth}>                           
+    return <div id={id} className={'col-md-'+colWidth} style={{marginLeft: '0', paddingLeft: leftPadding}}>                           
             <div className='col-md-12' style={{marginBottom: '4px'}}>
                 <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                 <span className='col-md-7'>

@@ -1,5 +1,6 @@
 import t from '../actionTypes'
 
+const setHasLoaded = (v) => ({type: t.majorContentLoaded, value: v})
 const setSeStatusBaseLine = (v) => ({type: t.setSeStatusBaseLine, value: v})
 const setSeStatusFollowUp = (v) => ({type: t.setSeStatusFollowUp, value: v})
 const setEducationBaseLine = (v) => ({type: t.setEducationBaseLine, value: v})
@@ -29,16 +30,16 @@ const setAlcoholBaseLine = (v) => ({type: t.setAlcoholBaseLine, value: v})
 const setAlcoholFollowUp = (v) => ({type: t.setAlcoholFollowUp, value: v})
 const setCigaretteBaseLine = (v) => ({type: t.setCigaretteBaseLine, value: v})
 const setCigaretteFollowUp = (v) => ({type: t.setCigaretteFollowUp, value: v})
-const setCigarBaseLine = () => ({type: t.setCigarBaseLine})
-const setCigarFollowUp = () => ({type: t.setCigarFollowUp})
-const setPipeBaseLine = () => ({type: t.setPipeBaseLine})
-const setPipeFollowUp = () => ({type: t.setPipeFollowUp})
-const setTobaccoBaseLine = () => ({type: t.setTobaccoBaseLine})
-const setTobaccoFollowUp  = () => ({type: t.setTobaccoFollowUp})
-const setEcigarBaseLine = () => ({type: t.setEcigarBaseLine})
-const setEcigarFollowUp = () => ({type: t.setEcigarFollowUp})
-const setNoncigarOtherBaseLine = () => ({type: t.setNoncigarOtherBaseLine})
-const setNoncigarOtherFollowUp  = () => ({type: t.setNoncigarOtherFollowUp})
+const setCigarBaseLine = (v) => ({type: t.setCigarBaseLine, value: v})
+const setCigarFollowUp = (v) => ({type: t.setCigarFollowUp, value: v})
+const setPipeBaseLine = (v) => ({type: t.setPipeBaseLine, value: v})
+const setPipeFollowUp = (v) => ({type: t.setPipeFollowUp, value: v})
+const setTobaccoBaseLine = (v) => ({type: t.setTobaccoBaseLine, value: v})
+const setTobaccoFollowUp  = (v) => ({type: t.setTobaccoFollowUp, value: v})
+const setEcigarBaseLine = (v) => ({type: t.setEcigarBaseLine, value: v})
+const setEcigarFollowUp = (v) => ({type: t.setEcigarFollowUp, value: v})
+const setNoncigarOtherBaseLine = (v) => ({type: t.setNoncigarOtherBaseLine, value: v})
+const setNoncigarOtherFollowUp  = (v) => ({type: t.setNoncigarOtherFollowUp, value: v})
 const setNoncigarBaseLineSpecify = (v) => ({type: t.setNoncigarBaseLineSpecify, value: v})
 const setNoncigarFollowUpSpecify = (v) => ({type: t.setNoncigarFollowUpSpecify, value: v})
 const setPhysicalBaseLine = (v) => ({type: t.setPhysicalBaseLine, value: v})
@@ -90,7 +91,9 @@ const setCancerLateEffects = (v) => ({type: t.setCancerLateEffects, value: v})
 const setCancerSymptom  = (v) => ({type: t.setCancerSymptom , value: v})
 const setCancerOther = (v) => ({type: t.setCancerOther, value: v})
 const setCancerOtherSpecify = (v) => ({type: t.setCancerOtherSpecify, value: v})
+const setSectionCStatus = (v) => ({type: t.setSectionCStatus, value: v})
 export default {
+    setHasLoaded,
     setSeStatusBaseLine,
     setSeStatusFollowUp,
     setEducationBaseLine,
@@ -179,5 +182,6 @@ export default {
     setCancerLateEffects,
     setCancerSymptom ,
     setCancerOther,
-    setCancerOtherSpecify
+    setCancerOtherSpecify,
+    setSectionCStatus
 }

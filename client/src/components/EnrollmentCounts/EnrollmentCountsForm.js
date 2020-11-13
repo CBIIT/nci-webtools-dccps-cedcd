@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 //import {useForm} from 'react-hook-form'
 import {useSelector, useDispatch, batch} from 'react-redux'
+import DatePicker from 'react-datepicker'
 import allactions from '../../actions'
 import validator from '../../validators'
 const EnrollmentCountsForm = ({...props}) => {
@@ -24,7 +25,7 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals(coltotalid, originalColTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
-
+    var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
             fetch('/api/questionnaire/enrollment_counts/13', {
@@ -253,7 +254,9 @@ const EnrollmentCountsForm = ({...props}) => {
                     </table>
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
-                        <span><input name='mostRecentDate'  className='inputUnderscore' placeholder='(MM/DD/YYYY)' value={enrollmentCount.mostRecentDate}  onChange={e => dispatch(allactions.enrollmentCountActions.updateMostRecentDate(e.target.value))}  onBlur = {() => {let r = validator.dateValidator(enrollmentCount.mostRecentDate, true); if(r){setErrors({...errors, mostRecentDate: r})} else {if(errors.mostRecentDate) {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}}}}/></span>
+                        <span>
+                            <DatePicker className='form-control' selected={new Date(enrollmentCount.mostRecentDate)}  dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
+                        </span>
                         {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>
 
