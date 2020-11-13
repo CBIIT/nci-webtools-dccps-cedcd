@@ -1,6 +1,7 @@
 import t from '../actionTypes'
 import InitialStates from '../states'
 const actions = {}
+actions[t.majorContentLoaded] = (state, action) => ({...state, hasLoaded: action.value})
 actions[t.setSeStatusBaseLine] = (state, action) => ({...state, seStatusBaseLine: action.value})
 actions[t.setSeStatusFollowUp] = (state, action) => ({...state, seStatusFollowUp: action.value})
 actions[t.setEducationBaseLine] = (state, action) => ({...state, educationBaseLine: action.value})
@@ -94,7 +95,7 @@ actions[t.setCancerLateEffects] = (state, action) => ({...state, cancerLateEffec
 actions[t.setCancerSymptom] = (state, action) => ({...state, cancerSymptom : action.value})
 actions[t.setCancerOther] = (state, action) => ({...state, cancerOther: action.value})
 actions[t.setCancerOtherSpecify] = (state, action) => ({...state, cancerOtherSpecify: action.value})
-
+actions[t.setSectionCStatus] = (state, action) => ({...state, sectionCStatus: action.value})
 const getResult = feedState => feedAction => actions[feedAction.type] && actions[feedAction.type](feedState, feedAction) || feedState
 const majorContent = (state=InitialStates.majorContent, action={}) => getResult(state)(action)
 

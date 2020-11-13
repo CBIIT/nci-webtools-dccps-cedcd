@@ -49,7 +49,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function(results){
-        logger.debug(results)
+        //logger.debug(results)
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
@@ -92,7 +92,7 @@ router.post('/enrollment_counts/:id', function(req, res){
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function(result){
-        logger.debug(result)
+        logger.debug(typeof result[4][0].mostRecentDate)
         const enrollmentCounts = {}
         enrollmentCounts.details = result[0]
         enrollmentCounts.rowTotals = result[1]
@@ -116,6 +116,24 @@ router.post('/major_content/:id', function(req, res){
         else
             res.json({status: 500, message: 'failed to load data'})
     })
+})
+
+router.post('/update_major_content/:id', function(req,res){
+    let func = 'upsert_major_content'
+    let body = JSON.stringify(req.body)
+    let params = []
+    params.push(req.params.id)
+    params.push(body)
+    logger.debug(body)
+    res.json({status:200, message:'update successful'})
+    /*
+    mysql.callJsonProcedure(func, params, function(result){
+        if(result && result[0] && result[0][0].rowsAffacted > 0)
+            res.json({status:200, message:'update successful'})
+        else
+            res.json({status:500, message:'update failed'})
+    })
+    */
 })
 
 module.exports = router

@@ -209,11 +209,8 @@ const CohortForm = ({...props}) => {
 
     const handleSaveContinue = () => {
         if(Object.entries(errors).length === 0){
-            if(Object.entries(errors).length === 0)
-                            dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
-                        else{
-                            dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
-                        }
+            cohort.sectionAStatus='complete'
+            dispatch(allactions.cohortActions.setSectionAStatus('complete'))
             saveCohort(13, true)
         }
         else{
@@ -485,7 +482,7 @@ const CohortForm = ({...props}) => {
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-3' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
                                    
-                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
+                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={new Date(cohort.completionDate)} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
                                         let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
                                     }}} /></span> 
                                 </span>

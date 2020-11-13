@@ -1,5 +1,6 @@
 import t from '../actionTypes'
 
+const setHasLoaded = (v) => ({type: t.majorContentLoaded, value: v})
 const setSeStatusBaseLine = (v) => ({type: t.setSeStatusBaseLine, value: v})
 const setSeStatusFollowUp = (v) => ({type: t.setSeStatusFollowUp, value: v})
 const setEducationBaseLine = (v) => ({type: t.setEducationBaseLine, value: v})
@@ -90,7 +91,9 @@ const setCancerLateEffects = (v) => ({type: t.setCancerLateEffects, value: v})
 const setCancerSymptom  = (v) => ({type: t.setCancerSymptom , value: v})
 const setCancerOther = (v) => ({type: t.setCancerOther, value: v})
 const setCancerOtherSpecify = (v) => ({type: t.setCancerOtherSpecify, value: v})
+const setSectionCStatus = (v) => ({type: t.setSectionCStatus, value: v})
 export default {
+    setHasLoaded,
     setSeStatusBaseLine,
     setSeStatusFollowUp,
     setEducationBaseLine,
@@ -179,5 +182,6 @@ export default {
     setCancerLateEffects,
     setCancerSymptom ,
     setCancerOther,
-    setCancerOtherSpecify
+    setCancerOtherSpecify,
+    setSectionCStatus
 }

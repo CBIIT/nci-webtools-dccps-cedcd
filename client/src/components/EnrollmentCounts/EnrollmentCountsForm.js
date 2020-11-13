@@ -25,7 +25,7 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals(coltotalid, originalColTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
-
+    var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
             fetch('/api/questionnaire/enrollment_counts/13', {
@@ -255,7 +255,7 @@ const EnrollmentCountsForm = ({...props}) => {
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
                         <span>
-                            <DatePicker className='form-control' selected={enrollmentCount.mostRecentDate} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
+                            <DatePicker className='form-control' selected={new Date(enrollmentCount.mostRecentDate)}  dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
                         </span>
                         {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>

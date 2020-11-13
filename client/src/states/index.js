@@ -5,7 +5,7 @@ const InitialStates ={
         cohortId: null,
         name: '',
         acronym: '',
-        completionDate: '',
+        completionDate: '2020-10-12T05:00:00.000Z',
         completerName: '',
         completerPosition: '',
         completerPhone: '',
@@ -171,10 +171,11 @@ const InitialStates ={
         '832': 350,
         '833': 350,
         '841': 3150,
-        'mostRecentDate': '',
+        'mostRecentDate': '2020-10-12T05:00:00.000Z',
         'sectionBStatus': ''
     },
     majorContent: {
+        'hasLoaded': false,
         'seStatusBaseLine': null,
         'seStatusFollowUp': null,
         'educationBaseLine': null,
