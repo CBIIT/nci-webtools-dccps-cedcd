@@ -464,7 +464,7 @@ const CohortForm = ({...props}) => {
                                 <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description: Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</label>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
+                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
