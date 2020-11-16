@@ -1186,15 +1186,7 @@ DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 CREATE PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
 BEGIN
 	SET @recentDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentDate'));
-    SET @validDate = false;
-    if (@recentDate is not null and length(@recentDate) = 10) then
-    begin
-		SET @validDate = true;
-		SET @recentMonth = SUBSTRING(@recentDate, 1, 2);
-		SET @recentDay = SUBSTRING(@recentDate, 4, 2);
-		SET @recentYear = SUBSTRING(@recentDate, 7, 4);
-    end;
-    end if;
+
 	if exists (select * from enrollment_count where cohort_id = `id`) then
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
         race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
@@ -1409,8 +1401,7 @@ BEGIN
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@validDate, 
-		STR_TO_DATE(CONCAT(@recentDay, ', ', @recentMonth, ', ', @recentYear), '%d, %m, %Y'), null)
+    set enrollment_most_recent_date = if(@recentDate is not null, replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
 	where cohort_id = `id`;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
