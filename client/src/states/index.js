@@ -268,6 +268,19 @@ const InitialStates ={
         'sectionCStatus': '',
 
     },
+    mortality:{
+        hasLoaded: false,
+        mortalityYear: null,
+        deathIndex: null,
+        deathCertificate: null,
+        deathOther: null,
+        haveDeathDate: null,
+        icd9: null,
+        icd10: null,
+        notCoded: null,
+        otherCode: null,
+        deathNumbers: null,
+    },
     cancerCount: {
         '1-2-1': 50,
         '2-2-1': 50,
