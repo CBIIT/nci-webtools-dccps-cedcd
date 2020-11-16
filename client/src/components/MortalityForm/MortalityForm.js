@@ -40,12 +40,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="deathIndex" className='col-md-5'>U.S. National Death Index (NDI) linkage</div>
 
                     <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathIndexNo' style={{ width: '30px' }} />
+                        <input type='radio' name='deathIndex' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathIndexYes' style={{ width: '30px' }} />
+                        <input type='radio' name='deathIndex' style={{ width: '30px' }} />
                         <span>Yes</span>
                     </span>
                 </div>
@@ -55,12 +55,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="deathCertificate" className='col-md-5'>Death Certificates</div>
 
                     <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathCertifNo' style={{ width: '30px' }} />
+                        <input type='radio' name='deathCertificate' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathCertifYes' style={{ width: '30px' }} />
+                        <input type='radio' name='deathCertificate' style={{ width: '30px' }} />
                         <span>Yes</span>
                     </span>
                 </div>
@@ -70,12 +70,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="deathOther" className='col-md-5'>Other</div>
 
                     <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathOtherNo' style={{ width: '30px' }} />
+                        <input type='radio' name='deathOther' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='deathOtherYes' style={{ width: '30px' }} />
+                        <input type='radio' name='deathOther' style={{ width: '30px' }} />
                         <span>Yes, specify</span>
                         <span style={{ marginLeft: '10px' }}><input className='inputUnderscore' style={{ width: '20rem' }}></input></span>
                     </span>
@@ -90,12 +90,12 @@ const MortalityForm = ({ ...props }) => {
 
         <div className='form-group col-md-9' >
             <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                <input type='checkbox' name='haveDeathDateNo' style={{ width: '30px' }} />
+                <input type='radio' name='haveDeathDate' style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
             <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                <input type='checkbox' name='haveDeathDateYes' style={{ width: '30px' }} />
+                <input type='radio' name='haveDeathDate' style={{ width: '30px' }} />
                 <span>Yes</span>
             </span>
         </div>
@@ -110,12 +110,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="icd9" className='col-md-5'>ICD-9</div>
 
                     <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='icd9No' style={{ width: '30px' }} />
+                        <input type='radio' name='icd9' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='icd9Yes' style={{ width: '30px' }} />
+                        <input type='radio' name='icd9' style={{ width: '30px' }} />
                         <span>Yes</span>
                     </span>
                 </div>
@@ -125,12 +125,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="icd10" className='col-md-5'>ICD-10</div>
 
                     <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='icd10No' style={{ width: '30px' }} />
+                        <input type='radio' name='icd10' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='icd10Yes' style={{ width: '30px' }} />
+                        <input type='radio' name='icd10' style={{ width: '30px' }} />
                         <span>Yes</span>
                     </span>
                 </div>
@@ -140,12 +140,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="notCoded" className='col-md-5'>Not Coded</div>
 
                     <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='notCodedNo' style={{ width: '30px' }} />
+                        <input type='radio' name='notCoded' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='notCodedYes' style={{ width: '30px' }} />
+                        <input type='radio' name='notCoded' style={{ width: '30px' }} />
                         <span>Yes</span>
                     </span>
                 </div>
@@ -155,12 +155,12 @@ const MortalityForm = ({ ...props }) => {
                     <div htmlFor="otherCode" className='col-md-5'>Other</div>
 
                     <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='otherCodeNo' style={{ width: '30px' }} />
+                        <input type='radio' name='otherCode' style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='checkbox' name='otherCodeYes' style={{ width: '30px' }} />
+                        <input type='radio' name='otherCode' style={{ width: '30px' }} />
                         <span>Yes, specify</span>
                         <span style={{ marginLeft: '10px' }}><input className='inputUnderscore' style={{ width: '20rem' }}></input></span>
                     </span>
