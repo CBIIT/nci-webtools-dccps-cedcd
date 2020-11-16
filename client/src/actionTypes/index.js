@@ -188,7 +188,21 @@ const actionTypes = {
     setCancerCount: 'SET_CANCER_COUNT',
     setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
 
-    setSectionStatus: 'SET_COHORT_SECTION_STATUS'
+    setSectionStatus: 'SET_COHORT_SECTION_STATUS',
+
+    /* section E */
+    setMortalityLoaded: 'SET_MORTALITY_LOADED',
+    setMortalityYear: 'SET_MORTALITY_YEAR',
+    setDeathIndex: 'SET_MORTALITY_DEATH_INDEX',
+    setDeathCertificate: 'SET_MORTALITY_DEATH_CERTIFICATE',
+    setDeathOther: 'SET_MORATLITY_DEATH_OTHER',
+    setHaveDeathDate: 'SET_MORTALITY_HAVE_DEATH_DATE',
+    setIcd9: 'SET_MORTALITY_ICD9',
+    setIcd10: 'SET_MORTALITY_ICD10',
+    setNotCoded: 'SET_MORTALITY_NOT_CODED',
+    setOtherCode: 'SET_MORTALITY_OTHER_CODE',
+    setDeathNumbers: 'SET_MORTALITY_DEATH_NUMBERS',
+    setSectionEStatus: 'SET_MORTALITY_STATUS',
 }
 
 export default  actionTypes
