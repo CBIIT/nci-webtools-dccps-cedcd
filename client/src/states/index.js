@@ -280,6 +280,7 @@ const InitialStates ={
         notCoded: null,
         otherCode: null,
         deathNumbers: null,
+        sectionEStatus: '',
     },
     cancerCount: {
         '1-2-1': 50,
