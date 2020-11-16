@@ -19,6 +19,7 @@ const actionTypes = {
     setInvestigatorInstitution: 'SET_COHORT_INVESTIGATOR_INSTITUTION',
     setInvestigatorEmail: 'SET_COHORT_INVESTIGATOR_EMAIL',
     addInvestigator: 'ADD_NEW_INVESTIGATOR',
+    removeInvestigator: 'REMOVE_COHORT_INVESTIGATOR',
     setCollaboratorName: 'SET_COLLABORATOR_NAME',
     setCollaboratorPosition: 'SET_COLLABORATOR_POSITION',
     setCollaboratorPhone: 'SET_COLLABORATOR_PHONE',
@@ -91,6 +92,7 @@ const actionTypes = {
     updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',
     setSectionBStatus: 'SET_ENROLLMENT_COUNT_STATUS',
     /*section C*/
+    majorContentLoaded: 'SET_MAJOR_CONTENT_LOADED',
     setSeStatusBaseLine: 'SET_MC_SESTATUS_BSASELINE',
     setSeStatusFollowUp: 'SET_MC_SESTATUS_FOLLOWUP',
     setEducationBaseLine: 'SET_MC_EDUCATION_BASELINE',
@@ -180,6 +182,7 @@ const actionTypes = {
     setCancerSymptom : 'SET_MC_CANCER_SYMPTOM',
     setCancerOther: 'SET_MC_CANCER_OTHER',
     setCancerOtherSpecify: 'SET_MC_CANCER_OTHER_SPECIFY',
+    setSectionCStatus: 'SET_MC_STATUS',
 
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',

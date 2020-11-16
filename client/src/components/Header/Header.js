@@ -6,8 +6,9 @@ export default function Header({ props }) {
     const userSession = useContext(UserSessionContext);
     const logout = async e => {
         e.preventDefault();
-        await fetch('/api/logout');
-        window.location.href = 'https://auth.nih.gov/siteminderagent/smlogout.asp'
+        // can not use normal 301 response, since session is not properly cleared
+        const response = await fetch('/api/logout');
+        window.location.href = await response.json();
     }
 
     return (
@@ -36,7 +37,7 @@ export default function Header({ props }) {
                     </> || <>
                         <a
                             className="login-button"
-                            href="/cohort/questionnaire/13"
+                            href="/cohort/questionnaire/79"
                             style={{ margin: '5px' }}
                             target="_self">
                             Cohort Login
