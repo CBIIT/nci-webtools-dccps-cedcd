@@ -87,7 +87,7 @@ const QuestionnaireHeader = ({...props}) => {
             <div style={{display: 'flex'}}>
                 <div style={{flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0'}}></div>
                 <div onMouseEnter={()=>setERing('blue')} onMouseMove={()=>setERing('blue')} onMouseOut={() => setERing('')}>
-                    <div style= {{flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['B'])}}>
+                    <div style= {{flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E'])}}>
                         <div style={{width: '25px', height: '25px',  borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto'}}></div>
                     </div>
                 </div>

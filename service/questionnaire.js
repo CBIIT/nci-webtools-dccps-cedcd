@@ -125,15 +125,14 @@ router.post('/update_major_content/:id', function(req,res){
     params.push(req.params.id)
     params.push(body)
     logger.debug(body)
-    res.json({status:200, message:'update successful'})
-    /*
+    
     mysql.callJsonProcedure(func, params, function(result){
-        if(result && result[0] && result[0][0].rowsAffacted > 0)
+        logger.debug(result)
+        if(result && result[0] && result[0][0].rowAffacted > 0)
             res.json({status:200, message:'update successful'})
         else
             res.json({status:500, message:'update failed'})
     })
-    */
 })
 
 module.exports = router

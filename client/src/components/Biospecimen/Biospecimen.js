@@ -149,6 +149,9 @@ class Biospecimen extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let rst = result.data;
+				//let lst = rst.list
+				//let ls =lst.sort((e1, e2) => {e1.specimen > e2.specimen ? 1 : -1})
+				console.dir(rst.list)
 				this.setState(prevState => (
 					{
 						result: rst,
