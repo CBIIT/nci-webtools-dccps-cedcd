@@ -67,7 +67,7 @@ const CohortForm = ({...props}) => {
     useEffect(() => {
         if(!cohort.hasLoaded){
             let shadow = {...errors}
-            fetch('/api/questionnaire/cohort_basic_info/13', {
+            fetch('/api/questionnaire/cohort_basic_info/79', {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
@@ -150,7 +150,7 @@ const CohortForm = ({...props}) => {
         }
     }, [])
 
-    const saveCohort = (id=13, proceed=false) => {
+    const saveCohort = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -194,7 +194,7 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(13)
+            saveCohort(79)
         }
         else{
             setDisplay('block')
@@ -202,7 +202,7 @@ const CohortForm = ({...props}) => {
                 cohort.sectionAStatus='incomplete'
                 dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
                 console.log(cohort.sectionAStatus)
-                saveCohort(13)
+                saveCohort(79)
             }
         }
     }
@@ -211,13 +211,13 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(13, true)
+            saveCohort(79, true)
         }
         else{
             if(window.confirm('there are validation errors, are you sure to save?')){
                 cohort.sectionAStatus='incomplete'
                 dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-                saveCohort(13, true)
+                saveCohort(79, true)
             }
         }
     }
@@ -426,7 +426,7 @@ const CohortForm = ({...props}) => {
                 fileData, 
                 fileData.name 
             ); 
-            fetch(`/api/questionnaire/upload/13/${category}`,{
+            fetch(`/api/questionnaire/upload/79/${category}`,{
                 method: "POST",
                 body: formData
             }).then(res => res.json())
@@ -464,7 +464,7 @@ const CohortForm = ({...props}) => {
                                 <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description: Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</label>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
+                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
@@ -482,7 +482,7 @@ const CohortForm = ({...props}) => {
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-3' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
                                    
-                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={new Date(cohort.completionDate)} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
+                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
                                         let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
                                     }}} /></span> 
                                 </span>

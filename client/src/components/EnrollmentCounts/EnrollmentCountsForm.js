@@ -28,7 +28,7 @@ const EnrollmentCountsForm = ({...props}) => {
     var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
-            fetch('/api/questionnaire/enrollment_counts/13', {
+            fetch('/api/questionnaire/enrollment_counts/79', {
                 method: 'POST',
             }).then(res => res.json())
               .then(result => {
@@ -57,7 +57,7 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
     */
-    const saveEnrollment = (id=13, proceed=false) => {
+    const saveEnrollment = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -86,21 +86,21 @@ const EnrollmentCountsForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             enrollmentCount.sectionBStatus='complete'
             dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
-            saveEnrollment(13)  
+            saveEnrollment(79)  
         }
         else{
             setDisplay('1')
             if(window.confirm('there are validation errors, are you sure to save?')){
                 enrollmentCount.sectionBStatus='incomplete'
                 dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
-                saveEnrollment(13)
+                saveEnrollment(79)
             }
         }
     }
 
     const handleSaveContinue = () => {
         if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(13, true)}
+            saveEnrollment(79, true)}
     }
 
 
@@ -255,7 +255,7 @@ const EnrollmentCountsForm = ({...props}) => {
                     <div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
                         <span>
-                            <DatePicker className='form-control' selected={new Date(enrollmentCount.mostRecentDate)}  dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
+                            <DatePicker className='form-control' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null}  dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
                         </span>
                         {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>

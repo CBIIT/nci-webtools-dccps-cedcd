@@ -41,6 +41,13 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
     const cohort = useSelector(state => state.cohortReducer)
     const dispatch = useDispatch()
 
+    const processPhoneNumber = (telNum) => {
+        if(/^\d{10}$/.test(telNum.trim()))
+            return telNum.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
+        else
+            return telNum
+    }
+
     useEffect(() => {
         dispatch(allactions.cohortActions.completerName(cohort.completerName))
     }, [])
@@ -63,7 +70,7 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
             <div  className='col-md-12' style={{marginBottom: '4px'}}>
                 <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Phone</span>
                 <span className='col-md-7'>
-                    <input className='form-control' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](e.target.value))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone')}}/>
+                    <input className='form-control' placeholder='10 digits' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(e.target.value)))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone')}}/>
                 </span>
             </div>
             {errors[phone] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[phone]}</span></div> : ''}

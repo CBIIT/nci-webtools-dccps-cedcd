@@ -32,7 +32,7 @@ const QuestionnaireHeader = ({...props}) => {
     return <div>
         <div style={{display: 'flex', flexDirection: 'column'}}>
             <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <p style={{fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </div>
         <div style={{display: 'flex'}}>
         <div id='sectionA' style={{flex: '1', textAlign: 'center'}} onClick={() => props.handler('A')}>

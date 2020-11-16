@@ -1186,15 +1186,7 @@ DROP PROCEDURE IF EXISTS upsert_enrollment_count //
 CREATE PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
 BEGIN
 	SET @recentDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentDate'));
-    SET @validDate = false;
-    if (@recentDate is not null and length(@recentDate) = 10) then
-    begin
-		SET @validDate = true;
-		SET @recentMonth = SUBSTRING(@recentDate, 1, 2);
-		SET @recentDay = SUBSTRING(@recentDate, 4, 2);
-		SET @recentYear = SUBSTRING(@recentDate, 7, 4);
-    end;
-    end if;
+
 	if exists (select * from enrollment_count where cohort_id = `id`) then
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
         race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
@@ -1405,12 +1397,11 @@ BEGIN
         (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
         
         insert into cohort_edit_status (cohort_id, page_code, `status`) 
-        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionBStatus')));
+        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')));
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@validDate, 
-		STR_TO_DATE(CONCAT(@recentDay, ', ', @recentMonth, ', ', @recentYear), '%d, %m, %Y'), null)
+    set enrollment_most_recent_date = if(@recentDate is not null, replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
 	where cohort_id = `id`;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
@@ -1561,7 +1552,7 @@ begin
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 41, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 42, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')), '', '', NOW(), NOW());
         insert into cohort_edit_status (cohort_id, page_code, `status`) 
-        values (targetID, 'C', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionCStatus')));
+        values (targetID, 'C', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionCStatus')));
     end if;
     select row_count() as rowAffacted;
 end //
