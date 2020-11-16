@@ -10,7 +10,7 @@ const MajorContentForm = ({...props}) => {
     const [errors, setErrors] = useState({})
     useEffect(() => {
         if(!majorContent.hasLoaded){
-            fetch('/api/questionnaire/major_content/13', {
+            fetch('/api/questionnaire/major_content/79', {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
@@ -138,14 +138,14 @@ const MajorContentForm = ({...props}) => {
        if(Object.entries(errors).length === 0){
             majorContent.sectionCStatus='complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(13)
+            saveMajorContent(79)
        }
         else{
             //setDisplay('block')
             if(window.confirm('there are validation errors, are you sure to save?')){
                 majorContent.sectionCStatus='incomplete'
                 dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(13)
+                saveMajorContent(79)
             }
         }
     }
@@ -154,13 +154,13 @@ const MajorContentForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             majorContent.sectionCStatus='complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(13, true)
+            saveMajorContent(79, true)
         }
         else{
             if(window.confirm('there are validation errors, are you sure to save?')){
                 majorContent.sectionAStatus='incomplete'
                 dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(13, true)
+                saveMajorContent(79, true)
             }
         }
     }

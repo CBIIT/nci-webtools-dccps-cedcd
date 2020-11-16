@@ -1397,7 +1397,7 @@ BEGIN
         (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
         
         insert into cohort_edit_status (cohort_id, page_code, `status`) 
-        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionBStatus')));
+        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')));
     END IF;
     
     update cohort_basic 
@@ -1552,7 +1552,7 @@ begin
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 41, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 42, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')), '', '', NOW(), NOW());
         insert into cohort_edit_status (cohort_id, page_code, `status`) 
-        values (targetID, 'C', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionCStatus')));
+        values (targetID, 'C', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionCStatus')));
     end if;
     select row_count() as rowAffacted;
 end //

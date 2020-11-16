@@ -67,7 +67,7 @@ const CohortForm = ({...props}) => {
     useEffect(() => {
         if(!cohort.hasLoaded){
             let shadow = {...errors}
-            fetch('/api/questionnaire/cohort_basic_info/13', {
+            fetch('/api/questionnaire/cohort_basic_info/79', {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
@@ -150,7 +150,7 @@ const CohortForm = ({...props}) => {
         }
     }, [])
 
-    const saveCohort = (id=13, proceed=false) => {
+    const saveCohort = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -194,7 +194,7 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(13)
+            saveCohort(79)
         }
         else{
             setDisplay('block')
@@ -202,7 +202,7 @@ const CohortForm = ({...props}) => {
                 cohort.sectionAStatus='incomplete'
                 dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
                 console.log(cohort.sectionAStatus)
-                saveCohort(13)
+                saveCohort(79)
             }
         }
     }
@@ -211,13 +211,13 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(13, true)
+            saveCohort(79, true)
         }
         else{
             if(window.confirm('there are validation errors, are you sure to save?')){
                 cohort.sectionAStatus='incomplete'
                 dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-                saveCohort(13, true)
+                saveCohort(79, true)
             }
         }
     }
@@ -426,7 +426,7 @@ const CohortForm = ({...props}) => {
                 fileData, 
                 fileData.name 
             ); 
-            fetch(`/api/questionnaire/upload/13/${category}`,{
+            fetch(`/api/questionnaire/upload/79/${category}`,{
                 method: "POST",
                 body: formData
             }).then(res => res.json())
