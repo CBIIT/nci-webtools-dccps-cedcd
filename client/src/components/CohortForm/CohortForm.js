@@ -17,7 +17,7 @@ const CohortForm = ({...props}) => {
     const errorMsg = 'please provide a value'
     
     const [errors, setErrors] = useState({
-        cohortName: errorMsg,
+       // cohort_name: errorMsg,
         completionDate: errorMsg,
         contacterRight: 'please choose one',
         collectedOtherSpecify: 'please specify',
@@ -71,7 +71,8 @@ const CohortForm = ({...props}) => {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
-                let cohort = result.data.cohort, changed = false, investigators = result.data.investigators, startChange = false,
+                let currentCohort = result.data.cohort, changed = false,
+                 investigators = result.data.investigators.length > 0 ?  result.data.investigators : cohort.investigators, startChange = false,
                     completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator
                 for(let i=0; i < investigators.length; i++){
                     shadow['investigator_name_'+i] = errorMsg
@@ -81,62 +82,74 @@ const CohortForm = ({...props}) => {
                 }
                 if(startChange) setErrors(shadow)
                 batch(() =>{
-                    for(let k of Object.keys(cohort)){
-                        dispatch(allactions.cohortActions[k](cohort[k]))
+                    for(let k of Object.keys(currentCohort)){
+                        dispatch(allactions.cohortActions[k](currentCohort[k]))
                     }
-                    
+                    if(completer)
                     for(let k of Object.keys(completer)){
-                        dispatch(allactions.cohortActions[k](completer[k]))
+                        if(k != 'completerCountry')
+                            dispatch(allactions.cohortActions[k](completer[k]))
+                        else    
+                            dispatch(allactions.cohortActions.country_code('completerCountry', completer.completerCountry))
                     }
+                    if(contacter)
                     for(let k of Object.keys(contacter)){
-                        dispatch(allactions.cohortActions[k](contacter[k]))
+                        if(k != 'contacterCountry')
+                            dispatch(allactions.cohortActions[k](contacter[k]))
+                        else    
+                            dispatch(allactions.cohortActions.country_code('contacterCountry', completer.contacterCountry))
                     }
+                    if(collaborator)
                     for(let k of Object.keys(collaborator)){
-                        dispatch(allactions.cohortActions[k](collaborator[k]))
+                        if(k != 'collaboratorCountry')
+                         dispatch(allactions.cohortActions[k](collaborator[k]))
+                        else    
+                            dispatch(allactions.cohortActions.country_code('collaboratorCountry', completer.collaboratorCountry))
                     }
+                    if(result.data.sectionStatus)
                     for(let k of result.data.sectionStatus){
                         dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                     }
-                    dispatch(allactions.cohortActions.setInvestigators(investigators))
+                    if(investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
                     dispatch(allactions.cohortActions.setHasLoaded(true))
                 }) 
                 
-                if(cohort.cohort_name) {delete shadow.cohortName; changed=true}
-                if(cohort.completionDate) {delete shadow.completionDate; changed = true}
-                if(cohort.clarification_contact in [0,1]) {delete shadow.contacterRight; changed=true}
-                if(cohort.data_collected_other !== 1) {delete shadow.collectedOtherSpecify; changed=true}
-                if(cohort.restrictOther !== 1) {delete shadow.restrictOtherSpecify; changed=true}
-                if(cohort.enrollment_total) {delete shadow.enrollTotal; changed=true}
-                if(cohort.enrollment_year_start) {delete shadow.enrollStartYear; changed=true}
-                if(cohort.enrollment_year_end) {delete shadow.enrollEndYear; changed=true}
-                if(cohort.enrollment_ongoing in [0, 1]) {delete shadow.enrollOnGoing; changed=true}
-                if(cohort.enrollment_ongoing === 0) { delete shadow.numOfPlans; delete shadow.yearToComplete; changed=true }
-                if(cohort.enrollment_age_min) {delete shadow.baseLineMinAge; changed=true}
-                if(cohort.enrollment_age_max) {delete shadow.baseLineMaxAge; changed=true}
-                if(cohort.enrollment_age_mean) {delete shadow.baseLineMeanAge; changed=true}
-                if(cohort.enrollment_age_median) {delete shadow.baseLineMedianAge; changed=true}
-                if(cohort.current_age_min) {delete shadow.currentMinAge; changed=true}
-                if(cohort.current_age_max) {delete shadow.currentMaxAge; changed=true}
-                if(cohort.current_age_mean) {delete shadow.currentMeanAge; changed=true}
-                if(cohort.current_age_median) {delete shadow.currentMedianAge; changed=true}
-                if(cohort.time_interval) {delete shadow.timeInterval; changed=true}
-                if(cohort.most_recent_year) {delete shadow.mostRecentYear; changed = true}
-                if(cohort.strategy_other !== 1) {delete shadow.strategyOtherSpecify; changed=true}
-                if(cohort.eligible_gender_id in [4, 2, 1]) {delete shadow.eligibleGender; changed=true}
-                if(cohort.data_collected_in_person || cohort.data_collected_phone || cohort.data_collected_paper || cohort.data_collected_web || cohort.data_collected_other) {delete shadow.dataCollection; changed=true}
-                if(cohort.requireNone || cohort.requirecollab || cohort.requireIrb || cohort.requireData || cohort.restrictGenoInfo || cohort.restrictOtherDb || cohort.restrictCommercial || cohort.restrictOther) {delete shadow.requirements; changed=true}
-                if(cohort.strategy_routine || cohort.strategy_mailing || cohort.strategy_aggregate_study || cohort.strategy_individual_study || cohort.strategy_invitation || cohort.strategy_other) {delete shadow.strategy; changed=true}
+                //if(cohort.cohort_name) {delete shadow.cohortName; changed=true}
+                if(currentCohort.completionDate) {delete shadow.completionDate; changed = true}
+                if(currentCohort.clarification_contact in [0,1]) {delete shadow.contacterRight; changed=true}
+                if(currentCohort.data_collected_other !== 1) {delete shadow.collectedOtherSpecify; changed=true}
+                if(currentCohort.restrictOther !== 1) {delete shadow.restrictOtherSpecify; changed=true}
+                if(currentCohort.enrollment_total) {delete shadow.enrollTotal; changed=true}
+                if(currentCohort.enrollment_year_start) {delete shadow.enrollStartYear; changed=true}
+                if(currentCohort.enrollment_year_end) {delete shadow.enrollEndYear; changed=true}
+                if(currentCohort.enrollment_ongoing in [0, 1]) {delete shadow.enrollOnGoing; changed=true}
+                if(currentCohort.enrollment_ongoing === 0) { delete shadow.numOfPlans; delete shadow.yearToComplete; changed=true }
+                if(currentCohort.enrollment_age_min) {delete shadow.baseLineMinAge; changed=true}
+                if(currentCohort.enrollment_age_max) {delete shadow.baseLineMaxAge; changed=true}
+                if(currentCohort.enrollment_age_mean) {delete shadow.baseLineMeanAge; changed=true}
+                if(currentCohort.enrollment_age_median) {delete shadow.baseLineMedianAge; changed=true}
+                if(currentCohort.current_age_min) {delete shadow.currentMinAge; changed=true}
+                if(currentCohort.current_age_max) {delete shadow.currentMaxAge; changed=true}
+                if(currentCohort.current_age_mean) {delete shadow.currentMeanAge; changed=true}
+                if(currentCohort.current_age_median) {delete shadow.currentMedianAge; changed=true}
+                if(currentCohort.time_interval) {delete shadow.timeInterval; changed=true}
+                if(currentCohort.most_recent_year) {delete shadow.mostRecentYear; changed = true}
+                if(currentCohort.strategy_other !== 1) {delete shadow.strategyOtherSpecify; changed=true}
+                if(currentCohort.eligible_gender_id in [4, 2, 1]) {delete shadow.eligibleGender; changed=true}
+                if(currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {delete shadow.dataCollection; changed=true}
+                if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {delete shadow.requirements; changed=true}
+                if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {delete shadow.strategy; changed=true}
                 //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                if(completer.completerName) {delete shadow.completerName; changed=true}
-                if(completer.completerPosition) {delete shadow.completerPosition; changed=true}
-                if(completer.completerEmail) {delete shadow.completerEmail; changed=true}
-                if(contacter.contacterName) {delete shadow.contacterName; changed=true}
-                if(contacter.contacterPosition) {delete shadow.contacterPosition; changed=true}
-                if(contacter.contacterEmail) {delete shadow.contacterEmail; changed=true}
+                if(completer && completer.completerName) {delete shadow.completerName; changed=true}
+                if(completer && completer.completerPosition) {delete shadow.completerPosition; changed=true}
+                if(completer && completer.completerEmail) {delete shadow.completerEmail; changed=true}
+                if(contacter && contacter.contacterName) {delete shadow.contacterName; changed=true}
+                if(contacter && contacter.contacterPosition) {delete shadow.contacterPosition; changed=true}
+                if(contacter && contacter.contacterEmail) {delete shadow.contacterEmail; changed=true}
 
-                if(collaborator.collaboratorName) {delete shadow.collaboratorName; changed=true}
-                if(collaborator.collaboratorPosition) {delete shadow.collaboratorPosition; changed=true}
-                if(collaborator.collaboratorEmail) {delete shadow.collaboratorEmail; changed=true}
+                if(contacter && collaborator.collaboratorName) {delete shadow.collaboratorName; changed=true}
+                if(contacter && collaborator.collaboratorPosition) {delete shadow.collaboratorPosition; changed=true}
+                if(contacter && collaborator.collaboratorEmail) {delete shadow.collaboratorEmail; changed=true}
 
                 for(let i=0; i < investigators.length; i++){
                     if(investigators[i].name){delete shadow['investigator_name_'+i]; changed=true}
@@ -448,9 +461,7 @@ const CohortForm = ({...props}) => {
                     <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
                         <div className='form-group col-md-12'>
                             <label htmlFor='cohortName' className='col-md-4'>A.1a Cohort Name<span style={{color: 'red'}}>*</span></label>
-                            <span className='col-md-5'>
-                                <input className='form-control' name='cohortName' value={cohort.name} onChange={e => dispatch(allactions.cohortActions.cohort_name(e.target.value))} onBlur={(e) => {populateErrors('cohortName', e.target.value, true, 'string')}}/>
-                            </span>
+                            <span className='col-md-8' style={{paddingLeft: '25px'}}>{cohort.name}</span>
                             {errors.cohortName && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.cohortName}</span> }
                         </div>
                         <div className='form-group col-md-12'>
@@ -471,7 +482,7 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12'>
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.6{' '}Does the cohort have a website ? Please specify if applicable</label>
                             </div>
-                            <div className='col-md-12'>
+                            <div className='col-md-8' style={{maxWidth: '670px'}}>
                                 <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
                                 </span>
                                 {errors.websiteurl && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span>} 
@@ -491,7 +502,7 @@ const CohortForm = ({...props}) => {
                         <div id='question3' className='col-md-12' style={{display: 'flex', flexDirection: 'column', paddingBottom: '10px'}}>
                             <div id='a3a' className='col-md-8' style={{paddingLeft: '0', marginBottom: '25px'}}>
                                 <div className='col-xs-12' style={{marginBottom: '5px'}}><b>A.3a{' '}Person who completed the form:</b><span style={{color: 'red'}}>*</span></div>
-                                <Person id='completerInfo' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' callback={setErrors} errors={errors} displayStyle={displayStyle} />
+                                <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' callback={setErrors} errors={errors} displayStyle={displayStyle} />
                             </div>
                             <div id='a3b' className='col-md-12'>
                                 <div style={{marginBottom: '5px'}}><b>A.3b{' '}Contact Person for Clarification of this form</b><span style={{color: 'red'}}>*</span></div>
@@ -504,7 +515,7 @@ const CohortForm = ({...props}) => {
                                 <div id='contacterInfo' className='col-sm-8' style={{paddingLeft: '0'}}>
                                     {
                                         cohort.contacterRight === 0 ? 
-                                        <Person name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' callback={setErrors} errors={errors}  displayStyle={displayStyle} leftPadding='0' /> : ''
+                                        <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' callback={setErrors} errors={errors}  displayStyle={displayStyle}  leftPadding='0' /> : ''
                                     }
                                 </div>
                             </div>
@@ -514,7 +525,7 @@ const CohortForm = ({...props}) => {
                     <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
                         <div id='question4' className='col-md-12' style={{paddingTop: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '10px'}}>
-                                <label className='col-md-6'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
+                                <label className='col-md-3'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
                                 <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; shadow['investigator_name_'+idx]=errorMsg; shadow['investigator_inst_'+idx]=errorMsg; shadow['investigator_email_'+idx]=errorMsg; setErrors(shadow)}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
                             </div>
                             <div className='col-md-12' style={{paddingLeft: '0'}}>
@@ -525,20 +536,20 @@ const CohortForm = ({...props}) => {
                             </div>
                         </div>
                         <div id='question5' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
-                            <div className='col-md-12' style={{marginBottom: '10px'}}>
+                            <div className='col-md-12' style={{marginBottom: '10px', marginRight: '0'}}>
                                 <label style={{paddingLeft: '0'}}>A.5{' '}If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?</label>
                             </div>
-                            <Person id='collaborator' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='6' callback={setErrors} errors={errors} displayStyle={displayStyle} />
-                            <div className='col-md-6' style={{display: 'flex', flexDirection: 'column'}}>
-                                <div style={{marginBottom: '40px'}}>
+                            <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' callback={setErrors} errors={errors} displayStyle={displayStyle} />
+                            <div className='col-md-5' style={{display: 'flex', flexDirection: 'column'}}>
+                                <div style={{marginBottom: '20px'}}>
                                     <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0}  onChange={(e) =>setCollaborator(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0')}/>{' '}
-                                    <span htmlFor='sameAsSomeone'>same as the person who completed the questionnaire </span>
+                                    <span htmlFor='sameAsSomeone'>same as the person who completed the form(3a) </span>
                                 </div>
                                 { 
                                     cohort.contacterRight === 0 ? 
-                                    <div>
+                                    <div style={{margin: '0', padding: '0', minWidth: '500px'}}>
                                         <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1}  onChange={(e) =>setCollaborator(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1')}/>{' '}
-                                        <span htmlFor='sameAsSomeone'>{' '} same as contact person </span>
+                                        <span htmlFor='sameAsSomeone' style={{padding: '0', margin: '0'}}>{' '} same as the contact person for clarification of this form(3b) </span>
                                     </div> : ''
                                 }
                             </div>                        
@@ -576,7 +587,7 @@ const CohortForm = ({...props}) => {
                                         <div style={{marginBottom: '5px'}}>Please specify any eligibility criteria in addition to age and sex</div>
                                         <div className='col-md-6' style={{paddingLeft: '0', paddingRight: '0'}}>
                                             <span className='col-md-12'>
-                                                <input className='form-control' name='otherCriteria' value={cohort.eligibilityCriteriaOther} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
+                                                <input className='form-control' placeholder='no more than 100 characters' maxLength= '100' name='otherCriteria' value={cohort.eligibilityCriteriaOther} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
                                             </span>
                                         </div>
                                     </div>
@@ -871,18 +882,21 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                         <tr className={errors.data ? 'errorBackground' : ''}>
                                         <td>Data sharing policy</td> 
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); if('data' in errors){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}}disabled={cohort.dataUrl}/></td>
                                         <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFileName}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); if('data' in errors){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}}disabled={cohort.dataUrl}/></td>
+                                        
                                         </tr>
                                         <tr className={errors.specimen ? 'errorBackground' : ''}>
                                         <td>Biospecimen sharing policy</td> 
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); if('specimen' in errors){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} disabled={cohort.specimenUrl}/></td>
                                         <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFileName}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); if('specimen' in errors){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} disabled={cohort.specimenUrl}/></td>
+                                        
                                         </tr>
                                         <tr className={errors.publication ? 'errorBackground' : ''}>
                                         <td>Publication(authorship) policy</td> 
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); if('publication' in errors){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} disabled={cohort.publicationUrl}/></td>
                                         <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); if('publication' in errors){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} disabled={cohort.publicationUrl}/></td>
+                                        
                                         </tr>
                                     </tbody>
                                 </table>

@@ -9,12 +9,15 @@ const InitialStates ={
         completerName: '',
         completerPosition: '',
         completerPhone: '',
+        completerCountry: '+1',
         completerEmail: '',
         contacterRight: null,
         contacterName: '',
         contacterPosition: '',
         contacterPhone: '',
+        contacterCountry: '+1',
         contacterEmail: '',
+
         investigators: [
             {
                 personId: null,
@@ -26,6 +29,7 @@ const InitialStates ={
         collaboratorName: '',
         collaboratorPosition: '',
         collaboratorPhone: '',
+        collaboratorCountry: '+1',
         collaboratorEmail: '',
         sameAsSomeone: null,
         description: '',

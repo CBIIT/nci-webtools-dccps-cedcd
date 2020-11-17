@@ -83,16 +83,6 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </div>
                 <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
             </div>
-<<<<<<< HEAD
-            <div style={{marginTop: '5px'}}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
-        </div>
-        <div id='sectionE' style={{flex: '1', textAlign: 'center'}} onClick={() => props.handler('E')}>
-            <div style={{display: 'flex'}}>
-                <div style={{flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0'}}></div>
-                <div onMouseEnter={()=>setERing('blue')} onMouseMove={()=>setERing('blue')} onMouseOut={() => setERing('')}>
-                    <div style= {{flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E'])}}>
-                        <div style={{width: '25px', height: '25px',  borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto'}}></div>
-=======
             <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('E')}>
                 <div style={{ display: 'flex' }}>
                     <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
@@ -100,7 +90,6 @@ const QuestionnaireHeader = ({ ...props }) => {
                         <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E']) }}>
                             <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}></div>
                         </div>
->>>>>>> bbecde465270759d93adeb504024f8cf6036350a
                     </div>
                     <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                 </div>

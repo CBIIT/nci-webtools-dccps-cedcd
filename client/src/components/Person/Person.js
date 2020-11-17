@@ -3,11 +3,13 @@ import validator from '../../validators'
 import allactions from '../../actions'
 import {useSelector, useDispatch} from 'react-redux'
 
-const Person =({id, name, position, phone, email, colWidth, callback, errors, displayStyle, leftPadding}) => {
-    const getValidationResult = (value, requiredOrNot, type) => {
+const Person =({id, type, name, position, phone, email, colWidth, callback, errors, displayStyle, leftPadding}) => {
+    const cohort = useSelector(state => state.cohortReducer)
+    const dispatch = useDispatch()
+    const getValidationResult = (value, requiredOrNot, type, countryCode) => {
         switch(type){
             case 'phone':
-                return validator.phoneValidator(value)
+                return validator.phoneValidator(countryCode, value)
             case 'date': 
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
@@ -23,8 +25,8 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
         }
     }
     
-    const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
-        const result = getValidationResult(value, requiredOrNot, valueType)
+    const populateErrors = (fieldName, value, requiredOrNot, valueType, countryCode) => {
+        const result = getValidationResult(value, requiredOrNot, valueType, countryCode)
         if(result) {
             let shadow = {...errors}
             shadow[fieldName] = result
@@ -38,11 +40,9 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
             
         }
     }
-    const cohort = useSelector(state => state.cohortReducer)
-    const dispatch = useDispatch()
-
-    const processPhoneNumber = (telNum) => {
-        if(/^\d{10}$/.test(telNum.trim()))
+    
+    const processPhoneNumber = (countryCode, telNum) => {
+        if(/^\+\s*0*1\s*$/.test(countryCode) && /^\d{10}$/.test(telNum.trim()))
             return telNum.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')
         else
             return telNum
@@ -67,11 +67,21 @@ const Person =({id, name, position, phone, email, colWidth, callback, errors, di
                 </span>
             </div>
             {errors[position] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[position]}</span></div> : ''}
-            <div  className='col-md-12' style={{marginBottom: '4px'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Phone</span>
-                <span className='col-md-7'>
-                    <input className='form-control' placeholder='10 digits' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(e.target.value)))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone')}}/>
+            {/*
+            <div className='col-md-12'>
+                <span className='col-md-offset-5 col-md-7'>
+                    <input type='checkbox' /> {' '}international phone number
                 </span>
+            </div>
+            */}
+            <div  className='col-md-12' style={{marginBottom: '4px'}}>
+                <span className='col-md-5' style={{ paddingLeft: '0'}}>Phone(country code & number)</span>
+                <span className='col-md-7'>
+                    <span className='col-md-2' style={{padding: '0', margin: '0'}}><input className='form-control' style={{padding: '5px'}} value={cohort[type]} onChange={e => dispatch(allactions.cohortActions.country_code(type, e.target.value))} onBlur={e =>{ 
+                        if(/^\+\s*$/.test(e.target.value))dispatch(allactions.cohortActions.country_code(type, '+1'))}
+                    }/></span>
+                    <span className='col-md-10' style={{padding: '0', margin: '0'}}><input className='form-control' placeholder='10 digits for USA' type='phone' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone', cohort[type])}}/></span>
+                </span> 
             </div>
             {errors[phone] ? <div><span className='col-md-offset-5 col-md-7' style={{color: 'red', display: displayStyle}}>{errors[phone]}</span></div> : ''}
             <div className='col-md-12'>

@@ -19,7 +19,9 @@ const MajorContentForm = ({...props}) => {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
-                let content = result.data
+                console.dir(result)
+                let content = result.data.counts
+                let cancerInfo = result.data.cancerInfo
                 batch(()=> {
                     dispatch(allactions.majorContentActions.setSeStatusBaseLine(content[0].baseline))
                     dispatch(allactions.majorContentActions.setSeStatusFollowUp(content[0].followup))
@@ -102,7 +104,12 @@ const MajorContentForm = ({...props}) => {
                     dispatch(allactions.majorContentActions.setMentalBaseLine(content[38].baseline))
                     dispatch(allactions.majorContentActions.setMentalFollowUp(content[38].followup))
                     dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(content[39].baseline))
-                    dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))     
+                    dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))
+                    dispatch(allactions.majorContentActions.setCancerToxicity(cancerInfo.cancerToxicity))
+                    dispatch(allactions.majorContentActions.setCancerLateEffects(cancerInfo.cancerLateEffects))
+                    dispatch(allactions.majorContentActions.setCancerSymptom(cancerInfo.cancerSymptom))
+                    dispatch(allactions.majorContentActions.setCancerOther(cancerInfo.cancerOther))
+                    dispatch(allactions.majorContentActions.setCancerOtherSpecify(cancerInfo.setCancerOtherSpecify))
                     dispatch(allactions.majorContentActions.setHasLoaded(true))
                 })//end of batch
             })//end of then

@@ -111,8 +111,11 @@ router.post('/major_content/:id', function(req, res){
     params.push(id)
     mysql.callProcedure(func, params, function(result){
         logger.debug(result)
-        if(result[0])
-            res.json({status: 200, data: result[0]})
+        const majorContent = {}
+        majorContent.counts = result[0]
+        majorContent.cancerInfo = result[1]
+        if(majorContent)
+            res.json({status: 200, data: majorContent})
         else
             res.json({status: 500, message: 'failed to load data'})
     })

@@ -10,6 +10,12 @@ const setSectionAStatus = (v) => ({
     value: v
 })
 
+const country_code = (personTypeName, v) => ({
+    type: t.setCountryCode,
+    personType: personTypeName,
+    value: v
+})
+
 const cohort_id = (v) => ({
     type: t.setCohortId,
     id: v
@@ -340,6 +346,7 @@ const publication_url = (v) => ({type: t.setPublicationUrl, url: v})
 export default {
     setHasLoaded,
     setSectionAStatus,
+    country_code,
     cohort_id,
     cohort_name,
     cohort_acronym,

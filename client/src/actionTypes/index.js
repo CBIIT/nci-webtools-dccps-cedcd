@@ -1,6 +1,7 @@
 const actionTypes = {
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setSectionAStatus: 'SET_COHORT_STATUS',
+    setCountryCode: 'SET_PERSON_PHONE_COUNTRY_CODE',
     setCohortId: 'SET_COHORT_ID',
     setCohortName: 'SET_COHORT_NAME',
     setAcronym: 'SET_COHORT_ACRONYM',

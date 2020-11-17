@@ -10,7 +10,7 @@ actions[t.setAcronym] = (state, action) => ({...state, acronym: action.acronym})
 actions[t.setCompletionDate] = (state, action) => ({...state, completionDate: action.completionDate ? action.completionDate : ''})
 actions[t.setCompleterName] = (state, action) => ({...state, completerName: action.completerName})
 actions[t.setCompleterPosition] = (state, action) => ({...state, completerPosition: action.completerPosition})
-actions[t.setCompleterPhone] = (state, action) => ({...state, completerPhone: action.completerPhone})
+actions[t.setCompleterPhone] = (state, action) => ({...state, completerPhone: /^[-()\s0-9]*$/.test(action.completerPhone.trim()) ? action.completerPhone : state.completerPhone})
 actions[t.setCompleterEmail] = (state, action) => ({...state, completerEmail: action.completerEmail})
 actions[t.setContacterRight] = (state, action) => ({...state, contacterRight: action.isContacter})
 actions[t.setContacterName] = (state, action) => ({...state, contacterName: action.contacterName})
@@ -18,6 +18,22 @@ actions[t.setContacterPosition] = (state, action) => ({...state, contacterPositi
 actions[t.setContacterPhone] = (state, action) => ({...state, contacterPhone: action.contacterPhone})
 actions[t.setContacterEmail] = (state, action) => ({...state, contacterEmail: action.contacterEmail})
 actions[t.setInvestigators] = (state, action) => ({...state, investigators: action.values})
+actions[t.setCountryCode] = (state, action) => {
+    let clone = {...state}
+    if(/^\s*\+[0-9-]*\s*$/.test(action.value)){
+        switch(action.personType){
+            case 'completerCountry':
+                clone.completerCountry = action.value
+                return clone
+            case 'contacterCountry': 
+                clone.contacterCountry = action.value
+                return clone
+            default:
+                clone.collaboratorCountry = action.value
+                return clone 
+        }
+    }
+}
 actions[t.setInvestigatorName] = (state, action) => {
     let clone = {...state}
     clone.investigators[action.index].name = action.investigatorName
