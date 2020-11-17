@@ -472,7 +472,8 @@ const CohortForm = ({...props}) => {
                         </div>
                         <div id='question7' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '5px'}}>
-                                <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description: Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</label>
+                                <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description</label>
+                                <p style={{fontSize: '16px'}}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div>
                                 <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
@@ -490,7 +491,7 @@ const CohortForm = ({...props}) => {
                         </div>
                         <div className='form-group col-md-12'>
                             <div className='col-md-12'>
-                                <label className='col-md-4' style={{paddingLeft: '0', marginRight: '0', width: '298px'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
+                                <label className='col-md-4' style={{paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
                                     <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
                                         let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
@@ -703,17 +704,19 @@ const CohortForm = ({...props}) => {
                                     {errors.currentMeanAge ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.currentMeanAge}</span> : ''}
                                 </div>
                             </div>
-                        </div>
-                        <div id='question10' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
-                            <div className='col-md-12' style={{marginBottom: '10px'}}>
-                                <label className='col-md-6' style={{padding: '0', margin: '0'}}>A.10{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{color: 'red'}}>*</span></label>
-                                <span className='col-md-4' style={{paddingLeft: '8px', paddingRight: '18px', marginLeft: '0'}}><input className='form-control' name='frequency' value={cohort.timeInterval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('timeInterval', e.target.value, true, 'string')}}/></span>
-                                {errors.timeInterval ? <span className='col-md-3'  style={{color: 'red', display: displayStyle}}>{errors.timeInterval}</span> : ''}
-                            </div>       
-                        </div>
+                        </div>                       
                     </div>
                     <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}><span>Requirements & Strategies</span></div>
                     <div className={activePanel === 'panelD' ? 'panel-active' : 'panellet'}>
+                        <div id='question10' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
+                            <div className='col-md-12' style={{marginBottom: '10px'}}>
+                                <label className='col-md-8' style={{padding: '0', margin: '0'}}>A.10{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{color: 'red'}}>*</span></label>                               
+                            </div> 
+                            <div className='col-md-8' style={{padding: '0 3px'}}>
+                                <span className='col-md-12' style={{paddingLeft: '8px', paddingRight: '18px', marginLeft: '0'}}><input className='form-control' name='frequency' value={cohort.timeInterval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('timeInterval', e.target.value, true, 'string')}}/></span>
+                                {errors.timeInterval ? <span className='col-md-3'  style={{color: 'red', display: displayStyle}}>{errors.timeInterval}</span> : ''} 
+                            </div>     
+                        </div>
                         <div id='question11' className='col-md-12' style={{paddingTop: '10px'}}>
                             <div className='col-md-12'>
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.11{' '}Most recent year when questionnaire data were collected<span style={{color: 'red'}}>*</span></label>
@@ -758,8 +761,8 @@ const CohortForm = ({...props}) => {
                                     <span className='col-md-1' style={{paddingLeft: '0', marginLeft: '0', marginRight: '0', width: '50px'}}>Other</span> 
                                     {
                                         cohort.collectedOther ? 
-                                        <span  className='col-md-4' style={{marginLeft: '0'}}>
-                                            <input name='collectedOtherSpecify' className='form-control' value={cohort.collectedOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value)); populateErrors('collectedOtherSpecify', e.target.value, true, 'string')}}/> 
+                                        <span  className='col-md-6' style={{marginLeft: '0'}}>
+                                            <input style={{height: '20px'}} name='collectedOtherSpecify' className='form-control' value={cohort.collectedOtherSpecify} placeholder='no more than 100 characters' onChange={e=>{dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value)); populateErrors('collectedOtherSpecify', e.target.value, true, 'string')}}/> 
                                         </span> : ''
                                     }   
                                     {
@@ -806,7 +809,7 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-1' style={{lineHeight: '1.4em', padding: '0', margin: '0', width: '50px'}}>Other</span>
                                 {
                                     cohort.restrictOther === 1 ? 
-                                    <span className='col-md-4' style={{margin: '0'}}><input className='form-control' name='restrictOtherSpecify' value={cohort.restrictOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value)); populateErrors('restrictOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
+                                    <span className='col-md-6' style={{margin: '0'}}><input style={{height: '20px'}} className='form-control' name='restrictOtherSpecify' placeholder='no more than 100 characters' value={cohort.restrictOtherSpecify} onChange={e=>{dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value)); populateErrors('restrictOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                                 }
                                 {errors.restrictOtherSpecify && <span style={{color: 'red', display: displayStyle}}>{errors.restrictOtherSpecify}</span> }
                             </div>
@@ -842,7 +845,7 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-1' style={{lineHeight: '1.4em', padding: '0', margin: '0', width: '50px'}}>Other</span>
                                 {
                                     cohort.strategyOther ? 
-                                    <span className='col-md-4' style={{margin: '0'}}><input className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} onChange={e => {dispatch(allactions.cohortActions.strategy_other_sepcify(e.target.value)); populateErrors('strategyOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
+                                    <span className='col-md-6' style={{margin: '0'}}><input style={{height: '20px'}} className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} placeholder='no more than 100 characters' onChange={e => {dispatch(allactions.cohortActions.strategy_other_sepcify(e.target.value)); populateErrors('strategyOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                                 }
                                 {errors.strategyOtherSpecify ? <span style={{color: 'red', display: displayStyle}}>{errors.strategyOtherSpecify}</span> : ''}
                             </div>

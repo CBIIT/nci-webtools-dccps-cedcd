@@ -75,7 +75,7 @@ const Person =({id, type, name, position, phone, email, colWidth, callback, erro
             </div>
             */}
             <div  className='col-md-12' style={{marginBottom: '4px'}}>
-                <span className='col-md-5' style={{ paddingLeft: '0'}}>Phone(country code & number)</span>
+                <span className='col-md-5' style={{ paddingLeft: '0', lineHeight: '2em'}}>Phone(country code & tel#)</span>
                 <span className='col-md-7'>
                     <span className='col-md-2' style={{padding: '0', margin: '0'}}><input className='form-control' style={{padding: '5px'}} value={cohort[type]} onChange={e => dispatch(allactions.cohortActions.country_code(type, e.target.value))} onBlur={e =>{ 
                         if(/^\+\s*$/.test(e.target.value))dispatch(allactions.cohortActions.country_code(type, '+1'))}
