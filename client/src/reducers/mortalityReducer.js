@@ -3,7 +3,7 @@ import InitialStates from '../states'
 const actions = {}
 actions[t.setMortalityLoaded] = (state, action) => ({ ...state, hasLoaded: action.value })
 actions[t.setMortalityYear] = (state, action) => ({ ...state, mortalityYear: action.value })
-actions[t.setDeathIndex] = (state, action) => ({ ...state, setDeathIndex: action.value })
+actions[t.setDeathIndex] = (state, action) => ({ ...state, deathIndex: action.value })
 actions[t.setDeathCertificate] = (state, action) => ({ ...state, deathCertificate: action.value })
 actions[t.setDeathOther] = (state, action) => ({ ...state, deathOther: action.value })
 actions[t.setHaveDeathDate] = (state, action) => ({ ...state, haveDeathDate: action.value })
