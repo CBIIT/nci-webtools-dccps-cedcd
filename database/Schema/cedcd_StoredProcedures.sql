@@ -771,13 +771,14 @@ CREATE PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
     DECLARE flag INT DEFAULT 1;
+   
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-    
-    START transaction;
+
+  START transaction;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
     SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
     SET @latest_cohort = targetID;
@@ -786,6 +787,7 @@ BEGIN
 			UPDATE `cohort_basic` 
 			SET 
 				cohort_name = JSON_UNQUOTE(JSON_EXTRACT(info, '$.name')),
+
 				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')),
                 date_completed =if(@completionDate is not null, replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
                 clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight'))),
@@ -810,7 +812,7 @@ BEGIN
 				current_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge'))),
 				current_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge'))),
 				time_interval = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval'))),
-				most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval'))),
+				most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear'))),
 				data_collected_in_person = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson'))),
 				data_collected_phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson'))),
 				data_collected_paper = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper'))),
@@ -833,7 +835,7 @@ BEGIN
 				strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation'))),
 				strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther'))),
 				strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOtherSpecify')), ''),
-            
+
                 /*
 				questionnaire_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFile')),
 				main_cohort_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortFile')),
@@ -847,7 +849,7 @@ BEGIN
 				data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl'))),
 				specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl'))),
 				publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl'))),
-           
+          
 				update_time = NOW()
 				WHERE cohort_id = `targetID`;
                 -- update section status
@@ -855,41 +857,77 @@ BEGIN
 					UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
                     WHERE cohort_id = `targetID` AND page_code = 'A';
 				END IF;
+				IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 1) THEN
+					UPDATE person 
+					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
+						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
+						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
+						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
+						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
+						update_time = NOW()
+					WHERE cohort_id = `targetID` and category_id = 1;
+                ELSE
+					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+                    VALUES (targetID, 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
+							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
+                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
+                            NOW(), NOW());
+                END IF;
+				IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 2) THEN
+					UPDATE person
+					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
+						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
+						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
+						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
+						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
+						update_time = NOW()
+					WHERE cohort_id = `targetID` and category_id = 2;
+               ELSE
+					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+                    VALUES (targetID, 2, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
+							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
+                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
+                            NOW(), NOW());
+                END IF; 
+                IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 4) THEN
+					UPDATE person
+					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
+						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
+						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
+						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
+						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
+						update_time = NOW()
+					WHERE cohort_id = `targetID` and category_id = 4;
+				ELSE
+					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+                    VALUES (targetID, 4, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
+							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
+                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
+                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
+                            NOW(), NOW());
+                END IF; 
                 
-                UPDATE person 
-				SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
-					`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
-					phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
-					email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
-					update_time = NOW()
-				WHERE cohort_id = `targetID` and category_id = 1;
-                
-                UPDATE person
-                SET `name` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName')),
-					`position` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')),
-					phone = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')),
-					email = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')),
-					update_time = NOW()
-				WHERE cohort_id = `targetID` and category_id = 2;
-                
-				UPDATE person
-                SET `name` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName')),
-					`position` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')),
-					phone = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')),
-					email = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')),
-					update_time = NOW()
-				WHERE cohort_id = `targetID` and category_id = 4;
 				SET @investigators = JSON_UNQUOTE(JSON_EXTRACT(info, '$.investigators'));
                 WHILE i < JSON_LENGTH(@investigators) DO
 					SELECT JSON_EXTRACT(@investigators, concat('$[',i,']')) INTO @investigator;
-                    UPDATE person 
-                    SET `name` = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
-						institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')),
-                        email = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email'))
-					WHERE id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
+					if exists(select * from person where id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'))) then
+						UPDATE person 
+						SET `name` = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
+							institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')),
+							email = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email'))
+						WHERE id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
+					else 
+						Insert into person (cohort_id, category_id, `name`, institution, email) values (targetID, 3,  JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
+                        JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')));
+                    end if;
 					SELECT i + 1 INTO i;
 				END WHILE;
-            END;
+            END;         
         ELSE
 			BEGIN
 				INSERT INTO cohort (`name`, acronym, `status`, publish_by, create_by, create_time, update_time) VALUES (
@@ -932,27 +970,23 @@ BEGIN
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyAggregateStudy')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyIndividualStudy')),
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther')),
 						IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOtherSpecify')), ''),
-                        /*
-                        JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFile')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortFile')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFile')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFile')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFile')),
-                        */
+                       
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl')),
 						JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')), NOW(), NOW()
 					);
 				
                 
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, create_time, update_time)
+					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, country_code, email, create_time, update_time)
 					VALUES(@latest_cohort, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.completerEmail')), NOW(), NOW());
+					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.completerCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')), NOW(), NOW());
 					
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, create_time, update_time)
+					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, country_code, email, create_time, update_time)
 					VALUES(@latest_cohort, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.contacterEmail')), NOW(), NOW());
+					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.contacterCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')), NOW(), NOW());
 					
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, create_time, update_time)
+					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, country_code, create_time, update_time)
 					VALUES(@latest_cohort, 4, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.collaboratorEmail')), NOW(), NOW());
+					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')), NOW(), NOW());
 					
 					SET @investigators = JSON_UNQUOTE(JSON_EXTRACT(info, '$.investigators'));
 					WHILE i < JSON_LENGTH(@investigators) DO
@@ -963,6 +997,7 @@ BEGIN
 						SELECT i + 1 INTO i;
 					END WHILE;
 				END;
+
         END IF;
         -- attachment_type: 1 for files, 0 for websites
         -- category: 1 for main website, 2 for questionnaire, 3 for main protocol, 4 for data policy, 5 for specimen, 6 for publication
@@ -1034,7 +1069,8 @@ BEGIN
 			END IF; 
 		END;
 		END IF;
-	commit;
+
+ commit;
 	
     SELECT flag AS rowsAffacted;
 END //
@@ -1162,16 +1198,16 @@ BEGIN
         
 	FROM cohort_basic WHERE id = `targetID`;
     
-    select `name` as completerName, `position` as completerPosition, phone as completerPhone, email as completerEmail 
+    select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
     from person where category_id = 1 and cohort_id = `targetID`;
     
-    select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, email as contacterEmail 
+    select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, country_code as contacterCountry, email as contacterEmail 
     from person where category_id = 2 and cohort_id = `targetID`;
     
-    select id as personId, `name` as `name`, institution as institution, email as email 
+    select id as personId, `name` as `name`, institution as institution, email as email
     from person where (`name` is not null and `name` <> '') and category_id = 3 and cohort_id = `targetID`;
     
-    select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, email as collaboratorEmail 
+    select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, country_code as collaboratorCountry, email as collaboratorEmail 
     from person where category_id = 4 and cohort_id = `targetID`;
     
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
