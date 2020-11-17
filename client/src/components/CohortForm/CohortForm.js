@@ -845,7 +845,7 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-1' style={{lineHeight: '1.4em', padding: '0', margin: '0', width: '50px'}}>Other</span>
                                 {
                                     cohort.strategyOther ? 
-                                    <span className='col-md-6' style={{margin: '0'}}><input style={{height: '20px'}} className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} placeholder='no more than 100 characters' onChange={e => {dispatch(allactions.cohortActions.strategy_other_sepcify(e.target.value)); populateErrors('strategyOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
+                                    <span className='col-md-6' style={{margin: '0'}}><input style={{height: '20px'}} className='form-control' name='strategyOtherSpecify' value={cohort.strategyOtherSpecify} placeholder='no more than 100 characters' onChange={e => {console.log(e.target.value); dispatch(allactions.cohortActions.strategy_other_specify(e.target.value)); populateErrors('strategyOtherSpecify', e.target.value, true, 'string')}}/></span> : ''
                                 }
                                 {errors.strategyOtherSpecify ? <span style={{color: 'red', display: displayStyle}}>{errors.strategyOtherSpecify}</span> : ''}
                             </div>
