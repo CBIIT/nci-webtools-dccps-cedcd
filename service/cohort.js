@@ -446,8 +446,6 @@ router.post('/specimen', function (req, res) {
 		params.push("");
 	}
 
-
-
 	if (filter.cancer.length > 0) {
 		params.push(filter.cancer.toString());
 	}
