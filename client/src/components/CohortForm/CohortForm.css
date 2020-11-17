@@ -38,3 +38,7 @@
 .errorBackground {
     background-color: #f66;
 }
+
+.react-datepicker__input-container input {
+    width: 342px;
+ }

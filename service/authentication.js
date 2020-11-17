@@ -16,14 +16,20 @@ const authRoutes = [
 
 async function authenticationMiddleware(request, response, next) {
     const { url, headers, session } = request;
+    const { 
+        user_auth_type: userAuthType, 
+        fed_email: fedEmail, 
+        sm_user: smUser
+    } = headers;
     const nodeEnv = process.env.NODE_ENV;
 
     if (authRoutes.some(regex => regex.test(url))) {
 
-        if (nodeEnv === 'development') {
+        if (nodeEnv === 'development' || !smUser) {
+            // siteminder is not configured or if developing locally, assign default permissions
             session.user = {
-                type: 'admin',
-                name: 'dev_admin',
+                type: 'internal',
+                name: 'admin',
                 role: /^\/admin/.test(url) 
                     ? 'SystemAdmin' 
                     : 'CohortAdmin',
@@ -33,12 +39,6 @@ async function authenticationMiddleware(request, response, next) {
 
         else try {
             // otherwise, update user-session variable when hitting authRoutes
-            const { 
-                user_auth_type: userAuthType, 
-                fed_email: fedEmail, 
-                sm_user: smUser
-            } = headers;
-            
             const isFederated = userAuthType === 'federated';
             const userType = isFederated ? 'external' : 'internal';
             const userName = isFederated ? fedEmail : smUser;

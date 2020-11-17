@@ -470,18 +470,17 @@ const CohortForm = ({...props}) => {
                         <div id='question6' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
                             <div className='col-md-12'>
                                 <label className='col-md-6' style={{paddingLeft: '0'}}>A.6{' '}Does the cohort have a website ? Please specify if applicable</label>
-                                <span className='col-md-3' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
-                                    </span>
-                                    {errors.websiteurl && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span>}
-                                </span> 
+                            </div>
+                            <div className='col-md-12'>
+                                <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='websiteurl' value={cohort.webSite} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('websiteurl', e.target.value, true, 'string')}}/>
+                                </span>
+                                {errors.websiteurl && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.websiteurl}</span>} 
                             </div>
                         </div>
                         <div className='form-group col-md-12'>
                             <div className='col-md-12'>
-                                <label className='col-md-6' style={{paddingLeft: '0'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
-                                <span className='col-md-3' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                   
+                                <label className='col-md-4' style={{paddingLeft: '0', marginRight: '0', width: '298px'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
+                                <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
                                     <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
                                         let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
                                     }}} /></span> 
@@ -849,24 +848,26 @@ const CohortForm = ({...props}) => {
                                     <thead>
                                         <tr>
                                             <th style={{textAlign: 'center'}}>Document</th>
-                                            <th style={{textAlign: 'center'}}>Attached</th>
-                                            <th style={{textAlign: 'center'}}>Website URL (if document is not attached)</th>
+                                            <th style={{textAlign: 'center'}}>Website URL (preferred)</th>
+                                            <th style={{textAlign: 'center'}}>Attached (if url not applicable)</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr className={errors.questionnaire ? 'errorBackground' : ''}>
                                         <td>Questionnaires</td> 
+                                        <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFileName} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                             <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); if('questionnaire' in errors){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} disabled={cohort.questionnaireUrl} />
                                         </td>
-                                        <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFileName} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
+                                       
                                         </tr>
                                         <tr className={errors.main ? 'errorBackground' : ''}>
                                         <td>Main cohort protocol</td> 
+                                        <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainFileName}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                                 <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); if('main' in errors){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} disabled={cohort.mainCohortUrl}/>
                                         </td>
-                                        <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainFileName}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
+                                       
                                         </tr>
                                         <tr className={errors.data ? 'errorBackground' : ''}>
                                         <td>Data sharing policy</td> 

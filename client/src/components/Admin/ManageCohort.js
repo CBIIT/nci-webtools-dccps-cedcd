@@ -338,30 +338,30 @@ class ManageCohort extends Component {
 					Then select the cohorts about which one you'd like to see the details or select the proper action to take on the cohort.
       		    </p>
 					<div className="filter-block col-md-12">
-						<div className="col-sm-4 ">
+						<div className="col-sm-3 ">
 							<div class="form-group has-feedback has-search">
 								<span class="glyphicon glyphicon-search form-control-feedback"></span>
 								<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 							</div>
 						</div>
-						<div className="col-sm-3 ">
+						<div className="col-sm-2 ">
 							<div id="cohortstatus" className="filter-component">
 								<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 							</div>
 						</div>
-						<div className="col-sm-3 ">
-							<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
-								<i className="fas fa-times"></i> Clear All </a>
+						<div className="col-sm-2 " style={{ "paddingLeft": "3px" }}>
+							<a id="filterClear" style={{ "paddingLeft": "3px" }} className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
+								<i className="fas fa-times" ></i> Clear All </a>
 
 						</div>
-					</div>
-					<div className="filter-block home col-md-12">
-						<div className="row" style={{ "display": "flex" }}>
-							<div style={{ "marginLeft": "auto", "paddingLeft": "10px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
-								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
-							</div>
-							<div style={{ "paddingRight": "15px", "paddingTop": "5px" }}>
-								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
+						<div className="col-sm-5 ">
+							<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
+								<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
+									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
+								</div>
+								<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative" }}>
+									<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
+								</div>
 							</div>
 						</div>
 					</div>

@@ -7,7 +7,12 @@ const MajorContentForm = ({...props}) => {
     const majorContent = useSelector(state => state.majorContentReducer)
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
-    const [errors, setErrors] = useState({})
+    const [errors, setErrors] = useState({
+        //seStatusBaseLine: false,
+        //seStatusFollowup: false
+    })
+    
+
     useEffect(() => {
         if(!majorContent.hasLoaded){
             fetch('/api/questionnaire/major_content/79', {
@@ -105,7 +110,7 @@ const MajorContentForm = ({...props}) => {
     }, [])
 
     const saveMajorContent = (id, proceed=false) => {
-        fetch(`/api/questionnaire/update_major_content/:${id}`, {
+        fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
             body: JSON.stringify(majorContent),
             headers: {
@@ -114,7 +119,7 @@ const MajorContentForm = ({...props}) => {
         }).then(res => res.json())
         .then(result => {
             console.log(result.status)
-           /* if(result.status === 200){
+           if(result.status === 200){
                 console.log('success')
                 
                 if(Object.entries(errors).length === 0)
@@ -129,7 +134,7 @@ const MajorContentForm = ({...props}) => {
                     props.sectionPicker('D')
             }else{
                 alert(result.message) 
-            }*/
+            }
            
         })
     }
@@ -692,25 +697,29 @@ const MajorContentForm = ({...props}) => {
                             <tr>
                                 <td colSpan='3'>
                                     <div><span>Do you have information on the following cancer related conditions?</span></div>
-                                    <div>
-                                        <span className='col-sm-7' style={{paddingLeft: '0'}}>Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
-                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerToxicity === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerToxicity(0))}/>{'  '} No</span>
-                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerToxicity === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerToxicity(1))}/>{'  '} Yes</span>
+                                    <div className='col-sm-12'>
+                                        <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerToxicity === 1} onChange={
+                                            e => dispatch(allactions.majorContentActions.setCancerToxicity(e.target.checked ? 1 : 0))
+                                        }/></span>
+                                        <span className='col-sm-7' style={{padding: '0', margin: '0'}}>Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
                                     </div>
-                                    <div>
+                                    <div className='col-sm-12'>
+                                        <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerLateEffects === 1} onChange={
+                                            e => dispatch(allactions.majorContentActions.setCancerLateEffects(e.target.checked ? 1 : 0))
+                                        }/></span>
                                         <span className='col-sm-7' style={{paddingLeft: '0'}}>Late effects of treatment (e.g., cardiotoxicity, lymphedema)</span>
-                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerLateEffects === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerLateEffects(0))}/>{'  '} No</span>
-                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerLateEffects === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerLateEffects(1))}/>{'  '} Yes</span>
                                     </div>
-                                    <div>
+                                    <div className='col-sm-12'>
+                                        <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerSymptom === 1} onChange={
+                                            e => dispatch(allactions.majorContentActions.setCancerSymptom(e.target.checked ? 1 : 0))
+                                        }/></span>
                                         <span className='col-sm-7' style={{paddingLeft: '0'}}>Symptom management (e.g., fatigue, pain, sexual dysfunction)</span>
-                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerSymptom === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerSymptom(0))}/>{'  '} No</span>
-                                        <span className='col-sm-2'><input type='radio' checked={majorContent.cancerSymptom === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerSymptom(1))}/>{'  '} Yes</span>
                                     </div>
-                                    <div>
-                                        <span className='col-sm-5' style={{paddingLeft: '0'}}>Other</span>
-                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerOther === 0} onClick={() => dispatch(allactions.majorContentActions.setCancerOther(0))}/>{'  '} No</span>
-                                        <span className='col-sm-1'><input type='radio' checked={majorContent.cancerOther === 1} onClick={() => dispatch(allactions.majorContentActions.setCancerOther(1))}/>{'  '} Yes</span>
+                                    <div className='col-sm-12'>
+                                        <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerOther === 1} onChange={
+                                            e => dispatch(allactions.majorContentActions.setCancerOther(e.target.checked ? 1 : 0))
+                                        }/></span>
+                                        <span className='col-sm-1' style={{paddingLeft: '0', width: '25px'}}>Other</span>
                                         {
                                             majorContent.cancerOther === 1 ? 
                                             <span className='col-sm-3'><input className='inputUnderscore' name='cancerOtherSpecify' onChange={(e) => dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))} /></span> : ''

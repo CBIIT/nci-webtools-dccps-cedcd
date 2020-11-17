@@ -1433,7 +1433,7 @@ BEGIN
 	group by t.ethnicity_id, t.gender_id;
 	 
 	select sum(enrollment_counts)  as grandTotal
-	from cedcd_new.enrollment_count
+	from enrollment_count
 	where cohort_id = `targetID`;
      
 	select date_format(enrollment_most_recent_date, '%Y-%m-%dT%H:%i:%s.000Z') as mostRecentDate from cohort_basic where cohort_id = `targetID`;
