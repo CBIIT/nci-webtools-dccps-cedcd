@@ -7,7 +7,7 @@ const MortalityForm = ({ ...props }) => {
     const mortality = useSelector(state => state.mortalityReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
-    
+
     const handleSave = () => {
         /* if(Object.entries(errors).length === 0)
              saveEnrollment(79)
@@ -71,17 +71,17 @@ const MortalityForm = ({ ...props }) => {
             </li>
             <li>
                 <div className="col-md-9">
-                    <div htmlFor="deathOther" className='col-md-5'>Other</div>
+                    <div htmlFor="otherDeath" className='col-md-5'>Other</div>
 
                     <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathOther' checked={mortality.deathOther === 0} onClick={() => dispatch(allactions.mortalityActions.setDeathOther(0))} style={{ width: '30px' }} />
+                        <input type='radio' name='otherDeath' checked={mortality.otherDeath === 0} onClick={() => dispatch(allactions.mortalityActions.setOtherDeath(0))} style={{ width: '30px' }} />
                         <span>No</span>
                     </span>
 
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathOther' checked={mortality.deathOther === 1} onClick={() => dispatch(allactions.mortalityActions.setDeathOther(1))} style={{ width: '30px' }} />
+                        <input type='radio' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherDeath(1))} style={{ width: '30px' }} />
                         <span>Yes, specify</span>
-                        <span style={{ marginLeft: '10px' }}><input className='inputUnderscore' style={{ width: '20rem' }}></input></span>
+                        <span style={{ marginLeft: '10px' }}><input name='otherDeathSpecify' className='inputUnderscore' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                     </span>
                 </div>
             </li>
@@ -166,7 +166,7 @@ const MortalityForm = ({ ...props }) => {
                     <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
                         <input type='radio' name='otherCode' checked={mortality.otherCode === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherCode(1))} style={{ width: '30px' }} />
                         <span>Yes, specify</span>
-                        <span style={{ marginLeft: '10px' }}><input className='inputUnderscore' style={{ width: '20rem' }}></input></span>
+                        <span style={{ marginLeft: '10px' }}><input name='otherCodeSpecify' className='inputUnderscore' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                     </span>
                 </div>
             </li>
@@ -178,7 +178,6 @@ const MortalityForm = ({ ...props }) => {
                 <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
             </div>
         </div>
-
         <div className='form-group col-md-12' style={{margin: '1.5rem'}}>
             <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
