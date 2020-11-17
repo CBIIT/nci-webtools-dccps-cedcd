@@ -43,33 +43,23 @@ const MortalityForm = ({ ...props }) => {
         if (mortality.otherCode === 1 && !mortality.otherCodeSpecify) { copy.otherCodeSpecify = 'please specify' } else { copy.otherCodeSpecify = '' }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
-
-        const isEmpty = !Object.values(copy).some(x => (x !== undefined && x !== ''));
-        console.log(isEmpty)
-
-        console.log(Object.values(copy));
-
         setErrors(copy);
+
+        return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
     const handleSave = () => {
 
-        validateInput();
-
-        /* if(Object.entries(errors).length === 0)
-             saveEnrollment(79)
-         else{
-             //setDisplay('block')
-             if(window.confirm('there are validation errors, are you sure to save?'))
-                 saveEnrollment(79)
-         }*/
+        if(validateInput()){
+            //Complete
+        }
+        else{
+            //Incomplete
+        }
     }
 
     const handleSaveContinue = () => {
-        /*
-        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
-            */
+
     }
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
