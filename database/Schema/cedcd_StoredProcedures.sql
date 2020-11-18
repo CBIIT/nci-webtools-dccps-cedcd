@@ -178,13 +178,13 @@ BEGIN
         set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
       elseif locate("41", category) > 0 then
         set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
         union
         select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
       else
 		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       end if;
 	
@@ -303,7 +303,7 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
-	    from cohort_basic cs, major_content mc, lu_data_collected_category ld, cohort ch, v_lu_data_collected_category vld
+	    from cohort_basic cs, major_content mc, lu_data_category ld, cohort ch, v_lu_data_category vld
 	    WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
   
   PREPARE stmt FROM @query;
@@ -385,7 +385,7 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
      set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
-	from cohort_basic cs, major_content mc, lu_data_collected_category ld , cohort ch, v_lu_data_collected_category vld
+	from cohort_basic cs, major_content mc, lu_data_category ld , cohort ch, v_lu_data_category vld
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
      
   PREPARE stmt FROM @query;
@@ -438,7 +438,7 @@ CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	  select * from lu_gender;
     select * from lu_cancer where id < 29 order by case when id=1 then 'zzz' else cancer end, cancer;
-    select * from v_lu_data_collected_category;
+    select * from v_lu_data_category;
     select * from lu_ethnicity;
     select * from lu_race order by case when id=7 then 'zzz' else race end, race;
     select * from lu_specimen where id < 10;
@@ -504,13 +504,13 @@ BEGIN
        set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1) ");
       elseif locate("41", category) > 0 then
        set @major_content_query = concat(" and cs.cohort_id in ( select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
         union
         select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 )");
       else
 		    set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
       end if;
     end if;
@@ -1488,7 +1488,7 @@ DROP PROCEDURE IF EXISTS get_major_content //
 CREATE PROCEDURE `get_major_content`(in targetID int)
 begin
 select cohort_id, category_id, category, baseline, followup from 
-major_content m join lu_data_collected_category d
+major_content m join lu_data_category d
 on m.category_id = d.id
 where cohort_id = targetID order by category_id;
 end //
