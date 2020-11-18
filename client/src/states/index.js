@@ -280,6 +280,7 @@ const InitialStates ={
         otherDeath: null,
         otherDeathSpecify: null,
         haveDeathDate: null,
+        haveDeathCause: null,
         icd9: null,
         icd10: null,
         notCoded: null,
