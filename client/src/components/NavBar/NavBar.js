@@ -21,7 +21,9 @@ class NavBar extends Component {
 
   render() {
     /*        {this.renderTab(7)}*/
+    const active = window.location.pathname
     return (
+      
       /*
       <ul id="mainNav">
         {this.renderTab(0)}
@@ -38,45 +40,53 @@ class NavBar extends Component {
           id="homeTab"
           value={0}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(0)}
         />
+        
         <Tab
           id="searchCohortsTab"
           value={1}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(1)}
         />
         <Tab
           id="enrollmentCountTab"
           value={2}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(2)}
         />
         <Tab
           id="cancerCountTab"
           value={3}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(3)}
         />
         <Tab
           id="biospecimenCountTab"
           value={4}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(4)}
         />
         <Tab
           id="aboutTab"
           value={5}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(5)}
         />
         <Tab
           id="contactTab"
           value={6}
           currTab={this.props.currTab}
+          active={active}
           onClick={() => this.props.onClick(6)}
         />
-        <TourBox currTab={this.props.currTab} />
+        <TourBox currTab={this.props.currTab}  />
         {
           this.props.isAdmin === 2 ?
         <Tab
