@@ -13,6 +13,11 @@
 
 .active, .accordion:hover {
     background-color: #ccc;
+
+}
+
+.accordian:hover span{
+    border-bottom: 1px solid blue;
 }
 
 .panellet {
