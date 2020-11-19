@@ -645,7 +645,7 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* 
-	from cohort_basic cs, specimen s, cohort ch
+	from cohort_basic cs, v_specimen s, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = s.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
