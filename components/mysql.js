@@ -9,7 +9,7 @@ const mysql = require('mysql');
 
 var pool = null;
 
-var connect = function(config, next){
+var getConnectionPool = function(config){
 	pool = mysql.createPool({
 		connectionLimit : config.connectionLimit, 
 		connectTimeout: config.connectTimeout || (1000 * 60 * 20),
@@ -21,12 +21,8 @@ var connect = function(config, next){
 	    database : config.db,
 	    debug    :  false
 	});
-	if(pool){
-		next(1);
-	}
-	else{
-		next(null);
-	}
+
+	return pool;
 };
 
 
@@ -226,8 +222,36 @@ var close = function(){
 	}
 };
 
+function checkConnection(connection) {
+	return new Promise((resolve, reject) => {
+		connection.query('select 1', (error, results) => {
+			if (error) reject(error);
+			else resolve(true);
+		});
+	})
+}
+
+function deferUntilConnected(connection) {
+	return new Promise((resolve, reject) => {
+		let interval = 1;
+		tryConnection();
+		async function tryConnection() {
+			try {
+				if (await checkConnection(connection)) {
+					resolve(connection);
+				}
+			} catch (e) {
+				console.log('Waiting for connection...');
+				interval *= 1.5;
+				setTimeout(tryConnection, 1000 * 10 * interval)
+			}
+		}
+	});
+}
+
 module.exports = {
-	connect,
+	pool,
+	getConnectionPool,
 	getConnection,
 	query,
 	queryWithLimit,
@@ -237,4 +261,5 @@ module.exports = {
 	close,
 	getConnectionAsync,
 	queryAsync,
+	deferUntilConnected
 };
