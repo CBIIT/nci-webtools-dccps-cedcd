@@ -39,7 +39,7 @@ router.post('/update_cohort_basic/:id', function(req, res){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
             res.json({status:200, message:'update successful'})
         else
-            res.json({status:500, message:'update failed'})
+            res.json({status:500, message:'update failed'})      
     })
     
 })

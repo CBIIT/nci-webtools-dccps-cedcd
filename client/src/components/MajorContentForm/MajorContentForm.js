@@ -153,8 +153,10 @@ const MajorContentForm = ({...props}) => {
                     dispatch(allactions.majorContentActions.setEcigarFollowUp(content[17].followup))
                     dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(content[18].baseline))
                     dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(content[18].followup))
+                    dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(content[18].other_specify_baseline))
+                    dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(content[18].other_specify_followup))
                     dispatch(allactions.majorContentActions.setPhysicalBaseLine(content[19].baseline))
-                    dispatch(allactions.majorContentActions.setPhysicalFollowUp(content[19].followup))
+                    dispatch(allactions.majorContentActions.setPhysicalFollowUp(content[19].followup))                   
                     dispatch(allactions.majorContentActions.setSleepBaseLine(content[20].baseline))
                     dispatch(allactions.majorContentActions.setSleepFollowUp(content[20].followup))
                     dispatch(allactions.majorContentActions.setReproduceBaseLine(content[21].baseline))
@@ -200,7 +202,7 @@ const MajorContentForm = ({...props}) => {
                     dispatch(allactions.majorContentActions.setCancerLateEffects(cancerInfo.cancerLateEffects))
                     dispatch(allactions.majorContentActions.setCancerSymptom(cancerInfo.cancerSymptom))
                     dispatch(allactions.majorContentActions.setCancerOther(cancerInfo.cancerOther))
-                    dispatch(allactions.majorContentActions.setCancerOtherSpecify(cancerInfo.setCancerOtherSpecify))
+                    dispatch(allactions.majorContentActions.setCancerOtherSpecify(cancerInfo.cancerOtherSpecify))
                     dispatch(allactions.majorContentActions.setHasLoaded(true))
                 })//end of batch
 
@@ -232,10 +234,18 @@ const MajorContentForm = ({...props}) => {
                 if(content[12].followup in [0, 1]){shadow.alcoholFollowUp = false; changed = true;}
                 if(content[13].baseline in [0, 1]){shadow.cigaretteBaseLine = false; changed = true;}
                 if(content[13].followup in [0, 1]){shadow.cigaretteFollowUp = false; changed = true;}
-                //if(content[14].baseline || content[15].baseline || content[16].baseline || content[17].baseline || content[18].baseline)
-                //{shadow.nonCigarBaseLine = false; changed = true;}
-                //if(content[14].followup || content[15].followup || content[16].followup || content[17].followup || content[18].followup)
-                //{shadow.nonCigarFollowup = false; changed = true;}
+                if(content[14].baseline){shadow.cigarBaseLine =false; changed = true;}
+                if(content[15].baseline){shadow.pipeBaseLine = false; changed = true;}
+                if(content[16].baseline){shadow.tobaccoBaseLine = false; changed = true;}
+                if(content[17].baseline){shadow.ecigarBaseLine = false; changed = true;}
+                if(content[18].baseline){shadow.noncigarOtherBaseLine = false; changed = true;}
+                if(content[18].other_specify_baseline){shadow.noncigarBaseLineSpecify = false; changed = true;}
+                if(content[14].followup){shadow.cigarFollowUp =false; changed = true;}
+                if(content[15].followup){shadow.pipeFollowUp = false; changed = true;}
+                if(content[16].followup){shadow.tobaccoFollowUp = false; changed = true;}
+                if(content[17].followup){shadow.ecigarFollowUp = false; changed = true;}
+                if(content[18].followup){shadow.noncigarOtherFollowUp = false; changed = true;}
+                if(content[18].other_specify_followup){shadow.noncigarFollowUpSpecify = false; changed = true;}
                 if(content[19].baseline in [0, 1]){shadow.physicalBaseLine = false; changed = true;}
                 if(content[19].followup in [0, 1]){shadow.physicalFollowUp = false; changed = true;}
                 if(content[20].baseline in [0, 1]){shadow.sleepBaseLine = false; changed = true;}
@@ -282,8 +292,11 @@ const MajorContentForm = ({...props}) => {
                 if(content[40].baseline in [0, 1]){shadow.physicalMeasureBaseLine = false; changed = true;}
                 if(content[40].followup in [0, 1]){shadow.physicalMeasureFollowUp = false; changed = true;}
 
-                //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
-                //{shadow.otherCancerConditions = false; changed = true;}
+                if(cancerInfo.cancerToxicity){shadow.cancerToxicity = false; changed=true;}
+                if(cancerInfo.cancerSymptom){shadow.cancerSymptom = false; changed=true;}
+                if(cancerInfo.cancerLateEffects){shadow.cancerLateEffects = false; changed=true;}
+                if(cancerInfo.cancerOther){shadow.cancerOther = false; changed=true;}
+                if(cancerInfo.cancerOtherSpecify){shadow.cancerOtherSpecify = false; changed = true;}
                 if(changed) setErrors(shadow)
             })//end of then
         }//end of if
@@ -558,12 +571,12 @@ const MajorContentForm = ({...props}) => {
                                             <span className='col-sm-8'>
                                                 <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
                                                 <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                    <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))} />
+                                                    <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value));; setErrors({...errors, noncigarBaseLineSpecify: !e.target.value})}} />
                                                 </span>
                                             </span> : ''
                                         }
                                     </div>
-                                       
+                                    {(majorContent.noncigarOtherBaseLine && saved && errors.noncigarBaseLineSpecify) && <div><span className='col-sm-offset-6 col-sm-6' style={{color: 'red'}}>please specify</span></div> || ''} 
                                 </td>
                                 <td style={{backgroundColor: (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved ? 'lightcoral' : 'white'}}> 
                                     <div className='col-sm-offset-2 col-sm-10'>
@@ -595,10 +608,11 @@ const MajorContentForm = ({...props}) => {
                                             <div className='col-sm-8'>
                                                 <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
                                                 <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                    <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onClick={e=>dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))} />
+                                                    <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)); setErrors({...errors, noncigarFollowUpSpecify: !e.target.value})}} />
                                                 </span>
                                             </div> : ''
                                         }   
+                                        {(majorContent.noncigarOtherFollowUp && saved && errors.noncigarFollowUpSpecify) && <div><span className='col-sm-offset-5 col-sm-7' style={{color: 'red'}}>please specify</span></div> || ''}
                                     </div>
                                 </td>
                             </tr>
@@ -880,7 +894,7 @@ const MajorContentForm = ({...props}) => {
                                         </th>
                                     </tr>
                                     <tr>
-                                        <td colSpan='3' style={{backgroundColor: errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther && saved ? 'lightcoral' : 'white'}}>
+                                        <td colSpan='3' style={{backgroundColor: (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved ? 'lightcoral' : 'white'}}>
                                             <div><span>Do you have information on the following cancer related conditions?<span style={{color: 'red'}}>*</span></span></div>
                                             <div className='col-sm-12'>
                                                 <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerToxicity === 1} onChange={
@@ -907,8 +921,9 @@ const MajorContentForm = ({...props}) => {
                                                 <span className='col-sm-1' style={{paddingLeft: '0', width: '25px'}}>Other</span>
                                                 {
                                                     majorContent.cancerOther === 1 ? 
-                                                    <span className='col-sm-3'><input className='inputUnderscore' name='cancerOtherSpecify' onChange={(e) => dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))} /></span> : ''
+                                                    <span className='col-sm-3'><input className='inputUnderscore' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={(e) => {dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)); setErrors({...errors, cancerOtherSpecify: !e.target.value})}} /></span> : ''
                                                 }
+                                                {(majorContent.cancerOther && saved && errors.cancerOtherSpecify) && <span style={{color: 'red'}}>please specify</span> || ''}
                                             </div>
                                         </td>
                                     </tr>

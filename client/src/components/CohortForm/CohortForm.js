@@ -5,6 +5,7 @@ import validator from '../../validators'
 import Person from '../Person/Person'
 import Investigator from '../Investigator/Investigator'
 import DatePicker from 'react-datepicker';
+import Messenger from '../Snackbar/Snackbar'
 
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.css'
@@ -16,6 +17,8 @@ const CohortForm = ({...props}) => {
 
     const errorMsg = 'please provide a value'
     
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
     const [errors, setErrors] = useState({
        // cohort_name: errorMsg,
         completionDate: errorMsg,
@@ -180,12 +183,13 @@ const CohortForm = ({...props}) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
 
-                    if(!proceed)
-                        alert('Data was successfully saved')
+                    if(!proceed){
+                        setSuccessMsg(true) 
+                    }
                     else
                         props.sectionPicker('B')
                 }else{
-                    alert(result.message)
+                    setFailureMsg(true)
                 }
             })
     }
@@ -214,7 +218,6 @@ const CohortForm = ({...props}) => {
             if(window.confirm('there are validation errors, are you sure to save?')){
                 cohort.sectionAStatus='incomplete'
                 dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-                console.log(cohort.sectionAStatus)
                 saveCohort(79)
             }
         }
@@ -451,6 +454,8 @@ const CohortForm = ({...props}) => {
     }
 
     return <div id='cohortContainer' className='col-md-12'>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg}/>}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>           
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
                 If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
@@ -470,13 +475,13 @@ const CohortForm = ({...props}) => {
                                 <span  style={{paddingLeft: '10px'}}>{cohort.acronym}</span>
                             </span>
                         </div>
-                        <div id='question7' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
+                        <div id='question7' className='col-md-12' style={{paddingBottom: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '5px'}}>
                                 <label style={{paddingLeft: '0'}}>A.7{' '}Cohort Description</label>
                                 <p style={{fontSize: '16px'}}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
+                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='15' placeholder='no more than 5000 characters' maxLength='5000' style={{resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px'}} value={cohort.description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
@@ -493,7 +498,7 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12'>
                                 <label className='col-md-4' style={{paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
+                                    <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
                                         let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
                                     }}} /></span> 
                                 </span>
@@ -544,13 +549,13 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-5' style={{display: 'flex', flexDirection: 'column'}}>
                                 <div style={{marginBottom: '20px'}}>
                                     <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0}  onChange={(e) =>setCollaborator(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0')}/>{' '}
-                                    <span htmlFor='sameAsSomeone'>same as the person who completed the form(3a) </span>
+                                    <span htmlFor='sameAsSomeone'>Same as the person who completed the form(3a) </span>
                                 </div>
                                 { 
                                     cohort.contacterRight === 0 ? 
                                     <div style={{margin: '0', padding: '0', minWidth: '500px'}}>
                                         <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1}  onChange={(e) =>setCollaborator(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1')}/>{' '}
-                                        <span htmlFor='sameAsSomeone' style={{padding: '0', margin: '0'}}>{' '} same as the contact person for clarification of this form(3b) </span>
+                                        <span htmlFor='sameAsSomeone' style={{padding: '0', margin: '0'}}>{' '} Same as the contact person for clarification of this form(3b) </span>
                                     </div> : ''
                                 }
                             </div>                        
@@ -603,25 +608,25 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-6' style={{lineHeight: '2em'}}>
                                     Totoal number of subjects enrolled to date<span style={{color: 'red'}}>*</span>
                                 </span>
-                                <span className='col-md-2'>
+                                <span className='col-md-2' style={{paddingBottom: '5px'}}>
                                     <input className='form-control' name='enrollTotal' value={cohort.enrolledTotal} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => {populateErrors('enrollTotal', e.target.value, true, 'number')}}/>
                                 </span>
                                 {errors.enrollTotal && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.enrollTotal}</span>}
                             </div>
                             <div className='col-md-12'  style={{paddingLeft: '0'}}>
                                 <span className='col-md-6' style={{lineHeight: '2em'}}> Started in year<span style={{color: 'red'}}>*</span></span>
-                                <span className='col-md-2'><input className='form-control' name='enrollStartYear' placeholder='yyyy' value={cohort.enrollStartYear} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => {populateErrors('enrollStartYear', e.target.value, true, 'year')}} /></span> 
+                                <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='enrollStartYear' placeholder='yyyy' value={cohort.enrollStartYear} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => {populateErrors('enrollStartYear', e.target.value, true, 'year')}} /></span> 
                                 {errors.enrollStartYear ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.enrollStartYear}</span> : ''}
                             </div>
                             <div className='col-md-12'  style={{paddingLeft: '0', marginBottom: '8px'}}>
                                 <span className='col-md-6'  style={{lineHeight: '2em'}}> Ended in year<span style={{color: 'red'}}>*</span></span>
-                                <span className='col-md-2'><input className='form-control' name='enroll
+                                <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='enroll
                                 EndYear' placeholder='yyyy' value={cohort.enrollEndYear} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => {populateErrors('enrollEndYear', e.target.value, true, 'year')}} /></span>
                                 {errors.enrollEndYear ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.enrollEndYear}</span>:  ''}
                             </div>
                             <div className='col-md-12' style={{marginBottom: '8px'}}>
                                 <span  className='col-md-6' style={{paddingLeft: '0'}}>Is enrollment ongoing?<span style={{color: 'red'}}>*</span></span>
-                                <span className='col-md-1'><input type='radio' name='enrollmentCurrent' value='0' checked={cohort.enrollOnGoing === 0} onChange={e => {
+                                <span className='col-md-1' style={{paddingBottom: '5px'}}><input type='radio' name='enrollmentCurrent' value='0' checked={cohort.enrollOnGoing === 0} onChange={e => {
                                         dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                         let shadow={...errors}, changed = false
                                         if(errors.enrollOnGoing) {delete shadow.enrollOnGoing; changed = true}
@@ -629,7 +634,7 @@ const CohortForm = ({...props}) => {
                                         if(errors.yearToComplete)  {delete shadow.yearToComplete; changed = true}
                                         if(changed) setErrors(shadow)
                                     }} /> No</span>
-                                <span className='col-md-1'><input type='radio' name='enrollmentCurrent' value='1' checked={cohort.enrollOnGoing === 1} onChange={e => {
+                                <span className='col-md-1' style={{paddingBottom: '5px'}}><input type='radio' name='enrollmentCurrent' value='1' checked={cohort.enrollOnGoing === 1} onChange={e => {
                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                     let shadow={...errors}, changed = false
                                     if(errors.enrollOnGoing) {delete shadow.enrollOnGoing; changed = true}
@@ -643,7 +648,7 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-6' style={{lineHeight: '2em'}}>
                                     If still enrolling, please specify the target number of plan to enroll<span style={{color: 'red'}}>*</span>
                                 </span>
-                                <span className='col-md-2'>
+                                <span className='col-md-2' style={{paddingBottom: '5px'}}>
                                     <input className='form-control' name='targetNumber' value={cohort.numOfPlans} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => {populateErrors('numOfPlans', e.target.value, true, 'number')}}/>
                                 </span>
                                 {errors.numOfPlans && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.numOfPlans}</span>}
@@ -652,7 +657,7 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-6' style={{lineHeight: '2em'}}>
                                     If still enrolling, please specify when you plan to complete enrollment<span style={{color: 'red'}}>*</span>
                                 </span>
-                                <span className='col-md-2'>
+                                <span className='col-md-2' style={{paddingBottom: '5px'}}>
                                     <input className='form-control' name='yearToComplete' placeholder='yyyy' value={cohort.yearToComplete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))}  onBlur={(e) => {populateErrors('yearToComplete', e.target.value, true, 'year')}}/>
                                 </span> 
                                 {errors.yearToComplete && <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.yearToComplete}</span>}                              
@@ -661,10 +666,10 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12'  style={{paddingLeft: '0'}}>
                                 <div>
                                     <span className='col-md-6' style={{lineHeight: '2em'}}>Baseline age range of enrolled subjects<span style={{color: 'red'}}>*</span></span>
-                                    <span className='col-md-2'>
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}>
                                        <input className='form-control' name='baseLineMinAge' value={cohort.baseLineMinAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => {populateBaseLineMinAgeError(e.target.value, true, cohort.baseLineMaxAge)}} />
                                     </span> 
-                                    <span className='col-md-1' style={{lineHeight: '2em', padding: '0', margin: '0', width: '15px'}}> to </span>
+                                    <span className='col-md-1' style={{lineHeight: '2em', paddingBottom: '5px', margin: '0', width: '15px'}}> to </span>
                                     <span className='col-md-2'><input className='form-control' name='baseLineMaxAge' value={cohort.baseLineMaxAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))} onBlur={(e) => {populateBaseLineMaxAgeError(e.target.value, true, cohort.baseLineMinAge)}} /></span>
                                 </div>
                                 <div className='col-md-12'>
@@ -673,19 +678,19 @@ const CohortForm = ({...props}) => {
                                 </div>
                                 <div>
                                     <span className='col-md-6' style={{lineHeight: '2em'}}>Median age<span style={{color: 'red'}}>*</span></span>
-                                    <span className='col-md-2'><input className='form-control' name='baseLineMedian' value={cohort.baseLineMedianAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('baseLineMedianAge', e.target.value, true, cohort.baseLineMinAge, cohort.baseLineMaxAge)} /></span> 
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='baseLineMedian' value={cohort.baseLineMedianAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('baseLineMedianAge', e.target.value, true, cohort.baseLineMinAge, cohort.baseLineMaxAge)} /></span> 
                                     {errors.baseLineMedianAge ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.baseLineMedianAge}</span> : ''}
                                 </div>
                                 <div>
                                     <span className='col-md-6'  style={{lineHeight: '2em'}}> Mean age<span style={{color: 'red'}}>*</span> </span>
-                                    <span className='col-md-2'><input className='form-control' name='baseLineMean' value={cohort.baseLineMeanAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('baseLineMeanAge', e.target.value, true, cohort.baseLineMinAge, cohort.baseLineMaxAge)}/></span>
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='baseLineMean' value={cohort.baseLineMeanAge} onChange={e=>dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('baseLineMeanAge', e.target.value, true, cohort.baseLineMinAge, cohort.baseLineMaxAge)}/></span>
                                     {errors.baseLineMeanAge ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.baseLineMeanAge}</span> : ''}
                                 </div>
                             </div>
                             <div className='col-md-12'  style={{paddingLeft: '0'}}>
                                 <div>
                                     <span className='col-md-6' style={{lineHeight: '2em'}}>Current age range of enrolled subjects<span style={{color: 'red'}}>*</span></span>
-                                    <span className='col-md-2'><input className='form-control' name='currentMinAge' value={cohort.currentMinAge} onChange={e=>dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.currentMaxAge)}/></span> 
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='currentMinAge' value={cohort.currentMinAge} onChange={e=>dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.currentMaxAge)}/></span> 
                                     <span className='col-md-1' style={{lineHeight: '2em', padding: '0', margin: '0', width: '15px'}}> to </span>
                                     <span className='col-md-2'><input className='form-control' name='currentMaxAge' value={cohort.currentMaxAge} onChange={e=>dispatch(allactions.cohortActions.current_age_max(e.target.value))} onBlur={e => populateCurrentMaxAgeError(e.target.value, true, cohort.currentMinAge)}/></span>
                                 </div>
@@ -695,12 +700,12 @@ const CohortForm = ({...props}) => {
                                 </div>
                                 <div>
                                     <span className='col-md-6' style={{lineHeight: '2em'}}>Median age<span style={{color: 'red'}}>*</span></span>
-                                    <span className='col-md-2'><input className='form-control' name='currentMedian' value={cohort.currentMedianAge} onChange={e=>dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('currentMedianAge', e.target.value, true, cohort.currentMinAge, cohort.currentMaxAge)}/></span> 
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='currentMedian' value={cohort.currentMedianAge} onChange={e=>dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('currentMedianAge', e.target.value, true, cohort.currentMinAge, cohort.currentMaxAge)}/></span> 
                                     {errors.currentMedianAge ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.currentMedianAge}</span> : ''}
                                 </div>
                                 <div>
                                     <span className='col-md-6'  style={{lineHeight: '2em'}}> Mean age<span style={{color: 'red'}}>*</span> </span>
-                                    <span className='col-md-2'><input className='form-control' name='currentMean' value={cohort.currentMeanAge} onChange={e=>dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('currentMeanAge', e.target.value, true, cohort.currentMinAge, cohort.currentMaxAge)}/></span>
+                                    <span className='col-md-2' style={{paddingBottom: '5px'}}><input className='form-control' name='currentMean' value={cohort.currentMeanAge} onChange={e=>dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('currentMeanAge', e.target.value, true, cohort.currentMinAge, cohort.currentMaxAge)}/></span>
                                     {errors.currentMeanAge ? <span className='col-md-3' style={{color: 'red', display: displayStyle}}>{errors.currentMeanAge}</span> : ''}
                                 </div>
                             </div>
@@ -855,7 +860,8 @@ const CohortForm = ({...props}) => {
                     <div className={activePanel === 'panelE' ? 'panel-active' : 'panellet'}>
                         <div id='question15' className='col-md-12' style={{paddingTop: '10px', paddingBottom: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '10px'}}>
-                                <label style={{paddingLeft: '0'}}>A.15 {' '} As indicated on the CEDCD Approval Form, we are requesting the following items for inclusion on the CEDCD website. If you provided approval to post this information, please attach the documents and return them with this form. If they are already available on a publicly accessible website, please just provide the website address.<span style={{color: 'red'}}>*</span></label>
+                                <label style={{paddingLeft: '0'}}>A.15 {' '} Required Documents</label>
+                                <p style={{fontSize: '16px'}}>As indicated on the CEDCD Approval Form, we are requesting the following items for inclusion on the CEDCD website. If you provided approval to post this information, please attach the documents and return them with this form. If they are already available on a publicly accessible website, please just provide the website address.</p>
                             </div>
                             <div className='col-md-12'>
                                 <table className='table table-stripe table-responsive table-borderless'>
@@ -867,37 +873,37 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className={errors.questionnaire ? 'errorBackground' : ''}>
-                                        <td>Questionnaires</td> 
-                                        <td><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFileName} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
+                                        <tr>
+                                        <td>Questionnaires<span style={{color: 'red'}}>*</span></td> 
+                                        <td className={errors.questionnaire ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaireUrl' id='questionnaireUrl' disabled={cohort.questionnaireFileName} value={cohort.questionnaireUrl} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                             <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); if('questionnaire' in errors){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} disabled={cohort.questionnaireUrl} />
                                         </td>
                                        
                                         </tr>
-                                        <tr className={errors.main ? 'errorBackground' : ''}>
-                                        <td>Main cohort protocol</td> 
-                                        <td><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainFileName}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
+                                        <tr>
+                                        <td>Main cohort protocol<span style={{color: 'red'}}>*</span></td> 
+                                        <td className={errors.main ? 'errorBackground' : ''}><input className='inputWriter' name='mainCohortUrl' id='mainCohortUrl' disabled={cohort.mainFileName}  value={cohort.mainCohortUrl} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                                 <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); if('main' in errors){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} disabled={cohort.mainCohortUrl}/>
                                         </td>
                                        
                                         </tr>
-                                        <tr className={errors.data ? 'errorBackground' : ''}>
-                                        <td>Data sharing policy</td> 
-                                        <td><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFileName}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
+                                        <tr>
+                                        <td>Data sharing policy<span style={{color: 'red'}}>*</span></td> 
+                                        <td className={errors.data ? 'errorBackground' : ''}><input className='inputWriter' name='dataUrl' id='dataUrl' disabled={cohort.dataFileName}  value={cohort.dataUrl} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); if('data' in errors){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}}disabled={cohort.dataUrl}/></td>
                                         
                                         </tr>
-                                        <tr className={errors.specimen ? 'errorBackground' : ''}>
-                                        <td>Biospecimen sharing policy</td> 
-                                        <td><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFileName}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
+                                        <tr>
+                                        <td>Biospecimen sharing policy<span style={{color: 'red'}}>*</span></td> 
+                                        <td className={errors.specimen ? 'errorBackground' : ''}><input className='inputWriter' name='specimenUrl' id='specimenUrl' disabled={cohort.specimenFileName}  value={cohort.specimenUrl} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); if('specimen' in errors){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} disabled={cohort.specimenUrl}/></td>
                                         
                                         </tr>
-                                        <tr className={errors.publication ? 'errorBackground' : ''}>
-                                        <td>Publication(authorship) policy</td> 
-                                        <td><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
+                                        <tr>
+                                        <td>Publication(authorship) policy<span style={{color: 'red'}}>*</span></td> 
+                                        <td className={errors.publication ? 'errorBackground' : ''}><input className='inputWriter' name='publicationUrl' value={cohort.publicationUrl} id='publicationUrl' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); if('publication' in errors){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} disabled={cohort.publicationUrl}/></td>
                                         
                                         </tr>

@@ -47,11 +47,13 @@ const Investigator = ({id, name, institution, email, isRequired, callback, handl
     const idx = id.split('_')[1]
 
     return <div id={id} className='col-md-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
-                <div className='col-md-12  invheader'>
+               {/*} <div className='col-md-12  invheader'>
                     {idx === '0' ? <span>Investigator</span> : <span>Addition Investigator</span> }
                     {idx !== '0' ? <span className='invclose' onClick={() =>handleRemove(idx)}>x</span> : ''}
-                </div>
+                </div> 
+                */}
                 <div className='col-md-12' style={{border: '1px solid lightgray'}}>
+                    {idx !== '0' ? <div className='col-md-12 invheader'><span className='invclose' onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 invheader'></div>}
                     <div className='col-md-12' style={{paddingLeft: '0', marginTop: '5px', marginBottom: '5px'}}>
                         <span className='col-md-2' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                         <span className='col-md-9'>
