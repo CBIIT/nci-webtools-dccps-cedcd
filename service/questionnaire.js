@@ -113,7 +113,7 @@ router.post('/major_content/:id', function(req, res){
         logger.debug(result)
         const majorContent = {}
         majorContent.counts = result[0]
-        majorContent.cancerInfo = result[1]
+        majorContent.cancerInfo = result[1][0]
         if(majorContent)
             res.json({status: 200, data: majorContent})
         else

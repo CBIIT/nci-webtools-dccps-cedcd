@@ -232,10 +232,10 @@ const MajorContentForm = ({...props}) => {
                 if(content[12].followup in [0, 1]){shadow.alcoholFollowUp = false; changed = true;}
                 if(content[13].baseline in [0, 1]){shadow.cigaretteBaseLine = false; changed = true;}
                 if(content[13].followup in [0, 1]){shadow.cigaretteFollowUp = false; changed = true;}
-                if(content[14].baseline || content[15].baseline || content[16].baseline || content[17].baseline || content[18].baseline)
-                {shadow.nonCigarBaseLine = false; changed = true;}
-                if(content[14].followup || content[15].followup || content[16].followup || content[17].followup || content[18].followup)
-                {shadow.nonCigarFollowup = false; changed = true;}
+                //if(content[14].baseline || content[15].baseline || content[16].baseline || content[17].baseline || content[18].baseline)
+                //{shadow.nonCigarBaseLine = false; changed = true;}
+                //if(content[14].followup || content[15].followup || content[16].followup || content[17].followup || content[18].followup)
+                //{shadow.nonCigarFollowup = false; changed = true;}
                 if(content[19].baseline in [0, 1]){shadow.physicalBaseLine = false; changed = true;}
                 if(content[19].followup in [0, 1]){shadow.physicalFollowUp = false; changed = true;}
                 if(content[20].baseline in [0, 1]){shadow.sleepBaseLine = false; changed = true;}
@@ -282,8 +282,8 @@ const MajorContentForm = ({...props}) => {
                 if(content[40].baseline in [0, 1]){shadow.physicalMeasureBaseLine = false; changed = true;}
                 if(content[40].followup in [0, 1]){shadow.physicalMeasureFollowUp = false; changed = true;}
 
-                if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
-                {shadow.otherCancerConditions = false; changed = true;}
+                //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
+                //{shadow.otherCancerConditions = false; changed = true;}
                 if(changed) setErrors(shadow)
             })//end of then
         }//end of if
@@ -779,7 +779,7 @@ const MajorContentForm = ({...props}) => {
                                     <tbody>
                                     <tr style={{backgroundColor: '#01857b', color: 'white'}}>
                                         <th colSpan='3'>
-                                            <span>C.30 Other Medical Conditions</span>
+                                            <span>C.31 Other Medical Conditions</span>
                                         </th>
                                     </tr>
                                     <tr style={{backgroundColor: '#01857b', color: 'white'}}>
@@ -876,7 +876,7 @@ const MajorContentForm = ({...props}) => {
                                 <tbody>
                                     <tr style={{backgroundColor: '#01857b', color: 'white'}}>
                                         <th colSpan='3'>
-                                            <span>C.31 Cancer related conditions</span>
+                                            <span>C.32 Cancer related conditions</span>
                                         </th>
                                     </tr>
                                     <tr>
