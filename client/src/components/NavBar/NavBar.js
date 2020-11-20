@@ -21,8 +21,10 @@ class NavBar extends Component {
 
   render() {
     /*        {this.renderTab(7)}*/
-    const active = '/' + window.location.pathname.split('/')[1];
-  
+    let active = '/' + window.location.pathname.split('/')[1];
+    if(active === '/')
+      active = '/home'
+
     return (
       
       /*
