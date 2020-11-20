@@ -52,16 +52,40 @@ const MortalityForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
+    const saveMortality = (id=79, proceed=false) => {
+        console.log(JSON.stringify(mortality))
+        fetch(`/api/questionnaire/update_mortality/${id}`,{
+            method: "POST",
+            body: JSON.stringify(mortality),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if(result.status === 200){
+                    if(!proceed)
+                        alert('Data was successfully saved')
+                    else
+                        props.sectionPicker('F')
+                }else{
+                    alert(result.message)
+                }
+            })
+    }
+
     const handleSave = () => {
 
         if (validateInput()) {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
+            saveMortality(79)
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                saveMortality(79)
             }
         }
     }

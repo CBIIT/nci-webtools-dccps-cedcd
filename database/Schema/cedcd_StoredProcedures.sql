@@ -1622,7 +1622,7 @@ DROP PROCEDURE if EXISTS `update_mortality` //
 CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
 BEGIN
 	if exists (select * from mortality where cohort_id = targetID) then 
-		update mortality set mort_year_mortality_followup = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) where cohort_id = targetID;
+		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) is null || JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) = '', NULL, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear'))) where cohort_id = targetID;
 		update mortality set mort_death_confirmed_by_ndi_linkage = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) where cohort_id = targetID;
 		update mortality set mort_death_confirmed_by_death_certificate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) where cohort_id = targetID;
 		update mortality set mort_death_confirmed_by_other =  JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) where cohort_id = targetID;
@@ -1657,14 +1657,14 @@ BEGIN
 			,update_time
 		) values (
 			targetID
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear'))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) = 'null', NULL, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) 
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded'))
 			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode'))
