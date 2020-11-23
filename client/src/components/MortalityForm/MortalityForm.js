@@ -27,6 +27,50 @@ const MortalityForm = ({ ...props }) => {
         deathNumbers: ''
     })
 
+    useEffect(() => {
+        if (!mortality.hasLoaded) {
+            fetch('/api/questionnaire/mortality/79', {
+                method: 'POST',
+            }).then(res => res.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.data.info[0] !== undefined) {
+                        const data = result.data.info[0]
+                        let completion = result.data.completion[0].status
+
+                        if (completion !== 'complete')
+                            completion = 'incomplete'
+
+                        console.log(completion)
+
+                        batch(() => {
+                            dispatch(allactions.mortalityActions.setHasLoaded(true))
+                            dispatch(allactions.mortalityActions.setMortalityYear(data.mort_year_mortality_followup))
+                            dispatch(allactions.mortalityActions.setDeathIndex(data.mort_death_confirmed_by_ndi_linkage))
+                            dispatch(allactions.mortalityActions.setDeathCertificate(data.mort_death_confirmed_by_death_certificate))
+                            dispatch(allactions.mortalityActions.setOtherDeath(data.mort_death_confirmed_by_other))
+                            dispatch(allactions.mortalityActions.setOtherDeathSpecify(data.mort_death_confirmed_by_other_specify))
+                            dispatch(allactions.mortalityActions.setHaveDeathDate(data.mort_have_date_of_death))
+                            dispatch(allactions.mortalityActions.setHaveDeathCause(data.mort_have_cause_of_death))
+                            dispatch(allactions.mortalityActions.setIcd9(data.mort_death_code_used_icd9))
+                            dispatch(allactions.mortalityActions.setIcd10(data.mort_death_code_used_icd10))
+                            dispatch(allactions.mortalityActions.setNotCoded(data.mort_death_not_coded))
+                            dispatch(allactions.mortalityActions.setOtherCode(data.mort_death_code_used_other))
+                            dispatch(allactions.mortalityActions.setOtherCodeSpecify(data.mort_death_code_used_other_specify))
+                            dispatch(allactions.mortalityActions.setDeathNumbers(data.mort_number_of_deaths))
+
+                            dispatch(allactions.mortalityActions.setSectionEStatus(completion))
+                            dispatch(allactions.sectionActions.setSectionStatus('E', completion))
+                        })
+                    }
+                    else {
+                        dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                        dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
+                    }
+                })
+        }
+    }, [])
+
     const validateInput = () => {
 
         let copy = { ...errors }
@@ -52,23 +96,24 @@ const MortalityForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
-    const saveMortality = (id=79, proceed=false) => {
-        console.log(JSON.stringify(mortality))
-        fetch(`/api/questionnaire/update_mortality/${id}`,{
+    const saveMortality = (id = 79, proceed = false, complete) => {
+        const copy = { ...mortality, sectionEStatus: complete }
+        console.log(JSON.stringify(copy))
+        fetch(`/api/questionnaire/update_mortality/${id}`, {
             method: "POST",
-            body: JSON.stringify(mortality),
+            body: JSON.stringify(copy),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(res => res.json())
             .then(result => {
-                if(result.status === 200){
-                    if(!proceed)
+                if (result.status === 200) {
+                    if (!proceed)
                         alert('Data was successfully saved')
                     else
                         props.sectionPicker('F')
-                }else{
+                } else {
                     alert(result.message)
                 }
             })
@@ -79,19 +124,34 @@ const MortalityForm = ({ ...props }) => {
         if (validateInput()) {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
-            saveMortality(79)
+            dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
+            saveMortality(79, false, 'complete')
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                saveMortality(79)
+                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
+                saveMortality(79, false, 'incomplete')
             }
         }
     }
 
     const handleSaveContinue = () => {
-
+        if (validateInput()) {
+            //Complete
+            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
+            dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
+            saveMortality(79, true, 'complete')
+        }
+        else {
+            //Incomplete
+            if (window.confirm('there are validation errors, are you sure you want to save?')) {
+                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
+                saveMortality(79, true, 'incomplete')
+            }
+        }
     }
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
