@@ -199,6 +199,7 @@ const actionTypes = {
     setOtherDeath: 'SET_MORATLITY_OTHER_DEATH',
     setOtherDeathSpecify: 'SET_OTHER_DEATH_SPECIFY',
     setHaveDeathDate: 'SET_MORTALITY_HAVE_DEATH_DATE',
+    setHaveDeathCause: 'SET_MORTALITY_HAVE_DEATH_CAUSE',
     setIcd9: 'SET_MORTALITY_ICD9',
     setIcd10: 'SET_MORTALITY_ICD10',
     setNotCoded: 'SET_MORTALITY_NOT_CODED',
