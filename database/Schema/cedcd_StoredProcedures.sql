@@ -1615,28 +1615,29 @@ BEGIN
 		,create_time
 		,update_time
 	FROM mortality WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
 end//
 
 DROP PROCEDURE if EXISTS `update_mortality` //
 
 CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
 BEGIN
-	if exists (select * from mortality where cohort_id = targetID) then 
-		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) is null || JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) = '', NULL, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear'))) where cohort_id = targetID;
-		update mortality set mort_death_confirmed_by_ndi_linkage = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) where cohort_id = targetID;
-		update mortality set mort_death_confirmed_by_death_certificate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) where cohort_id = targetID;
-		update mortality set mort_death_confirmed_by_other =  JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) where cohort_id = targetID;
-		update mortality set mort_death_code_used_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) where cohort_id = targetID;
-		update mortality set mort_have_date_of_death = JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) where cohort_id = targetID;
-		update mortality set mort_have_cause_of_death = JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) where cohort_id = targetID;
-		update mortality set mort_death_code_used_icd9 = JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) where cohort_id = targetID;
-		update mortality set mort_death_code_used_icd10 = JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) where cohort_id = targetID;
-		update mortality set mort_death_not_coded = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) where cohort_id = targetID;
-		update mortality set mort_death_code_used_other = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) where cohort_id = targetID;
-		update mortality set mort_death_code_used_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) where cohort_id = targetID;
-		update mortality set mort_number_of_deaths = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) where cohort_id = targetID;
-		update mortality set update_time = NOW() where cohort_id = targetID;
-		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = targetID and page_code = 'E';
+	if exists (select * from mortality where cohort_id = `targetID`) then 
+		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_death_certificate = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , json_unquote(json_extract(info, '$.deathCertificate'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , json_unquote(json_extract(info, '$.otherDeath'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , json_unquote(json_extract(info, '$.otherDeathSpecify'))) where cohort_id = `targetID`;
+		update mortality set mort_have_date_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , json_unquote(json_extract(info, '$.haveDeathDate'))) where cohort_id = `targetID`;
+		update mortality set mort_have_cause_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , json_unquote(json_extract(info, '$.haveDeathCause'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd9 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , json_unquote(json_extract(info, '$.icd9'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd10 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , json_unquote(json_extract(info, '$.icd10'))) where cohort_id = `targetID`;
+		update mortality set mort_death_not_coded = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , json_unquote(json_extract(info, '$.notCoded'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , json_unquote(json_extract(info, '$.otherCode'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , json_unquote(json_extract(info, '$.otherCodeSpecify'))) where cohort_id = `targetID`;
+		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers'))) where cohort_id = `targetID`;
+		update mortality set update_time = NOW() where cohort_id = `targetID`;
+		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
 	else
 		insert into mortality (
 			cohort_id
@@ -1657,19 +1658,19 @@ BEGIN
 			,update_time
 		) values (
 			targetID
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) = 'null', NULL, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) 
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify'))
-			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers'))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , json_unquote(json_extract(info, '$.deathCertificate')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , json_unquote(json_extract(info, '$.otherDeath')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , json_unquote(json_extract(info, '$.otherDeathSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , json_unquote(json_extract(info, '$.haveDeathDate')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , json_unquote(json_extract(info, '$.haveDeathCause')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , json_unquote(json_extract(info, '$.icd9')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , json_unquote(json_extract(info, '$.icd10')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , json_unquote(json_extract(info, '$.notCoded')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , json_unquote(json_extract(info, '$.otherCode')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , json_unquote(json_extract(info, '$.otherCodeSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers')))
 			,NOW()
 			,NOW()
 		);
