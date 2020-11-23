@@ -146,8 +146,9 @@ router.post('/mortality/:id', function(req, res){
     mysql.callProcedure(func, params, function(result){
         logger.debug(result)
         const mortality = {}
-        //majorContent.counts = result[0]
-        //majorContent.cancerInfo = result[1]
+        mortality.info = result[0]
+        mortality.completion = result[1]
+
         if(mortality)
             res.json({status: 200, data: mortality})
         else
