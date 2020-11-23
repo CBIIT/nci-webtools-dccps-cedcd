@@ -18,6 +18,7 @@ const MortalityForm = ({ ...props }) => {
         otherDeath: '',
         otherDeathSpecify: '',
         haveDeathDate: '',
+        haveDeathCause: '',
         icd9: '',
         icd10: '',
         notCoded: '',
@@ -36,11 +37,14 @@ const MortalityForm = ({ ...props }) => {
         if (!(mortality.otherDeath in [0, 1])) { copy.otherDeath = radioError } else { copy.otherDeath = '' }
         if (mortality.otherDeath === 1 && !mortality.otherDeathSpecify) { copy.otherDeathSpecify = 'please specify' } else { copy.otherDeathSpecify = '' }
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
-        if (!(mortality.icd9 in [0, 1])) { copy.icd9 = radioError } else { copy.icd9 = '' }
-        if (!(mortality.icd10 in [0, 1])) { copy.icd10 = radioError } else { copy.icd10 = '' }
-        if (!(mortality.notCoded in [0, 1])) { copy.notCoded = radioError } else { copy.notCoded = '' }
-        if (!(mortality.otherCode in [0, 1])) { copy.otherCode = radioError } else { copy.otherCode = '' }
-        if (mortality.otherCode === 1 && !mortality.otherCodeSpecify) { copy.otherCodeSpecify = 'please specify' } else { copy.otherCodeSpecify = '' }
+        if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
+        if (mortality.haveDeathCause === 1) {
+            if (!(mortality.icd9 in [0, 1])) { copy.icd9 = radioError } else { copy.icd9 = '' }
+            if (!(mortality.icd10 in [0, 1])) { copy.icd10 = radioError } else { copy.icd10 = '' }
+            if (!(mortality.notCoded in [0, 1])) { copy.notCoded = radioError } else { copy.notCoded = '' }
+            if (!(mortality.otherCode in [0, 1])) { copy.otherCode = radioError } else { copy.otherCode = '' }
+            if (mortality.otherCode === 1 && !mortality.otherCodeSpecify) { copy.otherCodeSpecify = 'please specify' } else { copy.otherCodeSpecify = '' }
+        }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
         setErrors(copy);
@@ -50,11 +54,15 @@ const MortalityForm = ({ ...props }) => {
 
     const handleSave = () => {
 
-        if(validateInput()){
+        if (validateInput()) {
             //Complete
+            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
         }
-        else{
+        else {
             //Incomplete
+            if (window.confirm('there are validation errors, are you sure you want to save?')) {
+                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+            }
         }
     }
 
@@ -150,6 +158,23 @@ const MortalityForm = ({ ...props }) => {
                 <span>Yes</span>
             </span>
             {errors.haveDeathDate !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeathDate}</div>}
+        </div>
+
+        <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+            <label htmlFor='haveDeathCause' className='col-md-12'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+        </div>
+
+        <div className='form-group col-md-9' >
+            <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
+                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 0} onClick={() => dispatch(allactions.mortalityActions.setHaveDeathCause(0))} style={{ width: '30px' }} />
+                <span>No</span>
+            </span>
+
+            <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
+                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 1} onClick={() => dispatch(allactions.mortalityActions.setHaveDeathCause(1))} style={{ width: '30px' }} />
+                <span>Yes</span>
+            </span>
+            {errors.haveDeathCause !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeathCause}</div>}
         </div>
 
         <div className='form-group col-md-12'>

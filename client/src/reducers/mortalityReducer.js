@@ -8,6 +8,7 @@ actions[t.setDeathCertificate] = (state, action) => ({ ...state, deathCertificat
 actions[t.setOtherDeath] = (state, action) => ({ ...state, otherDeath: action.value })
 actions[t.setOtherDeathSpecify] = (state, action) => ({ ...state, otherDeathSpecify: action.value })
 actions[t.setHaveDeathDate] = (state, action) => ({ ...state, haveDeathDate: action.value })
+actions[t.setHaveDeathCause] = (state, action) => ({ ...state, haveDeathCause: action.value })
 actions[t.setIcd9] = (state, action) => ({ ...state, icd9: action.value })
 actions[t.setIcd10] = (state, action) => ({ ...state, icd10: action.value })
 actions[t.setNotCoded] = (state, action) => ({ ...state, notCoded: action.value })

@@ -7,6 +7,7 @@ const setDeathCertificate = (v) => ({type: t.setDeathCertificate, value: v})
 const setOtherDeath = (v) => ({type: t.setOtherDeath, value: v})
 const setOtherDeathSpecify = (v) => ({type: t.setOtherDeathSpecify, value: v})
 const setHaveDeathDate = (v) => ({type: t.setHaveDeathDate, value: v})
+const setHaveDeathCause = (v) => ({type: t.setHaveDeathCause, value: v})
 const setIcd9 = (v) => ({type: t.setIcd9, value: v})
 const setIcd10 = (v) => ({type: t.setIcd10, value: v})
 const setNotCoded = (v) => ({type: t.setNotCoded, value: v})
@@ -23,6 +24,7 @@ export default{
     setOtherDeath,
     setOtherDeathSpecify,
     setHaveDeathDate,
+    setHaveDeathCause,
     setIcd9,
     setIcd10,
     setNotCoded,

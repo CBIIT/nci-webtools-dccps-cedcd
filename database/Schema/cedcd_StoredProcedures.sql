@@ -1592,4 +1592,91 @@ begin
     end if;
     select row_count() as rowAffacted;
 end //
+
+DROP PROCEDURE IF EXISTS `select_mortality` //
+
+CREATE PROCEDURE `select_mortality`(in targetID int) 
+BEGIN
+	SELECT 
+		cohort_id
+		,mort_year_mortality_followup
+		,mort_death_confirmed_by_ndi_linkage
+		,mort_death_confirmed_by_death_certificate
+		,mort_death_confirmed_by_other
+		,mort_death_confirmed_by_other_specify
+		,mort_have_date_of_death
+		,mort_have_cause_of_death
+		,mort_death_code_used_icd9
+		,mort_death_code_used_icd10
+		,mort_death_not_coded
+		,mort_death_code_used_other
+		,mort_death_code_used_other_specify
+		,mort_number_of_deaths
+		,create_time
+		,update_time
+	FROM mortality WHERE cohort_id = targetID;
+end//
+
+DROP PROCEDURE if EXISTS `update_mortality` //
+
+CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
+BEGIN
+	if exists (select * from mortality where cohort_id = targetID) then 
+		update mortality set mort_year_mortality_followup = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) where cohort_id = targetID;
+		update mortality set mort_death_confirmed_by_ndi_linkage = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) where cohort_id = targetID;
+		update mortality set mort_death_confirmed_by_death_certificate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) where cohort_id = targetID;
+		update mortality set mort_death_confirmed_by_other =  JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) where cohort_id = targetID;
+		update mortality set mort_death_code_used_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) where cohort_id = targetID;
+		update mortality set mort_have_date_of_death = JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) where cohort_id = targetID;
+		update mortality set mort_have_cause_of_death = JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) where cohort_id = targetID;
+		update mortality set mort_death_code_used_icd9 = JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) where cohort_id = targetID;
+		update mortality set mort_death_code_used_icd10 = JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) where cohort_id = targetID;
+		update mortality set mort_death_not_coded = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) where cohort_id = targetID;
+		update mortality set mort_death_code_used_other = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) where cohort_id = targetID;
+		update mortality set mort_death_code_used_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) where cohort_id = targetID;
+		update mortality set mort_number_of_deaths = JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) where cohort_id = targetID;
+		update mortality set update_time = NOW() where cohort_id = targetID;
+		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = targetID and page_code = 'E';
+	else
+		insert into mortality (
+			cohort_id
+			,mort_year_mortality_followup
+			,mort_death_confirmed_by_ndi_linkage
+			,mort_death_confirmed_by_death_certificate
+			,mort_death_confirmed_by_other
+			,mort_death_confirmed_by_other_specify
+			,mort_have_date_of_death
+			,mort_have_cause_of_death
+			,mort_death_code_used_icd9
+			,mort_death_code_used_icd10
+			,mort_death_not_coded
+			,mort_death_code_used_other
+			,mort_death_code_used_other_specify
+			,mort_number_of_deaths
+			,create_time
+			,update_time
+		) values (
+			targetID
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify'))
+			,JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers'))
+			,NOW()
+			,NOW()
+		);
+		insert into cohort_edit_status (cohort_id, page_code, `status`)
+		values (targetID, 'E', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')));
+	end if;
+	select row_count() as rowAffacted;
+end //
+
 DELIMITER ;
