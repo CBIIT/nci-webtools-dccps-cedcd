@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {useSelector, useDispatch, batch} from 'react-redux'
 import allactions from '../../actions'
+import Messenger from '../Snackbar/Snackbar'
+import CenterModal from '../Modal/Modal'
 
 
 const MajorContentForm = ({...props}) => {
@@ -8,6 +10,11 @@ const MajorContentForm = ({...props}) => {
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
     const [saved, setSaved] = useState(false)
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
+    const [hasErrors, setHasErrors] = useState(false)
+    const [proceed, setProceed] = useState(false)
     const [errors, setErrors] = useState({
         seStatusBaseLine: true,
         seStatusFollowUp: true,
@@ -234,17 +241,25 @@ const MajorContentForm = ({...props}) => {
                 if(content[12].followup in [0, 1]){shadow.alcoholFollowUp = false; changed = true;}
                 if(content[13].baseline in [0, 1]){shadow.cigaretteBaseLine = false; changed = true;}
                 if(content[13].followup in [0, 1]){shadow.cigaretteFollowUp = false; changed = true;}
-                if(content[14].baseline){shadow.cigarBaseLine =false; changed = true;}
-                if(content[15].baseline){shadow.pipeBaseLine = false; changed = true;}
-                if(content[16].baseline){shadow.tobaccoBaseLine = false; changed = true;}
-                if(content[17].baseline){shadow.ecigarBaseLine = false; changed = true;}
-                if(content[18].baseline){shadow.noncigarOtherBaseLine = false; changed = true;}
+                if(content[14].baseline) {shadow.cigarBaseLine =false; changed=true;}
+                if(content[15].baseline) {shadow.pipeBaseLine =false; changed=true;}
+                if(content[16].baseline) {shadow.tobaccoBaseLine =false; changed=true;}
+                if(content[17].baseline) {shadow.ecigarBaseLine =false; changed=true;}
+                if(content[18].baseline) {shadow.noncigarOtherBaseLine =false; changed=true;}
+
+                //if(content[14].baseline || content[15].baseline || content[16].baseline || content[17].baseline || content[18].baseline)
+                //{shadow.cigarBaseLine =false; shadow.pipeBaseLine=false; shadow.tobaccoBaseLine=false; shadow.ecigarBaseLine=false; shadow.noncigarOtherBaseLine =false; changed = true;}
+                if(content[14].followup) {shadow.cigarFollowUp =false; changed=true;}
+                if(content[15].followup) {shadow.pipeFollowUp =false; changed=true;}
+                if(content[16].followup) {shadow.tobaccoFollowUp =false; changed=true;}
+                if(content[17].followup) {shadow.ecigarFollowUp =false; changed=true;}
+                if(content[18].followup) {shadow.noncigarOtherFollowUp =false; changed=true;}
+
+
                 if(content[18].other_specify_baseline){shadow.noncigarBaseLineSpecify = false; changed = true;}
-                if(content[14].followup){shadow.cigarFollowUp =false; changed = true;}
-                if(content[15].followup){shadow.pipeFollowUp = false; changed = true;}
-                if(content[16].followup){shadow.tobaccoFollowUp = false; changed = true;}
-                if(content[17].followup){shadow.ecigarFollowUp = false; changed = true;}
-                if(content[18].followup){shadow.noncigarOtherFollowUp = false; changed = true;}
+                //if(content[14].followup || content[15].followup || content[16].followup || content[17].followup || content[18].followup)
+                //{shadow.cigarFollowUp =false; shadow.pipeFollowUp = false; shadow.tobaccoFollowUp=false; shadow.ecigarFollowUp=false; shadow.noncigarOtherFollowUp=false; changed = true;}
+                
                 if(content[18].other_specify_followup){shadow.noncigarFollowUpSpecify = false; changed = true;}
                 if(content[19].baseline in [0, 1]){shadow.physicalBaseLine = false; changed = true;}
                 if(content[19].followup in [0, 1]){shadow.physicalFollowUp = false; changed = true;}
@@ -292,17 +307,20 @@ const MajorContentForm = ({...props}) => {
                 if(content[40].baseline in [0, 1]){shadow.physicalMeasureBaseLine = false; changed = true;}
                 if(content[40].followup in [0, 1]){shadow.physicalMeasureFollowUp = false; changed = true;}
 
-                if(cancerInfo.cancerToxicity){shadow.cancerToxicity = false; changed=true;}
-                if(cancerInfo.cancerSymptom){shadow.cancerSymptom = false; changed=true;}
-                if(cancerInfo.cancerLateEffects){shadow.cancerLateEffects = false; changed=true;}
-                if(cancerInfo.cancerOther){shadow.cancerOther = false; changed=true;}
+                if(cancerInfo.cancerToxicity) {shadow.cancerToxicity = false; changed = true;}
+                if(cancerInfo.cancerLateEffects) {shadow.cancerLateEffects = false; changed = true;}
+                if(cancerInfo.cancerSymptom) {shadow.cancerSymptom = false; changed = true;}
+                if(cancerInfo.cancerOther) {shadow.cancerOther = false; changed = true;}
+
+                //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
+                //{shadow.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
                 if(cancerInfo.cancerOtherSpecify){shadow.cancerOtherSpecify = false; changed = true;}
                 if(changed) setErrors(shadow)
             })//end of then
         }//end of if
     }, [])
 
-    const saveMajorContent = (id, proceed=false) => {
+    const saveMajorContent = (id, hasErrors, proceed=false) => {
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
             body: JSON.stringify(majorContent),
@@ -315,18 +333,18 @@ const MajorContentForm = ({...props}) => {
            if(result.status === 200){
                 console.log('success')
                 
-                if(Object.entries(errors).length === 0)
+                if(!hasErrors)
                     dispatch(allactions.sectionActions.setSectionStatus('C', 'complete'))
                 else{
                     dispatch(allactions.sectionActions.setSectionStatus('C', 'incomplete'))
                 }
 
                 if(!proceed)
-                    alert('Data was successfully saved')
+                    setSuccessMsg(true)
                 else
                     props.sectionPicker('D')
             }else{
-                alert(result.message) 
+                setFailureMsg(true)
             }
            
         })
@@ -334,39 +352,55 @@ const MajorContentForm = ({...props}) => {
 
     const handleSave = () => {
         setSaved(true)
-        let hasErrors = false
-        for(let k of Object.keys(errors)){ hasErrors |= errors[k]}
-        if(!hasErrors){
+        let errorsRemain = false;
+        for(let k of Object.keys(errors)) errorsRemain |= errors[k]
+        errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) 
+        setHasErrors(errorsRemain)
+        if(!errorsRemain){
             majorContent.sectionCStatus='complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79)
+            saveMajorContent(79, hasErrors)
         }
         else{
-            //setDisplay('block')
-            if(window.confirm('there are validation errors, are you sure to save?')){
-                majorContent.sectionCStatus='incomplete'
-                dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(79)
-            }
+            setModalShow(true)
+            setProceed(false)
         }
     }
 
     const handleSaveContinue = () => {
-        if(Object.entries(errors).length === 0){
+        setSaved(true)
+        let errorsRemain = false;
+        for(let k of Object.keys(errors)) errorsRemain |= errors[k]
+        setHasErrors(errorsRemain)
+        if(!errorsRemain){
             majorContent.sectionCStatus='complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79, true)
+            saveMajorContent(79, true, true)
         }
         else{
-            if(window.confirm('there are validation errors, are you sure to save?')){
-                majorContent.sectionAStatus='incomplete'
-                dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(79, true)
+            setModalShow(true)
+            setProceed(true)
             }
-        }
+    }
+
+    const confirmSaveStay = () => {
+        console.log('confirm save and stay')
+        majorContent.sectionCStatus='incomplete'
+        dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'));
+        saveMajorContent(79, hasErrors);setModalShow(false)
+    }
+
+    const confirmSaveContinue = () => {
+        console.log('confirm save and continue')
+        majorContent.sectionAStatus='incomplete'
+        dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
+        saveMajorContent(79, hasErrors, true);setModalShow(false)
     }
 
     return <div className='col-md-12'>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg}/>}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
         <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>           
             <div style={{marginTop: '20px', marginBottom: '20px'}}>
                 <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
@@ -571,7 +605,7 @@ const MajorContentForm = ({...props}) => {
                                             <span className='col-sm-8'>
                                                 <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
                                                 <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                    <input name='noncigarBaseLineSpecify' className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value));; setErrors({...errors, noncigarBaseLineSpecify: !e.target.value})}} />
+                                                    <input name='noncigarBaseLineSpecify' style={{width: '200%'}} className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value));; setErrors({...errors, noncigarBaseLineSpecify: !e.target.value})}} />
                                                 </span>
                                             </span> : ''
                                         }
@@ -608,7 +642,7 @@ const MajorContentForm = ({...props}) => {
                                             <div className='col-sm-8'>
                                                 <span className='col-sm-1' style={{paddingLeft: '0'}}></span>
                                                 <span className='col-sm-10' style={{fontSize: '1.4rem'}}>
-                                                    <input name='noncigarFollowUpSpecify' className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)); setErrors({...errors, noncigarFollowUpSpecify: !e.target.value})}} />
+                                                    <input name='noncigarFollowUpSpecify'  style={{width: '200%'}} className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onChange={e=>{dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)); setErrors({...errors, noncigarFollowUpSpecify: !e.target.value})}} />
                                                 </span>
                                             </div> : ''
                                         }   
@@ -898,13 +932,13 @@ const MajorContentForm = ({...props}) => {
                                             <div><span>Do you have information on the following cancer related conditions?<span style={{color: 'red'}}>*</span></span></div>
                                             <div className='col-sm-12'>
                                                 <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerToxicity === 1} onChange={
-                                                    e => {dispatch(allactions.majorContentActions.setCancerToxicity(e.target.checked ? 1 : 0)); setErrors({...errors, cancerToxicity: !e.target.checked})}
-                                                }/></span>
+                                                    e => {dispatch(allactions.majorContentActions.setCancerToxicity(e.target.checked ? 1 : 0)); setErrors({...errors, cancerToxicity: !e.target.checked})
+                                                }}/></span>
                                                 <span className='col-sm-7' style={{padding: '0', margin: '0'}}>Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
                                             </div>
                                             <div className='col-sm-12'>
                                                 <span className='col-sm-1' style={{padding: '0', margin: '0', width: '40px'}}><input type='checkbox' checked={majorContent.cancerLateEffects === 1} onChange={
-                                                    e => {dispatch(allactions.majorContentActions.setCancerLateEffects(e.target.checked ? 1 : 0));setErrors({...errors, cancerLateEffects: !e.target.checked})}
+                                                    e => {dispatch(allactions.majorContentActions.setCancerLateEffects(e.target.checked ? 1 : 0)); setErrors({...errors, cancerLateEffects: !e.target.checked})}
                                                 }/></span>
                                                 <span className='col-sm-7' style={{paddingLeft: '0'}}>Late effects of treatment (e.g., cardiotoxicity, lymphedema)</span>
                                             </div>

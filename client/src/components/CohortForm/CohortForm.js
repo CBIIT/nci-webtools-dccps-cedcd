@@ -593,7 +593,7 @@ const CohortForm = ({...props}) => {
                                         <input type='checkbox' name='cancerSurvivors' checked={cohort.hasCancerSite} onChange={() => dispatch(allactions.cohortActions.eligible_disease())} />{' '} Cancer survivors only, specify cancer site(s)
                                     </div>
                                     <div className='col-md-6' style={{marginBottom: '20px'}}>
-                                        <input name='cancerSites' className='form-control' value={cohort.cancerSites} maxlength='100' placeholder='no more than 100 characters' disabled={!cohort.hasCancerSite} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
+                                        <input name='cancerSites' className='form-control' value={cohort.cancerSites} maxLength='100' placeholder='no more than 100 characters' disabled={!cohort.hasCancerSite} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
                                     </div>
                                     <div className='col-md-12'  style={{paddingLeft: '0', paddingRight: '0'}}>
                                         <div style={{marginBottom: '5px'}}>Please specify any eligibility criteria in addition to age and sex</div>
