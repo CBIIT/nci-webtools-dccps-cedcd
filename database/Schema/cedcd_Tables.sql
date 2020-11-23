@@ -42,10 +42,10 @@ CREATE TABLE `lu_cancer` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_category`;
+DROP TABLE IF EXISTS `lu_person_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_category` (
+CREATE TABLE `lu_person_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -434,7 +434,7 @@ CREATE TABLE `person` (
   PRIMARY KEY (`id`),
   KEY `person_cohort_id_idx` (`cohort_id`),
   KEY `person_category_id_idx` (`category_id`),
-  CONSTRAINT `person_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `person_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_person_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `person_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -758,12 +758,12 @@ insert into lu_ethnicity(id, ethnicity) values (2, "Hispanic or Latino");
 insert into lu_ethnicity(id, ethnicity) values (3, "Unknown/Not Reported Ethnicity");
 
 /*
- Generate data for lookup table lu_category
+ Generate data for lookup table lu_person_category
  */
-insert into lu_category(id, category) values (1, "Person who completed the form");
-insert into lu_category(id, category) values (2, "Contact Person for clarification of the form");
-insert into lu_category(id, category) values (3, "Cohort Principal Investigator");
-insert into lu_category(id, category) values (4, "Person to contact if an investigator is interested");
+insert into lu_person_category(id, category) values (1, "Person who completed the form");
+insert into lu_person_category(id, category) values (2, "Contact Person for clarification of the form");
+insert into lu_person_category(id, category) values (3, "Cohort Principal Investigator");
+insert into lu_person_category(id, category) values (4, "Person to contact if an investigator is interested");
 
 /*
 Generate default users 

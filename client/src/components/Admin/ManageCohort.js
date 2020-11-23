@@ -284,7 +284,7 @@ class ManageCohort extends Component {
 		let content = list.map((item, index) => {
 			let id = item.id;
 			let view_url = '/cohort?id=' + id;
-			let review_url = '/cohort/questionnaire';
+			let review_url = '/admin/viewcohort/' + id;
 			let view = "View";
 			let review = "Review";
 
@@ -293,9 +293,9 @@ class ManageCohort extends Component {
 				return (
 					<tr key={id}>
 						<td>
-							<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{item.name}</Link>
 						</td>
-						<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
+						<td><Link to={review_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
 						<td class="text-capitalize">{item.status}</td>
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>

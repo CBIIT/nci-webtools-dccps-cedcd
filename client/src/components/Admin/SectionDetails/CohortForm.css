@@ -1,0 +1,44 @@
+.accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding: 18px;
+    margin-bottom: 10px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+
+.active, .accordion:hover {
+    background-color: #ccc;
+    color: blue;
+}
+
+
+.accordion:hover > span {
+    border-bottom: 1px solid blue;
+}
+
+.panellet {
+    padding: 0 18px;
+    background-color: white;
+    display: none;
+    overflow: hidden;
+}
+
+.panel-active {
+    padding: 0 18px;
+    background-color: white;
+    display: block;
+    overflow: hidden;
+}
+
+.errorBackground {
+    background-color: #f66;
+}
+
+.react-datepicker__input-container input {
+    width: 342px;
+ }
