@@ -1,0 +1,8 @@
+.react-datepicker__input-container input {
+    width: 300px;
+ }
+
+ .errorDate,
+ .react-datepicker__day--today {
+   border: 1px solid red;
+ }

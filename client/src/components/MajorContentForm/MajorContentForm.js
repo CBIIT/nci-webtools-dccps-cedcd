@@ -116,7 +116,6 @@ const MajorContentForm = ({...props}) => {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
-                console.dir(result)
                 let content = result.data.counts
                 let cancerInfo = result.data.cancerInfo
                 let shadow = {...errors}
@@ -329,10 +328,7 @@ const MajorContentForm = ({...props}) => {
             }
         }).then(res => res.json())
         .then(result => {
-            console.log(result.status)
-           if(result.status === 200){
-                console.log('success')
-                
+           if(result.status === 200){               
                 if(!hasErrors)
                     dispatch(allactions.sectionActions.setSectionStatus('C', 'complete'))
                 else{
@@ -384,14 +380,12 @@ const MajorContentForm = ({...props}) => {
     }
 
     const confirmSaveStay = () => {
-        console.log('confirm save and stay')
         majorContent.sectionCStatus='incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'));
         saveMajorContent(79, hasErrors);setModalShow(false)
     }
 
     const confirmSaveContinue = () => {
-        console.log('confirm save and continue')
         majorContent.sectionAStatus='incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
         saveMajorContent(79, hasErrors, true);setModalShow(false)
