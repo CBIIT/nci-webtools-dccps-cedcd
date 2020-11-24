@@ -93,7 +93,7 @@ const CohortForm = ({ ...props }) => {
                                 <p style={{ fontSize: '16px' }}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='10' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.description} /></span>
+                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='15' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.description} /></span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
@@ -111,30 +111,29 @@ const CohortForm = ({ ...props }) => {
                                     <DatePicker className='form-control' selected={new Date(cohort.completionDate)} dateFormat='MM/dd/yyyy' readOnly />
                                 </span>
                             </div>
-                            <div id='question3' className='col-md-12' style={{ display: 'flex', flexDirection: 'column', paddingBottom: '10px' }}>
-                                <label className='col-md-4' style={{ paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em' }}>A.3 </label>
-                                <div id='a3a' className='col-md-8' style={{ paddingLeft: '0', marginBottom: '25px' }} readOnly>
-                                    <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.3a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
-                                    {<Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' displayStyle={displayStyle} />
-                                    } </div>
-                                <div id='a3b' className='col-md-12'>
-                                    <div style={{ marginBottom: '5px' }}><b>A.3b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
-                                    <div style={{ marginBottom: '40px' }}>
-                                        <span className='col-md-6' style={{ marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
-                                        <span className='col-md-1' style={{ paddingLeft: '0', marginLeft: '0' }}><input type='radio' name='contacterRight' checked={cohort.contacterRight === 0} />{' '}No</span>
-                                        <span className='col-md-1' style={{ paddingLeft: '0' }}><input type='radio' name='contacterRight' checked={cohort.contacterRight === 1} />{' '}Yes</span>
-                                    </div>
-                                    <div id='contacterInfo' className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        {
-                                            cohort.contacterRight === 0 ?
-                                                <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' displayStyle={displayStyle} leftPadding='0' /> : ''
-                                        }
-                                    </div>
+                        </div>
+                        <div id='question3' className='col-md-12' style={{ display: 'flex', flexDirection: 'column', paddingBottom: '10px' }}>
+                            <div id='a3a' className='col-md-8' style={{ paddingLeft: '0', marginBottom: '25px' }} readOnly>
+                                <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.3a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
+                                {<Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' displayStyle={displayStyle} />
+                                } </div>
+                            <div id='a3b' className='col-md-12'>
+                                <div style={{ marginBottom: '5px' }}><b>A.3b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
+                                <div style={{ marginBottom: '40px' }}>
+                                    <span className='col-md-6' style={{ marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
+                                    <span className='col-md-1' style={{ paddingLeft: '0', marginLeft: '0' }}><input type='radio' name='contacterRight' checked={cohort.contacterRight === 0} />{' '}No</span>
+                                    <span className='col-md-1' style={{ paddingLeft: '0' }}><input type='radio' name='contacterRight' checked={cohort.contacterRight === 1} />{' '}Yes</span>
+                                </div>
+                                <div id='contacterInfo' className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    {
+                                        cohort.contacterRight === 0 ?
+                                            <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' displayStyle={displayStyle} leftPadding='0' /> : ''
+                                    }
                                 </div>
                             </div>
                         </div>
-                        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}><span>Principal Investigators</span></div>
                     </div>
+                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}><span>Principal Investigators</span></div>
                     <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
                         <div id='question4' className='col-md-12' style={{ paddingTop: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '10px' }}>
@@ -484,7 +483,7 @@ const CohortForm = ({ ...props }) => {
                     </span>
                 </div>
             </div>
-        </div>
+        </div >
     </div >
 
 }
