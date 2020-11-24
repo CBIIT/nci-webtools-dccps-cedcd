@@ -1,6 +1,6 @@
 import t from '../actionTypes'
 
-const setHasLodaded = (v) => ({type: t.setMortalityLoaded, value: v})
+const setHasLoaded = (v) => ({type: t.setMortalityLoaded, value: v})
 const setMortalityYear = (v) => ({type: t.setMortalityYear, value: v})
 const setDeathIndex = (v) => ({type: t.setDeathIndex, value: v})
 const setDeathCertificate = (v) => ({type: t.setDeathCertificate, value: v})
@@ -17,7 +17,7 @@ const setDeathNumbers = (v) => ({type: t.setDeathNumbers, value: v})
 const setSectionEStatus = (v) => ({type: t.setSectionEStatus, value: v})
 
 export default{
-    setHasLodaded,
+    setHasLoaded,
     setMortalityYear,
     setDeathIndex,
     setDeathCertificate,
