@@ -16,101 +16,6 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
-    /*
-    const [errors, setErrors] = useState({
-        seStatusBaseLine: true,
-        seStatusFollowUp: true,
-        educationBaseLine: true,
-        educationFollowUp: true,
-        maritalStatusBaseLine: true,
-        maritalStatusFollowUp: true,
-        originBaseLine: true,
-        originFollowUp: true,
-        empStatusBaseLine: true,
-        empStatusFollowUp: true,
-        insuranceStatusBaseLine: true,
-        insuranceStatusFollowUp: true,
-        anthropometryBaseLine: true,
-        anthropometryFollowUp: true,
-        dietaryBaseLine: true,
-        dietaryFollowUp: true,
-        supplementBaseLine: true,
-        supplementFollowUp: true,
-        medicineBaseLine: true,
-        medicineFollowUp: true,
-        prescriptionBaseLine: true,
-        prescriptionFollowUp: true,
-        nonprescriptionBaseLine: true,
-        nonprescriptionFollowUp: true,
-        alcoholBaseLine: true,
-        alcoholFollowUp: true,
-        cigaretteBaseLine: true,
-        cigaretteFollowUp: true,
-
-        cigarBaseLine: true,
-        cigarFollowUp: true,
-        pipeBaseLine: true,
-        pipeFollowUp: true,
-        tobaccoBaseLine: true,
-        tobaccoFollowUp: true,
-        ecigarBaseLine: true,
-        ecigarFollowUp: true,
-        noncigarOtherBaseLine: true,
-        noncigarOtherFollowUp: true,
-
-        noncigarBaseLineSpecify: true,
-        noncigarFollowUpSpecify: true,
-        physicalBaseLine: true,
-        physicalFollowUp: true,
-        sleepBaseLine: true,
-        sleepFollowUp: true,
-        reproduceBaseLine: true,
-        reproduceFollowUp: true,
-        reportedHealthBaseLine: true,
-        reportedHealthFollowUp: true,
-        lifeBaseLine: true,
-        lifeFollowUp: true,
-        socialSupportBaseLine: true,
-        socialSupportFollowUp: true,
-        cognitionBaseLine: true,
-        cognitionFollowUp: true,
-        depressionBaseLine: true,
-        depressionFollowUp: true,
-        psychosocialBaseLine: true,
-        psychosocialFollowUp: true,
-        fatigueBaseLine: true,
-        fatigueFollowUp: true,
-        cancerHistoryBaseLine: true,
-        cancerHistoryFollowUp: true,
-        cancerPedigreeBaseLine: true,
-        cancerPedigreeFollowUp: true,
-        physicalMeasureBaseLine: true,
-        physicalMeasureFollowUp: true,
-        exposureBaseLine: true,
-        exposureFollowUp: true,
-        residenceBaseLine: true,
-        residenceFollowUp: true,
-        diabetesBaseLine: true,
-        diabetesFollowUp: true,
-        strokeBaseLine: true,
-        strokeFollowUp: true,
-        copdBaseLine: true,
-        copdFollowUp: true,
-        cardiovascularBaseLine: true,
-        cardiovascularFollowUp: true,
-        osteoporosisBaseLine: true,
-        osteoporosisFollowUp: true,
-        mentalBaseLine: true,
-        mentalFollowUp: true,
-        cognitiveDeclineBaseLine: true,
-        cognitiveDeclineFollowUp: true,
-        cancerToxicity: true,
-        cancerLateEffects: true,
-        cancerSymptom: true,
-        cancerOther: true,
-        cancerOtherSpecify: true
-    })
-*/
 
     useEffect(() => {
         if (!majorContent.hasLoaded) {
@@ -120,8 +25,7 @@ const MajorContentForm = ({ ...props }) => {
                 .then(result => {
                     let content = result.data.counts
                     let cancerInfo = result.data.cancerInfo
-                    let shadow = { ...errors }
-                    let changed = false
+                    
                     batch(() => {
                         dispatch(allactions.majorContentActions.setSeStatusBaseLine(content[0].baseline))
                         dispatch(allactions.majorContentActions.setSeStatusFollowUp(content[0].followup))
@@ -352,6 +256,7 @@ const MajorContentForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
+        console.dir(errors)
         let errorsRemain = false;
         for (let k of Object.keys(errors)) errorsRemain |= errors[k]
         errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
