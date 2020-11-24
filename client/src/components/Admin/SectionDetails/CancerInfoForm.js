@@ -449,13 +449,8 @@ const CancerInfoForm = ({ ...props }) => {
                     <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'left' }}>
                         <input type='button' className='btn btn-primary' value='Go Back' />
                     </span>
-                    <span style={{ position: 'relative', float: 'right' }}>
-                        <span onClick={handleSave}>
-                            <input type='button' className='btn btn-primary' value='Save' />
-                        </span>
-                        <span onClick={handleSaveContinue}>
-                            <input type='button' className='btn btn-primary' value='Save & Continue' />
-                        </span>
+                    <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'Right' }}>
+                        <input type='button' className='btn btn-primary' value='Next' />
                     </span>
                 </div>
             </div>
