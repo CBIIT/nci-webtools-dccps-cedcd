@@ -223,6 +223,9 @@ const InitialStates ={
         'mostRecentDate': '2020-10-12T05:00:00.000Z',
         'sectionBStatus': ''
     },
+    enrollmentCountErrors: {
+        mostRecentDate: 'please provide a value'
+    }, 
     majorContent: {
         'hasLoaded': false,
         'seStatusBaseLine': null,

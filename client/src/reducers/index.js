@@ -6,7 +6,8 @@ import majorContentReducer from './majorContentReducer'
 import cancerInfoReducer from './cancerInfoReducer'
 import mortalityReducer from './mortalityReducer'
 import cohortErrorReducer from './cohortErrorReducer'
+import enrollmentCountErrorReducer from './enrollmentCountErrorReducer'
 import majorContentErrorReducer from './majorContentErrorReducer'
-const rootReducer = combineReducers({cohortReducer, enrollmentCountsReducer, majorContentReducer, cancerInfoReducer, mortalityReducer, cohortErrorReducer, majorContentErrorReducer, sectionReducer});
+const rootReducer = combineReducers({cohortReducer, enrollmentCountsReducer, majorContentReducer, cancerInfoReducer, mortalityReducer, cohortErrorReducer, enrollmentCountErrorReducer, majorContentErrorReducer, sectionReducer});
 
 export default rootReducer
