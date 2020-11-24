@@ -78,17 +78,16 @@ const CohortForm = ({...props}) => {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
-                let currentCohort = result.data.cohort, changed = false,
-                 investigators = result.data.investigators.length > 0 ?  result.data.investigators : cohort.investigators, startChange = false,
+                let currentCohort = result.data.cohort,
+                 investigators = result.data.investigators.length > 0 ?  result.data.investigators : cohort.investigators,
                     completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator
-                for(let i=0; i < investigators.length; i++){
-                    shadow['investigator_name_'+i] = errorMsg
-                    shadow['investigator_inst_'+i] = errorMsg
-                    shadow['investigator_email_'+i] = errorMsg
-                    startChange = true
-                }
-                if(startChange) setErrors(shadow)
+                
                 batch(() =>{
+                    for(let i=0; i < investigators.length; i++){ //first add errors dynamically, to be removed later
+                        dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
+                        dispatch(allactions.cohortErrorActions.investigatorInsitution(i, false, errorMsg))
+                        dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
+                    }
                     for(let k of Object.keys(currentCohort)){
                         dispatch(allactions.cohortActions[k](currentCohort[k]))
                     }
@@ -122,46 +121,46 @@ const CohortForm = ({...props}) => {
                 }) 
                 
                 //if(cohort.cohort_name) {delete shadow.cohortName; changed=true}
-                if(currentCohort.completionDate) {delete shadow.completionDate; changed = true}
-                if(currentCohort.clarification_contact in [0,1]) {delete shadow.clarification_contact; changed=true}
-                if(currentCohort.data_collected_other !== 1) {delete shadow.data_collected_other_specify; changed=true}
-                if(currentCohort.restrictOther !== 1) {delete shadow.restrictions_other_specify; changed=true}
-                if(currentCohort.enrollment_total) {delete shadow.enrollment_total; changed=true}
-                if(currentCohort.enrollment_year_start) {delete shadow.enrollment_year_start; changed=true}
-                if(currentCohort.enrollment_year_end) {delete shadow.enrollment_year_end; changed=true}
-                if(currentCohort.enrollment_ongoing in [0, 1]) {delete shadow.enrollment_ongoing; changed=true}
-                if(currentCohort.enrollment_ongoing === 0) { delete shadow.enrollment_target; delete shadow.enrollment_year_complete; changed=true }
-                if(currentCohort.enrollment_age_min) {delete shadow.enrollment_age_min; changed=true}
-                if(currentCohort.enrollment_age_max) {delete shadow.enrollment_age_max; changed=true}
-                if(currentCohort.enrollment_age_mean) {delete shadow.enrollment_age_mean; changed=true}
-                if(currentCohort.enrollment_age_median) {delete shadow.enrollment_age_median; changed=true}
-                if(currentCohort.current_age_min) {delete shadow.current_age_min; changed=true}
-                if(currentCohort.current_age_max) {delete shadow.current_age_max; changed=true}
-                if(currentCohort.current_age_mean) {delete shadow.current_age_mean; changed=true}
-                if(currentCohort.current_age_median) {delete shadow.current_age_median; changed=true}
-                if(currentCohort.time_interval) {delete shadow.time_interval; changed=true}
-                if(currentCohort.most_recent_year) {delete shadow.most_recent_year; changed = true}
-                if(currentCohort.strategy_other !== 1) {delete shadow.strategy_other_specify; changed=true}
-                if(currentCohort.eligible_gender_id in [4, 2, 1]) {delete shadow.eligible_gender_id; changed=true}
-                if(currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {delete shadow.dataCollection; changed=true}
+                if(currentCohort.completionDate) {dispatch(allactions.cohortErrorActions.completionDate(true))}
+                if(currentCohort.clarification_contact in [0,1]) {dispatch(allactions.cohortErrorActions.clarification_contact(true))}
+                if(currentCohort.data_collected_other !== 1) {dispatch(allactions.cohortErrorActions.data_collected_other_specify(true))}
+                if(currentCohort.restrictOther !== 1) {dispatch(allactions.cohortErrorActions.enrollment_total(true))}
+                if(currentCohort.enrollment_total) {dispatch(allactions.cohortErrorActions.enrollment_year_start(true))}
+                if(currentCohort.enrollment_year_start) {dispatch(allactions.cohortErrorActions.enrollment_year_end(true))}
+                if(currentCohort.enrollment_year_end) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
+                if(currentCohort.enrollment_ongoing in [0, 1]) {dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))}
+                if(currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
+                if(currentCohort.enrollment_age_min) {dispatch(allactions.cohortErrorActions.enrollment_age_min(true))}
+                if(currentCohort.enrollment_age_max) {dispatch(allactions.cohortErrorActions.enrollment_age_max(true))}
+                if(currentCohort.enrollment_age_mean) {dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))}
+                if(currentCohort.enrollment_age_median) {dispatch(allactions.cohortErrorActions.enrollment_age_median(true))}
+                if(currentCohort.current_age_min) {dispatch(allactions.cohortErrorActions.current_age_min(true))}
+                if(currentCohort.current_age_max) {dispatch(allactions.cohortErrorActions.current_age_max(true))}
+                if(currentCohort.current_age_mean) {dispatch(allactions.cohortErrorActions.current_age_mean(true))}
+                if(currentCohort.current_age_median) {dispatch(allactions.cohortErrorActions.current_age_median(true))}
+                if(currentCohort.time_interval) {dispatch(allactions.cohortErrorActions.time_interval(true))}
+                if(currentCohort.most_recent_year) {dispatch(allactions.cohortErrorActions.most_recent_year(true))}
+                if(currentCohort.strategy_other !== 1) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
+                if(currentCohort.eligible_gender_id in [4, 2, 1]) {dispatch(allactions.cohortErrorActions.eligible_gender_id(true))}
+                if(currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {dispatch(allactions.cohortErrorActions.dataCollection(true))}
                 //if(currentCohort.collectedOtherSpecify){delete shadow.collectedOtherSpecify; changed = true}
-                if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {delete shadow.requirements; changed=true}
-                if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {delete shadow.strategy; changed=true}
+                if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.requirements(true))}
+                if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy(true))}
                 //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                if(completer && completer.completerName) {delete shadow.completerName; changed=true}
-                if(completer && completer.completerPosition) {delete shadow.completerPosition; changed=true}
-                if(completer && completer.completerEmail) {delete shadow.completerEmail; changed=true}
-                if(contacter && contacter.contacterName) {delete shadow.contacterName; changed=true}
-                if(contacter && contacter.contacterPosition) {delete shadow.contacterPosition; changed=true}
-                if(contacter && contacter.contacterEmail) {delete shadow.contacterEmail; changed=true}
+                if(completer && completer.completerName) {dispatch(allactions.cohortErrorActions.completerName(true))}
+                if(completer && completer.completerPosition) {dispatch(allactions.cohortErrorActions.completerPosition(true))}
+                if(completer && completer.completerEmail) {dispatch(allactions.cohortErrorActions.completerEmail(true))}
+                if(contacter && contacter.contacterName) {dispatch(allactions.cohortErrorActions.contacterName(true))}
+                if(contacter && contacter.contacterPosition) {dispatch(allactions.cohortErrorActions.contacterPosition(true))}
+                if(contacter && contacter.contacterEmail) {dispatch(allactions.cohortErrorActions.contacterEmail(true))}
 
-                if(contacter && collaborator.collaboratorName) {delete shadow.collaboratorName; changed=true}
-                if(contacter && collaborator.collaboratorPosition) {delete shadow.collaboratorPosition; changed=true}
-                if(contacter && collaborator.collaboratorEmail) {delete shadow.collaboratorEmail; changed=true}
+                if(contacter && collaborator.collaboratorName) {dispatch(allactions.cohortErrorActions.collaboratorName(true))}
+                if(contacter && collaborator.collaboratorPosition) {dispatch(allactions.cohortErrorActions.collaboratorPosition(true))}
+                if(contacter && collaborator.collaboratorEmail) {dispatch(allactions.cohortErrorActions.collaboratorEmail(true))}
 
                 for(let i=0; i < investigators.length; i++){
-                    if(investigators[i].name){delete shadow['investigator_name_'+i]; changed=true}
-                    if(investigators[i].institution){delete shadow['investigator_inst_'+i]; changed=true}
+                    if(investigators[i].name){dispatch(allactions.cohortErrorActions.investigatorName(i, true))}
+                    if(investigators[i].institution){dispatch(allactions.cohortErrorActions.investigatorName(i, true))}
                     if(investigators[i].email){delete shadow['investigator_email_'+i]; changed=true}
                 }
                 

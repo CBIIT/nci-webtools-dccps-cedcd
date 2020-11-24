@@ -212,7 +212,7 @@ const MajorContentForm = ({...props}) => {
                     dispatch(allactions.majorContentActions.setHasLoaded(true))
                 })//end of batch
 
-                if(content[0].baseline in [0, 1]){shadow.seStatusBaseLine = false; changed = true;}
+                if(content[0].baseline in [0, 1]){dispatch(allactions.majorContentErrorActions(true))}
                 if(content[0].followup in [0, 1]){shadow.seStatusFollowUp = false; changed = true;}
                 if(content[1].baseline in [0, 1]){shadow.educationBaseLine = false; changed = true;}
                 if(content[1].followup in [0, 1]){shadow.educationFollowUp = false; changed = true;}

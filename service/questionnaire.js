@@ -62,6 +62,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
         })
         basic_info.collaborator = results[4][0]
         basic_info.sectionStatus = results[5]
+
         res.json({status:200, data: basic_info})
     })
 })
