@@ -15,6 +15,7 @@ import './CohortForm.css'
 const CohortForm = ({...props}) => {
     const cohort = useSelector(state => state.cohortReducer)
     const section = useSelector(state => state.sectionReducer)
+    const errors = useSelector(state => state.cohortErrorReducer)
     const dispatch = useDispatch()
 
     const errorMsg = 'please provide a value'
@@ -24,51 +25,7 @@ const CohortForm = ({...props}) => {
     const [modalShow, setModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
-    const [errors, setErrors] = useState(() => ({
-       // cohort_name: errorMsg,
-        completionDate: errorMsg,
-        clarification_contact: 'please choose one',
-        data_collected_other_specify: 'please specify',
-        completerName: errorMsg,
-        completerPosition: errorMsg,
-        completerEmail: errorMsg,
-        contacterName: errorMsg,
-        contacterPosition: errorMsg,
-        contacterEmail: errorMsg,
-        collaboratorName: errorMsg,
-        collaboratorPosition: errorMsg,
-        collaboratorEmail: errorMsg,
-        eligible_gender_id: 'please select one',
-        enrollment_ongoing: 'please select one',
-        enrollment_total: errorMsg,
-        enrollment_year_start: errorMsg,
-        enrollment_year_end: errorMsg,
-        enrollment_ongoing: 'please select one',
-        enrollment_target: 'please specify',
-        enrollment_year_complete: 'please specify',
-        enrollment_age_min: cohort.enrollment_age_min === '' ? 'please specify' :  cohort.enrollment_age_min <= 0 ? 'invalid age value' : '',
-        enrollment_age_max: cohort.enrollment_age_max === '' ? 'please specify' :  cohort.enrollment_age_max <= 0 ? 'invalid age value' : '',
-        enrollment_age_mean: cohort.enrollment_age_mean === '' ? 'please specify' :  cohort.enrollment_age_mean <= 0 ? 'invalid age value' : '',
-        enrollment_age_median: cohort.enrollment_age_median === '' ? 'please specify' :  cohort.enrollment_age_median <= 0 ? 'invalid age value' : '',
-        current_age_min: cohort.current_age_min === '' ? 'please specify' :  cohort.current_age_min <= 0 ? 'invalid age value' : '',
-        current_age_max: cohort.current_age_max === '' ? 'please specify' :  cohort.current_age_max <= 0 ? 'invalid age value' : '',
-        current_age_mean: cohort.current_age_mean === '' ? 'please specify' :  cohort.current_age_mean <= 0 ? 'invalid age value' : '',
-        current_age_median: cohort.current_age_median === '' ? 'please specify' :  cohort.current_age_median <= 0 ? 'invalid age value' : '',
-        time_interval: errorMsg,
-        most_recent_year: errorMsg,
-        dataCollection: 'please select at least one value',
-        requirements: 'please select at least one value', 
-        strategy: 'please select at least one value', 
-        data_collected_other_specify: 'please specify', 
-        restrictions_other_specify: 'please specify', 
-        strategy_other_specify: 'please specify', 
-        questionnaire: false, 
-        main: false, 
-        data: false, 
-        specimen: false, 
-        publication: false
-    }))
-
+   
     const [activePanel, setActivePanel] = useState('panelA')
 
     useEffect(() => {
@@ -117,54 +74,54 @@ const CohortForm = ({...props}) => {
                         dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                     }
                     if(investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
-                    dispatch(allactions.cohortActions.setHasLoaded(true))
-                }) 
+                    
+                
                 
                 //if(cohort.cohort_name) {delete shadow.cohortName; changed=true}
-                if(currentCohort.completionDate) {dispatch(allactions.cohortErrorActions.completionDate(true))}
-                if(currentCohort.clarification_contact in [0,1]) {dispatch(allactions.cohortErrorActions.clarification_contact(true))}
-                if(currentCohort.data_collected_other !== 1) {dispatch(allactions.cohortErrorActions.data_collected_other_specify(true))}
-                if(currentCohort.restrictOther !== 1) {dispatch(allactions.cohortErrorActions.enrollment_total(true))}
-                if(currentCohort.enrollment_total) {dispatch(allactions.cohortErrorActions.enrollment_year_start(true))}
-                if(currentCohort.enrollment_year_start) {dispatch(allactions.cohortErrorActions.enrollment_year_end(true))}
-                if(currentCohort.enrollment_year_end) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
-                if(currentCohort.enrollment_ongoing in [0, 1]) {dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))}
-                if(currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
-                if(currentCohort.enrollment_age_min) {dispatch(allactions.cohortErrorActions.enrollment_age_min(true))}
-                if(currentCohort.enrollment_age_max) {dispatch(allactions.cohortErrorActions.enrollment_age_max(true))}
-                if(currentCohort.enrollment_age_mean) {dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))}
-                if(currentCohort.enrollment_age_median) {dispatch(allactions.cohortErrorActions.enrollment_age_median(true))}
-                if(currentCohort.current_age_min) {dispatch(allactions.cohortErrorActions.current_age_min(true))}
-                if(currentCohort.current_age_max) {dispatch(allactions.cohortErrorActions.current_age_max(true))}
-                if(currentCohort.current_age_mean) {dispatch(allactions.cohortErrorActions.current_age_mean(true))}
-                if(currentCohort.current_age_median) {dispatch(allactions.cohortErrorActions.current_age_median(true))}
-                if(currentCohort.time_interval) {dispatch(allactions.cohortErrorActions.time_interval(true))}
-                if(currentCohort.most_recent_year) {dispatch(allactions.cohortErrorActions.most_recent_year(true))}
-                if(currentCohort.strategy_other !== 1) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
-                if(currentCohort.eligible_gender_id in [4, 2, 1]) {dispatch(allactions.cohortErrorActions.eligible_gender_id(true))}
-                if(currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {dispatch(allactions.cohortErrorActions.dataCollection(true))}
-                //if(currentCohort.collectedOtherSpecify){delete shadow.collectedOtherSpecify; changed = true}
-                if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.requirements(true))}
-                if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy(true))}
-                //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                if(completer && completer.completerName) {dispatch(allactions.cohortErrorActions.completerName(true))}
-                if(completer && completer.completerPosition) {dispatch(allactions.cohortErrorActions.completerPosition(true))}
-                if(completer && completer.completerEmail) {dispatch(allactions.cohortErrorActions.completerEmail(true))}
-                if(contacter && contacter.contacterName) {dispatch(allactions.cohortErrorActions.contacterName(true))}
-                if(contacter && contacter.contacterPosition) {dispatch(allactions.cohortErrorActions.contacterPosition(true))}
-                if(contacter && contacter.contacterEmail) {dispatch(allactions.cohortErrorActions.contacterEmail(true))}
+                    if(currentCohort.completionDate) {dispatch(allactions.cohortErrorActions.completionDate(true))}
+                    if(currentCohort.clarification_contact in [0,1]) {dispatch(allactions.cohortErrorActions.clarification_contact(true))}
+                    if(currentCohort.data_collected_other !== 1) {dispatch(allactions.cohortErrorActions.data_collected_other_specify(true))}
+                    if(currentCohort.restrictOther !== 1) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
+                    if(currentCohort.enrollment_total) {dispatch(allactions.cohortErrorActions.enrollment_total(true))}
+                    if(currentCohort.enrollment_year_start) {dispatch(allactions.cohortErrorActions.enrollment_year_start(true))}
+                    if(currentCohort.enrollment_year_end) {dispatch(allactions.cohortErrorActions.enrollment_year_end(true))}
+                    if(currentCohort.enrollment_ongoing in [0, 1]) {dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))}
+                    if(currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
+                    if(currentCohort.enrollment_age_min) {dispatch(allactions.cohortErrorActions.enrollment_age_min(true))}
+                    if(currentCohort.enrollment_age_max) {dispatch(allactions.cohortErrorActions.enrollment_age_max(true))}
+                    if(currentCohort.enrollment_age_mean) {dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))}
+                    if(currentCohort.enrollment_age_median) {dispatch(allactions.cohortErrorActions.enrollment_age_median(true))}
+                    if(currentCohort.current_age_min) {dispatch(allactions.cohortErrorActions.current_age_min(true))}
+                    if(currentCohort.current_age_max) {dispatch(allactions.cohortErrorActions.current_age_max(true))}
+                    if(currentCohort.current_age_mean) {dispatch(allactions.cohortErrorActions.current_age_mean(true))}
+                    if(currentCohort.current_age_median) {dispatch(allactions.cohortErrorActions.current_age_median(true))}
+                    if(currentCohort.time_interval) {dispatch(allactions.cohortErrorActions.time_interval(true))}
+                    if(currentCohort.most_recent_year) {dispatch(allactions.cohortErrorActions.most_recent_year(true))}
+                    if(currentCohort.strategy_other !== 1) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
+                    if(currentCohort.eligible_gender_id in [4, 2, 1]) {dispatch(allactions.cohortErrorActions.eligible_gender_id(true))}
+                    if(currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {dispatch(allactions.cohortErrorActions.dataCollection(true))}
+                    //if(currentCohort.collectedOtherSpecify){delete shadow.collectedOtherSpecify; changed = true}
+                    if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.requirements(true))}
+                    if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy(true))}
+                    //just need to remove the first investigator error on load, since only investigator 0 has errors initially
+                    if(completer && completer.completerName) {dispatch(allactions.cohortErrorActions.completerName(true))}
+                    if(completer && completer.completerPosition) {dispatch(allactions.cohortErrorActions.completerPosition(true))}
+                    if(completer && completer.completerEmail) {dispatch(allactions.cohortErrorActions.completerEmail(true))}
+                    if(contacter && contacter.contacterName) {dispatch(allactions.cohortErrorActions.contacterName(true))}
+                    if(contacter && contacter.contacterPosition) {dispatch(allactions.cohortErrorActions.contacterPosition(true))}
+                    if(contacter && contacter.contacterEmail) {dispatch(allactions.cohortErrorActions.contacterEmail(true))}
 
-                if(contacter && collaborator.collaboratorName) {dispatch(allactions.cohortErrorActions.collaboratorName(true))}
-                if(contacter && collaborator.collaboratorPosition) {dispatch(allactions.cohortErrorActions.collaboratorPosition(true))}
-                if(contacter && collaborator.collaboratorEmail) {dispatch(allactions.cohortErrorActions.collaboratorEmail(true))}
+                    if(contacter && collaborator.collaboratorName) {dispatch(allactions.cohortErrorActions.collaboratorName(true))}
+                    if(contacter && collaborator.collaboratorPosition) {dispatch(allactions.cohortErrorActions.collaboratorPosition(true))}
+                    if(contacter && collaborator.collaboratorEmail) {dispatch(allactions.cohortErrorActions.collaboratorEmail(true))}
 
-                for(let i=0; i < investigators.length; i++){
-                    if(investigators[i].name){dispatch(allactions.cohortErrorActions.investigatorName(i, true))}
-                    if(investigators[i].institution){dispatch(allactions.cohortErrorActions.investigatorName(i, true))}
-                    if(investigators[i].email){delete shadow['investigator_email_'+i]; changed=true}
-                }
-                
-                if(changed) setErrors(shadow)
+                    for(let i=0; i < investigators.length; i++){
+                        if(investigators[i].name){dispatch(allactions.cohortErrorActions.investigatorName(i, true))}
+                        if(investigators[i].institution){dispatch(allactions.cohortErrorActions.investigatorInsitution(i, true))}
+                        if(investigators[i].email){dispatch(allactions.cohortErrorActions.investigatorEmail(i, true))}
+                    }
+                    dispatch(allactions.cohortActions.setHasLoaded(true))
+                }) 
                 
             })
         }
@@ -198,20 +155,18 @@ const CohortForm = ({...props}) => {
             })
     }
     const handleSave = () => {
+        console.log(errors)
         setSaved(true)
-        let shadow = {...errors}
-        let changed = false
         if(!(cohort.questionnaireFileName || cohort.questionnaire_url))
-        {shadow.questionnaire = true; changed = true}
+        {dispatch(allactions.cohortErrorActions.questionnaire(false, true))}
         if(!(cohort.mainFileName || cohort.main_cohort_url))
-        {shadow.main = true; changed = true}
+        {dispatch(allactions.cohortErrorActions.main(false, true))}
         if(!(cohort.specimenFileName || cohort.specimen_url))
-        {shadow.specimen = true; changed = true}
+        {dispatch(allactions.cohortErrorActions.specimen(false, true))}
         if(!(cohort.dataFileName || cohort.data_url))
-        {shadow.data = true; changed = true}
+        {dispatch(allactions.cohortErrorActions.data(false, true))}
         if(!(cohort.publicationFileName || cohort.publication_url))
-        {shadow.publication = true; changed = true}
-        if(changed) setErrors(shadow)
+        {dispatch(allactions.cohortErrorActions.publication(false, true))}
 
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
@@ -244,71 +199,45 @@ const CohortForm = ({...props}) => {
     const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
         const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
         if(result){
-            let shadow = {...errors}
-            shadow['baseLineMinAge'] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
         }else{
-            let shadow = {...errors}
-            if(errors['baseLineMinAge']) delete shadow['baseLineMinAge']
-            //if(errors['baseLineMaxAge']) delete shadow['baseLineMaxAge']
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
         }
     }
 
     const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
         const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
         if(result){
-            let shadow = {...errors}
-            shadow['baseLineMaxAge'] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
         }else{
-            let shadow = {...errors}
-            //if(errors['baseLineMinAge']) delete shadow['baseLineMinAge']
-            if(errors['baseLineMaxAge']) delete shadow['baseLineMaxAge']
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
         }
     }
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
         const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
         if(result){
-            let shadow = {...errors}
-            shadow['currentMinAge'] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.current_age_min(false, result))
         }else{
-            let shadow = {...errors}
-            if(errors['currentMinAge']) delete shadow['currentMinAge']
-            //if(errors['currentMaxAge']) delete shadow['currentMaxAge']
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.current_age_min(true))
         }
     }
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
         const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
         if(result){
-            let shadow = {...errors}
-            shadow['currentMaxAge'] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.current_age_max(false, result))
         }else{
-            let shadow = {...errors}
-            //if(errors['currentMinAge']) delete shadow['curentMinAge']
-            if(errors['currentMaxAge']) delete shadow['currentMaxAge']
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions.current_age_max(true))
         }
     }
 
     const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
         const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
         if(result){
-            let shadow = {...errors}
-            shadow[fieldName] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions[fieldName](false, result))
         }else{ 
-            if(errors[fieldName]){ 
-                let shadow = {...errors}
-                delete shadow[fieldName]
-                setErrors(shadow)
-            }
+            dispatch(allactions.cohortErrorActions[fieldName](true))
         }
     }
     //general validation, will be removed from this file later
@@ -334,52 +263,23 @@ const CohortForm = ({...props}) => {
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
         const result = getValidationResult(value, requiredOrNot, valueType)
         if(result) {
-            let shadow = {...errors}
-            shadow[fieldName] = result
-            setErrors(shadow)
+            dispatch(allactions.cohortErrorActions[fieldName](false, result))
         }else{
-            if(errors[fieldName]){
-                let shadow = {...errors}
-                delete shadow[fieldName] 
-                setErrors(shadow) 
-            }
-            
+            dispatch(allactions.cohortErrorActions[fieldName](true, result))
         }
     }
-/*
-    const updateWebSiteError =(errorToAdd, errorToRemove, dispatchname, v) => {
-        dispatch(allactions.cohortActions[dispatchname](v))
-        let changed = false
-        let shadow = {...errors}
-        for(let e of errorToRemove){
-            if(errors[e]){
-                delete shadow[e]
-                changed = true
-            }
-        }
-        if(errorToAdd && !errors[errorToAdd]){
-            shadow[errorToAdd] = 'please provide a value'
-            changed = true
-        }
-        if(changed) setErrors(shadow)
-    }
-*/
+
     const removeInvestigator = (idx) => {
+        //batch(
         dispatch(allactions.cohortActions.removeInvestigator(idx))
         //remove investigator also remove the errors
-        let changed = false, shadow = {...errors}
-        if(errors['investigator_name_'+idx]) {delete shadow['investigator_name_'+idx]; changed=true}
-        if(errors['investigator_inst_'+idx]) {delete shadow['investigator_inst_'+idx]; changed=true}
-        if(errors['investigator_email_'+idx]) {delete shadow['investigator_email_'+idx]; changed=true}
-        if(changed) setErrors(shadow)
+        dispatch(allactions.cohortErrorActions.investigatorName(idx, true))
+        dispatch(allactions.cohortErrorActions.investigatorInsitution(idx, true))
+        dispatch(allactions.cohortErrorActions.investigatorEmail(idx, true))
     }
 
     const removeEligbleGenderError = (v) => {
-        if(errors.eligible_gender_id){
-            let shadow = {...errors}
-            delete shadow['eligible_gender_id'] 
-            setErrors(shadow) 
-        }
+        dispatch(allactions.cohortErrorActions.eligible_gender_id(true))
         dispatch(allactions.cohortActions.eligible_gender_id(v))
     }
 
@@ -387,33 +287,19 @@ const CohortForm = ({...props}) => {
         let currentState = false
         for (let f of allfields) currentState = currentState || cohort[f] 
         currentState = currentState || event.target.checked
-        let changed = false
-        let shadow = {...errors}
+        
         if(currentState){//if any of the checkboxes is checked remove error
-            if(shadow[errorname]){
-                delete shadow[errorname]
-                changed = true
-            }
+            dispatch(allactions.cohortErrorActions[errorname](true))
         }else{// if none of them is checked
-            if(!shadow[errorname]){
-                shadow[errorname] = 'please select at lease one value'
-                changed = true
-            }
+            dispatch(allactions.cohortErrorActions[errorname](false, 'please select at least one value'))
         }
         if(furtherProcessing){
             if(!event.target.checked){
-                if(errors[otherFieldName]){
-                    delete shadow[otherFieldName]
-                    changed = true
-                }
+                dispatch(allactions.cohortErrorActions[otherFieldName](true))
             }else{
-                if(!errors[otherFieldName]){
-                    shadow[otherFieldName] = 'please provide a value'
-                    changed = true
-                }
+                dispatch(allactions.cohortErrorActions[otherFieldName](false, errorMsg))
             }
         }      
-        if(changed) setErrors(shadow)
         dispatch(allactions.cohortActions[dispatchname](event.target.checked ? 1 : 0));
     }
 
@@ -505,10 +391,10 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12'>
                                 <label className='col-md-4' style={{paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em'}}>A.2 Date Form Completed<span style={{color: 'red'}}>*</span></label>
                                 <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    {errors.completionDate && saved ? <Reminder message={errors.completionDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
-                                        let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
-                                    }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){setErrors({...errors, completionDate: 'please provide a value'})}else{
-                                        let shadow = {...errors}; if(shadow.completionDate) delete shadow.completionDate; setErrors(shadow)
+                                    {errors.completionDate && saved ? <Reminder message={errors.completionDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg))}else{
+                                        dispatch(allactions.cohortErrorActions.completionDate(true))
+                                    }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg))}else{
+                                        dispatch(allactions.cohortErrorActions.completionDate(true))
                                     }}} /></span>}
                                 </span>
                             </div>
@@ -516,7 +402,7 @@ const CohortForm = ({...props}) => {
                         <div id='question3' className='col-md-12' style={{display: 'flex', flexDirection: 'column', paddingBottom: '10px'}}>
                             <div id='a3a' className='col-md-8' style={{paddingLeft: '0', marginBottom: '25px'}}>
                                 <div className='col-xs-12' style={{marginBottom: '5px'}}><b>A.3a{' '}Person who completed the form:</b><span style={{color: 'red'}}>*</span></div>
-                                <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' callback={setErrors} errors={errors} displayStyle={saved} />
+                                <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} displayStyle={saved} />
                             </div>
                             <div id='a3b' className='col-md-12'>
                                 <div style={{marginBottom: '5px'}}><b>A.3b{' '}Contact Person for Clarification of this form</b><span style={{color: 'red'}}>*</span></div>
@@ -533,7 +419,7 @@ const CohortForm = ({...props}) => {
                                 <div id='contacterInfo' className='col-sm-8' style={{paddingLeft: '0'}}>
                                     {
                                         cohort.clarification_contact === 0 && saved ? 
-                                        <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' callback={setErrors} errors={errors}  displayStyle={saved}  leftPadding='0' /> : ''
+                                        <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors}  displayStyle={saved}  leftPadding='0' /> : ''
                                     }
                                 </div>
                             </div>
@@ -544,11 +430,11 @@ const CohortForm = ({...props}) => {
                         <div id='question4' className='col-md-12' style={{paddingTop: '10px'}}>
                             <div className='col-md-12' style={{marginBottom: '10px'}}>
                                 <label className='col-md-3'  style={{paddingLeft: '0'}}>A.4{' '} Cohort Principal Investigator(s)</label>
-                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; shadow['investigator_name_'+idx]=errorMsg; shadow['investigator_inst_'+idx]=errorMsg; shadow['investigator_email_'+idx]=errorMsg; setErrors(shadow)}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
+                                <span className='col-md-4' style={{position: 'relative'}}><button className='btn btn-primary btn-sm' onClick={(e) => {e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let shadow={...errors}, idx=cohort.investigators.length; dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorInsitution(idx, false, errorMsg));dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg))}} style={{position: 'absolute', right: 0}}>Add New Investigator</button></span>
                             </div>
                             <div className='col-md-12' style={{paddingLeft: '0'}}>
                                 {
-                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_'+idx} name={'investigator_name_'+idx} institution={'investigator_inst_'+idx} email={'investigator_email_'+idx} callback={setErrors} handleRemove={removeInvestigator} errors={errors} investigator={item}  displayStyle={saved}/></div>
+                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_'+idx} name={'investigator_name_'+idx} institution={'investigator_inst_'+idx} email={'investigator_email_'+idx} handleRemove={removeInvestigator} errors={errors} investigator={item}  displayStyle={saved}/></div>
                                     )
                                 }
                             </div>
@@ -557,7 +443,7 @@ const CohortForm = ({...props}) => {
                             <div className='col-md-12' style={{marginBottom: '10px', marginRight: '0'}}>
                                 <label style={{paddingLeft: '0'}}>A.5{' '}If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?</label>
                             </div>
-                            <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' callback={setErrors} errors={errors} displayStyle={saved} />
+                            <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' errors={errors} displayStyle={saved} />
                             <div className='col-md-5' style={{display: 'flex', flexDirection: 'column'}}>
                                 <div style={{marginBottom: '20px'}}>
                                     <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0}  onChange={(e) =>setCollaborator(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0')}/>{' '}
@@ -647,35 +533,27 @@ const CohortForm = ({...props}) => {
                                 <span className='col-md-1' style={{paddingBottom: '5px'}}>
                                     {errors.enrollment_ongoing && saved ? <Reminder message='please choose one'><span style={{color: 'red', borderBottom:'1px solid red'}}><input type='radio' name='enrollment_ongoing' value='0' checked={cohort.enrollment_ongoing === 0} onChange={e => {
                                         dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                        let shadow={...errors}, changed = false
-                                        if(errors.enrollment_ongoing) {delete shadow.enrollment_ongoing; changed = true}
-                                        if(errors.enrollment_target)  {delete shadow.enrollment_target; changed = true}
-                                        if(errors.enrollment_year_complete)  {delete shadow.enrollment_year_complete; changed = true}
-                                        if(changed) setErrors(shadow)
+                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                        dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
                                     }} />No</span></Reminder> : <span><input type='radio' name='enrollment_year_complete' value='0' checked={cohort.enrollment_ongoing === 0} onChange={e => {
                                         dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                        let shadow={...errors}, changed = false
-                                        if(errors.enrollment_ongoing) {delete shadow.enrollment_ongoing; changed = true}
-                                        if(errors.enrollment_target)  {delete shadow.enrollment_target; changed = true}
-                                        if(errors.enrollment_year_complete)  {delete shadow.enrollment_year_complete; changed = true}
-                                        if(changed) setErrors(shadow)
+                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                        dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
                                     }} />No</span>}
                                 </span>
                                 <span className='col-md-1' style={{paddingBottom: '5px'}}>
                                     {errors.enrollment_ongoing && saved ? <Reminder message='please choose one'><span style={{color: 'red', borderBottom:'1px solid red'}}><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                    let shadow={...errors}, changed = false
-                                    if(errors.enrollment_ongoing) {delete shadow.enrollment_ongoing; changed = true}
-                                    if(!errors.enrollment_target)  {shadow.enrollment_target = 'please specify'; changed = true}
-                                    if(!errors.enrollment_year_complete)  {shadow.enrollment_year_complete='please specify'; changed = true}
-                                    if(changed) setErrors(shadow)
+                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                    dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
                                 }} />Yes</span></Reminder> : <span><input type='radio' name='enrollmentCurrent' value='1' checked={cohort.enrollOnGoing === 1} onChange={e => {
                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                    let shadow={...errors}, changed = false
-                                    if(errors.enrollment_ongoing) {delete shadow.enrollment_ongoing; changed = true}
-                                    if(!errors.enrollment_target)  {shadow.enrollment_target = 'please specify'; changed = true}
-                                    if(!errors.enrollment_year_complete)  {shadow.enrollment_year_complete='please specify'; changed = true}
-                                    if(changed) setErrors(shadow)
+                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                    dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
                                 }} />Yes</span>} </span>
                             </div>
                             <div  className='col-md-12' style={{paddingLeft: '0'}}>
@@ -1119,36 +997,36 @@ const CohortForm = ({...props}) => {
                                     <tbody>
                                         <tr>
                                         <td>Questionnaires<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); if(errors.questionnaire){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} /></td>
+                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); dispatch(allactions.cohortErrorActions.questionnaire(true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
-                                            <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); if('questionnaire' in errors){let shadow={...errors}; delete shadow.questionnaire; setErrors(shadow)}}} disabled={cohort.questionnaire_url} />
+                                            <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.questionnaire(true))}} disabled={cohort.questionnaire_url} />
                                         </td>
                                        
                                         </tr>
                                         <tr>
                                         <td>Main cohort protocol<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); console.log(errors); if(errors.main){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} /></td>
+                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); dispatch(allactions.cohortErrorActions.main(true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
-                                                <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); if('main' in errors){let shadow={...errors}; delete shadow.main; setErrors(shadow)}}} disabled={cohort.main_cohort_url}/>
+                                                <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.main(true))}} disabled={cohort.main_cohort_url}/>
                                         </td>
                                        
                                         </tr>
                                         <tr>
                                         <td>Data sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); if(errors.data){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}} /></td>
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); if('data' in errors){let shadow={...errors}; delete shadow.data; setErrors(shadow)}}}disabled={cohort.data_url}/></td>
+                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value)); dispatch(allactions.cohortErrorActions.data(true))}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.data(true))}}disabled={cohort.data_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Biospecimen sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); if(errors.specimen){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} /></td>
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); if('specimen' in errors){let shadow={...errors}; delete shadow.specimen; setErrors(shadow)}}} disabled={cohort.specimen_url}/></td>
+                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value)); dispatch(allactions.cohortErrorActions.specimen(true))}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.specimen(true))}} disabled={cohort.specimen_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Publication(authorship) policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); if(errors.publication){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} /></td>
-                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); if('publication' in errors){let shadow={...errors}; delete shadow.publication; setErrors(shadow)}}} disabled={cohort.publication_url}/></td>                                       
+                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value)); dispatch(allactions.cohortErrorActions.publication(true))}} /></td>
+                                        <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.publication(true))}} disabled={cohort.publication_url}/></td>                                       
                                         </tr>
                                     </tbody>
                                 </table>

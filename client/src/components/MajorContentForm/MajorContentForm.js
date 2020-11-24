@@ -315,6 +315,7 @@ const MajorContentForm = ({...props}) => {
                 //{shadow.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
                 if(cancerInfo.cancerOtherSpecify){shadow.cancerOtherSpecify = false; changed = true;}
                 if(changed) setErrors(shadow)
+                
             })//end of then
         }//end of if
     }, [])

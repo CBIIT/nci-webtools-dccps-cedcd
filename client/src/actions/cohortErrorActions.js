@@ -19,7 +19,6 @@ const enrollment_ongoing = (toRemove, v) => ({ type: t.enrollment_ongoing, value
 const enrollment_total = (toRemove, v) => ({ type: t.enrollment_total, value: v, remove: toRemove})
 const enrollment_year_start = (toRemove, v) => ({ type: t.enrollment_year_start, value: v, remove: toRemove})
 const enrollment_year_end = (toRemove, v) => ({ type: t.enrollment_year_end, value: v, remove: toRemove})
-const enrollment_ongoing = (toRemove, v) => ({ type: t.enrollment_ongoing, value: v, remove: toRemove})
 const enrollment_target = (toRemove, v) => ({ type: t.enrollment_target, value: v, remove: toRemove})
 const enrollment_year_complete = (toRemove, v) => ({ type: t.enrollment_year_complete, value: v, remove: toRemove})
 const enrollment_age_min = (toRemove, v) => ({ type: t.enrollment_age_min, value: v, remove: toRemove})
@@ -64,7 +63,6 @@ export default {
     enrollment_total,
     enrollment_year_start,
     enrollment_year_end,
-    enrollment_ongoing,
     enrollment_target,
     enrollment_year_complete,
     enrollment_age_min,

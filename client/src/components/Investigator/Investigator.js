@@ -7,7 +7,7 @@ import Reminder from '../Tooltip/Tooltip'
 import "react-datepicker/dist/react-datepicker.css";
 import './Investigator.css'
 
-const Investigator = ({id, name, institution, email, callback, handleRemove, errors, displayStyle}) => {
+const Investigator = ({id, name, institution, email, handleRemove, errors, displayStyle}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
             case 'phone':
@@ -22,16 +22,9 @@ const Investigator = ({id, name, institution, email, callback, handleRemove, err
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
         const result = getValidationResult(value, requiredOrNot, valueType)
         if(result) {
-            let shadow = {...errors}
-            shadow[fieldName] = result
-            callback(shadow)
+            dispatch(allactions.cohortErrorActions[fieldName](false, result))
         }else{
-            if(errors[fieldName]){
-                let shadow = {...errors}
-                delete shadow[fieldName] 
-                callback(shadow) 
-            }
-            
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
         }
     }
 

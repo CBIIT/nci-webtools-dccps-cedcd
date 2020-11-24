@@ -6,7 +6,7 @@ import Reminder from '../Tooltip/Tooltip'
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const Person =({id, type, name, position, phone, email, colWidth, callback, errors, displayStyle, leftPadding}) => {
+const Person =({id, type, name, position, phone, email, colWidth, errors, displayStyle, leftPadding}) => {
     const cohort = useSelector(state => state.cohortReducer)
     const dispatch = useDispatch()
     const getValidationResult = (value, requiredOrNot, type, countryCode) => {
@@ -31,16 +31,9 @@ const Person =({id, type, name, position, phone, email, colWidth, callback, erro
     const populateErrors = (fieldName, value, requiredOrNot, valueType, countryCode) => {
         const result = getValidationResult(value, requiredOrNot, valueType, countryCode)
         if(result) {
-            let shadow = {...errors}
-            shadow[fieldName] = result
-            callback(shadow)
+            dispatch(allactions.cohortErrorActions[fieldName](false, result))
         }else{
-            if(errors[fieldName]){
-                let shadow = {...errors}
-                delete shadow[fieldName] 
-                callback(shadow) 
-            }
-            
+            dispatch(allactions.cohortErrorActions[fieldName](true))
         }
     }
     
