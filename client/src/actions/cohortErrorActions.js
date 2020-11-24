@@ -12,7 +12,7 @@ const collaboratorName = (toRemove, v) => ({ type: t.collaboratorName, value: v,
 const collaboratorPosition = (toRemove, v) => ({ type: t.collaboratorPosition, value: v, remove: toRemove})
 const collaboratorEmail = (toRemove, v) => ({ type: t.collaboratorEmail, value: v, remove: toRemove})
 const investigatorName = (idx, toRemove, v) => ({type: t.investigatorName, index: idx, value: v, remove: toRemove})
-const investigatorInsitution = (idx, toRemove, v) => ({type: t.investigatorInsitution, index: idx, value: v, remove: toRemove})
+const investigatorInstitution = (idx, toRemove, v) => ({type: t.investigatorInsitution, index: idx, value: v, remove: toRemove})
 const investigatorEmail = (idx, toRemove, v) => ({type: t.investigatorEmail, index: idx, value: v, remove: toRemove})
 const eligible_gender_id = (toRemove, v) => ({ type: t.eligible_gender_id, value: v, remove: toRemove})
 const enrollment_ongoing = (toRemove, v) => ({ type: t.enrollment_ongoing, value: v, remove: toRemove})
@@ -56,7 +56,7 @@ export default {
     collaboratorPosition,
     collaboratorEmail,
     investigatorName,
-    investigatorInsitution,
+    investigatorInstitution,
     investigatorEmail,
     eligible_gender_id,
     enrollment_ongoing,
