@@ -136,6 +136,8 @@ const actionTypes = {
     updateTotals: 'UPDATE_TOTALS',
     updateMostRecentDate: 'UPDATE_MOST_RECENT_DATE',
     setSectionBStatus: 'SET_ENROLLMENT_COUNT_STATUS',
+    /*section B errors*/
+    enrollment_most_recent_date: 'enrollment_most_recent_date',
     /*section C*/
     majorContentLoaded: 'SET_MAJOR_CONTENT_LOADED',
     setSeStatusBaseLine: 'SET_MC_SESTATUS_BSASELINE',

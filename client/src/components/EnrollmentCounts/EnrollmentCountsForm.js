@@ -11,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
+    const errors = useSelector(state => state.enrollmentCountErrorReducer)
     const dispatch = useDispatch()
     //const [displayStyle, setDisplay] = useState('0')
     const [successMsg, setSuccessMsg] = useState(false)
@@ -18,7 +19,7 @@ const EnrollmentCountsForm = ({...props}) => {
     const [modalShow, setModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
-    const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
+    //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -35,16 +36,15 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals(coltotalid, originalColTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
-    var dates = ''
+    //var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
             fetch('/api/questionnaire/enrollment_counts/79', {
                 method: 'POST',
             }).then(res => res.json())
-              .then(result => {
-                if(result.data.mostRecentDate.mostRecentDate)
-                {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}
+              .then(result => {               
                 batch(()=> {
+                    if(result.data.mostRecentDate.mostRecentDate) dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
                     for(let i = 0; i < result.data.details.length; i++)
                         dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
                     for(let i = 0; i < result.data.rowTotals.length; i++)
@@ -285,8 +285,8 @@ const EnrollmentCountsForm = ({...props}) => {
                         <div className='col-md-12' style={{paddingLeft: '0'}}>
                             <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label>
                             <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                {errors.mostRecentDate && saved ? <Reminder message={errors.mostRecentDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow)
-                                }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow)}}} /></span>}
+                                {errors.mostRecentDate && saved ? <Reminder message={errors.mostRecentDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))}}} /></span>}
                             </span>
                         </div>
                     </div>

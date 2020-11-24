@@ -19,12 +19,12 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
         }
     }
     
-    const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
+    const populateErrors = (index, fieldName, value, requiredOrNot, valueType) => {
         const result = getValidationResult(value, requiredOrNot, valueType)
         if(result) {
-            dispatch(allactions.cohortErrorActions[fieldName](false, result))
+            dispatch(allactions.cohortErrorActions[fieldName](index, false, result))
         }else{
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+            dispatch(allactions.cohortErrorActions[fieldName](index, true))
         }
     }
 
@@ -38,19 +38,19 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
                     <div className='col-md-12' style={{paddingLeft: '0', marginTop: '5px', marginBottom: '5px'}}>
                         <span className='col-md-2' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                         {errors[name] && displayStyle ? <Reminder message={errors[name]}><span className='col-md-9'>
-                        <input style={{border: '1px solid red'}} className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-9'><input className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/></span> }
+                        <input style={{border: '1px solid red'}} className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorName', e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-9'><input className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorName', e.target.value, true, 'string')}}/></span> }
                     </div>
                     <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
                         <span className='col-md-2'  style={{lineHeight: '2em', paddingLeft: '0'}}>Institution<span style={{color: 'red'}}>*</span></span>
                         {errors[institution] && displayStyle ? <Reminder message={errors[institution]}><span className='col-md-9'>
-                        <input style={{border: '1px solid red'}} className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(institution, e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-9'>
-                        <input className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(institution, e.target.value, true, 'string')}}/></span> }
+                        <input style={{border: '1px solid red'}} className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-9'>
+                        <input className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></span> }
                     </div>
                     <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
                         <span className='col-md-2'  style={{lineHeight: '2em', paddingLeft: '0'}}>Email<span style={{color: 'red'}}>*</span></span>
                         {errors[email] && displayStyle ? <Reminder message={errors[email]}><span className='col-md-9'>
-                        <input style={{border: '1px solid red'}} className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}/></span></Reminder> : <span className='col-md-9'>
-                        <input className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}/></span>}
+                        <input style={{border: '1px solid red'}} className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')}}/></span></Reminder> : <span className='col-md-9'>
+                        <input className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')}}/></span>}
                     </div>
                 </div>
             </div>
