@@ -5,15 +5,23 @@ import App from './components/App/App';
 import { unregister } from './registerServiceWorker';
 import {createBrowserHistory} from 'history';
 import {Provider}  from 'react-redux';
-import {createStore} from 'redux';
+import {createStore, compose, applyMiddleware} from 'redux';
+import thunk from 'redux-thunk';
 import rootReducer from './reducers';
+import { initializeLookup } from './reducers/lookupReducer';
 const history = createBrowserHistory();
-const store = createStore(rootReducer);
 export const UserSessionContext = React.createContext(null);
+const store = createStore(rootReducer, compose(
+	applyMiddleware(thunk),
+	window.__REDUX_DEVTOOLS_EXTENSION__
+		? window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true })
+		: e => e
+));
 
 (async function main() {
 	const response = await fetch('/api/user-session');
 	const userSession = await response.json();
+	store.dispatch(initializeLookup());
 
 	ReactDOM.render(
 		<UserSessionContext.Provider value={userSession}>
