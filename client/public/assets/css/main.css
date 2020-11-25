@@ -141,11 +141,21 @@ body {
 }
 
 .inputUnderscore{
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   border-top: none;
   border-left: none;
   border-right: none;
   border-bottom: 1px solid grey;
+  outline: none;
+  background: transparent;
+}
+
+.errorInputUnderscore{
+  font-size: 1.5rem;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: 1px solid red;
   outline: none;
   background: transparent;
 }
@@ -211,7 +221,7 @@ body {
 }
 .filter-component-dropdown {
   width:100%;
-  min-width: 250px;
+  min-width: 100px;
   max-height: 600px;
   overflow-y: auto;
   z-index:9001 !important;

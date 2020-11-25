@@ -13,12 +13,6 @@
 
 .active, .accordion:hover {
     background-color: #ccc;
-    color: blue;
-}
-
-
-.accordion:hover > span {
-    border-bottom: 1px solid blue;
 }
 
 .panellet {
@@ -34,16 +28,3 @@
     display: block;
     overflow: hidden;
 }
-
-.errorBackground {
-    background-color:  #f66;
-}
-
-.react-datepicker__input-container input {
-    width: 342px;
- }
-
- .errorDate,
- .react-datepicker__day--today {
-   border: 1px solid red;
- }
