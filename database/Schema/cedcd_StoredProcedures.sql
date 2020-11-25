@@ -174,9 +174,9 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-      if category = "41" then
+      if category = "99" then
         set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
-      elseif locate("41", category) > 0 then
+      elseif locate("99", category) > 0 then
         set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
@@ -302,7 +302,7 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
+    set @query = concat("select cs.cohort_id as id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
 	    from cohort_basic cs, major_content mc, lu_data_category ld, cohort ch, v_lu_data_category vld
 	    WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
   
@@ -384,7 +384,7 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
+     set @query = concat("select cs.cohort_id as id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
 	from cohort_basic cs, major_content mc, lu_data_category ld , cohort ch, v_lu_data_category vld
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
      
@@ -500,9 +500,9 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-      if category = "41" then
+      if category = "99" then
        set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1) ");
-      elseif locate("41", category) > 0 then
+      elseif locate("99", category) > 0 then
        set @major_content_query = concat(" and cs.cohort_id in ( select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 

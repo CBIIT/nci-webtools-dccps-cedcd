@@ -685,7 +685,8 @@ insert into lu_data_category(id, category, sub_category) values (37, "Other Medi
 insert into lu_data_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
 insert into lu_data_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
 insert into lu_data_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
-insert into lu_data_category(id, category, sub_category) values (41, "Cancer Treatment","");
+insert into lu_data_category(id, category, sub_category) values (41, "Physical function measures","");
+insert into lu_data_category(id, category, sub_category) values (99, "Cancer Treatment","");
 
 /*
  Generate data for lookup table lu_specimen
