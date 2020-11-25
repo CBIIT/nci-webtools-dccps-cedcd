@@ -300,7 +300,7 @@ class ManageCohort extends Component {
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={view_url} onClick={this.saveHistory}>{view}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{view}</Link>
 						</td>
 					</tr>
 				);
