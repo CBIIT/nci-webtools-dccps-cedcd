@@ -11,11 +11,12 @@ import Information from '../Information/Information';
 import Contact from '../Contact/Contact';
 import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
 import ManageCohort from '../Admin/ManageCohort'
+import ReviewCohort from '../Admin/ReviewCohort'
 import NewCohort from '../Admin/AddNewCohort'
 import NewUser from '../Admin/AddNewUser'
 
 class MainContent extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
   }
 
@@ -41,9 +42,10 @@ class MainContent extends Component {
         <Route path={match + '/biospecimen'} component={Biospecimen} />
         <Route path={match + '/about'} component={About} />
         <Route path={match + '/contact'} component={Contact} />
-        <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} /> }/>
+        <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} />} />
         <Route exact path={match + '/cohort'} component={Information} />
-        <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />}/>
+        <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />} />
+        <Route path={match + '/admin/viewcohort/:id'} render={() => <ReviewCohort setAdmin={this.props.setAdmin} />} />
         <Route path={match + '/admin/newcohort'} component={NewCohort} />
         <Route path={match + '/admin/newuser'} component={NewUser} />
       </Switch>

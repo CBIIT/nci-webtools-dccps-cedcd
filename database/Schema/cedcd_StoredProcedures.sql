@@ -174,17 +174,17 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-      if category = "41" then
+      if category = "99" then
         set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
-      elseif locate("41", category) > 0 then
+      elseif locate("99", category) > 0 then
         set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
         union
         select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
       else
 		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       end if;
 	
@@ -302,8 +302,8 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-    set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
-	    from cohort_basic cs, major_content mc, lu_data_collected_category ld, cohort ch, v_lu_data_collected_category vld
+    set @query = concat("select cs.cohort_id as id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.baseline, mc.other_specify_baseline 
+	    from cohort_basic cs, major_content mc, lu_data_category ld, cohort ch, v_lu_data_category vld
 	    WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
   
   PREPARE stmt FROM @query;
@@ -384,8 +384,8 @@ BEGIN
     
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
-     set @query = concat("select cs.cohort_id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
-	from cohort_basic cs, major_content mc, lu_data_collected_category ld , cohort ch, v_lu_data_collected_category vld
+     set @query = concat("select cs.cohort_id as id,cs.cohort_name,cs.cohort_acronym,mc.category_id, ld.category, ld.sub_category, mc.followup, mc.other_specify_followup 
+	from cohort_basic cs, major_content mc, lu_data_category ld , cohort ch, v_lu_data_category vld
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = mc.cohort_id and mc.category_id = ld.id and ld.category = vld.data_category ",@queryString);
      
   PREPARE stmt FROM @query;
@@ -438,7 +438,7 @@ CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	  select * from lu_gender;
     select * from lu_cancer where id < 29 order by case when id=1 then 'zzz' else cancer end, cancer;
-    select * from v_lu_data_collected_category;
+    select * from v_lu_data_category;
     select * from lu_ethnicity;
     select * from lu_race order by case when id=7 then 'zzz' else race end, race;
     select * from lu_specimen where id < 10;
@@ -500,17 +500,17 @@ BEGIN
     
     set @major_content_query = "";
     if category != "" then
-      if category = "41" then
+      if category = "99" then
        set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1) ");
-      elseif locate("41", category) > 0 then
+      elseif locate("99", category) > 0 then
        set @major_content_query = concat(" and cs.cohort_id in ( select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
         union
         select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 )");
       else
 		    set @major_content_query = concat(" and cs.cohort_id in (select distinct cohort_id 
-        from major_content where category_id in ( select ld.id from lu_data_collected_category ld , v_lu_data_collected_category vld 
+        from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) )");
       end if;
     end if;
@@ -645,7 +645,7 @@ BEGIN
     set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
     
     set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,s.* 
-	from cohort_basic cs, specimen s, cohort ch
+	from cohort_basic cs, v_specimen s, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = s.cohort_id ",@queryString);
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
@@ -1487,7 +1487,7 @@ DROP PROCEDURE IF EXISTS get_major_content //
 CREATE PROCEDURE `get_major_content`(in targetID int)
 begin
 select cohort_id, category_id, category, sub_category, baseline, followup, other_specify_baseline, other_specify_followup from 
-major_content m join lu_data_collected_category d
+major_content m join lu_data_category d
 on m.category_id = d.id
 where cohort_id = targetID order by category_id;
 
@@ -1575,26 +1575,26 @@ begin
 
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeFollowUp'))) where cohort_id = targetID and category_id = 31 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp'))) where cohort_id = targetID and category_id = 32 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp'))) where cohort_id = targetID and category_id = 32 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp'))) where cohort_id = targetID and category_id = 33 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp'))) where cohort_id = targetID and category_id = 33 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp'))) where cohort_id = targetID and category_id = 34 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp'))) where cohort_id = targetID and category_id = 34 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp'))) where cohort_id = targetID and category_id = 35 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp'))) where cohort_id = targetID and category_id = 35 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp'))) where cohort_id = targetID and category_id = 36 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp'))) where cohort_id = targetID and category_id = 36 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp'))) where cohort_id = targetID and category_id = 37 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp'))) where cohort_id = targetID and category_id = 37 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp'))) where cohort_id = targetID and category_id = 38 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp'))) where cohort_id = targetID and category_id = 38 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp'))) where cohort_id = targetID and category_id = 39 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp'))) where cohort_id = targetID and category_id = 39 ;
 
-		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp'))) where cohort_id = targetID and category_id = 40 ;
-        
-        update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
-        
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp'))) where cohort_id = targetID and category_id = 40 ;
+
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
+
         update cancer_info set mdc_acute_treatment_toxicity = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity')),
 							   mdc_late_effects_of_treatment = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects')),
                                mdc_symptoms_management = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSymptom')),
@@ -1626,33 +1626,122 @@ begin
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 17, JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 18, JSON_UNQUOTE(JSON_EXTRACT(info, '$.ecigarBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.ecigarFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 19, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 20, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 21, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 22, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 23, JSON_UNQUOTE(JSON_EXTRACT(info, '$.reproduceBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.reproduceFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 24, JSON_UNQUOTE(JSON_EXTRACT(info, '$.reportedHealthBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.reportedHealthFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 25, JSON_UNQUOTE(JSON_EXTRACT(info, '$.lifeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.lifeFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 26, JSON_UNQUOTE(JSON_EXTRACT(info, '$.socialSupportBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.socialSupportFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 27, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitionBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitionFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 28, JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 29, JSON_UNQUOTE(JSON_EXTRACT(info, '$.psychosocialBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.psychosocialFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 30, JSON_UNQUOTE(JSON_EXTRACT(info, '$.fatigueBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.fatigueFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 31, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerHistoryBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerHistoryFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 32, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 33, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 34, JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 35, JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 36, JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 37, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 38, JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 39, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 40, JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 41, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')), '', '', NOW(), NOW());
-		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 42, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')), '', '', NOW(), NOW());
-        insert into cohort_edit_status (cohort_id, page_code, `status`) 
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 19, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 20, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 21, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 22, JSON_UNQUOTE(JSON_EXTRACT(info, '$.reproduceBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.reproduceFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 23, JSON_UNQUOTE(JSON_EXTRACT(info, '$.reportedHealthBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.reportedHealthFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 24, JSON_UNQUOTE(JSON_EXTRACT(info, '$.lifeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.lifeFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 25, JSON_UNQUOTE(JSON_EXTRACT(info, '$.socialSupportBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.socialSupportFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 26, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitionBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitionFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 27, JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 28, JSON_UNQUOTE(JSON_EXTRACT(info, '$.psychosocialBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.psychosocialFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 29, JSON_UNQUOTE(JSON_EXTRACT(info, '$.fatigueBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.fatigueFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 30, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerHistoryBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerHistoryFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 31, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerPedigreeFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 32, JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.exposureFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 33, JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.residenceFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 34, JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.diabetesFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 35, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strokeFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 36, JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.copdFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 37, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cardiovascularFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 38, JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.osteoporosisFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 39, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mentalFollowUp')), '', '', NOW(), NOW());
+		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 40, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')), '', '', NOW(), NOW());
+        insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 41, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')), '', '', NOW(), NOW());
+	
+		insert into cohort_edit_status (cohort_id, page_code, `status`) 
         values (targetID, 'C', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionCStatus')));
     end if;
     commit;
     SELECT flag as rowAffacted;
 end //
+
+DROP PROCEDURE IF EXISTS `select_mortality` //
+
+CREATE PROCEDURE `select_mortality`(in targetID int) 
+BEGIN
+	SELECT 
+		cohort_id
+		,mort_year_mortality_followup
+		,mort_death_confirmed_by_ndi_linkage
+		,mort_death_confirmed_by_death_certificate
+		,mort_death_confirmed_by_other
+		,mort_death_confirmed_by_other_specify
+		,mort_have_date_of_death
+		,mort_have_cause_of_death
+		,mort_death_code_used_icd9
+		,mort_death_code_used_icd10
+		,mort_death_not_coded
+		,mort_death_code_used_other
+		,mort_death_code_used_other_specify
+		,mort_number_of_deaths
+		,create_time
+		,update_time
+	FROM mortality WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
+end//
+
+DROP PROCEDURE if EXISTS `update_mortality` //
+
+CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
+BEGIN
+	if exists (select * from mortality where cohort_id = `targetID`) then 
+		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_death_certificate = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , json_unquote(json_extract(info, '$.deathCertificate'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , json_unquote(json_extract(info, '$.otherDeath'))) where cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , json_unquote(json_extract(info, '$.otherDeathSpecify'))) where cohort_id = `targetID`;
+		update mortality set mort_have_date_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , json_unquote(json_extract(info, '$.haveDeathDate'))) where cohort_id = `targetID`;
+		update mortality set mort_have_cause_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , json_unquote(json_extract(info, '$.haveDeathCause'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd9 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , json_unquote(json_extract(info, '$.icd9'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd10 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , json_unquote(json_extract(info, '$.icd10'))) where cohort_id = `targetID`;
+		update mortality set mort_death_not_coded = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , json_unquote(json_extract(info, '$.notCoded'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , json_unquote(json_extract(info, '$.otherCode'))) where cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , json_unquote(json_extract(info, '$.otherCodeSpecify'))) where cohort_id = `targetID`;
+		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers'))) where cohort_id = `targetID`;
+		update mortality set update_time = NOW() where cohort_id = `targetID`;
+		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
+	else
+		insert into mortality (
+			cohort_id
+			,mort_year_mortality_followup
+			,mort_death_confirmed_by_ndi_linkage
+			,mort_death_confirmed_by_death_certificate
+			,mort_death_confirmed_by_other
+			,mort_death_confirmed_by_other_specify
+			,mort_have_date_of_death
+			,mort_have_cause_of_death
+			,mort_death_code_used_icd9
+			,mort_death_code_used_icd10
+			,mort_death_not_coded
+			,mort_death_code_used_other
+			,mort_death_code_used_other_specify
+			,mort_number_of_deaths
+			,create_time
+			,update_time
+		) values (
+			targetID
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , json_unquote(json_extract(info, '$.deathCertificate')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , json_unquote(json_extract(info, '$.otherDeath')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , json_unquote(json_extract(info, '$.otherDeathSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , json_unquote(json_extract(info, '$.haveDeathDate')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , json_unquote(json_extract(info, '$.haveDeathCause')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , json_unquote(json_extract(info, '$.icd9')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , json_unquote(json_extract(info, '$.icd10')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , json_unquote(json_extract(info, '$.notCoded')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , json_unquote(json_extract(info, '$.otherCode')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , json_unquote(json_extract(info, '$.otherCodeSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers')))
+			,NOW()
+			,NOW()
+		);
+		insert into cohort_edit_status (cohort_id, page_code, `status`)
+		values (targetID, 'E', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')));
+	end if;
+	select row_count() as rowAffacted;
+end //
+
 DELIMITER ;

@@ -139,4 +139,39 @@ router.post('/update_major_content/:id', function(req,res){
     })
 })
 
+router.post('/mortality/:id', function(req, res){
+    let id = req.params.id
+    let func = 'select_mortality'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function(result){
+        logger.debug(result)
+        const mortality = {}
+        mortality.info = result[0]
+        mortality.completion = result[1]
+
+        if(mortality)
+            res.json({status: 200, data: mortality})
+        else
+            res.json({status: 500, message: 'failed to load data'})
+    })
+})
+
+router.post('/update_mortality/:id', function(req,res){
+    let func = 'update_mortality'
+    let body = JSON.stringify(req.body)
+    let params = []
+    params.push(req.params.id)
+    params.push(body)
+    logger.debug(body)
+    
+    mysql.callJsonProcedure(func, params, function(result){
+        logger.debug(result)
+        if(result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({status:200, message:'update successful'})
+        else
+            res.json({status:500, message:'update failed'})
+    })
+})
+
 module.exports = router

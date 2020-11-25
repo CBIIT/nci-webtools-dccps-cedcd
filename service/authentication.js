@@ -1,5 +1,4 @@
 const settings = require('../config/cedcd.settings')
-var { getConnectionAsync, queryAsync } = require('../components/mysql');
 
 module.exports = {
     authenticationMiddleware,
@@ -8,53 +7,70 @@ module.exports = {
 }
 
 const authRoutes = [
-    '^/admin/\\w+$',
-    '^/cohort/questionnaire/\\w+$',
-    // '^/login/internal\/?$',
-    // '^/login/external\/?$',
+    // '^/admin/\\w+$',
+    // '^/cohort/questionnaire/\\w+$',
+    '^/login/internal\/?$',
+    '^/login/external\/?$',
 ].map(pattern => new RegExp(pattern));
 
 async function authenticationMiddleware(request, response, next) {
-    const { url, headers, session } = request;
+    const { url, headers, session, app } = request;
+    const { mysql } = app.locals;
+    const nodeEnv = process.env.NODE_ENV;
     const { 
         user_auth_type: userAuthType, 
         fed_email: fedEmail, 
         sm_user: smUser
     } = headers;
-    const nodeEnv = process.env.NODE_ENV;
+
+    console.log('authenticationMiddleware', url, authRoutes.some(regex => regex.test(url)))
 
     if (authRoutes.some(regex => regex.test(url))) {
+        try {
 
-        if (nodeEnv === 'development' || !smUser) {
-            // siteminder is not configured or if developing locally, assign default permissions
-            session.user = {
-                type: 'internal',
-                name: 'admin',
-                role: /^\/admin/.test(url) 
-                    ? 'SystemAdmin' 
-                    : 'CohortAdmin',
-            };
-            next();
-        }
+            if (nodeEnv === 'development' || !smUser) {
+                // siteminder is not configured or if developing locally, assign default permissions
+                session.user = {
+                    type: 'internal',
+                    name: 'admin',
+                    role: /internal/.test(url) 
+                        ? 'SystemAdmin' 
+                        : 'CohortAdmin',
+                };
+    
+            } else {
 
-        else try {
-            // otherwise, update user-session variable when hitting authRoutes
-            const isFederated = userAuthType === 'federated';
-            const userType = isFederated ? 'external' : 'internal';
-            const userName = isFederated ? fedEmail : smUser;
+                // otherwise, update user-session variable when hitting authRoutes
+                const isFederated = userAuthType === 'federated';
+                const userType = isFederated ? 'external' : 'internal';
+                const userName = isFederated ? fedEmail : smUser;
 
-            const { results } = await queryAsync(
-                await getConnectionAsync(),
-                `SELECT access_level as accessLevel 
-                FROM user where user_name = ?`,
-                [userName]
-            );
+                const results = await mysql.query(
+                    `SELECT access_level as accessLevel 
+                    FROM user where user_name = ?`,
+                    [userName]
+                );
 
-            session.user = {
-                type: userType,
-                name: userName,
-                role: results[0] && results[0].accessLevel, // SystemAdmin or CohortAdmin
-            };
+                console.log(results);
+
+                const userRole = results[0] && results[0].accessLevel; // SystemAdmin or CohortAdmin;
+
+                session.user = {
+                    type: userType,
+                    name: userName,
+                    role: userRole,
+                };
+            }
+
+            console.log('logged in', session.user);
+
+            if (/CohortAdmin/.test(session.user.role)) {
+                response.status(301).redirect('/cohort/questionnaire/79');
+            } else if (/SystemAdmin/.test(session.user.role)) {
+                response.status(301).redirect('/admin/managecohort');
+            } else {
+                response.status(301).redirect('/');
+            }
        
         } catch (e) {
             request.session.destroy(error => {

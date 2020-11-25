@@ -3,9 +3,10 @@ set FOREIGN_key_checks = 0;
 DROP TABLE IF EXISTS `lu_domain`;
 
 DROP TABLE IF EXISTS `lu_data_collected_category`;
+DROP TABLE IF EXISTS `lu_data_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_data_collected_category` (
+CREATE TABLE `lu_data_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(500) NOT NULL,
   `sub_category` varchar(500) DEFAULT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE `major_content` (
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`category_id`),
   CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `mc_domain_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_collected_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mc_domain_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 insert into major_content select * from major_content_bk;
@@ -78,49 +79,49 @@ CREATE TABLE `specimen_collected_type` (
 
 
 /*
- Generate data for lookup table lu_data_collected_category
+ Generate data for lookup table lu_data_category
  */
-insert into lu_data_collected_category(id, category, sub_category) values (1, "Socio-economic Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (2, "Education Level","");
-insert into lu_data_collected_category(id, category, sub_category) values (3, "Marital Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (4, "Language/Country of Origin","");
-insert into lu_data_collected_category(id, category, sub_category) values (5, "Employment Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (6, "Health Insurance Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (7, "Anthropometry","");
-insert into lu_data_collected_category(id, category, sub_category) values (8, "Dietary Intake","");
-insert into lu_data_collected_category(id, category, sub_category) values (9, "Dietary Supplement Use","");
-insert into lu_data_collected_category(id, category, sub_category) values (10, "Complementary and Alternative Medicine","");
-insert into lu_data_collected_category(id, category, sub_category) values (11, "Prescription Medication Use","");
-insert into lu_data_collected_category(id, category, sub_category) values (12, "Non-prescription Medication","");
-insert into lu_data_collected_category(id, category, sub_category) values (13, "Alcohol Consumption","");
-insert into lu_data_collected_category(id, category, sub_category) values (14, "Cigarette Smoking","");
-insert into lu_data_collected_category(id, category, sub_category) values (15, "Other Tobacco Products","Cigars");
-insert into lu_data_collected_category(id, category, sub_category) values (16, "Other Tobacco Products","Pipes");
-insert into lu_data_collected_category(id, category, sub_category) values (17, "Other Tobacco Products","Chewing tobacco");
-insert into lu_data_collected_category(id, category, sub_category) values (18, "Other Tobacco Products","E-Cigarettes");
-insert into lu_data_collected_category(id, category, sub_category) values (19, "Other Tobacco Products","Other");
-insert into lu_data_collected_category(id, category, sub_category) values (20, "Physical Activity","");
-insert into lu_data_collected_category(id, category, sub_category) values (21, "Sleep Habits","");
-insert into lu_data_collected_category(id, category, sub_category) values (22, "Reproductive History","");
-insert into lu_data_collected_category(id, category, sub_category) values (23, "Self-Reported Health","");
-insert into lu_data_collected_category(id, category, sub_category) values (24, "Quality of Life",""); 
-insert into lu_data_collected_category(id, category, sub_category) values (25, "Social Support","");
-insert into lu_data_collected_category(id, category, sub_category) values (26, "Cognitive Function","");
-insert into lu_data_collected_category(id, category, sub_category) values (27, "Depression","");
-insert into lu_data_collected_category(id, category, sub_category) values (28, "Other Psychosocial Variables","");
-insert into lu_data_collected_category(id, category, sub_category) values (29, "Fatigue","");
-insert into lu_data_collected_category(id, category, sub_category) values (30, "Family History of Cancer","Family History of Cancer");
-insert into lu_data_collected_category(id, category, sub_category) values (31, "Family History of Cancer","Family History of Cancer with Pedigrees");
-insert into lu_data_collected_category(id, category, sub_category) values (32, "Environmental or Occupational Exposures","");
-insert into lu_data_collected_category(id, category, sub_category) values (33, "Residential Information","");
-insert into lu_data_collected_category(id, category, sub_category) values (34, "Other Medical Conditions","Diabetes");
-insert into lu_data_collected_category(id, category, sub_category) values (35, "Other Medical Conditions","Stroke");
-insert into lu_data_collected_category(id, category, sub_category) values (36, "Other Medical Conditions","COPD and/or Emphysema");
-insert into lu_data_collected_category(id, category, sub_category) values (37, "Other Medical Conditions","Cardiovascular Disease");
-insert into lu_data_collected_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
-insert into lu_data_collected_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
-insert into lu_data_collected_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
-insert into lu_data_collected_category(id, category, sub_category) values (41, "Cancer Treatment","");
+insert into lu_data_category(id, category, sub_category) values (1, "Socio-economic Status","");
+insert into lu_data_category(id, category, sub_category) values (2, "Education Level","");
+insert into lu_data_category(id, category, sub_category) values (3, "Marital Status","");
+insert into lu_data_category(id, category, sub_category) values (4, "Language/Country of Origin","");
+insert into lu_data_category(id, category, sub_category) values (5, "Employment Status","");
+insert into lu_data_category(id, category, sub_category) values (6, "Health Insurance Status","");
+insert into lu_data_category(id, category, sub_category) values (7, "Anthropometry","");
+insert into lu_data_category(id, category, sub_category) values (8, "Dietary Intake","");
+insert into lu_data_category(id, category, sub_category) values (9, "Dietary Supplement Use","");
+insert into lu_data_category(id, category, sub_category) values (10, "Complementary and Alternative Medicine","");
+insert into lu_data_category(id, category, sub_category) values (11, "Prescription Medication Use","");
+insert into lu_data_category(id, category, sub_category) values (12, "Non-prescription Medication","");
+insert into lu_data_category(id, category, sub_category) values (13, "Alcohol Consumption","");
+insert into lu_data_category(id, category, sub_category) values (14, "Cigarette Smoking","");
+insert into lu_data_category(id, category, sub_category) values (15, "Other Tobacco Products","Cigars");
+insert into lu_data_category(id, category, sub_category) values (16, "Other Tobacco Products","Pipes");
+insert into lu_data_category(id, category, sub_category) values (17, "Other Tobacco Products","Chewing tobacco");
+insert into lu_data_category(id, category, sub_category) values (18, "Other Tobacco Products","E-Cigarettes");
+insert into lu_data_category(id, category, sub_category) values (19, "Other Tobacco Products","Other");
+insert into lu_data_category(id, category, sub_category) values (20, "Physical Activity","");
+insert into lu_data_category(id, category, sub_category) values (21, "Sleep Habits","");
+insert into lu_data_category(id, category, sub_category) values (22, "Reproductive History","");
+insert into lu_data_category(id, category, sub_category) values (23, "Self-Reported Health","");
+insert into lu_data_category(id, category, sub_category) values (24, "Quality of Life",""); 
+insert into lu_data_category(id, category, sub_category) values (25, "Social Support","");
+insert into lu_data_category(id, category, sub_category) values (26, "Cognitive Function","");
+insert into lu_data_category(id, category, sub_category) values (27, "Depression","");
+insert into lu_data_category(id, category, sub_category) values (28, "Other Psychosocial Variables","");
+insert into lu_data_category(id, category, sub_category) values (29, "Fatigue","");
+insert into lu_data_category(id, category, sub_category) values (30, "Family History of Cancer","Family History of Cancer");
+insert into lu_data_category(id, category, sub_category) values (31, "Family History of Cancer","Family History of Cancer with Pedigrees");
+insert into lu_data_category(id, category, sub_category) values (32, "Environmental or Occupational Exposures","");
+insert into lu_data_category(id, category, sub_category) values (33, "Residential Information","");
+insert into lu_data_category(id, category, sub_category) values (34, "Other Medical Conditions","Diabetes");
+insert into lu_data_category(id, category, sub_category) values (35, "Other Medical Conditions","Stroke");
+insert into lu_data_category(id, category, sub_category) values (36, "Other Medical Conditions","COPD and/or Emphysema");
+insert into lu_data_category(id, category, sub_category) values (37, "Other Medical Conditions","Cardiovascular Disease");
+insert into lu_data_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
+insert into lu_data_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
+insert into lu_data_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
+insert into lu_data_category(id, category, sub_category) values (41, "Cancer Treatment","");
 
 /*
 * add for specimen data collected category

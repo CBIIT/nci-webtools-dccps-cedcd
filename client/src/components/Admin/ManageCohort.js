@@ -284,7 +284,7 @@ class ManageCohort extends Component {
 		let content = list.map((item, index) => {
 			let id = item.id;
 			let view_url = '/cohort?id=' + id;
-			let review_url = '/cohort/questionnaire';
+			let review_url = '/admin/viewcohort/' + id;
 			let view = "View";
 			let review = "Review";
 
@@ -293,9 +293,9 @@ class ManageCohort extends Component {
 				return (
 					<tr key={id}>
 						<td>
-							<Link to={view_url} onClick={this.saveHistory}>{item.name}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{item.name}</Link>
 						</td>
-						<td><Link to={view_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
+						<td><Link to={review_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
 						<td class="text-capitalize">{item.status}</td>
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
@@ -334,9 +334,8 @@ class ManageCohort extends Component {
 				<Unauthorized /> ||
 				<div>
 					<h1 className="welcome pg-title">Manage Cohorts</h1>
-					<p className="welcome">Browse the list of cohorts or use the filter options to search cohorts according to cohort status.
-					Then select the cohorts about which one you'd like to see the details or select the proper action to take on the cohort.
-      		    </p>
+					<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
+      		    </p><p></p>
 					<div className="filter-block col-md-12">
 						<div className="col-sm-3 ">
 							<div class="form-group has-feedback has-search">
@@ -349,9 +348,11 @@ class ManageCohort extends Component {
 								<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 							</div>
 						</div>
-						<div className="col-sm-2 " style={{ "paddingLeft": "3px" }}>
-							<a id="filterClear" style={{ "paddingLeft": "3px" }} className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
-								<i className="fas fa-times" ></i> Clear All </a>
+						<div className="col-sm-2 ">
+							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px" }}>
+								<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
+									<i className="fas fa-times" ></i> Clear All </a>
+							</div>
 
 						</div>
 						<div className="col-sm-5 ">
@@ -390,7 +391,7 @@ class ManageCohort extends Component {
 
 					<div className="filter-block home col-md-12">
 
-						<div className="row" style={{ "display": "flex" }}>
+						<div className="row" style={{ "display": "flex", "paddingLeft": "15px" }}>
 							<div class="pageSize">
 								Page Size: <select name="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
 									<option>Page Size</option>
