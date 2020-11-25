@@ -150,24 +150,19 @@ const MajorContentForm = ({ ...props }) => {
                         if (content[12].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }
                         if (content[13].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }
                         if (content[13].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }
-                        if (content[14].baseline) { dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
-                        if (content[15].baseline) { dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
-                        if (content[16].baseline) { dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
-                        if (content[17].baseline) { dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
-                        if (content[18].baseline) { dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
+                        if (content[14].baseline == null || content[14].baseline == 1) { dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
+                        if (content[15].baseline == null || content[15].baseline == 1) { dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
+                        if (content[16].baseline == null || content[16].baseline == 1) { dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
+                        if (content[17].baseline == null || content[17].baseline == 1) { dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
+                        if (content[18].baseline == null || content[18].baseline == 1) { dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
 
-                        //if(content[14].baseline || content[15].baseline || content[16].baseline || content[17].baseline || content[18].baseline)
-                        //{dispatch(allactions.majorContentErrorActions.cigarBaseLine =false; shadow.pipeBaseLine=false; shadow.tobaccoBaseLine=false; shadow.ecigarBaseLine=false; shadow.noncigarOtherBaseLine =false; changed = true;}
-                        if (content[14].followup) { dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
-                        if (content[15].followup) { dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
-                        if (content[16].followup) { dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
-                        if (content[17].followup) { dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
-                        if (content[18].followup) { dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
-
-
+                        if (content[14].followup == null || content[14].followup == 1) {dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
+                        if (content[15].followup == null || content[15].followup == 1) { dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
+                        if (content[16].followup == null || content[16].followup == 1) { dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
+                        if (content[17].followup == null || content[17].followup == 1) { dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
+                        if (content[18].followup == null || content[18].followup == 1) { dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
                         if (content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
-                        //if(content[14].followup || content[15].followup || content[16].followup || content[17].followup || content[18].followup)
-                        //{dispatch(allactions.majorContentErrorActions.cigarFollowUp =false; shadow.pipeFollowUp = false; shadow.tobaccoFollowUp=false; shadow.ecigarFollowUp=false; shadow.noncigarOtherFollowUp=false; changed = true;}
+                        
 
                         if (content[18].other_specify_followup) { dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(true)) }
                         if (content[19].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }
@@ -216,10 +211,10 @@ const MajorContentForm = ({ ...props }) => {
                         if (content[40].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
                         if (content[40].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
 
-                        if (cancerInfo.cancerToxicity) { dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
-                        if (cancerInfo.cancerLateEffects) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
-                        if (cancerInfo.cancerSymptom) { dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
-                        if (cancerInfo.cancerOther) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
+                        if (cancerInfo.cancerToxicity == null || cancerInfo.cancerToxicity == 1) { dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
+                        if (cancerInfo.cancerLateEffects == null || cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
+                        if (cancerInfo.cancerSymptom == null || cancerInfo.cancerSymptom == 1) { dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
+                        if (cancerInfo.cancerOther == null || cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
 
                         //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
                         //{dispatch(allactions.majorContentErrorActions.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
@@ -261,7 +256,7 @@ const MajorContentForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        //console.dir(errors)
+        //console.log(errors.cigarFollowUp +' '+ errors.pipeFollowUp +' '+ errors.tobaccoFollowUp +' '+ errors.ecigarFollowUp +' '+ errors.noncigarOtherFollowUp)
         let errorsRemain = false;
         for (let k of Object.keys(errors)) errorsRemain |= errors[k]
         errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
