@@ -6,6 +6,7 @@
 
 var logger = require('./logger');
 const mysql = require('mysql');
+const { promisify } = require('util');
 
 var pool = null;
 
@@ -18,7 +19,8 @@ var getConnectionPool = function(config){
       	port     : config.port,
 	    user     : config.user,
 	    password : config.password,
-	    database : config.db,
+		database : config.db,
+		multipleStatements: true,
 	    debug    :  false
 	});
 
@@ -249,6 +251,28 @@ function deferUntilConnected(connection) {
 	});
 }
 
+function upsert({connection, table, columns, record}) {
+	if (!connection) connection = pool;
+	if (!columns) columns = Object.keys(record);
+
+	const values = columns.map(column => record[column]);
+	const valuePlaceholders = columns.map(_ => '?').join(',');
+	const valueAssignments = columns.map(column => 
+		`${connection.escapeId(column)} = VALUES(${connection.escapeId(column)})`
+	).join(',');
+
+	// return promise
+	const query = promisify(connection.query).bind(connection);
+
+	// if upserting, ensure that a unique key exists for the specified columns
+	// and that non-null values do not exist in this unique key
+	return query(
+		`INSERT INTO ?? (??) VALUES (${valuePlaceholders})
+		ON DUPLICATE KEY UPDATE ${valueAssignments}`, 
+		[table, columns, ...values]
+	);
+}
+
 module.exports = {
 	pool,
 	getConnectionPool,
@@ -261,5 +285,6 @@ module.exports = {
 	close,
 	getConnectionAsync,
 	queryAsync,
-	deferUntilConnected
+	deferUntilConnected,
+	upsert
 };
