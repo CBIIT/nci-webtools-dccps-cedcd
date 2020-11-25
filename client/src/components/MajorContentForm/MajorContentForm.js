@@ -115,7 +115,7 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.setCancerSymptom(cancerInfo.cancerSymptom))
                         dispatch(allactions.majorContentActions.setCancerOther(cancerInfo.cancerOther))
                         dispatch(allactions.majorContentActions.setCancerOtherSpecify(cancerInfo.cancerOtherSpecify))
-                        dispatch(allactions.majorContentActions.setHasLoaded(true))
+                        //dispatch(allactions.majorContentActions.setHasLoaded(true))
 
                         if (content[0].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }
                         if (content[0].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }

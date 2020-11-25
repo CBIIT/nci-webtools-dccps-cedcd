@@ -129,11 +129,11 @@ const InitialStates = {
         data_collected_other_specify: 'please specify',
         restrictions_other_specify: 'please specify',
         strategy_other_specify: 'please specify',
-        questionnaire: false,
-        main: false,
-        data: false,
-        specimen: false,
-        publication: false
+        questionnaire: true,
+        main: true,
+        data: true,
+        specimen: true,
+        publication: true
     },
     enrollmentCount: {
         'hasLoaded': false,

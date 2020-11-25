@@ -770,8 +770,9 @@ DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 CREATE PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+
     DECLARE flag INT DEFAULT 1;
-   
+  
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
@@ -786,39 +787,37 @@ BEGIN
 		BEGIN
 			UPDATE `cohort_basic` 
 			SET 
-				cohort_name = JSON_UNQUOTE(JSON_EXTRACT(info, '$.name')),
-
-				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')),
+				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
                 date_completed =if(@completionDate is not null, replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
-                clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight'))),
+                clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 				sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
-				cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
-				eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender'))),
-				eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.hasCancerSite')) = 'true', 1 , 0),
-				eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites'))),
-				eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibilityCriteriaOther')),
-				enrollment_total = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrolledTotal')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrolledTotal'))),
-				enrollment_year_start = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollStartYear')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollStartYear'))),
-				enrollment_year_end = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollEndYear')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollEndYear'))),
-				enrollment_ongoing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollOnGoing')) = 'null', null, CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollOnGoing')) AS SIGNED)),
-				enrollment_target = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.numOfPlans')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.numOfPlans'))),
-				enrollment_year_complete = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.yearToComplete')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.yearToComplete'))),
-				enrollment_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMinAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMinAge'))),
-				enrollment_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMaxAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMaxAge'))),
-				enrollment_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMedianAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMedianAge'))),
-				enrollment_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMeanAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMeanAge'))),
-				current_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMinAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMinAge'))),
-				current_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMaxAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMaxAge'))),
-				current_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge'))),
-				current_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge'))),
-				time_interval = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval'))),
-				most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear'))),
-				data_collected_in_person = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson'))),
-				data_collected_phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson'))),
-				data_collected_paper = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper'))),
-				data_collected_web = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedWeb')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedWeb'))),
-				data_collected_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOther')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOther'))),
-				data_collected_other_specify = IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOtherSpecify')), ''),
+				cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
+				eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
+				eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) = 'true', 1 , 0),
+				eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
+				eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_other_specify')),
+				enrollment_total = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total'))),
+				enrollment_year_start = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start'))),
+				enrollment_year_end = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end'))),
+				enrollment_ongoing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) = 'null', null, CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) AS SIGNED)),
+				enrollment_target = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target'))),
+				enrollment_year_complete = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete'))),
+				enrollment_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min'))),
+				enrollment_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max'))),
+				enrollment_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
+				enrollment_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
+				current_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min'))),
+				current_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max'))),
+				current_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median'))),
+				current_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean'))),
+				time_interval = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval'))),
+				most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year'))),
+				data_collected_in_person = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person'))),
+				data_collected_phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone'))),
+				data_collected_paper = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper'))),
+				data_collected_web = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web'))),
+				data_collected_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other'))),
+				data_collected_other_specify = IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other_specify')), ''),
 				restrictions = IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 1, '1_0_0_0_0_0_0_0',
 								   CONCAT('0_', if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) as CHAR)), '_',
 												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) as CHAR)), '_',
@@ -828,13 +827,13 @@ BEGIN
 												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))  as CHAR)), '_',
 												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))  as CHAR)))),
 				restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
-				strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyRoutine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyRoutine'))),
-				strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyMailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyMailing'))),
-				strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyAggregateStudy')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyAggregateStudy'))),
-				strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyIndividualStudy')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyIndividualStudy'))),
-				strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation'))),
-				strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther'))),
-				strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOtherSpecify')), ''),
+				strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine'))),
+				strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
+				strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
+				strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study'))),
+				strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation'))),
+				strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
+				strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')), ''),
 
                 /*
 				questionnaire_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFile')),
@@ -844,11 +843,11 @@ BEGIN
 				publication_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFile')),
                 */
 			 
-				questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl'))),
-				main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl'))),
-				data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl'))),
-				specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl'))),
-				publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl'))),
+				questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
+				main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'))),
+				data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'))),
+				specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'))),
+				publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'))),
           
 				update_time = NOW()
 				WHERE cohort_id = `targetID`;
@@ -918,12 +917,12 @@ BEGIN
 					if exists(select * from person where id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'))) then
 						UPDATE person 
 						SET `name` = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
-							institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')),
+							institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')),
 							email = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email'))
 						WHERE id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
 					else 
 						Insert into person (cohort_id, category_id, `name`, institution, email) values (targetID, 3,  JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
-                        JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')));
+                        JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')));
                     end if;
 					SELECT i + 1 INTO i;
 				END WHILE;
@@ -1487,15 +1486,19 @@ DROP PROCEDURE IF EXISTS get_major_content //
 
 CREATE PROCEDURE `get_major_content`(in targetID int)
 begin
-select cohort_id, category_id, category, baseline, followup from 
+select cohort_id, category_id, category, sub_category, baseline, followup, other_specify_baseline, other_specify_followup from 
 major_content m join lu_data_collected_category d
 on m.category_id = d.id
 where cohort_id = targetID order by category_id;
+
+select mdc_acute_treatment_toxicity as cancerToxicity, mdc_late_effects_of_treatment as cancerLateEffects,
+ mdc_symptoms_management as cancerSymptom, mdc_other_cancer_condition  as cancerOther, mdc_other_cancer_condition_specify as cancerOtherSpecify
+from cancer_info where cohort_id = targetID;
 end //
 
 DROP PROCEDURE IF EXISTS upsert_major_content //
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `upsert_major_content`(in targetID int, in info JSON)
+CREATE  PROCEDURE `upsert_major_content`(in targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
     
