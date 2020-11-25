@@ -1,5 +1,6 @@
 'use strict';
 
+var { promisify } = require('util');
 var express = require('express');
 var config = require('./config');
 var mysql = require('./components/mysql');
@@ -11,6 +12,10 @@ require('./routes')(app);
 
 const connection = mysql.getConnectionPool(config.mysql);
 app.locals.connection = connection;
+app.locals.mysql = {
+	connection,
+	query: promisify(connection.query).bind(connection),
+}
 
 mysql.deferUntilConnected(connection).then(function(connection) {
 	connection.query('call select_cohort_lookup()', (error, results, columns) => {
@@ -31,7 +36,7 @@ mysql.deferUntilConnected(connection).then(function(connection) {
 			cache.setValue("lookup:cohortstatus", cohortstatus, -1);
 	
 			app.listen(config.port, function () {
-				console.log('Project CEDCD listening on port :' + config.port);
+				console.log(`Project CEDCD listening on port: ${config.port}`);
 			});
 		}
 		else {

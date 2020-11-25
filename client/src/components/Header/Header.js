@@ -37,17 +37,17 @@ export default function Header({ props }) {
                     </> || <>
                         <a
                             className="login-button"
-                            href="/cohort/questionnaire/79"
+                            href="/login/external"
                             style={{ margin: '5px' }}
                             target="_self">
-                            Cohort Login
+                            External Login
                         </a>
                         <a
                             className="login-button"
-                            href="/admin/managecohort"
+                            href="/login/internal"
                             style={{ margin: '5px' }}
                             target="_self">
-                            Admin Login
+                            NIH Login
                         </a>
                     </>}
             </div>
