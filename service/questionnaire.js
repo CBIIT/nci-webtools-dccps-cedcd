@@ -257,11 +257,6 @@ router.post('/cancer_info', async (request, response) => {
         'ci_histologically_confirmed',
         'ci_cancer_subtype_histological',
         'ci_cancer_subtype_molecular',
-        'mdc_acute_treatment_toxicity',
-        'mdc_late_effects_of_treatment',
-        'mdc_symptoms_management',
-        'mdc_other_cancer_condition',
-        'mdc_other_cancer_condition_specify',
     ];
 
     try {
@@ -273,25 +268,74 @@ router.post('/cancer_info', async (request, response) => {
     }
 });
 
+router.get('/cohort/:id', async (request, response) => {
+    const { mysql } = request.app.locals;
+    try {
+
+        const [cohort] = await mysql.query(
+            `SELECT * FROM cohort WHERE id = ?`,
+            request.params.id
+        );
+
+        if (!cohort) {
+            throw new Error('Invalid Cohort');
+        }
+        
+        // todo: look in the information_schema for tables with foregn keys to cohort_id
+        const relatedTables = [
+            'cancer_count',
+            'cancer_info',
+            'cohort_basic',
+            'cohort_edit_status',
+            'enrollment_count',
+            'major_content',
+            'mortality',
+            'person',
+            'specimen',
+            'specimen_collected_type',
+            'specimen_count',
+            'technology',
+        ];
+
+        for (let table of relatedTables) {
+            cohort[table] = await mysql.query(
+                `SELECT * FROM ?? WHERE cohort_id = ?`,
+                [table, request.params.id]
+            );
+        }
+
+        response.json(cohort);
+    } catch (e) {
+        logger.error(e);
+        response.status(500).json({ message: 'Could not fetch cohort' });
+    }
+});
+
 router.get('/lookup', async (request, response) => {
     let { locals } = request.app;
     let { lookup, mysql } = locals;
 
-    if (!lookup) {
-        locals.lookup = lookup = {
-            cancer: await mysql.query(`SELECT id as value, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
-            case_type: await mysql.query(`SELECT id as value, case_type as label FROM lu_case_type`),
-            person_category: await mysql.query(`SELECT id as value, category as label FROM lu_person_category`),
-            cohort_status: await mysql.query(`SELECT id as value, cohortstatus as label FROM lu_cohort_status`),
-            data_category: await mysql.query(`SELECT id as value, category, sub_category FROM lu_data_category`),
-            ethnicity: await mysql.query(`SELECT id as value, ethnicity as label FROM lu_ethnicity`),
-            gender: await mysql.query(`SELECT id as value, gender as label FROM lu_gender`),
-            race: await mysql.query(`SELECT id as value, race as label FROM lu_race`),
-            specimen: await mysql.query(`SELECT id as value, specimen as label, sub_category FROM lu_specimen`),
+    try {
+
+        if (!lookup) {
+            locals.lookup = lookup = {
+                cancer: await mysql.query(`SELECT id as value, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
+                case_type: await mysql.query(`SELECT id as value, case_type as label FROM lu_case_type`),
+                person_category: await mysql.query(`SELECT id as value, category as label FROM lu_person_category`),
+                cohort_status: await mysql.query(`SELECT id as value, cohortstatus as label FROM lu_cohort_status`),
+                data_category: await mysql.query(`SELECT id as value, category, sub_category FROM lu_data_category`),
+                ethnicity: await mysql.query(`SELECT id as value, ethnicity as label FROM lu_ethnicity`),
+                gender: await mysql.query(`SELECT id as value, gender as label FROM lu_gender`),
+                race: await mysql.query(`SELECT id as value, race as label FROM lu_race`),
+                specimen: await mysql.query(`SELECT id as value, specimen as label, sub_category FROM lu_specimen`),
+            }
         }
+        response.json(lookup);
+    } catch (e) {
+        logger.error(e);
+        response.status(500).json({ message: 'Could not fetch lookup tables' });
     }
 
-    response.json(lookup);
 });
 
 module.exports = router
