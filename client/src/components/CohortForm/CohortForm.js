@@ -100,6 +100,12 @@ const CohortForm = ({...props}) => {
                     
                     if(currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.requirements(true))}
                     if(currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy(true))}
+
+                    if(currentCohort.questionnaire_url){dispatch(allactions.cohortErrorActions.questionnaire(true))}
+                    if(currentCohort.main_cohort_url){dispatch(allactions.cohortErrorActions.main(true))}
+                    if(currentCohort.data_url){dispatch(allactions.cohortErrorActions.data(true))}
+                    if(currentCohort.specimen_url){dispatch(allactions.cohortErrorActions.specimen(true))}
+                    if(currentCohort.publication_url){dispatch(allactions.cohortErrorActions.publication(true))}
                     //just need to remove the first investigator error on load, since only investigator 0 has errors initially
                     if(completer && completer.completerName) {dispatch(allactions.cohortErrorActions.completerName(true))}
                     if(completer && completer.completerPosition) {dispatch(allactions.cohortErrorActions.completerPosition(true))}
@@ -415,7 +421,7 @@ const CohortForm = ({...props}) => {
                                 </div>
                                 <div id='contacterInfo' className='col-sm-8' style={{paddingLeft: '0'}}>
                                     {
-                                        cohort.clarification_contact === 0 && saved ? 
+                                        cohort.clarification_contact === 0 ? 
                                         <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors}  displayStyle={saved}  leftPadding='0' /> : ''
                                     }
                                 </div>
@@ -994,7 +1000,7 @@ const CohortForm = ({...props}) => {
                                     <tbody>
                                         <tr>
                                         <td>Questionnaires<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire((e.target.value || cohort.questioinnaireFileName), true))}} /></td>
+                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire((e.target.value), true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                             <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.questionnaire((e.target.files[0].name || cohort.questionnaire_url), true))}} disabled={cohort.questionnaire_url} />
                                         </td>
@@ -1002,7 +1008,7 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                         <tr>
                                         <td>Main cohort protocol<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main((e.target.value || cohort.mainFileName), true))}} /></td>
+                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main((e.target.value), true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                                 <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.main((e.target.files[0].name || cohort.main_cohort_url), true))}} disabled={cohort.main_cohort_url}/>
                                         </td>
@@ -1010,19 +1016,19 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                         <tr>
                                         <td>Data sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data((e.target.value || cohort.dataFileName), true))}} /></td>
+                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data((e.target.value), true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.data((e.target.files[0].name || cohort.data_url), true))}}disabled={cohort.data_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Biospecimen sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen((e.target.value || cohort.specimenFileName), true))}} /></td>
+                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen((e.target.value), true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.specimen((e.target.files[0].name || cohort.specimen_url), true))}} disabled={cohort.specimen_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Publication(authorship) policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication((e.target.value || cohort.publicationFileName), true))}} /></td>
+                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication((e.target.value), true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.publication((e.target.files[0].name || cohort.publication_url), true))}} disabled={cohort.publication_url}/></td>                                       
                                         </tr>
                                     </tbody>
