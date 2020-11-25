@@ -7,8 +7,6 @@ module.exports = {
 }
 
 const authRoutes = [
-    // '^/admin/\\w+$',
-    // '^/cohort/questionnaire/\\w+$',
     '^/login/internal\/?$',
     '^/login/external\/?$',
 ].map(pattern => new RegExp(pattern));
@@ -16,19 +14,16 @@ const authRoutes = [
 async function authenticationMiddleware(request, response, next) {
     const { url, headers, session, app } = request;
     const { mysql } = app.locals;
-    const nodeEnv = process.env.NODE_ENV;
     const { 
         user_auth_type: userAuthType, 
         fed_email: fedEmail, 
         sm_user: smUser
     } = headers;
 
-    console.log('authenticationMiddleware', url, authRoutes.some(regex => regex.test(url)))
-
     if (authRoutes.some(regex => regex.test(url))) {
         try {
 
-            if (nodeEnv === 'development' || !smUser) {
+            if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
                 session.user = {
                     type: 'internal',
@@ -51,9 +46,10 @@ async function authenticationMiddleware(request, response, next) {
                     [userName]
                 );
 
-                console.log(results);
-
-                const userRole = results[0] && results[0].accessLevel; // SystemAdmin or CohortAdmin;
+                // SystemAdmin or CohortAdmin
+                const userRole = results && results.length 
+                    ? results[0].accessLevel 
+                    : null; 
 
                 session.user = {
                     type: userType,
@@ -61,8 +57,6 @@ async function authenticationMiddleware(request, response, next) {
                     role: userRole,
                 };
             }
-
-            console.log('logged in', session.user);
 
             if (/CohortAdmin/.test(session.user.role)) {
                 response.status(301).redirect('/cohort/questionnaire/79');
