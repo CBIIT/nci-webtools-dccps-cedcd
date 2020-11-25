@@ -1487,7 +1487,7 @@ DROP PROCEDURE IF EXISTS get_major_content //
 CREATE PROCEDURE `get_major_content`(in targetID int)
 begin
 select cohort_id, category_id, category, sub_category, baseline, followup, other_specify_baseline, other_specify_followup from 
-major_content m join lu_data_collected_category d
+major_content m join lu_data_category d
 on m.category_id = d.id
 where cohort_id = targetID order by category_id;
 
