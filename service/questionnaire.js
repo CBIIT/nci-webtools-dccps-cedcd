@@ -185,7 +185,7 @@ router.get('/cancer_count', async (request, response) => {
     }
     catch (e) {
         logger.error(e);
-        response.status(500).json({message: 'could not fetch cancer_info'})
+        response.status(500).json({message: 'could not fetch cancer_count'})
     }
 });
 
