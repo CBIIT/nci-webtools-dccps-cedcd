@@ -111,7 +111,7 @@ router.post('/major_content/:id', function(req, res){
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function(result){
-        logger.debug(result)
+        //logger.debug(result)
         const majorContent = {}
         majorContent.counts = result[0]
         majorContent.cancerInfo = result[1][0]
