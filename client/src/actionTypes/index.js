@@ -187,8 +187,7 @@ const actionTypes = {
 
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
-    setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
-
+    setCancerInfoFormValue: 'SET_CI_FORM_VALUE',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS',
 
     /* section E */
@@ -207,6 +206,8 @@ const actionTypes = {
     setOtherCodeSpecify: 'SET_OTHER_CODE_SPECIFY',
     setDeathNumbers: 'SET_MORTALITY_DEATH_NUMBERS',
     setSectionEStatus: 'SET_MORTALITY_STATUS',
+
+    setLookup: 'SET_LOOKUP',
 }
 
 export default  actionTypes

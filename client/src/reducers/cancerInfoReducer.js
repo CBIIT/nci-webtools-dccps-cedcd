@@ -1,16 +1,21 @@
 import t from '../actionTypes'
 import InitialStates from '../states'
 const actions = {}
+
 actions[t.setCancerCount] = (state, action) => {
-   let shadow = {...state}
-   let counts = action.count.trim()
-   if(/^\d*$/.test(counts))
-    shadow[action.cell] = counts
-   return shadow
+   let counts = parseInt(action.count);
+   state.counts[action.cell] = isNaN(counts) ? null : counts;
+   return state;
 }
 
-const getResult = feedState => feedAction => actions[feedAction.type] && actions[feedAction.type](feedState, feedAction) || feedState
+actions[t.setCancerInfoFormValue] = (state, action) => {
+   state.form[action.key] = action.value;
+   return state;
+}
 
-const cancerInfoReducer = (state=InitialStates.cancerCount, action={}) => getResult(state)(action)
+const cancerInfoReducer = (state=InitialStates.cancerInfo, action={}) => 
+   actions[action.type] 
+      ? actions[action.type]({ ...state }, action)
+      : { ...state };
 
 export default cancerInfoReducer
