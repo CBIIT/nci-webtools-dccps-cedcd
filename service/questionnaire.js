@@ -28,7 +28,7 @@ router.post('/upload/:id/:category', async function(req, res, next) {
 
 router.post('/update_cohort_basic/:id', function(req, res){
     logger.debug(req.body)
-    req.body.description = req.body.description.replace(/\n/g, '\\n')
+    req.body.cohort_description = req.body.cohort_description.replace(/\n/g, '\\n')
     let body = JSON.stringify(req.body)
     let proc = 'update_cohort_basic'
     let params = []
@@ -39,7 +39,7 @@ router.post('/update_cohort_basic/:id', function(req, res){
         if(result && result[0] && result[0][0].rowsAffacted > 0)
             res.json({status:200, message:'update successful'})
         else
-            res.json({status:500, message:'update failed'})
+            res.json({status:500, message:'update failed'})      
     })
     
 })
@@ -62,6 +62,7 @@ router.post('/cohort_basic_info/:id', function(req, res){
         })
         basic_info.collaborator = results[4][0]
         basic_info.sectionStatus = results[5]
+
         res.json({status:200, data: basic_info})
     })
 })
@@ -113,7 +114,7 @@ router.post('/major_content/:id', function(req, res){
         logger.debug(result)
         const majorContent = {}
         majorContent.counts = result[0]
-        majorContent.cancerInfo = result[1]
+        majorContent.cancerInfo = result[1][0]
         if(majorContent)
             res.json({status: 200, data: majorContent})
         else
