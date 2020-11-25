@@ -281,9 +281,9 @@ router.get('/lookup', async (request, response) => {
         locals.lookup = lookup = {
             cancer: await mysql.query(`SELECT id as value, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
             case_type: await mysql.query(`SELECT id as value, case_type as label FROM lu_case_type`),
-            category: await mysql.query(`SELECT id as value, category as label FROM lu_person_category`),
+            person_category: await mysql.query(`SELECT id as value, category as label FROM lu_person_category`),
             cohort_status: await mysql.query(`SELECT id as value, cohortstatus as label FROM lu_cohort_status`),
-            data_collected_category: await mysql.query(`SELECT id as value, category, sub_category FROM lu_data_category`),
+            data_category: await mysql.query(`SELECT id as value, category, sub_category FROM lu_data_category`),
             ethnicity: await mysql.query(`SELECT id as value, ethnicity as label FROM lu_ethnicity`),
             gender: await mysql.query(`SELECT id as value, gender as label FROM lu_gender`),
             race: await mysql.query(`SELECT id as value, race as label FROM lu_race`),
