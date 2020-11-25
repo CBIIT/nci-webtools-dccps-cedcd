@@ -788,7 +788,7 @@ BEGIN
 			UPDATE `cohort_basic` 
 			SET 
 				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
-                date_completed =if(@completionDate is not null, replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
+                date_completed =if(@completionDate is not null  && @completionDate != '', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
                 clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 				sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
 				cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
@@ -1436,7 +1436,7 @@ BEGIN
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@recentDate is not null, replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
+    set enrollment_most_recent_date = if(@recentDate is not null && @recentDate != '', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
 	where cohort_id = `id`;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
