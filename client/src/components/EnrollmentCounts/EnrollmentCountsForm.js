@@ -1,14 +1,25 @@
 import React, {useState, useEffect} from 'react'
-//import {useForm} from 'react-hook-form'
+import Reminder from '../Tooltip/Tooltip'
 import {useSelector, useDispatch, batch} from 'react-redux'
 import DatePicker from 'react-datepicker'
 import allactions from '../../actions'
-import validator from '../../validators'
+//import validator from '../../validators'
+import Messenger from '../Snackbar/Snackbar'
+import CenterModal from '../Modal/Modal'
+
+import 'react-datepicker/dist/react-datepicker.css'
+import './EnrollmentCounts.css'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
+    const errors = useSelector(state => state.enrollmentCountErrorReducer)
     const dispatch = useDispatch()
-    const [displayStyle, setDisplay] = useState('0')
-    const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
+    //const [displayStyle, setDisplay] = useState('0')
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
+    const [proceed, setProceed] = useState(false)
+    const [saved, setSaved] = useState(false)
+    //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -25,16 +36,15 @@ const EnrollmentCountsForm = ({...props}) => {
         dispatch(allactions.enrollmentCountActions.updateTotals(coltotalid, originalColTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
     }
-    var dates = ''
+    //var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
             fetch('/api/questionnaire/enrollment_counts/79', {
                 method: 'POST',
             }).then(res => res.json())
-              .then(result => {
-                if(result.data.mostRecentDate.mostRecentDate)
-                {let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)}
+              .then(result => {               
                 batch(()=> {
+                    if(result.data.mostRecentDate.mostRecentDate) dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
                     for(let i = 0; i < result.data.details.length; i++)
                         dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
                     for(let i = 0; i < result.data.rowTotals.length; i++)
@@ -49,14 +59,6 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
 
-    /*
-    useEffect(() => {
-        if(enrollmentCount.mostRecentDate){
-            alert(enrollmentCount.mostRecentDate)
-            let shadow={...errors}; delete shadow.mostRecentDate; setErrors(shadow)
-        }
-    }, [])
-    */
     const saveEnrollment = (id=79, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
@@ -74,37 +76,57 @@ const EnrollmentCountsForm = ({...props}) => {
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
                     }
                     if(!proceed)
-                        alert('Data was successfully saved')
+                        setSuccessMsg(true) 
                     else
                         props.sectionPicker('C')
                 }else{
-                    alert(result.message)
+                    setSuccessMsg(true) 
                 }
             })
     }
     const handleSave = () => {
+        setSaved(true)
         if(Object.entries(errors).length === 0){
             enrollmentCount.sectionBStatus='complete'
             dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
             saveEnrollment(79)  
         }
         else{
-            setDisplay('1')
-            if(window.confirm('there are validation errors, are you sure to save?')){
-                enrollmentCount.sectionBStatus='incomplete'
-                dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
-                saveEnrollment(79)
-            }
+            //setDisplay('1')
+            setModalShow(true)
+            setProceed(false)
         }
     }
 
     const handleSaveContinue = () => {
-        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
+        setSaved(true)
+        if(Object.entries(errors).length === 0){
+            enrollmentCount.sectionBStatus='complete'
+            dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
+            saveEnrollment(79, true)
+        }
+        else{
+            setModalShow(true)
+            setProceed(true)
+            }
     }
 
+    const confirmSaveStay = () => {
+        enrollmentCount.sectionBStatus='incomplete'
+        dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'));
+        saveEnrollment(79);setModalShow(false)
+    }
+
+    const confirmSaveContinue = () => {
+        enrollmentCount.sectionBStatus='incomplete'
+        dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
+        saveEnrollment(79, true);setModalShow(false)
+    }
 
     return <div id='enrollmentCountContainer' className='col-md-12'>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg}/>}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
             <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>            
                 <div style={{marginTop: '20px', marginBottom: '20px'}}>
                     Record actual, not planned, recruitment counts
@@ -252,14 +274,22 @@ const EnrollmentCountsForm = ({...props}) => {
                             </tr>                            
                         </tbody>
                     </table>
-                    <div style={{marginTop: '10px'}}>
+                    {/*<div style={{marginTop: '10px'}}>
                         <span><label htmlFor='mostRecentDate'>B.2{' '}Most recent date enrollment counts were confirmed&nbsp;&nbsp;&nbsp;&nbsp;</label></span>
                         <span>
-                            <DatePicker className='form-control' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null}  dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />
+                            {errors.mostRecentDate ? <Reminder message={errors.mostRecentDate}><DatePicker className='form-control errorDate' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null}  placeholderText='MM/DD/YYYY's onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} /></Reminder> : <DatePicker className='form-control' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null}  placeholderText='MM/DD/YYYY' dateFormat='MM/dd/yyyy' onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){setErrors({...errors, mostRecentDate: 'please provide a value'})}else{let shadow = {...errors}; if(shadow.mostRecentDate) delete shadow.mostRecentDate; setErrors(shadow) }}} />}
                         </span>
-                        {errors.mostRecentDate && <span style={{color: 'red', opacity: displayStyle}}>{errors.mostRecentDate}</span>}
                     </div>
-
+*/}
+                    <div className='form-group col-md-12' style={{paddingLeft: '0', marginTop: '10px'}}>
+                        <div className='col-md-12' style={{paddingLeft: '0'}}>
+                            <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label>
+                            <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
+                                {errors.mostRecentDate && saved ? <Reminder message={errors.mostRecentDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))}}} /></span>}
+                            </span>
+                        </div>
+                    </div>
                 </form>
             </div>
             <div style={{position: 'relative'}}>
