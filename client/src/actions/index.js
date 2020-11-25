@@ -7,6 +7,7 @@ import mortalityActions from './mortalityActions'
 import cohortErrorActions from './cohortErrorActions'
 import majorContentErrorActions from './majorContentErrorActions'
 import enrollmentCountErrorActions from './enrollmentCountErrorActions'
+import specimenActions from './specimenActions'
 export default {
     cohortActions,
     enrollmentCountActions,
@@ -16,5 +17,6 @@ export default {
     mortalityActions,
     cohortErrorActions,
     enrollmentCountErrorActions,
-    majorContentErrorActions
+    majorContentErrorActions,
+    specimenActions
 }

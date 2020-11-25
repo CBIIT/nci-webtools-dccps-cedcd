@@ -25,7 +25,8 @@
 19. upsert_enrollment_count
 20. add_file_attachment
 21. get_enrollment_counts
-22. get_
+22. get_specimen_counts
+23. update_specimen_count
 *
  */
 
@@ -1744,4 +1745,236 @@ BEGIN
 	select row_count() as rowAffacted;
 end //
 
+DROP PROCEDURE if EXISTS `get_specimen_counts` //
+
+CREATE PROCEDURE `get_specimen_counts`(in targetID int)
+begin
+	select c.cancer, ls.specimen,
+	concat(cast(c.id as char), '-', cast(s.specimen_id as char)) as cellId,
+	s.specimens_counts as counts
+	from specimen_count s
+	join lu_cancer c on s.cancer_id = c.id
+	join lu_specimen ls on s.specimen_id = ls.id
+	where cohort_id = targetID order by cancer_id, specimen_id;
+end //
+
+DROP PROCEDURE if EXISTS `update_specimen_count` //
+
+CREATE  PROCEDURE `update_specimen_count`(in targetID int, in info JSON)
+begin
+	DECLARE flag INT DEFAULT 1;
+	DECLARE i INT DEFAULT 0;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+
+  START transaction;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-1"')) where cancer_id = 1 and specimen_id = 1 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-2"')) where cancer_id = 1 and specimen_id = 2 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-3"')) where cancer_id = 1 and specimen_id = 3 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-4"')) where cancer_id = 1 and specimen_id = 4 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-5"')) where cancer_id = 1 and specimen_id = 5 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-6"')) where cancer_id = 1 and specimen_id = 6 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."1-7"')) where cancer_id = 1 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-1"')) where cancer_id = 2 and specimen_id = 1 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-2"')) where cancer_id = 2 and specimen_id = 2 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-3"')) where cancer_id = 2 and specimen_id = 3 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-4"')) where cancer_id = 2 and specimen_id = 4 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-5"')) where cancer_id = 2 and specimen_id = 5 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-6"')) where cancer_id = 2 and specimen_id = 6 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."2-7"')) where cancer_id = 2 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-1"')) where cancer_id = 3 and specimen_id = 1 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-2"')) where cancer_id = 3 and specimen_id = 2 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-3"')) where cancer_id = 3 and specimen_id = 3 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-4"')) where cancer_id = 3 and specimen_id = 4 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-5"')) where cancer_id = 3 and specimen_id = 5 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-6"')) where cancer_id = 3 and specimen_id = 6 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."3-7"')) where cancer_id = 3 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-1"')) where cancer_id = 4 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-2"')) where cancer_id = 4 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-3"')) where cancer_id = 4 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-4"')) where cancer_id = 4 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-5"')) where cancer_id = 4 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-6"')) where cancer_id = 4 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."4-7"')) where cancer_id = 4 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-1"')) where cancer_id = 5 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-2"')) where cancer_id = 5 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-3"')) where cancer_id = 5 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-4"')) where cancer_id = 5 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-5"')) where cancer_id = 5 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-6"')) where cancer_id = 5 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."5-7"')) where cancer_id = 5 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-1"')) where cancer_id = 6 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-2"')) where cancer_id = 6 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-3"')) where cancer_id = 6 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-4"')) where cancer_id = 6 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-5"')) where cancer_id = 6 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-6"')) where cancer_id = 6 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."6-7"')) where cancer_id = 6 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-1"')) where cancer_id = 7 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-2"')) where cancer_id = 7 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-3"')) where cancer_id = 7 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-4"')) where cancer_id = 7 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-5"')) where cancer_id = 7 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-6"')) where cancer_id = 7 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."7-7"')) where cancer_id = 7 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-1"')) where cancer_id = 8 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-2"')) where cancer_id = 8 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-3"')) where cancer_id = 8 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-4"')) where cancer_id = 8 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-5"')) where cancer_id = 8 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-6"')) where cancer_id = 8 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."8-7"')) where cancer_id = 8 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-1"')) where cancer_id = 9 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-2"')) where cancer_id = 9 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-3"')) where cancer_id = 9 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-4"')) where cancer_id = 9 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-5"')) where cancer_id = 9 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-6"')) where cancer_id = 9 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."9-7"')) where cancer_id = 9 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-1"')) where cancer_id = 10 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-2"')) where cancer_id = 10 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-3"')) where cancer_id = 10 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-4"')) where cancer_id = 10 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-5"')) where cancer_id = 10 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-6"')) where cancer_id = 10 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."10-7"')) where cancer_id = 10 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-1"')) where cancer_id = 11 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-2"')) where cancer_id = 11 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-3"')) where cancer_id = 11 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-4"')) where cancer_id = 11 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-5"')) where cancer_id = 11 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-6"')) where cancer_id = 11 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."11-7"')) where cancer_id = 11 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-1"')) where cancer_id = 12 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-2"')) where cancer_id = 12 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-3"')) where cancer_id = 12 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-4"')) where cancer_id = 12 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-5"')) where cancer_id = 12 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-6"')) where cancer_id = 12 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."12-7"')) where cancer_id = 12 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-1"')) where cancer_id = 13 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-2"')) where cancer_id = 13 and specimen_id = 2 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-3"')) where cancer_id = 13 and specimen_id = 3 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-4"')) where cancer_id = 13 and specimen_id = 4 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-5"')) where cancer_id = 13 and specimen_id = 5 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-6"')) where cancer_id = 13 and specimen_id = 6 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."13-7"')) where cancer_id = 13 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-1"')) where cancer_id = 14 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-2"')) where cancer_id = 14 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-3"')) where cancer_id = 14 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-4"')) where cancer_id = 14 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-5"')) where cancer_id = 14 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-6"')) where cancer_id = 14 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."14-7"')) where cancer_id = 14 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-1"')) where cancer_id = 15 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-2"')) where cancer_id = 15 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-3"')) where cancer_id = 15 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-4"')) where cancer_id = 15 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-5"')) where cancer_id = 15 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-6"')) where cancer_id = 15 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."15-7"')) where cancer_id = 15 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-1"')) where cancer_id = 16 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-2"')) where cancer_id = 16 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-3"')) where cancer_id = 16 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-4"')) where cancer_id = 16 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-5"')) where cancer_id = 16 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-6"')) where cancer_id = 16 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."16-7"')) where cancer_id = 16 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-1"')) where cancer_id = 17 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-2"')) where cancer_id = 17 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-3"')) where cancer_id = 17 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-4"')) where cancer_id = 17 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-5"')) where cancer_id = 17 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-6"')) where cancer_id = 17 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."17-7"')) where cancer_id = 17 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-1"')) where cancer_id = 18 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-2"')) where cancer_id = 18 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-3"')) where cancer_id = 18 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-4"')) where cancer_id = 18 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-5"')) where cancer_id = 18 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-6"')) where cancer_id = 18 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."18-7"')) where cancer_id = 18 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-1"')) where cancer_id = 19 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-2"')) where cancer_id = 19 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-3"')) where cancer_id = 19 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-4"')) where cancer_id = 19 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-5"')) where cancer_id = 19 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-6"')) where cancer_id = 19 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."19-7"')) where cancer_id = 19 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-1"')) where cancer_id = 20 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-2"')) where cancer_id = 20 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-3"')) where cancer_id = 20 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-4"')) where cancer_id = 20 and specimen_id = 4 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-5"')) where cancer_id = 20 and specimen_id = 5 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-6"')) where cancer_id = 20 and specimen_id = 6 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."20-7"')) where cancer_id = 20 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-1"')) where cancer_id = 21 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-2"')) where cancer_id = 21 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-3"')) where cancer_id = 21 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-4"')) where cancer_id = 21 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-5"')) where cancer_id = 21 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-6"')) where cancer_id = 21 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."21-7"')) where cancer_id = 21 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-1"')) where cancer_id = 22 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-2"')) where cancer_id = 22 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-3"')) where cancer_id = 22 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-4"')) where cancer_id = 22 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-5"')) where cancer_id = 22 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-6"')) where cancer_id = 22 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."22-7"')) where cancer_id = 22 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-1"')) where cancer_id = 23 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-2"')) where cancer_id = 23 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-3"')) where cancer_id = 23 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-4"')) where cancer_id = 23 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-5"')) where cancer_id = 23 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-6"')) where cancer_id = 23 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."23-7"')) where cancer_id = 23 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-1"')) where cancer_id = 24 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-2"')) where cancer_id = 24 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-3"')) where cancer_id = 24 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-4"')) where cancer_id = 24 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-5"')) where cancer_id = 24 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-6"')) where cancer_id = 24 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."24-7"')) where cancer_id = 24 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-1"')) where cancer_id = 25 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-2"')) where cancer_id = 25 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-3"')) where cancer_id = 25 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-4"')) where cancer_id = 25 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-5"')) where cancer_id = 25 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-6"')) where cancer_id = 25 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."25-7"')) where cancer_id = 25 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-1"')) where cancer_id = 26 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-2"')) where cancer_id = 26 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-3"')) where cancer_id = 26 and specimen_id = 3 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-4"')) where cancer_id = 26 and specimen_id = 4 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-5"')) where cancer_id = 26 and specimen_id = 5 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-6"')) where cancer_id = 26 and specimen_id = 6 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."26-7"')) where cancer_id = 26 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-1"')) where cancer_id = 27 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-2"')) where cancer_id = 27 and specimen_id = 2 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-3"')) where cancer_id = 27 and specimen_id = 3 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-4"')) where cancer_id = 27 and specimen_id = 4 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-5"')) where cancer_id = 27 and specimen_id = 5 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-6"')) where cancer_id = 27 and specimen_id = 6 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."27-7"')) where cancer_id = 27 and specimen_id = 7 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-1"')) where cancer_id = 28 and specimen_id = 1 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-2"')) where cancer_id = 28 and specimen_id = 2 and cohort_id = targetID;	
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-3"')) where cancer_id = 28 and specimen_id = 3 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-4"')) where cancer_id = 28 and specimen_id = 4 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-5"')) where cancer_id = 28 and specimen_id = 5 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-6"')) where cancer_id = 28 and specimen_id = 6 and cohort_id = targetID;	
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."28-7"')) where cancer_id = 28 and specimen_id = 7 and cohort_id = targetID;
+    update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-1"')) where cancer_id = 29 and specimen_id = 1 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-2"')) where cancer_id = 29 and specimen_id = 2 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-3"')) where cancer_id = 29 and specimen_id = 3 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-4"')) where cancer_id = 29 and specimen_id = 4 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-5"')) where cancer_id = 29 and specimen_id = 5 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-6"')) where cancer_id = 29 and specimen_id = 6 and cohort_id = targetID;
+	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."29-7"')) where cancer_id = 29 and specimen_id = 7 and cohort_id = targetID;
+  commit;
+  SELECT flag AS rowsAffacted;
+end //
 DELIMITER ;

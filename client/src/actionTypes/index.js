@@ -343,6 +343,10 @@ const actionTypes = {
     setOtherCodeSpecify: 'SET_OTHER_CODE_SPECIFY',
     setDeathNumbers: 'SET_MORTALITY_DEATH_NUMBERS',
     setSectionEStatus: 'SET_MORTALITY_STATUS',
+
+    /*secton G*/
+    setSpecimenCount: 'SET_SPECIMEN_COUNT',
+    setSectionGStatus: 'SET_SECTION_G_STATUS'
 }
 
 export default actionTypes
