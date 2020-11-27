@@ -9,7 +9,7 @@ router.use((request, response, next) => {
     const { session } = request;
     if (process.env.NODE_ENV !== 'development' &&
         !/CohortAdmin|SystemAdmin/.test(session.role)) {
-        response.status(400).json('Unauthorized');
+        response.status(400).json('Unauthorized').end();
     } else {
         next();
     }
@@ -322,7 +322,7 @@ router.get('/lookup', async (request, response) => {
                 cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
                 data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),
                 ethnicity: await mysql.query(`SELECT id, ethnicity FROM lu_ethnicity`),
-                gender: await mysql.query(`SELECT id, gender as label FROM lu_gender`),
+                gender: await mysql.query(`SELECT id, gender FROM lu_gender`),
                 person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),
                 race: await mysql.query(`SELECT id, race FROM lu_race`),
                 specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
