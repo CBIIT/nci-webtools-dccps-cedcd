@@ -6,6 +6,7 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from '../MortalityForm/MortalityForm'
+import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 const content = (currentSection, handleClick) => {
     switch(currentSection){
         case 'A':
@@ -27,6 +28,10 @@ const content = (currentSection, handleClick) => {
         case 'E':
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <MortalityForm />
+            </Questionnaire>
+        case 'F':
+            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <DataLinkageForm />
             </Questionnaire>
         default :
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
