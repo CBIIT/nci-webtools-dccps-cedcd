@@ -3,13 +3,23 @@ import { useSelector, useDispatch } from 'react-redux'
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames'
 import allactions from '../../actions'
+import { loadCohort } from '../../reducers/cancerInfoReducer';
+import { info } from 'winston';
 
 const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
-    const { counts, form } = useSelector(state => state.cancerInfoReducer);
-    const setFormValue = (key, value) => dispatch(allactions.cancerInfoActions.setCancerInfoFormValue(key, value));
+    const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+
+    const [activePanel, setActivePanel] = useState('panelA')
+    const [errors, setErrors] = useState({});
+    const [submitted, setSubmitted] = useState(false);
     const setCount = (key, value) => dispatch(allactions.cancerInfoActions.setCancerCount(key, value));
+    const setFormValue = (key, value) => {
+        setErrors(getValidationErrors({...form, [key]: value}));
+        dispatch(allactions.cancerInfoActions.setCancerInfoFormValue(key, value))
+    };
+
     const lookupMap = {
         female: lookup && lookup.gender.find(e => e.gender === 'Female').id,
         male: lookup && lookup.gender.find(e => e.gender === 'Male').id,
@@ -18,11 +28,50 @@ const CancerInfoForm = ({ ...props }) => {
     }
     const cohortId = 79;
 
-    const [activePanel, setActivePanel] = useState('panelA')
-    const [errors, setErrors] = useState({});
-    const [submitted, setSubmitted] = useState(false);
+    useEffect(() => {
+        // load existing cohort
+        dispatch(loadCohort(cohortId));
+    }, []);
 
-    const getValidationErrors = (form) => {
+    useEffect(() => {
+        // once cohort is loaded, populate form
+        if (!cohort || !Object.keys(cohort).length || !lookup) 
+            return;
+            
+        let {cancer_count: count, cancer_info: info} = cohort;
+        info = info[0] || {};
+
+        for (let key in info) {
+            setFormValue(key, info[key]);
+        }
+
+        const counts = [];
+
+        // merge unique columns into single key
+        for (let {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts} of count) {
+            counts.push({
+                key: [cohort_id, cancer_id, gender_id, case_type_id].join('_'),
+                value: cancer_counts
+            })    
+        }
+
+        // populate non-existent counts with 0
+        for (let c of lookup.cancer) {
+            for (let gender of [lookupMap.male, lookupMap.female]) {
+                for (let type of [lookupMap.prevalent, lookupMap.incident]) {
+                    let key = [cohortId, c.id, gender, type].join('_');
+                    if (!counts.find(c => c.key === key))
+                        counts.push({key, value: 0})
+                }
+            }
+        }
+
+        // dispatch updated counts
+        counts.forEach(c => setCount(c.key, c.value));
+    }, [cohort, lookup]);
+
+
+    function getValidationErrors(form) {
         const isNull =  v =>['', undefined, null].includes(v)
         const errors = {
             ci_confirmed_cancer_year: isNull(form.ci_confirmed_cancer_year),
@@ -76,33 +125,40 @@ const CancerInfoForm = ({ ...props }) => {
         return errors;
     }
 
-    const handleSave = () => {
-        const errors = getValidationErrors(form);
-        console.log(errors);
+    async function handleSave() {
+        setSubmitted(true);
+        // console.log(errors);
 
+        // todo: replace window.confirm/alert with either modals or toasts
 
+        if (Object.entries(errors).length === 0 || 
+            window.confirm('There are validation errors, are you sure to save?')
+        ) {
+            try {
+                const response = await fetch(`/api/questionnaire/cohort/${cohortId}`, {
+                    method: 'POST', 
+                    headers: {'content-type': 'application/json'},
+                    body: JSON.stringify({
+                        cancer_info: form,
+                        cancer_count: Object.entries(counts).map(([key, value]) => {
+                            let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
+                            let cancer_counts = value;
+                            return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
+                        })
+                    })
+                })
 
-
-        /* if(Object.entries(errors).length === 0)
-             saveEnrollment(79)
-         else{
-             //setDisplay('block')
-             if(window.confirm('there are validation errors, are you sure to save?'))
-                 saveEnrollment(79)
-         }*/
-
-
-
+                // reload form to confirm changes were made
+                dispatch(loadCohort(cohortId));
+            } catch (e) {
+                window.alert('There was an error processing your request. Please try again later.')
+            }
+        }
     }
 
-    const handleSaveContinue = () => {
-        handleSave();
+    async function handleSaveContinue() {
+        await handleSave();
         props.sectionPicker('E');
-
-        /*
-        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
-            */
     }
 
     return lookup && <div id="cancerInfoContainer" className="p-3">
@@ -144,7 +200,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 {inputKeys.map(key => 
                                     <td className="p-0" key={key}>
                                         <input 
-                                            class="form-control input-lg border-0 text-right" 
+                                            className="form-control input-lg border-0 text-right" 
                                             type="number"  
                                             min="0"
                                             name={key} 
@@ -162,8 +218,8 @@ const CancerInfoForm = ({ ...props }) => {
 
         <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information (D.2 - D.11)</div>
         <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
-            <form class="form-horizontal mt-3">
-                <div class="row mb-4 py-3 hover-highlight">
+            <form className="form-horizontal mt-3">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.2</strong>
                         Most recent date confirmed cancer case ascertainment:
@@ -177,7 +233,7 @@ const CancerInfoForm = ({ ...props }) => {
 
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.3</strong>
                         How were your cancer cases ascertained?
@@ -232,7 +288,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.4</strong>
                         Did you collect information about cancer recurrence?
@@ -251,7 +307,7 @@ const CancerInfoForm = ({ ...props }) => {
                 
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.5</strong>
                         Do you have second/subsequent primary cancer diagnoses?
@@ -270,7 +326,7 @@ const CancerInfoForm = ({ ...props }) => {
                 
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.6</strong>
                         Do you have cancer treatment data?
@@ -288,7 +344,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>
 
                 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.6a</strong>
                         Specify the treatment information you have:
@@ -366,7 +422,7 @@ const CancerInfoForm = ({ ...props }) => {
                     </div>
                 </div>
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.6b</strong>
                         Specify the data sources the treatment information is from: 
@@ -434,7 +490,7 @@ const CancerInfoForm = ({ ...props }) => {
 
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.6c</strong>
                         Would it be possible to collect treatment information from medical records or other sources?
@@ -452,7 +508,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>     
  
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.7</strong>
                         Do you have cancer staging data?
@@ -469,7 +525,7 @@ const CancerInfoForm = ({ ...props }) => {
                     </div>                    
                 </div>     
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.8</strong>
                         Do you have tumor grade data?
@@ -488,7 +544,7 @@ const CancerInfoForm = ({ ...props }) => {
                 
 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.9</strong>
                         Do you have tumor genetic markers data?
@@ -506,7 +562,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>     
                 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.10</strong>
                         Were cancer cases histologically confirmed?
@@ -527,7 +583,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>
                 
 
-                <div class="row mb-4 py-3 hover-highlight">
+                <div className="row mb-4 py-3 hover-highlight">
                     <label htmlFor="d2" className="col-md-6 control-label text-left font-weight-normal">
                         <strong className="mr-1">D.11</strong>
                         Do you have cancer subtyping?
@@ -560,7 +616,7 @@ const CancerInfoForm = ({ ...props }) => {
             </form>
         </div>
 
-        <pre>{JSON.stringify(form, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
 
         <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={() => props.sectionPicker('C')}>Go Back</button>
