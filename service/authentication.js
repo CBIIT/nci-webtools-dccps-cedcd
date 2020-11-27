@@ -26,6 +26,7 @@ async function authenticationMiddleware(request, response, next) {
             if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
                 session.user = {
+                    id: 1,
                     type: 'internal',
                     name: 'admin',
                     role: /internal/.test(url) 
@@ -40,18 +41,18 @@ async function authenticationMiddleware(request, response, next) {
                 const userType = isFederated ? 'external' : 'internal';
                 const userName = isFederated ? fedEmail : smUser;
 
-                const results = await mysql.query(
-                    `SELECT access_level as accessLevel 
+                const [results] = await mysql.query(
+                    `SELECT id, access_level as accessLevel 
                     FROM user where user_name = ?`,
                     [userName]
                 );
 
                 // SystemAdmin or CohortAdmin
-                const userRole = results && results.length 
-                    ? results[0].accessLevel 
-                    : null; 
+                const userId = results.id
+                const userRole = results.accessLevel 
 
                 session.user = {
+                    id: userId,
                     type: userType,
                     name: userName,
                     role: userRole,
