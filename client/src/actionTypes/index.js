@@ -207,6 +207,23 @@ const actionTypes = {
     setOtherCodeSpecify: 'SET_OTHER_CODE_SPECIFY',
     setDeathNumbers: 'SET_MORTALITY_DEATH_NUMBERS',
     setSectionEStatus: 'SET_MORTALITY_STATUS',
+
+    /* section F */
+    setDataLinkageLoaded: 'SET_LINKAGE_LOADED',
+    setHaveDataLink: 'SET_LINKAGE_HAVE_LINK',
+    setHaveDataLinkSpecify: 'SET_LINKAGE_LINK_SPECIFY',
+    setHaveHarmonization: 'SET_LINKAGE_HAVE_HARMONIZATION',
+    setHaveHarmonizationSpecify: 'SET_LINKAGE_HARMONIZATION_SPECIFY',
+    setHaveDeposited: 'SET_LINKAGE_HAVE_DEPOSITED',
+    setdbGaP: 'SET_LINKAGE_DBGAP',
+    setbioLinCC: 'SET_LINKAGE_BIOLINCC',
+    setOtherRepo: 'SET_LINKAGE_OTHER_REPO',
+    setDataOnline: 'SET_LINKAGE_DATA_ONLINE',
+    setDataOnlineWebsite: 'SET_LINKAGE_ONLINE_WEBSITE',
+    setDataOnlinePolicy: 'SET_LINKAGE_ONLINE_POLICY',
+    setCreatedRepo: 'SET_LINAKGE_CREATED_REPO',
+    setCreatedRepoSpecify: 'SET_LINKAGE_REPO_SPECIFY',
+    setSectionFStatus: 'SET_LINKAGE_STATUS',
 }
 
 export default  actionTypes
