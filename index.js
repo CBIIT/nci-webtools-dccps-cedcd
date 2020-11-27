@@ -15,6 +15,7 @@ app.locals.connection = connection;
 app.locals.mysql = {
 	connection,
 	query: promisify(connection.query).bind(connection),
+	upsert: mysql.upsert,
 }
 
 mysql.deferUntilConnected(connection).then(function(connection) {
