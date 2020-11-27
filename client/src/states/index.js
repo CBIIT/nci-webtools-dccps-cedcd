@@ -424,6 +424,7 @@ const InitialStates = {
         sectionEStatus: '',
     },
     cancerInfo: {
+        cohort: {},
         counts: {},
         form: {},
     },
