@@ -1,24 +1,88 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DatePicker from 'react-datepicker';
+import classNames from 'classnames'
 import allactions from '../../actions'
 
 const CancerInfoForm = ({ ...props }) => {
+    const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form } = useSelector(state => state.cancerInfoReducer);
     const setFormValue = (key, value) => dispatch(allactions.cancerInfoActions.setCancerInfoFormValue(key, value));
     const setCount = (key, value) => dispatch(allactions.cancerInfoActions.setCancerCount(key, value));
     const lookupMap = {
-        female: lookup && lookup.gender.find(e => e.label === 'Female').value,
-        male: lookup && lookup.gender.find(e => e.label === 'Male').value,
-        incident: lookup && lookup.case_type.find(e => e.label === 'incident').value,
-        prevalent: lookup && lookup.case_type.find(e => e.label === 'prevalent').value,
+        female: lookup && lookup.gender.find(e => e.gender === 'Female').id,
+        male: lookup && lookup.gender.find(e => e.gender === 'Male').id,
+        incident: lookup && lookup.case_type.find(e => e.case_type === 'incident').id,
+        prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent').id,
     }
     const cohortId = 79;
 
-    const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
+    const [errors, setErrors] = useState({});
+    const [submitted, setSubmitted] = useState(false);
+
+    const getValidationErrors = (form) => {
+        const isNull =  v =>['', undefined, null].includes(v)
+        const errors = {
+            ci_confirmed_cancer_year: isNull(form.ci_confirmed_cancer_year),
+
+            ci_ascertained_self_reporting: isNull(form.ci_ascertained_self_reporting),
+            ci_ascertained_tumor_registry: isNull(form.ci_ascertained_tumor_registry),
+            ci_ascertained_medical_records: isNull(form.ci_ascertained_medical_records),
+            ci_ascertained_other: isNull(form.ci_ascertained_other),
+            ci_ascertained_other_specify: +form.ci_ascertained_other === 1
+                && isNull(form.ci_ascertained_other_specify),
+
+            ci_cancer_recurrence: isNull(form.ci_cancer_recurrence),
+            ci_second_primary_diagnosis: isNull(form.ci_second_primary_diagnosis),
+            ci_cancer_treatment_data: isNull(form.ci_cancer_treatment_data),
+
+            ci_treatment_data_surgery:  +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_surgery),
+            ci_treatment_data_radiation:  +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_radiation),
+            ci_treatment_data_chemotherapy:  +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_chemotherapy),
+            ci_treatment_data_hormonal_therapy: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_hormonal_therapy),
+            ci_treatment_data_bone_stem_cell: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_bone_stem_cell),
+            ci_treatment_data_other:  +form.ci_cancer_treatment_data === 1 && isNull(form.ci_treatment_data_other),
+            ci_treatment_data_other_specify: +form.ci_cancer_treatment_data === 1 
+                && +form.ci_treatment_data_other === 1
+                && isNull(form.ci_treatment_data_other_specify),
+
+            ci_data_source_admin_claims: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_data_source_admin_claims),
+            ci_data_source_electronic_records: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_data_source_electronic_records),
+            ci_data_source_chart_abstraction: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_data_source_chart_abstraction),
+            ci_data_source_patient_reported: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_data_source_patient_reported),
+            ci_data_source_other: +form.ci_cancer_treatment_data === 1 && isNull(form.ci_data_source_other),
+            ci_data_source_other_specify: +form.ci_cancer_treatment_data === 1 
+                && +form.ci_data_source_other === 1
+                && isNull(form.ci_data_source_other_specify),
+
+            ci_collect_other_information: isNull(form.ci_collect_other_information),
+            
+            ci_cancer_staging_data: isNull(form.ci_cancer_staging_data),
+            ci_tumor_grade_data: isNull(form.ci_tumor_grade_data),
+            ci_tumor_genetic_markers_data: isNull(form.ci_tumor_genetic_markers_data),
+            ci_tumor_genetic_markers_data_describe: +form.ci_tumor_genetic_markers_data === 1 
+                && isNull(form.ci_tumor_genetic_markers_data_describe),
+            ci_histologically_confirmed: isNull(form.ci_histologically_confirmed),
+            ci_cancer_subtype_histological: isNull(form.ci_cancer_subtype_histological),
+            ci_cancer_subtype_molecular: isNull(form.ci_cancer_subtype_molecular),
+        };
+
+        for (let key in errors)
+            if (!errors[key])
+                delete errors[key];
+
+        return errors;
+    }
+
     const handleSave = () => {
+        const errors = getValidationErrors(form);
+        console.log(errors);
+
+
+
+
         /* if(Object.entries(errors).length === 0)
              saveEnrollment(79)
          else{
@@ -26,9 +90,15 @@ const CancerInfoForm = ({ ...props }) => {
              if(window.confirm('there are validation errors, are you sure to save?'))
                  saveEnrollment(79)
          }*/
+
+
+
     }
 
     const handleSaveContinue = () => {
+        handleSave();
+        props.sectionPicker('E');
+
         /*
         if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
             saveEnrollment(79, true)}
@@ -59,7 +129,7 @@ const CancerInfoForm = ({ ...props }) => {
                     </thead>
                     <tbody>
                         {lookup.cancer.map(c => {
-                            const keyPrefix =  `${cohortId}_${c.value}`;
+                            const keyPrefix =  `${cohortId}_${c.id}`;
                             const inputKeys = [
                                 `${keyPrefix}_${lookupMap.male}_${lookupMap.prevalent}`,
                                 `${keyPrefix}_${lookupMap.female}_${lookupMap.prevalent}`,
