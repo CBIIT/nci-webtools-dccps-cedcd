@@ -41,6 +41,7 @@ mysql.deferUntilConnected(connection).then(function(connection) {
 			});
 		}
 		else {
+			console.log(error);
 			console.log('failed to start up the service: load lookup data error.');
 		}
 	});
