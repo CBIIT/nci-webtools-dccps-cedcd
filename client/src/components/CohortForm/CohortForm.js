@@ -27,11 +27,12 @@ const CohortForm = ({...props}) => {
     const [saved, setSaved] = useState(false)
    
     const [activePanel, setActivePanel] = useState('panelA')
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if(!cohort.hasLoaded){
             let shadow = {...errors}
-            fetch('/api/questionnaire/cohort_basic_info/79', {
+            fetch(`/api/questionnaire/cohort_basic_info/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
@@ -131,7 +132,7 @@ const CohortForm = ({...props}) => {
         }
     }, [])
 
-    const saveCohort = (id=79) => {
+    const saveCohort = (id=cohortId) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -175,7 +176,7 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(79)
+            saveCohort(cohortId)
         }
         else{ 
             setModalShow(true)
@@ -188,7 +189,7 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(79, true)
+            saveCohort(cohortId, true)
         }
         else{
             setModalShow(true)
@@ -329,7 +330,7 @@ const CohortForm = ({...props}) => {
                 fileData, 
                 fileData.name 
             ); 
-            fetch(`/api/questionnaire/upload/79/${category}`,{
+            fetch(`/api/questionnaire/upload/${cohortId}/${category}`,{
                 method: "POST",
                 body: formData
             }).then(res => res.json())
@@ -343,13 +344,13 @@ const CohortForm = ({...props}) => {
     const confirmSaveStay = () => {
         cohort.sectionAStatus='incomplete'
         dispatch(allactions.cohortActions.setSectionAStatus('incomplete'));
-        saveCohort(79);setModalShow(false)
+        saveCohort(cohortId);setModalShow(false)
     }
 
     const confirmSaveContinue = () => {
         cohort.sectionAStatus='incomplete'
         dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-        saveCohort(79, true);setModalShow(false)
+        saveCohort(cohortId, true);setModalShow(false)
     }
 
     return <div id='cohortContainer' className='col-md-12'>

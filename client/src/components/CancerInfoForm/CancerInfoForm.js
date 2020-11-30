@@ -27,7 +27,7 @@ const CancerInfoForm = ({ ...props }) => {
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident').id,
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent').id,
     }
-    const cohortId = 79;
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         // load existing cohort
