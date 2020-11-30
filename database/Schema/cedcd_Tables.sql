@@ -42,10 +42,10 @@ CREATE TABLE `lu_cancer` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_category`;
+DROP TABLE IF EXISTS `lu_person_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_category` (
+CREATE TABLE `lu_person_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -60,10 +60,10 @@ CREATE TABLE `lu_cohort_status` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_data_collected_category`;
+DROP TABLE IF EXISTS `lu_data_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_data_collected_category` (
+CREATE TABLE `lu_data_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(500) NOT NULL,
   `sub_category` varchar(500) DEFAULT NULL,
@@ -260,6 +260,7 @@ CREATE TABLE `cancer_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `ci_confirmed_cancer_year` int(4) DEFAULT NULL,
+  `ci_confirmed_cancer_date` DATE DEFAULT NULL,
   `ci_ascertained_self_reporting` int(1) DEFAULT NULL,
   `ci_ascertained_tumor_registry` int(1) DEFAULT NULL,
   `ci_ascertained_medical_records` int(1) DEFAULT NULL,
@@ -387,7 +388,7 @@ CREATE TABLE `major_content` (
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`category_id`),
   CONSTRAINT `major_content_new_cohort_id_idx` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `mc_domain_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_collected_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `mc_domain_id` FOREIGN KEY (`category_id`) REFERENCES `lu_data_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `mortality`;
@@ -427,13 +428,14 @@ CREATE TABLE `person` (
   `position` varchar(100) DEFAULT NULL,
   `institution` varchar(100) DEFAULT NULL,
   `phone` varchar(100) DEFAULT NULL,
+  `country_code` varchar(10) NULL DEFAULT '+1',
   `email` varchar(100) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `person_cohort_id_idx` (`cohort_id`),
   KEY `person_category_id_idx` (`category_id`),
-  CONSTRAINT `person_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `person_category_id` FOREIGN KEY (`category_id`) REFERENCES `lu_person_category` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `person_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -642,49 +644,50 @@ values (1,"", "", "All Other Cancers"),
   (29,"", "", "No Cancer");
 
 /*
- Generate data for lookup table lu_data_collected_category
+ Generate data for lookup table lu_data_category
  */
-insert into lu_data_collected_category(id, category, sub_category) values (1, "Socio-economic Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (2, "Education Level","");
-insert into lu_data_collected_category(id, category, sub_category) values (3, "Marital Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (4, "Language/Country of Origin","");
-insert into lu_data_collected_category(id, category, sub_category) values (5, "Employment Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (6, "Health Insurance Status","");
-insert into lu_data_collected_category(id, category, sub_category) values (7, "Anthropometry","");
-insert into lu_data_collected_category(id, category, sub_category) values (8, "Dietary Intake","");
-insert into lu_data_collected_category(id, category, sub_category) values (9, "Dietary Supplement Use","");
-insert into lu_data_collected_category(id, category, sub_category) values (10, "Complementary and Alternative Medicine","");
-insert into lu_data_collected_category(id, category, sub_category) values (11, "Prescription Medication Use","");
-insert into lu_data_collected_category(id, category, sub_category) values (12, "Non-prescription Medication","");
-insert into lu_data_collected_category(id, category, sub_category) values (13, "Alcohol Consumption","");
-insert into lu_data_collected_category(id, category, sub_category) values (14, "Cigarette Smoking","");
-insert into lu_data_collected_category(id, category, sub_category) values (15, "Other Tobacco Products","Cigars");
-insert into lu_data_collected_category(id, category, sub_category) values (16, "Other Tobacco Products","Pipes");
-insert into lu_data_collected_category(id, category, sub_category) values (17, "Other Tobacco Products","Chewing tobacco");
-insert into lu_data_collected_category(id, category, sub_category) values (18, "Other Tobacco Products","E-Cigarettes");
-insert into lu_data_collected_category(id, category, sub_category) values (19, "Other Tobacco Products","Other");
-insert into lu_data_collected_category(id, category, sub_category) values (20, "Physical Activity","");
-insert into lu_data_collected_category(id, category, sub_category) values (21, "Sleep Habits","");
-insert into lu_data_collected_category(id, category, sub_category) values (22, "Reproductive History","");
-insert into lu_data_collected_category(id, category, sub_category) values (23, "Self-Reported Health","");
-insert into lu_data_collected_category(id, category, sub_category) values (24, "Quality of Life",""); 
-insert into lu_data_collected_category(id, category, sub_category) values (25, "Social Support","");
-insert into lu_data_collected_category(id, category, sub_category) values (26, "Cognitive Function","");
-insert into lu_data_collected_category(id, category, sub_category) values (27, "Depression","");
-insert into lu_data_collected_category(id, category, sub_category) values (28, "Other Psychosocial Variables","");
-insert into lu_data_collected_category(id, category, sub_category) values (29, "Fatigue","");
-insert into lu_data_collected_category(id, category, sub_category) values (30, "Family History of Cancer","Family History of Cancer");
-insert into lu_data_collected_category(id, category, sub_category) values (31, "Family History of Cancer","Family History of Cancer with Pedigrees");
-insert into lu_data_collected_category(id, category, sub_category) values (32, "Environmental or Occupational Exposures","");
-insert into lu_data_collected_category(id, category, sub_category) values (33, "Residential Information","");
-insert into lu_data_collected_category(id, category, sub_category) values (34, "Other Medical Conditions","Diabetes");
-insert into lu_data_collected_category(id, category, sub_category) values (35, "Other Medical Conditions","Stroke");
-insert into lu_data_collected_category(id, category, sub_category) values (36, "Other Medical Conditions","COPD and/or Emphysema");
-insert into lu_data_collected_category(id, category, sub_category) values (37, "Other Medical Conditions","Cardiovascular Disease");
-insert into lu_data_collected_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
-insert into lu_data_collected_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
-insert into lu_data_collected_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
-insert into lu_data_collected_category(id, category, sub_category) values (41, "Cancer Treatment","");
+insert into lu_data_category(id, category, sub_category) values (1, "Socio-economic Status","");
+insert into lu_data_category(id, category, sub_category) values (2, "Education Level","");
+insert into lu_data_category(id, category, sub_category) values (3, "Marital Status","");
+insert into lu_data_category(id, category, sub_category) values (4, "Language/Country of Origin","");
+insert into lu_data_category(id, category, sub_category) values (5, "Employment Status","");
+insert into lu_data_category(id, category, sub_category) values (6, "Health Insurance Status","");
+insert into lu_data_category(id, category, sub_category) values (7, "Anthropometry","");
+insert into lu_data_category(id, category, sub_category) values (8, "Dietary Intake","");
+insert into lu_data_category(id, category, sub_category) values (9, "Dietary Supplement Use","");
+insert into lu_data_category(id, category, sub_category) values (10, "Complementary and Alternative Medicine","");
+insert into lu_data_category(id, category, sub_category) values (11, "Prescription Medication Use","");
+insert into lu_data_category(id, category, sub_category) values (12, "Non-prescription Medication","");
+insert into lu_data_category(id, category, sub_category) values (13, "Alcohol Consumption","");
+insert into lu_data_category(id, category, sub_category) values (14, "Cigarette Smoking","");
+insert into lu_data_category(id, category, sub_category) values (15, "Other Tobacco Products","Cigars");
+insert into lu_data_category(id, category, sub_category) values (16, "Other Tobacco Products","Pipes");
+insert into lu_data_category(id, category, sub_category) values (17, "Other Tobacco Products","Chewing tobacco");
+insert into lu_data_category(id, category, sub_category) values (18, "Other Tobacco Products","E-Cigarettes");
+insert into lu_data_category(id, category, sub_category) values (19, "Other Tobacco Products","Other");
+insert into lu_data_category(id, category, sub_category) values (20, "Physical Activity","");
+insert into lu_data_category(id, category, sub_category) values (21, "Sleep Habits","");
+insert into lu_data_category(id, category, sub_category) values (22, "Reproductive History","");
+insert into lu_data_category(id, category, sub_category) values (23, "Self-Reported Health","");
+insert into lu_data_category(id, category, sub_category) values (24, "Quality of Life",""); 
+insert into lu_data_category(id, category, sub_category) values (25, "Social Support","");
+insert into lu_data_category(id, category, sub_category) values (26, "Cognitive Function","");
+insert into lu_data_category(id, category, sub_category) values (27, "Depression","");
+insert into lu_data_category(id, category, sub_category) values (28, "Other Psychosocial Variables","");
+insert into lu_data_category(id, category, sub_category) values (29, "Fatigue","");
+insert into lu_data_category(id, category, sub_category) values (30, "Family History of Cancer","Family History of Cancer");
+insert into lu_data_category(id, category, sub_category) values (31, "Family History of Cancer","Family History of Cancer with Pedigrees");
+insert into lu_data_category(id, category, sub_category) values (32, "Environmental or Occupational Exposures","");
+insert into lu_data_category(id, category, sub_category) values (33, "Residential Information","");
+insert into lu_data_category(id, category, sub_category) values (34, "Other Medical Conditions","Diabetes");
+insert into lu_data_category(id, category, sub_category) values (35, "Other Medical Conditions","Stroke");
+insert into lu_data_category(id, category, sub_category) values (36, "Other Medical Conditions","COPD and/or Emphysema");
+insert into lu_data_category(id, category, sub_category) values (37, "Other Medical Conditions","Cardiovascular Disease");
+insert into lu_data_category(id, category, sub_category) values (38, "Other Medical Conditions","Osteoporosis");
+insert into lu_data_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
+insert into lu_data_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
+insert into lu_data_category(id, category, sub_category) values (41, "Physical function measures","");
+insert into lu_data_category(id, category, sub_category) values (99, "Cancer Treatment","");
 
 /*
  Generate data for lookup table lu_specimen
@@ -757,12 +760,12 @@ insert into lu_ethnicity(id, ethnicity) values (2, "Hispanic or Latino");
 insert into lu_ethnicity(id, ethnicity) values (3, "Unknown/Not Reported Ethnicity");
 
 /*
- Generate data for lookup table lu_category
+ Generate data for lookup table lu_person_category
  */
-insert into lu_category(id, category) values (1, "Person who completed the form");
-insert into lu_category(id, category) values (2, "Contact Person for clarification of the form");
-insert into lu_category(id, category) values (3, "Cohort Principal Investigator");
-insert into lu_category(id, category) values (4, "Person to contact if an investigator is interested");
+insert into lu_person_category(id, category) values (1, "Person who completed the form");
+insert into lu_person_category(id, category) values (2, "Contact Person for clarification of the form");
+insert into lu_person_category(id, category) values (3, "Cohort Principal Investigator");
+insert into lu_person_category(id, category) values (4, "Person to contact if an investigator is interested");
 
 /*
 Generate default users 

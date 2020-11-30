@@ -1,13 +1,11 @@
 .invheader{
-    background-color: #eee;
-    height: 40px;
+    background-color: white;
+    height: 20px;
     padding-top: 10px;
     position: relative;
 }
 
-.invheader:hover{
-    background-color: #ccc;
-}
+
 
 .invclose{
     position: absolute;
@@ -16,5 +14,6 @@
 
 .invclose:hover{
     cursor: pointer;
-    color: white;
+    color: blue;
+    border-bottom: 1px solid blue;
 }

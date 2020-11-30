@@ -26,10 +26,11 @@ const MortalityForm = ({ ...props }) => {
         otherCodeSpecify: '',
         deathNumbers: ''
     })
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!mortality.hasLoaded) {
-            fetch('/api/questionnaire/mortality/79', {
+            fetch(`/api/questionnaire/mortality/${cohortId}`, {
                 method: 'POST',
             }).then(res => res.json())
                 .then(result => {
@@ -96,7 +97,7 @@ const MortalityForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
-    const saveMortality = (id = 79, proceed = false, complete) => {
+    const saveMortality = (id = cohortId, proceed = false, complete) => {
         const copy = { ...mortality, sectionEStatus: complete }
         console.log(JSON.stringify(copy))
         fetch(`/api/questionnaire/update_mortality/${id}`, {
@@ -125,14 +126,14 @@ const MortalityForm = ({ ...props }) => {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(79, false, 'complete')
+            saveMortality(cohortId, false, 'complete')
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(79, false, 'incomplete')
+                saveMortality(cohortId, false, 'incomplete')
             }
         }
     }
@@ -142,14 +143,14 @@ const MortalityForm = ({ ...props }) => {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(79, true, 'complete')
+            saveMortality(cohortId, true, 'complete')
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(79, true, 'incomplete')
+                saveMortality(cohortId, true, 'incomplete')
             }
         }
     }

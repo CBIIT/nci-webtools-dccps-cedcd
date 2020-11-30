@@ -1,5 +1,4 @@
 const settings = require('../config/cedcd.settings')
-var { getConnectionAsync, queryAsync } = require('../components/mysql');
 
 module.exports = {
     authenticationMiddleware,
@@ -8,53 +7,80 @@ module.exports = {
 }
 
 const authRoutes = [
-    '^/admin/\\w+$',
-    '^/cohort/questionnaire/\\w+$',
-    // '^/login/internal\/?$',
-    // '^/login/external\/?$',
+    '^/login/internal\/?$',
+    '^/login/external\/?$',
 ].map(pattern => new RegExp(pattern));
 
 async function authenticationMiddleware(request, response, next) {
-    const { url, headers, session } = request;
+    const { url, headers, session, app } = request;
+    const { mysql } = app.locals;
     const { 
         user_auth_type: userAuthType, 
         fed_email: fedEmail, 
         sm_user: smUser
     } = headers;
-    const nodeEnv = process.env.NODE_ENV;
 
     if (authRoutes.some(regex => regex.test(url))) {
+        try {
 
-        if (nodeEnv === 'development' || !smUser) {
-            // siteminder is not configured or if developing locally, assign default permissions
-            session.user = {
-                type: 'internal',
-                name: 'admin',
-                role: /^\/admin/.test(url) 
-                    ? 'SystemAdmin' 
-                    : 'CohortAdmin',
-            };
-            next();
-        }
+            let cohortId;
 
-        else try {
-            // otherwise, update user-session variable when hitting authRoutes
-            const isFederated = userAuthType === 'federated';
-            const userType = isFederated ? 'external' : 'internal';
-            const userName = isFederated ? fedEmail : smUser;
+            if (process.env.NODE_ENV === 'development' || !smUser) {
+                // siteminder is not configured or if developing locally, assign default permissions
+                cohortId = 79;
+                session.user = {
+                    id: 1,
+                    type: 'internal',
+                    name: 'admin',
+                    role: /internal/.test(url) 
+                        ? 'SystemAdmin' 
+                        : 'CohortAdmin',
+                    cohorts: [cohortId]
+                };
+            } else {
 
-            const { results } = await queryAsync(
-                await getConnectionAsync(),
-                `SELECT access_level as accessLevel 
-                FROM user where user_name = ?`,
-                [userName]
-            );
+                // otherwise, update user-session variable when hitting authRoutes
+                const isFederated = userAuthType === 'federated';
+                const userType = isFederated ? 'external' : 'internal';
+                const userName = isFederated ? fedEmail : smUser;
 
-            session.user = {
-                type: userType,
-                name: userName,
-                role: results[0] && results[0].accessLevel, // SystemAdmin or CohortAdmin
-            };
+                const [results] = await mysql.query(
+                    `SELECT id, access_level as accessLevel 
+                    FROM user where user_name = ?`,
+                    [userName]
+                );
+
+                // SystemAdmin or CohortAdmin
+                const userId = results.id
+                const userRole = results.accessLevel 
+
+                const allowedCohorts = (await mysql.query(
+                    `SELECT cohort_id
+                    FROM cohort_user_mapping
+                    WHERE cohort_user_id = ?`,
+                    [userId]
+                )).map(c => c.cohort_id);
+                
+                // todo: if there is more than one allowed cohort for the user, take the user
+                // to a cohort selection page
+                cohortId = allowedCohorts[0];
+
+                session.user = {
+                    id: userId,
+                    type: userType,
+                    name: userName,
+                    role: userRole,
+                    cohorts: allowedCohorts
+                };
+            }
+
+            if (/CohortAdmin/.test(session.user.role)) {
+                response.status(301).redirect(`/cohort/questionnaire/${cohortId || ''}`);
+            } else if (/SystemAdmin/.test(session.user.role)) {
+                response.status(301).redirect('/admin/managecohort');
+            } else {
+                response.status(301).redirect('/');
+            }
        
         } catch (e) {
             request.session.destroy(error => {

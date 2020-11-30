@@ -6,6 +6,7 @@
 
 var logger = require('./logger');
 const mysql = require('mysql');
+const { promisify } = require('util');
 
 var pool = null;
 
@@ -18,7 +19,8 @@ var getConnectionPool = function(config){
       	port     : config.port,
 	    user     : config.user,
 	    password : config.password,
-	    database : config.db,
+		database : config.db,
+		multipleStatements: true,
 	    debug    :  false
 	});
 
@@ -249,6 +251,47 @@ function deferUntilConnected(connection) {
 	});
 }
 
+async function upsert({connection, table, record}) {
+	for (let key in record)
+		if (record[key] === undefined)
+			delete record[key];
+
+	if (!connection) connection = pool;
+	const query = promisify(connection.query).bind(connection);
+	const escape = connection.escapeId.bind(connection);
+
+	const validColumns = (await query(
+		`SELECT COLUMN_NAME FROM information_schema.COLUMNS where TABLE_NAME = ?`,
+		table
+	)).map(e => e.COLUMN_NAME);
+	
+	if (record.id) {
+		// when upserting, columns without default values must be provided
+		const [existingRecord] = await query(
+			`SELECT * FROM ?? WHERE id = ?`,
+			[table, record.id]
+		);
+		record = {...existingRecord, ...record};
+	}
+
+	const columns = Object.keys(record).filter(column => validColumns.includes(column));
+	const values = columns.map(column => record[column]);
+	const valuePlaceholders = columns.map(_ => '?').join(',');
+	const valueAssignments = validColumns.map(column => 
+		`${escape(column)} = COALESCE(VALUES(${escape(column)}), ${escape(column)}) `
+	).join(',');
+
+
+
+	// if upserting, ensure that a unique key exists for the specified columns
+	// and that non-null values do not exist in this unique key
+	return await query(
+		`INSERT INTO ?? (??) VALUES (${valuePlaceholders})
+		ON DUPLICATE KEY UPDATE ${valueAssignments}`, 
+		[table, columns, ...values]
+	);
+}
+
 module.exports = {
 	pool,
 	getConnectionPool,
@@ -261,5 +304,6 @@ module.exports = {
 	close,
 	getConnectionAsync,
 	queryAsync,
-	deferUntilConnected
+	deferUntilConnected,
+	upsert
 };
