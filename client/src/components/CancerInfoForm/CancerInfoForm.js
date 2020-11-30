@@ -135,7 +135,7 @@ const CancerInfoForm = ({ ...props }) => {
     async function handleSave() {
         let hasErrors = Object.entries(errors).length === 0;
         setSubmitted(true);
-        console.log(errors);
+        // console.log(errors);
 
         // todo: replace window.confirm/alert with either modals or toasts
 
@@ -309,7 +309,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                         {+form.ci_ascertained_other === 1 && <div className={classNames("row mb-2", submitted && errors.ci_ascertained_other_specify && "has-error")}>
                             <div className="col-md-6">
-                                <input className="form-control" name="ci_ascertained_other_specify" value={form.ci_ascertained_other_specify} onChange={e => setFormValue(e.target.name, e.target.value)} />
+                                <input className="form-control" name="ci_ascertained_other_specify" value={form.ci_ascertained_other_specify || ''} onChange={e => setFormValue(e.target.name, e.target.value)} />
                             </div>
                         </div>}
                     </div>
@@ -443,7 +443,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                         {+form.ci_treatment_data_other === 1 && <div className={classNames("row mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
                             <div className="col-md-6">
-                                <input className="form-control" name="ci_treatment_data_other_specify" value={form.ci_treatment_data_other_specify} onChange={e => setFormValue(e.target.name, e.target.value)} />
+                                <input className="form-control" name="ci_treatment_data_other_specify" value={form.ci_treatment_data_other_specify || ''} onChange={e => setFormValue(e.target.name, e.target.value)} />
                             </div>
                         </div>}                        
 
@@ -510,7 +510,7 @@ const CancerInfoForm = ({ ...props }) => {
                         
                         {+form.ci_data_source_other === 1 && <div className={classNames("row mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
                             <div className="col-md-6">
-                                <input className="form-control" name="ci_data_source_other_specify" value={form.ci_data_source_other_specify} onChange={e => setFormValue(e.target.name, e.target.value)} />
+                                <input className="form-control" name="ci_data_source_other_specify" value={form.ci_data_source_other_specify || ''} onChange={e => setFormValue(e.target.name, e.target.value)} />
                             </div>
                         </div>}      
                     </div>
