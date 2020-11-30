@@ -42,8 +42,6 @@ const MortalityForm = ({ ...props }) => {
                         if (completion !== 'complete')
                             completion = 'incomplete'
 
-                        console.log(completion)
-
                         batch(() => {
                             dispatch(allactions.mortalityActions.setHasLoaded(true))
                             dispatch(allactions.mortalityActions.setMortalityYear(data.mort_year_mortality_followup))
@@ -74,13 +72,26 @@ const MortalityForm = ({ ...props }) => {
 
     const validateInput = () => {
 
+        console.log(mortality)
         let copy = { ...errors }
+        console.log(mortality.otherDeathSpecify)
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
         if (!(mortality.deathIndex in [0, 1])) { copy.deathIndex = radioError } else { copy.deathIndex = '' }
         if (!(mortality.deathCertificate in [0, 1])) { copy.deathCertificate = radioError } else { copy.deathCertificate = '' }
         if (!(mortality.otherDeath in [0, 1])) { copy.otherDeath = radioError } else { copy.otherDeath = '' }
-        if (mortality.otherDeath === 1 && !mortality.otherDeathSpecify) { copy.otherDeathSpecify = 'please specify' } else { copy.otherDeathSpecify = '' }
+        if (mortality.otherDeath === 1) {
+            if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
+                copy.otherDeathSpecify = 'please specify'
+            else {
+                if (mortality.otherDeathSpecify.length > 200)
+                    copy.otherDeathSpecify = 'cannot exceed 200 characters'
+                else
+                    copy.otherDeathSpecify = ''
+            }
+        }
+        else
+            copy.otherDeathSpecify = '';
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
         if (mortality.haveDeathCause === 1) {
@@ -88,7 +99,18 @@ const MortalityForm = ({ ...props }) => {
             if (!(mortality.icd10 in [0, 1])) { copy.icd10 = radioError } else { copy.icd10 = '' }
             if (!(mortality.notCoded in [0, 1])) { copy.notCoded = radioError } else { copy.notCoded = '' }
             if (!(mortality.otherCode in [0, 1])) { copy.otherCode = radioError } else { copy.otherCode = '' }
-            if (mortality.otherCode === 1 && !mortality.otherCodeSpecify) { copy.otherCodeSpecify = 'please specify' } else { copy.otherCodeSpecify = '' }
+            if (mortality.otherCode === 1) {
+                if (mortality.otherCodeSpecify === null || !mortality.otherCodeSpecify)
+                    copy.otherCodeSpecify = 'please specify'
+                else {
+                    if (mortality.otherCodeSpecify.length > 200)
+                        copy.otherCodeSpecify = 'cannot exceed 200 characters'
+                    else
+                        copy.otherCodeSpecify = ''
+                }
+            }
+            else
+                copy.otherCodeSpecify = '';
         }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
@@ -213,19 +235,20 @@ const MortalityForm = ({ ...props }) => {
                         <span>No</span>
                     </span>
 
-                    <span className="col-md-4" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
                         <input type='radio' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherDeath(1))} style={{ width: '30px' }} />
                         <span>Yes, specify</span>
-                        <span style={{ marginLeft: '10px' }}><input name='otherDeathSpecify' className='inputUnderscore' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                     </span>
                     {errors.otherDeath !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherDeath}</div>}
-                    {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherDeathSpecify}</div>}
                 </div>
             </li>
-            <li>
-
-            </li>
         </ul>
+        {mortality.otherDeath === 1 && <div className="col-md-12 form-group">
+            <div className='col-md-7 col-xs-12'>
+                <input name='otherDeathSpecify' className='form-control' placeholder='Specify confirmation of death (Max 200 characters)' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} />
+            </div>
+            {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherDeathSpecify}</div>}
+        </div>}
 
         <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
             <label htmlFor='haveDeathDate' className='col-md-12'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
@@ -325,17 +348,25 @@ const MortalityForm = ({ ...props }) => {
                             <span>No</span>
                         </span>
 
-                        <span className="col-md-4" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                        <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
                             <input type='radio' name='otherCode' checked={mortality.otherCode === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherCode(1))} style={{ width: '30px' }} />
                             <span>Yes, specify</span>
-                            <span style={{ marginLeft: '10px' }}><input name='otherCodeSpecify' className='inputUnderscore' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                         </span>
                         {errors.otherCode !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherCode}</div>}
-                        {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherCodeSpecify}</div>}
                     </div>
                 </li>
             </ul>
+
+            {mortality.otherCode === 1 && <div className="col-md-12 form-group">
+                <div className='col-md-7 col-xs-12'>
+                    <input name='otherCodeSpecify' className='form-control' placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                </div>
+                {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherCodeSpecify}</div>}
+            </div>}
+
+
         </div>}
+
 
         <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
             <label htmlFor='deathNumbers' className='col-md-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
