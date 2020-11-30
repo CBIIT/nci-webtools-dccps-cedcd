@@ -23,6 +23,8 @@ async function authenticationMiddleware(request, response, next) {
     if (authRoutes.some(regex => regex.test(url))) {
         try {
 
+            let cohortId;
+
             if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
                 session.user = {
@@ -33,6 +35,8 @@ async function authenticationMiddleware(request, response, next) {
                         ? 'SystemAdmin' 
                         : 'CohortAdmin',
                 };
+
+                cohortId = 79;
     
             } else {
 
@@ -57,10 +61,24 @@ async function authenticationMiddleware(request, response, next) {
                     name: userName,
                     role: userRole,
                 };
+
+                const allowedCohorts = await mysql.query(
+                    `SELECT cohort_id
+                    FROM cohort_user_mapping
+                    WHERE cohort_user_id = ?`,
+                    [userId]
+                );
+                
+                // todo: if there is more than one allowed cohort for the user, take the user
+                // to a cohort selection page
+                cohortId = allowedCohorts.length
+                    ? allowedCohorts[0].cohort_id
+                    : null;
+
             }
 
             if (/CohortAdmin/.test(session.user.role)) {
-                response.status(301).redirect('/cohort/questionnaire/79');
+                response.status(301).redirect(`/cohort/questionnaire/${cohortId || ''}`);
             } else if (/SystemAdmin/.test(session.user.role)) {
                 response.status(301).redirect('/admin/managecohort');
             } else {
