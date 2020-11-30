@@ -196,7 +196,7 @@ const getTablesWithColumn = async (mysql, column, schema) => {
         where 
             c.COLUMN_NAME = ? and 
             t.TABLE_TYPE != 'VIEW' and 
-            t.TABLE_SCHAMA = ?`,
+            t.TABLE_SCHEMA = ?`,
         [column, schema]
     );
     return tables.map(t => t.name);
