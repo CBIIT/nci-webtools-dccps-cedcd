@@ -17,7 +17,6 @@ const InitialStates = {
         contacterPhone: '',
         contacterCountry: '+1',
         contacterEmail: '',
-
         investigators: [
             {
                 personId: true,
@@ -424,6 +423,7 @@ const InitialStates = {
         sectionEStatus: '',
     },
     cancerInfo: {
+        cohort: {},
         counts: {},
         form: {},
     },
@@ -473,6 +473,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
+    cohortId: null,
 }
 
 export default InitialStates

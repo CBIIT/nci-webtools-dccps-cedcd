@@ -13,6 +13,8 @@ const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch()
+    const cohortId = +window.location.pathname.split('/').pop();
+
 
     const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
@@ -20,7 +22,7 @@ const CohortForm = ({ ...props }) => {
     useEffect(() => {
         if (!cohort.hasLoaded) {
 
-            fetch('/api/questionnaire/cohort_basic_info/79', {
+            fetch(`/api/questionnaire/cohort_basic_info/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {

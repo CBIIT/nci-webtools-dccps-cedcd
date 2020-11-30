@@ -3,7 +3,17 @@ var router = express.Router();
 var mysql = require('../components/mysql');
 var logger = require('../components/logger');
 var cache = require('../components/cache');
-var fs = require('fs')
+var fs = require('fs');
+
+router.use((request, response, next) => {
+    const { session } = request;
+    if (process.env.NODE_ENV !== 'development' &&
+        !/CohortAdmin|SystemAdmin/.test(session.role)) {
+        response.status(400).json('Unauthorized').end();
+    } else {
+        next();
+    }
+});
 
 router.post('/upload/:id/:category', async function (req, res, next) {
     let cohortFile = req.files.cohortFile
@@ -175,101 +185,128 @@ router.post('/update_mortality/:id', function (req, res) {
     })
 });
 
-router.get('/cancer_count', async (request, response) => {
-    const { mysql } = request.app.locals;
+const getTablesWithColumn = async (mysql, column) => {
+    const tables = await mysql.query(
+        `select distinct c.table_name as name
+        from information_schema.COLUMNS c
+            left join information_schema.tables t on (
+                t.TABLE_NAME = c.TABLE_NAME and
+                t.TABLE_SCHEMA = c.TABLE_SCHEMA
+            )
+        where 
+            c.COLUMN_NAME = ? and 
+            t.TABLE_TYPE != 'VIEW'`,
+        column
+    );
+    return tables.map(t => t.name);
+};
+
+router.get('/cohort/:id(\\d+)', async (request, response) => {
+    const { app, session, params } = request;
+    const { mysql } = app.locals;
+    const { id } = params;
     try {
-        const records = await mysql.query(
-            `SELECT * FROM cancer_count WHERE cohort_id = ?`,
-            request.query.cohort_id
+
+        const [cohort] = await mysql.query(`SELECT * FROM cohort WHERE id = ?`, id);
+
+        if (!cohort)
+            throw new Error(`Invalid cohort: ${id}`);
+
+        // only allow SystemAdmins to administer user mapping roles
+        const restrictedTables = process.env.NODE_ENV === 'development' || /SystemAdmin/.test(session.user.role)
+            ? []
+            : ['cohort_user_mapping'];
+
+        // look for tables with references to cohort(cohort_id)
+        const tables = (await getTablesWithColumn(mysql, 'cohort_id')).filter(t => 
+            !restrictedTables.includes(t)
         );
-        response.json(records);
-    }
-    catch (e) {
-        logger.error(e);
-        response.status(500).json({ message: 'could not fetch cancer_info' })
-    }
-});
+ 
+        for (let table of tables) {
+            cohort[table] = await mysql.query(
+                `SELECT * FROM ?? WHERE cohort_id = ?`,
+                [table, id]
+            );
+        }
 
-router.post('/cancer_count', async (request, response) => {
-    const columns = [
-        'cohort_id',
-        'cancer_id',
-        'gender_id',
-        'case_type_id',
-        'cancer_counts',
-    ];
-
-    try {
-        for (const record of request.body)
-            await mysql.upsert({ table: 'cancer_count', columns, record });
-        response.json({ status: 200, message: 'update successful' });
+        response.json(cohort);
     } catch (e) {
         logger.error(e);
-        response.json({ status: 500, message: 'update failed' });
+        response.status(500).json({ message: 'Could not fetch cohort' });
     }
 });
 
-router.get('/cancer_info', async (request, response) => {
-    const { mysql } = request.app.locals;
+router.post('/cohort(/:id(\\d+))?', async (request, response) => {
+    const { app, session, params, body } = request;
+    const { mysql } = app.locals;
+    let id = params ? params.id : undefined; // can be undefined (for new cohorts)
+
+    // todo: only allow the CohortAdmin for this specific cohort to post to this route
+    const authenticated = true;
+    
+    if (!authenticated)
+        throw new Error('Unauthorized');
+
     try {
-        const records = await mysql.query(
-            `SELECT * FROM cancer_info WHERE cohort_id = ?`,
-            request.query.cohort_id
+        // only allow SystemAdmins to administer user mapping roles
+        // todo: store table-specific acl rules in the database
+        const restrictedTables = process.env.NODE_ENV === 'development' || /SystemAdmin/.test(session.user.role)
+            ? []
+            : ['cohort_user_mapping'];
+
+        // look for tables with references to cohort(cohort_id)
+        const tables = (await getTablesWithColumn(mysql, 'cohort_id')).filter(t => 
+            !restrictedTables.includes(t)
         );
-        response.json(records.length ? records[0] : null);
-    }
-    catch (e) {
-        logger.error(e);
-        response.status(500).json({ message: 'could not fetch cancer_info' })
-    }
-});
 
-router.post('/cancer_info', async (request, response) => {
-    const columns = [
-        'cohort_id',
-        'ci_confirmed_cancer_year',
-        'ci_ascertained_self_reporting',
-        'ci_ascertained_tumor_registry',
-        'ci_ascertained_medical_records',
-        'ci_ascertained_other',
-        'ci_ascertained_other_specify',
-        'ci_cancer_recurrence',
-        'ci_second_primary_diagnosis',
-        'ci_cancer_treatment_data',
-        'ci_treatment_data_surgery',
-        'ci_treatment_data_radiation',
-        'ci_treatment_data_chemotherapy',
-        'ci_treatment_data_hormonal_therapy',
-        'ci_treatment_data_bone_stem_cell',
-        'ci_treatment_data_other',
-        'ci_treatment_data_other_specify',
-        'ci_data_source_admin_claims',
-        'ci_data_source_electronic_records',
-        'ci_data_source_chart_abstraction',
-        'ci_data_source_patient_reported',
-        'ci_data_source_other',
-        'ci_data_source_other_specify',
-        'ci_collect_other_information',
-        'ci_cancer_staging_data',
-        'ci_tumor_grade_data',
-        'ci_tumor_genetic_markers_data',
-        'ci_tumor_genetic_markers_data_describe',
-        'ci_histologically_confirmed',
-        'ci_cancer_subtype_histological',
-        'ci_cancer_subtype_molecular',
-        'mdc_acute_treatment_toxicity',
-        'mdc_late_effects_of_treatment',
-        'mdc_symptoms_management',
-        'mdc_other_cancer_condition',
-        'mdc_other_cancer_condition_specify',
-    ];
+        const results = await mysql.upsert({ 
+            table: 'cohort', 
+            record: {
+                ...body, 
+                id: id || undefined,
+                create_time: undefined,
+                update_time: new Date(),
+                publish_by: session.user ? session.user.id : undefined,
+            }
+        });
 
-    try {
-        await mysql.upsert({ table: 'cancer_info', columns, record: request.body });
-        response.json({ status: 200, message: 'update successful' });
+        // if inserting a new cohort, preserve the insertId
+        if (id === undefined && results.insertId)
+            id = results.insertId;
+
+        // if a related table is provided, replace all records for the specified cohort
+        for (const table of tables) {
+            let records = body[table] || [];
+            if (!Array.isArray(records))
+                records = [records];
+
+            if (records.length) {
+                // remove existing records for the current table
+                await mysql.query(
+                    `DELETE FROM ?? WHERE cohort_id = ?`,
+                    [table, id]
+                );
+
+                // insert replacement records
+                for (const record of records) {
+                    await mysql.upsert({ 
+                        table, 
+                        record: {
+                            ...record, 
+                            id: undefined,
+                            cohort_id: id,
+                            create_time: undefined,
+                            update_time: new Date()
+                        }
+                    });
+                }
+            }
+        }
+
+        response.json(true);
     } catch (e) {
         logger.error(e);
-        response.json({ status: 500, message: 'update failed' });
+        response.status(500).json({ message: 'Could not update cohort' });
     }
 });
 
@@ -277,21 +314,25 @@ router.get('/lookup', async (request, response) => {
     let { locals } = request.app;
     let { lookup, mysql } = locals;
 
-    if (!lookup) {
-        locals.lookup = lookup = {
-            cancer: await mysql.query(`SELECT id as value, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
-            case_type: await mysql.query(`SELECT id as value, case_type as label FROM lu_case_type`),
-            category: await mysql.query(`SELECT id as value, category as label FROM lu_person_category`),
-            cohort_status: await mysql.query(`SELECT id as value, cohortstatus as label FROM lu_cohort_status`),
-            data_collected_category: await mysql.query(`SELECT id as value, category, sub_category FROM lu_data_category`),
-            ethnicity: await mysql.query(`SELECT id as value, ethnicity as label FROM lu_ethnicity`),
-            gender: await mysql.query(`SELECT id as value, gender as label FROM lu_gender`),
-            race: await mysql.query(`SELECT id as value, race as label FROM lu_race`),
-            specimen: await mysql.query(`SELECT id as value, specimen as label, sub_category FROM lu_specimen`),
+    try {
+        if (!lookup) {
+            locals.lookup = lookup = {
+                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
+                case_type: await mysql.query(`SELECT id, case_type FROM lu_case_type`),
+                cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
+                data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),
+                ethnicity: await mysql.query(`SELECT id, ethnicity FROM lu_ethnicity`),
+                gender: await mysql.query(`SELECT id, gender FROM lu_gender`),
+                person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),
+                race: await mysql.query(`SELECT id, race FROM lu_race`),
+                specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
+            }
         }
+        response.json(lookup);
+    } catch (e) {
+        logger.error(e);
+        response.status(500).json({ message: 'Could not fetch lookup tables' });
     }
-
-    response.json(lookup);
 });
 
 router.post('/update_specimen/:id', function(req,res){

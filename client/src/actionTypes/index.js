@@ -326,6 +326,7 @@ const actionTypes = {
 
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
+    setCancerInfoCohort: 'SET_CI_COHORT',
     setCancerInfoFormValue: 'SET_CI_FORM_VALUE',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS',
 

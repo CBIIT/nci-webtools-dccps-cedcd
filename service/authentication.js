@@ -23,16 +23,20 @@ async function authenticationMiddleware(request, response, next) {
     if (authRoutes.some(regex => regex.test(url))) {
         try {
 
+            let cohortId;
+
             if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
+                cohortId = 79;
                 session.user = {
+                    id: 1,
                     type: 'internal',
                     name: 'admin',
                     role: /internal/.test(url) 
                         ? 'SystemAdmin' 
                         : 'CohortAdmin',
+                    cohorts: [cohortId]
                 };
-    
             } else {
 
                 // otherwise, update user-session variable when hitting authRoutes
@@ -40,26 +44,38 @@ async function authenticationMiddleware(request, response, next) {
                 const userType = isFederated ? 'external' : 'internal';
                 const userName = isFederated ? fedEmail : smUser;
 
-                const results = await mysql.query(
-                    `SELECT access_level as accessLevel 
+                const [results] = await mysql.query(
+                    `SELECT id, access_level as accessLevel 
                     FROM user where user_name = ?`,
                     [userName]
                 );
 
                 // SystemAdmin or CohortAdmin
-                const userRole = results && results.length 
-                    ? results[0].accessLevel 
-                    : null; 
+                const userId = results.id
+                const userRole = results.accessLevel 
+
+                const allowedCohorts = (await mysql.query(
+                    `SELECT cohort_id
+                    FROM cohort_user_mapping
+                    WHERE cohort_user_id = ?`,
+                    [userId]
+                )).map(c => c.cohort_id);
+                
+                // todo: if there is more than one allowed cohort for the user, take the user
+                // to a cohort selection page
+                cohortId = allowedCohorts[0];
 
                 session.user = {
+                    id: userId,
                     type: userType,
                     name: userName,
                     role: userRole,
+                    cohorts: allowedCohorts
                 };
             }
 
             if (/CohortAdmin/.test(session.user.role)) {
-                response.status(301).redirect('/cohort/questionnaire/79');
+                response.status(301).redirect(`/cohort/questionnaire/${cohortId || ''}`);
             } else if (/SystemAdmin/.test(session.user.role)) {
                 response.status(301).redirect('/admin/managecohort');
             } else {

@@ -7,21 +7,22 @@ const MortalityForm = ({ ...props }) => {
     const mortality = useSelector(state => state.mortalityReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
+    const cohortId = +window.location.pathname.split('/').pop();
 
     const handleSave = () => {
         /* if(Object.entries(errors).length === 0)
-             saveEnrollment(79)
+             saveEnrollment(cohortId)
          else{
              //setDisplay('block')
              if(window.confirm('there are validation errors, are you sure to save?'))
-                 saveEnrollment(79)
+                 saveEnrollment(cohortId)
          }*/
     }
 
     const handleSaveContinue = () => {
         /*
         if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
+            saveEnrollment(cohortId, true)}
             */
     }
 
