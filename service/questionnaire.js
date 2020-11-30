@@ -8,7 +8,7 @@ var fs = require('fs');
 router.use((request, response, next) => {
     const { session } = request;
     if (process.env.NODE_ENV !== 'development' &&
-        !/CohortAdmin|SystemAdmin/.test(session.role)) {
+        (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role))) {
         response.status(400).json('Unauthorized').end();
     } else {
         next();
@@ -185,7 +185,7 @@ router.post('/update_mortality/:id', function (req, res) {
     })
 });
 
-const getTablesWithColumn = async (mysql, column) => {
+const getTablesWithColumn = async (mysql, column, schema) => {
     const tables = await mysql.query(
         `select distinct c.table_name as name
         from information_schema.COLUMNS c
@@ -195,8 +195,9 @@ const getTablesWithColumn = async (mysql, column) => {
             )
         where 
             c.COLUMN_NAME = ? and 
-            t.TABLE_TYPE != 'VIEW'`,
-        column
+            t.TABLE_TYPE != 'VIEW' and 
+            t.TABLE_SCHEMA = ?`,
+        [column, schema]
     );
     return tables.map(t => t.name);
 };
@@ -218,7 +219,7 @@ router.get('/cohort/:id(\\d+)', async (request, response) => {
             : ['cohort_user_mapping'];
 
         // look for tables with references to cohort(cohort_id)
-        const tables = (await getTablesWithColumn(mysql, 'cohort_id')).filter(t => 
+        const tables = (await getTablesWithColumn(mysql, 'cohort_id', 'cedcd')).filter(t => 
             !restrictedTables.includes(t)
         );
  
@@ -255,7 +256,7 @@ router.post('/cohort(/:id(\\d+))?', async (request, response) => {
             : ['cohort_user_mapping'];
 
         // look for tables with references to cohort(cohort_id)
-        const tables = (await getTablesWithColumn(mysql, 'cohort_id')).filter(t => 
+        const tables = (await getTablesWithColumn(mysql, 'cohort_id', 'cedcd')).filter(t => 
             !restrictedTables.includes(t)
         );
 
