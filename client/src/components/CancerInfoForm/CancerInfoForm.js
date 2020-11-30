@@ -133,14 +133,13 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     async function handleSave() {
+        let hasErrors = Object.entries(errors).length === 0;
         setSubmitted(true);
         console.log(errors);
 
         // todo: replace window.confirm/alert with either modals or toasts
 
-        if (Object.entries(errors).length === 0 || 
-            window.confirm('There are validation errors, are you sure to save?')
-        ) {
+        if (hasErrors || window.confirm('There are validation errors, are you sure to save?')) {
             try {
                 let info = {...form};
 
@@ -170,10 +169,16 @@ const CancerInfoForm = ({ ...props }) => {
                     dispatch(loadCohort(cohortId));
                     window.alert('Your information has been saved.');
                 } else {
-                    throw new Error('Could not save cohort')
+                    hasErrors = true;
+                    throw new Error('Could not save cohort');
                 }
             } catch (e) {
                 window.alert('There was an error processing your request. Please try again later.')
+            } finally {
+                dispatch(allactions.sectionActions.setSectionStatus(
+                    'D', 
+                    hasErrors ? 'incomplete' : 'complete')
+                )
             }
         }
     }
