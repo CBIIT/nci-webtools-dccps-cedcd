@@ -4,12 +4,15 @@ const completionDate = (toRemove, v) => ({type: t.completionDate, value: v, remo
 const clarification_contact = (toRemove, v) => ({type: t.clarification_contact, value: v, remove: toRemove})
 const completerName = (toRemove, v) => ({type: t.completerName, value: v, remove: toRemove})
 const completerPosition = (toRemove, v) => ({type: t.completerPosition, value: v, remove: toRemove})
+const completerPhone = (toRemove, v) => ({type: t.completerPhone, value: v, remove: toRemove})
 const completerEmail = (toRemove, v) => ({type: t.completerEmail, value: v, remove: toRemove})
 const contacterName = (toRemove, v) => ({type: t.contacterName, value: v, remove: toRemove})
 const contacterPosition = (toRemove, v) => ({ type: t.contacterPosition, value: v, remove: toRemove})
+const contacterPhone = (toRemove, v) => ({type: t.contacterPhone, value: v, remove: toRemove})
 const contacterEmail = (toRemove, v) => ({ type: t.contacterEmail, value: v, remove: toRemove})
 const collaboratorName = (toRemove, v) => ({ type: t.collaboratorName, value: v, remove: toRemove})
 const collaboratorPosition = (toRemove, v) => ({ type: t.collaboratorPosition, value: v, remove: toRemove})
+const collaboratorPhone = (toRemove, v) => ({type: t.collaboratorPhone, value: v, remove: toRemove})
 const collaboratorEmail = (toRemove, v) => ({ type: t.collaboratorEmail, value: v, remove: toRemove})
 const investigatorName = (idx, toRemove, v) => ({type: t.investigatorName, index: idx, value: v, remove: toRemove})
 const investigatorInstitution = (idx, toRemove, v) => ({type: t.investigatorInsitution, index: idx, value: v, remove: toRemove})
@@ -48,12 +51,15 @@ export default {
     clarification_contact,
     completerName,
     completerPosition,
+    completerPhone,
     completerEmail,
     contacterName,
     contacterPosition,
+    contacterPhone,
     contacterEmail,
     collaboratorName,
     collaboratorPosition,
+    collaboratorPhone,
     collaboratorEmail,
     investigatorName,
     investigatorInstitution,
