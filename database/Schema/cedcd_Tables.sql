@@ -260,6 +260,7 @@ CREATE TABLE `cancer_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `ci_confirmed_cancer_year` int(4) DEFAULT NULL,
+  `ci_confirmed_cancer_date` DATE DEFAULT NULL,
   `ci_ascertained_self_reporting` int(1) DEFAULT NULL,
   `ci_ascertained_tumor_registry` int(1) DEFAULT NULL,
   `ci_ascertained_medical_records` int(1) DEFAULT NULL,
