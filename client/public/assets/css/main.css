@@ -881,7 +881,7 @@ a.section-expand {
     content: attr(data-text);
     background-color: #623494;
     color: white;
-    border: 1px rgba(102,102,93,1.00) solid;
+    
     border-left: 1px #B28FC2 solid;
     border-right: 1px #B28FC2 solid;
     display: flex;

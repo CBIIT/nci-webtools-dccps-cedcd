@@ -91,12 +91,15 @@ const actionTypes = {
     clarification_contact: 'clarification_contact',
     completerName: 'completerName',
     completerPosition: 'completerPosition',
+    completerPhone: 'completerPhone',
     completerEmail: 'completerEmail',
     contacterName: 'contacterName',
     contacterPosition: 'contacterPosition',
+    contacterPhone: 'contacterPhone',
     contacterEmail: 'contacterEmail',
     collaboratorName: 'collaboratorName',
     collaboratorPosition: 'collaboratorPosition',
+    collaboratorPhone: 'collaboratorPhone',
     collaboratorEmail: 'collaboratorEmail',
     investigatorName: 'investigatorName',
     investigatorInsitution: 'investigatorInsitution',
@@ -344,6 +347,9 @@ const actionTypes = {
     setSectionEStatus: 'SET_MORTALITY_STATUS',
 
     setLookup: 'SET_LOOKUP',
+    /*secton G*/
+    setSpecimenCount: 'SET_SPECIMEN_COUNT',
+    setSectionGStatus: 'SET_SECTION_G_STATUS'
 }
 
 export default actionTypes

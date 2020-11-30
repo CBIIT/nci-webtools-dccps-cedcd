@@ -11,5 +11,7 @@ import majorContentErrorReducer from './majorContentErrorReducer'
 import lookupReducer from './lookupReducer'
 
 const rootReducer = combineReducers({ cohortReducer, enrollmentCountsReducer, majorContentReducer, cancerInfoReducer, mortalityReducer, cohortErrorReducer, enrollmentCountErrorReducer, majorContentErrorReducer, sectionReducer, lookupReducer });
+import specimenReducer from './specimenReducer'
+const rootReducer = combineReducers({cohortReducer, enrollmentCountsReducer, majorContentReducer, cancerInfoReducer, mortalityReducer, cohortErrorReducer, enrollmentCountErrorReducer, majorContentErrorReducer, specimenReducer, sectionReducer});
 
 export default rootReducer
