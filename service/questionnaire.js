@@ -8,7 +8,7 @@ var fs = require('fs');
 router.use((request, response, next) => {
     const { session } = request;
     if (process.env.NODE_ENV !== 'development' &&
-        !/CohortAdmin|SystemAdmin/.test(session.role)) {
+        (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role))) {
         response.status(400).json('Unauthorized').end();
     } else {
         next();
