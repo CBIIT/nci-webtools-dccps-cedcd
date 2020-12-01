@@ -179,9 +179,9 @@ const MortalityForm = ({ ...props }) => {
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
 
-        <div className='form-group col-md-12'>
-            <label htmlFor='mortalityYear' className='col-md-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-md-3">
+        <div className='form-group col-sm-12'>
+            <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
+            <div className="col-sm-3">
                 <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
             </div>
             {errors.mortalityYear !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.mortalityYear}</div>}
@@ -243,8 +243,8 @@ const MortalityForm = ({ ...props }) => {
                 </div>
             </li>
         </ul>
-        {mortality.otherDeath === 1 && <div className="col-md-12 form-group">
-            <div className='col-md-7 col-xs-12'>
+        {mortality.otherDeath === 1 && <div className="col-sm-12 form-group" style={{marginTop: '1em'}}>
+            <div className='col-sm-7'>
                 <input name='otherDeathSpecify' className='form-control' placeholder='Specify confirmation of death (Max 200 characters)' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} />
             </div>
             {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherDeathSpecify}</div>}
@@ -357,8 +357,8 @@ const MortalityForm = ({ ...props }) => {
                 </li>
             </ul>
 
-            {mortality.otherCode === 1 && <div className="col-md-12 form-group">
-                <div className='col-md-7 col-xs-12'>
+            {mortality.otherCode === 1 && <div className="col-sm-12 form-group" style={{marginTop: '1em'}}>
+                <div className='col-sm-7'>
                     <input name='otherCodeSpecify' className='form-control' placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
                 </div>
                 {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherCodeSpecify}</div>}
@@ -367,14 +367,16 @@ const MortalityForm = ({ ...props }) => {
 
         </div>}
 
+        <label htmlFor='deathNumbers' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
 
-        <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
-            <label htmlFor='deathNumbers' className='col-md-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-md-3">
+        <div className='form-group col-sm-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+            
+            <div className="col-sm-3">
                 <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
             </div>
             {errors.deathNumbers !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.deathNumbers}</div>}
         </div>
+
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
