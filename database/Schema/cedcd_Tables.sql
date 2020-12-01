@@ -601,7 +601,7 @@ insert into lu_cohort_status values (6,"Returned");
 insert into lu_gender(id, gender) values (1, "Female");
 insert into lu_gender(id, gender) values (2, "Male");
 insert into lu_gender(id, gender) values (3, "Unknown");
-insert into lu_gender(id, gender) values (4, "Both");
+insert into lu_gender(id, gender) values (4, "All");  /* changed Both to All according to Questionnaire v8.1 */
 
 /*
  Generate data for lookup table lu_cast_type
