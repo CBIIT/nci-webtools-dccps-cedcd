@@ -243,7 +243,7 @@ const MortalityForm = ({ ...props }) => {
                 </div>
             </li>
         </ul>
-        {mortality.otherDeath === 1 && <div className="col-md-12 form-group">
+        {mortality.otherDeath === 1 && <div className="col-md-12 form-group" style={{marginTop: '1em'}}>
             <div className='col-md-7 col-xs-12'>
                 <input name='otherDeathSpecify' className='form-control' placeholder='Specify confirmation of death (Max 200 characters)' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} />
             </div>
@@ -357,7 +357,7 @@ const MortalityForm = ({ ...props }) => {
                 </li>
             </ul>
 
-            {mortality.otherCode === 1 && <div className="col-md-12 form-group">
+            {mortality.otherCode === 1 && <div className="col-md-12 form-group" style={{marginTop: '1em'}}>
                 <div className='col-md-7 col-xs-12'>
                     <input name='otherCodeSpecify' className='form-control' placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
                 </div>
