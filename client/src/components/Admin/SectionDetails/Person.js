@@ -73,9 +73,9 @@ const Person = ({ id, type, name, position, phone, email, colWidth, callback, er
             </div>
             */}
         <div className='col-md-12' style={{ marginBottom: '4px' }}>
-            <span className='col-md-5' style={{ paddingLeft: '0', lineHeight: '2em' }}>Phone(country code & tel#)</span>
+            <span className='col-md-5' style={{ paddingLeft: '0', lineHeight: '2em' }}>Phone</span>
             <span className='col-md-7'>
-                <span className='col-md-2' style={{ padding: '0', margin: '0' }}><input className='form-control' style={{ padding: '5px' }} value={cohort[type]} readOnly /></span>
+                <span className='col-md-2' style={{ padding: '0', margin: '0' }}><input className='form-control' style={{ padding: '5px' }} value={cohort[type]} title='country code' readOnly /></span>
                 <span className='col-md-10' style={{ padding: '0', margin: '0' }}><input className='form-control' placeholder='10 digits for USA' type='phone' name={phone} value={cohort[phone]} readOnly /></span>
             </span>
         </div>
