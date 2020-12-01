@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import Questionnaire from '../Questionnaire/Questionnaire'
 import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
@@ -9,7 +9,7 @@ import MortalityForm from '../MortalityForm/MortalityForm'
 import SpecimenForm from '../SpecimenForm/Specimens'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 const content = (currentSection, handleClick) => {
-    switch(currentSection){
+    switch (currentSection) {
         case 'A':
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <CohortForm />
@@ -34,13 +34,13 @@ const content = (currentSection, handleClick) => {
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <DataLinkageForm />
             </Questionnaire>
-        default :
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <Message />
-            </Questionnaire>
-        default :
+        case 'G':
             return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <SpecimenForm />
+            </Questionnaire>
+        default:
+            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <Message />
             </Questionnaire>
     }
 }

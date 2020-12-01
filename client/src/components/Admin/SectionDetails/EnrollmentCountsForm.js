@@ -30,7 +30,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
     var dates = ''
     useEffect(() => {
         if (!enrollmentCount.hasLoaded) {
-            fetch(`/api/questionnaire/enrollment_counts/cohortId`, {
+            fetch(`/api/questionnaire/enrollment_counts/${cohortId}`, {
                 method: 'POST',
             }).then(res => res.json())
                 .then(result => {
