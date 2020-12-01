@@ -10,6 +10,8 @@ const DataLinkageForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
     const radioError = 'please choose one'
+    const cohortId = +window.location.pathname.split('/').pop();
+
 
     const [errors, setErrors] = useState({
         haveDataLink: '',
@@ -114,22 +116,59 @@ const DataLinkageForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
+    const saveDataLinkage = (id = cohortID, proceed = false, complete) => {
+
+        const copy = { ...dataLinkage, sectionFStatus: complete }
+
+        fetch(`/api/questionnaire/update_dlh/${id}`, {
+            method: "POST",
+            body: JSON.stringify(copy),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.status === 200) {
+                    if (!proceed)
+                        alert('Data was successfully saved')
+                    else
+                        props.sectionPicker('G')
+                } else {
+                    alert(result.message)
+                }
+            })
+    }
+
     const handleSave = () => {
-        
-        if(validateInput()){
+
+        if (validateInput()) {
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
+            saveDataLinkage(cohortId,false,'complete')
         }
-        else{
+        else {
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+                saveDataLinkage(cohortId,false,'incomplete')
             }
         }
     }
 
     const handleSaveContinue = () => {
-
+        if (validateInput()) {
+            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
+            dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
+            saveDataLinkage(cohortId,true,'complete')
+        }
+        else {
+            if (window.confirm('there are validation errors, are you sure you want to save?')) {
+                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+                saveDataLinkage(cohortId,true,'incomplete')
+            }
+        }
     }
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
