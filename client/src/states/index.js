@@ -435,7 +435,7 @@ const InitialStates = {
         dataOnline: null,
         dataOnlineWebsite: false,
         dataOnlinePolicy: false,
-        dataOnlineURL: null,
+        dataOnlineURL: '',
         createdRepo: null,
         createdRepoSpecify: null,
         sectionFStatus: '',
