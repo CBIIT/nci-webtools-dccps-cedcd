@@ -110,7 +110,7 @@ const CohortForm = ({ ...props }) => {
                             <div className='col-md-12'>
                                 <label className='col-md-4' style={{ paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em' }}>A.2 Date Form Completed<span style={{ color: 'red' }}>*</span></label>
                                 <span className='col-md-4' style={{ marginLeft: '0', paddingLeft: '0', paddingRight: '0' }}>
-                                    <DatePicker className='form-control' selected={new Date(cohort.completionDate)} dateFormat='MM/dd/yyyy' readOnly />
+                                    <DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} dateFormat='MM/dd/yyyy' readOnly />
                                 </span>
                             </div>
                         </div>
