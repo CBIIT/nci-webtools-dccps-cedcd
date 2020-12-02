@@ -169,7 +169,7 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-md-12' style={{ marginBottom: '15px' }}>
                                     <span className='col-md-2' style={{ paddingLeft: '0' }}>Eligible gender</span>
                                     <span className='col-md-2' style={{ marginRight: '0' }}>
-                                        <input type='radio' name='eligibleGender' value='4' checked={cohort.eligible_gender_id === 4} />{' '} Both genders
+                                        <input type='radio' name='eligibleGender' value='4' checked={cohort.eligible_gender_id === 4} />{' '} All genders
                                     </span>
                                     <span className='col-md-2' style={{ marginRight: '0' }}>
                                         <input type='radio' name='eligibleGender' value='2' checked={cohort.eligible_gender_id === 2} />{' '} Males only
