@@ -189,7 +189,7 @@ const MortalityForm = ({ ...props }) => {
 
         <div className='form-group col-sm-12'>
             <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-sm-3">
+            <div className="col-sm-2">
                 <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
             </div>
             {errors.mortalityYear !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.mortalityYear}</div>}
@@ -200,7 +200,7 @@ const MortalityForm = ({ ...props }) => {
             <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)<span style={{ color: 'red' }}>*</span></label>
         </div>
 
-        <ul style={{ listStyle: 'none' }}>
+        <ul style={{ listStyle: 'none', padding: '0' }}>
             <li>
                 <div className="col-md-12">
                     <div htmlFor="deathIndex" className='col-md-4'>U.S. National Death Index (NDI) linkage</div>
@@ -298,7 +298,7 @@ const MortalityForm = ({ ...props }) => {
                 <span className='col-md-5'>If yes, what type of death code was used?</span>
             </div>
 
-            <ul style={{ listStyle: 'none' }}>
+            <ul style={{ listStyle: 'none', padding: '0' }}>
                 <li>
                     <div className="col-md-12">
                         <div htmlFor="icd9" className='col-md-4'>ICD-9</div>
@@ -378,7 +378,7 @@ const MortalityForm = ({ ...props }) => {
         </div>
         <div className='form-group col-sm-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
 
-            <div className="col-sm-3">
+            <div className="col-sm-2">
                 <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
             </div>
             {errors.deathNumbers !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.deathNumbers}</div>}
