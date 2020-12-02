@@ -189,13 +189,13 @@ const DataLinkageForm = ({ ...props }) => {
             {errors.haveDataLink !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLink}</div>}
         </div>
 
-        {dataLinkage.haveDataLink === 1 && <div className='form-group col-md-12'>
+        <div className='form-group col-md-12'>
             <label className='col-md-12'>If yes, please specify:</label>
             <div className='col-md-12'>
-                <input name='haveDataLinkSpecify' className='form-control' placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
             </div>
             {errors.haveDataLinkSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLinkSpecify}</div>}
-        </div>}
+        </div>
 
         <div className='col-md-12'>
             <label htmlFor='haveHarmonization' className='col-md-12'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
@@ -214,13 +214,13 @@ const DataLinkageForm = ({ ...props }) => {
             {errors.haveHarmonization !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonization}</div>}
         </div>
 
-        {dataLinkage.haveHarmonization === 1 && <div className='form-group col-md-12'>
+        <div className='form-group col-md-12'>
             <label className='col-md-12'>If part of a consortium, please specify:</label>
             <div className='col-md-12'>
-                <input name='haveHarmonizationSpecify' className='form-control' value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Specify Consortum (Max 500 characters)'></input>
+                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Specify Consortum (Max 500 characters)'></input>
             </div>
             {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonizationSpecify}</div>}
-        </div>}
+        </div>
 
         <div className='col-md-12'>
             <label htmlFor='haveDeposited' className='col-md-12'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
@@ -239,7 +239,7 @@ const DataLinkageForm = ({ ...props }) => {
             {errors.haveDeposited !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeposited}</div>}
         </div>
 
-        {dataLinkage.haveDeposited === 1 && <div>
+        <div>
             <div className='form-group col-md-12'>
                 <span className='col-md-5'>If yes, please select which repositories:</span>
             </div>
@@ -250,12 +250,12 @@ const DataLinkageForm = ({ ...props }) => {
                         <div htmlFor="dbGaP" className='col-md-2'>dbGaP</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='dbGaP' checked={dataLinkage.dbGaP === 0} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='dbGaP' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.dbGaP === 0} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='dbGaP' checked={dataLinkage.dbGaP === 1} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='dbGaP' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.dbGaP === 1} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.dbGaP !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dbGaP}</div>}
@@ -267,12 +267,12 @@ const DataLinkageForm = ({ ...props }) => {
                         <div htmlFor="BioLINCC" className='col-md-2'>BioLINCC</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='BioLINCC' checked={dataLinkage.BioLINCC === 0} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='BioLINCC' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.BioLINCC === 0} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='BioLINCC' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.BioLINCC === 1} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.BioLINCC !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.BioLINCC}</div>}
@@ -283,19 +283,19 @@ const DataLinkageForm = ({ ...props }) => {
                         <div htmlFor="otherRepo" className='col-md-2'>Other</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherRepo' checked={dataLinkage.otherRepo === 0} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='otherRepo' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.otherRepo === 0} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherRepo' checked={dataLinkage.otherRepo === 1} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='otherRepo' disabled={dataLinkage.haveDeposited !== 1} checked={dataLinkage.otherRepo === 1} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.otherRepo !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherRepo}</div>}
                     </div>
                 </li>
             </ul>
-        </div>}
+        </div>
 
         <div className='col-md-12'>
             <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
@@ -314,31 +314,31 @@ const DataLinkageForm = ({ ...props }) => {
             {errors.dataOnline !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnline}</div>}
         </div>
 
-        {dataLinkage.dataOnline === 1 && <div>
+        <div>
             <div className='form-group col-md-12'>
                 <span className='col-md-5'>If yes, please specify:</span>
             </div>
 
             <ul style={{ listStyle: 'none' }}>
                 <li>
-                    <input type='checkbox' name='dataOnlinePolicy' checked={dataLinkage.dataOnlinePolicy} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(!dataLinkage.dataOnlinePolicy))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(!dataLinkage.dataOnlinePolicy))} style={{ width: '30px' }} />
                     <span>Policy attached (PDF)</span>
                 </li>
                 <li>
-                    <input type='checkbox' name='dataOnlineWebsite' checked={dataLinkage.dataOnlineWebsite} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(!dataLinkage.dataOnlineWebsite))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(!dataLinkage.dataOnlineWebsite))} style={{ width: '30px' }} />
                     <span>Website, please specify: </span>
                 </li>
                 {errors.dataOnlineSelected !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>}
             </ul>
 
 
-            {dataLinkage.dataOnlineWebsite && <div className='form-group col-md-12'>
+            <div className='form-group col-md-12'>
                 <div className='col-md-8'>
-                    <input name='dataOnlineURL' className='form-control' value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Specify website url (Max 300 characters)'></input>
+                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Specify website url (Max 300 characters)'></input>
                 </div>
                 {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnlineURL}</div>}
-            </div>}
-        </div>}
+            </div>
+        </div>
 
         <div className='col-md-12'>
             <label htmlFor='createdRepo' className='col-md-12'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
@@ -357,13 +357,13 @@ const DataLinkageForm = ({ ...props }) => {
             {errors.createdRepo !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.createdRepo}</div>}
         </div>
 
-        {dataLinkage.createdRepo === 1 && <div className='col-md-12'>
+        <div className='col-md-12'>
             <label className='col-md-12'>If yes, please specify location:</label>
             <div className='col-md-8'>
-                <input name='createdRepoSpecify' className='form-control' value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Specify enclave location (Max 300 characters)'></input>
+                <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Specify enclave location (Max 300 characters)'></input>
             </div>
             {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.createdRepoSpecify}</div>}
-        </div>}
+        </div>
 
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'left' }}>
