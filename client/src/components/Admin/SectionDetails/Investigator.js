@@ -49,7 +49,7 @@ const Investigator = ({ id, name, institution, email, isRequired, callback, hand
     return <div id={id} className='col-md-12' style={{ paddingLeft: '0', marginBottom: '15px' }}>
         <div className='col-md-12  invheader'>
             {idx === '0' ? <span>Investigator</span> : <span>Addition Investigator</span>}
-            {idx !== '0' ? <span className='invclose' onClick={() => handleRemove(idx)}>x</span> : ''}
+
         </div>
         <div className='col-md-12' style={{ border: '1px solid lightgray' }}>
             <div className='col-md-12' style={{ paddingLeft: '0', marginTop: '5px', marginBottom: '5px' }}>
