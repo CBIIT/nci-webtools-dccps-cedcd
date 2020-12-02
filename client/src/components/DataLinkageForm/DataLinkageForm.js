@@ -116,7 +116,7 @@ const DataLinkageForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
-    const saveDataLinkage = (id = cohortID, proceed = false, complete) => {
+    const saveDataLinkage = (id = cohortId, proceed = false, complete) => {
 
         const copy = { ...dataLinkage, sectionFStatus: complete }
 
