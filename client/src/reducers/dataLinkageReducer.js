@@ -13,6 +13,7 @@ actions[t.setOtherRepo] = (state, action) => ({ ...state, otherRepo: action.valu
 actions[t.setDataOnline] = (state, action) => ({ ...state, dataOnline: action.value })
 actions[t.setDataOnlineWebsite] = (state, action) => ({ ...state, dataOnlineWebsite: action.value })
 actions[t.setDataOnlinePolicy] = (state, action) => ({ ...state, dataOnlinePolicy: action.value })
+actions[t.setDataOnlineURL] = (state, action) => ({ ...state, dataOnlineURL: action.value })
 actions[t.setCreatedRepo] = (state, action) => ({ ...state, createdRepo: action.value })
 actions[t.setCreatedRepoSpecify] = (state, action) => ({ ...state, createdRepoSpecify: action.value })
 actions[t.setSectionFStatus] = (state, action) => ({ ...state, sectionFStatus: action.value })

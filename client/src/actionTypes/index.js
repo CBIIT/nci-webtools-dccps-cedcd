@@ -360,6 +360,7 @@ const actionTypes = {
     setDataOnline: 'SET_LINKAGE_DATA_ONLINE',
     setDataOnlineWebsite: 'SET_LINKAGE_ONLINE_WEBSITE',
     setDataOnlinePolicy: 'SET_LINKAGE_ONLINE_POLICY',
+    setDataOnlineURL: 'SET_LINKAGE_ONLINE_URL',
     setCreatedRepo: 'SET_LINAKGE_CREATED_REPO',
     setCreatedRepoSpecify: 'SET_LINKAGE_REPO_SPECIFY',
     setSectionFStatus: 'SET_LINKAGE_STATUS',

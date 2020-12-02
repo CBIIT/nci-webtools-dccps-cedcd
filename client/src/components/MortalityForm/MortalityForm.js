@@ -92,6 +92,7 @@ const MortalityForm = ({ ...props }) => {
         }
         else
             copy.otherDeathSpecify = '';
+
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
         if (mortality.haveDeathCause === 1) {
@@ -111,6 +112,13 @@ const MortalityForm = ({ ...props }) => {
             }
             else
                 copy.otherCodeSpecify = '';
+        }
+        else{
+            copy.icd9 = '';
+            copy.icd10 = '';
+            copy.notCoded = '';
+            copy.otherCode = '';
+            copy.otherCodeSpecify = '';
         }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
