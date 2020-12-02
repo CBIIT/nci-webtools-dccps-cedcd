@@ -38,7 +38,7 @@ const ReviewCohorHeader = ({ ...props }) => {
 
     return <div>
         <div>
-            <a className="back" href="javascript:void(0);" onClick={goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to previous page</span></a>
+            <a className="back" href="/admin/managecohort" target="_self" onClick={goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to Manage Cohorts</span></a>
         </div>
 
 
