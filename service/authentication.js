@@ -27,7 +27,7 @@ async function authenticationMiddleware(request, response, next) {
 
             if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
-                cohortId = 79;
+                cohortId = process.env.NODE_ENV === 'development' ? 79 : 30;
                 session.user = {
                     id: 1,
                     type: 'internal',
