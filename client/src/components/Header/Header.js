@@ -4,6 +4,7 @@ import { UserSessionContext } from '../../index';
 
 export default function Header({ props }) {
     const userSession = useContext(UserSessionContext);
+    console.dir('in header: '+userSession)
     const logout = async e => {
         e.preventDefault();
         // can not use normal 301 response, since session is not properly cleared

@@ -2,6 +2,7 @@ import t from '../actionTypes'
 
 const completionDate = (toRemove, v) => ({type: t.completionDate, value: v, remove: toRemove})
 const clarification_contact = (toRemove, v) => ({type: t.clarification_contact, value: v, remove: toRemove})
+const cohort_web_site = (toRemove, v) => ({type: t.cohort_web_site, value: v, remove: toRemove})
 const completerName = (toRemove, v) => ({type: t.completerName, value: v, remove: toRemove})
 const completerPosition = (toRemove, v) => ({type: t.completerPosition, value: v, remove: toRemove})
 const completerPhone = (toRemove, v) => ({type: t.completerPhone, value: v, remove: toRemove})
@@ -48,6 +49,7 @@ const publication = (toRemove, v) => ({ type: t.publication, value: v, remove: t
 
 export default {
     completionDate,
+    cohort_web_site,
     clarification_contact,
     completerName,
     completerPosition,

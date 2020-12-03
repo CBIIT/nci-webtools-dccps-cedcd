@@ -1,18 +1,18 @@
-.invheader{
+.inspectorheader{
     background-color: white;
-    height: 20px;
+    height: 15px;
     padding-top: 10px;
     position: relative;
 }
 
 
 
-.invclose{
+.inspectorClose{
     position: absolute;
-    right: 20px;
+    right: 15px;
 }
 
-.invclose:hover{
+.inspectorClose:hover{
     cursor: pointer;
     color: blue;
     border-bottom: 1px solid blue;

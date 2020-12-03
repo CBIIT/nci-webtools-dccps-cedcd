@@ -4,7 +4,6 @@ import InitialStates from '../states'
 const actions = {}
 actions[t.setSpecimenCount] = (state, action) => {
     let shallow = {...state}
-    console.dir(shallow)
     if(/^\d*$/.test(action.value.trim())){
         shallow.counts[action.cell] = action.value
         return shallow

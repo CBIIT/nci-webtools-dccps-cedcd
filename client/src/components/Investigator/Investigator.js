@@ -4,7 +4,7 @@ import validator from '../../validators'
 import {useSelector, useDispatch} from 'react-redux'
 import Reminder from '../Tooltip/Tooltip'
 
-import "react-datepicker/dist/react-datepicker.css";
+//import "react-datepicker/dist/react-datepicker.css";
 import './Investigator.css'
 
 const Investigator = ({id, name, institution, email, handleRemove, errors, displayStyle}) => {
@@ -34,7 +34,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
 
     return <div id={id} className='col-md-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
                 <div className='col-md-12' style={{border: '1px solid lightgray'}}>
-                    {idx !== '0' ? <div className='col-md-12 invheader'><span className='invclose' onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 invheader'></div>}
+                    {idx !== '0' ? <div className='col-md-12 inspectorheader'><span className='inspectorClose' onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 inspectorheader'></div>}
                     <div className='col-md-12' style={{paddingLeft: '0', marginTop: '5px', marginBottom: '5px'}}>
                         <span className='col-md-2' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                         {errors[name] && displayStyle ? <Reminder message={errors[name]}><span className='col-md-9'>
@@ -46,7 +46,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
                         <input style={{border: '1px solid red'}} className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-9'>
                         <input className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></span> }
                     </div>
-                    <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
+                    <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '18px'}}>
                         <span className='col-md-2'  style={{lineHeight: '2em', paddingLeft: '0'}}>Email<span style={{color: 'red'}}>*</span></span>
                         {errors[email] && displayStyle ? <Reminder message={errors[email]}><span className='col-md-9'>
                         <input style={{border: '1px solid red'}} className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')}}/></span></Reminder> : <span className='col-md-9'>
