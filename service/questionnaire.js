@@ -196,7 +196,7 @@ router.post('/dlh/:id', function (req, res) {
         dlh.info = result[0]
         dlh.completion = result[1]
 
-        if (mortality)
+        if (dlh)
             res.json({ status: 200, data: dlh })
         else
             res.json({ status: 500, message: 'failed to load data' })
