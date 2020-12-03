@@ -54,6 +54,6 @@ export default function Tab(props) {
   return (<li className={cls}>
       {!target && <Link to={url} id={props.id} onClick={props.onClick}><span>{name}</span></Link>}
       {target && <a href={url} target={target}><span>{name}</span></a>}
-      <span className="arrow down"></span>
+      {window.innerWidth > 800 && <span className="arrow down"></span>}
     </li>);
 }

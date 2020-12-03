@@ -1,4 +1,5 @@
 const actionTypes = {
+    setSpecimenCounts: 'SET_SPECIMEN_COUNTS',
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setSectionAStatus: 'SET_COHORT_STATUS',
     setCountryCode: 'SET_PERSON_PHONE_COUNTRY_CODE',
@@ -88,6 +89,7 @@ const actionTypes = {
     setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*cohort Errors*/
     completionDate: 'completionDate',
+    cohort_web_site: 'cohort_web_site',
     clarification_contact: 'clarification_contact',
     completerName: 'completerName',
     completerPosition: 'completerPosition',

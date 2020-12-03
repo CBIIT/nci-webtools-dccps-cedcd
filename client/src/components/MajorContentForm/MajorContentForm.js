@@ -8,6 +8,7 @@ import Reminder from '../Tooltip/Tooltip'
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
+    const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.majorContentErrorReducer)
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
@@ -112,9 +113,10 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.setMentalFollowUp(content[38].followup))
                         dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(content[39].baseline))
                         dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))
-
+                        if(content[40]){
                         dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(content[40].baseline))
                         dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(content[40].followup))
+                        }
 
                         dispatch(allactions.majorContentActions.setCancerToxicity(cancerInfo.cancerToxicity))
                         dispatch(allactions.majorContentActions.setCancerLateEffects(cancerInfo.cancerLateEffects))
@@ -209,8 +211,10 @@ const MajorContentForm = ({ ...props }) => {
                         if (content[38].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }
                         if (content[39].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }
                         if (content[39].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }
-                        if (content[40].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
-                        if (content[40].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
+                        if(content[40]){
+                            if (content[40].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
+                            if (content[40].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
+                        }
 
                         if (cancerInfo.cancerToxicity == null || cancerInfo.cancerToxicity == 1) { dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
                         if (cancerInfo.cancerLateEffects == null || cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
@@ -480,7 +484,7 @@ const MajorContentForm = ({ ...props }) => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span style={{ fontSize: '1.4rem' }}>C. 15 Use of tobacco products other than cigarettes</span></td>
+                                    <td><span>C. 15 Use of tobacco products other than cigarettes</span></td>
                                     <td style={{ backgroundColor: (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved ? 'lightcoral' : 'white' }}>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
@@ -495,26 +499,24 @@ const MajorContentForm = ({ ...props }) => {
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>Chewing Tabacco</span>
+                                            <span className='col-sm-10'>Chewing Tabacco</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>E-cigarettes</span>
+                                            <span className='col-sm-10' >E-cigarettes</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
-                                                <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-2' style={{ fontSize: '1.4rem' }}>Other</span>
-                                            {
-                                                majorContent.noncigarOtherBaseLine ?
-                                                    <span className='col-sm-8'>
-                                                        <span className='col-sm-1' style={{ paddingLeft: '0' }}></span>
-                                                        <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>
-                                                           {errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input name='noncigarBaseLineSpecify' style={{ width: '200%' }} className='errorInputUnderscore' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(e.target.value)) }} /></Reminder> : <input name='noncigarBaseLineSpecify' style={{ width: '200%' }} className='inputUnderscore' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(e.target.value)) }} />}
-                                                        </span>
-                                                    </span> : ''
-                                            }
+                                                <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(!e.target.checked)) }} />  </span>
+                                            <span className='col-sm-2' >Other</span>
+                                        </div>
+                                        <div> 
+                                            <span className='col-sm-12'>
+                                                <span className='col-sm-offset-3 col-sm-10' >
+                                                    {errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/>}
+                                                </span>
+                                            </span>   
                                         </div>
                                     </td>
                                     <td style={{ backgroundColor: (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved ? 'lightcoral' : 'white' }}>
@@ -531,26 +533,24 @@ const MajorContentForm = ({ ...props }) => {
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>Chewing Tabacco</span>
+                                            <span className='col-sm-10' >Chewing Tabacco</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>E-cigarettes</span>
+                                            <span className='col-sm-10' >E-cigarettes</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
-                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-2' style={{ fontSize: '1.4rem' }}>Other</span>
-                                            {
-                                                majorContent.noncigarOtherFollowUp ?
-                                                    <div className='col-sm-8'>
-                                                        <span className='col-sm-1' style={{ paddingLeft: '0' }}></span>
-                                                        <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>
-                                                            {errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input name='noncigarFollowUpSpecify' style={{ width: '200%' }} className='errorInputUnderscore' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(e.target.value)) }} /></Reminder> : <input name='noncigarFollowUpSpecify' style={{ width: '200%' }} className='inputUnderscore' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(e.target.value)) }} />}
-                                                        </span>
-                                                    </div> : ''
-                                            }
+                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(!e.target.checked)) }} />  </span>
+                                            <span className='col-sm-2' >Other</span>
+                                        </div>
+                                        <div> 
+                                            <span className='col-sm-12'>
+                                                <span className='col-sm-offset-3 col-sm-10' >
+                                                    {errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/>}
+                                                </span>
+                                            </span>   
                                         </div>
                                     </td>
                                 </tr>
@@ -855,15 +855,15 @@ const MajorContentForm = ({ ...props }) => {
                                         </div>
                                         <div className='col-sm-12'>
                                             <span className='col-sm-1' style={{ padding: '0', margin: '0', width: '40px' }}><input type='checkbox' checked={majorContent.cancerOther === 1} onChange={
-                                                e => { dispatch(allactions.majorContentActions.setCancerOther(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)) }}
+                                                e => { dispatch(allactions.majorContentActions.setCancerOther(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(!e.target.checked)) }}
                                             /></span>
                                             <span className='col-sm-1' style={{ paddingLeft: '0', width: '25px' }}>Other</span>
-                                            {
-                                                majorContent.cancerOther === 1 ?
-                                                    <span className='col-sm-3'>
-                                                        {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input name='cancerOtherSpecify' className='errorInputUnderscore' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(e.target.value)) }} /></Reminder> : <input className='inputUnderscore' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={(e) => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(e.target.value)) }} />}
-                                                    </span> : ''
-                                            }
+                                        </div>
+                                        <div className='col-sm-12'>
+                                            <span className='col-sm-1' style={{ padding: '0', margin: '0', width: '40px' }}></span>
+                                            <span className='col-sm-5' style={{paddingLeft: '0'}}>
+                                                {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='cancerOtherSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' style={{height: '24px'}} className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} />}
+                                            </span>
                                         </div>
                                     </td>
                                 </tr>
@@ -882,6 +882,7 @@ const MajorContentForm = ({ ...props }) => {
                         <span onClick={handleSaveContinue}>
                             <input type='button' className='btn btn-primary' value='Save & Continue' />
                         </span>
+                        {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
                     </span>
                 </div>
             </div>

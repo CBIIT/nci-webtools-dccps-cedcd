@@ -95,7 +95,11 @@ const CohortForm = ({ ...props }) => {
                                 <p style={{ fontSize: '16px' }}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='15' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.cohort_description} /></span>
+                                <span className='col-md-12'>
+                                    <div style={{ border: '1px solid lightgray', borderRadius: '4', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px', paddingTop: '10px', paddingBottom: '10', paddingLeft: '10', paddingRight: '10px', lineHeight: '1.5', WebkitTransition: 'all', whiteSpace: "pre-line" }}>
+                                        {cohort.cohort_description}
+                                    </div>
+                                </span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>

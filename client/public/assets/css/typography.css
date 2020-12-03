@@ -221,6 +221,8 @@ ul.results-nav li {
   top:21px;
   transition: all 0.4s ease-in-out;
 }
+
+
 #mainNavBar li:hover .arrow.down, #mainNavBar li.active .arrow.down {
   width: 0;
   height: 0;
@@ -248,8 +250,14 @@ ul#mainNav li {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  position: relative;
+  position: relative; 
 }
+
+ul#mainNave li.icon{
+  padding: 0;
+  margin: 0;
+}
+
 .loggedin ul#mainNav li {
   display: none;
 }
