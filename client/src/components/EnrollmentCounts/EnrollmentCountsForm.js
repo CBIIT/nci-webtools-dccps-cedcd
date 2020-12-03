@@ -11,6 +11,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
 const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
+    const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.enrollmentCountErrorReducer)
     const dispatch = useDispatch()
     //const [displayStyle, setDisplay] = useState('0')
@@ -304,6 +305,7 @@ const EnrollmentCountsForm = ({...props}) => {
                 <span onClick={handleSaveContinue}>
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
+                {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
                 </span>
             </div> 
             </div>

@@ -8,6 +8,7 @@ import Reminder from '../Tooltip/Tooltip'
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
+    const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.majorContentErrorReducer)
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
@@ -112,9 +113,10 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.setMentalFollowUp(content[38].followup))
                         dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(content[39].baseline))
                         dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))
-
+                        if(content[40]){
                         dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(content[40].baseline))
                         dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(content[40].followup))
+                        }
 
                         dispatch(allactions.majorContentActions.setCancerToxicity(cancerInfo.cancerToxicity))
                         dispatch(allactions.majorContentActions.setCancerLateEffects(cancerInfo.cancerLateEffects))
@@ -209,8 +211,10 @@ const MajorContentForm = ({ ...props }) => {
                         if (content[38].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }
                         if (content[39].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }
                         if (content[39].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }
-                        if (content[40].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
-                        if (content[40].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
+                        if(content[40]){
+                            if (content[40].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
+                            if (content[40].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
+                        }
 
                         if (cancerInfo.cancerToxicity == null || cancerInfo.cancerToxicity == 1) { dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
                         if (cancerInfo.cancerLateEffects == null || cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
@@ -878,6 +882,7 @@ const MajorContentForm = ({ ...props }) => {
                         <span onClick={handleSaveContinue}>
                             <input type='button' className='btn btn-primary' value='Save & Continue' />
                         </span>
+                        {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
                     </span>
                 </div>
             </div>
