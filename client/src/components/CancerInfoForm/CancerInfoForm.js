@@ -151,37 +151,37 @@ const CancerInfoForm = ({ ...props }) => {
                     info.ci_confirmed_cancer_year = null;
                 }
 
-                await fetch(`/api/questionnaire/update_cancer_info/${cohortId}`, {
+                // await fetch(`/api/questionnaire/update_cancer_info/${cohortId}`, {
+                //     method: 'POST', 
+                //     headers: {'content-type': 'application/json'},
+                //     body: JSON.stringify(info)
+                // }).json();
+
+                // await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
+                //     method: 'POST', 
+                //     headers: {'content-type': 'application/json'},
+                //     body: JSON.stringify(Object.entries(counts).map(([key, value]) => {
+                //         let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
+                //         let cancer_counts = value;
+                //         return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
+                //     }))
+                // }).json();
+                const response = await fetch(`/api/questionnaire/cohort/${cohortId}`, {
                     method: 'POST', 
                     headers: {'content-type': 'application/json'},
-                    body: JSON.stringify(info)
-                }).json();
-
-                await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
-                    method: 'POST', 
-                    headers: {'content-type': 'application/json'},
-                    body: JSON.stringify(Object.entries(counts).map(([key, value]) => {
-                        let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
-                        let cancer_counts = value;
-                        return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
-                    }))
-                }).json();
-
+                    body: JSON.stringify({
+                        cancer_info: info,
+                        cancer_count: Object.entries(counts).map(([key, value]) => {
+                            let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
+                            let cancer_counts = value;
+                            return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
+                        })
+                    })
+                });
                 dispatch(loadCohort(cohortId));
                 window.alert('Your information has been saved.');
 
-                // const response = await fetch(`/api/questionnaire/cohort/${cohortId}`, {
-                //     method: 'POST', 
-                //     headers: {'content-type': 'application/json'},
-                //     body: JSON.stringify({
-                //         cancer_info: info,
-                //         cancer_count: Object.entries(counts).map(([key, value]) => {
-                //             let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
-                //             let cancer_counts = value;
-                //             return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
-                //         })
-                //     })
-                // });
+
             } catch (e) {
                 window.alert('There was an error processing your request. Please try again later.')
             } finally {
