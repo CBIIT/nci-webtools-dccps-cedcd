@@ -1,4 +1,5 @@
 const actionTypes = {
+    setSpecimenCounts: 'SET_SPECIMEN_COUNTS',
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setSectionAStatus: 'SET_COHORT_STATUS',
     setCountryCode: 'SET_PERSON_PHONE_COUNTRY_CODE',

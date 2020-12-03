@@ -337,14 +337,15 @@ router.get('/lookup', async (request, response) => {
 });
 
 router.post('/update_specimen/:id', function(req,res){
-    let func = 'update_specimen'
+    let func = 'update_specimen_count'
     let body = req.body
     for(let k of Object.keys(body.counts)){if(body.counts[k] === '')body.counts[k]= 0} 
     body = JSON.stringify(body)
     let params = []
     params.push(req.params.id)
     params.push(body)
-/*
+    //logger.debug(body)
+
     mysql.callJsonProcedure(func, params, function(result){
         //logger.debug(result)
         if(result && result[0] && result[0][0].rowAffacted > 0)
@@ -352,8 +353,7 @@ router.post('/update_specimen/:id', function(req,res){
         else
             res.json({status:500, message:'update failed'})
     })
-    */
-   res.json({msg: 'ok'})
+    
 })
 
 module.exports = router
