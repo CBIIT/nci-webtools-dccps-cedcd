@@ -1977,4 +1977,96 @@ begin
   commit;
   SELECT flag AS rowsAffacted;
 end //
+
+
+DROP PROCEDURE IF EXISTS `select_dlh` //
+
+CREATE PROCEDURE `select_dlh` (in targetID int) 
+BEGIN
+	SELECT
+		cohort_id
+		,dlh_linked_to_existing_databases
+		,dlh_linked_to_existing_databases_specify
+		,dlh_harmonization_projects
+		,dlh_harmonization_projects_specify
+		,dlh_nih_repository
+		,dlh_nih_dbgap
+		,dlh_nih_biolincc
+		,dlh_nih_other
+		,dlh_procedure_online
+		,dlh_procedure_website
+		,dlh_procedure_url
+		,dlh_procedure_attached
+		,dlh_procedure_enclave
+		,dlh_enclave_location
+		,create_time
+		,update_time
+	FROM dlh WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
+end//
+
+DROP PROCEDURE if EXISTS `update_dlh` //
+
+CREATE PROCEDURE `update_dlh` (in targetID int, in info JSON)
+BEGIN
+	if exists (select * from dlh where cohort_id = `targetID`) then 
+		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
+		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization'))) where cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_repository = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_online = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) where cohort_id = `targetID`;
+		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
+		update dlh set update_time = NOW() where cohort_id = `targetID`;
+	else
+		insert into dlh (
+			cohort_id
+			,dlh_linked_to_existing_databases
+			,dlh_linked_to_existing_databases_specify
+			,dlh_harmonization_projects
+			,dlh_harmonization_projects_specify
+			,dlh_nih_repository
+			,dlh_nih_dbgap
+			,dlh_nih_biolincc
+			,dlh_nih_other
+			,dlh_procedure_online
+			,dlh_procedure_website
+			,dlh_procedure_url
+			,dlh_procedure_attached
+			,dlh_procedure_enclave
+			,dlh_enclave_location
+			,create_time
+			,update_time
+		) values(
+			targetID
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify')))
+			,NOW()
+			,NOW()
+		);
+		insert into cohort_edit_status (cohort_id, page_code, `status`)
+		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
+	end if;
+	select row_count() as rowAffacted;
+end//
+
 DELIMITER ;

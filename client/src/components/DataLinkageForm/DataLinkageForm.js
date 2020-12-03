@@ -244,7 +244,7 @@ const DataLinkageForm = ({ ...props }) => {
                 <span className='col-md-5'>If yes, please select which repositories:</span>
             </div>
 
-            <ul style={{ listStyle: 'none' }}>
+            <ul style={{ listStyle: 'none', padding: '0' }}>
                 <li>
                     <div className="col-md-12">
                         <div htmlFor="dbGaP" className='col-md-2'>dbGaP</div>
@@ -297,7 +297,7 @@ const DataLinkageForm = ({ ...props }) => {
             </ul>
         </div>
 
-        <div className='col-md-12'>
+        <div className='col-md-12' style={{marginTop: '1em'}}>
             <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
         </div>
 

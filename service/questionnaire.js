@@ -185,6 +185,41 @@ router.post('/update_mortality/:id', function (req, res) {
     })
 });
 
+router.post('/dlh/:id', function (req, res) {
+    let id = req.params.id
+    let func = 'select_dlh'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function (result) {
+        logger.debug(result)
+        const dlh = {}
+        dlh.info = result[0]
+        dlh.completion = result[1]
+
+        if (mortality)
+            res.json({ status: 200, data: dlh })
+        else
+            res.json({ status: 500, message: 'failed to load data' })
+    })
+});
+
+router.post('/update_dlh/:id', function (req, res) {
+    let func = 'update_dlh'
+    let body = JSON.stringify(req.body)
+    let params = []
+    params.push(req.params.id)
+    params.push(body)
+    logger.debug(body)
+
+    mysql.callJsonProcedure(func, params, function (result) {
+        logger.debug(result)
+        if (result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({ status: 200, message: 'update successful' })
+        else
+            res.json({ status: 500, message: 'update failed' })
+    })
+});
+
 const getTablesWithColumn = async (mysql, column, schema) => {
     const tables = await mysql.query(
         `select distinct c.table_name as name
@@ -310,7 +345,7 @@ router.post('/cohort(/:id(\\d+))?', async (request, response) => {
         response.status(500).json({ message: 'Could not update cohort' });
     }
 });
-
+/*
 router.get('/lookup', async (request, response) => {
     let { locals } = request.app;
     let { lookup, mysql } = locals;
@@ -352,8 +387,8 @@ router.post('/update_specimen/:id', function(req,res){
         else
             res.json({status:500, message:'update failed'})
     })
-    */
+
    res.json({msg: 'ok'})
 })
-
+*/
 module.exports = router
