@@ -1,12 +1,14 @@
-.dropdown {
+.dropdown, .miniDropdown {
   position: relative;
   display: inline-block;
   height: inherit;
   box-sizing: border-box;
 }
-.dropdown:hover {
+.dropdown:hover{
   background-color: #01857b;
 }
+
+
 
 #dropHeader {
   padding-bottom: 0;
@@ -28,6 +30,7 @@
   z-index: 1;
 }
 
+
 /* Links inside the dropdown */
 .dropdown-content a {
   color: black;
@@ -36,10 +39,72 @@
   display: block;
 }
 
+
 .dropdown-content a:hover {
   background-color: #ddd;
 }
 
+
 .dropdown:hover .dropdown-content {
   display: block;
 }
+
+
+ul#mainNav li.icon {
+  display: none;
+}
+
+
+@media screen and (max-width: 800px) {
+  ul#mainNav li:not(:first-child){
+    display: none;
+  }
+  ul#mainNav{
+    border-bottom: 1px solid gray;
+  }
+  ul#subNav{
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  ul#subNav li{
+    width: 100%;
+    margin: 0;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: #135B5D;
+  }
+
+  ul#subNav li:hover, ul#subNav li.active{
+    background-color: #01857b;
+    cursor: hand;
+  }
+
+  ul#subNav li.miniDropdown a.miniLink:hover{
+    color: red;
+  }
+
+  ul#subNav li a {
+    color: white;
+  }
+
+  ul#mainNav li.icon {
+    position: relative;
+    height: 100%;
+    font-size: 25px;
+    display: block;
+    text-align: center;
+    line-height: 1.5em;
+  }
+
+  ul#mainNav li.icon:hover {
+    background-color: #01857b;
+    cursor: hand;
+  }
+  
+}
+

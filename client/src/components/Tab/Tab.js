@@ -48,10 +48,11 @@ class Tab extends Component {
     }
 
     let cls = url === this.props.active ? "active" : "";
-    return (<li className={cls}>
+    return (<li className={cls} >
         {!target && <Link to={url} id={this.props.id} onClick={this.props.onClick}><span>{name}</span></Link>}
         {target && <a href={url} target={target}><span>{name}</span></a>}
-        <span className="arrow down"></span>
+
+        {window.innerWidth > 800 && <span className="arrow down"></span>}
       </li>);
   }
 }

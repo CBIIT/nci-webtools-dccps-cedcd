@@ -89,6 +89,7 @@ const actionTypes = {
     setPublicationUrl: 'SET_COHORT_PUBLICATION_URL',
     /*cohort Errors*/
     completionDate: 'completionDate',
+    cohort_web_site: 'cohort_web_site',
     clarification_contact: 'clarification_contact',
     completerName: 'completerName',
     completerPosition: 'completerPosition',

@@ -91,7 +91,7 @@ class GenderList extends Component {
 			f_list = f_list.filter(r => r.gender != "Unknown");
 		}
 		if (!hasBoth) {
-			f_list = f_list.filter(r => r.gender != "Both");
+			f_list = f_list.filter(r => r.gender != "All");
 		}
 		/*f_list.forEach(alert(r => r.gender))*/
 		const list = f_list.map((item, idx) => {

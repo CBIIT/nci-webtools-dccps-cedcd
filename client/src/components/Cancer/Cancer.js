@@ -227,7 +227,7 @@ class Cancer extends Component {
 								<div className="col-sm-4 filterCol">
 									<div id="gender_area" className="filter-component">
 										<h3>Gender</h3>
-										<GenderList hasBoth={false} hasUnknown={false} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick} />
+										<GenderList hasBoth={false} hasUnknown={true} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick} />
 									</div>
 								</div>
 								<div className="col-sm-4 filterCol">
