@@ -479,7 +479,7 @@ const MajorContentForm = ({ ...props }) => {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span style={{ fontSize: '1.4rem' }}>C. 15 Use of tobacco products other than cigarettes</span></td>
+                                    <td><span>C. 15 Use of tobacco products other than cigarettes</span></td>
                                     <td style={{ backgroundColor: (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved ? 'lightcoral' : 'white' }}>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
@@ -494,22 +494,22 @@ const MajorContentForm = ({ ...props }) => {
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>Chewing Tabacco</span>
+                                            <span className='col-sm-10'>Chewing Tabacco</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>E-cigarettes</span>
+                                            <span className='col-sm-10' >E-cigarettes</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
-                                                <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-2' style={{ fontSize: '1.4rem' }}>Other</span>
+                                                <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(!e.target.checked)) }} />  </span>
+                                            <span className='col-sm-2' >Other</span>
                                         </div>
                                         <div> 
                                             <span className='col-sm-12'>
-                                                <span className='col-sm-offset-3 col-sm-10' style={{ fontSize: '1.4rem' }}>
-                                                    {errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input name='noncigarBaseLineSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } /></Reminder> : <input name='noncigarBaseLineSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/>}
+                                                <span className='col-sm-offset-3 col-sm-10' >
+                                                    {errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/>}
                                                 </span>
                                             </span>   
                                         </div>
@@ -528,22 +528,22 @@ const MajorContentForm = ({ ...props }) => {
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>Chewing Tabacco</span>
+                                            <span className='col-sm-10' >Chewing Tabacco</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
                                                 <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-10' style={{ fontSize: '1.4rem' }}>E-cigarettes</span>
+                                            <span className='col-sm-10' >E-cigarettes</span>
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
-                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)) }} />  </span>
-                                            <span className='col-sm-2' style={{ fontSize: '1.4rem' }}>Other</span>
+                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(!e.target.checked)) }} />  </span>
+                                            <span className='col-sm-2' >Other</span>
                                         </div>
                                         <div> 
                                             <span className='col-sm-12'>
-                                                <span className='col-sm-offset-3 col-sm-10' style={{ fontSize: '1.4rem' }}>
-                                                    {errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input name='noncigarFollowUpSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } /></Reminder> : <input name='noncigarFollowUpSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/>}
+                                                <span className='col-sm-offset-3 col-sm-10' >
+                                                    {errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/>}
                                                 </span>
                                             </span>   
                                         </div>
@@ -850,15 +850,15 @@ const MajorContentForm = ({ ...props }) => {
                                         </div>
                                         <div className='col-sm-12'>
                                             <span className='col-sm-1' style={{ padding: '0', margin: '0', width: '40px' }}><input type='checkbox' checked={majorContent.cancerOther === 1} onChange={
-                                                e => { dispatch(allactions.majorContentActions.setCancerOther(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)) }}
+                                                e => { dispatch(allactions.majorContentActions.setCancerOther(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(!e.target.checked)) }}
                                             /></span>
                                             <span className='col-sm-1' style={{ paddingLeft: '0', width: '25px' }}>Other</span>
-                                            {
-                                                majorContent.cancerOther === 1 ?
-                                                    <span className='col-sm-3'>
-                                                        {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input name='cancerOtherSpecify' className='errorInputUnderscore' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(e.target.value)) }} /></Reminder> : <input className='inputUnderscore' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={(e) => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(e.target.value)) }} />}
-                                                    </span> : ''
-                                            }
+                                        </div>
+                                        <div className='col-sm-12'>
+                                            <span className='col-sm-1' style={{ padding: '0', margin: '0', width: '40px' }}></span>
+                                            <span className='col-sm-5' style={{paddingLeft: '0'}}>
+                                                {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='cancerOtherSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' style={{height: '24px'}} className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} />}
+                                            </span>
                                         </div>
                                     </td>
                                 </tr>
