@@ -672,6 +672,251 @@ BEGIN
     SELECT LAST_INSERT_ID();
 END //
 
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cancer_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cancer_count` //
+CREATE PROCEDURE `select_cancer_count`(in cohort_id integer)
+BEGIN
+    set @query = "SELECT * FROM cancer_count WHERE cohort_id = ?";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cancer_info
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cancer_info` //
+CREATE PROCEDURE `select_cancer_info`(in cohort_id integer)
+BEGIN
+    set @query = "SELECT * FROM cancer_info WHERE cohort_id = ?";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cancer_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cancer_count` //
+CREATE PROCEDURE `update_cancer_count`(in cohort_id integer, in params json)
+BEGIN
+	DECLARE success INT DEFAULT 1;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+      SET success = 0;
+      ROLLBACK;
+	END;
+
+    START TRANSACTION;
+
+    set @cohort_id = cohort_id;
+    set @params = params;
+    set @query = "
+        insert into cancer_count (
+            cohort_id,
+            cancer_id,
+            gender_id,
+            case_type_id,
+            cancer_counts
+        )
+        select
+            ?,
+            cancer_id,
+            gender_id,
+            case_type_id,
+            cancer_counts
+        from json_table(
+            ?,
+            '$[*]' columns(
+                cancer_id integer path '$.cancer_id',
+                gender_id integer path '$.gender_id',
+                case_type_id integer path '$.case_type_id',
+                cancer_counts integer path '$.cancer_counts'
+            )
+        ) as json_params
+        on duplicate key update
+            cancer_counts = values(cancer_counts)";
+
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id, @params;
+	DEALLOCATE PREPARE stmt;
+
+    COMMIT;
+
+    SELECT success;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cancer_info
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cancer_info` //
+CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
+BEGIN
+	DECLARE success INT DEFAULT 1;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+      SET success = 0;
+      ROLLBACK;
+	END;
+
+    START TRANSACTION;
+
+    set @cohort_id = cohort_id;
+    set @params = params;
+    set @query = "
+        insert into cancer_info (
+            cohort_id,
+            ci_confirmed_cancer_year,
+            ci_confirmed_cancer_date,
+            ci_ascertained_self_reporting,
+            ci_ascertained_tumor_registry,
+            ci_ascertained_medical_records,
+            ci_ascertained_other,
+            ci_ascertained_other_specify,
+            ci_cancer_recurrence,
+            ci_second_primary_diagnosis,
+            ci_cancer_treatment_data,
+            ci_treatment_data_surgery,
+            ci_treatment_data_radiation,
+            ci_treatment_data_chemotherapy,
+            ci_treatment_data_hormonal_therapy,
+            ci_treatment_data_bone_stem_cell,
+            ci_treatment_data_other,
+            ci_treatment_data_other_specify,
+            ci_data_source_admin_claims,
+            ci_data_source_electronic_records,
+            ci_data_source_chart_abstraction,
+            ci_data_source_patient_reported,
+            ci_data_source_other,
+            ci_data_source_other_specify,
+            ci_collect_other_information,
+            ci_cancer_staging_data,
+            ci_tumor_grade_data,
+            ci_tumor_genetic_markers_data,
+            ci_tumor_genetic_markers_data_describe,
+            ci_histologically_confirmed,
+            ci_cancer_subtype_histological,
+            ci_cancer_subtype_molecular
+        )
+        select
+            ?,
+            ci_confirmed_cancer_year,
+            ci_confirmed_cancer_date,
+            ci_ascertained_self_reporting,
+            ci_ascertained_tumor_registry,
+            ci_ascertained_medical_records,
+            ci_ascertained_other,
+            ci_ascertained_other_specify,
+            ci_cancer_recurrence,
+            ci_second_primary_diagnosis,
+            ci_cancer_treatment_data,
+            ci_treatment_data_surgery,
+            ci_treatment_data_radiation,
+            ci_treatment_data_chemotherapy,
+            ci_treatment_data_hormonal_therapy,
+            ci_treatment_data_bone_stem_cell,
+            ci_treatment_data_other,
+            ci_treatment_data_other_specify,
+            ci_data_source_admin_claims,
+            ci_data_source_electronic_records,
+            ci_data_source_chart_abstraction,
+            ci_data_source_patient_reported,
+            ci_data_source_other,
+            ci_data_source_other_specify,
+            ci_collect_other_information,
+            ci_cancer_staging_data,
+            ci_tumor_grade_data,
+            ci_tumor_genetic_markers_data,
+            ci_tumor_genetic_markers_data_describe,
+            ci_histologically_confirmed,
+            ci_cancer_subtype_histological,
+            ci_cancer_subtype_molecular
+        from json_table(
+            ?,
+            '$[*]' columns(
+                ci_confirmed_cancer_year integer path '$.ci_confirmed_cancer_year',
+                ci_confirmed_cancer_date integer path '$.ci_confirmed_cancer_date',
+                ci_ascertained_self_reporting integer path '$.ci_ascertained_self_reporting',
+                ci_ascertained_tumor_registry integer path '$.ci_ascertained_tumor_registry',
+                ci_ascertained_medical_records integer path '$.ci_ascertained_medical_records',
+                ci_ascertained_other integer path '$.ci_ascertained_other',
+                ci_ascertained_other_specify varchar(300) path '$.ci_ascertained_other_specify',
+                ci_cancer_recurrence integer path '$.ci_cancer_recurrence',
+                ci_second_primary_diagnosis integer path '$.ci_second_primary_diagnosis',
+                ci_cancer_treatment_data integer path '$.ci_cancer_treatment_data',
+                ci_treatment_data_surgery integer path '$.ci_treatment_data_surgery',
+                ci_treatment_data_radiation integer path '$.ci_treatment_data_radiation',
+                ci_treatment_data_chemotherapy integer path '$.ci_treatment_data_chemotherapy',
+                ci_treatment_data_hormonal_therapy integer path '$.ci_treatment_data_hormonal_therapy',
+                ci_treatment_data_bone_stem_cell integer path '$.ci_treatment_data_bone_stem_cell',
+                ci_treatment_data_other integer path '$.ci_treatment_data_other',
+                ci_treatment_data_other_specify varchar(200) path '$.ci_treatment_data_other_specify',
+                ci_data_source_admin_claims integer path '$.ci_data_source_admin_claims',
+                ci_data_source_electronic_records integer path '$.ci_data_source_electronic_records',
+                ci_data_source_chart_abstraction integer path '$.ci_data_source_chart_abstraction',
+                ci_data_source_patient_reported integer path '$.ci_data_source_patient_reported',
+                ci_data_source_other integer path '$.ci_data_source_other',
+                ci_data_source_other_specify varchar(200) path '$.ci_data_source_other_specify',
+                ci_collect_other_information integer path '$.ci_collect_other_information',
+                ci_cancer_staging_data integer path '$.ci_cancer_staging_data',
+                ci_tumor_grade_data integer path '$.ci_tumor_grade_data',
+                ci_tumor_genetic_markers_data integer path '$.ci_tumor_genetic_markers_data',
+                ci_tumor_genetic_markers_data_describe varchar(200) path '$.ci_tumor_genetic_markers_data_describe',
+                ci_histologically_confirmed integer path '$.ci_histologically_confirmed',
+                ci_cancer_subtype_histological integer path '$.ci_cancer_subtype_histological',
+                ci_cancer_subtype_molecular integer path '$.ci_cancer_subtype_molecular'
+            )
+        ) as json_params
+        on duplicate key update
+            ci_confirmed_cancer_year = values(ci_confirmed_cancer_year),
+            ci_confirmed_cancer_date = values(ci_confirmed_cancer_date),
+            ci_ascertained_self_reporting = values(ci_ascertained_self_reporting),
+            ci_ascertained_tumor_registry = values(ci_ascertained_tumor_registry),
+            ci_ascertained_medical_records = values(ci_ascertained_medical_records),
+            ci_ascertained_other = values(ci_ascertained_other),
+            ci_ascertained_other_specify = values(ci_ascertained_other_specify),
+            ci_cancer_recurrence = values(ci_cancer_recurrence),
+            ci_second_primary_diagnosis = values(ci_second_primary_diagnosis),
+            ci_cancer_treatment_data = values(ci_cancer_treatment_data),
+            ci_treatment_data_surgery = values(ci_treatment_data_surgery),
+            ci_treatment_data_radiation = values(ci_treatment_data_radiation),
+            ci_treatment_data_chemotherapy = values(ci_treatment_data_chemotherapy),
+            ci_treatment_data_hormonal_therapy = values(ci_treatment_data_hormonal_therapy),
+            ci_treatment_data_bone_stem_cell = values(ci_treatment_data_bone_stem_cell),
+            ci_treatment_data_other = values(ci_treatment_data_other),
+            ci_treatment_data_other_specify = values(ci_treatment_data_other_specify),
+            ci_data_source_admin_claims = values(ci_data_source_admin_claims),
+            ci_data_source_electronic_records = values(ci_data_source_electronic_records),
+            ci_data_source_chart_abstraction = values(ci_data_source_chart_abstraction),
+            ci_data_source_patient_reported = values(ci_data_source_patient_reported),
+            ci_data_source_other = values(ci_data_source_other),
+            ci_data_source_other_specify = values(ci_data_source_other_specify),
+            ci_collect_other_information = values(ci_collect_other_information),
+            ci_cancer_staging_data = values(ci_cancer_staging_data),
+            ci_tumor_grade_data = values(ci_tumor_grade_data),
+            ci_tumor_genetic_markers_data = values(ci_tumor_genetic_markers_data),
+            ci_tumor_genetic_markers_data_describe = values(ci_tumor_genetic_markers_data_describe),
+            ci_histologically_confirmed = values(ci_histologically_confirmed),
+            ci_cancer_subtype_histological = values(ci_cancer_subtype_histological),
+            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)";
+
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id, @params;
+	DEALLOCATE PREPARE stmt;
+
+    COMMIT;
+
+    SELECT success;
+END //
+
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_cancer_counts
 -- -----------------------------------------------------------------------------------------------------------
@@ -1977,4 +2222,6 @@ begin
   commit;
   SELECT flag AS rowsAffacted;
 end //
+
+
 DELIMITER ;
