@@ -2025,6 +2025,7 @@ BEGIN
 		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) where cohort_id = `targetID`;
 		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
 		update dlh set update_time = NOW() where cohort_id = `targetID`;
+		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')) where cohort_id = `targetID` and page_code = 'F';
 	else
 		insert into dlh (
 			cohort_id
