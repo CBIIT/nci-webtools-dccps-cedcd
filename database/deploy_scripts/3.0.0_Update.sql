@@ -130,7 +130,7 @@ call update_cohort_published_status();
 
 DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 
-call temp_update_cancer_info_and_counts()
+call temp_update_cancer_info_and_counts();
 
 drop procedure temp_update_cancer_info_and_counts;
 
