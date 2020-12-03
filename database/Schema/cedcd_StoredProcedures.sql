@@ -1680,7 +1680,7 @@ BEGIN
 		,create_time
 		,update_time
 	FROM mortality WHERE cohort_id = targetID;
-	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='E';
 end//
 
 DROP PROCEDURE if EXISTS `update_mortality` //
@@ -2002,7 +2002,7 @@ BEGIN
 		,create_time
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
-	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
 end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
