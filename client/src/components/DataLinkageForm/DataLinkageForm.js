@@ -321,11 +321,11 @@ const DataLinkageForm = ({ ...props }) => {
 
             <ul style={{ listStyle: 'none' }}>
                 <li>
-                    <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(!dataLinkage.dataOnlinePolicy))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy+1) % 2))} style={{ width: '30px' }} />
                     <span>Policy attached (PDF)</span>
                 </li>
                 <li>
-                    <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(!dataLinkage.dataOnlineWebsite))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite+1) % 2))} style={{ width: '30px' }} />
                     <span>Website, please specify: </span>
                 </li>
                 {errors.dataOnlineSelected !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>}
