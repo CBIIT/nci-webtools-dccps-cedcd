@@ -260,6 +260,7 @@ CREATE TABLE `cancer_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `ci_confirmed_cancer_year` int(4) DEFAULT NULL,
+  `ci_confirmed_cancer_date` DATE DEFAULT NULL,
   `ci_ascertained_self_reporting` int(1) DEFAULT NULL,
   `ci_ascertained_tumor_registry` int(1) DEFAULT NULL,
   `ci_ascertained_medical_records` int(1) DEFAULT NULL,
@@ -600,7 +601,7 @@ insert into lu_cohort_status values (6,"Returned");
 insert into lu_gender(id, gender) values (1, "Female");
 insert into lu_gender(id, gender) values (2, "Male");
 insert into lu_gender(id, gender) values (3, "Unknown");
-insert into lu_gender(id, gender) values (4, "Both");
+insert into lu_gender(id, gender) values (4, "All");  /* changed Both to All according to Questionnaire v8.1 */
 
 /*
  Generate data for lookup table lu_cast_type

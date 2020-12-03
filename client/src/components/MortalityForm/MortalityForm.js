@@ -26,10 +26,11 @@ const MortalityForm = ({ ...props }) => {
         otherCodeSpecify: '',
         deathNumbers: ''
     })
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!mortality.hasLoaded) {
-            fetch('/api/questionnaire/mortality/79', {
+            fetch(`/api/questionnaire/mortality/${cohortId}`, {
                 method: 'POST',
             }).then(res => res.json())
                 .then(result => {
@@ -40,8 +41,6 @@ const MortalityForm = ({ ...props }) => {
 
                         if (completion !== 'complete')
                             completion = 'incomplete'
-
-                        console.log(completion)
 
                         batch(() => {
                             dispatch(allactions.mortalityActions.setHasLoaded(true))
@@ -73,13 +72,27 @@ const MortalityForm = ({ ...props }) => {
 
     const validateInput = () => {
 
+        console.log(mortality)
         let copy = { ...errors }
+        console.log(mortality.otherDeathSpecify)
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
         if (!(mortality.deathIndex in [0, 1])) { copy.deathIndex = radioError } else { copy.deathIndex = '' }
         if (!(mortality.deathCertificate in [0, 1])) { copy.deathCertificate = radioError } else { copy.deathCertificate = '' }
         if (!(mortality.otherDeath in [0, 1])) { copy.otherDeath = radioError } else { copy.otherDeath = '' }
-        if (mortality.otherDeath === 1 && !mortality.otherDeathSpecify) { copy.otherDeathSpecify = 'please specify' } else { copy.otherDeathSpecify = '' }
+        if (mortality.otherDeath === 1) {
+            if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
+                copy.otherDeathSpecify = 'please specify'
+            else {
+                if (mortality.otherDeathSpecify.length > 200)
+                    copy.otherDeathSpecify = 'cannot exceed 200 characters'
+                else
+                    copy.otherDeathSpecify = ''
+            }
+        }
+        else
+            copy.otherDeathSpecify = '';
+
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
         if (mortality.haveDeathCause === 1) {
@@ -87,7 +100,25 @@ const MortalityForm = ({ ...props }) => {
             if (!(mortality.icd10 in [0, 1])) { copy.icd10 = radioError } else { copy.icd10 = '' }
             if (!(mortality.notCoded in [0, 1])) { copy.notCoded = radioError } else { copy.notCoded = '' }
             if (!(mortality.otherCode in [0, 1])) { copy.otherCode = radioError } else { copy.otherCode = '' }
-            if (mortality.otherCode === 1 && !mortality.otherCodeSpecify) { copy.otherCodeSpecify = 'please specify' } else { copy.otherCodeSpecify = '' }
+            if (mortality.otherCode === 1) {
+                if (mortality.otherCodeSpecify === null || !mortality.otherCodeSpecify)
+                    copy.otherCodeSpecify = 'please specify'
+                else {
+                    if (mortality.otherCodeSpecify.length > 200)
+                        copy.otherCodeSpecify = 'cannot exceed 200 characters'
+                    else
+                        copy.otherCodeSpecify = ''
+                }
+            }
+            else
+                copy.otherCodeSpecify = '';
+        }
+        else {
+            copy.icd9 = '';
+            copy.icd10 = '';
+            copy.notCoded = '';
+            copy.otherCode = '';
+            copy.otherCodeSpecify = '';
         }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
@@ -96,7 +127,7 @@ const MortalityForm = ({ ...props }) => {
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
     }
 
-    const saveMortality = (id = 79, proceed = false, complete) => {
+    const saveMortality = (id = cohortId, proceed = false, complete) => {
         const copy = { ...mortality, sectionEStatus: complete }
         console.log(JSON.stringify(copy))
         fetch(`/api/questionnaire/update_mortality/${id}`, {
@@ -125,14 +156,14 @@ const MortalityForm = ({ ...props }) => {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(79, false, 'complete')
+            saveMortality(cohortId, false, 'complete')
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(79, false, 'incomplete')
+                saveMortality(cohortId, false, 'incomplete')
             }
         }
     }
@@ -142,23 +173,23 @@ const MortalityForm = ({ ...props }) => {
             //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(79, true, 'complete')
+            saveMortality(cohortId, true, 'complete')
         }
         else {
             //Incomplete
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
                 dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(79, true, 'incomplete')
+                saveMortality(cohortId, true, 'incomplete')
             }
         }
     }
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
 
-        <div className='form-group col-md-12'>
-            <label htmlFor='mortalityYear' className='col-md-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-md-3">
+        <div className='form-group col-sm-12'>
+            <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
+            <div className="col-sm-2">
                 <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
             </div>
             {errors.mortalityYear !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.mortalityYear}</div>}
@@ -169,7 +200,7 @@ const MortalityForm = ({ ...props }) => {
             <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)<span style={{ color: 'red' }}>*</span></label>
         </div>
 
-        <ul style={{ listStyle: 'none' }}>
+        <ul style={{ listStyle: 'none', padding: '0' }}>
             <li>
                 <div className="col-md-12">
                     <div htmlFor="deathIndex" className='col-md-4'>U.S. National Death Index (NDI) linkage</div>
@@ -212,19 +243,20 @@ const MortalityForm = ({ ...props }) => {
                         <span>No</span>
                     </span>
 
-                    <span className="col-md-4" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
                         <input type='radio' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherDeath(1))} style={{ width: '30px' }} />
                         <span>Yes, specify</span>
-                        <span style={{ marginLeft: '10px' }}><input name='otherDeathSpecify' className='inputUnderscore' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                     </span>
                     {errors.otherDeath !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherDeath}</div>}
-                    {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherDeathSpecify}</div>}
                 </div>
             </li>
-            <li>
-
-            </li>
         </ul>
+        <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
+            <div className='col-sm-7'>
+                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Specify confirmation of death (Max 200 characters)' />
+            </div>
+            {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherDeathSpecify}</div>}
+        </div>
 
         <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
             <label htmlFor='haveDeathDate' className='col-md-12'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
@@ -261,23 +293,23 @@ const MortalityForm = ({ ...props }) => {
             {errors.haveDeathCause !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeathCause}</div>}
         </div>
 
-        {mortality.haveDeathCause === 1 && <div>
+        <div>
             <div className='form-group col-md-12'>
                 <span className='col-md-5'>If yes, what type of death code was used?</span>
             </div>
 
-            <ul style={{ listStyle: 'none' }}>
+            <ul style={{ listStyle: 'none', padding: '0' }}>
                 <li>
                     <div className="col-md-12">
                         <div htmlFor="icd9" className='col-md-4'>ICD-9</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd9' checked={mortality.icd9 === 0} onClick={() => dispatch(allactions.mortalityActions.setIcd9(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='icd9' checked={mortality.icd9 === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd9' checked={mortality.icd9 === 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.icd9 !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.icd9}</div>}
@@ -288,12 +320,12 @@ const MortalityForm = ({ ...props }) => {
                         <div htmlFor="icd10" className='col-md-4'>ICD-10</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd10' checked={mortality.icd10 === 0} onClick={() => dispatch(allactions.mortalityActions.setIcd10(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='icd10' checked={mortality.icd10 === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd10' checked={mortality.icd10 === 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.icd10 !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.icd10}</div>}
@@ -304,12 +336,12 @@ const MortalityForm = ({ ...props }) => {
                         <div htmlFor="notCoded" className='col-md-4'>Not Coded</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='notCoded' checked={mortality.notCoded === 0} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(0))} style={{ width: '30px' }} />
+                            <input type='radio' name='notCoded' checked={mortality.notCoded === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(0))} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
                         <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='notCoded' checked={mortality.notCoded === 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(1))} style={{ width: '30px' }} />
+                            <input type='radio' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(1))} style={{ width: '30px' }} />
                             <span>Yes</span>
                         </span>
                         {errors.notCoded !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.notCoded}</div>}
@@ -320,29 +352,38 @@ const MortalityForm = ({ ...props }) => {
                         <div htmlFor="otherCode" className='col-md-4'>Other</div>
 
                         <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherCode' checked={mortality.otherCode === 0} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode(0)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
+                            <input type='radio' name='otherCode' checked={mortality.otherCode === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode(0)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
                             <span>No</span>
                         </span>
 
-                        <span className="col-md-4" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherCode' checked={mortality.otherCode === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherCode(1))} style={{ width: '30px' }} />
+                        <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                            <input type='radio' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setOtherCode(1))} style={{ width: '30px' }} />
                             <span>Yes, specify</span>
-                            <span style={{ marginLeft: '10px' }}><input name='otherCodeSpecify' className='inputUnderscore' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} style={{ width: '20rem' }}></input></span>
                         </span>
                         {errors.otherCode !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherCode}</div>}
-                        {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherCodeSpecify}</div>}
                     </div>
                 </li>
             </ul>
-        </div>}
 
-        <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
-            <label htmlFor='deathNumbers' className='col-md-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-md-3">
+            <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
+                <div className='col-sm-7'>
+                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                </div>
+                {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherCodeSpecify}</div>}
+            </div>
+        </div>
+
+        <div className='col-sm-12'>
+            <label htmlFor='deathNumbers' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
+        </div>
+        <div className='form-group col-sm-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+
+            <div className="col-sm-2">
                 <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
             </div>
             {errors.deathNumbers !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.deathNumbers}</div>}
         </div>
+
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />

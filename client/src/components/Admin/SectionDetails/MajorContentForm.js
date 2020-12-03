@@ -11,11 +11,11 @@ const MajorContentForm = ({ ...props }) => {
         //seStatusBaseLine: false,
         //seStatusFollowup: false
     })
-
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!majorContent.hasLoaded) {
-            fetch('/api/questionnaire/major_content/79', {
+            fetch(`/api/questionnaire/major_content/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
@@ -150,14 +150,14 @@ const MajorContentForm = ({ ...props }) => {
         if (Object.entries(errors).length === 0) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79)
+            saveMajorContent(cohortId)
         }
         else {
             //setDisplay('block')
             if (window.confirm('there are validation errors, are you sure to save?')) {
                 majorContent.sectionCStatus = 'incomplete'
                 dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(79)
+                saveMajorContent(cohortId)
             }
         }
     }
@@ -166,13 +166,13 @@ const MajorContentForm = ({ ...props }) => {
         if (Object.entries(errors).length === 0) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79, true)
+            saveMajorContent(cohortId, true)
         }
         else {
             if (window.confirm('there are validation errors, are you sure to save?')) {
                 majorContent.sectionAStatus = 'incomplete'
                 dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-                saveMajorContent(79, true)
+                saveMajorContent(cohortId, true)
             }
         }
     }

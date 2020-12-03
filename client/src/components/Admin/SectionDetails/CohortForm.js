@@ -13,6 +13,8 @@ const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch()
+    const cohortId = +window.location.pathname.split('/').pop();
+
 
     const [displayStyle, setDisplay] = useState('none')
     const [activePanel, setActivePanel] = useState('panelA')
@@ -20,7 +22,7 @@ const CohortForm = ({ ...props }) => {
     useEffect(() => {
         if (!cohort.hasLoaded) {
 
-            fetch('/api/questionnaire/cohort_basic_info/79', {
+            fetch(`/api/questionnaire/cohort_basic_info/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
@@ -93,7 +95,11 @@ const CohortForm = ({ ...props }) => {
                                 <p style={{ fontSize: '16px' }}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div>
-                                <span className='col-md-12'><textarea className='form-control' name='cohortDes' cols='20' rows='15' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.cohort_description} /></span>
+                                <span className='col-md-12'>
+                                    <div style={{ border: '1px solid lightgray', borderRadius: '4', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px', paddingTop: '10px', paddingBottom: '10', paddingLeft: '10', paddingRight: '10px', lineHeight: '1.5', WebkitTransition: 'all', whiteSpace: "pre-line" }}>
+                                        {cohort.cohort_description}
+                                    </div>
+                                </span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
@@ -108,7 +114,7 @@ const CohortForm = ({ ...props }) => {
                             <div className='col-md-12'>
                                 <label className='col-md-4' style={{ paddingLeft: '0', marginRight: '0', width: '298px', lineHeight: '2em' }}>A.2 Date Form Completed<span style={{ color: 'red' }}>*</span></label>
                                 <span className='col-md-4' style={{ marginLeft: '0', paddingLeft: '0', paddingRight: '0' }}>
-                                    <DatePicker className='form-control' selected={new Date(cohort.completionDate)} dateFormat='MM/dd/yyyy' readOnly />
+                                    <DatePicker className='form-control' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} dateFormat='MM/dd/yyyy' readOnly />
                                 </span>
                             </div>
                         </div>
@@ -167,7 +173,7 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-md-12' style={{ marginBottom: '15px' }}>
                                     <span className='col-md-2' style={{ paddingLeft: '0' }}>Eligible gender</span>
                                     <span className='col-md-2' style={{ marginRight: '0' }}>
-                                        <input type='radio' name='eligibleGender' value='4' checked={cohort.eligible_gender_id === 4} />{' '} Both genders
+                                        <input type='radio' name='eligibleGender' value='4' checked={cohort.eligible_gender_id === 4} />{' '} All genders
                                     </span>
                                     <span className='col-md-2' style={{ marginRight: '0' }}>
                                         <input type='radio' name='eligibleGender' value='2' checked={cohort.eligible_gender_id === 2} />{' '} Males only

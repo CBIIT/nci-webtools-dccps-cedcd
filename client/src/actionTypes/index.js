@@ -328,8 +328,8 @@ const actionTypes = {
 
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
-    setSelfReport: 'SET_CANCER_CASE_SELF_REPORTED',
-
+    setCancerInfoCohort: 'SET_CI_COHORT',
+    setCancerInfoFormValue: 'SET_CI_FORM_VALUE',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS',
 
     /* section E */
@@ -349,6 +349,24 @@ const actionTypes = {
     setDeathNumbers: 'SET_MORTALITY_DEATH_NUMBERS',
     setSectionEStatus: 'SET_MORTALITY_STATUS',
 
+    /* section F */
+    setDataLinkageLoaded: 'SET_LINKAGE_LOADED',
+    setHaveDataLink: 'SET_LINKAGE_HAVE_LINK',
+    setHaveDataLinkSpecify: 'SET_LINKAGE_LINK_SPECIFY',
+    setHaveHarmonization: 'SET_LINKAGE_HAVE_HARMONIZATION',
+    setHaveHarmonizationSpecify: 'SET_LINKAGE_HARMONIZATION_SPECIFY',
+    setHaveDeposited: 'SET_LINKAGE_HAVE_DEPOSITED',
+    setdbGaP: 'SET_LINKAGE_DBGAP',
+    setbioLinCC: 'SET_LINKAGE_BIOLINCC',
+    setOtherRepo: 'SET_LINKAGE_OTHER_REPO',
+    setDataOnline: 'SET_LINKAGE_DATA_ONLINE',
+    setDataOnlineWebsite: 'SET_LINKAGE_ONLINE_WEBSITE',
+    setDataOnlinePolicy: 'SET_LINKAGE_ONLINE_POLICY',
+    setDataOnlineURL: 'SET_LINKAGE_ONLINE_URL',
+    setCreatedRepo: 'SET_LINAKGE_CREATED_REPO',
+    setCreatedRepoSpecify: 'SET_LINKAGE_REPO_SPECIFY',
+    setSectionFStatus: 'SET_LINKAGE_STATUS',
+    setLookup: 'SET_LOOKUP',
     /*secton G*/
     setSpecimenCount: 'SET_SPECIMEN_COUNT',
     setSectionGStatus: 'SET_SECTION_G_STATUS'

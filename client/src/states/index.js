@@ -17,7 +17,6 @@ const InitialStates = {
         contacterPhone: '',
         contacterCountry: '+1',
         contacterEmail: '',
-
         investigators: [
             {
                 personId: true,
@@ -408,20 +407,38 @@ const InitialStates = {
     },
     mortality: {
         hasLoaded: false,
-        mortalityYear: true,
-        deathIndex: true,
-        deathCertificate: true,
-        otherDeath: true,
-        otherDeathSpecify: true,
-        haveDeathDate: true,
-        haveDeathCause: true,
-        icd9: true,
-        icd10: true,
-        notCoded: true,
-        otherCode: true,
-        otherCodeSpecify: true,
-        deathNumbers: true,
+        mortalityYear: '',
+        deathIndex: null,
+        deathCertificate: null,
+        otherDeath: null,
+        otherDeathSpecify: '',
+        haveDeathDate: null,
+        haveDeathCause: null,
+        icd9: null,
+        icd10: null,
+        notCoded: null,
+        otherCode: null,
+        otherCodeSpecify: '',
+        deathNumbers: '',
         sectionEStatus: '',
+    },
+    dataLinkage:{
+        hasLoaded: false,
+        haveDataLink: null,
+        haveDataLinkSpecify: null,
+        haveHarmonization: null,
+        haveHarmonizationSpecify: null,
+        haveDeposited: null,
+        dbGaP: null,
+        BioLINCC: null,
+        otherRepo: null,
+        dataOnline: null,
+        dataOnlineWebsite: false,
+        dataOnlinePolicy: false,
+        dataOnlineURL: '',
+        createdRepo: null,
+        createdRepoSpecify: null,
+        sectionFStatus: '',
     },
     cancerCount: {
         '1-2-1': 50,
@@ -537,6 +554,11 @@ const InitialStates = {
         '27-1-2': 50,
         '28-1-2': 50
     },
+    cancerInfo: {
+        cohort: {},
+        counts: {},
+        form: {},
+    },
 
     specimen: {
         counts: {
@@ -575,13 +597,15 @@ const InitialStates = {
 
     sectionStatus: {
         'A': 'complete',
-        'B': 'complete',
+        'B': 'complete  ',
         'C': 'complete',
         'D': 'complete',
         'E': 'complete',
         'F': 'complete',
         'G': 'incomplete'
-    }
+    },
+    lookup: {},
+    cohortId: null,
 }
 
 export default InitialStates

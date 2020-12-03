@@ -7,8 +7,6 @@ module.exports = {
 }
 
 const authRoutes = [
-    // '^/admin/\\w+$',
-    // '^/cohort/questionnaire/\\w+$',
     '^/login/internal\/?$',
     '^/login/external\/?$',
 ].map(pattern => new RegExp(pattern));
@@ -16,28 +14,29 @@ const authRoutes = [
 async function authenticationMiddleware(request, response, next) {
     const { url, headers, session, app } = request;
     const { mysql } = app.locals;
-    const nodeEnv = process.env.NODE_ENV;
     const { 
         user_auth_type: userAuthType, 
         fed_email: fedEmail, 
         sm_user: smUser
     } = headers;
 
-    console.log('authenticationMiddleware', url, authRoutes.some(regex => regex.test(url)))
-
     if (authRoutes.some(regex => regex.test(url))) {
         try {
 
-            if (nodeEnv === 'development' || !smUser) {
+            let cohortId;
+
+            if (process.env.NODE_ENV === 'development' || !smUser) {
                 // siteminder is not configured or if developing locally, assign default permissions
+                cohortId = process.env.NODE_ENV === 'development' ? 79 : 30;
                 session.user = {
+                    id: 1,
                     type: 'internal',
                     name: 'admin',
                     role: /internal/.test(url) 
                         ? 'SystemAdmin' 
                         : 'CohortAdmin',
+                    cohorts: [cohortId]
                 };
-    
             } else {
 
                 // otherwise, update user-session variable when hitting authRoutes
@@ -45,27 +44,38 @@ async function authenticationMiddleware(request, response, next) {
                 const userType = isFederated ? 'external' : 'internal';
                 const userName = isFederated ? fedEmail : smUser;
 
-                const results = await mysql.query(
-                    `SELECT access_level as accessLevel 
+                const [results] = await mysql.query(
+                    `SELECT id, access_level as accessLevel 
                     FROM user where user_name = ?`,
                     [userName]
                 );
 
-                console.log(results);
+                // SystemAdmin or CohortAdmin
+                const userId = results.id
+                const userRole = results.accessLevel 
 
-                const userRole = results[0] && results[0].accessLevel; // SystemAdmin or CohortAdmin;
+                const allowedCohorts = (await mysql.query(
+                    `SELECT cohort_id
+                    FROM cohort_user_mapping
+                    WHERE cohort_user_id = ?`,
+                    [userId]
+                )).map(c => c.cohort_id);
+                
+                // todo: if there is more than one allowed cohort for the user, take the user
+                // to a cohort selection page
+                cohortId = allowedCohorts[0];
 
                 session.user = {
+                    id: userId,
                     type: userType,
                     name: userName,
                     role: userRole,
+                    cohorts: allowedCohorts
                 };
             }
 
-            console.log('logged in', session.user);
-
             if (/CohortAdmin/.test(session.user.role)) {
-                response.status(301).redirect('/cohort/questionnaire/79');
+                response.status(301).redirect(`/cohort/questionnaire/${cohortId || ''}`);
             } else if (/SystemAdmin/.test(session.user.role)) {
                 response.status(301).redirect('/admin/managecohort');
             } else {

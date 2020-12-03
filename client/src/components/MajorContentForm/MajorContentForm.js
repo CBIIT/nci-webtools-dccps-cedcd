@@ -17,10 +17,11 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
+    const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!majorContent.hasLoaded) {
-            fetch('/api/questionnaire/major_content/79', {
+            fetch(`/api/questionnaire/major_content/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
@@ -266,7 +267,7 @@ const MajorContentForm = ({ ...props }) => {
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79, hasErrors)
+            saveMajorContent(cohortId, hasErrors)
         }
         else {
             setModalShow(true)
@@ -282,7 +283,7 @@ const MajorContentForm = ({ ...props }) => {
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(79, true, true)
+            saveMajorContent(cohortId, true, true)
         }
         else {
             setModalShow(true)
@@ -293,13 +294,13 @@ const MajorContentForm = ({ ...props }) => {
     const confirmSaveStay = () => {
         majorContent.sectionCStatus = 'incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'));
-        saveMajorContent(79, hasErrors); setModalShow(false)
+        saveMajorContent(cohortId, hasErrors); setModalShow(false)
     }
 
     const confirmSaveContinue = () => {
         majorContent.sectionAStatus = 'incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-        saveMajorContent(79, hasErrors, true); setModalShow(false)
+        saveMajorContent(cohortId, hasErrors, true); setModalShow(false)
     }
 
     return <div className='col-md-12'>

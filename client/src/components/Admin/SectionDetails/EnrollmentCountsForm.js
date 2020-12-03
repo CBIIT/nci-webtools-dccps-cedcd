@@ -9,6 +9,8 @@ const EnrollmentCountsForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const [displayStyle, setDisplay] = useState('0')
     const [errors, setErrors] = useState({ mostRecentDate: 'please provide a value' })
+    const cohortId = +window.location.pathname.split('/').pop();
+
     function updateCells(cellid, amount) {
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid + '41'
@@ -28,7 +30,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
     var dates = ''
     useEffect(() => {
         if (!enrollmentCount.hasLoaded) {
-            fetch('/api/questionnaire/enrollment_counts/79', {
+            fetch(`/api/questionnaire/enrollment_counts/${cohortId}`, {
                 method: 'POST',
             }).then(res => res.json())
                 .then(result => {
@@ -56,7 +58,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
         }
     }, [])
     */
-    const saveEnrollment = (id = 79, proceed = false) => {
+    const saveEnrollment = (id = cohortId, proceed = false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`, {
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -85,21 +87,21 @@ const EnrollmentCountsForm = ({ ...props }) => {
         if (Object.entries(errors).length === 0) {
             enrollmentCount.sectionBStatus = 'complete'
             dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
-            saveEnrollment(79)
+            saveEnrollment(cohortId)
         }
         else {
             setDisplay('1')
             if (window.confirm('there are validation errors, are you sure to save?')) {
                 enrollmentCount.sectionBStatus = 'incomplete'
                 dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
-                saveEnrollment(79)
+                saveEnrollment(cohortId)
             }
         }
     }
 
     const handleSaveContinue = () => {
         if (Object.entries(errors).length === 0 || window.confirm('there are validation errors, are you sure to save and proceed?')) {
-            saveEnrollment(79, true)
+            saveEnrollment(cohortId, true)
         }
     }
 

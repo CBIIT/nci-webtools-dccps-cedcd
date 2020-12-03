@@ -38,12 +38,12 @@ const ReviewCohorHeader = ({ ...props }) => {
 
     return <div>
         <div>
-            <a className="back" href="javascript:void(0);" onClick={goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to previous page</span></a>
+            <a className="back" href="/admin/managecohort" target="_self" onClick={goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to Manage Cohorts</span></a>
         </div>
 
 
         <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8px' }}>
-            <h1 className='pg-title'>{cohort.acronym} Questionnaire </h1>
+            <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire </h1>
             <p style={{ fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
         </div>
         <div style={{ display: 'flex' }}>
