@@ -330,7 +330,7 @@ const MajorContentForm = ({ ...props }) => {
                             <tbody>
                                 <tr>
                                     <td><span>C.1 Socio-economic Status</span></td>
-                                    <td style={{ backgroundColor: errors.seStatusBaseLine && saved ? 'lightcoral' : 'white' }} >
+                                    <td style={{ backgroundColor: errors.seStatusBaseLine && saved ? 'lightcoral' : 'white', padding: '0' }} >
                                         <span className='col-sm-offset-2 col-sm-4'><input type='radio' name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0} onClick={() => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }} />{' '} No</span>
                                         <span className='col-sm-4'><input type='radio' name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1} onClick={() => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }} />{' '} Yes</span>
                                     </td>
@@ -859,10 +859,10 @@ const MajorContentForm = ({ ...props }) => {
                                             /></span>
                                             <span className='col-sm-1' style={{ paddingLeft: '0', width: '25px' }}>Other</span>
                                         </div>
-                                        <div className='col-sm-12'>
+                                        <div className='col-sm-12' style={{marginTop: '5px'}}>
                                             <span className='col-sm-1' style={{ padding: '0', margin: '0', width: '40px' }}></span>
                                             <span className='col-sm-5' style={{paddingLeft: '0'}}>
-                                                {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='cancerOtherSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' style={{height: '24px'}} className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} />}
+                                                {errors.cancerOtherSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='cancerOtherSpecify' style={{border: '1px solid red'}} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200'  className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} />}
                                             </span>
                                         </div>
                                     </td>
