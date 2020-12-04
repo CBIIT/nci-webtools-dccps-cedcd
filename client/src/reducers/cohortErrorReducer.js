@@ -3,6 +3,7 @@ import t from '../actionTypes'
 
 const actions = {}
 actions[t.completionDate] = (state, action) => { let cloned = {...state}; if(action.remove){if(cloned.completionDate) delete cloned.completionDate}else{if(!cloned.completionDate) cloned.completionDate=action.value}; return cloned}
+actions[t.cohort_web_site] = (state, action) => { let cloned = {...state}; if(action.remove){if(cloned.cohort_web_site) delete cloned.cohort_web_site}else{if(!cloned.cohort_web_site) cloned.cohort_web_site=action.value}; return cloned}
 actions[t.clarification_contact] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.clarification_contact) delete cloned.clarification_contact}else{if(!cloned.clarification_contact) cloned.clarification_contact = action.value}; return cloned}
 actions[t.completerName] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.completerName) delete cloned.completerName}else{if(!cloned.completerName) cloned.completerName = action.value}; return cloned}
 actions[t.completerPosition] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.completerPosition) delete cloned.completerPosition}else{if(!cloned.completerPosition) cloned.completerPosition = action.value}; return cloned}
