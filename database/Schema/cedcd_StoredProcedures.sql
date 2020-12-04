@@ -27,6 +27,8 @@
 21. get_enrollment_counts
 22. get_specimen_counts
 23. update_specimen_count
+24. inspect_cohort
+25. insert_new_cohort_from_published
 *
  */
 
@@ -2223,5 +2225,186 @@ begin
   SELECT flag AS rowsAffacted;
 end //
 
+DROP PROCEDURE IF EXISTS `inspect_cohort` //
+
+CREATE  PROCEDURE `inspect_cohort`(in targetID int, out new_id int)
+begin
+    set new_id = targetID; -- assume it is draft
+    if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
+        if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
+            select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
+        else -- if copy not exists, create a new one
+           insert cohort (name, acronym, status, publish_by, create_time, update_time) select name, acronym, 'draft', null, now(), now() from cohort
+           where id = targetID;
+           set new_id = last_insert_id();
+           call insert_new_cohort_from_published(new_id, targetID);
+ 
+        end if;
+    end if;
+end //
+
+
+DROP PROCEDURE IF EXISTS `insert_new_cohort_from_published` //
+
+CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in old_cohort_id int)
+BEGIN
+
+ DECLARE flag INT DEFAULT 1;
+  
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+
+set sql_mode='';
+SET SQL_SAFE_UPDATES = 0;
+
+  START transaction;
+-- insert into Cohort table
+/* assune cohort table was updated, and new cohort_id is passed in
+* insert into cohort (id, name, acronym, status, create_by, create_time, update_time)
+* select new_cohort_id, cohort_name, cohort_acronym, 'draft', 3, now(), now() from cohort_basic where cohort_id =old_cohort_id;
+*/
+
+-- insert into cohort_basic 
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    cohort_basic
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into cohort_basic select null, a.* from cohort_temp a; 
+
+-- insert into person, attachment
+insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
+select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
+from person where cohort_id = old_cohort_id and name is not null;
+
+insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+select new_cohort_id,  attachment_type, category, filename, website, status, now(), now() 
+from attachment where cohort_id = old_cohort_id;
+
+-- insert into enrollment_count
+insert into enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
+select new_cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, now(), now() 
+from enrollment_count where cohort_id =old_cohort_id;
+
+-- ---- insert into dlh --
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    dlh
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into dlh select null, a.* from cohort_temp a; 
+
+-- insert into cancer_count
+insert into cancer_count (cohort_id,cancer_id,gender_id, case_type_id,cancer_counts, create_time, update_time)
+select new_cohort_id, cancer_id,gender_id, case_type_id,cancer_counts, now(), now() 
+from cancer_count where cohort_id =old_cohort_id;
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    cancer_info
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into cancer_info select null, a.* from cohort_temp a; 
+
+-- insert into major_count
+insert into major_content (cohort_id,category_id,baseline, followup, other_specify_baseline,other_specify_followup, create_time, update_time)
+select new_cohort_id, lu.id as category_id,baseline, followup, other_specify_baseline,other_specify_followup, 
+(case when mdc.create_time is null then now() else mdc.create_time end) as create_time, 
+(case when mdc.update_time is null then now() else mdc.update_time end) as update_time
+from major_content as mdc right join  
+(select * from lu_data_category where category <> 'Cancer Treatment') as lu 
+on mdc.cohort_id = old_cohort_id and mdc.category_id = lu.id ;
+
+
+-- inert into mortality
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    mortality
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into mortality select null, a.* from cohort_temp a; 
+
+-- insert into specimen_count
+insert into specimen_count (cohort_id,cancer_id,specimen_id, specimens_counts, create_time, update_time)
+select new_cohort_id, cancer_id,specimen_id, specimens_counts, now(), now() 
+from specimen_count where cohort_id =old_cohort_id;
+
+insert into specimen_collected_type
+select null, new_cohort_id, c.id as specimen_id, b.collected_yn,
+(case when b.create_time is null then now() else b.create_time end ) as create_time,
+(case when b.update_time is null then now() else b.create_time end ) as update_time
+from specimen_collected_type b right join (select * from lu_specimen where id > 10) c
+on b.specimen_id = c.id and b.cohort_id = old_cohort_id;
+
+-- inert into specimen
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    specimen
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into specimen select null, a.* from cohort_temp a; 
+
+-- insert into technology
+insert into technology (cohort_id,tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, create_time, update_time)
+select new_cohort_id, tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, now(), now() 
+from technology where cohort_id =old_cohort_id;
+
+-- insert update supporting tables ,for published cohort, 
+insert into cohort_edit_status (cohort_id, page_code, status)
+values ( new_cohort_id, 'A', 'complete'),
+( new_cohort_id, 'B', 'complete'),
+( new_cohort_id, 'C', 'complete'),
+( new_cohort_id, 'D', 'complete'),
+( new_cohort_id, 'E', 'complete'),
+( new_cohort_id, 'F', 'complete'),
+( new_cohort_id, 'G', 'complete');
+
+/* update log table 
+insert into cohort_activity_log (cohort_id, cohort_user_id, activity, notes, create_time)
+values ( new_cohort_id,  3, 'init new cohort from published cohort new_cohort_id', null, now());
+*/
+
+SET SQL_SAFE_UPDATES = 1;
+END //
 
 DELIMITER ;
