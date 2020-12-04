@@ -369,8 +369,8 @@ const CohortForm = ({...props}) => {
                     <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}><span>Cohort Information</span></div>
                     <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
                         <div className='form-group col-md-12'>
-                            <label htmlFor='cohortName' className='col-md-4'>A.1a Cohort Name<span style={{color: 'red'}}>*</span></label>
-                            <span className='col-md-8' style={{paddingLeft: '25px'}}>{cohort.cohort_name}</span>
+                            <label htmlFor='cohortName' className='col-sm-4'>A.1a Cohort Name<span style={{color: 'red'}}>*</span></label>
+                            <span className='col-sm-8' style={{paddingLeft: '25px'}}>{cohort.cohort_name}</span>
                         </div>
                         <div className='form-group col-md-12'>
                             <label htmlFor='cohortAcronym' className='col-md-4'>A.1b Cohort Abbreviation</label>
@@ -456,7 +456,7 @@ const CohortForm = ({...props}) => {
                                     <span htmlFor='sameAsSomeone'>Same as the person who completed the form(5a) </span>
                                 </div>
                                 { 
-                                    cohort.clarification_contact === 0 && saved ? 
+                                    cohort.clarification_contact === 0  ? 
                                     <div style={{margin: '0', padding: '0', minWidth: '500px'}}>
                                         <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1}  onChange={(e) =>setCollaborator(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1')}/>{' '}
                                         <span htmlFor='sameAsSomeone' style={{padding: '0', margin: '0'}}>{' '} Same as the contact person for clarification of this form(5b) </span>

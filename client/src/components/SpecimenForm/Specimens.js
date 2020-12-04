@@ -1,6 +1,7 @@
-import React, {useState} from 'react'
-import {useSelector, useDispatch}  from 'react-redux'
+import React, {useEffect, useState} from 'react'
+import {useSelector, useDispatch, batch}  from 'react-redux'
 import allactions from '../../actions'
+import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../Modal/Modal'
@@ -19,6 +20,25 @@ const SpecimenForm = ({...props}) => {
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [activePanel, setActivePanel] = useState('panelA')
+    //const cohortId = window.location.pathname.split('/').pop();
+    
+    useEffect(() => {
+        fetch(`/api/questionnaire/get_specimen/79`, {
+            method: "POST"
+        }).then(res => res.json())
+          .then(result => {
+              //console.log(result.data)
+              if(result && result.data){
+                batch(() => {
+                    for(let k of Object.keys(result.data)){
+                        dispatch(allactions.specimenActions.setSpecimenCount(k, result.data[k].toString()))
+                    }
+                } )
+              }})
+          .catch((error) => {
+              console.log(error)
+          })
+    }, [])
 
     const saveSpecimen = (id=79) => {
         fetch(`/api/questionnaire/update_specimen/${id}`,{
@@ -81,12 +101,307 @@ const SpecimenForm = ({...props}) => {
     }
 */
     return <div id='cancerInfoContainer' className='col-md-12'>
-{/*}
+{/*
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg}/>}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
 */}
-        <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>           
+        <div className='col-md-12' style={{display: 'flex', flexDirection: 'column'}}>  
+            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+                <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
+            </div> 
+            <div style={{marginTop: '15px'}}>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>part one</div>
+                <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{padding: '0'}}>
+                    <table className='table table-stripe table-responsive'>
+                        <thead>
+                            <tr>
+                                <th className='col-xs-4'>Did you collect any of the following specimens</th>
+                                <th className='col-xs-4' style={{textAlign: 'center'}}>Collected at baseline</th>
+                                <th className='col-xs-4' style={{textAlign: 'center'}}>Collected at other time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>G.1 Blood</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                    <div className='col-xs-12' style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                                        <span className='col-sm-12'>If collected, types of aliquots</span>
+                                        <span className='col-sm-12'><input type='checkbox' />{' '}Serum</span>
+                                        <span className='col-sm-12'><input type='checkbox' />{' '}Plasma</span>
+                                        <span className='col-sm-12'><input type='checkbox' />{' '}Buffy Coat</span>
+                                        <span className='col-sm-12'><input type='checkbox' />{' '}Other blood derivative</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                    <div className='col-xs-12' style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                                        <span className='col-xs-12'>If collected, types of aliquots</span>
+                                        <span className='col-xs-12'><input type='checkbox' />{' '}Serum</span>
+                                        <span className='col-xs-12'><input type='checkbox' />{' '}Plasma</span>
+                                        <span className='col-xs-12'><input type='checkbox' />{' '}Buffy Coat</span>
+                                        <span className='col-xs-12'><input type='checkbox' />{' '}Other blood derivative</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>G.2 Buccal/Saliva</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>G.3 Tissue (include tumor and/or normal</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>G.4 Urine</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>G.5 Feces</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>G.6 Other(e.g. toenails)</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                        <span className='col-xs-12'>If yes, please specify</span>
+                                        <span className='col-xs-12'>
+                                            <input className='form-control' />
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                        <span className='col-xs-12'>If yes, please specify</span>
+                                        <span className='col-xs-12'>
+                                            <input className='form-control' />
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.7 Did you collect repeated samples over multiple timepoints for the same individuals?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.8 If your cohort does not currently collect tumor blocks, do you have information on where the blocks are kept/stored?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style={{backgroundColor: '#01857b'}}>
+                                <td colspan='3'>
+                                    <span style={{color: 'white'}}>Do you have:</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.9 Genotyping Data (SNP)</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.10  Sequencing Data – Exome</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.11  Sequencing Data – Whole Genome</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.13  Transcriptomics Data</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.14 Microbiome Data (16S RNA, metagenomics)</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR)</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15a Are the biospecimens collected fasting samples?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15b What are the disease outcome(s) in your study?</td>
+                                <td>
+                                    <div className='col-xs-12' style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
+                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{marign: 'auto'}} />{' '}Cancer</span>
+                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{marign: 'auto'}} />{' '}CVD</span>
+                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{marign: 'auto'}} />{' '}Diabetes</span>
+                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{marign: 'auto'}} />{' '}Other</span>
+                                        <span className='col-xs-offset-1 col-xs-11'><input className='form-control' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}No</span>
+                                        <span className='col-xs-6'><input type='radio' style={{marign: 'auto'}} />{' '}Yes</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15d What is the number of participants with metabolomics data in your study? </td>
+                                <td>
+                                <div className='col-xs-12'>
+                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15e Which laboratory or company was used for the analysis?</td>
+                                <td>
+                                <div className='col-xs-12'>
+                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?</td>
+                                <td>
+                                <div className='col-xs-12'>
+                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</td>
+                                <td>
+                                <div className='col-xs-12'>
+                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15h How many metabolites were measured?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{marign: 'auto'}} /></span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan='2'>G.15i What year were samples analyzed?</td>
+                                <td>
+                                    <div className='col-xs-12'>
+                                        <span><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={null} onChange={f=>f}/></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>       
             <div style={{marginTop: '15px'}}>
                 <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>part one</div>
                 <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{padding: '0'}}>

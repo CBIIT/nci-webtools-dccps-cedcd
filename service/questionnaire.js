@@ -336,11 +336,30 @@ router.get('/lookup', async (request, response) => {
     }
 });
 
+
+router.post('/get_specimen/:id', function(req, res){
+    let func = 'get_specimen_counts'
+    let params = []
+    params.push(req.params.id)
+
+    mysql.callProcedure(func, params, function(result){
+        if(result && result[0]){
+            //logger.debug(result)
+            const specimenCounts = {}
+            for(let k of result[0])
+                specimenCounts[k.cellId] = k.counts
+            res.json({status: 200, data: specimenCounts})
+        }else
+            res.json({status: 500, message: 'failed to retrieve data'})
+    })
+
+})
+
 router.post('/update_specimen/:id', function(req,res){
     let func = 'update_specimen_count'
     let body = req.body
     for(let k of Object.keys(body.counts)){if(body.counts[k] === '')body.counts[k]= 0} 
-    body = JSON.stringify(body)
+    body = JSON.stringify(body.counts)
     let params = []
     params.push(req.params.id)
     params.push(body)

@@ -34,7 +34,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
 
     return <div id={id} className='col-md-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
                 <div className='col-md-12' style={{border: '1px solid lightgray'}}>
-                    {idx !== '0' ? <div className='col-md-12 inspectorheader'><span className='inspectorClose' onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 inspectorheader'></div>}
+                    {idx !== '0' ? <div className='col-md-12 inspectorheader'><span className='inspectorClose' style={{color: 'blue'}} onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 inspectorheader'></div>}
                     <div className='col-md-12' style={{paddingLeft: '0', marginTop: '5px', marginBottom: '5px'}}>
                         <span className='col-md-2' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                         {errors[name] && displayStyle ? <Reminder message={errors[name]}><span className='col-md-9'>
