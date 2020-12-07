@@ -220,6 +220,71 @@ router.post('/update_dlh/:id', function (req, res) {
     })
 });
 
+router.get('/cancer_count/:id', function (req, res) {
+    let id = req.params.id
+    let func = 'select_cancer_count'
+    let params = []
+    params.push(id)
+    mysql.callProcedure(func, params, function (result) {
+        if (result)
+            res.json({ status: 200, data: result })
+        else
+            res.status(500).json({ status: 500, message: 'failed to load data' })
+    })
+});
+
+router.get('/cancer_info/:id', function (req, res) {
+    let func = 'select_cancer_info'
+    let body = JSON.stringify(req.body)
+    let params = []
+    params.push(req.params.id)
+    logger.debug(body)
+
+    mysql.callJsonProcedure(func, params, function (result) {
+        if (result)
+            res.json({ status: 200, data: result })
+        else
+            res.status(500).json({ status: 500, message: 'failed to load data' })
+    })
+});
+
+router.post('/update_cancer_count/:id', async function (req, res) {
+    const { app, params, body } = req;
+    const { mysql } = app.locals;
+    const { id } = params;
+    try {
+        const result = await mysql.query('CALL update_cancer_count(?, ?)', [id, JSON.stringify(body)])
+        console.log(result);
+
+        if (result && result[0] && result[0][0].success === 1) {
+            res.json({ status: 200, message: 'update successful' })
+        } else {
+            throw new Error("SQL Exception");
+        }
+    } catch (e) {
+        logger.debug(e);
+        res.status(500).json({ status: 500, message: 'update failed' })
+    }
+});
+
+router.post('/update_cancer_info/:id', async function (req, res) {
+    const { app, params, body } = req;
+    const { mysql } = app.locals;
+    const { id } = params;
+    try {
+        const result = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
+        console.log(result);
+        if (result && result[0] && result[0][0].success === 1) {
+            res.json({ status: 200, message: 'update successful' })
+        } else {
+            throw new Error("SQL Exception");
+        }
+    } catch (e) {
+        logger.debug(e);
+        res.status(500).json({ status: 500, message: 'update failed' })
+    }
+});
+
 const getTablesWithColumn = async (mysql, column, schema) => {
     const tables = await mysql.query(
         `select distinct c.table_name as name
