@@ -241,7 +241,7 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     return lookup && <div id="cancerInfoContainer" className="p-3">
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts (D.1)</div>
+        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
         <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
             <div className="my-3">
                 <label className="d-block">D.1 Cancer Counts</label>
@@ -275,8 +275,8 @@ const CancerInfoForm = ({ ...props }) => {
                             ];
 
                             return <tr key={keyPrefix}>
-                                <td className="bg-light">{c.icd9 || 'N/A'}</td>
-                                <td className="bg-light">{c.icd10 || 'N/A'}</td>
+                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
+                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
                                 <td className="bg-light">{c.cancer}</td>
                                 {inputKeys.map(key => 
                                     <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
@@ -297,7 +297,7 @@ const CancerInfoForm = ({ ...props }) => {
             </div>
         </div>
 
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information (D.2 - D.11)</div>
+        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information</div>
         <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
             <form>
                 <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
