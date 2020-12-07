@@ -1173,16 +1173,13 @@ tr.compare-row--hover, .body-header--hover {
   align-items: center;
 }
 
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
 .border-0 {
   border: 0;
   border-radius: 0;
   box-shadow: none;
-}
-
-.overflow-x-auto {
-  overflow-x: auto !important;
-}
-
-.hover-highlight:hover {
-  background-color: rgba(0, 0, 0, 0.02);
 }
