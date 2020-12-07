@@ -842,7 +842,7 @@ BEGIN
             ?,
             '$[*]' columns(
                 ci_confirmed_cancer_year integer path '$.ci_confirmed_cancer_year',
-                ci_confirmed_cancer_date integer path '$.ci_confirmed_cancer_date',
+                ci_confirmed_cancer_date DATE path '$.ci_confirmed_cancer_date',
                 ci_ascertained_self_reporting integer path '$.ci_ascertained_self_reporting',
                 ci_ascertained_tumor_registry integer path '$.ci_ascertained_tumor_registry',
                 ci_ascertained_medical_records integer path '$.ci_ascertained_medical_records',
