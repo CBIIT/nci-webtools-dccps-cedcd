@@ -1173,6 +1173,10 @@ tr.compare-row--hover, .body-header--hover {
   align-items: center;
 }
 
+.bg-grey {
+  background-color: #eee;
+}
+
 .disabled {
   cursor: not-allowed;
   opacity: 0.8;
