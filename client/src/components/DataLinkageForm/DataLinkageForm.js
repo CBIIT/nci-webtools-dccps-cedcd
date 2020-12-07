@@ -29,6 +29,50 @@ const DataLinkageForm = ({ ...props }) => {
         createdRepoSpecify: '',
     })
 
+    useEffect(() => {
+        if (!dataLinkage.hasLoaded) {
+
+            fetch(`/api/questionnaire/dlh/${cohortId}`, {
+                method: 'POST',
+            }).then(res => res.json())
+                .then(result => {
+                    console.log(result)
+                    if (result.data.info[0] !== undefined) {
+                        const data = result.data.info[0]
+                        let completion = result.data.completion[0].status
+                        
+                        if (completion !== 'complete')
+                            completion = 'incomplete'
+
+                        batch(() => {
+                            dispatch(allactions.dataLinkageActions.setHasLoaded(true))
+                            dispatch(allactions.dataLinkageActions.setHaveDataLink(data.dlh_linked_to_existing_databases))
+                            dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(data.dlh_linked_to_existing_databases_specify))
+                            dispatch(allactions.dataLinkageActions.setHaveHarmonization(data.dlh_harmonization_projects))
+                            dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(data.dlh_harmonization_projects_specify))
+                            dispatch(allactions.dataLinkageActions.setHaveDeposited(data.dlh_nih_repository))
+                            dispatch(allactions.dataLinkageActions.setdbGaP(data.dlh_nih_dbgap))
+                            dispatch(allactions.dataLinkageActions.setbioLinCC(data.dlh_nih_biolincc))
+                            dispatch(allactions.dataLinkageActions.setOtherRepo(data.dlh_nih_other))
+                            dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
+                            dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
+                            dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
+                            if(data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
+                            dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
+                            dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
+
+                            dispatch(allactions.dataLinkageActions.setSectionFStatus(completion))
+                            dispatch(allactions.sectionActions.setSectionStatus('F', completion))
+                        })
+                    }
+                    else {
+                        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
+                        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+                    }
+                })
+        }
+    }, [])
+
     const validateInput = () => {
 
         let copy = { ...errors }
@@ -81,7 +125,7 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
-            if (!dataLinkage.dataOnlinePolicy && !dataLinkage.dataOnlineWebsite) { copy.dataOnlineSelected = 'please select at least one option' } else { copy.dataOnlineSelected = '' }
+            if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'please select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
                 if (dataLinkage.dataOnlineURL.length > 300)
@@ -89,6 +133,9 @@ const DataLinkageForm = ({ ...props }) => {
                 else {
                     copy.dataOnlineURL = validator.urlValidator(dataLinkage.dataOnlineURL, true)
                 }
+            }
+            else{
+                copy.dataOnlineURL = ''
             }
         }
         else {
@@ -143,30 +190,30 @@ const DataLinkageForm = ({ ...props }) => {
     const handleSave = () => {
 
         if (validateInput()) {
-            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
+            dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
-            saveDataLinkage(cohortId,false,'complete')
+            saveDataLinkage(cohortId, false, 'complete')
         }
         else {
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId,false,'incomplete')
+                saveDataLinkage(cohortId, false, 'incomplete')
             }
         }
     }
 
     const handleSaveContinue = () => {
         if (validateInput()) {
-            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
+            dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
-            saveDataLinkage(cohortId,true,'complete')
+            saveDataLinkage(cohortId, true, 'complete')
         }
         else {
             if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
                 dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId,true,'incomplete')
+                saveDataLinkage(cohortId, true, 'incomplete')
             }
         }
     }
@@ -178,7 +225,7 @@ const DataLinkageForm = ({ ...props }) => {
         </div>
         <div className='form-group col-md-12'>
             <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDataLink(0))} style={{ width: '30px' }} />
+                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) }} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -203,7 +250,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div className='form-group col-md-12'>
             <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} onClick={() => dispatch(allactions.dataLinkageActions.setHaveHarmonization(0))} style={{ width: '30px' }} />
+                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) }} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -228,7 +275,12 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div className='form-group col-md-12'>
             <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDeposited(0))} style={{ width: '30px' }} />
+                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => {
+                    dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
+                    dispatch(allactions.dataLinkageActions.setdbGaP(null))
+                    dispatch(allactions.dataLinkageActions.setbioLinCC(null))
+                    dispatch(allactions.dataLinkageActions.setOtherRepo(null))
+                }} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -244,7 +296,7 @@ const DataLinkageForm = ({ ...props }) => {
                 <span className='col-md-5'>If yes, please select which repositories:</span>
             </div>
 
-            <ul style={{ listStyle: 'none' }}>
+            <ul style={{ listStyle: 'none', padding: '0' }}>
                 <li>
                     <div className="col-md-12">
                         <div htmlFor="dbGaP" className='col-md-2'>dbGaP</div>
@@ -297,13 +349,18 @@ const DataLinkageForm = ({ ...props }) => {
             </ul>
         </div>
 
-        <div className='col-md-12'>
+        <div className='col-md-12' style={{ marginTop: '1em' }}>
             <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
         </div>
 
         <div className='form-group col-md-12'>
             <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnline(0))} style={{ width: '30px' }} />
+                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => {
+                    dispatch(allactions.dataLinkageActions.setDataOnline(0));
+                    dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
+                    dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
+                    dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                }} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -321,11 +378,11 @@ const DataLinkageForm = ({ ...props }) => {
 
             <ul style={{ listStyle: 'none' }}>
                 <li>
-                    <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(!dataLinkage.dataOnlinePolicy))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2))} style={{ width: '30px' }} />
                     <span>Policy attached (PDF)</span>
                 </li>
                 <li>
-                    <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(!dataLinkage.dataOnlineWebsite))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite + 1) % 2))} style={{ width: '30px' }} />
                     <span>Website, please specify: </span>
                 </li>
                 {errors.dataOnlineSelected !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>}
@@ -336,7 +393,7 @@ const DataLinkageForm = ({ ...props }) => {
                 <div className='col-md-8'>
                     <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Specify website url (Max 300 characters)'></input>
                 </div>
-                {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnlineURL}</div>}
+                {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.dataOnlineURL}</div>}
             </div>
         </div>
 
@@ -346,7 +403,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div className='form-group col-md-12'>
             <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} onClick={() => dispatch(allactions.dataLinkageActions.setCreatedRepo(0))} style={{ width: '30px' }} />
+                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} onClick={() => {dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(''))}} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -362,7 +419,7 @@ const DataLinkageForm = ({ ...props }) => {
             <div className='col-md-8'>
                 <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Specify enclave location (Max 300 characters)'></input>
             </div>
-            {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.createdRepoSpecify}</div>}
+            {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
         </div>
 
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>

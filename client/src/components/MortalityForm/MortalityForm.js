@@ -19,6 +19,7 @@ const MortalityForm = ({ ...props }) => {
         otherDeathSpecify: '',
         haveDeathDate: '',
         haveDeathCause: '',
+        coded: '',
         icd9: '',
         icd10: '',
         notCoded: '',
@@ -77,9 +78,6 @@ const MortalityForm = ({ ...props }) => {
         console.log(mortality.otherDeathSpecify)
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
-        if (!(mortality.deathIndex in [0, 1])) { copy.deathIndex = radioError } else { copy.deathIndex = '' }
-        if (!(mortality.deathCertificate in [0, 1])) { copy.deathCertificate = radioError } else { copy.deathCertificate = '' }
-        if (!(mortality.otherDeath in [0, 1])) { copy.otherDeath = radioError } else { copy.otherDeath = '' }
         if (mortality.otherDeath === 1) {
             if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
                 copy.otherDeathSpecify = 'please specify'
@@ -96,10 +94,12 @@ const MortalityForm = ({ ...props }) => {
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
         if (mortality.haveDeathCause === 1) {
-            if (!(mortality.icd9 in [0, 1])) { copy.icd9 = radioError } else { copy.icd9 = '' }
-            if (!(mortality.icd10 in [0, 1])) { copy.icd10 = radioError } else { copy.icd10 = '' }
-            if (!(mortality.notCoded in [0, 1])) { copy.notCoded = radioError } else { copy.notCoded = '' }
-            if (!(mortality.otherCode in [0, 1])) { copy.otherCode = radioError } else { copy.otherCode = '' }
+
+            if (mortality.icd9 === 0 && mortality.icd10 === 0 && mortality.notCoded === 0 && mortality.otherCode === 0)
+                copy.coded = 'select at least one option'
+            else
+                copy.coded = ''
+
             if (mortality.otherCode === 1) {
                 if (mortality.otherCodeSpecify === null || !mortality.otherCodeSpecify)
                     copy.otherCodeSpecify = 'please specify'
@@ -114,10 +114,7 @@ const MortalityForm = ({ ...props }) => {
                 copy.otherCodeSpecify = '';
         }
         else {
-            copy.icd9 = '';
-            copy.icd10 = '';
-            copy.notCoded = '';
-            copy.otherCode = '';
+            copy.coded = '';
             copy.otherCodeSpecify = '';
         }
         copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
@@ -197,60 +194,30 @@ const MortalityForm = ({ ...props }) => {
 
 
         <div className='form-group col-md-12' style={{ marginTop: '10px' }}>
-            <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)<span style={{ color: 'red' }}>*</span></label>
+            <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)</label>
         </div>
 
-        <ul style={{ listStyle: 'none', padding: '0' }}>
-            <li>
-                <div className="col-md-12">
-                    <div htmlFor="deathIndex" className='col-md-4'>U.S. National Death Index (NDI) linkage</div>
+        <div className='col-md-12'>
+            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                    <input type='checkbox' name='deathIndex' checked={mortality.deathIndex === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2))} style={{ width: '30px' }} />
+                </span>
+                <span>U.S. National Death Index (NDI) linkage</span>
+            </div>
+            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                    <input type='checkbox' name='deathCertificate' checked={mortality.deathCertificate === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2))} style={{ width: '30px' }} />
+                </span>
+                <span>Death Certificates</span>
+            </div>
+            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                    <input type='checkbox' name='otherDeath' checked={mortality.otherDeath === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) }} style={{ width: '30px' }} />
+                </span>
+                <span>Other</span>
+            </div>
+        </div>
 
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathIndex' checked={mortality.deathIndex === 0} onClick={() => dispatch(allactions.mortalityActions.setDeathIndex(0))} style={{ width: '30px' }} />
-                        <span>No</span>
-                    </span>
-
-                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathIndex' checked={mortality.deathIndex === 1} onClick={() => dispatch(allactions.mortalityActions.setDeathIndex(1))} style={{ width: '30px' }} />
-                        <span>Yes</span>
-                    </span>
-                    {errors.deathIndex !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.deathIndex}</div>}
-                </div>
-
-            </li>
-            <li>
-                <div className="col-md-12">
-                    <div htmlFor="deathCertificate" className='col-md-4'>Death Certificates</div>
-
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathCertificate' checked={mortality.deathCertificate === 0} onClick={() => dispatch(allactions.mortalityActions.setDeathCertificate(0))} style={{ width: '30px' }} />
-                        <span>No</span>
-                    </span>
-
-                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='deathCertificate' checked={mortality.deathCertificate === 1} onClick={() => dispatch(allactions.mortalityActions.setDeathCertificate(1))} style={{ width: '30px' }} />
-                        <span>Yes</span>
-                    </span>
-                    {errors.deathCertificate !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.deathCertificate}</div>}
-                </div>
-            </li>
-            <li>
-                <div className="col-md-12">
-                    <div htmlFor="otherDeath" className='col-md-4'>Other</div>
-
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='otherDeath' checked={mortality.otherDeath === 0} onClick={() => { dispatch(allactions.mortalityActions.setOtherDeath(0)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) }} style={{ width: '30px' }} />
-                        <span>No</span>
-                    </span>
-
-                    <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                        <input type='radio' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => dispatch(allactions.mortalityActions.setOtherDeath(1))} style={{ width: '30px' }} />
-                        <span>Yes, specify</span>
-                    </span>
-                    {errors.otherDeath !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherDeath}</div>}
-                </div>
-            </li>
-        </ul>
         <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
             <div className='col-sm-7'>
                 <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Specify confirmation of death (Max 200 characters)' />
@@ -298,72 +265,36 @@ const MortalityForm = ({ ...props }) => {
                 <span className='col-md-5'>If yes, what type of death code was used?</span>
             </div>
 
-            <ul style={{ listStyle: 'none', padding: '0' }}>
-                <li>
-                    <div className="col-md-12">
-                        <div htmlFor="icd9" className='col-md-4'>ICD-9</div>
 
-                        <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd9' checked={mortality.icd9 === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9(0))} style={{ width: '30px' }} />
-                            <span>No</span>
-                        </span>
-
-                        <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9(1))} style={{ width: '30px' }} />
-                            <span>Yes</span>
-                        </span>
-                        {errors.icd9 !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.icd9}</div>}
-                    </div>
-                </li>
-                <li>
-                    <div className="col-md-12">
-                        <div htmlFor="icd10" className='col-md-4'>ICD-10</div>
-
-                        <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd10' checked={mortality.icd10 === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10(0))} style={{ width: '30px' }} />
-                            <span>No</span>
-                        </span>
-
-                        <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10(1))} style={{ width: '30px' }} />
-                            <span>Yes</span>
-                        </span>
-                        {errors.icd10 !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.icd10}</div>}
-                    </div>
-                </li>
-                <li>
-                    <div className="col-md-12">
-                        <div htmlFor="notCoded" className='col-md-4'>Not Coded</div>
-
-                        <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='notCoded' checked={mortality.notCoded === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(0))} style={{ width: '30px' }} />
-                            <span>No</span>
-                        </span>
-
-                        <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded(1))} style={{ width: '30px' }} />
-                            <span>Yes</span>
-                        </span>
-                        {errors.notCoded !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.notCoded}</div>}
-                    </div>
-                </li>
-                <li>
-                    <div className="col-md-12">
-                        <div htmlFor="otherCode" className='col-md-4'>Other</div>
-
-                        <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherCode' checked={mortality.otherCode === 0} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode(0)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
-                            <span>No</span>
-                        </span>
-
-                        <span className="col-md-2" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                            <input type='radio' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setOtherCode(1))} style={{ width: '30px' }} />
-                            <span>Yes, specify</span>
-                        </span>
-                        {errors.otherCode !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.otherCode}</div>}
-                    </div>
-                </li>
-            </ul>
+            <div className='col-md-12'>
+                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                        <input type='checkbox' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2))} style={{ width: '30px' }} />
+                    </span>
+                    <span>ICD-9</span>
+                </div>
+                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                        <input type='checkbox' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2))} style={{ width: '30px' }} />
+                    </span>
+                    <span>ICD-10</span>
+                </div>
+                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                        <input type='checkbox' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2))} style={{ width: '30px' }} />
+                    </span>
+                    <span>Not Coded</span>
+                </div>
+                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                        <input type='checkbox' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
+                    </span>
+                    <span>Other Code</span>
+                </div>
+                {errors.coded !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                    <div className='col-md-3' style={{ color: 'red' }}>{errors.coded}</div>
+                </div>}
+            </div>
 
             <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
                 <div className='col-sm-7'>

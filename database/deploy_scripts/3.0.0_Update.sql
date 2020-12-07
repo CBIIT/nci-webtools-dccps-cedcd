@@ -126,6 +126,8 @@ begin
     commit;
 end //
 
+DELIMITER ;
+
 call update_cohort_published_status();
 
 DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
