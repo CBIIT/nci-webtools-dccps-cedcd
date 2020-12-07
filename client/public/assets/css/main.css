@@ -1183,3 +1183,7 @@ tr.compare-row--hover, .body-header--hover {
   border-radius: 0;
   box-shadow: none;
 }
+
+.resize-vertical {
+  resize: vertical;
+}
