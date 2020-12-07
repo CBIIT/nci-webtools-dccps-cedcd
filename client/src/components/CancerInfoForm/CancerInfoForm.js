@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
-window.parseISO = parseISO;
 
 const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
@@ -31,7 +30,8 @@ const CancerInfoForm = ({ ...props }) => {
 
     useEffect(() => {
         // load existing cohort
-        dispatch(loadCohort(cohortId));
+        if (!cohort || +cohort.id !== +cohortId)
+            dispatch(loadCohort(cohortId));
     }, []);
 
     useEffect(() => {
@@ -40,17 +40,34 @@ const CancerInfoForm = ({ ...props }) => {
             return;
             
         let {cancer_count: count, cancer_info: info} = cohort;
-        info = info[0] || {};
+        info = {...info[0]} || {};
 
-        for (let key in info) {
-            let value = info[key];
-            if (key === 'ci_confirmed_cancer_date' && value) {
-                // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
-                let date = parseISO(value); 
-                value = date !== 'Invalid Date' ? date : null;
-            }
-            setFormValue(key, value);
+        // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
+        if (info.ci_confirmed_cancer_date) {
+            let date = parseISO(info.ci_confirmed_cancer_date)
+            info.ci_confirmed_cancer_date = date !== 'Invalid Date' ? date : null;
         }
+
+        // if no ci_cancer_treatment_data is provided, clear related inputs
+        if (+info.ci_cancer_treatment_data === 0) {
+            info.ci_treatment_data_surgery = 0;
+            info.ci_treatment_data_radiation = 0;
+            info.ci_treatment_data_chemotherapy = 0;
+            info.ci_treatment_data_hormonal_therapy = 0;
+            info.ci_treatment_data_bone_stem_cell = 0;
+            info.ci_treatment_data_other = 0;
+            info.ci_treatment_data_other_specify = '';
+
+            info.ci_data_source_admin_claims = 0;
+            info.ci_data_source_electronic_records = 0;
+            info.ci_data_source_chart_abstraction = 0;
+            info.ci_data_source_patient_reported = 0;
+            info.ci_data_source_other = 0;
+            info.ci_data_source_other_specify = '';
+        }
+
+        for (let key in info)
+            setFormValue(key, info[key]);
 
         const counts = [];
 
@@ -138,11 +155,7 @@ const CancerInfoForm = ({ ...props }) => {
         setErrors(errors);
         setSubmitted(true);
 
-        // if (hasErrors)
-            console.log(hasErrors, errors);
-
         // todo: replace window.confirm/alert with either modals or toasts
-
         if (!hasErrors || (hasErrors && window.confirm('There are validation errors, are you sure to save?'))) {
             try {
                 let info = {...form};
@@ -203,7 +216,7 @@ const CancerInfoForm = ({ ...props }) => {
         props.sectionPicker('E');
     }
 
-    function CheckedInput({value, name, type, label, className, disabled}) {
+    function CheckedInput({value, name, type, label, className, disabled, onChange}) {
         return <div className={classNames(className || type, disabled && 'disabled')}>
             <label>
                 <input 
@@ -212,12 +225,16 @@ const CancerInfoForm = ({ ...props }) => {
                     checked={disabled ? false : form[name] == value} 
                     value={value}
                     disabled={disabled}
-                    onChange={e => setFormValue(
-                        e.target.name,
-                        type === 'checkbox' 
-                            ? (e.target.checked ? 1 : 0)
-                            : e.target.value
-                    )} />
+                    onChange={e => {
+                        setFormValue(
+                            e.target.name,
+                            type === 'checkbox' 
+                                ? (e.target.checked ? 1 : 0)
+                                : e.target.value
+                        );
+                        if (onChange)
+                            onChange(e);
+                    }} />
                 {label}
             </label>
         </div>
@@ -309,7 +326,14 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
                     {+form.ci_ascertained_other === 1 && <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
-                        <textarea className="form-control" name="ci_ascertained_other_specify" value={form.ci_ascertained_other_specify || ''} onChange={e => setFormValue(e.target.name, e.target.value)} />
+                        <textarea 
+                            className="form-control resize-vertical" 
+                            name="ci_ascertained_other_specify" 
+                            value={form.ci_ascertained_other_specify || ''} 
+                            onChange={e => setFormValue(e.target.name, e.target.value)} 
+                            maxlength={300}
+                        />
+                        <span class="help-block">300 Characters Max</span>
                     </div>}
                 </div>
 
@@ -342,7 +366,30 @@ const CancerInfoForm = ({ ...props }) => {
                     {[
                         {value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c'},
                         {value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes'},
-                    ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
+                    ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} onChange={e => {
+                        if (+e.target.value === 0) {
+                            // clear related inputs if "no" is checked
+                            let info = {}
+                            info.ci_treatment_data_surgery = 0;
+                            info.ci_treatment_data_radiation = 0;
+                            info.ci_treatment_data_chemotherapy = 0;
+                            info.ci_treatment_data_hormonal_therapy = 0;
+                            info.ci_treatment_data_bone_stem_cell = 0;
+                            info.ci_treatment_data_other = 0;
+                            info.ci_treatment_data_other_specify = '';
+                
+                            info.ci_data_source_admin_claims = 0;
+                            info.ci_data_source_electronic_records = 0;
+                            info.ci_data_source_chart_abstraction = 0;
+                            info.ci_data_source_patient_reported = 0;
+                            info.ci_data_source_other = 0;
+                            info.ci_data_source_other_specify = '';
+
+                            for (let key in info) {
+                                setFormValue(key, info[key])
+                            }
+                        }
+                    }} />)}
                 </div>
 
                 <div className="ml-4">
@@ -364,12 +411,14 @@ const CancerInfoForm = ({ ...props }) => {
                         {+form.ci_treatment_data_other === 1 && 
                             <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
                                 <textarea 
-                                    className="form-control" 
+                                    className="form-control resize-vertical" 
                                     name="ci_treatment_data_other_specify" 
                                     disabled={+form.ci_cancer_treatment_data === 0}
                                     value={form.ci_treatment_data_other_specify || ''} 
                                     onChange={e => setFormValue(e.target.name, e.target.value)} 
+                                    maxlength={200}
                                 />
+                                <span class="help-block">200 Characters Max</span>
                             </div>}
                     </div>
 
@@ -388,12 +437,14 @@ const CancerInfoForm = ({ ...props }) => {
 
                         {+form.ci_data_source_other === 1 && <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
                             <textarea 
-                                className="form-control" 
+                                className="form-control  resize-vertical" 
                                 name="ci_data_source_other_specify" 
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_data_source_other_specify || ''} 
                                 onChange={e => setFormValue(e.target.name, e.target.value)} 
+                                maxlength={200}
                             />
+                            <span class="help-block">200 Characters Max</span>
                         </div>}
                     </div>
 
@@ -443,12 +494,14 @@ const CancerInfoForm = ({ ...props }) => {
                     {+form.ci_tumor_genetic_markers_data === 1 && 
                         <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
                             <textarea 
-                                className="form-control" 
+                                className="form-control resize-vertical" 
                                 name="ci_tumor_genetic_markers_data_describe" 
                                 length="40" 
                                 value={form.ci_tumor_genetic_markers_data_describe} 
                                 onChange={e => setFormValue(e.target.name, e.target.value)} 
+                                maxlength={200}
                             />
+                            <span class="help-block">200 Characters Max</span>
                         </div>}
                 </div>
 
