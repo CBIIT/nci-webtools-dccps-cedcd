@@ -321,7 +321,6 @@ const CancerInfoForm = ({ ...props }) => {
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report'},
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry'},
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review'},
-                        {type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report'},
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)'},
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
