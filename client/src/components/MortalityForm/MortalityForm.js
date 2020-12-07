@@ -200,19 +200,19 @@ const MortalityForm = ({ ...props }) => {
         <div className='col-md-12'>
             <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
                 <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='deathIndex' checked={mortality.deathIndex === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='deathIndex' checked={mortality.deathIndex === 1} onClick={() => dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2))} style={{ width: '30px' }} />
                 </span>
                 <span>U.S. National Death Index (NDI) linkage</span>
             </div>
             <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
                 <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='deathCertificate' checked={mortality.deathCertificate === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2))} style={{ width: '30px' }} />
+                    <input type='checkbox' name='deathCertificate' checked={mortality.deathCertificate === 1} onClick={() => dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2))} style={{ width: '30px' }} />
                 </span>
                 <span>Death Certificates</span>
             </div>
             <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
                 <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='otherDeath' checked={mortality.otherDeath === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) }} style={{ width: '30px' }} />
+                    <input type='checkbox' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) }} style={{ width: '30px' }} />
                 </span>
                 <span>Other</span>
             </div>
@@ -249,7 +249,13 @@ const MortalityForm = ({ ...props }) => {
 
         <div className='form-group col-md-9' >
             <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 0} onClick={() => dispatch(allactions.mortalityActions.setHaveDeathCause(0))} style={{ width: '30px' }} />
+                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 0} onClick={() => {
+                    dispatch(allactions.mortalityActions.setHaveDeathCause(0));
+                    dispatch(allactions.mortalityActions.setIcd9(0));
+                    dispatch(allactions.mortalityActions.setIcd10(0));
+                    dispatch(allactions.mortalityActions.setOtherCode(0));
+                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                }} style={{ width: '30px' }} />
                 <span>No</span>
             </span>
 
@@ -292,7 +298,7 @@ const MortalityForm = ({ ...props }) => {
                     <span>Other Code</span>
                 </div>
                 {errors.coded !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <div className='col-md-3' style={{ color: 'red' }}>{errors.coded}</div>
+                    <div className='col-md-4' style={{ color: 'red' }}>{errors.coded}</div>
                 </div>}
             </div>
 
