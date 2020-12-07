@@ -429,7 +429,7 @@ router.get('/lookup', async (request, response) => {
     try {
         if (!lookup) {
             locals.lookup = lookup = {
-                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = ''`),
+                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer ORDER BY icd9 = '', icd9`),
                 case_type: await mysql.query(`SELECT id, case_type FROM lu_case_type`),
                 cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
                 data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),
