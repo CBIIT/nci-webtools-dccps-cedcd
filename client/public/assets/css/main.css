@@ -1257,6 +1257,14 @@ tr.compare-row--hover, .body-header--hover {
   box-shadow: none;
 }
 
+.bg-light {
+  background-color: #f2f2f2 !important;
+}
+
+.bg-transparent {
+  background-color: transparent !important;
+}
+
 .w-100 {
   width: 100%;
 }

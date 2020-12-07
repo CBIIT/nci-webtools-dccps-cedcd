@@ -133,19 +133,24 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     async function handleSave() {
-        let hasErrors = Object.entries(errors).length === 0;
+        let errors = getValidationErrors(form);
+        let hasErrors = Object.entries(errors).length > 0;
+        setErrors(errors);
         setSubmitted(true);
-        // console.log(errors);
+
+        // if (hasErrors)
+            console.log(hasErrors, errors);
 
         // todo: replace window.confirm/alert with either modals or toasts
 
-        if (hasErrors || window.confirm('There are validation errors, are you sure to save?')) {
+        if (!hasErrors || (hasErrors && window.confirm('There are validation errors, are you sure to save?'))) {
             try {
                 let info = {...form};
 
-                if (form.ci_confirmed_cancer_date) {
-                    info.ci_confirmed_cancer_date = format(form.ci_confirmed_cancer_date, 'yyyy-MM-dd')
-                    info.ci_confirmed_cancer_year = format(form.ci_confirmed_cancer_date, 'yyyy')
+                if (info.ci_confirmed_cancer_date) {
+                    const dateTime = info.ci_confirmed_cancer_date.getTime();
+                    info.ci_confirmed_cancer_date = format(dateTime, 'yyyy-MM-dd');
+                    info.ci_confirmed_cancer_year = format(dateTime, 'yyyy');
                 } else {
                     info.ci_confirmed_cancer_date = null;
                     info.ci_confirmed_cancer_year = null;
@@ -154,8 +159,8 @@ const CancerInfoForm = ({ ...props }) => {
                 await fetch(`/api/questionnaire/update_cancer_info/${cohortId}`, {
                     method: 'POST', 
                     headers: {'content-type': 'application/json'},
-                    body: JSON.stringify(info)
-                }).json();
+                    body: JSON.stringify([info])
+                }).then(r => r.json());
 
                 await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
                     method: 'POST', 
@@ -165,24 +170,24 @@ const CancerInfoForm = ({ ...props }) => {
                         let cancer_counts = value;
                         return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
                     }))
-                }).json();
+                }).then(r => r.json());
+
+                await fetch(`/api/questionnaire/cohort/${cohortId}`, {
+                    method: 'POST', 
+                    headers: {'content-type': 'application/json'},
+                    body: JSON.stringify({
+                        cohort_edit_status: [{
+                            page_code: 'D',
+                            status: hasErrors ? 'incomplete' : 'complete'
+                        }]
+                    })
+                }).then(r => r.json());
 
                 dispatch(loadCohort(cohortId));
                 window.alert('Your information has been saved.');
 
-                // const response = await fetch(`/api/questionnaire/cohort/${cohortId}`, {
-                //     method: 'POST', 
-                //     headers: {'content-type': 'application/json'},
-                //     body: JSON.stringify({
-                //         cancer_info: info,
-                //         cancer_count: Object.entries(counts).map(([key, value]) => {
-                //             let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
-                //             let cancer_counts = value;
-                //             return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
-                //         })
-                //     })
-                // });
             } catch (e) {
+                console.log(e);
                 window.alert('There was an error processing your request. Please try again later.')
             } finally {
                 dispatch(allactions.sectionActions.setSectionStatus(
@@ -204,7 +209,7 @@ const CancerInfoForm = ({ ...props }) => {
             <p className="strong mt-3">D.1 Cancer Counts</p>
             <p>Please enter the number of participants with these cancers by sex </p>
             <div className="overflow-x-auto mb-4">
-                <table className='table table-nowrap table-valign-middle'>
+                <table className='table table-condensed table-nowrap table-valign-middle'>
                     <thead>
                         <tr>
                             <th className="text-center" rowSpan={2}>ICD-9</th>
@@ -231,18 +236,18 @@ const CancerInfoForm = ({ ...props }) => {
                             ];
 
                             return <tr key={keyPrefix}>
-                                <td>{c.icd9}</td>
-                                <td>{c.icd10}</td>
-                                <td>{c.cancer}</td>
+                                <td className="bg-light">{c.icd9 || 'N/A'}</td>
+                                <td className="bg-light">{c.icd10 || 'N/A'}</td>
+                                <td className="bg-light">{c.cancer}</td>
                                 {inputKeys.map(key => 
-                                    <td className="p-0" key={key} className={classNames(submitted && errors[key] && "has-error")}>
+                                    <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
                                         <input 
-                                            className="form-control input-lg border-0 text-right"
+                                            className="form-control border-0 p-0 bg-transparent text-right"
                                             type="number"  
                                             min="0"
                                             name={key} 
-                                            value={counts[key]} 
-                                            onChange={ev => setCount(ev.target.name, ev.target.value)} 
+                                            value={counts[key] || 0} 
+                                            onChange={ev => setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0))} 
                                         />
                                     </td>
                                 )}
