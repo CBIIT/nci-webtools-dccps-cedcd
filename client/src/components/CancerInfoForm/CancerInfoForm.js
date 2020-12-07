@@ -183,7 +183,7 @@ const CancerInfoForm = ({ ...props }) => {
                         let cancer_counts = value;
                         return {cohort_id, cancer_id, gender_id, case_type_id, cancer_counts}
                     }))
-                }).json();
+                }).then(r => r.json());
 
                 await fetch(`/api/questionnaire/cohort/${cohortId}`, {
                     method: 'POST', 
