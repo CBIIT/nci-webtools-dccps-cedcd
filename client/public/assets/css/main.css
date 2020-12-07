@@ -1168,87 +1168,9 @@ tr.compare-row--hover, .body-header--hover {
   vertical-align: middle !important;
 }
 
-.p-0 {
-  padding: 0 !important;
-}
-
-.p-3 {
-  padding: 15px !important;
-}
-
-.py-3 {
-  padding-top: 15px !important;
-  padding-bottom: 15px !important;
-}
-
-.py-4 {
-  padding-top: 20px !important;
-  padding-bottom: 20px !important;
-}
-
-.mr-1 {
-  margin-right: 5px;
-}
-
-.mr-2 {
-  margin-right: 10px;
-}
-
-.mr-3 {
-  margin-right: 15px;
-}
-
-.ml-1 {
-  margin-left: 5px;
-}
-
-.ml-2 {
-  margin-left: 10px;
-}
-
-.ml-3 {
-  margin-left: 15px;
-}
-
-.mb-2 {
-  margin-bottom: 10px;
-}
-
-.mb-3 {
-  margin-bottom: 15px;
-}
-
-.mb-4 {
-  margin-bottom: 20px;
-}
-
-.mt-2 {
-  margin-top: 10px;
-}
-
-.mt-3 {
-  margin-top: 15px;
-}
-
-.strong {
-  font-weight: bold;
-}
-
-.font-weight-normal {
-  font-weight: normal;
-}
-
 .text-valign-center {
   display: flex;
   align-items: center;
-}
-
-.valign-middle {
-  vertical-align: middle;
-}
-
-.text-left {
-  text-align: left !important;
 }
 
 .border-0 {
@@ -1257,28 +1179,8 @@ tr.compare-row--hover, .body-header--hover {
   box-shadow: none;
 }
 
-.bg-light {
-  background-color: #f2f2f2 !important;
-}
-
-.bg-transparent {
-  background-color: transparent !important;
-}
-
-.w-100 {
-  width: 100%;
-}
-
 .overflow-x-auto {
   overflow-x: auto !important;
-}
-
-.d-flex {
-  display: flex;
-}
-
-.justify-content-between {
-  justify-content: space-between;
 }
 
 .hover-highlight:hover {
