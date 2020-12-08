@@ -95,7 +95,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
                     <div style={{color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px',  margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
                         <div style={{width: '99%',  height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto'}}>
-                            <span style={props.activeSection === 'G' ? activeStyle : {}}>Data Linkage & Harmonization</span>
+                            <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
                         </div>
                     </div>
                 </div>
