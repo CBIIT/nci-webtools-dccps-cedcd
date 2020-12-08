@@ -27,8 +27,10 @@
 21. get_enrollment_counts
 22. get_specimen_counts
 23. update_specimen_count
-24. inspect_cohort
-25. insert_new_cohort_from_published
+24. select_questionnaire_specimen_info
+25. update_questionnaire_speciemn_info
+26. inspect_cohort
+27. insert_new_cohort_from_published
 *
  */
 
