@@ -9,6 +9,7 @@ import cohortErrorActions from './cohortErrorActions'
 import majorContentErrorActions from './majorContentErrorActions'
 import enrollmentCountErrorActions from './enrollmentCountErrorActions'
 import specimenActions from './specimenActions'
+import specimenErrorActions from './specimenErrorActions'
 import appActions from './appActions'
 export default {
     cohortActions,
@@ -22,5 +23,6 @@ export default {
     enrollmentCountErrorActions,
     majorContentErrorActions,
     specimenActions,
+    specimenErrorActions,
     appActions
 }

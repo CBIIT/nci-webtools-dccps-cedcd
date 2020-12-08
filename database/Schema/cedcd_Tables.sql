@@ -258,7 +258,7 @@ DROP TABLE IF EXISTS `cancer_info`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cancer_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cohort_id` int(11) NOT NULL,
+  `cohort_id` int(11) NOT NULL UNIQUE,
   `ci_confirmed_cancer_year` int(4) DEFAULT NULL,
   `ci_confirmed_cancer_date` DATE DEFAULT NULL,
   `ci_ascertained_self_reporting` int(1) DEFAULT NULL,

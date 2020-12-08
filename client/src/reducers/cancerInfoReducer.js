@@ -20,11 +20,20 @@ actions[t.setCancerInfoCohort] = (state, action) => {
 
 export function loadCohort(id) {
    return async function(dispatch) {
-       const response = await fetch(`/api/questionnaire/cohort/${id}`)
-       dispatch({
-           type: t.setCancerInfoCohort, 
-           value: await response.json()
-       });
+      const cohort = await fetch(`/api/questionnaire/cohort/${id}`).then(r => r.json());
+      const response = {
+         cancer_count: await fetch(`/api/questionnaire/cancer_count/${id}`).then(r => r.json()),
+         cancer_info: await fetch(`/api/questionnaire/cancer_info/${id}`).then(r => r.json()),
+      }
+
+      dispatch({
+         type: t.setCancerInfoCohort, 
+         value: {
+            ...cohort,
+            cancer_count: response.cancer_count.data[0],
+            cancer_info: response.cancer_info.data[0],
+         }
+      });
    }
 }
 

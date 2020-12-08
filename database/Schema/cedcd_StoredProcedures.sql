@@ -27,6 +27,10 @@
 21. get_enrollment_counts
 22. get_specimen_counts
 23. update_specimen_count
+24. select_questionnaire_specimen_info
+25. update_questionnaire_speciemn_info
+26. inspect_cohort
+27. insert_new_cohort_from_published
 *
  */
 
@@ -671,6 +675,251 @@ BEGIN
     
     SELECT LAST_INSERT_ID();
 END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cancer_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cancer_count` //
+CREATE PROCEDURE `select_cancer_count`(in cohort_id integer)
+BEGIN
+    set @query = "SELECT * FROM cancer_count WHERE cohort_id = ?";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cancer_info
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cancer_info` //
+CREATE PROCEDURE `select_cancer_info`(in cohort_id integer)
+BEGIN
+    set @query = "SELECT * FROM cancer_info WHERE cohort_id = ?";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cancer_count
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cancer_count` //
+CREATE PROCEDURE `update_cancer_count`(in cohort_id integer, in params json)
+BEGIN
+	DECLARE success INT DEFAULT 1;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+      SET success = 0;
+      ROLLBACK;
+	END;
+
+    START TRANSACTION;
+
+    set @cohort_id = cohort_id;
+    set @params = params;
+    set @query = "
+        insert into cancer_count (
+            cohort_id,
+            cancer_id,
+            gender_id,
+            case_type_id,
+            cancer_counts
+        )
+        select
+            ?,
+            cancer_id,
+            gender_id,
+            case_type_id,
+            cancer_counts
+        from json_table(
+            ?,
+            '$[*]' columns(
+                cancer_id integer path '$.cancer_id',
+                gender_id integer path '$.gender_id',
+                case_type_id integer path '$.case_type_id',
+                cancer_counts integer path '$.cancer_counts'
+            )
+        ) as json_params
+        on duplicate key update
+            cancer_counts = values(cancer_counts)";
+
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id, @params;
+	DEALLOCATE PREPARE stmt;
+
+    COMMIT;
+
+    SELECT success;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cancer_info
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cancer_info` //
+CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
+BEGIN
+	DECLARE success INT DEFAULT 1;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+	BEGIN
+      SET success = 0;
+      ROLLBACK;
+	END;
+
+    START TRANSACTION;
+
+    set @cohort_id = cohort_id;
+    set @params = params;
+    set @query = "
+        insert into cancer_info (
+            cohort_id,
+            ci_confirmed_cancer_year,
+            ci_confirmed_cancer_date,
+            ci_ascertained_self_reporting,
+            ci_ascertained_tumor_registry,
+            ci_ascertained_medical_records,
+            ci_ascertained_other,
+            ci_ascertained_other_specify,
+            ci_cancer_recurrence,
+            ci_second_primary_diagnosis,
+            ci_cancer_treatment_data,
+            ci_treatment_data_surgery,
+            ci_treatment_data_radiation,
+            ci_treatment_data_chemotherapy,
+            ci_treatment_data_hormonal_therapy,
+            ci_treatment_data_bone_stem_cell,
+            ci_treatment_data_other,
+            ci_treatment_data_other_specify,
+            ci_data_source_admin_claims,
+            ci_data_source_electronic_records,
+            ci_data_source_chart_abstraction,
+            ci_data_source_patient_reported,
+            ci_data_source_other,
+            ci_data_source_other_specify,
+            ci_collect_other_information,
+            ci_cancer_staging_data,
+            ci_tumor_grade_data,
+            ci_tumor_genetic_markers_data,
+            ci_tumor_genetic_markers_data_describe,
+            ci_histologically_confirmed,
+            ci_cancer_subtype_histological,
+            ci_cancer_subtype_molecular
+        )
+        select
+            ?,
+            ci_confirmed_cancer_year,
+            ci_confirmed_cancer_date,
+            ci_ascertained_self_reporting,
+            ci_ascertained_tumor_registry,
+            ci_ascertained_medical_records,
+            ci_ascertained_other,
+            ci_ascertained_other_specify,
+            ci_cancer_recurrence,
+            ci_second_primary_diagnosis,
+            ci_cancer_treatment_data,
+            ci_treatment_data_surgery,
+            ci_treatment_data_radiation,
+            ci_treatment_data_chemotherapy,
+            ci_treatment_data_hormonal_therapy,
+            ci_treatment_data_bone_stem_cell,
+            ci_treatment_data_other,
+            ci_treatment_data_other_specify,
+            ci_data_source_admin_claims,
+            ci_data_source_electronic_records,
+            ci_data_source_chart_abstraction,
+            ci_data_source_patient_reported,
+            ci_data_source_other,
+            ci_data_source_other_specify,
+            ci_collect_other_information,
+            ci_cancer_staging_data,
+            ci_tumor_grade_data,
+            ci_tumor_genetic_markers_data,
+            ci_tumor_genetic_markers_data_describe,
+            ci_histologically_confirmed,
+            ci_cancer_subtype_histological,
+            ci_cancer_subtype_molecular
+        from json_table(
+            ?,
+            '$[*]' columns(
+                ci_confirmed_cancer_year integer path '$.ci_confirmed_cancer_year',
+                ci_confirmed_cancer_date DATE path '$.ci_confirmed_cancer_date',
+                ci_ascertained_self_reporting integer path '$.ci_ascertained_self_reporting',
+                ci_ascertained_tumor_registry integer path '$.ci_ascertained_tumor_registry',
+                ci_ascertained_medical_records integer path '$.ci_ascertained_medical_records',
+                ci_ascertained_other integer path '$.ci_ascertained_other',
+                ci_ascertained_other_specify varchar(300) path '$.ci_ascertained_other_specify',
+                ci_cancer_recurrence integer path '$.ci_cancer_recurrence',
+                ci_second_primary_diagnosis integer path '$.ci_second_primary_diagnosis',
+                ci_cancer_treatment_data integer path '$.ci_cancer_treatment_data',
+                ci_treatment_data_surgery integer path '$.ci_treatment_data_surgery',
+                ci_treatment_data_radiation integer path '$.ci_treatment_data_radiation',
+                ci_treatment_data_chemotherapy integer path '$.ci_treatment_data_chemotherapy',
+                ci_treatment_data_hormonal_therapy integer path '$.ci_treatment_data_hormonal_therapy',
+                ci_treatment_data_bone_stem_cell integer path '$.ci_treatment_data_bone_stem_cell',
+                ci_treatment_data_other integer path '$.ci_treatment_data_other',
+                ci_treatment_data_other_specify varchar(200) path '$.ci_treatment_data_other_specify',
+                ci_data_source_admin_claims integer path '$.ci_data_source_admin_claims',
+                ci_data_source_electronic_records integer path '$.ci_data_source_electronic_records',
+                ci_data_source_chart_abstraction integer path '$.ci_data_source_chart_abstraction',
+                ci_data_source_patient_reported integer path '$.ci_data_source_patient_reported',
+                ci_data_source_other integer path '$.ci_data_source_other',
+                ci_data_source_other_specify varchar(200) path '$.ci_data_source_other_specify',
+                ci_collect_other_information integer path '$.ci_collect_other_information',
+                ci_cancer_staging_data integer path '$.ci_cancer_staging_data',
+                ci_tumor_grade_data integer path '$.ci_tumor_grade_data',
+                ci_tumor_genetic_markers_data integer path '$.ci_tumor_genetic_markers_data',
+                ci_tumor_genetic_markers_data_describe varchar(200) path '$.ci_tumor_genetic_markers_data_describe',
+                ci_histologically_confirmed integer path '$.ci_histologically_confirmed',
+                ci_cancer_subtype_histological integer path '$.ci_cancer_subtype_histological',
+                ci_cancer_subtype_molecular integer path '$.ci_cancer_subtype_molecular'
+            )
+        ) as json_params
+        on duplicate key update
+            ci_confirmed_cancer_year = values(ci_confirmed_cancer_year),
+            ci_confirmed_cancer_date = values(ci_confirmed_cancer_date),
+            ci_ascertained_self_reporting = values(ci_ascertained_self_reporting),
+            ci_ascertained_tumor_registry = values(ci_ascertained_tumor_registry),
+            ci_ascertained_medical_records = values(ci_ascertained_medical_records),
+            ci_ascertained_other = values(ci_ascertained_other),
+            ci_ascertained_other_specify = values(ci_ascertained_other_specify),
+            ci_cancer_recurrence = values(ci_cancer_recurrence),
+            ci_second_primary_diagnosis = values(ci_second_primary_diagnosis),
+            ci_cancer_treatment_data = values(ci_cancer_treatment_data),
+            ci_treatment_data_surgery = values(ci_treatment_data_surgery),
+            ci_treatment_data_radiation = values(ci_treatment_data_radiation),
+            ci_treatment_data_chemotherapy = values(ci_treatment_data_chemotherapy),
+            ci_treatment_data_hormonal_therapy = values(ci_treatment_data_hormonal_therapy),
+            ci_treatment_data_bone_stem_cell = values(ci_treatment_data_bone_stem_cell),
+            ci_treatment_data_other = values(ci_treatment_data_other),
+            ci_treatment_data_other_specify = values(ci_treatment_data_other_specify),
+            ci_data_source_admin_claims = values(ci_data_source_admin_claims),
+            ci_data_source_electronic_records = values(ci_data_source_electronic_records),
+            ci_data_source_chart_abstraction = values(ci_data_source_chart_abstraction),
+            ci_data_source_patient_reported = values(ci_data_source_patient_reported),
+            ci_data_source_other = values(ci_data_source_other),
+            ci_data_source_other_specify = values(ci_data_source_other_specify),
+            ci_collect_other_information = values(ci_collect_other_information),
+            ci_cancer_staging_data = values(ci_cancer_staging_data),
+            ci_tumor_grade_data = values(ci_tumor_grade_data),
+            ci_tumor_genetic_markers_data = values(ci_tumor_genetic_markers_data),
+            ci_tumor_genetic_markers_data_describe = values(ci_tumor_genetic_markers_data_describe),
+            ci_histologically_confirmed = values(ci_histologically_confirmed),
+            ci_cancer_subtype_histological = values(ci_cancer_subtype_histological),
+            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)";
+
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id, @params;
+	DEALLOCATE PREPARE stmt;
+
+    COMMIT;
+
+    SELECT success;
+END //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_cancer_counts
@@ -1680,7 +1929,7 @@ BEGIN
 		,create_time
 		,update_time
 	FROM mortality WHERE cohort_id = targetID;
-	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='E';
 end//
 
 DROP PROCEDURE if EXISTS `update_mortality` //
@@ -1977,4 +2226,278 @@ begin
   commit;
   SELECT flag AS rowsAffacted;
 end //
+
+DROP PROCEDURE IF EXISTS `inspect_cohort` //
+
+CREATE  PROCEDURE `inspect_cohort`(in targetID int, out new_id int)
+begin
+    set new_id = targetID; -- assume it is draft
+    if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
+        if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
+            select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
+        else -- if copy not exists, create a new one
+           insert cohort (name, acronym, status, publish_by, create_time, update_time) select name, acronym, 'draft', null, now(), now() from cohort
+           where id = targetID;
+           set new_id = last_insert_id();
+           call insert_new_cohort_from_published(new_id, targetID);
+ 
+        end if;
+    end if;
+end //
+
+
+DROP PROCEDURE IF EXISTS `insert_new_cohort_from_published` //
+
+CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in old_cohort_id int)
+BEGIN
+
+ DECLARE flag INT DEFAULT 1;
+  
+ DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+
+set sql_mode='';
+SET SQL_SAFE_UPDATES = 0;
+
+  START transaction;
+-- insert into Cohort table
+/* assune cohort table was updated, and new cohort_id is passed in
+* insert into cohort (id, name, acronym, status, create_by, create_time, update_time)
+* select new_cohort_id, cohort_name, cohort_acronym, 'draft', 3, now(), now() from cohort_basic where cohort_id =old_cohort_id;
+*/
+
+-- insert into cohort_basic 
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    cohort_basic
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into cohort_basic select null, a.* from cohort_temp a; 
+
+-- insert into person, attachment
+insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
+select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
+from person where cohort_id = old_cohort_id and name is not null;
+
+insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+select new_cohort_id,  attachment_type, category, filename, website, status, now(), now() 
+from attachment where cohort_id = old_cohort_id;
+
+-- insert into enrollment_count
+insert into enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
+select new_cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, now(), now() 
+from enrollment_count where cohort_id =old_cohort_id;
+
+-- ---- insert into dlh --
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    dlh
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into dlh select null, a.* from cohort_temp a; 
+
+-- insert into cancer_count
+insert into cancer_count (cohort_id,cancer_id,gender_id, case_type_id,cancer_counts, create_time, update_time)
+select new_cohort_id, cancer_id,gender_id, case_type_id,cancer_counts, now(), now() 
+from cancer_count where cohort_id =old_cohort_id;
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    cancer_info
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into cancer_info select null, a.* from cohort_temp a; 
+
+-- insert into major_count
+insert into major_content (cohort_id,category_id,baseline, followup, other_specify_baseline,other_specify_followup, create_time, update_time)
+select new_cohort_id, lu.id as category_id,baseline, followup, other_specify_baseline,other_specify_followup, 
+(case when mdc.create_time is null then now() else mdc.create_time end) as create_time, 
+(case when mdc.update_time is null then now() else mdc.update_time end) as update_time
+from major_content as mdc right join  
+(select * from lu_data_category where category <> 'Cancer Treatment') as lu 
+on mdc.cohort_id = old_cohort_id and mdc.category_id = lu.id ;
+
+
+-- inert into mortality
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    mortality
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into mortality select null, a.* from cohort_temp a; 
+
+-- insert into specimen_count
+insert into specimen_count (cohort_id,cancer_id,specimen_id, specimens_counts, create_time, update_time)
+select new_cohort_id, cancer_id,specimen_id, specimens_counts, now(), now() 
+from specimen_count where cohort_id =old_cohort_id;
+
+insert into specimen_collected_type
+select null, new_cohort_id, c.id as specimen_id, b.collected_yn,
+(case when b.create_time is null then now() else b.create_time end ) as create_time,
+(case when b.update_time is null then now() else b.create_time end ) as update_time
+from specimen_collected_type b right join (select * from lu_specimen where id > 10) c
+on b.specimen_id = c.id and b.cohort_id = old_cohort_id;
+
+-- inert into specimen
+
+drop table if exists cohort_temp;
+
+CREATE TABLE cohort_temp AS SELECT * FROM
+    specimen
+WHERE
+    cohort_id = old_cohort_id;
+
+UPDATE cohort_temp 
+SET 
+    cohort_id = new_cohort_id;
+alter table cohort_temp drop column id;
+
+insert into specimen select null, a.* from cohort_temp a; 
+
+-- insert into technology
+insert into technology (cohort_id,tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, create_time, update_time)
+select new_cohort_id, tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, now(), now() 
+from technology where cohort_id =old_cohort_id;
+
+-- insert update supporting tables ,for published cohort, 
+insert into cohort_edit_status (cohort_id, page_code, status)
+values ( new_cohort_id, 'A', 'complete'),
+( new_cohort_id, 'B', 'complete'),
+( new_cohort_id, 'C', 'complete'),
+( new_cohort_id, 'D', 'complete'),
+( new_cohort_id, 'E', 'complete'),
+( new_cohort_id, 'F', 'complete'),
+( new_cohort_id, 'G', 'complete');
+
+/* update log table 
+insert into cohort_activity_log (cohort_id, cohort_user_id, activity, notes, create_time)
+values ( new_cohort_id,  3, 'init new cohort from published cohort new_cohort_id', null, now());
+*/
+
+SET SQL_SAFE_UPDATES = 1;
+END //
+
+DROP PROCEDURE IF EXISTS `select_dlh` //
+
+CREATE PROCEDURE `select_dlh` (in targetID int) 
+BEGIN
+	SELECT
+		cohort_id
+		,dlh_linked_to_existing_databases
+		,dlh_linked_to_existing_databases_specify
+		,dlh_harmonization_projects
+		,dlh_harmonization_projects_specify
+		,dlh_nih_repository
+		,dlh_nih_dbgap
+		,dlh_nih_biolincc
+		,dlh_nih_other
+		,dlh_procedure_online
+		,dlh_procedure_website
+		,dlh_procedure_url
+		,dlh_procedure_attached
+		,dlh_procedure_enclave
+		,dlh_enclave_location
+		,create_time
+		,update_time
+	FROM dlh WHERE cohort_id = targetID;
+	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
+end//
+
+DROP PROCEDURE if EXISTS `update_dlh` //
+
+CREATE PROCEDURE `update_dlh` (in targetID int, in info JSON)
+BEGIN
+	if exists (select * from dlh where cohort_id = `targetID`) then 
+		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
+		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization'))) where cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_repository = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC'))) where cohort_id = `targetID`;
+		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_online = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) where cohort_id = `targetID`;
+		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
+		update dlh set update_time = NOW() where cohort_id = `targetID`;
+		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')) where cohort_id = `targetID` and page_code = 'F';
+	else
+		insert into dlh (
+			cohort_id
+			,dlh_linked_to_existing_databases
+			,dlh_linked_to_existing_databases_specify
+			,dlh_harmonization_projects
+			,dlh_harmonization_projects_specify
+			,dlh_nih_repository
+			,dlh_nih_dbgap
+			,dlh_nih_biolincc
+			,dlh_nih_other
+			,dlh_procedure_online
+			,dlh_procedure_website
+			,dlh_procedure_url
+			,dlh_procedure_attached
+			,dlh_procedure_enclave
+			,dlh_enclave_location
+			,create_time
+			,update_time
+		) values(
+			targetID
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify')))
+			,NOW()
+			,NOW()
+		);
+		insert into cohort_edit_status (cohort_id, page_code, `status`)
+		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
+	end if;
+	select row_count() as rowAffacted;
+end//
+
 DELIMITER ;
