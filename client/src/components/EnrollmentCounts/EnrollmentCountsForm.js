@@ -134,8 +134,8 @@ const EnrollmentCountsForm = ({...props}) => {
                     Record actual, not planned, recruitment counts
                 </div>
             <div>
-                <form  style={{boxSizing: 'border-box', overflowX: 'scroll'}}>
-                    <div style={{marginTop: '10px'}}>
+                <form  style={{boxSizing: 'border-box', overflowX: window.innerWidth <= 1000 ? 'scroll' : ''}}>
+                    <div style={{marginBottom: '10px'}}>
                         <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                     </div>
                     <table className='table-stripe table-responsive'>
