@@ -678,6 +678,32 @@ END //
 
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cohort_for_user
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cohort_for_user` //
+CREATE PROCEDURE `select_cohort_for_user`(in user_id int)
+BEGIN
+    set @query = "
+		select c.*
+		from cohort c
+        join cohort_user_mapping cm on cm.cohort_acronym = c.acronym
+		where cohort_user_id = ?
+		order by
+			status = 'draft' desc,
+			status = 'in review' desc,
+			status = 'submitted' desc,
+			status = 'new' desc,
+			status = 'published' desc
+		limit 1;
+	";
+    set @user_id = user_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @user_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_cancer_count
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cancer_count` //
