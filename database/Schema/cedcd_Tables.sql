@@ -132,6 +132,7 @@ CREATE TABLE `cohort` (
   PRIMARY KEY (`id`),
   KEY `cohort_create_id` (`create_by`),
   KEY `cohort_publish_id` (`publish_by`),
+  KEY `cohort_acronym_index` (`acronym`),
   CONSTRAINT `cohort_create_id` FOREIGN KEY (`create_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_publish_id` FOREIGN KEY (`publish_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
@@ -536,18 +537,19 @@ DROP TABLE IF EXISTS `cohort_user_mapping`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort_user_mapping` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cohort_id` int(11) NOT NULL,
-  `cohort_user_id` int(11) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cohort_acronym` varchar(100) DEFAULT NULL,
+  `cohort_user_id` int NOT NULL,
   `active` varchar(10) NOT NULL DEFAULT 'yes',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `cohort_user_chhort_id` (`cohort_id`),
   KEY `cohort_user_user_id` (`cohort_user_id`),
-  CONSTRAINT `cohort_user_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+  KEY `cohort_user_mapping_cohort_acronym_fk` (`cohort_acronym`),
+  CONSTRAINT `cohort_user_mapping_cohort_acronym_fk` FOREIGN KEY (`cohort_acronym`) REFERENCES `cohort` (`acronym`),
+  CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
+
 
 DROP TABLE IF EXISTS `cohort_page_mapping`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

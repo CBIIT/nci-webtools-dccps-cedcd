@@ -33,6 +33,7 @@ const bioMetabolomicData = (disabled) => ({ type: t.bioMetabolomicData, toDisabl
 const bioMetaFastingSample = (disabled) => ({ type: t.bioMetaFastingSample, toDisable: disabled })
 const bioMetaOutcomesInCancerStudy = (disabled) => ({ type: t.bioMetaOutcomesInCancerStudy, toDisable: disabled })
 const bioMetaOutcomesInCvdStudy = (disabled) => ({ type: t.bioMetaOutcomesInCvdStudy, toDisable: disabled })
+const bioMetaOutcomesInDiabetesStudy = (disabled) => ({ type: t.bioMetaOutcomesInDiabetesStudy, toDisable: disabled })
 const bioMetaOutcomesInOtherStudy = (disabled) => ({ type: t.bioMetaOutcomesInOtherStudy, toDisable: disabled })
 const bioMemberOfMetabolomicsStudies = (disabled) => ({ type: t.bioMemberOfMetabolomicsStudies, toDisable: disabled })
 const bioOtherBaselineSpecify = (disabled) => ({ type: t.bioOtherBaselineSpecify, toDisable: disabled })
@@ -79,6 +80,7 @@ export default {
     bioMetaFastingSample,
     bioMetaOutcomesInCancerStudy,
     bioMetaOutcomesInCvdStudy,
+    bioMetaOutcomesInDiabetesStudy,
     bioMetaOutcomesInOtherStudy,
     bioMemberOfMetabolomicsStudies,
     bioOtherBaselineSpecify,
@@ -89,5 +91,5 @@ export default {
     bioAnalyticalPlatform,
     bioSeparationPlatform,
     bioNumberMetabolitesMeasured,
-    bioYearSamplesSent,
+    bioYearSamplesSent
 }
