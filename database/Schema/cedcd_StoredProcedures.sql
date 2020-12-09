@@ -678,6 +678,31 @@ END //
 
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_cohort_by_acronym
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_cohort_by_acronym` //
+CREATE PROCEDURE `select_cohort_by_acronym`(in acronym varchar(100))
+BEGIN
+    set @query = "
+		select *
+		from cohort
+		where acronym = ?
+		order by
+			status = 'draft' desc,
+			status = 'in review' desc,
+			status = 'submitted' desc,
+			status = 'new' desc,
+			status = 'published' desc
+		limit 1;
+	";
+    set @acronym = acronym;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @acronym;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_cancer_count
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cancer_count` //
