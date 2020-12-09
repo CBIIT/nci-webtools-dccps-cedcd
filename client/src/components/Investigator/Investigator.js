@@ -32,9 +32,33 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, displ
     const dispatch = useDispatch()
     const idx = id.split('_')[1]
 
-    return <div id={id} className='col-md-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
+    return window.innerWidth <= 1000 ?
+    <div id={id} className='col-xs-12' style={{paddingLeft: '0', paddingRight: '0', marginBottom: '15px'}}>
+        <div className='col-xs-12' style={{border: '1px solid lightgray'}}>
+            {idx !== '0' ? <div className='col-xs-12 inspectorheader'><span className='inspectorClose' style={{color: 'blue'}} onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-xs-12 inspectorheader'></div>} 
+            <div className='col-xs-12' style={{paddingLeft: '0',  marginBottom: '5px'}}>
+                <div className='col-xs-12' style={{paddingBottom: '5px', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></div>
+                {errors[name] && displayStyle ? <Reminder message={errors[name]}><div className='col-xs-12' style={{paddingLeft: '0'}}>
+                <input style={{border: '1px solid red'}} className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorName', e.target.value, true, 'string')}}/></div></Reminder> : <div className='col-xs-12' style={{paddingLeft: '0'}}><input className='form-control' name={name} value={cohort.investigators[idx].name} onChange={(e) => dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorName', e.target.value, true, 'string')}}/></div> }
+            </div>
+            <div  className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
+                <div className='col-xs-12'  style={{paddingBottom: '5px',paddingLeft: '0'}}>Institution<span style={{color: 'red'}}>*</span></div>
+                {errors[institution] && displayStyle ? <Reminder message={errors[institution]}><div className='col-xs-12' style={{paddingLeft: '0'}}>
+                <input style={{border: '1px solid red'}} className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></div></Reminder> : <div className='col-xs-12' style={{paddingLeft: '0'}}>
+                <input className='form-control' name={institution} value={cohort.investigators[idx].institution} onChange={(e) => dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}}/></div> }
+            </div>
+            <div  className='col-xs-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
+                <div className='col-xs-12'  style={{paddingBottom: '5px',paddingLeft: '0'}}>Email<span style={{color: 'red'}}>*</span></div>
+                {errors[email] && displayStyle ? <Reminder message={errors[email]}><div className='col-xs-12' style={{paddingLeft: '0'}}>
+                <input style={{border: '1px solid red'}} className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')}}/></div></Reminder> : <div className='col-xs-12' style={{paddingLeft: '0'}}>
+                <input className='form-control' type='email' name={email} value={cohort.investigators[idx].email} onChange={(e) => dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))} onBlur={(e) => {populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')}}/></div>}
+            </div>
+        </div>
+    </div>
+     :
+    <div id={id} className='col-md-12' style={{paddingLeft: '0', marginBottom: '15px'}}>
                 <div className='col-md-12' style={{border: '1px solid lightgray'}}>
-                    {idx !== '0' ? <div className='col-md-12 inspectorheader'><span className='inspectorClose' onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 inspectorheader'></div>}
+                    {idx !== '0' ? <div className='col-md-12 inspectorheader'><span className='inspectorClose' style={{color: 'blue'}} onClick={() =>handleRemove(idx)}>Remove</span></div> : <div className='col-md-12 inspectorheader'></div>}
                     <div className='col-md-12' style={{paddingLeft: '0', marginTop: '5px', marginBottom: '5px'}}>
                         <span className='col-md-2' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
                         {errors[name] && displayStyle ? <Reminder message={errors[name]}><span className='col-md-9'>
