@@ -434,7 +434,7 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <input className='form-control' disabled={specimen.bioOtherBaseline !== 1} placeholder='(Max 100 characters)'
+                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherBaselineSpecify' disabled={specimen.bioOtherBaseline !== 1} placeholder='(Max 100 characters)'
                                                 value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))} />
                                         </span>
                                     </div>
@@ -447,7 +447,7 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <input className='form-control' disabled={specimen.bioOtherOtherTime !== 1} placeholder='(Max 100 characters)'
+                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherOtherTimeSpecify' disabled={specimen.bioOtherOtherTime !== 1} placeholder='(Max 100 characters)'
                                                 value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))} />
                                         </span>
                                     </div>
@@ -616,7 +616,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
-                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='input the number of participants with metabolomics data ' style={{ marign: 'auto' }}
+                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='input a number' style={{ marign: 'auto' }}
                                                 value={specimen.bioMemberInStudy} onChange={e => dispatch(allactions.specimenActions.setBioMemberInStudy(e.target.value))} />
                                         </span>
                                     </div>
@@ -667,7 +667,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
-                                            <input maxLength='200' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input the measured metabolites number)' style={{ marign: 'auto' }}
+                                            <input maxLength='200' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
                                                 value={specimen.bioNumberMetabolitesMeasured} onChange={e => dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(e.target.value))} />
                                         </span>
                                     </div>
