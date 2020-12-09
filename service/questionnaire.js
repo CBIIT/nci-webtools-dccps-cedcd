@@ -295,8 +295,7 @@ router.post('/update_specimen/:id', function (req, res) {
     //logger.debug(body)
 
     mysql.callJsonProcedure(func, params, function (result) {
-        //logger.debug(result)
-        if (result && result[0] && result[0][0].rowAffacted > 0)
+        if (result && result[0] && result[0][0].rowsAffacted > 0)
             res.json({ status: 200, message: 'update successful' })
         else
             res.json({ status: 500, message: 'update failed' })
@@ -467,26 +466,6 @@ router.post('/get_specimen/:id', function (req, res) {
             res.json({ status: 200, data: specimenData })
         } else
             res.json({ status: 500, message: 'failed to retrieve data' })
-    })
-
-})
-
-router.post('/update_specimen/:id', function (req, res) {
-    let func = 'update_specimen_count'
-    let body = req.body
-    for (let k of Object.keys(body.counts)) { if (body.counts[k] === '') body.counts[k] = 0 }
-    body = JSON.stringify(body.counts)
-    let params = []
-    params.push(req.params.id)
-    params.push(body)
-    //logger.debug(body)
-
-    mysql.callJsonProcedure(func, params, function (result) {
-        //logger.debug(result)
-        if (result && result[0] && result[0][0].rowAffacted > 0)
-            res.json({ status: 200, message: 'update successful' })
-        else
-            res.json({ status: 500, message: 'update failed' })
     })
 
 })
