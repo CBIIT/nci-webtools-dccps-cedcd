@@ -563,7 +563,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <td colspan='3'>
                                     {/* G15 a */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 0}
@@ -576,7 +576,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 b */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15b {'  '}What are the disease outcome(s) in your study?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15b {'  '}What are the disease outcome(s) in your study?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -600,7 +600,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 c */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
                                     </div>
                                     <div className='col-md-12'>
                                         <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 0}
@@ -612,7 +612,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 d */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15d {'  '}What is the number of participants with metabolomics data in your study?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15d {'  '}What is the number of participants with metabolomics data in your study?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
@@ -624,7 +624,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 e */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15e {'  '}Which laboratory or company was used for the analysis?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15e {'  '}Which laboratory or company was used for the analysis?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-xs-12'>
@@ -650,7 +650,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 g*/}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-xs-12'>
@@ -663,7 +663,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 h */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }}> G.15h {'  '}How many metabolites were measured?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15h {'  '}How many metabolites were measured?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
@@ -675,7 +675,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
                                     {/* G15 i */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-6' style={{ paddingLeft: '0' }} > G.15i {'  '} What year were samples analyzed?</span>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }} > G.15i {'  '} What year were samples analyzed?</span>
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-1' style={{ paddingRight: '0' }}>
