@@ -616,7 +616,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
-                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='input a number' style={{ marign: 'auto' }}
+                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
                                                 value={specimen.bioMemberInStudy} onChange={e => dispatch(allactions.specimenActions.setBioMemberInStudy(e.target.value))} />
                                         </span>
                                     </div>
