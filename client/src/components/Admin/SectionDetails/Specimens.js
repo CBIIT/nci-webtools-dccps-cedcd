@@ -616,8 +616,8 @@ const SpecimenForm = ({ ...props }) => {
                 </div>
             </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Biospecimen Counts</div>
-                <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Biospecimen Counts</div>
+                <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
                     <div><label>G.16 </label></div>
                     <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available in your current inventory. If you do not have exact counts, please enter approximate counts. (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.) </p>
                     <table className='table table-stripe table-responsive'>
