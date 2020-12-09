@@ -11,6 +11,13 @@
 
 update lu_gender set gender = 'All' where id = 4;
 
+/* update lu_specimen for quetionnaire 8.1 changes */
+
+INSERT INTO lu_specimen (id, specimen, sub_category) VALUES (46, 'Metabolomic', 'bio_member_of_metabolomics_studies')
+    on duplicate key update specimen='Metabolomic', sub_category= 'bio_member_of_metabolomics_studies';
+UPDATE lu_specimen SET sub_category = 'bio_meta_outcomes_in_diabetes_study' WHERE id = 44;
+UPDATE lu_specimen SET sub_category = 'bio_meta_outcomes_in_other_study' WHERE id = 45;
+
 
 /*
 *  insert published cohort edit status

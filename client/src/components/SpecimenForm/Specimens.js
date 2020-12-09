@@ -602,7 +602,7 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
                                     </div>
-                                    <div className='col-md-12'>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 0}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioMemberOfMetabolomicsStudies(0)); dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true)) }} />{' '}No</span>
                                         <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 1}
@@ -616,7 +616,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-2'>
-                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='input a number' style={{ marign: 'auto' }}
+                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
                                                 value={specimen.bioMemberInStudy} onChange={e => dispatch(allactions.specimenActions.setBioMemberInStudy(e.target.value))} />
                                         </span>
                                     </div>
