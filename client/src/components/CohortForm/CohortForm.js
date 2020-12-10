@@ -44,7 +44,7 @@ const CohortForm = ({...props}) => {
                  investigators = result.data.investigators.length > 0 ?  result.data.investigators : cohort.investigators,
                     completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
                     cohort_status = result.data.cohortStatus
-                    //console.dir(cohort_status)
+                    console.dir('current status: '+cohort_status)
                 
                 batch(() =>{
                     dispatch(({type: 'SET_COHORT_STATUS', value: cohort_status}))
@@ -1199,17 +1199,18 @@ const CohortForm = ({...props}) => {
                 </form>
             </div> 
             <div style={{ position: 'relative' }}>
-                <span style={{ position: 'relative', float: 'left' }}>
-                        <input type='button' className='btn btn-primary' value='Previous' disabled />
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' disabled  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('B')} />
                 </span>
-                <span style={{ position: 'relative', float: 'right' }}>
-                    <span onClick={handleSave}>
-                        <input type='button' className='btn btn-primary' value='Save' />
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
                     </span>
-                    <span onClick={handleSaveContinue}>
-                        <input type='button' className='btn btn-primary' value='Save & Continue' />
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
                     </span>
-                    <span onClick={() => alert('submitted')}><input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/></span> 
+                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
             </div>  
         </div>
