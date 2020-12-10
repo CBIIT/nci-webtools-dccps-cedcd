@@ -40,6 +40,7 @@ const setBioMetabolomicData = (v) => ({ type: t.setBioMetabolomicData, value: v 
 const setBioMetaFastingSample = (v) => ({ type: t.setBioMetaFastingSample, value: v })
 const setBioMetaOutcomesInCancerStudy = (v) => ({ type: t.setBioMetaOutcomesInCancerStudy, value: v })
 const setBioMetaOutcomesInCvdStudy = (v) => ({ type: t.setBioMetaOutcomesInCvdStudy, value: v })
+const setBioMetaOutcomesInDiabetesStudy = (v) => ({ type: t.setBioMetaOutcomesInDiabetesStudy, value: v })
 const setBioMetaOutcomesInOtherStudy = (v) => ({ type: t.setBioMetaOutcomesInOtherStudy, value: v })
 const setBioMemberOfMetabolomicsStudies = (v) => ({ type: t.setBioMemberOfMetabolomicsStudies, value: v })
 const setBioOtherBaselineSpecify = (v) => ({ type: t.setBioOtherBaselineSpecify, value: v })
@@ -89,6 +90,7 @@ export default {
     setBioMetaFastingSample,
     setBioMetaOutcomesInCancerStudy,
     setBioMetaOutcomesInCvdStudy,
+    setBioMetaOutcomesInDiabetesStudy,
     setBioMetaOutcomesInOtherStudy,
     setBioMemberOfMetabolomicsStudies,
     setBioOtherBaselineSpecify,

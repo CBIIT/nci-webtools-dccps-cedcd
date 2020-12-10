@@ -55,11 +55,9 @@ async function authenticationMiddleware(request, response, next) {
                 const userRole = results.accessLevel 
 
                 const allowedCohorts = (await mysql.query(
-                    `SELECT cohort_id
-                    FROM cohort_user_mapping
-                    WHERE cohort_user_id = ?`,
+                    `call select_cohort_for_user(?)`,
                     [userId]
-                )).map(c => c.cohort_id);
+                ))[0].map(c => c.id);
                 
                 // todo: if there is more than one allowed cohort for the user, take the user
                 // to a cohort selection page

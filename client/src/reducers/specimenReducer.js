@@ -44,17 +44,25 @@ actions[t.setBioMetabolomicData] = (state, action) => ({ ...state, bioMetabolomi
 actions[t.setBioMetaFastingSample] = (state, action) => ({ ...state, bioMetaFastingSample: action.value })
 actions[t.setBioMetaOutcomesInCancerStudy] = (state, action) => ({ ...state, bioMetaOutcomesInCancerStudy: action.value })
 actions[t.setBioMetaOutcomesInCvdStudy] = (state, action) => ({ ...state, bioMetaOutcomesInCvdStudy: action.value })
+actions[t.setBioMetaOutcomesInDiabetesStudy] = (state, action) => ({ ...state, bioMetaOutcomesInDiabetesStudy: action.value })
 actions[t.setBioMetaOutcomesInOtherStudy] = (state, action) => ({ ...state, bioMetaOutcomesInOtherStudy: action.value })
 actions[t.setBioMemberOfMetabolomicsStudies] = (state, action) => ({ ...state, bioMemberOfMetabolomicsStudies: action.value })
 actions[t.setBioOtherBaselineSpecify] = (state, action) => ({ ...state, bioOtherBaselineSpecify: action.value })
 actions[t.setBioOtherOtherTimeSpecify] = (state, action) => ({ ...state, bioOtherOtherTimeSpecify: action.value })
 actions[t.setBioMetaOutcomesOtherStudySpecify] = (state, action) => ({ ...state, bioMetaOutcomesOtherStudySpecify: action.value })
-actions[t.setBioMemberInStudy] = (state, action) => ({ ...state, bioMemberInStudy: action.value })
+actions[t.setBioMemberInStudy] = (state, action) => {
+    if ((/^\d*$/.test(action.value))) return { ...state, bioMemberInStudy: action.value }
+}
+
 actions[t.setBioLabsUsedForAnalysis] = (state, action) => ({ ...state, bioLabsUsedForAnalysis: action.value })
 actions[t.setBioAnalyticalPlatform] = (state, action) => ({ ...state, bioAnalyticalPlatform: action.value })
 actions[t.setBioSeparationPlatform] = (state, action) => ({ ...state, bioSeparationPlatform: action.value })
-actions[t.setBioNumberMetabolitesMeasured] = (state, action) => ({ ...state, bioNumberMetabolitesMeasured: action.value })
-actions[t.setBioYearSamplesSent] = (state, action) => ({ ...state, bioYearSamplesSent: action.value })
+actions[t.setBioNumberMetabolitesMeasured] = (state, action) => {
+    if ((/^\d*$/.test(action.value))) return { ...state, bioNumberMetabolitesMeasured: action.value }
+}
+actions[t.setBioYearSamplesSent] = (state, action) => {
+    if ((/^\d*$/.test(action.value))) return { ...state, bioYearSamplesSent: action.value }
+}
 
 actions[t.setSectionGStatus] = (state, action) => ({ ...state, sectionGStatus: action.value })
 

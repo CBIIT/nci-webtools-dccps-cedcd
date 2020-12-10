@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
+import validator from '../../validators'
 import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
@@ -27,6 +28,31 @@ const SpecimenForm = ({ ...props }) => {
     const [activePanel, setActivePanel] = useState('panelA')
     //const cohortId = window.location.pathname.split('/').pop();
 
+    const getValidationResult = (value, requiredOrNot, type) => {
+        switch (type) {
+            case 'date':
+                return validator.dateValidator(value, requiredOrNot)
+            case 'number':
+                return validator.numberValidator(value, requiredOrNot, false)
+            case 'year':
+                console.log(value)
+                return validator.yearValidator(value, requiredOrNot)
+            default:
+                return validator.stringValidator(value, requiredOrNot)
+        }
+    }
+
+    const populateErrors = (value, requiredOrNot, valueType) => {
+        const result = getValidationResult(value, requiredOrNot, valueType)
+        console.log(result)
+        if (result) {
+            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(false))
+        } else {
+            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+        }
+    }
+
+
     useEffect(() => {
         if (!specimen.specimenLoaded) {
             fetch(`/api/questionnaire/get_specimen/${cohortId}`, {
@@ -40,7 +66,7 @@ const SpecimenForm = ({ ...props }) => {
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
-                                dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
+                                if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
                             }
                             for (let k of Object.keys(specimenInfo)) {
                                 switch (specimenInfo[k].sub_category) {
@@ -176,11 +202,15 @@ const SpecimenForm = ({ ...props }) => {
                                         dispatch(allactions.specimenActions.setBioMetaOutcomesInCvdStudy(specimenInfo[k].collected_yn))
                                         dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
                                         break
-                                    case 'bio_meta_outcomes_in_other_study': // specimen_id 44
+                                    case 'bio_meta_outcomes_in_diabetes_study': // specimen_id 44
+                                        dispatch(allactions.specimenActions.setBioMetaOutcomesInDiabetesStudy(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                        break
+                                    case 'bio_meta_outcomes_in_other_study': // specimen_id 45
                                         dispatch(allactions.specimenActions.setBioMetaOutcomesInOtherStudy(specimenInfo[k].collected_yn))
                                         dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
                                         break
-                                    case 'bio_member_of_metabolomics_studies': // specimen_id 45
+                                    case 'bio_member_of_metabolomics_studies': // specimen_id 46
                                         dispatch(allactions.specimenActions.setBioMemberOfMetabolomicsStudies(specimenInfo[k].collected_yn))
                                         dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
                                         break
@@ -190,6 +220,18 @@ const SpecimenForm = ({ ...props }) => {
                                 }
 
                             }
+
+                            // details part
+                            dispatch(allactions.specimenActions.setBioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
+                            dispatch(allactions.specimenActions.setBioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
+                            dispatch(allactions.specimenActions.setBioMemberInStudy(specimenDetails.bio_member_in_study))
+                            dispatch(allactions.specimenActions.setBioMetaOutcomesInCancerStudy(specimenDetails.bio_meta_outcomes_other_study_specify))
+                            dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
+                            dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
+                            dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
+                            dispatch(allactions.specimenActions.setBioSeparationPlatform(specimenDetails.bio_separation_platform))
+                            dispatch(allactions.specimenActions.setBioYearSamplesSent(specimenDetails.bio_year_samples_sent))
+
 
                         })
                     }
@@ -202,7 +244,9 @@ const SpecimenForm = ({ ...props }) => {
         } // end if
     }, [])
 
-    const saveSpecimen = (id = 79) => {
+    const saveSpecimen = (id = 79, hasErrors, proceed = false) => {
+        console.log(specimen)
+
         fetch(`/api/questionnaire/update_specimen/${id}`, {
             method: "POST",
             body: JSON.stringify(specimen),
@@ -212,68 +256,50 @@ const SpecimenForm = ({ ...props }) => {
         })
             .then(res => res.json())
             .then(result => {
-                /*
-                            if(result.status === 200){
-                                if(Object.entries(errors).length === 0)
-                                    dispatch(allactions.sectionActions.setSectionStatus('G', 'complete'))
-                                else{
-                                    dispatch(allactions.sectionActions.setSectionStatus('G', 'incomplete'))
-                                }
-            
-                                if(!proceed){
-                                    setSuccessMsg(true) 
-                                }
-                                else
-                                    props.sectionPicker('B')
-                            }else{
-                                setFailureMsg(true)
-                            }
-                    */
+
+                if (result.status === 200) {
+                    if (Object.entries(errors).length === 0)
+                        dispatch(allactions.sectionActions.setSectionStatus('G', 'complete'))
+                    else {
+                        dispatch(allactions.sectionActions.setSectionStatus('G', 'incomplete'))
+                    }
+
+                    if (!proceed) {
+                        setSuccessMsg(true)
+                    }
+                    else
+                        props.sectionPicker('G')
+                } else {
+                    setFailureMsg(true)
+                }
+
                 console.log(result)
             })
     }
     const handleSave = () => {
-        /* if(Object.entries(errors).length === 0)
-             saveEnrollment(79)
-         else{
-             //setDisplay('block')
-             if(window.confirm('there are validation errors, are you sure to save?'))
-                 saveEnrollment(79)
-         }*/
-        saveSpecimen(79)
+        if (Object.entries(errors).length === 0) {
+            specimen.sectionGStatus = 'complete'
+            saveSpecimen(cohortId)
+        } else {
+            //setDisplay('block')
+            specimen.sectionGStatus = 'incomplete'
+            if (window.confirm('there are validation errors, are you sure to save?'))
+                saveSpecimen(cohortId)
+        }
     }
 
-    const handleSaveContinue = () => {
-        /*
-        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(79, true)}
-            */
-    }
-    /*
-         const confirmSaveStay = () => {
-            cohort.sectionAStatus='incomplete'
-            dispatch(allactions.cohortActions.setSectionAStatus('incomplete'));
-            saveCohort(79);setModalShow(false)
-        }
-    
-        const confirmSaveContinue = () => {
-            cohort.sectionAStatus='incomplete'
-            dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-            saveCohort(79, true);setModalShow(false)
-        }
-    */
+
     return <div id='specimenInfoContainer' className='col-md-12'>
-        {/*
-        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg}/>}
+
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
-        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-*/}
+
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
             </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>part one</div>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Specimen Collected</div>
                 <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
                     <table className='table table-stripe table-responsive'>
                         <thead>
@@ -296,13 +322,13 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                         <span className='col-sm-12'>If collected, types of aliquots</span>
-                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineSerum' checked={specimen.bioBloodBaselineSerum === 1}
+                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineSerum' disabled={specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineSerum === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaselineSerum(0)); dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true)) }} />{' '}Serum</span>
-                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselinePlasma' checked={specimen.bioBloodBaselinePlasma === 1}
+                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselinePlasma' disabled={specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselinePlasma === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaselinePlasma(0)); dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true)) }} />{' '}Plasma</span>
-                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineBuffyCoat' checked={specimen.bioBloodBaselineBuffyCoat === 1}
+                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineBuffyCoat' disabled={specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineBuffyCoat === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaselineBuffyCoat(0)); dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(true)) }} />{' '}Buffy Coat</span>
-                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineOtherDerivative' checked={specimen.bioBloodBaselineOtherDerivative === 1}
+                                        <span className='col-sm-12'><input type='checkbox' name='bioBloodBaselineOtherDerivative' disabled={specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineOtherDerivative === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaselineOtherDerivative(0)); dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(true)) }} />{' '}Other blood derivative</span>
                                     </div>
                                 </td>
@@ -315,13 +341,13 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                         <span className='col-xs-12'>If collected, types of aliquots</span>
-                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeSerum' checked={specimen.bioBloodOtherTimeSerum === 1}
+                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeSerum' disabled={specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeSerum === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTimeSerum(0)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(true)) }} />{' '}Serum</span>
-                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimePlasma' checked={specimen.bioBloodOtherTimePlasma === 1}
+                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimePlasma' disabled={specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimePlasma === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTimePlasma(0)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(true)) }} />{' '}Plasma</span>
-                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeBuffyCoat' checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
+                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeBuffyCoat' disabled={specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTimeBuffyCoat(0)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(true)) }} />{' '}Buffy Coat</span>
-                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeOtherDerivative' checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
+                                        <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTimeOtherDerivative' disabled={specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTimeOtherDerivative(0)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(true)) }} />{' '}Other blood derivative</span>
                                     </div>
                                 </td>
@@ -412,7 +438,8 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <input className='form-control' />
+                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherBaselineSpecify' disabled={specimen.bioOtherBaseline !== 1} placeholder='(Max 100 characters)'
+                                                value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))} />
                                         </span>
                                     </div>
                                 </td>
@@ -424,7 +451,8 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <input className='form-control' />
+                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherOtherTimeSpecify' disabled={specimen.bioOtherOtherTime !== 1} placeholder='(Max 100 characters)'
+                                                value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))} />
                                         </span>
                                     </div>
                                 </td>
@@ -523,7 +551,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR)</td>
+                                <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR) <strong> {'   '} If yes, please answer G15 a-i </strong></td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 0}
@@ -533,89 +561,143 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan='2'>G.15a Are the biospecimens collected fasting samples?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' checked={specimen.bioMetaFastingSample === 0}
+
+                            <tr >
+
+                                <td colspan='3'>
+                                    {/* G15 a */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
+                                    </div>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 0}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioMetaFastingSample(0)); dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true)) }} />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' checked={specimen.bioMetaFastingSample === 1}
+                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioMetaFastingSample(1)); dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true)) }} />{' '}Yes</span>
+
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15b What are the disease outcome(s) in your study?</td>
-                                <td>
-                                    <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCancerStudy' checked={specimen.bioMetaOutcomesInCancerStudy === 1}
-                                            onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInCancerStudy(0)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true)) }} />{' '}Cancer</span>
-                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCvdStudy' checked={specimen.bioMetaOutcomesInCvdStudy === 1}
-                                            onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInCvdStudy(0)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true)) }} />{' '}CVD</span>
-                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioBloodBaselineSerum' checked={specimen.bioBloodBaselineSerum === 1}
-                                            onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaselineSerum(0)); dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true)) }} />{' '}Diabetes</span>
-                                        <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' checked={specimen.bioMetaOutcomesInOtherStudy === 1}
-                                            onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInOtherStudy(0)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true)) }} />{' '}Other</span>
-                                        <span className='col-xs-offset-1 col-xs-11'><input className='form-control' style={{ marign: 'auto' }} /></span>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 b */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15b {'  '}What are the disease outcome(s) in your study?</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' checked={specimen.bioMemberOfMetabolomicsStudies === 0}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCancerStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCancerStudy === 1}
+                                                onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInCancerStudy((specimen.bioMetaOutcomesInCancerStudy + 1) % 2)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true)) }} />{' '}Cancer</span>
+                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCvdStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCvdStudy === 1}
+                                                onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInCvdStudy((specimen.bioMetaOutcomesInCvdStudy + 1) % 2)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true)) }} />{' '}CVD</span>
+                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInDiabetesStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInDiabetesStudy === 1}
+                                                onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInDiabetesStudy((specimen.bioMetaOutcomesInDiabetesStudy + 1) % 2)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true)) }} />{' '}Diabetes</span>
+                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
+                                                onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInOtherStudy((specimen.bioMetaOutcomesInOtherStudy + 1) % 2)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true)) }} />{' '}Other</span>
+                                            <span className='col-xs-12'>
+                                                <textarea className="form-control resize-vertical" maxlength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioMetaOutcomesOtherStudySpecify || ''}
+                                                    onChange={e => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(e.target.value))} />
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 c */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
+                                    </div>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 0}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioMemberOfMetabolomicsStudies(0)); dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true)) }} />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' checked={specimen.bioMemberOfMetabolomicsStudies === 1}
+                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 1}
                                             onClick={() => { dispatch(allactions.specimenActions.setBioMemberOfMetabolomicsStudies(1)); dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true)) }} />{' '}Yes</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15d What is the number of participants with metabolomics data in your study? </td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{ marign: 'auto' }} /></span>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 d */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15d {'  '}What is the number of participants with metabolomics data in your study?</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15e Which laboratory or company was used for the analysis?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{ marign: 'auto' }} /></span>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-2'>
+                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
+                                                value={specimen.bioMemberInStudy} onChange={e => dispatch(allactions.specimenActions.setBioMemberInStudy(e.target.value))} />
+                                        </span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{ marign: 'auto' }} /></span>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 e */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15e {'  '}Which laboratory or company was used for the analysis?</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{ marign: 'auto' }} /></span>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-xs-12'>
+                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioLabsUsedForAnalysis' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                value={specimen.bioLabsUsedForAnalysis || ''}
+                                                onChange={e => dispatch(allactions.specimenActions.setBioLabsUsedForAnalysis(e.target.value))} />
+                                        </span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15h How many metabolites were measured?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-12'><input maxLength='200' className='inputWriter' placeholder='(Max of 200 characters)' style={{ marign: 'auto' }} /></span>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 f */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15f {'  '}Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?</span>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15i What year were samples analyzed?</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={null} onChange={f => f} /></span>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-xs-12'>
+                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioAnalyticalPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                value={specimen.bioAnalyticalPlatform || ''}
+                                                onChange={e => dispatch(allactions.specimenActions.setBioAnalyticalPlatform(e.target.value))} />
+                                        </span>
+                                    </div>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 g*/}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</span>
+                                    </div>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-xs-12'>
+                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioSeparationPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                value={specimen.bioSeparationPlatform || ''}
+                                                onChange={e => dispatch(allactions.specimenActions.setBioSeparationPlatform(e.target.value))} />
+                                        </span>
+                                    </div>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 h */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15h {'  '}How many metabolites were measured?</span>
+                                    </div>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-2'>
+                                            <input maxLength='200' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
+                                                value={specimen.bioNumberMetabolitesMeasured} onChange={e => dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(e.target.value))} />
+                                        </span>
+                                    </div>
+
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                    {/* G15 i */}
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-12' style={{ paddingLeft: '0' }} > G.15i {'  '} What year were samples analyzed?</span>
+                                    </div>
+                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                        <span className='col-md-1' style={{ paddingRight: '0' }}>
+                                            {
+                                                errors.bioYearSamplesSent && saved ?
+                                                    <Reminder message={errors.bioYearSamplesSent}>
+                                                        <input style={{ marign: 'auto', border: '1px solid red' }}
+                                                            className='form-control' name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1}
+                                                            onChange={e => dispatch(allactions.specimenActions.setBioYearSamplesSent(e.target.value))}
+                                                            onBlur={(e) => { populateErrors(e.target.value, true, 'year') }} />
+                                                    </Reminder>
+                                                    :
+                                                    <input style={{ marign: 'auto' }} className='form-control'
+                                                        name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1}
+                                                        onChange={e => dispatch(allactions.specimenActions.setBioYearSamplesSent(e.target.value))}
+                                                        onBlur={(e) => { populateErrors('bioYearSamplesSent', e.target.value, true, 'year') }} />
+                                            }
+                                        </span>
                                     </div>
                                 </td>
                             </tr>
@@ -624,9 +706,9 @@ const SpecimenForm = ({ ...props }) => {
                 </div>
             </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>part one</div>
-                <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <div><label>G.16 Specimen Counts</label></div>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Biospecimen Counts</div>
+                <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
+                    <div><label>G.16 </label></div>
                     <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available in your current inventory. If you do not have exact counts, please enter approximate counts. (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.) </p>
                     <table className='table table-stripe table-responsive'>
                         <thead>
@@ -1005,7 +1087,7 @@ const SpecimenForm = ({ ...props }) => {
                         <span onClick={handleSave}>
                             <input type='button' className='btn btn-primary' value='Save' />
                         </span>
-                        <span onClick={handleSaveContinue}>
+                        <span>
                             <input type='button' className='btn btn-primary' value='Save & Continue' disabled />
                         </span>
                         <span onClick={() => alert('submitted')}>
