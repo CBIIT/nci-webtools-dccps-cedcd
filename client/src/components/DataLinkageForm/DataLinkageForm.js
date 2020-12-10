@@ -11,6 +11,9 @@ const DataLinkageForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const radioError = 'please choose one'
     const cohortId = +window.location.pathname.split('/').pop();
+    /* this line is needed by the button group at the bottom
+        const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    */
 
 
     const [errors, setErrors] = useState({
@@ -408,6 +411,24 @@ const DataLinkageForm = ({ ...props }) => {
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
             </span>
+            {/* please adjust your code for the buttons. Here is the sample code
+            <div style={{position: 'relative'}}>
+                <span  onClick={() => props.sectionPicker('E')} style={{position: 'relative', float: 'left'}}>
+                    <input type='button' className='btn btn-primary' value='Go Back' />
+                </span>
+                <span style={{position: 'relative', float: 'right'}}>
+                    <span onClick={handleSave}>
+                        <input type='button' className='btn btn-primary' value='Save' />
+                    </span>
+                    <span onClick={handleSaveContinue}>
+                        <input type='button' className='btn btn-primary' value='Save & Continue' />
+                    </span>
+                    <span onClick={() => alert('submitted')}>
+                        <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
+                    </span> 
+                </span>
+            </div> 
+             */}
         </div>
     </div >
 }

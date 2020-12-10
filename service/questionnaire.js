@@ -47,8 +47,19 @@ router.post('/update_cohort_basic/:id', function (req, res) {
     params.push(body)
 
     mysql.callJsonProcedure(proc, params, function (result) {
-        if (result && result[0] && result[0][0].rowsAffacted > 0)
-            res.json({ status: 200, message: 'update successful' })
+        logger.debug(result)
+        if (result && result[0] && result[0][0].rowsAffacted > 0){
+            const updatedCohortInfo = {}
+            if(Array.isArray(result[1])){
+                updatedCohortInfo.investigators = []
+                result[1].map((item) => {
+                    updatedCohortInfo.investigators.push(item)
+                })
+            }
+            if(result[2]) updatedCohortInfo.newCohortID = result[2][0].duplicated_cohort_id
+
+            res.json({ status: 200, message: 'update successful', newCohortInfo: updatedCohortInfo })
+        }
         else
             res.json({ status: 500, message: 'update failed' })
     })
@@ -60,7 +71,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
-        //logger.debug(results)
+        logger.debug(results)
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
@@ -73,6 +84,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         })
         basic_info.collaborator = results[4][0]
         basic_info.sectionStatus = results[5]
+        basic_info.cohortStatus = results[6][0].cohort_status
 
         res.json({ status: 200, data: basic_info })
     })
@@ -84,14 +96,19 @@ router.post('/upload/files', function (req, res) {
 
 router.post('/upsert_enrollment_counts/:id', function (req, res) {
     let body = JSON.stringify(req.body)
-    let proc = 'upsert_enrollment_count'
+    let proc = 'update_enrollment_count'
     let params = []
     params.push(req.params.id)
     params.push(body)
 
     mysql.callJsonProcedure(proc, params, function (result) {
-        if (result && result[0] && result[0][0].rowsAffacted > 0)
-            res.json({ status: 200, message: 'update successful' })
+        logger.debug(result)
+        if (result && result[0] && result[0][0].rowsAffacted > 0){
+            if(Array.isArray(result[1])){
+                res.json({ status: 200, message: 'update successful', data: result[1][0].duplicated_cohort_id})
+            }else
+                res.json({ status: 200, message: 'update successful'})
+        }
         else
             res.json({ status: 500, message: 'update failed' })
     })

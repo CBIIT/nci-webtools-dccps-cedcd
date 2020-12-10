@@ -11,6 +11,10 @@ const CancerInfoForm = ({ ...props }) => {
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
 
+    /* this line is needed by the button group at the bottom
+        const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    */
+
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
     const [submitted, setSubmitted] = useState(false);
@@ -531,7 +535,7 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
 
         {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
-
+       {/* please update your code if you don't like my code
         <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={() => props.sectionPicker('C')}>Go Back</button>
             <div>
@@ -539,6 +543,24 @@ const CancerInfoForm = ({ ...props }) => {
                 <button className="btn btn-primary" onClick={handleSaveContinue}>Save &amp; Continue</button>
             </div>
         </div>
+      */}
+    
+        <div style={{position: 'relative'}}>
+            <span  onClick={() => props.sectionPicker('C')} style={{position: 'relative', float: 'left'}}>
+                <input type='button' className='btn btn-primary' value='Go Back' />
+            </span>
+            <span style={{position: 'relative', float: 'right'}}>
+                <span onClick={handleSave}>
+                    <input type='button' className='btn btn-primary' value='Save' />
+                </span>
+                <span onClick={handleSaveContinue}>
+                    <input type='button' className='btn btn-primary' value='Save & Continue' />
+                </span>
+                <span onClick={() => alert('submitted')}>
+                    <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
+                </span> 
+            </span>
+        </div> 
     </div>
 }
 

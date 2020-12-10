@@ -12,6 +12,11 @@ const SpecimenForm = ({ ...props }) => {
     const specimen = useSelector(state => state.specimenReducer)
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.specimenInfoErrorReducer)
+
+     /* this line is needed by the button group at the bottom
+        const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    */
+
     const dispatch = useDispatch()
 
     const [saved, setSaved] = useState(false)
@@ -1006,7 +1011,24 @@ const SpecimenForm = ({ ...props }) => {
                     </span>
                     {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
                 </span>
-
+             {/* please adjust your code accordingly. Here is the sample code
+             <div style={{ position: 'relative' }}>
+                    <span onClick={() => props.sectionPicker('F')} style={{ position: 'relative', float: 'left' }}>
+                        <input type='button' className='btn btn-primary' value='Go Back' />
+                    </span>
+                    <span style={{ position: 'relative', float: 'right' }}>
+                        <span onClick={handleSave}>
+                            <input type='button' className='btn btn-primary' value='Save' />
+                        </span>
+                        <span onClick={handleSaveContinue}>
+                            <input type='button' className='btn btn-primary' value='Save & Continue' disabled />
+                        </span>
+                        <span onClick={() => alert('submitted')}>
+                            <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
+                        </span> 
+                    </span>
+                </div>
+              */}
             </div>
         </div>
     </div>
