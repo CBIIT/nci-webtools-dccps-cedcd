@@ -1200,7 +1200,7 @@ const CohortForm = ({...props}) => {
             </div> 
             <div style={{ position: 'relative' }}>
                 <span style={{ position: 'relative', float: 'left' }}>
-                        <input type='button' className='btn btn-primary' value='Go Back' disabled />
+                        <input type='button' className='btn btn-primary' value='Previous' disabled />
                 </span>
                 <span style={{ position: 'relative', float: 'right' }}>
                     <span onClick={handleSave}>

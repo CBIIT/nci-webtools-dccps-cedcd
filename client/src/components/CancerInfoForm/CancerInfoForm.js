@@ -10,10 +10,10 @@ const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
-
-    /* this line is needed by the button group at the bottom
-        const cohortStatus = useSelector(state => state.cohortStatusReducer)
-    */
+   
+    const section = useSelector(state => state.sectionReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
@@ -30,7 +30,7 @@ const CancerInfoForm = ({ ...props }) => {
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident').id,
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent').id,
     }
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         // load existing cohort
@@ -547,7 +547,7 @@ const CancerInfoForm = ({ ...props }) => {
     
         <div style={{position: 'relative'}}>
             <span  onClick={() => props.sectionPicker('C')} style={{position: 'relative', float: 'left'}}>
-                <input type='button' className='btn btn-primary' value='Go Back' />
+                <input type='button' className='btn btn-primary' value='Previous' />
             </span>
             <span style={{position: 'relative', float: 'right'}}>
                 <span onClick={handleSave}>

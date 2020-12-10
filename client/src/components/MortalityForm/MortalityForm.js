@@ -8,9 +8,9 @@ const MortalityForm = ({ ...props }) => {
     const mortality = useSelector(state => state.mortalityReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
-    /* this line is needed by the button group at the bottom
-        const cohortStatus = useSelector(state => state.cohortStatusReducer)
-    */
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    
 
     const radioError = 'please choose one'
 
@@ -30,7 +30,7 @@ const MortalityForm = ({ ...props }) => {
         otherCodeSpecify: '',
         deathNumbers: ''
     })
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!mortality.hasLoaded) {
@@ -324,7 +324,8 @@ const MortalityForm = ({ ...props }) => {
             {errors.deathNumbers !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.deathNumbers}</div>}
         </div>
 
-        <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
+       {/* please update your code if you don't like my version
+       <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
             </span>
@@ -336,10 +337,11 @@ const MortalityForm = ({ ...props }) => {
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
             </span>
-            {/* please adjust your code for the buttons. Here is the sample code
-            <div style={{position: 'relative'}}>
+            </div>
+            */}
+            <div style={{position: 'relative', margin: '1.5rem'}}>
                 <span  onClick={() => props.sectionPicker('D')} style={{position: 'relative', float: 'left'}}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
+                    <input type='button' className='btn btn-primary' value='Previous' />
                 </span>
                 <span style={{position: 'relative', float: 'right'}}>
                     <span onClick={handleSave}>
@@ -353,8 +355,8 @@ const MortalityForm = ({ ...props }) => {
                     </span> 
                 </span>
             </div> 
-             */}
-        </div>
+             
+        
     </div>
 }
 

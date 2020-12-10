@@ -874,7 +874,7 @@ const MajorContentForm = ({ ...props }) => {
                 </form>
                 <div style={{ position: 'relative' }}>
                     <span onClick={() => props.sectionPicker('B')} style={{ position: 'relative', float: 'left' }}>
-                        <input type='button' className='btn btn-primary' value='Go Back' />
+                        <input type='button' className='btn btn-primary' value='Previous' />
                     </span>
                     <span style={{ position: 'relative', float: 'right' }}>
                         <span onClick={handleSave}>

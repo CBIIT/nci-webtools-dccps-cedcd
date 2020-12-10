@@ -12,10 +12,9 @@ const SpecimenForm = ({ ...props }) => {
     const specimen = useSelector(state => state.specimenReducer)
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.specimenInfoErrorReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
-     /* this line is needed by the button group at the bottom
-        const cohortStatus = useSelector(state => state.cohortStatusReducer)
-    */
 
     const dispatch = useDispatch()
 
@@ -26,7 +25,7 @@ const SpecimenForm = ({ ...props }) => {
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [activePanel, setActivePanel] = useState('panelA')
-    const cohortId = window.location.pathname.split('/').pop();
+    //const cohortId = window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!specimen.specimenLoaded) {
@@ -998,23 +997,9 @@ const SpecimenForm = ({ ...props }) => {
                     </table>
                 </div>
             </div>
-            <div sytle={{ position: 'relative' }}>
-                <span onClick={() => props.sectionPicker('F')} style={{ position: 'relative', float: 'left' }}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
-                </span>
-                <span style={{ position: 'relative', float: 'right' }}>
-                    <span onClick={handleSave}>
-                        <input type='button' className='btn btn-primary' value='Save' />
-                    </span>
-                    <span onClick={handleSaveContinue}>
-                        <input type='button' className='btn btn-primary' value='Save & Continue' />
-                    </span>
-                    {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
-                </span>
-             {/* please adjust your code accordingly. Here is the sample code
-             <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }}>
                     <span onClick={() => props.sectionPicker('F')} style={{ position: 'relative', float: 'left' }}>
-                        <input type='button' className='btn btn-primary' value='Go Back' />
+                        <input type='button' className='btn btn-primary' value='Previous' />
                     </span>
                     <span style={{ position: 'relative', float: 'right' }}>
                         <span onClick={handleSave}>
@@ -1028,8 +1013,6 @@ const SpecimenForm = ({ ...props }) => {
                         </span> 
                     </span>
                 </div>
-              */}
-            </div>
         </div>
     </div>
 }

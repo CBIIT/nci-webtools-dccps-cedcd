@@ -10,10 +10,9 @@ const DataLinkageForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
     const radioError = 'please choose one'
-    const cohortId = +window.location.pathname.split('/').pop();
-    /* this line is needed by the button group at the bottom
-        const cohortStatus = useSelector(state => state.cohortStatusReducer)
-    */
+    //const cohortId = +window.location.pathname.split('/').pop();
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
 
     const [errors, setErrors] = useState({
@@ -398,7 +397,8 @@ const DataLinkageForm = ({ ...props }) => {
             </div>
             {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
         </div>
-
+    
+    {/* please update your code if you don't like mine
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
@@ -411,25 +411,25 @@ const DataLinkageForm = ({ ...props }) => {
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
             </span>
-            {/* please adjust your code for the buttons. Here is the sample code
-            <div style={{position: 'relative'}}>
-                <span  onClick={() => props.sectionPicker('E')} style={{position: 'relative', float: 'left'}}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
-                </span>
-                <span style={{position: 'relative', float: 'right'}}>
-                    <span onClick={handleSave}>
-                        <input type='button' className='btn btn-primary' value='Save' />
-                    </span>
-                    <span onClick={handleSaveContinue}>
-                        <input type='button' className='btn btn-primary' value='Save & Continue' />
-                    </span>
-                    <span onClick={() => alert('submitted')}>
-                        <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
-                    </span> 
-                </span>
-            </div> 
-             */}
         </div>
+            */}
+            
+        <div style={{position: 'relative'}}>
+            <span  onClick={() => props.sectionPicker('E')} style={{position: 'relative', float: 'left'}}>
+                <input type='button' className='btn btn-primary' value='Previous' />
+            </span>
+            <span style={{position: 'relative', float: 'right'}}>
+                <span onClick={handleSave}>
+                    <input type='button' className='btn btn-primary' value='Save' />
+                </span>
+                <span onClick={handleSaveContinue}>
+                    <input type='button' className='btn btn-primary' value='Save & Continue' />
+                </span>
+                <span onClick={() => alert('submitted')}>
+                    <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
+                </span> 
+            </span>
+        </div>      
     </div >
 }
 
