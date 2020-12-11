@@ -48,16 +48,16 @@ router.post('/update_cohort_basic/:id', function (req, res) {
 
     mysql.callJsonProcedure(proc, params, function (result) {
         logger.debug(result)
-        if (result && result[0] && result[0][0].rowsAffacted > 0){
+        if (result && result[0] && result[0][0].rowsAffacted > 0) {
             const updatedCohortInfo = {}
-            if(Array.isArray(result[1])){
+            if (Array.isArray(result[1])) {
                 updatedCohortInfo.investigators = []
                 result[1].map((item) => {
                     updatedCohortInfo.investigators.push(item)
                 })
             }
-            if(result[2]) updatedCohortInfo.newCohortID = result[2][0].duplicated_cohort_id
-            if(result[3]) updatedCohortInfo.status = result[3][0].status
+            if (result[2]) updatedCohortInfo.newCohortID = result[2][0].duplicated_cohort_id
+            if (result[3]) updatedCohortInfo.status = result[3][0].status
             res.json({ status: 200, message: 'update successful', newCohortInfo: updatedCohortInfo })
         }
         else
@@ -103,14 +103,14 @@ router.post('/upsert_enrollment_counts/:id', function (req, res) {
 
     mysql.callJsonProcedure(proc, params, function (result) {
         logger.debug(result)
-        if (result && result[0] && result[0][0].rowsAffacted > 0){
-            if(Array.isArray(result[1])){
+        if (result && result[0] && result[0][0].rowsAffacted > 0) {
+            if (Array.isArray(result[1])) {
                 const updatedInfo = {}
                 updatedInfo.duplicated_cohort_id = result[1][0].duplicated_cohort_id
-                if(result[2]) updatedInfo.status = result[2][0].status
-                res.json({ status: 200, message: 'update successful', data: updatedInfo})         
-            }else
-                res.json({ status: 200, message: 'update successful'})
+                if (result[2]) updatedInfo.status = result[2][0].status
+                res.json({ status: 200, message: 'update successful', data: updatedInfo })
+            } else
+                res.json({ status: 200, message: 'update successful' })
         }
         else
             res.json({ status: 500, message: 'update failed' })
@@ -305,7 +305,7 @@ router.post('/update_cancer_info/:id', async function (req, res) {
 });
 
 router.post('/update_specimen/:id', function (req, res) {
-    let func = 'update_specimen_count'
+    let func = 'update_specimen_section_data'
     let body = req.body
     for (let k of Object.keys(body.counts)) { if (body.counts[k] === '') body.counts[k] = 0 }
     body = JSON.stringify(body)
@@ -510,36 +510,17 @@ router.get('/select_specimen_info/:id', function (req, res) {
 
 })
 
-router.post('/update_specimen_info/:id', function (req, res) {
-    let func = 'update_questionnaire_specimen_info'
-    let body = req.body
-    for (let k of Object.keys(body.counts)) { if (body.counts[k] === '') body.counts[k] = 0 }
-    body = JSON.stringify(body.counts)
-    let params = []
-    params.push(req.params.id)
-    params.push(body)
-    //logger.debug(body)
 
-    mysql.callJsonProcedure(func, params, function (result) {
-        //logger.debug(result)
-        if (result && result[0] && result[0][0].rowAffacted > 0)
-            res.json({ status: 200, message: 'update successful' })
-        else
-            res.json({ status: 500, message: 'update failed' })
-    })
-
-})
-
-router.post('/reset_cohort_status/:id/:status', function(req, res){
+router.post('/reset_cohort_status/:id/:status', function (req, res) {
     let func = 'reset_cohort_status'
     let params = []
     params.push(req.params.id, req.params.status)
-    mysql.callProcedure(func, params, function(result){
+    mysql.callProcedure(func, params, function (result) {
         logger.debug(result)
-        if(result && result[0] && result[0][0].rowAffacted > 0)
-            res.json({status: 200, message: 'update was successful'})
-        else  
-            res.json({status: 500, message: 'update failed'})
+        if (result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({ status: 200, message: 'update was successful' })
+        else
+            res.json({ status: 500, message: 'update failed' })
     })
 })
 
