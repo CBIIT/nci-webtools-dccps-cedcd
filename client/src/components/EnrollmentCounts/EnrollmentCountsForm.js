@@ -64,15 +64,12 @@ const EnrollmentCountsForm = ({...props}) => {
     }, [])
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        console.dir(cohortID)
         if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
               .then(result => {
-                  console.dir(result)
                   if (result && result.status === 200){
-                      console.log('ln 74 about to update cohort status')
                     dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
                   }
               })

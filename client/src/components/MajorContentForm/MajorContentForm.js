@@ -11,6 +11,7 @@ const MajorContentForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.majorContentErrorReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer)
     const dispatch = useDispatch()
     const [activePanel, setActivePanel] = useState('panelA')
     const [saved, setSaved] = useState(false)
@@ -19,7 +20,8 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
+    
 
     useEffect(() => {
         if (!majorContent.hasLoaded) {
@@ -224,7 +226,9 @@ const MajorContentForm = ({ ...props }) => {
 
                         //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
                         //{dispatch(allactions.majorContentErrorActions.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
-                        if (cancerInfo.cancerOtherSpecify) { dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(true)) }
+                        if (!cancerInfo.cancerOther || cancerInfo.cancerOtherSpecify) {
+                             dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(true)) 
+                        }
 
                         dispatch(allactions.majorContentActions.setHasLoaded(true))
                     })
@@ -232,6 +236,19 @@ const MajorContentForm = ({ ...props }) => {
                 })//end of then
         }//end of if
     }, [])
+
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+              .then(result => {
+                  if (result && result.status === 200){
+                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+                  }
+              })
+        }
+    }
 
     const saveMajorContent = (id, hasErrors, proceed = false) => {
         fetch(`/api/questionnaire/update_major_content/${id}`, {
@@ -248,7 +265,12 @@ const MajorContentForm = ({ ...props }) => {
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'incomplete'))
                     }
-
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                        if (result.data.status)
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                    }
                     if (!proceed)
                         setSuccessMsg(true)
                     else
@@ -884,7 +906,7 @@ const MajorContentForm = ({ ...props }) => {
                     <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
                         <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
                     </span>
-                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
             </div>  
             </div>

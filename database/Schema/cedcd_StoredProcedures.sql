@@ -790,15 +790,18 @@ DROP PROCEDURE IF EXISTS `update_cancer_info` //
 CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
 BEGIN
 	DECLARE success INT DEFAULT 1;
+    DECLARE new_id INT DEFAULT cohort_id;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
       SET success = 0;
       ROLLBACK;
 	END;
 
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
+    IF @cohort_status = 'published' THEN CALL inspect_cohort(cohort_id, new_id); END IF;
     START TRANSACTION;
 
-    set @cohort_id = cohort_id;
+    set @cohort_id = new_id;
     set @params = params;
     set @query = "
         insert into cancer_info (
@@ -942,8 +945,14 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 
     COMMIT;
-
+	
     SELECT success;
+    IF cohort_id <> new_id THEN
+    BEGIN
+		SELECT new_id AS duplicated_cohort_id;
+        SELECT `status` from cohort WHERE id = new_id;
+    END;
+    END IF;
 END //
 
 
@@ -1736,10 +1745,11 @@ end //
 
 DROP PROCEDURE IF EXISTS upsert_major_content //
 
-CREATE  PROCEDURE `upsert_major_content`(in targetID int, in info JSON)
+CREATE  PROCEDURE `upsert_major_content`(in Old_targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
-   
+	DECLARE targetID INT DEFAULT Old_targetID;
+    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
@@ -1747,6 +1757,9 @@ begin
 	END;
 
     start transaction;
+   
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
 	if exists (select * from major_content where cohort_id = targetID) then
     begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp'))) where cohort_id = targetID and category_id = 1 ;
@@ -1788,7 +1801,7 @@ begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherFollowUp'))) where cohort_id = targetID and category_id = 19;
 
 		update major_content set other_specify_baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify'))), other_specify_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify'))) where cohort_id = targetID and category_id = 19 ;
-
+		
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp'))) where cohort_id = targetID and category_id = 20 ;
 
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp'))) where cohort_id = targetID and category_id = 21 ;
@@ -1844,7 +1857,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
         where 
         cohort_id = targetID and page_code = 'C';
     end;
-    else
+    /*else
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$.educationBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.educationFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$.maritalStatusBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.maritalStatusFollowUp')), '', '', NOW(), NOW());
@@ -1890,9 +1903,15 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
 	
 		insert into cohort_edit_status (cohort_id, page_code, `status`) 
         values (targetID, 'C', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionCStatus')));
+        */
     end if;
     commit;
+    
     SELECT flag as rowAffacted;
+    if targetID <> Old_targetID then 
+		 SELECT targetID as duplicated_cohort_id;
+         SELECT `status` from cohort where id = targetID;
+    end if;
 end //
 
 DROP PROCEDURE IF EXISTS `select_mortality` //
@@ -1922,8 +1941,11 @@ end//
 
 DROP PROCEDURE if EXISTS `update_mortality` //
 
-CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
+CREATE PROCEDURE `update_mortality` (in Old_targetID int, in info JSON)
 BEGIN
+	DECLARE targetID INT DEFAULT Old_targetID;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
 	if exists (select * from mortality where cohort_id = `targetID`) then 
 		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) where cohort_id = `targetID`;
 		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) where cohort_id = `targetID`;
@@ -1980,6 +2002,12 @@ BEGIN
 		values (targetID, 'E', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')));
 	end if;
 	select row_count() as rowAffacted;
+    if targetID <> Old_targetID then
+    begin
+		SELECT targetID as duplicated_cohort_id;
+		SELECT `status` from cohort where id = targetID;
+    end;
+    end if;
 end //
 
 DROP PROCEDURE if EXISTS `get_specimen_counts` //
@@ -2514,8 +2542,12 @@ end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
 
-CREATE PROCEDURE `update_dlh` (in targetID int, in info JSON)
+CREATE PROCEDURE `update_dlh` (in Old_targetID int, in info JSON)
 BEGIN
+	DECLARE targetID INT DEFAULT Old_targetID;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
+    
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2575,6 +2607,23 @@ BEGIN
 		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
 	end if;
 	select row_count() as rowAffacted;
-end//
+    if targetID <> Old_targetID then 
+		 SELECT targetID as duplicated_cohort_id;
+         SELECT `status` from cohort where id = targetID;
+    end if;
+end //
 
+DROP PROCEDURE IF EXISTS reset_cohort_status //
+
+CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30))
+begin
+	DECLARE rowAffacted int default 0;
+	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
+    begin
+		update cohort set `status` = cohort_status where id = targetID;
+        if row_count() > 0 then set rowAffacted = 1; end if;
+	end;
+	end if;
+    select rowAffacted;
+ end //
 DELIMITER ;
