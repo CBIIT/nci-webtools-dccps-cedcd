@@ -1,8 +1,8 @@
 const InitialStates = {
+    cohort_status: '',
     cohort: {
         hasLoaded: false,
         sectionAStatus: '',
-        cohort_Id: true,
         cohort_name: '',
         cohort_acronym: '',
         completionDate: '2020-10-12T05:00:00.000Z',
@@ -699,7 +699,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
-    cohortId: null,
+    cohortId: 118,
 }
 
 export default InitialStates

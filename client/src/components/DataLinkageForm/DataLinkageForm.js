@@ -10,7 +10,9 @@ const DataLinkageForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
     const radioError = 'please choose one'
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
 
     const [errors, setErrors] = useState({
@@ -395,7 +397,8 @@ const DataLinkageForm = ({ ...props }) => {
             </div>
             {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
         </div>
-
+    
+    {/* please update your code if you don't like mine
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
@@ -409,6 +412,23 @@ const DataLinkageForm = ({ ...props }) => {
                 </span>
             </span>
         </div>
+            */}
+            
+            <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')}  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
+                </span>
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                </span>
+            </div>      
     </div >
 }
 

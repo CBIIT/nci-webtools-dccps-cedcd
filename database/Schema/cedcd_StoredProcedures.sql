@@ -2035,7 +2035,7 @@ end //
 
 DROP PROCEDURE if EXISTS `update_specimen_count` //
 
-CREATE  PROCEDURE `update_specimen_count`(in targetID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_count`(in cohortID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;

@@ -10,6 +10,10 @@ const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+   
+    const section = useSelector(state => state.sectionReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
@@ -26,7 +30,7 @@ const CancerInfoForm = ({ ...props }) => {
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident').id,
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent').id,
     }
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         // load existing cohort
@@ -531,7 +535,7 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
 
         {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
-
+       {/* please update your code if you don't like my code
         <div className="d-flex justify-content-between">
             <button className="btn btn-primary" onClick={() => props.sectionPicker('C')}>Go Back</button>
             <div>
@@ -539,6 +543,23 @@ const CancerInfoForm = ({ ...props }) => {
                 <button className="btn btn-primary" onClick={handleSaveContinue}>Save &amp; Continue</button>
             </div>
         </div>
+      */}
+    
+    <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('C')}  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('E')} />
+                </span>
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                </span>
+            </div>  
     </div>
 }
 

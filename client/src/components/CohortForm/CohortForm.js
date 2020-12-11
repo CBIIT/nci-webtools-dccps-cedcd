@@ -15,8 +15,10 @@ import cohortErrorActions from '../../actions/cohortErrorActions'
 
 const CohortForm = ({...props}) => {
     const cohort = useSelector(state => state.cohortReducer)
+    const cohortID = useSelector(state => state.cohortIDReducer)
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.cohortErrorReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
 
     const errorMsg = 'please provide a value'
@@ -28,20 +30,24 @@ const CohortForm = ({...props}) => {
     const [saved, setSaved] = useState(false)
    
     const [activePanel, setActivePanel] = useState('panelA')
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
+
 
     useEffect(() => {
         if(!cohort.hasLoaded){
-            let shadow = {...errors}
-            fetch(`/api/questionnaire/cohort_basic_info/${cohortId}`, {
+            //let shadow = {...errors}
+            fetch(`/api/questionnaire/cohort_basic_info/${cohortID}`, {
                 method: 'POST'
             }).then(res => res.json())
             .then(result => {
                 let currentCohort = result.data.cohort,
                  investigators = result.data.investigators.length > 0 ?  result.data.investigators : cohort.investigators,
-                    completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator
+                    completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
+                    cohort_status = result.data.cohortStatus
+                    console.dir('current status: '+cohort_status)
                 
                 batch(() =>{
+                    dispatch(({type: 'SET_COHORT_STATUS', value: cohort_status}))
                     for(let i=0; i < investigators.length; i++){ //first add errors dynamically, to be removed later
                         dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
                         dispatch(allactions.cohortErrorActions.investigatorInstitution(i, false, errorMsg))
@@ -134,7 +140,7 @@ const CohortForm = ({...props}) => {
         }
     }, [])
 
-    const saveCohort = (id=cohortId) => {
+    const saveCohort = (id=cohortID) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`,{
             method: "POST",
             body: JSON.stringify(cohort),
@@ -144,13 +150,17 @@ const CohortForm = ({...props}) => {
         })
             .then(res => res.json())
             .then(result => {
+                console.dir(result.newCohortInfo)
                 if(result.status === 200){
                     if(Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else{
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
-
+                    if(result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID){
+                            dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
+                    }
+                    if(result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
                     if(!proceed){
                         setSuccessMsg(true) 
                     }
@@ -162,7 +172,6 @@ const CohortForm = ({...props}) => {
             })
     }
     const handleSave = () => {
-        console.log(errors)
         setSaved(true)
         if(!(cohort.questionnaireFileName || cohort.questionnaire_url))
         {dispatch(allactions.cohortErrorActions.questionnaire(false, true))}
@@ -178,7 +187,7 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(cohortId)
+            saveCohort(cohortID)
         }
         else{ 
             setModalShow(true)
@@ -191,7 +200,8 @@ const CohortForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             cohort.sectionAStatus='complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
-            saveCohort(cohortId, true)
+            saveCohort(cohortID, true)
+            
         }
         else{
             setModalShow(true)
@@ -334,7 +344,7 @@ const CohortForm = ({...props}) => {
                 fileData, 
                 fileData.name 
             ); 
-            fetch(`/api/questionnaire/upload/${cohortId}/${category}`,{
+            fetch(`/api/questionnaire/upload/${cohortID}/${category}`,{
                 method: "POST",
                 body: formData
             }).then(res => res.json())
@@ -348,13 +358,14 @@ const CohortForm = ({...props}) => {
     const confirmSaveStay = () => {
         cohort.sectionAStatus='incomplete'
         dispatch(allactions.cohortActions.setSectionAStatus('incomplete'));
-        saveCohort(cohortId);setModalShow(false)
+        saveCohort(cohortID);setModalShow(false)
+        console.dir('cohortID after update: '+cohortID)
     }
 
     const confirmSaveContinue = () => {
         cohort.sectionAStatus='incomplete'
         dispatch(allactions.cohortActions.setSectionAStatus('incomplete'))
-        saveCohort(cohortId, true);setModalShow(false)
+        saveCohort(cohortID, true);setModalShow(false)
     }
 
     return <div id='cohortContainer' className='col-md-12'>
@@ -394,28 +405,28 @@ const CohortForm = ({...props}) => {
                             </div>
                             {window.innerWidth <= 1000 ? 
                             <div className='col-xs-12' style={{}}>
-                                {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{margin: '0', paddingLeft: '0', paddingRight: '10px'}}><input style={{border: '1px solid red'}} className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span></Reminder> : <span className='col-xs-12' style={{margin: '0', paddingLeft: '0', paddingRight: '30px'}}><input className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span>}
+                                {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{margin: '0', paddingLeft: '0', paddingRight: '10px'}}><input style={{border: '1px solid red'}} placeholder='(Max of 200 characters)' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span></Reminder> : <span className='col-xs-12' style={{margin: '0', paddingLeft: '0', paddingRight: '30px'}}><input className='form-control' placeholder='(Max of 200 characters)' maxLength='200' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span>}
                             </div>
                             :
                             <div className='col-md-8' style={{maxWidth: '670px'}}>
-                                {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{margin: '0', padding: '0'}}><input style={{border: '1px solid red'}} className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span></Reminder> : <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span>}
+                                {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{margin: '0', padding: '0'}}><input style={{border: '1px solid red'}} placeholder='(Max of 200 characters)' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span></Reminder> : <span className='col-md-12' style={{margin: '0', padding: '0'}}><input className='form-control' name='cohort_web_site'  placeholder='(Max of 200 characters)' maxLength='200' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => {populateErrors('cohort_web_site', e.target.value, false, 'string')}}/></span>}
                             </div>
                             }
                         </div>
-                        <div className='form-group col-md-12' style={{marginTop: window.innerWidth > 800 ? '15px' : '8px'}}>
-                            <div className='col-md-12'>
-                                <label className='col-md-4' style={{paddingLeft: '0', paddingRight: '0', marginRight: '0', width: '298px', lineHeight: '2em'}}>A.4 Date Form Completed<span style={{color: 'red'}}>*</span></label>
-                                <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
+                        <div className='form-group col-xs-12' style={{marginTop: window.innerWidth > 800 ? '15px' : '8px'}}>
+                            <div className='col-xs-12'>
+                                <label className='col-md-4 col-xs-12' style={{paddingLeft: '0', paddingRight: '0', marginRight: '0', width: '298px', lineHeight: '2em'}}>A.4 Date Form Completed<span style={{color: 'red'}}>*</span></label>
+                                <span className='col-md-4 col-xs-12' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
                                     {errors.completionDate && saved ? <Reminder message={errors.completionDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg))}else{
                                         dispatch(allactions.cohortErrorActions.completionDate(true))
-                                    }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg))}else{
+                                    }}} /></span></Reminder> : <span className='col-xs-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={cohort.completionDate ? new Date(cohort.completionDate) : null} onChange={date => {dispatch(allactions.cohortActions.completionDate(date)); if(!date){dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg))}else{
                                         dispatch(allactions.cohortErrorActions.completionDate(true))
                                     }}} /></span>}
                                 </span>
                             </div>
                         </div>
-                        <div id='question3' className='col-md-12' style={{display: 'flex', flexDirection: 'column', paddingBottom: '10px'}}>
-                            <div id='a3a' className='col-md-8' style={{paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px'}}>
+                        <div id='question3' className='col-xs-12' style={{display: 'flex', flexDirection: 'column', paddingBottom: '10px'}}>
+                            <div id='a3a' className='col-md-8 col-xs-12' style={{paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px'}}>
                                 <div className='col-xs-12' style={{marginBottom: '5px'}}><b>A.5a{' '}Person who completed the form:</b><span style={{color: 'red'}}>*</span></div>
                                 <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} displayStyle={saved} />
                             </div>
@@ -660,7 +671,7 @@ const CohortForm = ({...props}) => {
                             </div> 
                             <div className='col-md-8'>
                                 <span className='col-md-12' style={{paddingLeft: '0', paddingRight: '6px', marginLeft: '0'}}>
-                                    {errors.time_interval && saved ? <Reminder message={errors.time_interval}><input style={{border: '1px solid red'}} className='form-control' name='time_interval' value={cohort.time_interval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('time_interval', e.target.value, true, 'string')}}/></Reminder> : <input className='form-control' name='time_interval' value={cohort.time_interval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('time_interval', e.target.value, true, 'string')}}/> }
+                                    {errors.time_interval && saved ? <Reminder message={errors.time_interval}><input style={{border: '1px solid red'}} placeholder='(Max of 200 characters)' maxLength='200' className='form-control' name='time_interval' value={cohort.time_interval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('time_interval', e.target.value, true, 'string')}}/></Reminder> : <input className='form-control' placeholder='(Max of 200 characters)' maxLength='200' name='time_interval' value={cohort.time_interval} onChange={e=>dispatch(allactions.cohortActions.time_interval(e.target.value))}  onBlur={(e) => {populateErrors('time_interval', e.target.value, true, 'string')}}/> }
                                 </span>
                             </div>     
                         </div>
@@ -768,12 +779,12 @@ const CohortForm = ({...props}) => {
                                     window.innerWidth <= 1000 ?
                                         <div>
                                             {saved && errors.data_collected_other_specify ?
-                                             <Reminder message={errors.data_collected_other_specify}><input style={{border: '1px solid red'}} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/> }   
+                                             <Reminder message={errors.data_collected_other_specify}><input style={{border: '1px solid red'}} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/> }   
                                         </div>
                                      :                     
                                     <span  className='col-md-12' style={{paddingLeft: '35px', paddingRight: '0'}}>
                                         {saved && errors.data_collected_other_specify ?
-                                        <Reminder message={errors.data_collected_other_specify}><input style={{border: '1px solid red'}} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/> }   
+                                        <Reminder message={errors.data_collected_other_specify}><input style={{border: '1px solid red'}} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')}  disabled={!cohort.data_collected_other}/> }   
                                     </span> 
                                     }      
                                 </div>            
@@ -912,12 +923,12 @@ const CohortForm = ({...props}) => {
                                     { window.innerWidth <= 1000 ? 
                                         <div>
                                         {saved && errors.restrictions_other_specify ?
-                                            <Reminder message={errors.restrictions_other_specify}><input style={{border: '1px solid red'}} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/> } 
+                                            <Reminder message={errors.restrictions_other_specify}><input style={{border: '1px solid red'}} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/> } 
                                         </div>
                                     :                         
                                     <span  className='col-md-12' style={{paddingLeft: '35px', paddingRight: '0'}}>
                                         {saved && errors.restrictions_other_specify ?
-                                        <Reminder message={errors.restrictions_other_specify}><input style={{border: '1px solid red'}} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/> }   
+                                        <Reminder message={errors.restrictions_other_specify}><input style={{border: '1px solid red'}} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')}  disabled={!cohort.restrictOther}/> }   
                                     </span> 
                                     }      
                                 </div> 
@@ -1025,12 +1036,12 @@ const CohortForm = ({...props}) => {
                                     {  window.innerWidth <= 1000 ?
                                         <div>
                                             {saved && errors.strategy_other_specify ?
-                                            <Reminder message={errors.strategy_other_specify}><input style={{border: '1px solid red'}} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/> }   
+                                            <Reminder message={errors.strategy_other_specify}><input style={{border: '1px solid red'}} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 200 characters)' maxLength='200'  onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 200 characters)' maxLength='200' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/> }   
                                         </div>
                                       :                       
                                     <span  className='col-md-12' style={{paddingLeft: '35px', paddingRight: '0'}}>
                                         {saved && errors.strategy_other_specify ?
-                                        <Reminder message={errors.strategy_other_specify}><input style={{border: '1px solid red'}} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/> }   
+                                        <Reminder message={errors.strategy_other_specify}><input style={{border: '1px solid red'}} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 200 characters)' maxLength='200'  onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='(Max of 100 characters)' onChange={e=>dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')}  disabled={!cohort.strategy_other}/> }   
                                     </span> 
                                     }      
                                 </div>
@@ -1056,7 +1067,7 @@ const CohortForm = ({...props}) => {
                                                     <tbody>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Web Url</th>
-                                                            <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true))}} /></td>
+                                                            <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true))}} /></td>
                                                         </tr>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Attached</th>
@@ -1073,7 +1084,7 @@ const CohortForm = ({...props}) => {
                                                     <tbody>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Web Url</th>
-                                                            <td className={errors.main && saved ? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main(e.target.value, true))}} /></td>
+                                                            <td className={errors.main && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main(e.target.value, true))}} /></td>
                                                         </tr>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Attached</th>
@@ -1090,7 +1101,7 @@ const CohortForm = ({...props}) => {
                                                     <tbody>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Web Url</th>
-                                                            <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data(e.target.value, true))}} /></td>
+                                                            <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data(e.target.value, true))}} /></td>
                                                         </tr>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Attached</th>
@@ -1107,7 +1118,7 @@ const CohortForm = ({...props}) => {
                                                     <tbody>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Web Url</th>
-                                                            <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen(e.target.value, true))}} /></td>
+                                                            <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen(e.target.value, true))}} /></td>
                                                         </tr>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Attached</th>
@@ -1124,7 +1135,7 @@ const CohortForm = ({...props}) => {
                                                     <tbody>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Web Url</th>
-                                                            <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication(e.target.value, true))}} /></td>
+                                                            <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication(e.target.value, true))}} /></td>
                                                         </tr>
                                                         <tr>
                                                             <th style={{backgroundColor: '#01857b', color: 'white'}}>Attached</th>
@@ -1148,7 +1159,7 @@ const CohortForm = ({...props}) => {
                                     <tbody>
                                         <tr>
                                         <td>Questionnaires<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''} ><input className='inputWriter' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true))}} /></td>
+                                        <td className={errors.questionnaire && saved ? 'errorBackground' : ''} ><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => {dispatch(allactions.cohortActions.questionnaire_url(e.target.value));dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                             <input type='file' name='cohortFile'  formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => {handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.questionnaire((e.target.files[0].name || cohort.questionnaire_url), true))}} disabled={cohort.questionnaire_url} />
                                         </td>
@@ -1156,7 +1167,7 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                         <tr>
                                         <td>Main cohort protocol<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main(e.target.value, true))}} /></td>
+                                        <td className={errors.main  && saved? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName}  value={cohort.main_cohort_url} onChange={e => {dispatch(allactions.cohortActions.main_cohort_url(e.target.value));dispatch(allactions.cohortErrorActions.main(e.target.value, true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}>
                                                 <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.main((e.target.files[0].name || cohort.main_cohort_url), true))}} disabled={cohort.main_cohort_url}/>
                                         </td>
@@ -1164,19 +1175,19 @@ const CohortForm = ({...props}) => {
                                         </tr>
                                         <tr>
                                         <td>Data sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data(e.target.value, true))}} /></td>
+                                        <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName}  value={cohort.data_url} onChange={e => {dispatch(allactions.cohortActions.data_url(e.target.value));dispatch(allactions.cohortErrorActions.data(e.target.value, true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.data((e.target.files[0].name || cohort.data_url), true))}}disabled={cohort.data_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Biospecimen sharing policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen(e.target.value, true))}} /></td>
+                                        <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName}  value={cohort.specimen_url} onChange={e => {dispatch(allactions.cohortActions.specimen_url(e.target.value));dispatch(allactions.cohortErrorActions.specimen(e.target.value, true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.specimen((e.target.files[0].name || cohort.specimen_url), true))}} disabled={cohort.specimen_url}/></td>
                                         
                                         </tr>
                                         <tr>
                                         <td>Publication(authorship) policy<span style={{color: 'red'}}>*</span></td> 
-                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication(e.target.value, true))}} /></td>
+                                        <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='(Max of 100 characters)' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => {dispatch(allactions.cohortActions.publication_url(e.target.value));dispatch(allactions.cohortErrorActions.publication(e.target.value, true))}} /></td>
                                         <td style={{verticalAlign: 'middle'}}><input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => {handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name));dispatch(allactions.cohortErrorActions.publication((e.target.files[0].name || cohort.publication_url), true))}} disabled={cohort.publication_url}/></td>                                       
                                         </tr>
                                     </tbody>
@@ -1187,14 +1198,20 @@ const CohortForm = ({...props}) => {
                     </div>
                 </form>
             </div> 
-            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                <span onClick={handleSave}>
-                    <input type='button' className='btn btn-primary' value='Save' />
+            <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' disabled  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('B')} />
                 </span>
-                <span onClick={handleSaveContinue}>
-                    <input type='button' className='btn btn-primary' value='Save & Continue' />
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
-                {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span onClick={() => alert('submitted')}><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
             </div>  
         </div>
   </div>
