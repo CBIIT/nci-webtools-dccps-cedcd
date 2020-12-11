@@ -490,27 +490,6 @@ router.post('/get_specimen/:id', function (req, res) {
 
 })
 
-router.get('/select_specimen_info/:id', function (req, res) {
-    let id = req.params.id
-    let func = 'select_questionnaire_specimen_info'
-    let params = []
-    params.push(id)
-    mysql.callProcedure(func, params, function (result) {
-        if (result) {
-            const specimenInfo = {}
-            specimenInfo.data = result[0]
-            specimenInfo.details = result[1]
-            res.json({ data: specimenInfo })
-
-        }
-        else
-            res.status(500).json({ status: 500, message: 'failed to load data' })
-
-    })
-
-})
-
-
 router.post('/reset_cohort_status/:id/:status', function (req, res) {
     let func = 'reset_cohort_status'
     let params = []
