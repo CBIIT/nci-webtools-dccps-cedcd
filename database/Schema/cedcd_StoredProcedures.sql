@@ -1467,7 +1467,7 @@ END //
 
 DROP PROCEDURE IF EXISTS update_enrollment_count //
 
-CCREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
+CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT 0;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
