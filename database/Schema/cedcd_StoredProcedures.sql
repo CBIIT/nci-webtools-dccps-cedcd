@@ -1069,7 +1069,7 @@ BEGIN
 	UPDATE `cohort_basic` 
 	SET 
 		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
-		date_completed =if(@completionDate is not null and @completionDate != '', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
+		date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
 		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
 		cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
@@ -1297,6 +1297,7 @@ BEGIN
         email, create_time, update_time from person
         where cohort_id = new_id and category_id = 3;
         SELECT new_id as duplicated_cohort_id;
+        SELECT `status` from cohort where id = new_id;
 	end; 
 	end if;
     
@@ -1448,7 +1449,7 @@ END //
 
 DROP PROCEDURE IF EXISTS update_enrollment_count //
 
-CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
+CREATE  PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT targetID;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
@@ -1669,12 +1670,13 @@ BEGIN
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
+    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
 	where cohort_id = new_id;
     SET @rowcount = ROW_COUNT();
     SELECT @rowcount AS rowsAffacted;
     if targetID <> new_id then 
 		 SELECT new_id as duplicated_cohort_id;
+         SELECT `status` from cohort where id = new_id;
     end if;
 END //
 

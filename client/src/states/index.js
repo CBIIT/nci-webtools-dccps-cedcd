@@ -217,7 +217,7 @@ const InitialStates = {
         '833': 350,
         '841': 3150,
         'mostRecentDate': '2020-10-12T05:00:00.000Z',
-        'sectionBStatus': ''
+        sectionBStatus: ''
     },
     enrollmentCountErrors: {
         mostRecentDate: 'please provide a value'
@@ -699,7 +699,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
-    cohortId: 79,
+    cohortId: 18,
 }
 
 export default InitialStates
