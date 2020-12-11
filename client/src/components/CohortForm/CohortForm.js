@@ -209,6 +209,10 @@ const CohortForm = ({...props}) => {
             }
     }
 
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if(['new, draft, published, submitted, returned, archived, "in review"'].includes(nextStatus)){}
+    }
+
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge) => validator.minAgeValidator(value, requiredOrNot, maxAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge) => validator.maxAgeValidator(value, requiredOrNot, minAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)

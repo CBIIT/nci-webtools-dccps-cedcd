@@ -527,4 +527,16 @@ router.post('/update_specimen_info/:id', function (req, res) {
 
 })
 
+router.post('/reset_cohort_status/:id/:status', function(req, res){
+    let func = 'reset_cohort_status'
+    let params = []
+    params.push(req.params.id, req.params.status)
+    mysql.callProcedure(func, params, function(result){
+        if(result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({status: 200, message: 'update was successful'})
+        else  
+            res.json({status: 500, message: 'update failed'})
+    })
+})
+
 module.exports = router
