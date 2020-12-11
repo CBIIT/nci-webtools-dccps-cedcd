@@ -57,7 +57,7 @@ router.post('/update_cohort_basic/:id', function (req, res) {
                 })
             }
             if(result[2]) updatedCohortInfo.newCohortID = result[2][0].duplicated_cohort_id
-
+            if(result[3]) updatedCohortInfo.status = result[3][0].status
             res.json({ status: 200, message: 'update successful', newCohortInfo: updatedCohortInfo })
         }
         else
@@ -105,7 +105,10 @@ router.post('/upsert_enrollment_counts/:id', function (req, res) {
         logger.debug(result)
         if (result && result[0] && result[0][0].rowsAffacted > 0){
             if(Array.isArray(result[1])){
-                res.json({ status: 200, message: 'update successful', data: result[1][0].duplicated_cohort_id})
+                const updatedInfo = {}
+                updatedInfo.duplicated_cohort_id = result[1][0].duplicated_cohort_id
+                if(result[2]) updatedInfo.status = result[2][0].status
+                res.json({ status: 200, message: 'update successful', data: updatedInfo})         
             }else
                 res.json({ status: 200, message: 'update successful'})
         }
@@ -525,6 +528,19 @@ router.post('/update_specimen_info/:id', function (req, res) {
             res.json({ status: 500, message: 'update failed' })
     })
 
+})
+
+router.post('/reset_cohort_status/:id/:status', function(req, res){
+    let func = 'reset_cohort_status'
+    let params = []
+    params.push(req.params.id, req.params.status)
+    mysql.callProcedure(func, params, function(result){
+        logger.debug(result)
+        if(result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({status: 200, message: 'update was successful'})
+        else  
+            res.json({status: 500, message: 'update failed'})
+    })
 })
 
 module.exports = router

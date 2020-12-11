@@ -179,6 +179,7 @@ const CohortForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 console.dir(result.newCohortInfo)
+
                 if (result.status === 200) {
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
@@ -229,6 +230,15 @@ const CohortForm = ({ ...props }) => {
         else {
             setModalShow(true)
             setProceed(true)
+        }
+    }
+
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if (['new, draft, published, submitted, returned, archived, "in review"'].includes(nextStatus)) {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+                .then(result => { console.log(result) })
         }
     }
 
@@ -382,7 +392,7 @@ const CohortForm = ({ ...props }) => {
         cohort.sectionAStatus = 'incomplete'
         dispatch(allactions.cohortActions.setSectionAStatus('incomplete'));
         saveCohort(cohortID); setModalShow(false)
-        console.dir('cohortID after update: ' + cohortID)
+
     }
 
     const confirmSaveContinue = () => {
@@ -1237,7 +1247,7 @@ const CohortForm = ({ ...props }) => {
                     <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
                         <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
                     </span>
-                    <span className='col-xs-4' onClick={() => alert('submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
                 </span>
             </div>
         </div>

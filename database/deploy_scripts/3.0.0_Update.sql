@@ -8,6 +8,12 @@
 
 
 /* according to Auestionnaire v8,1m change 'Both' to 'All' for gender option  */
+CREATE TABLE `mapping_old_PI_Id_To_New` (
+  `cohort_id` int NOT NULL,
+  `old_PI_Id` int NOT NULL,
+  `new_PI_Id` int NOT NULL,
+  PRIMARY KEY (`new_PI_Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 update lu_gender set gender = 'All' where id = 4;
 

@@ -63,6 +63,22 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
 
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        console.dir(cohortID)
+        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+              .then(result => {
+                  console.dir(result)
+                  if (result && result.status === 200){
+                      console.log('ln 74 about to update cohort status')
+                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+                  }
+              })
+        }
+    }
+
     const saveEnrollment = (id=cohortID, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
@@ -80,9 +96,12 @@ const EnrollmentCountsForm = ({...props}) => {
                     else{
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
                     }
-                    if(result.data && result.data != cohortID){
-                        dispatch(allactions.cohortIDAction.setCohortId(result.data))
-                }
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID)
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                        if (result.data.status)
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                    }
                     if(!proceed)
                         setSuccessMsg(true) 
                     else
@@ -120,8 +139,11 @@ const EnrollmentCountsForm = ({...props}) => {
     }
 
     const confirmSaveStay = () => {
+        console.dir('before dispatch'+enrollmentCount)
         enrollmentCount.sectionBStatus='incomplete'
+        
         dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'));
+        console.dir('after dispatch'+enrollmentCount)
         saveEnrollment(cohortID);setModalShow(false)
     }
 
@@ -312,7 +334,7 @@ const EnrollmentCountsForm = ({...props}) => {
                     <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
                         <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
                     </span>
-                    <span className='col-xs-4' onClick={() => alert('submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
             </div>  
             </div>
