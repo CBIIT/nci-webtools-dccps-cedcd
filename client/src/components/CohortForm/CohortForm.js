@@ -234,11 +234,15 @@ const CohortForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if (['new, draft, published, submitted, returned, archived, "in review"'].includes(nextStatus)) {
+        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
-                .then(result => { console.log(result) })
+                .then(result => {
+                    if (result && result.status === 200) {
+                        dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+                    }
+                })
         }
     }
 
