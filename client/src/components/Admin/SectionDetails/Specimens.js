@@ -991,7 +991,7 @@ const SpecimenForm = ({ ...props }) => {
             </div>
             <div sytle={{ position: 'relative' }}>
                 <span onClick={() => props.sectionPicker('F')} style={{ position: 'relative', float: 'left' }}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
+                    <input type='button' className='btn btn-primary' value='<< Prev' />
                 </span>
 
 

@@ -485,7 +485,7 @@ const CohortForm = ({ ...props }) => {
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <span onClick={() => props.sectionPicker('B')} style={{ position: 'relative', float: 'Right' }}>
-                        <input type='button' className='btn btn-primary' value='Next' />
+                        <input type='button' className='btn btn-primary' value='Next >>' />
                     </span>
                 </div>
             </div>

@@ -375,10 +375,10 @@ const CancerInfoForm = ({ ...props }) => {
         {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
         <div style={{ position: 'relative' }}>
             <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='btn btn-primary' value='Go Back' />
+                <input type='button' className='btn btn-primary' value=' << Prev' />
             </span>
             <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'Right' }}>
-                <input type='button' className='btn btn-primary' value='Next' />
+                <input type='button' className='btn btn-primary' value='Next >>' />
             </span>
         </div>
 
