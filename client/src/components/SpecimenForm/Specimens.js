@@ -275,7 +275,12 @@ const SpecimenForm = ({ ...props }) => {
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('G', 'incomplete'))
                     }
-
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                        if (result.data.status)
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                    }
                     if (!proceed) {
                         setSuccessMsg(true)
                     }

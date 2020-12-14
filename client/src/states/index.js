@@ -699,7 +699,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
-    cohortId: 18,
+    cohortId: 118,
 }
 
 export default InitialStates
