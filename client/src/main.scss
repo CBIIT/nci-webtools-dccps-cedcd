@@ -1,11 +1,10 @@
 /* CSS Document */
-@import '/assets/css/typography.css';
-@import '/assets/css/forms.css';
-@import '/assets/css/modal.css';
-@import '/assets/css/login-button.css';
 @import '~bootstrap/scss/bootstrap';
-@import '/assets/css/bootstrap.css';
-@import '/assets/css/bootstrap-utils.css';
+@import '../public/assets/css/bootstrap';
+@import '../public/assets/css/typography';
+@import '../public/assets/css/forms';
+@import '../public/assets/css/modal';
+@import '../public/assets/css/login-button';
 /* CORE-STRCTURE -------------------------------------------------------- */ 
 body {
   width: 100%;

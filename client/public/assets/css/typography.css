@@ -54,7 +54,7 @@ h3 {
   font-size: 1.6rem;
   font-weight: 400;
   color: #525349;
-  background: #ffffff url(../img/arrow-square.png) no-repeat 1% -49px;
+  background: #ffffff url(/assets/img/arrow-square.png) no-repeat 1% -49px;
   padding: 4px 10px 4px 22px;
   margin: 2px 0 0 0;
   border: none;
@@ -124,7 +124,7 @@ li {
   font-size: 90%;
   margin-top: 20px;
   padding-bottom: 10px;
-  /*background: url(../img/bg_footer_rule.png) center bottom no-repeat;*/
+  /*background: url(/assets/img/bg_footer_rule.png) center bottom no-repeat;*/
 }
 #footer .footer-nav li {
   color: white;
@@ -132,7 +132,7 @@ li {
   display: inline;
   margin: 0 0 0 0;
   padding: 2px 0;
-  background: url(../img/bg_footer_nav.png) center right no-repeat;
+  background: url(/assets/img/bg_footer_nav.png) center right no-repeat;
 }
 #footer .footer-nav li.no-right {
   background: none;
@@ -406,7 +406,7 @@ a:hover {
   color: rgba(0,0,0,0);
 }
 .table-pager a.arrow.prev {
-  background: url(../img/bg_arrow_prev.png) no-repeat 95%;
+  background: url(/assets/img/bg_arrow_prev.png) no-repeat 95%;
   width: 17px;
   overflow: hidden;
 }
@@ -416,7 +416,7 @@ a:hover {
   color:gray !important;
 }
 .table-pager a.arrow.next {
-  background: url(../img/bg_arrow_next.png) no-repeat;
+  background: url(/assets/img/bg_arrow_next.png) no-repeat;
   width: 17px;
   overflow: hidden;
 }
@@ -443,7 +443,7 @@ a:hover {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 400;
-  background: #fff url(../img/bg_cohort_profile.png) no-repeat 8px center;
+  background: #fff url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
   width: 66px;
   margin: 4px auto;
   padding: 6px 2px 3px 32px;
@@ -454,7 +454,7 @@ a:hover {
 }
 .cedcd-table a:hover.cohort-profile {
   color: #ffffff;
-  background: #135B5D url(../img/bg_cohort_profile.png) no-repeat 8px center;
+  background: #135B5D url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
   border: #135B5D 1px solid;
 }
 .cedcd-table th.sortable a, #cohort_name a, #cohort_acronym a, #date_form_completed a, #status_timestamp a, #status a, th.sortable a {
@@ -605,7 +605,7 @@ ul.results-nav li a {
   font-weight: 400;
   letter-spacing: .5px;
   text-align: left;
-  background: url(../img/bg_results_nav.png) no-repeat 100% center;
+  background: url(/assets/img/bg_results_nav.png) no-repeat 100% center;
   margin: 0 6% 2px 6%;
   padding: 8px 15% 8px 0;
   border-bottom: #457F7F 1px solid;
@@ -617,11 +617,11 @@ ul.results-nav li.last-item a {
   border-bottom: #135B5D 1px solid;
 }
 ul.results-nav li a:hover {
-  background: url(../img/bg_results_nav_hover.png) no-repeat 115% center;
+  background: url(/assets/img/bg_results_nav_hover.png) no-repeat 115% center;
   padding: 8px 10% 8px 5%;
 }
 ul.results-nav li.active a {
-  background: url(../img/bg_results_nav_active.png) no-repeat 100% center;
+  background: url(/assets/img/bg_results_nav_active.png) no-repeat 100% center;
   padding: 8px 10% 8px 5%;
 }
 ul.results-nav li a.inactive {
@@ -640,25 +640,25 @@ a.expand-link {
   margin: 10px 0 0 2%;
   padding: 0 0 0 24px;
   display: block;
-  background: url(../img/bg_more_info.png) left center no-repeat;
+  background: url(/assets/img/bg_more_info.png) left center no-repeat;
   transition: all 200ms ease-out;
 }
 a:hover.expand-link {
   margin: 10px 0 0 2%;
   padding: 0 0 0 24px;
   display: block;
-  background: url(../img/bg_more_info_hover.png) left center no-repeat;
+  background: url(/assets/img/bg_more_info_hover.png) left center no-repeat;
 }
 .link-docx {
-  background: url(../img/ico_Doc.png) no-repeat left 5px;
+  background: url(/assets/img/ico_Doc.png) no-repeat left 5px;
   padding-left: 20px;
 }
 .link-pdf {
-  background: url(../img/ico_PDF.png) no-repeat left 5px;
+  background: url(/assets/img/ico_PDF.png) no-repeat left 5px;
   padding-left: 25px !important;
 }
 .link-excel {
-  background: url(../img/ico_Excel.png) no-repeat left 5px;
+  background: url(/assets/img/ico_Excel.png) no-repeat left 5px;
   padding-left: 20px;
 }
 .link-url {
