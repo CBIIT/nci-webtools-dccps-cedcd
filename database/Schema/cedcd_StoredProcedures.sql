@@ -26,14 +26,14 @@
 20. add_file_attachment
 21. get_enrollment_counts
 22. get_specimen_counts
-23. update_specimen_count
+23. update_specimen_section_data
 24. select_questionnaire_specimen_info
 25. update_questionnaire_speciemn_info
 26. inspect_cohort
 27. insert_new_cohort_from_published
 *
  */
-
+use cedcd;
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: advanced_cohort_select
 -- -----------------------------------------------------------------------------------------------------------
@@ -683,11 +683,14 @@ END //
 DROP PROCEDURE IF EXISTS `select_cohort_for_user` //
 CREATE PROCEDURE `select_cohort_for_user`(in user_id int)
 BEGIN
+	
+
     set @query = "
 		select c.*
 		from cohort c
         join cohort_user_mapping cm on cm.cohort_acronym = c.acronym
-		where cohort_user_id = ?
+		where cm.cohort_user_id = ?
+		and cm.acronym = ?
 		order by
 			status = 'draft' desc,
 			status = 'in review' desc,
@@ -701,6 +704,32 @@ BEGIN
 	EXECUTE stmt using @user_id;
 	DEALLOCATE PREPARE stmt;
 END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_editable_cohort_by_acronym
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_editable_cohort_by_acronym` //
+CREATE PROCEDURE `select_editable_cohort_by_acronym`(in acronym varchar(100))
+BEGIN
+    set @query = "
+		select *
+		from cohort c
+		where acronym = ?
+		order by
+			status = 'draft' desc,
+			status = 'in review' desc,
+			status = 'submitted' desc,
+			status = 'new' desc,
+			status = 'published' desc
+		limit 1;
+	";
+    set @acronym = acronym;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @acronym;
+	DEALLOCATE PREPARE stmt;
+END //
+
 
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -790,15 +819,18 @@ DROP PROCEDURE IF EXISTS `update_cancer_info` //
 CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
 BEGIN
 	DECLARE success INT DEFAULT 1;
+    DECLARE new_id INT DEFAULT cohort_id;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
       SET success = 0;
       ROLLBACK;
 	END;
 
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
+    IF @cohort_status = 'published' THEN CALL inspect_cohort(cohort_id, new_id); END IF;
     START TRANSACTION;
 
-    set @cohort_id = cohort_id;
+    set @cohort_id = new_id;
     set @params = params;
     set @query = "
         insert into cancer_info (
@@ -942,8 +974,14 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 
     COMMIT;
-
+	
     SELECT success;
+    IF cohort_id <> new_id THEN
+    BEGIN
+		SELECT new_id AS duplicated_cohort_id;
+        SELECT `status` from cohort WHERE id = new_id;
+    END;
+    END IF;
 END //
 
 
@@ -1043,237 +1081,188 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 
-CREATE PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
+CREATE  PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
-
+	DECLARE new_id INT DEFAULT targetID;
+	
     DECLARE flag INT DEFAULT 1;
-  
+ 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
 
-  START transaction;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+
+    IF @cohort_status = 'published' then 
+	   call select_unpublished_cohort_id(targetID, new_id); 
+    else 
+       set new_id = targetID;
+    END IF;
+
+  START transaction;
+  
+	drop table if exists temp_PI_IDS;
+    create table temp_PI_IDS(
+		upToDatePIId int not null default 0
+    );
+    
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
+
     SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
-    SET @latest_cohort = targetID;
-    IF @cohort_status <> 'published' THEN
-		BEGIN
-			UPDATE `cohort_basic` 
-			SET 
-				cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
-                date_completed =if(@completionDate is not null  && @completionDate != '', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
-                clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
-				sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
-				cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
-				eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
-				eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) = 'true', 1 , 0),
-				eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
-				eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_other_specify')),
-				enrollment_total = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total'))),
-				enrollment_year_start = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start'))),
-				enrollment_year_end = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end'))),
-				enrollment_ongoing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) = 'null', null, CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) AS SIGNED)),
-				enrollment_target = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target'))),
-				enrollment_year_complete = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete'))),
-				enrollment_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min'))),
-				enrollment_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max'))),
-				enrollment_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
-				enrollment_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
-				current_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min'))),
-				current_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max'))),
-				current_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median'))),
-				current_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean'))),
-				time_interval = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval'))),
-				most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year'))),
-				data_collected_in_person = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person'))),
-				data_collected_phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone'))),
-				data_collected_paper = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper'))),
-				data_collected_web = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web'))),
-				data_collected_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other'))),
-				data_collected_other_specify = IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other_specify')), ''),
-				restrictions = IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 1, '1_0_0_0_0_0_0_0',
-								   CONCAT('0_', if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData'))  as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo'))  as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb'))  as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))  as CHAR)), '_',
-												if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))  as CHAR)))),
-				restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
-				strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine'))),
-				strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
-				strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
-				strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study'))),
-				strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation'))),
-				strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
-				strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')), ''),
-
-                /*
-				questionnaire_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFile')),
-				main_cohort_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortFile')),
-				data_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFile')),
-				specimen_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFile')),
-				publication_file_attached = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFile')),
-                */
-			 
-				questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
-				main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'))),
-				data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'))),
-				specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'))),
-				publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'))),
-          
+    SET @latest_cohort = new_id;
+	UPDATE `cohort_basic` 
+	SET 
+		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
+		date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
+		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
+		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
+		cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
+		eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
+		eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) = 'true', 1 , 0),
+		eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
+		eligible_disease_other_specify = JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_other_specify')),
+		enrollment_total = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total'))),
+		enrollment_year_start = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_start'))),
+		enrollment_year_end = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_end'))),
+		enrollment_ongoing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) = 'null', null, CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_ongoing')) AS SIGNED)),
+		enrollment_target = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_target'))),
+		enrollment_year_complete = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_year_complete'))),
+		enrollment_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_min'))),
+		enrollment_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_max'))),
+		enrollment_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
+		enrollment_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_age_mean'))),
+		current_age_min = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_min'))),
+		current_age_max = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_max'))),
+		current_age_median = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_median'))),
+		current_age_mean = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.current_age_mean'))),
+		time_interval = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.time_interval'))),
+		most_recent_year = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.most_recent_year'))),
+		data_collected_in_person = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_in_person'))),
+		data_collected_phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_phone'))),
+		data_collected_paper = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_paper'))),
+		data_collected_web = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_web'))),
+		data_collected_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other'))),
+		data_collected_other_specify = IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other_specify')), ''),
+		restrictions = IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 1, '1_0_0_0_0_0_0_0',
+						   CONCAT('0_', if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData'))  as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo'))  as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb'))  as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))  as CHAR)), '_',
+										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))  as CHAR)))),
+		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
+		strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine'))),
+		strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
+		strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
+		strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study'))),
+		strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation'))),
+		strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
+		strategy_other_specify = IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')), ''),
+		questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
+		main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'))),
+		data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'))),
+		specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'))),
+		publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'))),
+		update_time = NOW()
+		WHERE cohort_id = new_id;
+		-- update section status
+		IF ROW_COUNT() > 0 THEN
+			UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
+			WHERE cohort_id = new_id AND page_code = 'A';
+		END IF;
+		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 1) THEN
+			UPDATE person 
+			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
+				`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
+				phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
+				country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
+				email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
 				update_time = NOW()
-				WHERE cohort_id = `targetID`;
-                -- update section status
-                IF ROW_COUNT() > 0 THEN
-					UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
-                    WHERE cohort_id = `targetID` AND page_code = 'A';
-				END IF;
-				IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 1) THEN
-					UPDATE person 
-					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
-						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
-						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
-						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
-						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
-						update_time = NOW()
-					WHERE cohort_id = `targetID` and category_id = 1;
-                ELSE
-					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
-                    VALUES (targetID, 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
-							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
-                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
-                            NOW(), NOW());
-                END IF;
-				IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 2) THEN
-					UPDATE person
-					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
-						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
-						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
-						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
-						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
-						update_time = NOW()
-					WHERE cohort_id = `targetID` and category_id = 2;
-               ELSE
-					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
-                    VALUES (targetID, 2, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
-							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
-                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
-                            NOW(), NOW());
-                END IF; 
-                IF EXISTS (SELECT * FROM person WHERE cohort_id = targetID AND category_id = 4) THEN
-					UPDATE person
-					SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
-						`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
-						phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
-						country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
-						email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
-						update_time = NOW()
-					WHERE cohort_id = `targetID` and category_id = 4;
-				ELSE
-					INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
-                    VALUES (targetID, 4, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
-							if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
-                            JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
-                            if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
-                            NOW(), NOW());
-                END IF; 
-                
-				SET @investigators = JSON_UNQUOTE(JSON_EXTRACT(info, '$.investigators'));
-                WHILE i < JSON_LENGTH(@investigators) DO
-					SELECT JSON_EXTRACT(@investigators, concat('$[',i,']')) INTO @investigator;
-					if exists(select * from person where id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'))) then
-						UPDATE person 
-						SET `name` = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
-							institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')),
-							email = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email'))
-						WHERE id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
-					else 
-						Insert into person (cohort_id, category_id, `name`, institution, email) values (targetID, 3,  JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
-                        JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')));
-                    end if;
-					SELECT i + 1 INTO i;
-				END WHILE;
-            END;         
-        ELSE
-			BEGIN
-				INSERT INTO cohort (`name`, acronym, `status`, publish_by, create_by, create_time, update_time) VALUES (
-					JSON_UNQUOTE(JSON_EXTRACT(info, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.acronym')), 'draft', null, 3, NOW(), NOW()
-                );
-                SELECT last_insert_id() into @latest_cohort;
-				INSERT INTO cohort_basic (
-					cohort_id, cohort_name, cohort_acronym, cohort_web_site, date_completed, clarification_contact, sameAsSomeone, cohort_description,
-					eligible_gender_id, eligible_disease, eligible_disease_cancer_specify, eligible_disease_other_specify,
-					enrollment_total, enrollment_year_start, enrollment_year_end, enrollment_ongoing, enrollment_target,
-					enrollment_year_complete, enrollment_age_min, enrollment_age_max, enrollment_age_median, enrollment_age_mean,
-					current_age_min, current_age_max, current_age_median, current_age_mean, time_interval, most_recent_year,
-					data_collected_in_person, data_collected_phone, data_collected_paper, data_collected_web, data_collected_other,
-					data_collected_other_specify, restrictions, restrictions_other_specify, strategy_routine, strategy_mailing,
-					strategy_aggregate_study, strategy_individual_study, strategy_invitation, strategy_other, strategy_other_specify,
-					-- questionnaire_file_attached, main_cohort_file_attached, data_file_attached, specimen_file_attached, publication_file_attached,
-                    
-					questionnaire_url, main_cohort_url, data_url, specimen_url, publication_url, create_time, update_time)
-				VALUES
-					(
-						@latest_cohort, (JSON_EXTRACT(info, '$.name')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.acronym')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.webSite')),
-                        if(@completionDate is not null, replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterRight')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.description')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibleGender')), IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.hasCancerSite')) = 'true', 1 , 0), 
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerSites')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligibilityCriteriaOther')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrolledTotal')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollStartYear')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollEndYear')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollOnGoing')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.numOfPlans')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.yearToComplete')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMinAge')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMaxAge')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMedianAge')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.baseLineMeanAge')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMinAge')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMaxAge')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMedianAge')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.currentMeanAge')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.timeInterval')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentYear')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedInPerson')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPhone')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedPaper')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedWeb')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOther')), IF(data_collected_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collectedOtherSpecify')), ''),
-						IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 1, '1_0_0_0_0_0_0_0', CONCAT('0_', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) as CHAR), '_',
-						CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) as CHAR), '_', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData')) as CHAR), '_',
-						CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo')) as CHAR), '_', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb')) as CHAR), '_',
-						CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) as CHAR), '_', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) as CHAR))), 
-						IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyRoutine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyMailing')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyAggregateStudy')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyIndividualStudy')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyInvitation')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOther')),
-						IF(strategy_other = 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategyOtherSpecify')), ''),
-                       
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl')),
-						JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl')), NOW(), NOW()
-					);
-				
-                
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, country_code, email, create_time, update_time)
-					VALUES(@latest_cohort, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.completerCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')), NOW(), NOW());
-					
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, country_code, email, create_time, update_time)
-					VALUES(@latest_cohort, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.contacterCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')), NOW(), NOW());
-					
-					INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, country_code, create_time, update_time)
-					VALUES(@latest_cohort, 4, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')),
-					'', JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')), JSON_UNQOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')), NOW(), NOW());
-					
-					SET @investigators = JSON_UNQUOTE(JSON_EXTRACT(info, '$.investigators'));
-					WHILE i < JSON_LENGTH(@investigators) DO
-						SELECT JSON_EXTRACT(@investigators, concat('$[',i,']')) INTO @investigator;
-						INSERT INTO person (cohort_id, category_id, `name`, `position`, institution, phone, email, create_time, update_time)
-						VALUES(@latest_cohort, 3, JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),'', JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institutioin')),
-							   '', JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')), NOW(), NOW());
-						SELECT i + 1 INTO i;
-					END WHILE;
-				END;
+			WHERE cohort_id = new_id and category_id = 1;
+		ELSE
+			INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+			VALUES (new_id, 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPosition'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerPhone'))),
+					JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerCountry')), 
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerEmail'))),
+					NOW(), NOW());
+		END IF;
+		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 2) THEN
+			UPDATE person
+			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
+				`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
+				phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
+				country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
+				email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
+				update_time = NOW()
+			WHERE cohort_id = new_id and category_id = 2;
+	   ELSE
+			INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+			VALUES (new_id, 2, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterName'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPosition'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterPhone'))),
+					JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterCountry')), 
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.contacterEmail'))),
+					NOW(), NOW());
+		END IF; 
+		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 4) THEN
+			UPDATE person
+			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
+				`position` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
+				phone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
+				country_code = JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
+				email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
+				update_time = NOW()
+			WHERE cohort_id = new_id and category_id = 4;
+		ELSE
+			INSERT INTO person(cohort_id, category_id, `name`, `position`, phone, country_code, email, create_time, update_time)
+			VALUES (new_id, 4, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorName'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPosition'))),
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorPhone'))),
+					JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorCountry')), 
+					if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.collaboratorEmail'))),
+					NOW(), NOW());
+		END IF; 
+		
+		SET @investigators = JSON_UNQUOTE(JSON_EXTRACT(info, '$.investigators'));
+		WHILE i < JSON_LENGTH(@investigators) DO
+			SELECT JSON_EXTRACT(@investigators, concat('$[',i,']')) INTO @investigator;
+		
+			IF targetID <> new_id THEN -- if duplication occurred
+				select new_PI_Id into @new_PI_Id from mapping_old_PI_Id_To_New WHERE old_PI_Id =  JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
+			else
+				set @new_PI_Id = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.personId'));
+			end if;
+		
+			if exists(select * from person where id = @new_PI_Id) then
+			begin
+				insert into temp_PI_IDS (upToDatePIId) values (@new_PI_Id);
+				update person 
+				SET `name` = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
+					institution = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')),
+					email = JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email'))
+				WHERE id = @new_PI_Id;
+				-- delete from mapping_old_PI_Id_To_New where new_PI_Id = @new_PI_Id;
+			end;
+			else 
+            begin
+				Insert into person (cohort_id, category_id, `name`, institution, email) values (new_id, 3,  JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.name')),
+				JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.institution')), JSON_UNQUOTE(JSON_EXTRACT(@investigator, '$.email')));
+				insert into temp_PI_IDS (upToDatePIId) values (last_insert_id());
+			end;
+			end if;
+			SELECT i + 1 INTO i;
+		END WHILE;
+		
+		delete from person where cohort_id = new_id and category_id = 3 and id not in (select upToDatePIId from temp_PI_IDS);
+		TRUNCATE TABLE mapping_old_PI_Id_To_New;
 
-        END IF;
+        -- END IF; */
         -- attachment_type: 1 for files, 0 for websites
         -- category: 1 for main website, 2 for questionnaire, 3 for main protocol, 4 for data policy, 5 for specimen, 6 for publication
         -- set @questionnaireFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
@@ -1348,6 +1337,17 @@ BEGIN
  commit;
 	
     SELECT flag AS rowsAffacted;
+    if targetID <> new_id then 
+    begin
+		SELECT id as personId, cohort_id, category_id,
+        `name`, `position`, institution, phone, country_code,
+        email, create_time, update_time from person
+        where cohort_id = new_id and category_id = 3;
+        SELECT new_id as duplicated_cohort_id;
+        SELECT `status` from cohort where id = new_id;
+	end; 
+	end if;
+    
 END //
 
 
@@ -1412,11 +1412,11 @@ END //
 
 DROP PROCEDURE IF EXISTS `get_cohort_basic_info` //
 
-CREATE PROCEDURE `get_cohort_basic_info`(in `targetID` int)
+CREATE  PROCEDURE `get_cohort_basic_info`(in `targetID` int)
 BEGIN
 	SELECT 
-		cohort_id
-        ,cohort_name
+		-- cohort_id
+        cohort_name
         ,cohort_acronym
         ,cohort_web_site
         ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
@@ -1486,238 +1486,271 @@ BEGIN
     from person where category_id = 4 and cohort_id = `targetID`;
     
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
+    
+    select `status` as cohort_status from cohort where id = targetID;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: upsert_enrollment_count
 -- -----------------------------------------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS upsert_enrollment_count //
+DROP PROCEDURE IF EXISTS update_enrollment_count //
 
-CREATE PROCEDURE `upsert_enrollment_count`(in id int(11), in info JSON)
+CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
+	DECLARE new_id INT DEFAULT 0;
+    DECLARE flag INT DEFAULT 1;
+ 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+    
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+    IF @cohort_status = 'published' then 
+    call select_unpublished_cohort_id(targetID, new_id); 
+    else
+     set new_id = targetID;
+    END IF;
+    
+     /*
+    *  select_unpublished_cohort_id should retunr a cohort_id not in published status
+    * if new_id not 0 (default value), continue
+    */
+ 
+    
+  IF new_id > 0  THEN
+		BEGIN
+
 	SET @recentDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentDate'));
 
-	if exists (select * from enrollment_count where cohort_id = `id`) then
+	if exists (select * from enrollment_count where cohort_id = new_id) then
 		update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')) where
-        race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')) where
-        race_id=1 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')) where
-        race_id=1 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."121"')) where
-        race_id=1 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."122"')) where
-        race_id=1 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."123"')) where
-        race_id=1 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."131"')) where
-        race_id=1 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."132"')) where
-        race_id=1 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."133"')) where
-        race_id=1 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=1 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."211"')) where
-        race_id=2 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."212"')) where
-        race_id=2 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."213"')) where
-        race_id=2 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."221"')) where
-        race_id=2 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."222"')) where
-        race_id=2 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."223"')) where
-        race_id=2 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."231"')) where
-        race_id=2 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."232"')) where
-        race_id=2 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."233"')) where
-        race_id=2 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=2 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."311"')) where
-        race_id=3 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."312"')) where
-        race_id=3 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."313"')) where
-        race_id=3 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."321"')) where
-        race_id=3 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."322"')) where
-        race_id=3 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."323"')) where
-        race_id=3 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."331"')) where
-        race_id=3 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."332"')) where
-        race_id=3 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."333"')) where
-        race_id=3 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=3 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."411"')) where
-        race_id=4 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."412"')) where
-        race_id=4 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."413"')) where
-        race_id=4 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."421"')) where
-        race_id=4 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."422"')) where
-        race_id=4 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."423"')) where
-        race_id=4 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."431"')) where
-        race_id=4 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."432"')) where
-        race_id=4 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."433"')) where
-        race_id=4 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=4 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."511"')) where
-        race_id=5 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."512"')) where
-        race_id=5 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."513"')) where
-        race_id=5 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."521"')) where
-        race_id=5 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."522"')) where
-        race_id=5 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."523"')) where
-        race_id=5 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."531"')) where
-        race_id=5 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."532"')) where
-        race_id=5 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."533"')) where
-        race_id=5 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=5 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."611"')) where
-        race_id=6 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."612"')) where
-        race_id=6 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."613"')) where
-        race_id=6 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."621"')) where
-        race_id=6 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."622"')) where
-        race_id=6 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."623"')) where
-        race_id=6 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."631"')) where
-        race_id=6 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."632"')) where
-        race_id=6 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."633"')) where
-        race_id=6 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=6 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."711"')) where
-        race_id=7 and ethnicity_id=1 and gender_id=1 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=1 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."712"')) where
-        race_id=7 and ethnicity_id=1 and gender_id=2 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=1 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."713"')) where
-        race_id=7 and ethnicity_id=1 and gender_id=3 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=1 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."721"')) where
-        race_id=7 and ethnicity_id=2 and gender_id=1 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=2 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."722"')) where
-        race_id=7 and ethnicity_id=2 and gender_id=2 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=2 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."723"')) where
-        race_id=7 and ethnicity_id=2 and gender_id=3 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=2 and gender_id=3 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')) where
-        race_id=7 and ethnicity_id=3 and gender_id=1 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=3 and gender_id=1 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')) where
-        race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=3 and gender_id=2 and cohort_id=new_id;
         update enrollment_count set enrollment_counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')) where
-        race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=`id`;
+        race_id=7 and ethnicity_id=3 and gender_id=3 and cohort_id=new_id;
         
         update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')) where 
-        cohort_id = `id` and page_code = 'B';
-	ELSE 
+        cohort_id = new_id and page_code = 'B';
+	/*ELSE 
 		INSERT enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
         VALUES 
-        (`id`, 1, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')), now(), now()),
-        (`id`, 1, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')), now(), now()),
-        (`id`, 1, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')), now(), now()),
-        (`id`, 1, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."121"')), now(), now()),
-        (`id`, 1, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."122"')), now(), now()),
-        (`id`, 1, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."123"')), now(), now()),
-        (`id`, 1, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."131"')), now(), now()),
-        (`id`, 1, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."132"')), now(), now()),
-        (`id`, 1, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."133"')), now(), now()),
+        (new_id, 1, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."111"')), now(), now()),
+        (new_id, 1, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."112"')), now(), now()),
+        (new_id, 1, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."113"')), now(), now()),
+        (new_id, 1, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."121"')), now(), now()),
+        (new_id, 1, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."122"')), now(), now()),
+        (new_id, 1, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."123"')), now(), now()),
+        (new_id, 1, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."131"')), now(), now()),
+        (new_id, 1, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."132"')), now(), now()),
+        (new_id, 1, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."133"')), now(), now()),
         
-        (`id`, 2, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."211"')), now(), now()),
-        (`id`, 2, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."212"')), now(), now()),
-        (`id`, 2, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."213"')), now(), now()),
-        (`id`, 2, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."221"')), now(), now()),
-        (`id`, 2, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."222"')), now(), now()),
-        (`id`, 2, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."223"')), now(), now()),
-        (`id`, 2, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."231"')), now(), now()),
-        (`id`, 2, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."232"')), now(), now()),
-        (`id`, 2, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."233"')), now(), now()),
+        (new_id, 2, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."211"')), now(), now()),
+        (new_id, 2, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."212"')), now(), now()),
+        (new_id, 2, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."213"')), now(), now()),
+        (new_id, 2, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."221"')), now(), now()),
+        (new_id, 2, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."222"')), now(), now()),
+        (new_id, 2, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."223"')), now(), now()),
+        (new_id, 2, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."231"')), now(), now()),
+        (new_id, 2, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."232"')), now(), now()),
+        (new_id, 2, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."233"')), now(), now()),
         
-        (`id`, 3, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."311"')), now(), now()),
-        (`id`, 3, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."312"')), now(), now()),
-        (`id`, 3, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."313"')), now(), now()),
-        (`id`, 3, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."321"')), now(), now()),
-        (`id`, 3, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."322"')), now(), now()),
-        (`id`, 3, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."323"')), now(), now()),
-        (`id`, 3, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."331"')), now(), now()),
-        (`id`, 3, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."332"')), now(), now()),
-        (`id`, 3, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."333"')), now(), now()),
+        (new_id, 3, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."311"')), now(), now()),
+        (new_id, 3, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."312"')), now(), now()),
+        (new_id, 3, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."313"')), now(), now()),
+        (new_id, 3, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."321"')), now(), now()),
+        (new_id, 3, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."322"')), now(), now()),
+        (new_id, 3, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."323"')), now(), now()),
+        (new_id, 3, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."331"')), now(), now()),
+        (new_id, 3, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."332"')), now(), now()),
+        (new_id, 3, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."333"')), now(), now()),
         
-        (`id`, 4, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."411"')), now(), now()),
-        (`id`, 4, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."412"')), now(), now()),
-        (`id`, 4, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."413"')), now(), now()),
-        (`id`, 4, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."421"')), now(), now()),
-        (`id`, 4, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."422"')), now(), now()),
-        (`id`, 4, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."423"')), now(), now()),
-        (`id`, 4, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."431"')), now(), now()),
-        (`id`, 4, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."432"')), now(), now()),
-        (`id`, 4, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."433"')), now(), now()),
+        (new_id, 4, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."411"')), now(), now()),
+        (new_id, 4, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."412"')), now(), now()),
+        (new_id, 4, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."413"')), now(), now()),
+        (new_id, 4, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."421"')), now(), now()),
+        (new_id, 4, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."422"')), now(), now()),
+        (new_id, 4, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."423"')), now(), now()),
+        (new_id, 4, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."431"')), now(), now()),
+        (new_id, 4, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."432"')), now(), now()),
+        (new_id, 4, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."433"')), now(), now()),
         
-        (`id`, 5, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."511"')), now(), now()),
-        (`id`, 5, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."512"')), now(), now()),
-        (`id`, 5, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."513"')), now(), now()),
-        (`id`, 5, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."521"')), now(), now()),
-        (`id`, 5, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."522"')), now(), now()),
-        (`id`, 5, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."523"')), now(), now()),
-        (`id`, 5, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."531"')), now(), now()),
-        (`id`, 5, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."532"')), now(), now()),
-        (`id`, 5, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."533"')), now(), now()),
+        (new_id, 5, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."511"')), now(), now()),
+        (new_id, 5, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."512"')), now(), now()),
+        (new_id, 5, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."513"')), now(), now()),
+        (new_id, 5, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."521"')), now(), now()),
+        (new_id, 5, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."522"')), now(), now()),
+        (new_id, 5, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."523"')), now(), now()),
+        (new_id, 5, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."531"')), now(), now()),
+        (new_id, 5, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."532"')), now(), now()),
+        (new_id, 5, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."533"')), now(), now()),
         
-        (`id`, 6, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."611"')), now(), now()),
-        (`id`, 6, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."612"')), now(), now()),
-        (`id`, 6, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."613"')), now(), now()),
-        (`id`, 6, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."621"')), now(), now()),
-        (`id`, 6, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."622"')), now(), now()),
-        (`id`, 6, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."623"')), now(), now()),
-        (`id`, 6, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."631"')), now(), now()),
-        (`id`, 6, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."632"')), now(), now()),
-        (`id`, 6, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."633"')), now(), now()),
+        (new_id, 6, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."611"')), now(), now()),
+        (new_id, 6, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."612"')), now(), now()),
+        (new_id, 6, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."613"')), now(), now()),
+        (new_id, 6, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."621"')), now(), now()),
+        (new_id, 6, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."622"')), now(), now()),
+        (new_id, 6, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."623"')), now(), now()),
+        (new_id, 6, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."631"')), now(), now()),
+        (new_id, 6, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."632"')), now(), now()),
+        (new_id, 6, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."633"')), now(), now()),
         
-        (`id`, 7, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."711"')), now(), now()),
-        (`id`, 7, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."712"')), now(), now()),
-        (`id`, 7, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."713"')), now(), now()),
-        (`id`, 7, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."721"')), now(), now()),
-        (`id`, 7, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."722"')), now(), now()),
-        (`id`, 7, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."723"')), now(), now()),
-        (`id`, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
-        (`id`, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
-        (`id`, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
+        (new_id, 7, 1, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."711"')), now(), now()),
+        (new_id, 7, 1, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."712"')), now(), now()),
+        (new_id, 7, 1, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."713"')), now(), now()),
+        (new_id, 7, 2, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."721"')), now(), now()),
+        (new_id, 7, 2, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."722"')), now(), now()),
+        (new_id, 7, 2, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."723"')), now(), now()),
+        (new_id, 7, 3, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$."731"')), now(), now()),
+        (new_id, 7, 3, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$."732"')), now(), now()),
+        (new_id, 7, 3, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$."733"')), now(), now());
         
         insert into cohort_edit_status (cohort_id, page_code, `status`) 
-        values (`id`, 'B', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')));
+        values (new_id, 'B', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus'))); */
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@recentDate is not null && @recentDate != '', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
-	where cohort_id = `id`;
-    SET @rowcount = ROW_COUNT();
-    SELECT @rowcount AS rowsAffacted;
+    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
+	where cohort_id = new_id;
+    -- SET @rowcount = ROW_COUNT();
+    SELECT flag AS rowsAffacted;
+    if targetID <> new_id then 
+		 SELECT new_id as duplicated_cohort_id;
+         SELECT `status` from cohort where id = new_id;
+    end if;
+    end;
+    end if;
+    
 END //
-
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: get_enrollment_counts
 -- -----------------------------------------------------------------------------------------------------------
@@ -1774,10 +1807,11 @@ end //
 
 DROP PROCEDURE IF EXISTS upsert_major_content //
 
-CREATE  PROCEDURE `upsert_major_content`(in targetID int, in info JSON)
+CREATE  PROCEDURE `upsert_major_content`(in Old_targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
-   
+	DECLARE targetID INT DEFAULT 0;
+    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
@@ -1785,6 +1819,14 @@ begin
 	END;
 
     start transaction;
+   
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
+    
 	if exists (select * from major_content where cohort_id = targetID) then
     begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp'))) where cohort_id = targetID and category_id = 1 ;
@@ -1826,7 +1868,7 @@ begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarOtherFollowUp'))) where cohort_id = targetID and category_id = 19;
 
 		update major_content set other_specify_baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarBaseLineSpecify'))), other_specify_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.noncigarFollowUpSpecify'))) where cohort_id = targetID and category_id = 19 ;
-
+		
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalFollowUp'))) where cohort_id = targetID and category_id = 20 ;
 
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sleepFollowUp'))) where cohort_id = targetID and category_id = 21 ;
@@ -1882,7 +1924,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
         where 
         cohort_id = targetID and page_code = 'C';
     end;
-    else
+    /*else
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 2, JSON_UNQUOTE(JSON_EXTRACT(info, '$.educationBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.educationFollowUp')), '', '', NOW(), NOW());
 		insert into major_content (cohort_id, category_id, baseline, followup, other_specify_baseline, other_specify_followup, create_time, update_time) values (targetID, 3, JSON_UNQUOTE(JSON_EXTRACT(info, '$.maritalStatusBaseLine')), JSON_UNQUOTE(JSON_EXTRACT(info, '$.maritalStatusFollowUp')), '', '', NOW(), NOW());
@@ -1928,9 +1970,17 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
 	
 		insert into cohort_edit_status (cohort_id, page_code, `status`) 
         values (targetID, 'C', JSON_UNQUOTE(JSON_EXTACT(info, '$.sectionCStatus')));
+        */
     end if;
     commit;
+    
     SELECT flag as rowAffacted;
+    if targetID <> Old_targetID then 
+		 SELECT targetID as duplicated_cohort_id;
+         SELECT `status` from cohort where id = targetID;
+    end if;
+    end;
+    end if;
 end //
 
 DROP PROCEDURE IF EXISTS `select_mortality` //
@@ -1960,8 +2010,15 @@ end//
 
 DROP PROCEDURE if EXISTS `update_mortality` //
 
-CREATE PROCEDURE `update_mortality` (in targetID int, in info JSON)
+CREATE PROCEDURE `update_mortality` (in Old_targetID int, in info JSON)
 BEGIN
+	DECLARE targetID INT DEFAULT 0;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
 	if exists (select * from mortality where cohort_id = `targetID`) then 
 		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) where cohort_id = `targetID`;
 		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) where cohort_id = `targetID`;
@@ -2018,6 +2075,14 @@ BEGIN
 		values (targetID, 'E', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')));
 	end if;
 	select row_count() as rowAffacted;
+    if targetID <> Old_targetID then
+    begin
+		SELECT targetID as duplicated_cohort_id;
+		SELECT `status` from cohort where id = targetID;
+    end;
+    end if;
+    end;
+    end if;
 end //
 
 DROP PROCEDURE if EXISTS `get_specimen_counts` //
@@ -2033,19 +2098,33 @@ begin
 	where cohort_id = targetID order by cancer_id, specimen_id;
 end //
 
-DROP PROCEDURE if EXISTS `update_specimen_count` //
+DROP PROCEDURE if EXISTS `update_specimen_section_data` //
 
-CREATE  PROCEDURE `update_specimen_count`(in cohortID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_section_data`(in cohortID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
+    DECLARE cohortID INT DEFAULT 0;
+    /*
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-  SELECT `status` INTO @cohort_status FROM cohort WHERE id = `cohortID`;
-  IF @cohort_status <> 'published' THEN
+    */
+    SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(targetID, cohortID); 
+    else 
+     set cohortID = targetID;
+    END IF;
+    /*
+    *  select_unpublished_cohort_id should retunr a cohort_id not in published status
+    * if cohortID not 0 (default value), continue
+    */
+ 
+    
+  IF cohortID > 0  THEN
 		BEGIN
         
   SET @counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$.counts')) ;
@@ -2294,7 +2373,7 @@ update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( inf
 update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberOfMetabolomicsStudies')) where specimen_id = 46 and cohort_id = `cohortID`;
   
   update specimen set bio_other_baseline_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify')),
-bio_other_other_time_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify')),
+  bio_other_other_time_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify')),
 bio_meta_outcomes_other_study_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify')),
 bio_member_in_study = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy')),
 bio_labs_used_for_analysis = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis')),
@@ -2308,7 +2387,8 @@ bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent')
   select flag as rowsAffacted;
   end ;
   end if ;
-end //
+  
+  end //
 
 
 DROP PROCEDURE if EXISTS `select_questionnaire_specimen_info` //
@@ -2342,9 +2422,9 @@ BEGIN
 
 END //
 
-DROP PROCEDURE IF EXISTS `inspect_cohort` //
+DROP PROCEDURE IF EXISTS `select_unpublished_cohort_id` //
 
-CREATE  PROCEDURE `inspect_cohort`(in targetID int, out new_id int)
+CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int)
 begin
     set new_id = targetID; -- assume it is draft
     if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
@@ -2552,8 +2632,16 @@ end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
 
-CREATE PROCEDURE `update_dlh` (in targetID int, in info JSON)
+CREATE PROCEDURE `update_dlh` (in Old_targetID int, in info JSON)
 BEGIN
+	DECLARE targetID INT DEFAULT Old_targetID;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
+    
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2613,6 +2701,25 @@ BEGIN
 		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
 	end if;
 	select row_count() as rowAffacted;
-end//
+    if targetID <> Old_targetID then 
+		 SELECT targetID as duplicated_cohort_id;
+         SELECT `status` from cohort where id = targetID;
+    end if;
+    end;
+    end if;
+end //
 
+DROP PROCEDURE IF EXISTS reset_cohort_status //
+
+CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30))
+begin
+	DECLARE rowAffacted int default 0;
+	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
+    begin
+		update cohort set `status` = cohort_status where id = targetID;
+        if row_count() > 0 then set rowAffacted = 1; end if;
+	end;
+	end if;
+    select rowAffacted;
+ end //
 DELIMITER ;

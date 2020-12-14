@@ -8,6 +8,12 @@
 
 
 /* according to Auestionnaire v8,1m change 'Both' to 'All' for gender option  */
+CREATE TABLE IF NOT EXISTS `mapping_old_PI_Id_To_New` (
+  `cohort_id` int NOT NULL,
+  `old_PI_Id` int NOT NULL,
+  `new_PI_Id` int NOT NULL,
+  PRIMARY KEY (`new_PI_Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 update lu_gender set gender = 'All' where id = 4;
 
@@ -69,6 +75,9 @@ drop procedure if exists temp_update_3_0_0 //
 create procedure temp_update_3_0_0()
 begin
     start transaction;
+
+    # update dev admin user name
+    update user set user_name = 'admin' where id = 1;
 
     # check if unique index exists on cancer_count(cohort_id, cancer_id, gender_id, case_type_id)
     if (select COUNT(*) != 4
