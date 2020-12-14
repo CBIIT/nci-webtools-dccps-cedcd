@@ -13,7 +13,10 @@ import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
 import ManageCohort from '../Admin/ManageCohort'
 import ReviewCohort from '../Admin/ReviewCohort'
 import NewCohort from '../Admin/AddNewCohort'
+import SelectCohort from '../SelectCohort/SelectCohort';
 import NewUser from '../Admin/AddNewUser'
+import Unauthorized from '../Unauthorized/Unauthorized';
+
 
 class MainContent extends Component {
   constructor(props) {
@@ -44,10 +47,12 @@ class MainContent extends Component {
         <Route path={match + '/contact'} component={Contact} />
         <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} />} />
         <Route exact path={match + '/cohort'} component={Information} />
+        <Route path={match + '/cohort/select'} component={SelectCohort} />
         <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />} />
         <Route path={match + '/admin/viewcohort/:id'} render={() => <ReviewCohort setAdmin={this.props.setAdmin} />} />
         <Route path={match + '/admin/newcohort'} component={NewCohort} />
         <Route path={match + '/admin/newuser'} component={NewUser} />
+        <Route path={match + '/unauthorized'} component={Unauthorized} />
       </Switch>
     );
   }

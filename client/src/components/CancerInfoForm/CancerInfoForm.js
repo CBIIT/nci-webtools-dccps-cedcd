@@ -98,6 +98,18 @@ const CancerInfoForm = ({ ...props }) => {
         counts.forEach(c => setCount(c.key, c.value));
     }, [cohort, lookup]);
 
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+              .then(result => {
+                  if (result && result.status === 200){
+                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+                  }
+              })
+        }
+    }
 
     function getValidationErrors(form) {
         const isNull =  v =>['', undefined, null].includes(v)
@@ -318,26 +330,27 @@ const CancerInfoForm = ({ ...props }) => {
 
                 <div className={"form-group"}>
                     <label htmlFor="ci_confirmed_cancer_date" className="d-block">
-                        D.3 How were your cancer cases ascertained?
+                        D.3 How were your cancer cases ascertained? (select all that apply)
                     </label>
 
                     {[
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report'},
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry'},
                         {type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review'},
-                        {type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)'},
+                        {type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)', onChange: e => setFormValue('ci_ascertained_other_specify', '')},
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
-                    {+form.ci_ascertained_other === 1 && <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
+                    <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
                         <textarea 
                             className="form-control resize-vertical" 
                             name="ci_ascertained_other_specify" 
                             value={form.ci_ascertained_other_specify || ''} 
                             onChange={e => setFormValue(e.target.name, e.target.value)} 
+                            placeholder="300 Characters Max"
                             maxlength={300}
+                            disabled={+form.ci_ascertained_other !== 1}
                         />
-                        <span class="help-block">300 Characters Max</span>
-                    </div>}
+                    </div>
                 </div>
 
 
@@ -399,7 +412,7 @@ const CancerInfoForm = ({ ...props }) => {
                     
                     <div className={"form-group"}>
                         <label htmlFor="ci_confirmed_cancer_date" className="d-block">
-                            D.6a Specify the treatment information you have:
+                            D.6a Specify the treatment information you have (select all that apply):
                         </label>
 
                         {[
@@ -408,26 +421,26 @@ const CancerInfoForm = ({ ...props }) => {
                             {type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy'},
                             {type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy'},
                             {type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant'},
-                            {type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)'},
+                            {type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)',  onChange: e => setFormValue('ci_treatment_data_other_specify', '')},
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
-                        {+form.ci_treatment_data_other === 1 && 
-                            <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
-                                <textarea 
-                                    className="form-control resize-vertical" 
-                                    name="ci_treatment_data_other_specify" 
-                                    disabled={+form.ci_cancer_treatment_data === 0}
-                                    value={form.ci_treatment_data_other_specify || ''} 
-                                    onChange={e => setFormValue(e.target.name, e.target.value)} 
-                                    maxlength={200}
-                                />
-                                <span class="help-block">200 Characters Max</span>
-                            </div>}
+                        <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
+                            <textarea 
+                                className="form-control resize-vertical" 
+                                name="ci_treatment_data_other_specify" 
+                                disabled={+form.ci_cancer_treatment_data === 0}
+                                value={form.ci_treatment_data_other_specify || ''} 
+                                onChange={e => setFormValue(e.target.name, e.target.value)} 
+                                placeholder="200 Characters Max"
+                                maxlength={200}
+                                disabled={+form.ci_treatment_data_other !== 1}
+                            />
+                        </div>
                     </div>
 
                     <div className={"form-group"}>
                         <label htmlFor="ci_confirmed_cancer_date" className="d-block">
-                            D.6b Specify the data sources the treatment information is from:
+                            D.6b Specify the data sources the treatment information is from (select all that apply):
                         </label>
 
                         {[
@@ -435,20 +448,21 @@ const CancerInfoForm = ({ ...props }) => {
                             {type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record'},
                             {type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction'},
                             {type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire'},
-                            {type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)'},
+                            {type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)',  onChange: e => setFormValue('ci_data_source_other_specify', '')},
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
 
-                        {+form.ci_data_source_other === 1 && <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
+                        <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
                             <textarea 
                                 className="form-control  resize-vertical" 
                                 name="ci_data_source_other_specify" 
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_data_source_other_specify || ''} 
                                 onChange={e => setFormValue(e.target.name, e.target.value)} 
+                                placeholder="200 Characters Max"
                                 maxlength={200}
+                                disabled={+form.ci_data_source_other !== 1}
                             />
-                            <span class="help-block">200 Characters Max</span>
-                        </div>}
+                        </div>
                     </div>
 
                     <div className="form-group">
@@ -489,23 +503,22 @@ const CancerInfoForm = ({ ...props }) => {
                         D.9 Do you have tumor genetic markers data?
                     </label>
                     {[
-                        {value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No'},
-                        {value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)'},
+                        {value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No', onChange: e => setFormValue('ci_tumor_genetic_markers_data_describe', '')},
+                        {value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)', onChange: e => setFormValue('ci_tumor_genetic_markers_data_describe', '')},
                     ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
 
-
-                    {+form.ci_tumor_genetic_markers_data === 1 && 
-                        <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                            <textarea 
-                                className="form-control resize-vertical" 
-                                name="ci_tumor_genetic_markers_data_describe" 
-                                length="40" 
-                                value={form.ci_tumor_genetic_markers_data_describe} 
-                                onChange={e => setFormValue(e.target.name, e.target.value)} 
-                                maxlength={200}
-                            />
-                            <span class="help-block">200 Characters Max</span>
-                        </div>}
+                    <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                        <textarea 
+                            className="form-control resize-vertical" 
+                            name="ci_tumor_genetic_markers_data_describe" 
+                            length="40" 
+                            value={form.ci_tumor_genetic_markers_data_describe} 
+                            onChange={e => setFormValue(e.target.name, e.target.value)} 
+                            placeholder="200 Characters Max"
+                            maxlength={200}
+                            disabled={+form.ci_tumor_genetic_markers_data !== 1}
+                        />
+                    </div>
                 </div>
 
                 <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
@@ -545,22 +558,21 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
       */}
     
-        <div style={{position: 'relative'}}>
-            <span  onClick={() => props.sectionPicker('C')} style={{position: 'relative', float: 'left'}}>
-                <input type='button' className='btn btn-primary' value='Previous' />
-            </span>
-            <span style={{position: 'relative', float: 'right'}}>
-                <span onClick={handleSave}>
-                    <input type='button' className='btn btn-primary' value='Save' />
+    <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('C')}  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('E')} />
                 </span>
-                <span onClick={handleSaveContinue}>
-                    <input type='button' className='btn btn-primary' value='Save & Continue' />
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
-                <span onClick={() => alert('submitted')}>
-                    <input type='button' className='btn btn-primary' value='Submit For Review' disabled = {cohortStatus === 'published' || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'}/>
-                </span> 
-            </span>
-        </div> 
+            </div>  
     </div>
 }
 

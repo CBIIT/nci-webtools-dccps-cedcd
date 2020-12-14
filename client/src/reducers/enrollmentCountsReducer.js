@@ -23,6 +23,7 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
                 hasLoaded: action.value
             }
         case t.setSectionBStatus:
+            console.log('updating sectionB status')
             return {
                 ...state,
                 sectionBStatus: action.value

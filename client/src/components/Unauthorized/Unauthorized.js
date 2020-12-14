@@ -1,10 +1,12 @@
 import React from 'react';
 
-export default function Unauthorized(props) {
+export default function Unauthorized() {
     return <>
-        <div className="text-center">
-            <h1>Unauthorized</h1>
-            <p>You are not authorized to view this resource. Please log in as a user with the appropriate authorization. </p>
-        </div>
+        <h1 className="welcome pg-title">
+            Unauthorized
+        </h1>
+        <p class="welcome">
+            You are not authorized to access this resource. Please log in as an authorized user.
+        </p>
     </>
 }
