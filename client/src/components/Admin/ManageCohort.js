@@ -283,8 +283,8 @@ class ManageCohort extends Component {
 		const list = this.state.list;
 		let content = list.map((item, index) => {
 			let id = item.id;
-			let view_url = '/cohort?id=' + id;
-			let review_url = '/admin/viewcohort/' + id;
+			//let view_url = '/cohort?id=' + id;
+			let review_url = `/admin/viewcohort/${item.status.toLowerCase()}/${id}`;
 			let view = "View";
 			let review = "Review";
 

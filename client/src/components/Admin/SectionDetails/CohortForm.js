@@ -483,9 +483,23 @@ const CohortForm = ({ ...props }) => {
                     </div>
                 </form>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {/*<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <span onClick={() => props.sectionPicker('B')} style={{ position: 'relative', float: 'Right' }}>
                         <input type='button' className='btn btn-primary' value='Next >>' />
+                    </span>
+                </div>*/}
+                <div style={{ position: 'relative' }}>
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' disabled style={{paddingLeft:'0', marginLeft: '0'}}/>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' style={{paddingRight:'0', marginRight: '0'}} onClick={() => props.sectionPicker('B')} />
+                    </span>
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                        <span className='col-md-offset-3 col-md-3 col-xs-6' style={{ margin: '0', padding: '0', float: 'right'}}>
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Reject' disabled />
+                        </span>
+                        <span className='col-md-offset-3 col-md-3 col-xs-6' style={{ margin: '0', padding: '0', float: 'right'}}>
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Approve' disabled style={{ marginRight: '5px', marginBottom: '5px' }} />
+                        </span>
                     </span>
                 </div>
             </div>

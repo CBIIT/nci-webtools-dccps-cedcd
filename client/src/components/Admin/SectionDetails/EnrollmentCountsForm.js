@@ -270,12 +270,22 @@ const EnrollmentCountsForm = ({ ...props }) => {
 
                 </form>
             </div>
-            <div style={{ position: 'relative' }}>
+            {/*<div style={{ position: 'relative' }}>
                 <span onClick={() => props.sectionPicker('A')} style={{ position: 'relative', float: 'left' }}>
                     <input type='button' className='btn btn-primary' value='<< Prev' />
                 </span>
                 <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'Right' }}>
                     <input type='button' className='btn btn-primary' value='Next >>' />
+                </span>
+            </div> */}
+            <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('A')} />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('C')} />
+                </span>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
                 </span>
             </div>
         </div>

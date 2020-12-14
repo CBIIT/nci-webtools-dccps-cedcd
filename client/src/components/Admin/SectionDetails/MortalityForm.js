@@ -211,11 +211,13 @@ const MortalityForm = ({ ...props }) => {
         </div>
 
         <div style={{ position: 'relative' }}>
-            <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='btn btn-primary' value='<< Prev' />
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('D')} />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('F')} />
             </span>
-            <span onClick={() => props.sectionPicker('F')} style={{ position: 'relative', float: 'Right' }}>
-                <input type='button' className='btn btn-primary' value='Next >>' />
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
             </span>
         </div>
     </div>
