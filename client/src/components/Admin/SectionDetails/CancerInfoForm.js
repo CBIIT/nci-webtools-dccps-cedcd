@@ -194,10 +194,9 @@ const CancerInfoForm = ({ ...props }) => {
                             className="form-control resize-vertical"
                             name="ci_ascertained_other_specify"
                             value={form.ci_ascertained_other_specify || ''}
-
+                            placeholder="300 Characters Max"
                             maxlength={300}
                         />
-                        <span class="help-block">300 Characters Max</span>
                     </div>}
                 </div>
 
@@ -256,10 +255,9 @@ const CancerInfoForm = ({ ...props }) => {
                                     name="ci_treatment_data_other_specify"
                                     disabled={+form.ci_cancer_treatment_data === 0}
                                     value={form.ci_treatment_data_other_specify || ''}
-
+                                    placeholder="200 Characters Max"
                                     maxlength={200}
                                 />
-                                <span class="help-block">200 Characters Max</span>
                             </div>}
                     </div>
 
@@ -282,10 +280,9 @@ const CancerInfoForm = ({ ...props }) => {
                                 name="ci_data_source_other_specify"
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_data_source_other_specify || ''}
-
+                                placeholder="200 Characters Max"
                                 maxlength={200}
                             />
-                            <span class="help-block">200 Characters Max</span>
                         </div>}
                     </div>
 
@@ -339,10 +336,9 @@ const CancerInfoForm = ({ ...props }) => {
                                 name="ci_tumor_genetic_markers_data_describe"
                                 length="40"
                                 value={form.ci_tumor_genetic_markers_data_describe}
-
+                                placeholder="200 Characters Max"
                                 maxlength={200}
                             />
-                            <span class="help-block">200 Characters Max</span>
                         </div>}
                 </div>
 
