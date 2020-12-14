@@ -1,8 +1,11 @@
 /* CSS Document */
-@import 'typography.css';
-@import 'forms.css';
-@import 'modal.css';
-@import 'login-button.css';
+@import '/assets/css/typography.css';
+@import '/assets/css/forms.css';
+@import '/assets/css/modal.css';
+@import '/assets/css/login-button.css';
+@import '~bootstrap/scss/bootstrap';
+@import '/assets/css/bootstrap.css';
+@import '/assets/css/bootstrap-utils.css';
 /* CORE-STRCTURE -------------------------------------------------------- */ 
 body {
   width: 100%;
@@ -511,7 +514,7 @@ th.comRowHeader:hover {
 /* DATA TABLES -------------------------------------------------------- */
 .section-expand {
   display: inline;
-  background: url(../img/arrow-square.png) no-repeat 1% 4px;
+  background: url('/assets/img/arrow-square.png') no-repeat 1% 4px;
   min-width: 15px;
   min-height: 15px;
   float: right;
@@ -522,7 +525,7 @@ th.comRowHeader:hover {
 .row-expand { /* Comes into place in Cancer Info & other sub-section of compare.aspx */
   margin-left: 10px;
   display: inline-block;
-  background: url(../img/arrow-square.png) no-repeat 1% 4px;
+  background: url('/assets/img/arrow-square.png') no-repeat 1% 4px;
   width: 15px;
   height: 15px;
 }
@@ -590,7 +593,7 @@ th.comRowHeader:hover {
 .icon_modal {
   display: inline;
   text-align: right;
-  background: url(../img/ico_modal.png);
+  background: url('/assets/img/ico_modal.png');
   background-repeat: no-repeat;
   background-size: 16px 16px;
   padding: 0 9px 0 9px;
@@ -599,7 +602,7 @@ th.comRowHeader:hover {
 }
 .icon_modal:hover {
   display: inline;
-  background: url(../img/ico_modal_hover.png);
+  background: url('/assets/img/ico_modal_hover.png');
   background-repeat: no-repeat;
   background-size: 16px 16px;
   padding: 0 9px 0 9px;
@@ -677,13 +680,13 @@ th.comRowHeader:hover {
   transition: all 200ms ease-out;
 }
 .btn-popover.prev {
-  background: url(../img/bg_popover_prev.png) 6px center no-repeat;
+  background: url('/assets/img/bg_popover_prev.png') 6px center no-repeat;
   float: left;
   clear: both;
   padding: 2px 10px 2px 16px;
 }
 .btn-popover.next {
-  background: url(../img/bg_popover_next.png) right 6px center no-repeat;
+  background: url('/assets/img/bg_popover_next.png') right 6px center no-repeat;
   float: right;
   padding: 2px 16px 2px 10px;
 }
@@ -692,7 +695,7 @@ th.comRowHeader:hover {
 }
 .popover[class*="tour-"] .popover-navigation *[data-role="end"].btn-popover.next.popover-last {
   position: relative !important;
-  background: url(../img/bg_popover_next.png) right 6px center no-repeat;
+  background: url('/assets/img/bg_popover_next.png') right 6px center no-repeat;
   float: right;
   padding: 2px 16px 2px 10px !important;
   margin: 0 !important;
