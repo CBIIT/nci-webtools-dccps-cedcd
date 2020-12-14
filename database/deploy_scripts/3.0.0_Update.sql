@@ -8,7 +8,7 @@
 
 
 /* according to Auestionnaire v8,1m change 'Both' to 'All' for gender option  */
-CREATE TABLE `mapping_old_PI_Id_To_New` (
+CREATE TABLE IF NOT EXISTS `mapping_old_PI_Id_To_New` (
   `cohort_id` int NOT NULL,
   `old_PI_Id` int NOT NULL,
   `new_PI_Id` int NOT NULL,
