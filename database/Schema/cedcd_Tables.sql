@@ -739,8 +739,9 @@ values (11,"Blood","bio_blood_baseline"),
 (41,"Metabolomic","bio_meta_fasting_sample"),
 (42,"Metabolomic","bio_meta_outcomes_in_cancer_study"),
 (43,"Metabolomic","bio_meta_outcomes_in_cvd_study"),
-(44,"Metabolomic","bio_meta_outcomes_in_other_study"),
-(45,"Metabolomic","bio_member_of_metabolomics_studies");
+(44,"Metabolomic","bio_member_of_metabolomics_studies")
+(45,"Metabolomic","bio_meta_outcomes_in_other_study"),
+(46,"Metabolomic","bio_member_of_metabolomics_studies");
 
 
 /*

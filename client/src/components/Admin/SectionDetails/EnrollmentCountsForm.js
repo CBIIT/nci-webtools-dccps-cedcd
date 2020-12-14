@@ -272,10 +272,10 @@ const EnrollmentCountsForm = ({ ...props }) => {
             </div>
             <div style={{ position: 'relative' }}>
                 <span onClick={() => props.sectionPicker('A')} style={{ position: 'relative', float: 'left' }}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
+                    <input type='button' className='btn btn-primary' value='<< Prev' />
                 </span>
                 <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'Right' }}>
-                    <input type='button' className='btn btn-primary' value='Next' />
+                    <input type='button' className='btn btn-primary' value='Next >>' />
                 </span>
             </div>
         </div>

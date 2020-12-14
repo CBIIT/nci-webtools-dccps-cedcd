@@ -5,6 +5,9 @@ import MajorContentForm from './SectionDetails/MajorContentForm'
 import CancerInfoForm from './SectionDetails/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from './SectionDetails/MortalityForm'
+import SpecimenForm from './SectionDetails/Specimens'
+import DataLinkageForm from './SectionDetails/DataLinkageForm'
+
 import ReviewQuestionnaire from './ReviewQuestionnaire'
 
 
@@ -29,6 +32,14 @@ const content = (currentSection, handleClick) => {
         case 'E':
             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
                 <MortalityForm />
+            </ReviewQuestionnaire>
+        case 'F':
+            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <DataLinkageForm />
+            </ReviewQuestionnaire>
+        case 'G':
+            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                <SpecimenForm />
             </ReviewQuestionnaire>
         default:
             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>

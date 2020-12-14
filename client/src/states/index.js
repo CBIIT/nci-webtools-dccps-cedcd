@@ -1,8 +1,8 @@
 const InitialStates = {
+    cohort_status: '',
     cohort: {
         hasLoaded: false,
         sectionAStatus: '',
-        cohort_Id: true,
         cohort_name: '',
         cohort_acronym: '',
         completionDate: '2020-10-12T05:00:00.000Z',
@@ -217,7 +217,7 @@ const InitialStates = {
         '833': 350,
         '841': 3150,
         'mostRecentDate': '2020-10-12T05:00:00.000Z',
-        'sectionBStatus': ''
+        sectionBStatus: ''
     },
     enrollmentCountErrors: {
         mostRecentDate: 'please provide a value'
@@ -675,15 +675,15 @@ const InitialStates = {
             bioMetaOutcomesInDiabetesStudy: true,
             bioMetaOutcomesInOtherStudy: true,
             bioMemberOfMetabolomicsStudies: true,
-            bioOtherBaselineSpecify: '',
-            bioOtherOtherTimeSpecify: '',
-            bioMetaOutcomesOtherStudySpecify: '',
-            bioMemberInStudy: '',
-            bioLabsUsedForAnalysis: '',
-            bioAnalyticalPlatform: '',
-            bioSeparationPlatform: '',
-            bioNumberMetabolitesMeasured: '',
-            bioYearSamplesSent: ''
+            bioOtherBaselineSpecify: true,
+            bioOtherOtherTimeSpecify: true,
+            bioMetaOutcomesOtherStudySpecify: true,
+            bioMemberInStudy: true,
+            bioLabsUsedForAnalysis: true,
+            bioAnalyticalPlatform: true,
+            bioSeparationPlatform: true,
+            bioNumberMetabolitesMeasured: true,
+            bioYearSamplesSent: true
         },
 
         sectionGStatus: ''
@@ -699,7 +699,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
-    cohortId: null,
+    cohortId: 0
 }
 
 export default InitialStates

@@ -8,6 +8,9 @@ const MortalityForm = ({ ...props }) => {
     const mortality = useSelector(state => state.mortalityReducer)
     const section = useSelector(state => state.sectionReducer)
     const dispatch = useDispatch();
+    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    
 
     const radioError = 'please choose one'
 
@@ -27,7 +30,7 @@ const MortalityForm = ({ ...props }) => {
         otherCodeSpecify: '',
         deathNumbers: ''
     })
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
 
     useEffect(() => {
         if (!mortality.hasLoaded) {
@@ -70,6 +73,19 @@ const MortalityForm = ({ ...props }) => {
                 })
         }
     }, [])
+
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+              .then(result => {
+                  if (result && result.status === 200){
+                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+                  }
+              })
+        }
+    }
 
     const validateInput = () => {
 
@@ -137,8 +153,15 @@ const MortalityForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
-                    if (!proceed)
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                        if (result.data.status)
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                    }
+                    if (!proceed){
                         alert('Data was successfully saved')
+                    }
                     else
                         props.sectionPicker('F')
                 } else {
@@ -321,7 +344,8 @@ const MortalityForm = ({ ...props }) => {
             {errors.deathNumbers !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.deathNumbers}</div>}
         </div>
 
-        <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
+       {/* please update your code if you don't like my version
+       <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('D')} style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='btn btn-primary' value='Go Back' />
             </span>
@@ -333,7 +357,25 @@ const MortalityForm = ({ ...props }) => {
                     <input type='button' className='btn btn-primary' value='Save & Continue' />
                 </span>
             </span>
-        </div>
+            </div>
+            */}
+            <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('D')}  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('F')} />
+                </span>
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                </span>
+            </div>  
+             
+        
     </div>
 }
 

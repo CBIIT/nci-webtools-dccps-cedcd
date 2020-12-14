@@ -1,462 +1,388 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import classNames from 'classnames'
+import DatePicker from 'react-datepicker';
+import { loadCohort } from '../../../reducers/cancerInfoReducer';
+import { parseISO, format } from 'date-fns';
 import allactions from '../../../actions'
 
 const CancerInfoForm = ({ ...props }) => {
-    const cancerInfo = useSelector(state => state.cancerInfoReducer)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const lookup = useSelector(state => state.lookupReducer)
+    const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+
     const [activePanel, setActivePanel] = useState('panelA')
+    const [errors, setErrors] = useState({});
+    const [submitted, setSubmitted] = useState(false);
+    const setCount = (key, value) => dispatch(allactions.cancerInfoActions.setCancerCount(key, value));
+    const setFormValue = (key, value) => {
+
+        dispatch(allactions.cancerInfoActions.setCancerInfoFormValue(key, value))
+    };
+
+    const lookupMap = {
+        female: lookup && lookup.gender.find(e => e.gender === 'Female').id,
+        male: lookup && lookup.gender.find(e => e.gender === 'Male').id,
+        incident: lookup && lookup.case_type.find(e => e.case_type === 'incident').id,
+        prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent').id,
+    }
     const cohortId = +window.location.pathname.split('/').pop();
 
-    const handleSave = () => {
-        /* if(Object.entries(errors).length === 0)
-             saveEnrollment(cohortId)
-         else{
-             //setDisplay('block')
-             if(window.confirm('there are validation errors, are you sure to save?'))
-                 saveEnrollment(cohortId)
-         }*/
+    useEffect(() => {
+        // load existing cohort
+        if (!cohort || +cohort.id !== +cohortId)
+            dispatch(loadCohort(cohortId));
+    }, []);
+
+    useEffect(() => {
+        // once cohort is loaded, populate form
+        if (!cohort || !Object.keys(cohort).length || !lookup)
+            return;
+
+        let { cancer_count: count, cancer_info: info } = cohort;
+        info = { ...info[0] } || {};
+
+        // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
+        if (info.ci_confirmed_cancer_date) {
+            let date = parseISO(info.ci_confirmed_cancer_date)
+            info.ci_confirmed_cancer_date = date !== 'Invalid Date' ? date : null;
+        }
+
+        // if no ci_cancer_treatment_data is provided, clear related inputs
+        if (+info.ci_cancer_treatment_data === 0) {
+            info.ci_treatment_data_surgery = 0;
+            info.ci_treatment_data_radiation = 0;
+            info.ci_treatment_data_chemotherapy = 0;
+            info.ci_treatment_data_hormonal_therapy = 0;
+            info.ci_treatment_data_bone_stem_cell = 0;
+            info.ci_treatment_data_other = 0;
+            info.ci_treatment_data_other_specify = '';
+
+            info.ci_data_source_admin_claims = 0;
+            info.ci_data_source_electronic_records = 0;
+            info.ci_data_source_chart_abstraction = 0;
+            info.ci_data_source_patient_reported = 0;
+            info.ci_data_source_other = 0;
+            info.ci_data_source_other_specify = '';
+        }
+
+        for (let key in info)
+            setFormValue(key, info[key]);
+
+        const counts = [];
+
+        // merge unique columns into single key
+        for (let { cohort_id, cancer_id, gender_id, case_type_id, cancer_counts } of count) {
+            counts.push({
+                key: [cohort_id, cancer_id, gender_id, case_type_id].join('_'),
+                value: cancer_counts
+            })
+        }
+
+        // populate non-existent counts with 0
+        for (let c of lookup.cancer) {
+            for (let gender of [lookupMap.male, lookupMap.female]) {
+                for (let type of [lookupMap.prevalent, lookupMap.incident]) {
+                    let key = [cohortId, c.id, gender, type].join('_');
+                    if (!counts.find(c => c.key === key))
+                        counts.push({ key, value: 0 })
+                }
+            }
+        }
+
+        // dispatch updated counts
+        counts.forEach(c => setCount(c.key, c.value));
+    }, [cohort, lookup]);
+
+
+    function CheckedInput({ value, name, type, label, className, disabled }) {
+        return <div className={classNames(className || type, disabled && 'disabled')}>
+            <label>
+                <input
+                    type={type}
+                    name={name}
+                    checked={disabled ? false : form[name] == value}
+                    value={value}
+                    disabled={disabled}
+                />
+                {label}
+            </label>
+        </div>
     }
 
-    const handleSaveContinue = () => {
-        /*
-        if(Object.entries(errors).length === 0|| window.confirm('there are validation errors, are you sure to save and proceed?')){
-            saveEnrollment(cohortId, true)}
-            */
-    }
-    return <div id='cancerInfoContainer' className='col-md-12'>
-        <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>part one</div>
-                <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <table className='table table-stripe table-responsive'>
-                        <thead>
-                            <tr><td colSpan='7'>D.1 Cancer Counts Please enter the number of participants with these cancer by sex</td></tr>
-                            <tr>
-                                <th className='col-sm-1' style={{ textAlign: 'center' }}>ICD-9</th>
-                                <th className='col-sm-1' style={{ textAlign: 'center' }}> ICD-10</th>
-                                <th className='col-sm-3' style={{ textAlign: 'center' }}>Cancer Site/Type</th>
-                                <th className='col-sm-3' colSpan='2' style={{ textAlign: 'center' }}>Male</th>
-                                <th className='col-sm-3' colSpan='2' style={{ textAlign: 'center' }}>Female</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colSpan='3'></td>
-                                <td style={{ textAlign: 'center' }}>Prevalent Cases</td>
-                                <td style={{ textAlign: 'center' }}>Incident Cases</td>
-                                <td style={{ textAlign: 'center' }}>Prevalent Cases</td>
-                                <td style={{ textAlign: 'center' }}>Incident Cases</td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>141-149</td>
-                                <td style={{ textAlign: 'center' }}>C00-C14</td>
-                                <td style={{ textAlign: 'center' }}>Oropharyngeal</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='2-2-1' value={cancerInfo['2-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='2-2-2' value={cancerInfo['2-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='2-1-1' value={cancerInfo['2-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='2-1-2' value={cancerInfo['2-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>150</td>
-                                <td style={{ textAlign: 'center' }}>C15</td>
-                                <td style={{ textAlign: 'center' }}>Esophagus</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='3-2-1' value={cancerInfo['3-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='3-2-2' value={cancerInfo['3-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='3-1-1' value={cancerInfo['3-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='3-1-2' value={cancerInfo['3-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>151</td>
-                                <td style={{ textAlign: 'center' }}>C16</td>
-                                <td style={{ textAlign: 'center' }}>Stomach</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='4-2-1' value={cancerInfo['4-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='4-2-2' value={cancerInfo['4-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='4-1-1' value={cancerInfo['4-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='4-1-2' value={cancerInfo['4-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>152</td>
-                                <td style={{ textAlign: 'center' }}>C17</td>
-                                <td style={{ textAlign: 'center' }}>Small intestine</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='5-2-1' value={cancerInfo['5-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='5-2-2' value={cancerInfo['5-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='5-1-1' value={cancerInfo['5-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='5-1-2' value={cancerInfo['5-1-2']} readOnly /></td>
-                            </tr>
+    return lookup && <div id="cancerInfoContainer" className="p-3">
+        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
+        <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
+            <div className="my-3">
+                <label className="d-block">D.1 Cancer Counts</label>
+                <div>Please enter the number of participants with these cancers by sex.</div>
+            </div>
+            <div className="overflow-auto mb-4">
+                <table className='table table-condensed table-nowrap table-valign-middle'>
+                    <thead>
+                        <tr>
+                            <th className="text-center" rowSpan={2}>ICD-9</th>
+                            <th className="text-center" rowSpan={2}>ICD-10</th>
+                            <th className="text-center" rowSpan={2}>Cancer Site/Type</th>
+                            <th className="text-center" colSpan={2}>Males</th>
+                            <th className="text-center" colSpan={2}>Females</th>
+                        </tr>
+                        <tr>
+                            <th className="text-center">Prevalent Cases</th>
+                            <th className="text-center">Incident Cases</th>
+                            <th className="text-center">Prevalent Cases</th>
+                            <th className="text-center">Incident Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {lookup.cancer.map(c => {
+                            const keyPrefix = `${cohortId}_${c.id}`;
+                            const inputKeys = [
+                                `${keyPrefix}_${lookupMap.male}_${lookupMap.prevalent}`,
+                                `${keyPrefix}_${lookupMap.female}_${lookupMap.prevalent}`,
+                                `${keyPrefix}_${lookupMap.male}_${lookupMap.incident}`,
+                                `${keyPrefix}_${lookupMap.female}_${lookupMap.incident}`,
+                            ];
 
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>153</td>
-                                <td style={{ textAlign: 'center' }}>C18</td>
-                                <td style={{ textAlign: 'center' }}>Colon</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='6-2-1' value={cancerInfo['6-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='6-2-2' value={cancerInfo['6-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='6-1-1' value={cancerInfo['6-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='6-1-2' value={cancerInfo['6-1-2']} readOnly /></td>
+                            return <tr key={keyPrefix}>
+                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
+                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
+                                <td className="bg-light">{c.cancer}</td>
+                                {inputKeys.map(key =>
+                                    <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
+                                        <input
+                                            className="form-control border-0 p-0 bg-transparent text-right"
+                                            type="number"
+                                            min="0"
+                                            name={key}
+                                            value={counts[key] || 0}
+                                        />
+                                    </td>
+                                )}
                             </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>154</td>
-                                <td style={{ textAlign: 'center' }}>C19-C21</td>
-                                <td style={{ textAlign: 'center' }}>Rectum and anus</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='7-2-1' value={cancerInfo['7-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='7-2-2' value={cancerInfo['7-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='7-1-1' value={cancerInfo['7-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='7-1-2' value={cancerInfo['7-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>155</td>
-                                <td style={{ textAlign: 'center' }}>C22</td>
-                                <td style={{ textAlign: 'center' }}>Liver and intrahepatic bile ducts</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='8-2-1' value={cancerInfo['8-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='8-2-2' value={cancerInfo['8-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='8-1-1' value={cancerInfo['8-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='8-1-2' value={cancerInfo['8-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>156</td>
-                                <td style={{ textAlign: 'center' }}>C23, C24</td>
-                                <td style={{ textAlign: 'center' }}>Gallbladder and extrahepatic bile ducts</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='9-2-1' value={cancerInfo['9-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='9-2-2' value={cancerInfo['9-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='9-1-1' value={cancerInfo['9-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='9-1-2' value={cancerInfo['9-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>157</td>
-                                <td style={{ textAlign: 'center' }}>C25</td>
-                                <td style={{ textAlign: 'center' }}>Pancreas</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='10-2-1' value={cancerInfo['10-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='10-2-2' value={cancerInfo['10-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='10-1-1' value={cancerInfo['10-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='10-1-2' value={cancerInfo['10-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>162</td>
-                                <td style={{ textAlign: 'center' }}>C34</td>
-                                <td style={{ textAlign: 'center' }}>Lung and bronchus</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='11-2-1' value={cancerInfo['11-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='11-2-2' value={cancerInfo['11-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='11-1-1' value={cancerInfo['11-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='11-1-2' value={cancerInfo['11-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>170</td>
-                                <td style={{ textAlign: 'center' }}>C40,C41</td>
-                                <td style={{ textAlign: 'center' }}>Bone</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='12-2-1' value={cancerInfo['12-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='12-2-2' value={cancerInfo['12-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='12-1-1' value={cancerInfo['12-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='12-1-2' value={cancerInfo['12-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>172</td>
-                                <td style={{ textAlign: 'center' }}>C43</td>
-                                <td style={{ textAlign: 'center' }}>Melanoma (excluding mucosal sites)</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='13-2-1' value={cancerInfo['13-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='13-2-2' value={cancerInfo['13-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='13-1-1' value={cancerInfo['13-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='13-1-2' value={cancerInfo['13-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>174-175</td>
-                                <td style={{ textAlign: 'center' }}>C50</td>
-                                <td style={{ textAlign: 'center' }}>Invasive Breast Cancer</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='14-2-1' value={cancerInfo['14-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='14-2-2' value={cancerInfo['14-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='14-1-1' value={cancerInfo['14-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='14-1-2' value={cancerInfo['14-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>233</td>
-                                <td style={{ textAlign: 'center' }}>D05.1</td>
-                                <td style={{ textAlign: 'center' }}>Ductal carcinoma in situ of breast </td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='15-2-1' value={cancerInfo['15-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='15-2-2' value={cancerInfo['15-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='15-1-1' value={cancerInfo['15-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='15-1-2' value={cancerInfo['15-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>180</td>
-                                <td style={{ textAlign: 'center' }}>C53</td>
-                                <td style={{ textAlign: 'center', fontSize: '1.4rem' }}>Cervix (Squamous cell carcinoma, Adenocarcinoma)</td>
-                                <td style={{ verticalAlign: 'middle' }}><input className='inputWriter' style={{ textAlign: 'center' }} name='16-2-1' value={cancerInfo['16-2-1']} readOnly /></td>
-                                <td style={{ verticalAlign: 'middle' }}><input className='inputWriter' style={{ textAlign: 'center' }} name='16-2-2' value={cancerInfo['16-2-2']} readOnly /></td>
-                                <td style={{ verticalAlign: 'middle' }}><input className='inputWriter' style={{ textAlign: 'center' }} name='16-1-1' value={cancerInfo['16-1-1']} readOnly /></td>
-                                <td style={{ verticalAlign: 'middle' }}><input className='inputWriter' style={{ textAlign: 'center' }} name='16-1-2' value={cancerInfo['16-1-2']} readOnly /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>part two</div>
-                <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <table style={{ marginBottom: '10px' }} >
-                        <thead>
-                            <tr>
-                                <th className='col-sm-1' style={{ textAlign: 'center' }}>ICD-9</th>
-                                <th className='col-sm-1' style={{ textAlign: 'center' }}> ICD-10</th>
-                                <th className='col-sm-3' style={{ textAlign: 'center' }}>Cancer Site/Type</th>
-                                <th className='col-sm-3' colSpan='2' style={{ textAlign: 'center' }}>Male</th>
-                                <th className='col-sm-3' colSpan='2' style={{ textAlign: 'center' }}>Female</th>
-                            </tr>
-                        </thead>
-                        <tbody aria-readonly>
-                            <tr>
-                                <td colSpan='3'></td>
-                                <td style={{ textAlign: 'center' }}>Prevalent Cases</td>
-                                <td style={{ textAlign: 'center' }}>Incident Cases</td>
-                                <td style={{ textAlign: 'center' }}>Prevalent Cases</td>
-                                <td style={{ textAlign: 'center' }}>Incident Cases</td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>233</td>
-                                <td style={{ textAlign: 'center' }}>D06.1</td>
-                                <td style={{ textAlign: 'center' }}>Cervical carcinoma in situ (CIN II/III, CIS, AIS)</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='17-2-1' value={cancerInfo['17-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='17-2-2' value={cancerInfo['17-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='17-1-1' value={cancerInfo['17-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='17-1-2' value={cancerInfo['17-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>182</td>
-                                <td style={{ textAlign: 'center' }}>C54</td>
-                                <td style={{ textAlign: 'center' }}>Corpus, body of uterus</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='18-2-1' value={cancerInfo['18-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='18-2-2' value={cancerInfo['18-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='18-1-1' value={cancerInfo['18-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='18-1-2' value={cancerInfo['18-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>183</td>
-                                <td style={{ textAlign: 'center' }}>C56</td>
-                                <td style={{ textAlign: 'center' }}>Ovary, fallopian tube, broad ligament</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='19-2-1' value={cancerInfo['19-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='19-2-2' value={cancerInfo['19-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='19-1-1' value={cancerInfo['19-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='19-1-2' value={cancerInfo['19-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>185</td>
-                                <td style={{ textAlign: 'center' }}>C61</td>
-                                <td style={{ textAlign: 'center' }}>Prostate</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='20-2-1' value={cancerInfo['20-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='20-2-2' value={cancerInfo['20-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='20-1-1' value={cancerInfo['20-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='20-1-2' value={cancerInfo['20-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>188</td>
-                                <td style={{ textAlign: 'center' }}>C67</td>
-                                <td style={{ textAlign: 'center' }}>Bladder</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='21-2-1' value={cancerInfo['21-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='21-2-2' value={cancerInfo['21-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='21-1-1' value={cancerInfo['21-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='21-1-2' value={cancerInfo['21-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>189</td>
-                                <td style={{ textAlign: 'center' }}>C64-C66, C68</td>
-                                <td style={{ textAlign: 'center' }}>Kidney and other unspecified urinary organs </td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='22-2-1' value={cancerInfo['22-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='22-2-2' value={cancerInfo['22-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='22-1-1' value={cancerInfo['22-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='22-1-2' value={cancerInfo['22-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>191</td>
-                                <td style={{ textAlign: 'center' }}>C71</td>
-                                <td style={{ textAlign: 'center' }}>Brain</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='23-2-1' value={cancerInfo['23-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='23-2-2' value={cancerInfo['23-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='23-1-1' value={cancerInfo['23-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='23-1-2' value={cancerInfo['23-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>193</td>
-                                <td style={{ textAlign: 'center' }}>C73</td>
-                                <td style={{ textAlign: 'center' }}>Thyroid</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='24-2-1' value={cancerInfo['24-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='24-2-2' value={cancerInfo['24-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='24-1-1' value={cancerInfo['24-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='24-1-2' value={cancerInfo['24-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>201</td>
-                                <td style={{ textAlign: 'center' }}>C81</td>
-                                <td style={{ textAlign: 'center' }}>Hodgkin Lymphoma </td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='25-2-1' value={cancerInfo['25-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='25-2-2' value={cancerInfo['25-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='25-1-1' value={cancerInfo['25-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='25-1-2' value={cancerInfo['25-1-2']} readOnly /></td>
-                            </tr>
-
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>200, 202</td>
-                                <td style={{ textAlign: 'center' }}>C82-85</td>
-                                <td style={{ textAlign: 'center' }}>Non-Hodgkin Lymphoma</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='26-2-1' value={cancerInfo['26-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='26-2-2' value={cancerInfo['26-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='26-1-1' value={cancerInfo['26-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='26-1-2' value={cancerInfo['26-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>203</td>
-                                <td style={{ textAlign: 'center' }}>C90</td>
-                                <td style={{ textAlign: 'center' }}>Myeloma</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='27-2-1' value={cancerInfo['27-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='27-2-2' value={cancerInfo['27-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='27-1-1' value={cancerInfo['27-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='27-1-2' value={cancerInfo['27-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td style={{ textAlign: 'center' }}>204-208</td>
-                                <td style={{ textAlign: 'center' }}>C91-95</td>
-                                <td style={{ textAlign: 'center' }}>Leukemia</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='28-2-1' value={cancerInfo['28-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='28-2-2' value={cancerInfo['28-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='28-1-1' value={cancerInfo['28-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='28-1-2' value={cancerInfo['28-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td colSpan='2' style={{ textAlign: 'center' }}></td>
-                                <td style={{ textAlign: 'center' }}>All Other Cancers</td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='1-2-1' value={cancerInfo['1-2-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='1-2-2' value={cancerInfo['1-2-2']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='1-1-1' value={cancerInfo['1-1-1']} readOnly /></td>
-                                <td><input className='inputWriter' style={{ textAlign: 'center' }} name='1-1-2' value={cancerInfo['1-1-2']} readOnly /></td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.2 Most recent date confirmed cancer case ascertainment</td>
-                                <td colSpan='4'><input className='inputUnderscore' value='' />(MM/DD/YYYY)</td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3' style={{ verticalAlign: 'middle' }}>D.3 How were your cancer cases ascertained</td>
-                                <td colSpan='4'>
-                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-3' style={{ marginLeft: '0', paddingLeft: '0' }}>self-reported</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-3' style={{ marginLeft: '0', paddingLeft: '0' }}> cancer registry</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-4' style={{ marginLeft: '0', paddingLeft: '0' }}> medical record review</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-1' style={{ marginLeft: '0', paddingLeft: '0' }}> other</span><span className='col-sm-3'><input className='col-sm-12 inputUnderscore' /></span></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.4 Did you collect infromation about cancer recurrence</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='cancerRecurrenceInfo' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='cancerRecurrenceInfo' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.5 Do you have second/subsequent primary cancer diagnoses</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='cancerDiagnosis' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='cancerDiagnosis' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}>part three</div>
-                <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <table style={{ marginBottom: '10px' }} >
-                        <tbody>
-                            <tr>
-                                <td colSpan='3'>D.6 Do you have cancer treatment data</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='cancerTreatmentInfo' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='cancerTreatmentInfo' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3' style={{ verticalAlign: 'middle' }}>D.6a Specify the treatment information you have</td>
-                                <td colSpan='4'>
-                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-3' style={{ marginLeft: '0', paddingLeft: '0' }}>Surgery</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-3' style={{ marginLeft: '0', paddingLeft: '0' }}> Radiation</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-4' style={{ marginLeft: '0', paddingLeft: '0' }}> Chemotherapy</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-4' style={{ marginLeft: '0', paddingLeft: '0' }}> Hormonal therapy</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}> Bone marrow/stem cell transplant</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-1' style={{ marginLeft: '0', paddingLeft: '0' }}> other</span><span className='col-sm-3'><input className='col-sm-12 inputUnderscore' /></span></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3' style={{ verticalAlign: 'middle' }}>D.6b Specify the data sources the treatment information is from</td>
-                                <td colSpan='4'>
-                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}>Administrative claims data</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}> Electronic health record</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}> Chart abstraction</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}> Patient-reported questionnaire</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-1' style={{ marginLeft: '0', paddingLeft: '0' }}> other</span><span className='col-sm-3'><input className='col-sm-12 inputUnderscore' /></span></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.6c Would it be possible to collect treatment information from medical records or other sources</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='fromMedicalRecords' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='fromMedicalRecords' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.7 Do you have cancer staging data</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='hasStagingData' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='hasStagingData' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.8 Do you have tumor grade data</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='hasGradeData' />{' '} No</span>
-                                    <span className='col-sm-5'><input type='radio' name='hasGradeData' />{' '} Yes</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.9 Do you have tumor genetic markers data</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-2'><input type='radio' name='hasMarkersData' />{' '} No</span>
-                                    <span className='col-sm-2'><input type='radio' name='hasMarkersData' />{' '} Yes</span>
-                                    <span className='col-sm-4'><input className='inputUnderscore' name='markerData' style={{ margin: '0' }} /></span>
-                                    <span style={{ color: 'red' }}>please specify</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3'>D.10 Were cancer cases histologically confirmed</td>
-                                <td colSpan='4'>
-                                    <span className='col-sm-3'><input type='radio' name='caseConfirmed' />{' '} All</span>
-                                    <span className='col-sm-3'><input type='radio' name='caseConfirmed' />{' '} Some</span>
-                                    <span className='col-sm-3'><input type='radio' name='caseConfirmed' />{' '} None</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan='3' style={{ verticalAlign: 'middle' }}>D.11	Do you have cancer subtyping</td>
-                                <td colSpan='4'>
-                                    <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column' }}>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}>Histological</span></li>
-                                        <li><span className='col-sm-1'><input type='checkbox' /></span><span className='col-sm-5' style={{ marginLeft: '0', paddingLeft: '0' }}>Molecular</span></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div style={{ position: 'relative' }}>
-                    <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'left' }}>
-                        <input type='button' className='btn btn-primary' value='Go Back' />
-                    </span>
-                    <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'Right' }}>
-                        <input type='button' className='btn btn-primary' value='Next' />
-                    </span>
-                </div>
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
+
+        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information</div>
+        <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
+            <form>
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.2 Most recent date confirmed cancer case ascertainment:
+                    </label>
+                    <DatePicker className="form-control" id="ci_confirmed_cancer_date" selected={form.ci_confirmed_cancer_date ? new Date(form.ci_confirmed_cancer_date) : null} dateFormat='MM/dd/yyyy' readOnly />
+
+                </div>
+
+                <div className={"form-group"}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.3 How were your cancer cases ascertained?
+                    </label>
+
+                    {[
+                        { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
+                        { type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry' },
+                        { type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review' },
+                        { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
+
+                    {+form.ci_ascertained_other === 1 && <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
+                        <textarea
+                            className="form-control resize-vertical"
+                            name="ci_ascertained_other_specify"
+                            value={form.ci_ascertained_other_specify || ''}
+
+                            maxlength={300}
+                        />
+                        <span class="help-block">300 Characters Max</span>
+                    </div>}
+                </div>
+
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.4 Did you collect information about cancer recurrence?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_cancer_recurrence', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_cancer_recurrence', type: 'radio', label: 'Yes' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d4-${index}`} />)}
+                </div>
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.5 Do you have second/subsequent primary cancer diagnoses?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'Yes' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d5-${index}`} />)}
+                </div>
+
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.6 Do you have cancer treatment data?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c' },
+                        { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
+                </div>
+
+                <div className="ml-4">
+
+                    <div className={"form-group"}>
+                        <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                            D.6a Specify the treatment information you have:
+                        </label>
+
+                        {[
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy' },
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy' },
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant' },
+                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
+                        ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
+
+                        {+form.ci_treatment_data_other === 1 &&
+                            <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
+                                <textarea
+                                    className="form-control resize-vertical"
+                                    name="ci_treatment_data_other_specify"
+                                    disabled={+form.ci_cancer_treatment_data === 0}
+                                    value={form.ci_treatment_data_other_specify || ''}
+
+                                    maxlength={200}
+                                />
+                                <span class="help-block">200 Characters Max</span>
+                            </div>}
+                    </div>
+
+                    <div className={"form-group"}>
+                        <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                            D.6b Specify the data sources the treatment information is from:
+                        </label>
+
+                        {[
+                            { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
+                            { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
+                            { type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction' },
+                            { type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire' },
+                            { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
+                        ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
+
+                        {+form.ci_data_source_other === 1 && <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
+                            <textarea
+                                className="form-control  resize-vertical"
+                                name="ci_data_source_other_specify"
+                                disabled={+form.ci_cancer_treatment_data === 0}
+                                value={form.ci_data_source_other_specify || ''}
+
+                                maxlength={200}
+                            />
+                            <span class="help-block">200 Characters Max</span>
+                        </div>}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                            D.6c Would it be possible to collect treatment information from medical records or other sources?
+                        </label>
+                        {[
+                            { value: 0, name: 'ci_collect_other_information', type: 'radio', label: 'No' },
+                            { value: 1, name: 'ci_collect_other_information', type: 'radio', label: 'Yes' },
+                        ].map((props, index) => <CheckedInput {...props} key={`d6c-${index}`} />)}
+                    </div>
+                </div>
+
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.7 Do you have cancer staging data?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_cancer_staging_data', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_cancer_staging_data', type: 'radio', label: 'Yes' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d7-${index}`} />)}
+                </div>
+
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.8 Do you have tumor grade data?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_tumor_grade_data', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_tumor_grade_data', type: 'radio', label: 'Yes' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d8-${index}`} />)}
+                </div>
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.9 Do you have tumor genetic markers data?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
+
+
+                    {+form.ci_tumor_genetic_markers_data === 1 &&
+                        <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                            <textarea
+                                className="form-control resize-vertical"
+                                name="ci_tumor_genetic_markers_data_describe"
+                                length="40"
+                                value={form.ci_tumor_genetic_markers_data_describe}
+
+                                maxlength={200}
+                            />
+                            <span class="help-block">200 Characters Max</span>
+                        </div>}
+                </div>
+
+                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.10 Were cancer cases histologically confirmed?
+                    </label>
+                    {[
+                        { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_histologically_confirmed', type: 'radio', label: 'Some' },
+                        { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d10-${index}`} />)}
+                </div>
+
+                <div className={"form-group"}>
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block">
+                        D.11 Do you have histological and/or molecular cancer subtyping?
+                    </label>
+
+                    {[
+                        { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_histological', label: 'Histological' },
+                        { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_molecular', label: 'Molecular' },
+                    ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
+                </div>
+
+            </form>
+
+        </div>
+
+        {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
+        <div style={{ position: 'relative' }}>
+            <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'left' }}>
+                <input type='button' className='btn btn-primary' value=' << Prev' />
+            </span>
+            <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'Right' }}>
+                <input type='button' className='btn btn-primary' value='Next >>' />
+            </span>
+        </div>
+
+
     </div>
 }
 

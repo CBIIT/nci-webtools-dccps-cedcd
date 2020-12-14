@@ -13,6 +13,8 @@ const EnrollmentCountsForm = ({...props}) => {
     const enrollmentCount = useSelector(state => state.enrollmentCountsReducer)
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.enrollmentCountErrorReducer)
+    const cohortID = useSelector(state => state.cohortIDReducer)
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
     //const [displayStyle, setDisplay] = useState('0')
     const [successMsg, setSuccessMsg] = useState(false)
@@ -20,7 +22,7 @@ const EnrollmentCountsForm = ({...props}) => {
     const [modalShow, setModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
-    const cohortId = +window.location.pathname.split('/').pop();
+    //const cohortId = +window.location.pathname.split('/').pop();
     //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         let [firstid, ...rest] = cellid
@@ -41,7 +43,7 @@ const EnrollmentCountsForm = ({...props}) => {
     //var dates = ''
     useEffect(() => {
         if(!enrollmentCount.hasLoaded){
-            fetch(`/api/questionnaire/enrollment_counts/${cohortId}`, {
+            fetch(`/api/questionnaire/enrollment_counts/${cohortID}`, {
                 method: 'POST',
             }).then(res => res.json())
               .then(result => {               
@@ -61,7 +63,20 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
 
-    const saveEnrollment = (id=cohortId, proceed=false) => {
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+              .then(result => {
+                  if (result && result.status === 200){
+                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+                  }
+              })
+        }
+    }
+
+    const saveEnrollment = (id=cohortID, proceed=false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`,{
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -77,6 +92,12 @@ const EnrollmentCountsForm = ({...props}) => {
                     else{
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
                     }
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID)
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                        if (result.data.status)
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                    }
                     if(!proceed)
                         setSuccessMsg(true) 
                     else
@@ -91,7 +112,7 @@ const EnrollmentCountsForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             enrollmentCount.sectionBStatus='complete'
             dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
-            saveEnrollment(cohortId)  
+            saveEnrollment(cohortID)  
         }
         else{
             //setDisplay('1')
@@ -105,7 +126,7 @@ const EnrollmentCountsForm = ({...props}) => {
         if(Object.entries(errors).length === 0){
             enrollmentCount.sectionBStatus='complete'
             dispatch(allactions.enrollmentCountActions.setSectionBStatus('complete'))
-            saveEnrollment(cohortId, true)
+            saveEnrollment(cohortID, true)
         }
         else{
             setModalShow(true)
@@ -114,15 +135,18 @@ const EnrollmentCountsForm = ({...props}) => {
     }
 
     const confirmSaveStay = () => {
+        console.dir('before dispatch'+enrollmentCount)
         enrollmentCount.sectionBStatus='incomplete'
+        
         dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'));
-        saveEnrollment(cohortId);setModalShow(false)
+        console.dir('after dispatch'+enrollmentCount)
+        saveEnrollment(cohortID);setModalShow(false)
     }
 
     const confirmSaveContinue = () => {
         enrollmentCount.sectionBStatus='incomplete'
         dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
-        saveEnrollment(cohortId, true);setModalShow(false)
+        saveEnrollment(cohortID, true);setModalShow(false)
     }
 
     return <div id='enrollmentCountContainer' className='col-md-12'>
@@ -294,20 +318,21 @@ const EnrollmentCountsForm = ({...props}) => {
                     </div>
                 </form>
             </div>
-            <div style={{position: 'relative'}}>
-                <span  onClick={() => props.sectionPicker('A')} style={{position: 'relative', float: 'left'}}>
-                    <input type='button' className='btn btn-primary' value='Go Back' />
+            <div style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('A')}  />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('C')} />
                 </span>
-                <span style={{position: 'relative', float: 'right'}}>
-                <span onClick={handleSave}>
-                    <input type='button' className='btn btn-primary' value='Save' />
+                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
                 </span>
-                <span onClick={handleSaveContinue}>
-                    <input type='button' className='btn btn-primary' value='Save & Continue' />
-                </span>
-                {section.A === 'complete' && section.B === 'complete' && section.C === 'complete' && section.D === 'complete' && section.E === 'complete' && section.F === 'complete' && section.G === 'complete' ? <span><input type='button' className='btn btn-primary' value='Submit For Review' /></span> : ''}
-                </span>
-            </div> 
+            </div>  
             </div>
     </div>
 }
