@@ -683,11 +683,14 @@ END //
 DROP PROCEDURE IF EXISTS `select_cohort_for_user` //
 CREATE PROCEDURE `select_cohort_for_user`(in user_id int)
 BEGIN
+	
+
     set @query = "
 		select c.*
 		from cohort c
         join cohort_user_mapping cm on cm.cohort_acronym = c.acronym
-		where cohort_user_id = ?
+		where cm.cohort_user_id = ?
+		and cm.acronym = ?
 		order by
 			status = 'draft' desc,
 			status = 'in review' desc,
@@ -701,6 +704,32 @@ BEGIN
 	EXECUTE stmt using @user_id;
 	DEALLOCATE PREPARE stmt;
 END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_editable_cohort_by_acronym
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_editable_cohort_by_acronym` //
+CREATE PROCEDURE `select_editable_cohort_by_acronym`(in acronym varchar(100))
+BEGIN
+    set @query = "
+		select *
+		from cohort c
+		where acronym = ?
+		order by
+			status = 'draft' desc,
+			status = 'in review' desc,
+			status = 'submitted' desc,
+			status = 'new' desc,
+			status = 'published' desc
+		limit 1;
+	";
+    set @acronym = acronym;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @acronym;
+	DEALLOCATE PREPARE stmt;
+END //
+
 
 
 -- -----------------------------------------------------------------------------------------------------------

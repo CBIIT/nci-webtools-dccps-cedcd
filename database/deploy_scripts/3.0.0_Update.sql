@@ -63,6 +63,9 @@ create procedure temp_update_3_0_0()
 begin
     start transaction;
 
+    # update dev admin user name
+    update user set user_name = 'admin' where id = 1;
+
     # check if unique index exists on cancer_count(cohort_id, cancer_id, gender_id, case_type_id)
     if (select COUNT(*) != 4
         from information_schema.STATISTICS
