@@ -33,7 +33,7 @@
 27. insert_new_cohort_from_published
 *
  */
-
+use cedcd;
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: advanced_cohort_select
 -- -----------------------------------------------------------------------------------------------------------
@@ -1773,7 +1773,7 @@ DROP PROCEDURE IF EXISTS upsert_major_content //
 CREATE  PROCEDURE `upsert_major_content`(in Old_targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
-	DECLARE targetID INT DEFAULT Old_targetID;
+	DECLARE targetID INT DEFAULT 0;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -1783,8 +1783,13 @@ begin
 
     start transaction;
    
-	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
+    
 	if exists (select * from major_content where cohort_id = targetID) then
     begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp'))) where cohort_id = targetID and category_id = 1 ;
@@ -1936,6 +1941,8 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
     if targetID <> Old_targetID then 
 		 SELECT targetID as duplicated_cohort_id;
          SELECT `status` from cohort where id = targetID;
+    end if;
+    end;
     end if;
 end //
 
