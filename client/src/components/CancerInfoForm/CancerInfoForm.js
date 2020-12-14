@@ -534,7 +534,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                 <div className={"form-group"}>
                     <label htmlFor="ci_confirmed_cancer_date" className="d-block">
-                        D.11 Do you have histological and/or molecular cancer subtyping?
+                        D.11 Do you have histological and/or molecular cancer subtyping? (select all that apply)
                     </label>
 
                     {[
