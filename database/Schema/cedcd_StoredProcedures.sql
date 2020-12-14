@@ -26,7 +26,7 @@
 20. add_file_attachment
 21. get_enrollment_counts
 22. get_specimen_counts
-23. update_specimen_count
+23. update_specimen_section_data
 24. select_questionnaire_specimen_info
 25. update_questionnaire_speciemn_info
 26. inspect_cohort
@@ -1056,6 +1056,7 @@ CREATE  PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
+	
     DECLARE flag INT DEFAULT 1;
  
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -1063,6 +1064,14 @@ BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
+
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+
+    IF @cohort_status = 'published' then 
+	   call select_unpublished_cohort_id(targetID, new_id); 
+    else 
+       set new_id = targetID;
+    END IF;
 
   START transaction;
   
@@ -1072,7 +1081,7 @@ BEGIN
     );
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
-    IF @cohort_status = 'published' then call inspect_cohort(targetID, new_id); END IF;
+
     SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
     SET @latest_cohort = new_id;
 	UPDATE `cohort_basic` 
@@ -1458,11 +1467,25 @@ END //
 
 DROP PROCEDURE IF EXISTS update_enrollment_count //
 
-CREATE  PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
+CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
-	DECLARE new_id INT DEFAULT targetID;
+	DECLARE new_id INT DEFAULT 0;
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
-    IF @cohort_status = 'published' then call inspect_cohort(targetID, new_id); END IF;
+    IF @cohort_status = 'published' then 
+    call select_unpublished_cohort_id(targetID, new_id); 
+    else
+     set new_id = targetID;
+    END IF;
+    
+     /*
+    *  select_unpublished_cohort_id should retunr a cohort_id not in published status
+    * if new_id not 0 (default value), continue
+    */
+ 
+    
+  IF new_id > 0  THEN
+		BEGIN
+
 	SET @recentDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mostRecentDate'));
 
 	if exists (select * from enrollment_count where cohort_id = new_id) then
@@ -1687,8 +1710,10 @@ BEGIN
 		 SELECT new_id as duplicated_cohort_id;
          SELECT `status` from cohort where id = new_id;
     end if;
+    end;
+    end if;
+    
 END //
-
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: get_enrollment_counts
 -- -----------------------------------------------------------------------------------------------------------
@@ -2023,19 +2048,33 @@ begin
 	where cohort_id = targetID order by cancer_id, specimen_id;
 end //
 
-DROP PROCEDURE if EXISTS `update_specimen_count` //
+DROP PROCEDURE if EXISTS `update_specimen_section_data` //
 
-CREATE  PROCEDURE `update_specimen_count`(in cohortID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_section_data`(in cohortID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
+    DECLARE cohortID INT DEFAULT 0;
+    /*
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-  SELECT `status` INTO @cohort_status FROM cohort WHERE id = `cohortID`;
-  IF @cohort_status <> 'published' THEN
+    */
+    SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(targetID, cohortID); 
+    else 
+     set cohortID = targetID;
+    END IF;
+    /*
+    *  select_unpublished_cohort_id should retunr a cohort_id not in published status
+    * if cohortID not 0 (default value), continue
+    */
+ 
+    
+  IF cohortID > 0  THEN
 		BEGIN
         
   SET @counts = JSON_UNQUOTE(JSON_EXTRACT(info, '$.counts')) ;
@@ -2284,7 +2323,7 @@ update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( inf
 update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberOfMetabolomicsStudies')) where specimen_id = 46 and cohort_id = `cohortID`;
   
   update specimen set bio_other_baseline_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify')),
-bio_other_other_time_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify')),
+  bio_other_other_time_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify')),
 bio_meta_outcomes_other_study_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify')),
 bio_member_in_study = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy')),
 bio_labs_used_for_analysis = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis')),
@@ -2298,7 +2337,8 @@ bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent')
   select flag as rowsAffacted;
   end ;
   end if ;
-end //
+  
+  end //
 
 
 DROP PROCEDURE if EXISTS `select_questionnaire_specimen_info` //
@@ -2332,9 +2372,9 @@ BEGIN
 
 END //
 
-DROP PROCEDURE IF EXISTS `inspect_cohort` //
+DROP PROCEDURE IF EXISTS `select_unpublished_cohort_id` //
 
-CREATE  PROCEDURE `inspect_cohort`(in targetID int, out new_id int)
+CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int)
 begin
     set new_id = targetID; -- assume it is draft
     if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published

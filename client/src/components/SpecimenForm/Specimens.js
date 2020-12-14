@@ -53,15 +53,15 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
-              .then(result => {
-                  if (result && result.status === 200){
-                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
-                  }
-              })
+                .then(result => {
+                    if (result && result.status === 200) {
+                        dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+                    }
+                })
         }
     }
 
@@ -243,6 +243,7 @@ const SpecimenForm = ({ ...props }) => {
                             dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
                             dispatch(allactions.specimenActions.setBioSeparationPlatform(specimenDetails.bio_separation_platform))
                             dispatch(allactions.specimenActions.setBioYearSamplesSent(specimenDetails.bio_year_samples_sent))
+                            if (specimenDetails.bio_year_samples_sent) dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
 
 
                         })
@@ -455,7 +456,7 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherBaselineSpecify' disabled={specimen.bioOtherBaseline !== 1} placeholder='(Max 100 characters)'
+                                            <textarea className="form-control resize-vertical" maxLength={100} name='bioOtherBaselineSpecify' disabled={specimen.bioOtherBaseline !== 1} placeholder='(Max 100 characters)'
                                                 value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))} />
                                         </span>
                                     </div>
@@ -468,14 +469,14 @@ const SpecimenForm = ({ ...props }) => {
                                             onClick={() => { dispatch(allactions.specimenActions.setBioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '}Yes</span>
                                         <span className='col-xs-12'>If yes, please specify</span>
                                         <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={100} name='bioOtherOtherTimeSpecify' disabled={specimen.bioOtherOtherTime !== 1} placeholder='(Max 100 characters)'
+                                            <textarea className="form-control resize-vertical" maxLength={100} name='bioOtherOtherTimeSpecify' disabled={specimen.bioOtherOtherTime !== 1} placeholder='(Max 100 characters)'
                                                 value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))} />
                                         </span>
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.7 Did you collect repeated samples over multiple timepoints for the same individuals?</td>
+                                <td colSpan='2'>G.7 Did you collect repeated samples over multiple timepoints for the same individuals?</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 0}
@@ -486,7 +487,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.8 If your cohort does not currently collect tumor blocks, do you have information on where the blocks are kept/stored?</td>
+                                <td colSpan='2'>G.8 If your cohort does not currently collect tumor blocks, do you have information on where the blocks are kept/stored?</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 0}
@@ -497,12 +498,12 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr style={{ backgroundColor: '#01857b' }}>
-                                <td colspan='3'>
+                                <td colSpan='3'>
                                     <span style={{ color: 'white' }}>Do you have:</span>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.9 Genotyping Data (SNP)</td>
+                                <td colSpan='2'>G.9 Genotyping Data (SNP)</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
@@ -513,7 +514,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.10  Sequencing Data – Exome</td>
+                                <td colSpan='2'>G.10  Sequencing Data – Exome</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
@@ -524,7 +525,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.11  Sequencing Data – Whole Genome</td>
+                                <td colSpan='2'>G.11  Sequencing Data – Whole Genome</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
@@ -535,7 +536,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)</td>
+                                <td colSpan='2'>G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
@@ -546,7 +547,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.13  Transcriptomics Data</td>
+                                <td colSpan='2'>G.13  Transcriptomics Data</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
@@ -557,7 +558,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.14 Microbiome Data (16S RNA, metagenomics)</td>
+                                <td colSpan='2'>G.14 Microbiome Data (16S RNA, metagenomics)</td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
@@ -568,7 +569,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR) <strong> {'   '} If yes, please answer G15 a-i </strong></td>
+                                <td colSpan='2'>G.15 Metabolomic Data (from MS and/or NMR) <strong> {'   '} If yes, please answer G15 a-i </strong></td>
                                 <td>
                                     <div className='col-xs-12'>
                                         <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 0}
@@ -581,7 +582,7 @@ const SpecimenForm = ({ ...props }) => {
 
                             <tr >
 
-                                <td colspan='3'>
+                                <td colSpan='3'>
                                     {/* G15 a */}
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
@@ -610,7 +611,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
                                                 onClick={() => { dispatch(allactions.specimenActions.setBioMetaOutcomesInOtherStudy((specimen.bioMetaOutcomesInOtherStudy + 1) % 2)); dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true)) }} />{' '}Other</span>
                                             <span className='col-xs-12'>
-                                                <textarea className="form-control resize-vertical" maxlength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
+                                                <textarea className="form-control resize-vertical" maxLength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
                                                     value={specimen.bioMetaOutcomesOtherStudySpecify || ''}
                                                     onChange={e => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(e.target.value))} />
                                             </span>
@@ -649,7 +650,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioLabsUsedForAnalysis' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioLabsUsedForAnalysis' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
                                                 value={specimen.bioLabsUsedForAnalysis || ''}
                                                 onChange={e => dispatch(allactions.specimenActions.setBioLabsUsedForAnalysis(e.target.value))} />
                                         </span>
@@ -662,7 +663,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioAnalyticalPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioAnalyticalPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
                                                 value={specimen.bioAnalyticalPlatform || ''}
                                                 onChange={e => dispatch(allactions.specimenActions.setBioAnalyticalPlatform(e.target.value))} />
                                         </span>
@@ -675,7 +676,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioSeparationPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioSeparationPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
                                                 value={specimen.bioSeparationPlatform || ''}
                                                 onChange={e => dispatch(allactions.specimenActions.setBioSeparationPlatform(e.target.value))} />
                                         </span>
@@ -701,8 +702,8 @@ const SpecimenForm = ({ ...props }) => {
                                     <div className='col-md-12' style={{ marginBottom: '8px' }}>
                                         <span className='col-md-1' style={{ paddingRight: '0' }}>
                                             {
-                                                errors.bioYearSamplesSent && saved ?
-                                                    <Reminder message={errors.bioYearSamplesSent}>
+                                                errors.bioYearSamplesSent ?
+                                                    <Reminder message={'invaliad or empty year value'}>
                                                         <input style={{ marign: 'auto', border: '1px solid red' }}
                                                             className='form-control' name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1}
                                                             onChange={e => dispatch(allactions.specimenActions.setBioYearSamplesSent(e.target.value))}
@@ -1097,20 +1098,20 @@ const SpecimenForm = ({ ...props }) => {
                 </div>
             </div>
             <div style={{ position: 'relative' }}>
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('F')}  />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' disabled />
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('F')} />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' disabled />
                 </span>
-                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
                     </span>
-                    <span className='col-xs-4'  style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled style={{marginRight: '5px', marginBottom: '5px'}}/>
+                    <span className='col-xs-4' style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled style={{ marginRight: '5px', marginBottom: '5px' }} />
                     </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
                 </span>
-            </div>  
+            </div>
         </div>
     </div>
 }

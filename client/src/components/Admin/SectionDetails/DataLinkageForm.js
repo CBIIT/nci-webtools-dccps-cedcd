@@ -219,10 +219,10 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
             <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='btn btn-primary' value='Go Back' />
+                <input type='button' className='btn btn-primary' value='<< Prev' />
             </span>
             <span onClick={() => props.sectionPicker('G')} style={{ position: 'relative', float: 'Right' }}>
-                <input type='button' className='btn btn-primary' value='Next' />
+                <input type='button' className='btn btn-primary' value='Next >>' />
             </span>
         </div>
     </div >

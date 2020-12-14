@@ -675,15 +675,15 @@ const InitialStates = {
             bioMetaOutcomesInDiabetesStudy: true,
             bioMetaOutcomesInOtherStudy: true,
             bioMemberOfMetabolomicsStudies: true,
-            bioOtherBaselineSpecify: '',
-            bioOtherOtherTimeSpecify: '',
-            bioMetaOutcomesOtherStudySpecify: '',
-            bioMemberInStudy: '',
-            bioLabsUsedForAnalysis: '',
-            bioAnalyticalPlatform: '',
-            bioSeparationPlatform: '',
-            bioNumberMetabolitesMeasured: '',
-            bioYearSamplesSent: ''
+            bioOtherBaselineSpecify: true,
+            bioOtherOtherTimeSpecify: true,
+            bioMetaOutcomesOtherStudySpecify: true,
+            bioMemberInStudy: true,
+            bioLabsUsedForAnalysis: true,
+            bioAnalyticalPlatform: true,
+            bioSeparationPlatform: true,
+            bioNumberMetabolitesMeasured: true,
+            bioYearSamplesSent: true
         },
 
         sectionGStatus: ''
@@ -699,7 +699,7 @@ const InitialStates = {
         'G': 'incomplete'
     },
     lookup: {},
-    cohortId: 118,
+    cohortId: 0
 }
 
 export default InitialStates
