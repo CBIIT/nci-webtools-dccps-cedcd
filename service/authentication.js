@@ -60,8 +60,6 @@ async function login(request, response) {
             [userId]
         );
 
-        console.log(cohortAcronyms);
-
         let cohorts = [];
 
         for (const {acronym} of cohortAcronyms) {

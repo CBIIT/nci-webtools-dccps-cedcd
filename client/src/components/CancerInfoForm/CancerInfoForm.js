@@ -346,7 +346,7 @@ const CancerInfoForm = ({ ...props }) => {
                             name="ci_ascertained_other_specify" 
                             value={form.ci_ascertained_other_specify || ''} 
                             onChange={e => setFormValue(e.target.name, e.target.value)} 
-                            placeholder="300 Characters Max"
+                            placeholder="Max of 300 Characters"
                             maxlength={300}
                             disabled={+form.ci_ascertained_other !== 1}
                         />
@@ -380,7 +380,7 @@ const CancerInfoForm = ({ ...props }) => {
                         D.6 Do you have cancer treatment data?
                     </label>
                     {[
-                        {value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c'},
+                        {value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c)'},
                         {value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes'},
                     ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} onChange={e => {
                         if (+e.target.value === 0) {
@@ -431,7 +431,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_treatment_data_other_specify || ''} 
                                 onChange={e => setFormValue(e.target.name, e.target.value)} 
-                                placeholder="200 Characters Max"
+                                placeholder="Max of 200 Characters"
                                 maxlength={200}
                                 disabled={+form.ci_treatment_data_other !== 1}
                             />
@@ -458,7 +458,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_data_source_other_specify || ''} 
                                 onChange={e => setFormValue(e.target.name, e.target.value)} 
-                                placeholder="200 Characters Max"
+                                placeholder="Max of 200 Characters"
                                 maxlength={200}
                                 disabled={+form.ci_data_source_other !== 1}
                             />
@@ -514,7 +514,7 @@ const CancerInfoForm = ({ ...props }) => {
                             length="40" 
                             value={form.ci_tumor_genetic_markers_data_describe} 
                             onChange={e => setFormValue(e.target.name, e.target.value)} 
-                            placeholder="200 Characters Max"
+                            placeholder="Max of 200 Characters"
                             maxlength={200}
                             disabled={+form.ci_tumor_genetic_markers_data !== 1}
                         />
@@ -534,7 +534,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                 <div className={"form-group"}>
                     <label htmlFor="ci_confirmed_cancer_date" className="d-block">
-                        D.11 Do you have histological and/or molecular cancer subtyping?
+                        D.11 Do you have histological and/or molecular cancer subtyping? (select all that apply)
                     </label>
 
                     {[
