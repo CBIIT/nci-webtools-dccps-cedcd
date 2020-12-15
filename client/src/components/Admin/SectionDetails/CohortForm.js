@@ -495,10 +495,10 @@ const CohortForm = ({ ...props }) => {
                     </span>
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
                         <span className='col-md-offset-3 col-md-3 col-xs-6' style={{ margin: '0', padding: '0', float: 'right'}}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Reject' disabled />
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Approve' disabled />
                         </span>
                         <span className='col-md-offset-3 col-md-3 col-xs-6' style={{ margin: '0', padding: '0', float: 'right'}}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Approve' disabled style={{ marginRight: '5px', marginBottom: '5px' }} />
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Reject' disabled />
                         </span>
                     </span>
                 </div>

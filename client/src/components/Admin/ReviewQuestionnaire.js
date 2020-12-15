@@ -10,7 +10,7 @@ const ReviewQuestionnaire = ({ ...props }) => {
         
     return isAuthorized && <div>
         <ReviewCohortHeader activeSection={props.activeSection} handler={props.handler} currentStatus={props.cohortStatus}/>
-        {React.cloneElement(props.children, { sectionPicker: props.handler })}
+        {React.cloneElement(props.children, { sectionPicker: props.handler, status: props.cohortStatus})}
     </div> || <Unauthorized />;
 }
 
