@@ -194,10 +194,9 @@ const CancerInfoForm = ({ ...props }) => {
                             className="form-control resize-vertical"
                             name="ci_ascertained_other_specify"
                             value={form.ci_ascertained_other_specify || ''}
-
+                            placeholder="Max of 300 Characters"
                             maxlength={300}
                         />
-                        <span class="help-block">300 Characters Max</span>
                     </div>}
                 </div>
 
@@ -228,7 +227,7 @@ const CancerInfoForm = ({ ...props }) => {
                         D.6 Do you have cancer treatment data?
                     </label>
                     {[
-                        { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c' },
+                        { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (Go to D.6c)' },
                         { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
                 </div>
@@ -256,10 +255,9 @@ const CancerInfoForm = ({ ...props }) => {
                                     name="ci_treatment_data_other_specify"
                                     disabled={+form.ci_cancer_treatment_data === 0}
                                     value={form.ci_treatment_data_other_specify || ''}
-
+                                    placeholder="Max of 200 Characters"
                                     maxlength={200}
                                 />
-                                <span class="help-block">200 Characters Max</span>
                             </div>}
                     </div>
 
@@ -282,10 +280,9 @@ const CancerInfoForm = ({ ...props }) => {
                                 name="ci_data_source_other_specify"
                                 disabled={+form.ci_cancer_treatment_data === 0}
                                 value={form.ci_data_source_other_specify || ''}
-
+                                placeholder="200 Characters Max"
                                 maxlength={200}
                             />
-                            <span class="help-block">200 Characters Max</span>
                         </div>}
                     </div>
 
@@ -339,10 +336,9 @@ const CancerInfoForm = ({ ...props }) => {
                                 name="ci_tumor_genetic_markers_data_describe"
                                 length="40"
                                 value={form.ci_tumor_genetic_markers_data_describe}
-
+                                placeholder="Max of 200 Characters"
                                 maxlength={200}
                             />
-                            <span class="help-block">200 Characters Max</span>
                         </div>}
                 </div>
 

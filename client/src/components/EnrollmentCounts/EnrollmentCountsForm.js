@@ -86,7 +86,6 @@ const EnrollmentCountsForm = ({...props}) => {
         })
             .then(res => res.json())
             .then(result => {
-                console.dir(result)
                 if(result.status === 200){
                     if(Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'complete'))

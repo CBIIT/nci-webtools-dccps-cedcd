@@ -33,7 +33,7 @@
 27. insert_new_cohort_from_published
 *
  */
-
+use cedcd;
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: advanced_cohort_select
 -- -----------------------------------------------------------------------------------------------------------
@@ -683,11 +683,14 @@ END //
 DROP PROCEDURE IF EXISTS `select_cohort_for_user` //
 CREATE PROCEDURE `select_cohort_for_user`(in user_id int)
 BEGIN
+	
+
     set @query = "
 		select c.*
 		from cohort c
         join cohort_user_mapping cm on cm.cohort_acronym = c.acronym
-		where cohort_user_id = ?
+		where cm.cohort_user_id = ?
+		and cm.acronym = ?
 		order by
 			status = 'draft' desc,
 			status = 'in review' desc,
@@ -701,6 +704,32 @@ BEGIN
 	EXECUTE stmt using @user_id;
 	DEALLOCATE PREPARE stmt;
 END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_editable_cohort_by_acronym
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_editable_cohort_by_acronym` //
+CREATE PROCEDURE `select_editable_cohort_by_acronym`(in acronym varchar(100))
+BEGIN
+    set @query = "
+		select *
+		from cohort c
+		where acronym = ?
+		order by
+			status = 'draft' desc,
+			status = 'in review' desc,
+			status = 'submitted' desc,
+			status = 'new' desc,
+			status = 'published' desc
+		limit 1;
+	";
+    set @acronym = acronym;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @acronym;
+	DEALLOCATE PREPARE stmt;
+END //
+
 
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1470,7 +1499,15 @@ DROP PROCEDURE IF EXISTS update_enrollment_count //
 CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT 0;
-	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
+    DECLARE flag INT DEFAULT 1;
+ 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+    
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
     IF @cohort_status = 'published' then 
     call select_unpublished_cohort_id(targetID, new_id); 
     else
@@ -1704,8 +1741,8 @@ BEGIN
     update cohort_basic 
     set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
 	where cohort_id = new_id;
-    SET @rowcount = ROW_COUNT();
-    SELECT @rowcount AS rowsAffacted;
+    -- SET @rowcount = ROW_COUNT();
+    SELECT flag AS rowsAffacted;
     if targetID <> new_id then 
 		 SELECT new_id as duplicated_cohort_id;
          SELECT `status` from cohort where id = new_id;
@@ -1773,7 +1810,7 @@ DROP PROCEDURE IF EXISTS upsert_major_content //
 CREATE  PROCEDURE `upsert_major_content`(in Old_targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
-	DECLARE targetID INT DEFAULT Old_targetID;
+	DECLARE targetID INT DEFAULT 0;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -1783,8 +1820,13 @@ begin
 
     start transaction;
    
-	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
+    
 	if exists (select * from major_content where cohort_id = targetID) then
     begin
 		update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.seStatusFollowUp'))) where cohort_id = targetID and category_id = 1 ;
@@ -1937,6 +1979,8 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depres
 		 SELECT targetID as duplicated_cohort_id;
          SELECT `status` from cohort where id = targetID;
     end if;
+    end;
+    end if;
 end //
 
 DROP PROCEDURE IF EXISTS `select_mortality` //
@@ -1968,9 +2012,13 @@ DROP PROCEDURE if EXISTS `update_mortality` //
 
 CREATE PROCEDURE `update_mortality` (in Old_targetID int, in info JSON)
 BEGIN
-	DECLARE targetID INT DEFAULT Old_targetID;
-	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
+	DECLARE targetID INT DEFAULT 0;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
 	if exists (select * from mortality where cohort_id = `targetID`) then 
 		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) where cohort_id = `targetID`;
 		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) where cohort_id = `targetID`;
@@ -2031,6 +2079,8 @@ BEGIN
     begin
 		SELECT targetID as duplicated_cohort_id;
 		SELECT `status` from cohort where id = targetID;
+    end;
+    end if;
     end;
     end if;
 end //
@@ -2585,8 +2635,12 @@ DROP PROCEDURE if EXISTS `update_dlh` //
 CREATE PROCEDURE `update_dlh` (in Old_targetID int, in info JSON)
 BEGIN
 	DECLARE targetID INT DEFAULT Old_targetID;
-	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-    IF @cohort_status = 'published' then call inspect_cohort(Old_targetID, targetID); END IF;
+	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	else set targetID = Old_targetID;
+    END IF;
+    IF targetID > 0 then
+    begin
     
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
@@ -2650,6 +2704,8 @@ BEGIN
     if targetID <> Old_targetID then 
 		 SELECT targetID as duplicated_cohort_id;
          SELECT `status` from cohort where id = targetID;
+    end if;
+    end;
     end if;
 end //
 

@@ -3,7 +3,7 @@ import InitialStates from '../states'
 
 const cohortStatusReducer = (state=InitialStates.cohort_status, action={}) => {
     if (action.type == t.setCohortStatus)
-        return action.value
+        return action.value || null
     else
         return state
 }
