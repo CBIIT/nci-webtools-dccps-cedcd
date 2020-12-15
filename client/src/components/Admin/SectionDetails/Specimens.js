@@ -13,7 +13,7 @@ const SpecimenForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     //const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
-
+    const [userEmails, setEmails] = useState('')
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
@@ -22,7 +22,6 @@ const SpecimenForm = ({ ...props }) => {
     const [proceed, setProceed] = useState(false)
     const [activePanel, setActivePanel] = useState('panelA')
     const cohortId = +window.location.pathname.split('/').pop();
-
 
 
     useEffect(() => {
@@ -34,6 +33,7 @@ const SpecimenForm = ({ ...props }) => {
                     let specimenCounts = result.data.counts
                     let specimenInfo = result.data.info
                     let specimenDetails = result.data.details
+                    setEmails(result.data.emails)
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
@@ -217,9 +217,7 @@ const SpecimenForm = ({ ...props }) => {
 
 
     const handleApprove = () => {
-        //resetCohortStatus(cohortId, 'published')
-        alert(props.status)
-        //console.log(sendEmail())
+        resetCohortStatus(cohortId, 'published')
     }
 
     const handleReject = () => {
@@ -233,9 +231,13 @@ const SpecimenForm = ({ ...props }) => {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        
-                        sendEmail()
+                        if(sendEmail() === 'sent')
+                            setSuccessMsg(true)
+                        else 
+                            setFailureMsg(true)
                     }
+                    else
+                        setFailureMsg(true)
                 })
         }
     }
@@ -246,7 +248,7 @@ const SpecimenForm = ({ ...props }) => {
           //  lastname:'zhao',
            // organization:'NIH',
           //  phone:'',
-            email:'joezhao4865@gmail.com',
+            email: userEmails,
             topic:'test',
             message:'this is test on sending email'
           };
@@ -259,13 +261,14 @@ const SpecimenForm = ({ ...props }) => {
           })
           .then(res => res.json())
           .then(result => {
-              console.dir(result)
               if(result && result.status === 200)
                 console.log(result.data)
           })
     }
 
     return <div id='specimenInfoContainer' className='col-md-12'>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
@@ -1042,8 +1045,8 @@ const SpecimenForm = ({ ...props }) => {
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' disabled />
                 </span>
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve'  onClick={handleApprove} disabled={!['published', 'submitted', 'in review'].includes(props.status)}/> 
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' onClick={handleReject} disabled={!['published', 'submitted', 'in review'].includes(props.status)}/> 
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve'  onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)}/> 
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)}/> 
                 </span>
             </div>
         </div>
