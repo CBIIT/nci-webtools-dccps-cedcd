@@ -58,12 +58,7 @@ const CohortForm = ({ ...props }) => {
 
     useEffect(() => {
         if (!cohort.hasLoaded) {
-            //let shadow = {...errors}
-            console.log("2: ln 49 " + cohortID)
-            console.dir(cohortID)
-            console.log("2: ln 51 " + tempId)
             dispatch(allactions.cohortIDAction.setCohortId(tempId))
-            console.log("2: ln 58 CohortID  " + cohortID)
             fetch(`/api/questionnaire/cohort_basic_info/${tempId}`, {
                 method: 'POST'
             }).then(res => res.json())
@@ -72,7 +67,6 @@ const CohortForm = ({ ...props }) => {
                         investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
                         completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
                         cohort_status = result.data.cohortStatus
-                    console.dir('current status: ' + cohort_status)
 
                     batch(() => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
@@ -83,6 +77,7 @@ const CohortForm = ({ ...props }) => {
                         }
                         for (let k of Object.keys(currentCohort)) {
                             //if(k==='enrollment_age_mean')
+                            console.log(k+": "+currentCohort[k])
                             dispatch(allactions.cohortActions[k](currentCohort[k]))
                         }
                         if (completer)
@@ -846,6 +841,7 @@ const CohortForm = ({ ...props }) => {
                                             <div className='col-xs-11' style={{ paddingLeft: '0', color: 'red' }}>{' '}None</div>
                                         </div>
                                     </Reminder> : <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
+                                <span>{cohort.requireNone}</span>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
                                                 <input type='checkbox' name='requireNone' checked={cohort.requireNone == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone')} />
                                             </div>
