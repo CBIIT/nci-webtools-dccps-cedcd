@@ -141,8 +141,8 @@ const DataLinkageForm = ({ ...props }) => {
             if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
-                if (dataLinkage.dataOnlineURL.length > 300)
-                    copy.dataOnlineURL = 'cannot exceed 300 characters'
+                if (dataLinkage.dataOnlineURL.length > 200)
+                    copy.dataOnlineURL = 'cannot exceed 200 characters'
                 else {
                     copy.dataOnlineURL = validator.urlValidator(dataLinkage.dataOnlineURL, true)
                 }
@@ -163,8 +163,8 @@ const DataLinkageForm = ({ ...props }) => {
             if (!dataLinkage.createdRepoSpecify)
                 copy.createdRepoSpecify = 'please specify'
             else {
-                if (dataLinkage.createdRepoSpecify.length > 500)
-                    copy.createdRepoSpecify = 'cannot exceed 500 characters'
+                if (dataLinkage.createdRepoSpecify.length > 200)
+                    copy.createdRepoSpecify = 'cannot exceed 200 characters'
                 else
                     copy.createdRepoSpecify = ''
             }
@@ -252,7 +252,7 @@ const DataLinkageForm = ({ ...props }) => {
         <div className='form-group col-md-12'>
             <label className='col-md-12'>If yes, please specify:</label>
             <div className='col-md-12'>
-                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max 500 characters' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
             </div>
             {errors.haveDataLinkSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLinkSpecify}</div>}
         </div>
@@ -277,7 +277,7 @@ const DataLinkageForm = ({ ...props }) => {
         <div className='form-group col-md-12'>
             <label className='col-md-12'>If part of a consortium, please specify:</label>
             <div className='col-md-12'>
-                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Specify Consortum (Max 500 characters)'></input>
+                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max 500 characters'></input>
             </div>
             {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonizationSpecify}</div>}
         </div>
@@ -381,7 +381,7 @@ const DataLinkageForm = ({ ...props }) => {
 
             <div className='form-group col-md-12' style={{marginTop: '1em'}}>
                 <div className='col-md-8'>
-                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Specify website url (Max 300 characters)'></input>
+                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max 200 characters'></input>
                 </div>
                 {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.dataOnlineURL}</div>}
             </div>
@@ -407,7 +407,7 @@ const DataLinkageForm = ({ ...props }) => {
         <div className='col-md-12'>
             <label className='col-md-12'>If yes, please specify location:</label>
             <div className='col-md-8'>
-                <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Specify enclave location (Max 300 characters)'></input>
+                <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max 200 characters'></input>
             </div>
             {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
         </div>

@@ -236,7 +236,7 @@ const MortalityForm = ({ ...props }) => {
 
         <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
             <div className='col-sm-7'>
-                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Specify confirmation of death (Max 200 characters)' />
+                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max 200 characters' />
             </div>
             {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherDeathSpecify}</div>}
         </div>
@@ -320,7 +320,7 @@ const MortalityForm = ({ ...props }) => {
 
             <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
                 <div className='col-sm-7'>
-                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max 200 characters' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
                 </div>
                 {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherCodeSpecify}</div>}
             </div>
