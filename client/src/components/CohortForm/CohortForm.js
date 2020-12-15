@@ -841,7 +841,6 @@ const CohortForm = ({ ...props }) => {
                                             <div className='col-xs-11' style={{ paddingLeft: '0', color: 'red' }}>{' '}None</div>
                                         </div>
                                     </Reminder> : <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
-                                <span>{cohort.requireNone}</span>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
                                                 <input type='checkbox' name='requireNone' checked={cohort.requireNone == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone')} />
                                             </div>
