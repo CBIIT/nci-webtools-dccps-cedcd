@@ -30,6 +30,7 @@ module.exports = function(app){
     app.use(methodOverride());
     app.use(cookieParser());
     app.use(require('../service/session'));
+    app.use(require('../service/authentication').authenticationMiddleware);
 
     app.use(express.static(path.join(config.root, 'client/www')));
     
