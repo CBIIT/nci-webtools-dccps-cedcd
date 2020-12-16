@@ -350,16 +350,26 @@ const CohortForm = ({ ...props }) => {
         let phone = e.target.checked ? tel : ''
         let email = e.target.checked ? eml : ''
         if(personType === 'collaborator'){
-            dispatch(allactions.cohortActions.collaboratorName(name))
-            dispatch(allactions.cohortActions.collaboratorPosition(position))
-            dispatch(allactions.cohortActions.collaboratorPhone(phone))
-            dispatch(allactions.cohortActions.collaboratorEmail(email))
-            dispatch(allactions.cohortActions.sameAsSomeone(checkedValue))
+            batch(() => {
+                dispatch(allactions.cohortActions.collaboratorName(name))
+                if(name) dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                dispatch(allactions.cohortActions.collaboratorPosition(position))
+                if(position) dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                dispatch(allactions.cohortActions.collaboratorPhone(phone))
+                if(phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                dispatch(allactions.cohortActions.collaboratorEmail(email))
+                if(email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                dispatch(allactions.cohortActions.sameAsSomeone(checkedValue))
+            })
         }else if (personType === 'contacter'){
             dispatch(allactions.cohortActions.clarification_contact(checkedValue))
+            if(name) dispatch(allactions.cohortErrorActions.contacterName(true))
             dispatch(allactions.cohortActions.contacterName(name))
+            if(position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
             dispatch(allactions.cohortActions.contacterPosition(position))
+            if(phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
             dispatch(allactions.cohortActions.contacterPhone(phone))
+            if(email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
             dispatch(allactions.cohortActions.contacterEmail(email))
         }
 
@@ -486,7 +496,7 @@ const CohortForm = ({ ...props }) => {
                                             <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span>
                                         }
 
-                                        {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span></Reminder> :
+                                        {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span></Reminder> :
                                             <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span>
                                         }
                                     </div>
