@@ -516,10 +516,13 @@ router.post('/get_specimen/:id', function (req, res) {
             specimenData.details = result[2][0]
             specimenData.counts = {}
             specimenData.emails = ''
-        
-           for(let e of result[3])
-                temp.push(e.email)
-            specimenData.emails = temp.join(',')
+
+            if(result[3].length > 0){
+                for(let e of result[3])
+                    temp.push(e.email)
+                specimenData.emails = temp.join(',')
+            }
+
             for (let k of result[0])
                 specimenData.counts[k.cellId] = k.counts
             res.json({ status: 200, data: specimenData })
