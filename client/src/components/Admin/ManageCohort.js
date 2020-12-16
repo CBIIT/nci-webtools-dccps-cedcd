@@ -287,20 +287,19 @@ class ManageCohort extends Component {
 			let review_url = `/admin/viewcohort/${item.status.toLowerCase()}/${id}`;
 			let view = "View";
 			let review = "Review";
+			let addNewCohortUrl = `/admin/newcohort`
 
 			let select_id = "select_" + id;
-			if (item.status.toLowerCase() === 'published' || item.status.toLowerCase() === 'draft') {
+			if (item.status.toLowerCase() === 'submitted' || item.status.toLowerCase() === 'in review') {
 				return (
 					<tr key={id}>
-						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.name}</Link>
-						</td>
-						<td><Link to={review_url} onClick={this.saveHistory}>{item.acronym}</Link></td>
-						<td class="text-capitalize">{item.status}</td>
+						<td>{item.name}</td>
+						<td>{item.acronym}</td>
+						<td className="text-capitalize">{item.status}</td>
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{view}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{review}</Link>
 						</td>
 					</tr>
 				);
@@ -309,11 +308,11 @@ class ManageCohort extends Component {
 					<tr key={id}>
 						<td>{item.name}</td>
 						<td>{item.acronym}</td>
-						<td class="text-capitalize">{item.status}</td>
+						<td className="text-capitalize">{item.status}</td>
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.status.toLowerCase() != 'new' ? review : null}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{item.status.toLowerCase() != 'new' ? view : null}</Link>
 						</td>
 					</tr>
 				);
@@ -336,26 +335,28 @@ class ManageCohort extends Component {
 					<h1 className="welcome pg-title">Manage Cohorts</h1>
 					<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
       		    </p><p></p>
-					<div className="filter-block col-md-12">
-						<div className="col-sm-3 ">
-							<div class="form-group has-feedback has-search">
-								<span class="glyphicon glyphicon-search form-control-feedback"></span>
-								<input type="text" class="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
+					<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '0' }}>
+						<div className="col-md-3 col-xs-6" >
+							<div className="form-group has-feedback has-search">
+								<span className="glyphicon glyphicon-search form-control-feedback"></span>
+								<input type="text" className="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 							</div>
 						</div>
-						<div className="col-sm-2 ">
+						<div className="col-md-2 col-xs-6">
 							<div id="cohortstatus" className="filter-component">
 								<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 							</div>
 						</div>
-						<div className="col-sm-2 ">
-							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px" }}>
-								<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
+						<div className="col-md-3 col-xs-12" style={{ "paddingLeft": "0" }}>
+							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
+								<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
 									<i className="fas fa-times" ></i> Clear All </a>
+
+								<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 							</div>
 
 						</div>
-						<div className="col-sm-5 ">
+						<div className="col-md-4 col-xs-12">
 							<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
 								<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
@@ -389,11 +390,11 @@ class ManageCohort extends Component {
 						</div>
 					</div>
 
-					<div className="filter-block home col-md-12">
+					<div className="filter-block home col-md-12" >
 
-						<div className="row" style={{ "display": "flex", "paddingLeft": "15px" }}>
-							<div class="pageSize">
-								Page Size: <select name="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
+						<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
+							<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
+								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
 									<option>Page Size</option>
 									<option value="5">5</option>
 									<option value="10">10</option>
@@ -401,7 +402,7 @@ class ManageCohort extends Component {
 									<option value="20">20</option>
 								</select>
 							</div>
-							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
+							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "4px" }}>
 
 								<div>
 									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
@@ -409,7 +410,7 @@ class ManageCohort extends Component {
 
 							</div>
 
-							<div style={{ "paddingRight": "15px", "paddingTop": "5px" }}>
+							<div style={{ "paddingRight": "15px", "paddingTop": "0px" }}>
 								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
 							</div>
 						</div>

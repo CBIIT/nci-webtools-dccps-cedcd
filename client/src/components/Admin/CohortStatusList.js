@@ -99,7 +99,7 @@ class CohortStatusList extends Component {
 				<li key={key}>
 					<label>
 						<span className="filter-component-input">
-							<input id={cohortstatusId} type="checkbox" onClick={() => this.props.onClick(item)} checked={checked} />
+							<input id={cohortstatusId} type="checkbox" onChange={() => this.props.onClick(item)} checked={checked} />
 						</span>
 						{item.cohortstatus}
 					</label>
