@@ -69,6 +69,13 @@ class GenderList extends Component {
 						lookup: dict
 					});
 				}
+				if(this.props.hasOnly){
+					let allGenders = {...this.state}
+					allGenders.list.sort((a,b) => b.id - a.id)
+					for(let k of allGenders.list)
+						if(k.gender != 'All' && k.gender != 'Unknown')
+							k.gender = k.gender+'s only'
+				}
 			});
 	}
 
@@ -93,6 +100,7 @@ class GenderList extends Component {
 		if (!hasBoth) {
 			f_list = f_list.filter(r => r.gender != "All");
 		}
+	
 		/*f_list.forEach(alert(r => r.gender))*/
 		const list = f_list.map((item, idx) => {
 			const key = "gender_" + item.id;

@@ -510,13 +510,16 @@ router.post('/get_specimen/:id', function (req, res) {
 
     mysql.callProcedure(func, params, function (result) {
         if (result && result[0]) {
-            //logger.debug(result)
             const specimenData = {}
-
+            let temp =[]
             specimenData.info = result[1]
             specimenData.details = result[2][0]
             specimenData.counts = {}
-
+            specimenData.emails = ''
+        
+           for(let e of result[3])
+                temp.push(e.email)
+            specimenData.emails = temp.join(',')
             for (let k of result[0])
                 specimenData.counts[k.cellId] = k.counts
             res.json({ status: 200, data: specimenData })
