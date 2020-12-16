@@ -830,6 +830,7 @@ CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
 BEGIN
 	DECLARE success INT DEFAULT 1;
     DECLARE new_id INT DEFAULT cohort_id;
+   
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
       SET success = 0;
@@ -837,10 +838,11 @@ BEGIN
 	END;
 
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
-    IF @cohort_status = 'published' THEN CALL inspect_cohort(cohort_id, new_id); END IF;
+    IF @cohort_status = 'published' THEN CALL select_unpublished_cohort_id(cohort_id, new_id); END IF;
     START TRANSACTION;
-
+	
     set @cohort_id = new_id;
+    set @old_id = cohort_id;
     set @params = params;
     set @query = "
         insert into cancer_info (
@@ -977,21 +979,26 @@ BEGIN
             ci_tumor_genetic_markers_data_describe = values(ci_tumor_genetic_markers_data_describe),
             ci_histologically_confirmed = values(ci_histologically_confirmed),
             ci_cancer_subtype_histological = values(ci_cancer_subtype_histological),
-            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)";
+            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)
+            ";
 
     PREPARE stmt FROM @query;
 	EXECUTE stmt using @cohort_id, @params;
 	DEALLOCATE PREPARE stmt;
 
+	
     COMMIT;
 	
-    SELECT success;
-    IF cohort_id <> new_id THEN
-    BEGIN
-		SELECT new_id AS duplicated_cohort_id;
-        SELECT `status` from cohort WHERE id = new_id;
-    END;
+	IF success = 1 then
+      if cohort_id <> new_id THEN
+        SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
+      else
+         select success;
+      end if;
+    else
+        select success;
     END IF;
+    
 END //
 
 
