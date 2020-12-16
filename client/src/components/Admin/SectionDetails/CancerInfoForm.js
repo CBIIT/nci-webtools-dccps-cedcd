@@ -110,7 +110,7 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
     }
 
-    return lookup && <div id="cancerInfoContainer" className="p-3">
+    return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
         <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
         <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
             <div className="my-3">
@@ -197,6 +197,7 @@ const CancerInfoForm = ({ ...props }) => {
                             placeholder="Max of 300 Characters"
                             maxlength={300}
                         />
+                        {errors.ci_ascertained_other_specify && <span class="help-block">This field is required.</span>}
                     </div>}
                 </div>
 
@@ -258,6 +259,7 @@ const CancerInfoForm = ({ ...props }) => {
                                     placeholder="Max of 200 Characters"
                                     maxlength={200}
                                 />
+                                {errors.ci_treatment_data_other_specify && <span class="help-block">This field is required.</span>}
                             </div>}
                     </div>
 
@@ -283,6 +285,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 placeholder="200 Characters Max"
                                 maxlength={200}
                             />
+                            {errors.ci_data_source_other_specify && <span class="help-block">This field is required.</span>}
                         </div>}
                     </div>
 
@@ -339,6 +342,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 placeholder="Max of 200 Characters"
                                 maxlength={200}
                             />
+                            {errors.ci_tumor_genetic_markers_data_describe && <span class="help-block">This field is required.</span>}
                         </div>}
                 </div>
 
