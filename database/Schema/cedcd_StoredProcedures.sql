@@ -435,6 +435,16 @@ BEGIN
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_owner
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS select_cohort_owner //
+CREATE PROCEDURE `select_cohort_owner`()
+BEGIN
+	select first_name, last_name, email from user
+	where access_level='CohortAdmin' order by last_name, first_name;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_lookup
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cohort_lookup` //

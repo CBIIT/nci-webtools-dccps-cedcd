@@ -33,7 +33,23 @@ router.post('/list', function (req, res) {
 	});
 });
 
+router.post('/owners', function (req, res) {
 
+	let func = 'select_cohort_owner';
+	let params = [];
+
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			let dt = {};
+			dt.list = results[0];
+			dt.total = dt.list.length;
+			res.json({ status: 200, data: dt });
+		}
+		else {
+			res.json({ status: 200, data: { list: [], total: 0 } });
+		}
+	})
+});
 
 router.post('/lookup', function (req, res) {
 	let body = req.body;

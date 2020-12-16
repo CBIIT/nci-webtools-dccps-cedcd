@@ -12,7 +12,19 @@ const setCancerInfoFormValue = (key, value) => ({
     value,
 });
 
+const mergeCancerCounts = (values) => ({
+    type: t.mergeCancerCounts,
+    values
+});
+
+const mergeCancerInfoFormValues = (values) => ({
+    type: t.mergeCancerInfoFormValues,
+    values,
+});
+
 export default {
     setCancerCount,
     setCancerInfoFormValue,
+    mergeCancerCounts,
+    mergeCancerInfoFormValues,
 }
