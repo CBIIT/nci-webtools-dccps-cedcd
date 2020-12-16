@@ -21,7 +21,7 @@ const CohortForm = ({ ...props }) => {
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
 
-    const errorMsg = 'please provide a value'
+    const errorMsg = 'missing required field value'
 
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
@@ -30,31 +30,6 @@ const CohortForm = ({ ...props }) => {
     const [saved, setSaved] = useState(false)
     const [tempId, setTempId] = useState(+window.location.pathname.split('/').pop())
     const [activePanel, setActivePanel] = useState('panelA')
-    //const cohortID = +window.location.pathname.split('/').pop();
-    //const tempId = +window.location.pathname.split('/').pop();
-    /*
-        async function refreshCohortId(tempId) {
-            try {
-    
-                const valueA = await dispatch(allactions.cohortIDAction.setCohortId(tempId));
-                console.log("ln 40 value A" + valueA)
-    
-            } catch (e) {
-                console.log(e.message);
-            } finally {
-                //setLoadingA(false);
-            }
-        }
-        
-    
-        useEffect(() => {
-            console.log("1: ln 36 " + cohortID)
-            console.dir(cohortID)
-            console.log("1: ln 38 " + tempId)
-    
-           // refreshCohortId(tempId)
-        }, [])
-    */
 
     useEffect(() => {
         if (!cohort.hasLoaded) {
@@ -85,13 +60,22 @@ const CohortForm = ({ ...props }) => {
                                 else
                                     dispatch(allactions.cohortActions.country_code('completerCountry', completer.completerCountry))
                             }
-                        if (contacter)
+                        if (currentCohort.clarification_contact === 1){
+                            for (let k of Object.keys(completer)) {
+                                dispatch(allactions.cohortActions.contacterName(completer.completerName))
+                                dispatch(allactions.cohortActions.contacterPosition(completer.completerPosition))
+                                dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
+                                dispatch(allactions.cohortActions.contacterPhone(completer.completerPhone))
+                                dispatch(allactions.cohortActions.contacterEmail(completer.completerEmail))        
+                            }
+                        }else if(contacter){
                             for (let k of Object.keys(contacter)) {
                                 if (k != 'contacterCountry')
                                     dispatch(allactions.cohortActions[k](contacter[k]))
                                 else
                                     dispatch(allactions.cohortActions.country_code('contacterCountry', completer.contacterCountry))
                             }
+                        }
                         if (collaborator)
                             for (let k of Object.keys(collaborator)) {
                                 if (k != 'collaboratorCountry')
@@ -106,13 +90,13 @@ const CohortForm = ({ ...props }) => {
                         if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
 
                         if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
-                        if (currentCohort.clarification_contact in [0, 1]) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
+                        if ([0, 1].includes(currentCohort.clarification_contact) ) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
                         if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
                         if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
                         if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
                         if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
                         if (currentCohort.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
-                        if (currentCohort.enrollment_ongoing in [0, 1]) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
+                        if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
                         if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
                         if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
                         if (currentCohort.enrollment_age_max) { dispatch(allactions.cohortErrorActions.enrollment_age_max(true)) }
@@ -141,9 +125,17 @@ const CohortForm = ({ ...props }) => {
                         if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
                         if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
                         if (completer && completer.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
-                        if (contacter && contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                        if (contacter && contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                        if (contacter && contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
+                        
+                        
+                        if(currentCohort.clarification_contact === 1 && completer){
+                            if (completer.completerName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
+                            if (completer.completerPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
+                            if ( completer.completerEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
+                        }else if (contacter){
+                            if (contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
+                            if (contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
+                            if (contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
+                        }
 
                         if (contacter && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
                         if (contacter && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
@@ -352,19 +344,28 @@ const CohortForm = ({ ...props }) => {
         dispatch(allactions.cohortActions[dispatchname](event.target.checked ? 1 : 0));
     }
 
-    function setCollaborator(e, n, p, tel, eml, checkedValue) {
+    function setPerson(e, n, p, tel, eml, checkedValue, personType) {
         let name = e.target.checked ? n : ''
         let position = e.target.checked ? p : ''
         let phone = e.target.checked ? tel : ''
         let email = e.target.checked ? eml : ''
-
-        dispatch(allactions.cohortActions.collaboratorName(name))
-        dispatch(allactions.cohortActions.collaboratorPosition(position))
-        dispatch(allactions.cohortActions.collaboratorPhone(phone))
-        dispatch(allactions.cohortActions.collaboratorEmail(email))
-        dispatch(allactions.cohortActions.sameAsSomeone(checkedValue))
+        if(personType === 'collaborator'){
+            dispatch(allactions.cohortActions.collaboratorName(name))
+            dispatch(allactions.cohortActions.collaboratorPosition(position))
+            dispatch(allactions.cohortActions.collaboratorPhone(phone))
+            dispatch(allactions.cohortActions.collaboratorEmail(email))
+            dispatch(allactions.cohortActions.sameAsSomeone(checkedValue))
+        }else if (personType === 'contacter'){
+            dispatch(allactions.cohortActions.clarification_contact(checkedValue))
+            dispatch(allactions.cohortActions.contacterName(name))
+            dispatch(allactions.cohortActions.contacterPosition(position))
+            dispatch(allactions.cohortActions.contacterPhone(phone))
+            dispatch(allactions.cohortActions.contacterEmail(email))
+        }
 
     }
+
+    
 
     const handleUpload = (fileData, category) => {
         if (fileData.name) {
@@ -431,7 +432,7 @@ const CohortForm = ({ ...props }) => {
                         </div>
                         <div id='question6' className='col-md-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? Please specify if applicable</label>
+                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? missing required field value if applicable</label>
                             </div>
                             {window.innerWidth <= 1000 ?
                                 <div className='col-xs-12' style={{}}>
@@ -472,7 +473,7 @@ const CohortForm = ({ ...props }) => {
                                     }
 
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span></Reminder> :
-                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span>
+                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span>
                                     }
                                 </div>
                                 <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact} displayStyle={saved} leftPadding='0' />
@@ -486,7 +487,7 @@ const CohortForm = ({ ...props }) => {
                                         }
 
                                         {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span></Reminder> :
-                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span>
+                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span>
                                         }
                                     </div>
                                     <div id='contacterInfo' className='col-md-8' style={{ paddingLeft: '0' }}>
@@ -518,13 +519,13 @@ const CohortForm = ({ ...props }) => {
                             <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' errors={errors} displayStyle={saved} />
                             <div className='col-md-5' style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ marginBottom: '20px' }}>
-                                    <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0} onChange={(e) => setCollaborator(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0')} />{' '}
+                                    <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0} onChange={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0', 'collaborator')} />{' '}
                                     <span htmlFor='sameAsSomeone'>Same as the person who completed the form(5a) </span>
                                 </div>
                                 {
                                     cohort.clarification_contact === 0 ?
                                         <div style={{ margin: '0', padding: '0', minWidth: '500px' }}>
-                                            <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1} onChange={(e) => setCollaborator(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1')} />{' '}
+                                            <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1} onChange={(e) => setPerson(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1', 'collaborator')} />{' '}
                                             <span htmlFor='sameAsSomeone' style={{ padding: '0', margin: '0' }}>{' '} Same as the contact person for clarification of this form(5b) </span>
                                         </div> : ''
                                 }
@@ -541,7 +542,7 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '10px' : '15px' }}>
                                     <span className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '10px' }}>
                                         <span className='col-md-2 col-xs-4' style={{paddingLeft: '0'}}>Eligible sex<span style={{ color: 'red' }}>*</span></span>
-                                        {errors.eligible_gender_id && saved ? <span className='col-md-3 col-xs-6' style={{color: 'red', fontSize: '16px', paddingLeft: '0'}}>missing required field</span> : ''}
+                                        {errors.eligible_gender_id && saved ? <span className='col-md-3 col-xs-8' style={{color: 'red', fontSize: '16px', paddingLeft: '0'}}>{errorMsg}</span> : ''}
                                     </span>
                                     {/*{errors.eligible_gender_id && saved ? <Reminder message={errors.eligible_gender_id}><span style={{ borderBottom: '1px solid red', color: 'red' }}>
                                         <input type='radio' name='eligible_gender_id' value='4' checked={cohort.eligible_gender_id === 4} onChange={() => removeEligbleGenderError(4)} />{' '} All
@@ -577,7 +578,7 @@ const CohortForm = ({ ...props }) => {
                                         <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' disabled={!cohort.eligible_disease} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
                                     </div>
                                     <div className='col-md-12 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                        <div style={{ marginBottom: '5px' }}>Please specify any eligibility criteria in addition to age and sex</div>
+                                        <div style={{ marginBottom: '5px' }}>missing required field value any eligibility criteria in addition to age and sex</div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                             <span className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                                 <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name='eligible_disease_other_specify' value={cohort.eligible_disease_other_specify} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
@@ -593,7 +594,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12'>
                                 <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    Totoal number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
+                                    Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_total && saved ? <Reminder message={errors.enrollment_total}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} />}
@@ -642,7 +643,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
+                                    If still enrolling, missing required field value the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} />}
@@ -650,7 +651,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
+                                    If still enrolling, missing required field value when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} />}
@@ -741,7 +742,7 @@ const CohortForm = ({ ...props }) => {
                         <div id='question12' className='col-md-12' style={{ paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='col-md-8 col-xs-12' style={{paddingLeft: '0'}}><label style={{ paddingLeft: '0' }}>A.12{' '}How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span>  (Select all that apply) </label></span>
-                                {errors.dataCollection && saved ?<span className='col-md-4 col-xs-12' style={{paddingLeft: '0', color: 'red'}}>missing required filed</span> : ''}
+                                {errors.dataCollection && saved ?<span className='col-md-4 col-xs-12' style={{paddingLeft: '0', color: 'red'}}>{errorMsg}</span> : ''}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div>
@@ -804,10 +805,10 @@ const CohortForm = ({ ...props }) => {
                         <div id='question13' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                             <div className='col-md-12' style={{ marginBottom: '5px' }}>
                                 <span className='col-xs-12' style={{paddingLeft: '0'}}><b>A.13{' '}Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)</b>
-                                {errors.requirements && saved ? <span style={{color: 'red', marginLeft: '10px'}}>missing required field</span> : ''}</span>
+                                {errors.requirements && saved ? <span style={{color: 'red', marginLeft: '10px'}}>{errorMsg}</span> : ''}</span>
                                 
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div>
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
@@ -892,7 +893,7 @@ const CohortForm = ({ ...props }) => {
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='cl-xs-12' style={{paddingLeft: '0'}}>
                                     <b>A.14{' '}What strategies does your cohort use to engage participants?<span style={{color: 'red' }}>*</span>(Select all that apply)</b>
-                                    {errors.strategy && saved ? <span style={{color: 'red', marginLeft: '10px'}}>missing required field</span> : ''}
+                                    {errors.strategy && saved ? <span style={{color: 'red', marginLeft: '10px'}}>{errorMsg}</span> : ''}
                                 </span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
