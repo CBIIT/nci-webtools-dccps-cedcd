@@ -7,10 +7,10 @@ const ReviewQuestionnaire = ({ ...props }) => {
     const userSession = useContext(UserSessionContext);
     const isAuthorized = (process.env.NODE_ENV === 'development')
         || (userSession && userSession.role === 'SystemAdmin');
-
+        
     return isAuthorized && <div>
-        <ReviewCohortHeader activeSection={props.activeSection} handler={props.handler} />
-        {React.cloneElement(props.children, { sectionPicker: props.handler })}
+        <ReviewCohortHeader activeSection={props.activeSection} handler={props.handler} currentStatus={props.cohortStatus}/>
+        {React.cloneElement(props.children, { sectionPicker: props.handler, status: props.cohortStatus})}
     </div> || <Unauthorized />;
 }
 

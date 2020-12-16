@@ -4,6 +4,9 @@ var mysql = require('../components/mysql');
 var logger = require('../components/logger');
 var cache = require('../components/cache');
 var fs = require('fs');
+var ejs = require('ejs');
+var config = require('../config');
+var mail = require('../components/mail');
 
 router.use((request, response, next) => {
     const { session } = request;
@@ -14,6 +17,18 @@ router.use((request, response, next) => {
         next();
     }
 });
+
+
+router.post('/sendEmail', async function (req, res, next) {
+    try{
+        logger.debug(config.mail.from+'//'+req.body.email+'//'+req.body.topic+'//'+req.body.message)
+        await mail.sendMail(config.mail.from, req.body.email, req.body.topic, req.body.message, "");
+        res.json({ status: 200, data: 'sent' });
+	} catch (e) {
+        logger.debug("error: "+e.message)
+		res.json({ status: 200, data: 'failed' });
+	}
+})
 
 router.post('/upload/:id/:category', async function (req, res, next) {
     let cohortFile = req.files.cohortFile
@@ -495,12 +510,18 @@ router.post('/get_specimen/:id', function (req, res) {
 
     mysql.callProcedure(func, params, function (result) {
         if (result && result[0]) {
-            //logger.debug(result)
             const specimenData = {}
-
+            let temp =[]
             specimenData.info = result[1]
             specimenData.details = result[2][0]
             specimenData.counts = {}
+            specimenData.emails = ''
+
+            if(result[3].length > 0){
+                for(let e of result[3])
+                    temp.push(e.email)
+                specimenData.emails = temp.join(',')
+            }
 
             for (let k of result[0])
                 specimenData.counts[k.cellId] = k.counts

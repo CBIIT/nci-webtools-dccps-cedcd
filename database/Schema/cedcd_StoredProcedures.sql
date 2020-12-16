@@ -2430,6 +2430,12 @@ BEGIN
     PREPARE stmt2 FROM @query2;
 	EXECUTE stmt2 using @cohort_id;
 	DEALLOCATE PREPARE stmt2;
+    
+    set @query3 = "select u.email from cohort c join cohort_user_mapping um on c.acronym = um.cohort_acronym join user u on um.cohort_user_id = u.id where c.id = ? and um.cohort_user_id in (11, 12);";
+    
+    PREPARE stmt3 FROM @query3;
+    EXECUTE stmt3 using @cohort_id;
+    DEALLOCATE PREPARE stmt3;
 
 END //
 
