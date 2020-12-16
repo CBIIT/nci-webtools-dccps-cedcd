@@ -10,7 +10,6 @@ class AddNewCohort extends Component {
   constructor(props) {
     super(props);
 
-
     this.state = {
       open: false,
       submitted: false,
@@ -18,11 +17,8 @@ class AddNewCohort extends Component {
       name_error: "",
       acronym_error: "",
       notes_error: "",
-      org_required: false,
       cohortName: "",
       cohortAcronym: "",
-      organization: "",
-      topic: "1",
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
@@ -59,24 +55,12 @@ class AddNewCohort extends Component {
 
         owners.map((owner) => {
           const name = owner.first_name + ' ' + owner.last_name + ' (' + owner.email + ')'
-          const option = { value: {id: owner.id, name}, label: name }
+          const option = { value: owner.id, label: name }
           toAddOwners.push(option)
-
         })
 
         this.setState({ ownerOptions: toAddOwners, isFetching: false })
       })
-  }
-
-  getOwners = () => {
-
-    return ['hello']
-  }
-
-  handleClick = () => {
-    this.setState({
-      open: !this.state.open
-    });
   }
 
   handleModalClick = () => {
@@ -94,8 +78,6 @@ class AddNewCohort extends Component {
       cohortName: "",
       cohortAcronym: "",
       cohortOwners: [],
-      organization: "",
-      topic: "1",
       notes: ""
     });
   }
@@ -152,7 +134,6 @@ class AddNewCohort extends Component {
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
-            console.log(cohort.cohort_name)
             if (state.cohortName === cohort.cohort_name) {
               state.name_error = 'cohort already exists'
               errors += 1;
@@ -165,8 +146,13 @@ class AddNewCohort extends Component {
           })
         }
 
-        //Cohort owners validation todo
+        let ownerIDs = []
 
+        if (state.cohortOwners != null) {
+          state.cohortOwners.map((owner) => {
+            ownerIDs.push(owner.value)
+          })
+        }
         if ((state.notes !== null || !state.notes) && state.notes.length > 500) {
           state.notes_error = 'max length of 500 characters'
           errors += 1
@@ -177,16 +163,14 @@ class AddNewCohort extends Component {
         }
         else {
 
-
           //submit
           let reqBody = {
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
-            organization: state.organization,
-            topic: state.topic,
+            cohortOwners: ownerIDs,
             notes: state.notes
           };
-          fetch('./api/contact/add', {
+          fetch('/api/cohort/add', {
             method: "POST",
             body: JSON.stringify(reqBody),
             headers: {
@@ -194,11 +178,7 @@ class AddNewCohort extends Component {
             }
           })
             .then(res => res.json())
-          /*.then(result => {
-            let data = result.data;
-            state.submitted = data === "sent";
-            this.setState(state);
-          });*/
+
           state.submitted = true;
           this.setState(state);
           setTimeout(() => {
@@ -211,9 +191,7 @@ class AddNewCohort extends Component {
               message_required: false,
               cohortName: "",
               cohortAcronym: "",
-              organization: "",
               cohortOwners: [],
-              topic: "1",
               notes: ""
             });
           }, 1500);
@@ -243,7 +221,7 @@ class AddNewCohort extends Component {
       {userSession => (
         !(process.env.NODE_ENV === 'development' || (userSession && userSession.role === 'SystemAdmin')) &&
         <Unauthorized /> ||
-        <div>
+        <div className='col-md-12'>
           <div id="myModal" className={success_back} onClick={this.handleModalClick}>
             <div className={submit_cls} style={{ textAlign: "center", "border-radius": "10px" }}>
               <div class="modal-header">
@@ -274,9 +252,8 @@ class AddNewCohort extends Component {
                   </div>
                   <div id="ctl11_div_organization" className={org_cls}>
                     <label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s) </label>
-                    {/*<input name="cu_organization" type="text" id="cu_organization" value={this.state.organization} onChange={(e) => this.handleChange("organization", e)} />*/}
                     <div style={{ width: '90%' }}>
-                      <Select name='owners' isMulti='true' value={this.state.cohortOwners} options={this.state.ownerOptions} onChange={this.handleMultiChange}/>
+                      <Select name='owners' isMulti='true' value={this.state.cohortOwners} options={this.state.ownerOptions} onChange={this.handleMultiChange} />
                     </div>
                   </div>
                   <div id="ctl11_div_message">
@@ -295,7 +272,6 @@ class AddNewCohort extends Component {
                 <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required.</p>
               </div>
             </div>
-            {console.log(this.state.cohortOwners)}
           </div>
         </div>
       )}</UserSessionContext.Consumer>;
