@@ -1404,7 +1404,7 @@ BEGIN
   set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status,l_status.id as status_id, concat(u1.first_name, ' ', u1.last_name) create_by, 
 	 (case when ch.publish_by is null then null else (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.publish_by) end) publish_by,
 	 (case when ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time 
-	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE ch.create_by=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
+	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE IFNULL(ch.create_by, 1)=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
   
   set @query = concat(@query, @orderBy, @paging);
 	
@@ -1481,7 +1481,7 @@ BEGIN
         ,specimen_url
         ,publication_url
         
-	FROM cohort_basic WHERE id = `targetID`;
+	FROM cohort_basic WHERE cohort_id = `targetID`;
     
     select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
     from person where category_id = 1 and cohort_id = `targetID`;
@@ -2730,12 +2730,21 @@ DROP PROCEDURE IF EXISTS reset_cohort_status //
 CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30))
 begin
 	DECLARE rowAffacted int default 0;
+    DECLARE flag INT DEFAULT 1;
+ 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+	
+    START TRANSACTION;
 	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
     begin
 		update cohort set `status` = cohort_status where id = targetID;
-        if row_count() > 0 then set rowAffacted = 1; end if;
 	end;
 	end if;
-    select rowAffacted;
+    commit;
+    select flag as rowAffacted;
  end //
 DELIMITER ;
