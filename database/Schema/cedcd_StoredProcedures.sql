@@ -460,6 +460,7 @@ BEGIN
 	  select * from lu_cohort_status;
 END //
 
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
 -- -----------------------------------------------------------------------------------------------------------
@@ -2732,4 +2733,23 @@ begin
 	end if;
     select rowAffacted;
  end //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: insert_new_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `insert_new_cohort` //
+
+CREATE PROCEDURE `insert_new_cohort`(in info JSON)
+BEGIN
+	DECLARE i INT DEFAULT 0;
+	
+	insert into cohort (name,acronym,status,publish_by,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName')),JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),"new",NULL,NOW());
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+	WHILE i < JSON_LENGTH(@owners) DO
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),,'Y',NOW());
+		SELECT i + 1 INTO i;	
+	end WHILE;
+END //
+
 DELIMITER ;
