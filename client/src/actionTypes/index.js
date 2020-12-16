@@ -328,8 +328,10 @@ const actionTypes = {
 
     /* section D */
     setCancerCount: 'SET_CANCER_COUNT',
+    mergeCancerCounts: 'MERGE_CANCER_COUNTS',
     setCancerInfoCohort: 'SET_CI_COHORT',
     setCancerInfoFormValue: 'SET_CI_FORM_VALUE',
+    mergeCancerInfoFormValues: 'MERGE_CI_FORM_VALUES',
     setSectionStatus: 'SET_COHORT_SECTION_STATUS',
 
     /* section E */
