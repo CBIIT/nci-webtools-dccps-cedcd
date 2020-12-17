@@ -8,9 +8,17 @@ actions[t.setCancerCount] = (state, action) => {
    return state;
 }
 
+actions[t.mergeCancerCounts] = (state, action) => {
+   return {...state, counts: {...action.values}};
+}
+
 actions[t.setCancerInfoFormValue] = (state, action) => {
    state.form[action.key] = action.value;
    return state;
+}
+
+actions[t.mergeCancerInfoFormValues] = (state, action) => {
+   return {...state, form: {...action.values}};
 }
 
 actions[t.setCancerInfoCohort] = (state, action) => {

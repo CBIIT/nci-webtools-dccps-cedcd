@@ -110,7 +110,7 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
     }
 
-    return lookup && <div id="cancerInfoContainer" className="p-3">
+    return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
         <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
         <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
             <div className="my-3">
@@ -197,6 +197,7 @@ const CancerInfoForm = ({ ...props }) => {
                             placeholder="Max of 300 Characters"
                             maxlength={300}
                         />
+                        {errors.ci_ascertained_other_specify && <span class="help-block">This field is required.</span>}
                     </div>}
                 </div>
 
@@ -258,6 +259,7 @@ const CancerInfoForm = ({ ...props }) => {
                                     placeholder="Max of 200 Characters"
                                     maxlength={200}
                                 />
+                                {errors.ci_treatment_data_other_specify && <span class="help-block">This field is required.</span>}
                             </div>}
                     </div>
 
@@ -283,6 +285,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 placeholder="200 Characters Max"
                                 maxlength={200}
                             />
+                            {errors.ci_data_source_other_specify && <span class="help-block">This field is required.</span>}
                         </div>}
                     </div>
 
@@ -339,6 +342,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 placeholder="Max of 200 Characters"
                                 maxlength={200}
                             />
+                            {errors.ci_tumor_genetic_markers_data_describe && <span class="help-block">This field is required.</span>}
                         </div>}
                 </div>
 
@@ -370,11 +374,14 @@ const CancerInfoForm = ({ ...props }) => {
 
         {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
         <div style={{ position: 'relative' }}>
-            <span onClick={() => props.sectionPicker('C')} style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='btn btn-primary' value=' << Prev' />
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('C')} />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('E')} />
             </span>
-            <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'Right' }}>
-                <input type='button' className='btn btn-primary' value='Next >>' />
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
+                
             </span>
         </div>
 

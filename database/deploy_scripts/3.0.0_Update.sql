@@ -6,7 +6,7 @@
 *
 */
 
-
+SET SQL_SAFE_UPDATES = 0;
 /* according to Auestionnaire v8,1m change 'Both' to 'All' for gender option  */
 CREATE TABLE IF NOT EXISTS `mapping_old_PI_Id_To_New` (
   `cohort_id` int NOT NULL,
@@ -23,6 +23,8 @@ INSERT INTO lu_specimen (id, specimen, sub_category) VALUES (46, 'Metabolomic', 
     on duplicate key update specimen='Metabolomic', sub_category= 'bio_member_of_metabolomics_studies';
 UPDATE lu_specimen SET sub_category = 'bio_meta_outcomes_in_diabetes_study' WHERE id = 44;
 UPDATE lu_specimen SET sub_category = 'bio_meta_outcomes_in_other_study' WHERE id = 45;
+
+UPDATE lu_cohort_status  SET cohortstatus = 'Rejected' WHERE cohortstatus = 'Returned';
 
 
 /*
@@ -200,5 +202,7 @@ DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 call temp_update_3_0_0();
 
 drop procedure temp_update_3_0_0;
+
+SET SQL_SAFE_UPDATES = 1;
 
 

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { $CombinedState } from 'redux'
 import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
 import validator from '../../validators'
+import Messenger from '../Snackbar/Snackbar'
+import CenterModal from '../Modal/Modal'
 
 const DataLinkageForm = ({ ...props }) => {
 
@@ -13,6 +16,12 @@ const DataLinkageForm = ({ ...props }) => {
     //const cohortId = +window.location.pathname.split('/').pop();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
+    const [proceed, setProceed] = useState(false)
+    const [saved, setSaved] = useState(false)
 
 
     const [errors, setErrors] = useState({
@@ -74,15 +83,15 @@ const DataLinkageForm = ({ ...props }) => {
     }, [])
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
-              .then(result => {
-                  if (result && result.status === 200){
-                    dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
-                  }
-              })
+                .then(result => {
+                    if (result && result.status === 200) {
+                        dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+                    }
+                })
         }
     }
 
@@ -141,8 +150,8 @@ const DataLinkageForm = ({ ...props }) => {
             if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
-                if (dataLinkage.dataOnlineURL.length > 300)
-                    copy.dataOnlineURL = 'cannot exceed 300 characters'
+                if (dataLinkage.dataOnlineURL.length > 200)
+                    copy.dataOnlineURL = 'cannot exceed 200 characters'
                 else {
                     copy.dataOnlineURL = validator.urlValidator(dataLinkage.dataOnlineURL, true)
                 }
@@ -163,8 +172,8 @@ const DataLinkageForm = ({ ...props }) => {
             if (!dataLinkage.createdRepoSpecify)
                 copy.createdRepoSpecify = 'please specify'
             else {
-                if (dataLinkage.createdRepoSpecify.length > 500)
-                    copy.createdRepoSpecify = 'cannot exceed 500 characters'
+                if (dataLinkage.createdRepoSpecify.length > 200)
+                    copy.createdRepoSpecify = 'cannot exceed 200 characters'
                 else
                     copy.createdRepoSpecify = ''
             }
@@ -190,23 +199,25 @@ const DataLinkageForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
-                    if(result.data){
+                    if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                         if (result.data.status)
-                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                     }
                     if (!proceed)
-                        alert('Data was successfully saved')
+                        setSuccessMsg(true)
                     else
                         props.sectionPicker('G')
                 } else {
-                    alert(result.message)
+                    setSuccessMsg(true)
                 }
             })
     }
 
+
     const handleSave = () => {
+        setSaved(true)
 
         if (validateInput()) {
             dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
@@ -214,30 +225,47 @@ const DataLinkageForm = ({ ...props }) => {
             saveDataLinkage(cohortId, false, 'complete')
         }
         else {
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId, false, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(false)
         }
     }
 
     const handleSaveContinue = () => {
+        setSaved(true)
+
         if (validateInput()) {
             dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
             saveDataLinkage(cohortId, true, 'complete')
         }
         else {
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId, true, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(true)
         }
     }
 
+    const confirmSaveStay = () => {
+        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+        saveDataLinkage(cohortId, false, 'incomplete')
+
+        setModalShow(false)
+    }
+
+    const confirmSaveContinue = () => {
+
+        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+        saveDataLinkage(cohortId, true, 'incomplete')
+
+        setModalShow(false)
+    }
+
+
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
 
         <div className='col-md-12'>
             <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
@@ -256,9 +284,9 @@ const DataLinkageForm = ({ ...props }) => {
         </div>
 
         <div className='form-group col-md-12'>
-            <label className='col-md-12'>If yes, please specify:</label>
+            <span className='col-md-12'>If yes, please specify:</span>
             <div className='col-md-12'>
-                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
             </div>
             {errors.haveDataLinkSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLinkSpecify}</div>}
         </div>
@@ -281,9 +309,9 @@ const DataLinkageForm = ({ ...props }) => {
         </div>
 
         <div className='form-group col-md-12'>
-            <label className='col-md-12'>If part of a consortium, please specify:</label>
+            <span className='col-md-12'>If yes, please specify:</span>
             <div className='col-md-12'>
-                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Specify Consortum (Max 500 characters)'></input>
+                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
             </div>
             {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonizationSpecify}</div>}
         </div>
@@ -312,7 +340,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please select which repositories:</span>
+                <span className='col-md-5'>If yes, please select which repositories (Select all that apply):</span>
             </div>
 
             <div className='col-md-12'>
@@ -364,7 +392,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please specify:</span>
+                <span className='col-md-5'>If yes, please specify (Select all that apply):</span>
             </div>
 
             <div className='col-md-12'>
@@ -385,9 +413,9 @@ const DataLinkageForm = ({ ...props }) => {
                 </div>}
             </div>
 
-            <div className='form-group col-md-12' style={{marginTop: '1em'}}>
+            <div className='form-group col-md-12' style={{ marginTop: '1em' }}>
                 <div className='col-md-8'>
-                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Specify website url (Max 300 characters)'></input>
+                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
                 </div>
                 {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.dataOnlineURL}</div>}
             </div>
@@ -411,44 +439,29 @@ const DataLinkageForm = ({ ...props }) => {
         </div>
 
         <div className='col-md-12'>
-            <label className='col-md-12'>If yes, please specify location:</label>
+            <span className='col-md-12'>If yes, please specify:</span>
             <div className='col-md-8'>
-                <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Specify enclave location (Max 300 characters)'></input>
+                <input name='createdRepoSpecify' className='form-group form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
             </div>
             {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
         </div>
-    
-    {/* please update your code if you don't like mine
-        <div className='form-group col-md-12' style={{ margin: '1.5rem' }}>
-            <span onClick={() => props.sectionPicker('E')} style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='btn btn-primary' value='Go Back' />
+
+
+        <div className='col-md-12' style={{ position: 'relative' }}>
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')} />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
             </span>
-            <span style={{ position: 'relative', float: 'right' }}>
-                <span onClick={handleSave}>
-                    <input type='button' className='btn btn-primary' value='Save' />
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
+                <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                    <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
                 </span>
-                <span onClick={handleSaveContinue}>
-                    <input type='button' className='btn btn-primary' value='Save & Continue' />
+                <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
+                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
                 </span>
+                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' style={{ paddingLeft: '0', paddingRight: '0' }} disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
             </span>
         </div>
-            */}
-            
-            <div style={{ position: 'relative' }}>
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')}  />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
-                </span>
-                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
-                    </span>
-                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
-                    </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
-                </span>
-            </div>      
     </div >
 }
 

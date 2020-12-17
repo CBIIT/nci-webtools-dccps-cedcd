@@ -1,8 +1,8 @@
 const emailValidator = (value, isRequired=false) => {
     if(isRequired && !value)
-        return 'please provide a value'
+        return 'Required Field'
     else if(!/^[a-zA-Z0-9.!#$%&*+\/=?^_{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value.trim()))
-        return 'invalid email'
+        return 'Invalid Email'
 }
 
 export default emailValidator

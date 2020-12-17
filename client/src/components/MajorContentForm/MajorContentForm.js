@@ -167,10 +167,10 @@ const MajorContentForm = ({ ...props }) => {
                         if (content[16].followup == null || content[16].followup == 1) { dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
                         if (content[17].followup == null || content[17].followup == 1) { dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
                         if (content[18].followup == null || content[18].followup == 1) { dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
-                        if (content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
+                        if (content[18].baseline == 0 || content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
                         
 
-                        if (content[18].other_specify_followup) { dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(true)) }
+                        if (content[18].followup == 0 || content[18].other_specify_followup) { dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(true)) }
                         if (content[19].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }
                         if (content[19].followup in [0, 1]) { dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }
                         if (content[20].baseline in [0, 1]) { dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }
@@ -235,7 +235,7 @@ const MajorContentForm = ({ ...props }) => {
 
                 })//end of then
         }//end of if
-    }, [])
+    }, [hasErrors])
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
@@ -250,7 +250,7 @@ const MajorContentForm = ({ ...props }) => {
         }
     }
 
-    const saveMajorContent = (id, hasErrors, proceed = false) => {
+    const saveMajorContent = (id, errorsRemain = true,  proceed = false) => {
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
             body: JSON.stringify(majorContent),
@@ -260,7 +260,7 @@ const MajorContentForm = ({ ...props }) => {
         }).then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
-                    if (!hasErrors)
+                    if (!errorsRemain)
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'incomplete'))
@@ -282,6 +282,7 @@ const MajorContentForm = ({ ...props }) => {
             })
     }
 
+
     const handleSave = () => {
         setSaved(true)
         //console.log(errors.cigarFollowUp +' '+ errors.pipeFollowUp +' '+ errors.tobaccoFollowUp +' '+ errors.ecigarFollowUp +' '+ errors.noncigarOtherFollowUp)
@@ -289,12 +290,11 @@ const MajorContentForm = ({ ...props }) => {
         for (let k of Object.keys(errors)) errorsRemain |= errors[k]
         errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
         errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
-
-        setHasErrors(errorsRemain)
+        
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(cohortId, hasErrors)
+            saveMajorContent(cohortId, errorsRemain)
         }
         else {
             setModalShow(true)
@@ -306,11 +306,13 @@ const MajorContentForm = ({ ...props }) => {
         setSaved(true)
         let errorsRemain = false;
         for (let k of Object.keys(errors)) errorsRemain |= errors[k]
-        setHasErrors(errorsRemain)
+        errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
+        errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
-            saveMajorContent(cohortId, true, true)
+            saveMajorContent(cohortId, errorsRemain, true)
         }
         else {
             setModalShow(true)
@@ -321,13 +323,13 @@ const MajorContentForm = ({ ...props }) => {
     const confirmSaveStay = () => {
         majorContent.sectionCStatus = 'incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'));
-        saveMajorContent(cohortId, hasErrors); setModalShow(false)
+        saveMajorContent(cohortId); setModalShow(false)
     }
 
     const confirmSaveContinue = () => {
         majorContent.sectionAStatus = 'incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-        saveMajorContent(cohortId, hasErrors, true); setModalShow(false)
+        saveMajorContent(cohortId, true); setModalShow(false)
     }
 
     return <div className='col-md-12'>
@@ -537,7 +539,7 @@ const MajorContentForm = ({ ...props }) => {
                                         <div> 
                                             <span className='col-sm-12'>
                                                 <span className='col-sm-offset-3 col-sm-10' >
-                                                    {errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/>}
+                                                    {majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify)) } disabled={!majorContent.noncigarOtherBaseLine}/>}
                                                 </span>
                                             </span>   
                                         </div>
@@ -565,13 +567,13 @@ const MajorContentForm = ({ ...props }) => {
                                         </div>
                                         <div className='col-sm-offset-2 col-sm-10'>
                                             <span className='col-sm-1' style={{ paddingLeft: '0' }}>
-                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(!e.target.checked)) }} />  </span>
+                                                <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(e.target.checked ? 1 : 0)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(!e.target.checked)) }} />  </span>
                                             <span className='col-sm-2' >Other</span>
                                         </div>
                                         <div> 
                                             <span className='col-sm-12'>
                                                 <span className='col-sm-offset-3 col-sm-10' >
-                                                    {errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/>}
+                                                    {majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{border: '1px solid red', height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/></Reminder> : <input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{height: '24px'}} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value))}}  onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify)) } disabled={!majorContent.noncigarOtherFollowUp}/>}
                                                 </span>
                                             </span>   
                                         </div>

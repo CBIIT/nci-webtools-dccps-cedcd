@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import CohortForm from './SectionDetails/CohortForm'
 import EnrollmentCountsForm from './SectionDetails/EnrollmentCountsForm'
 import MajorContentForm from './SectionDetails/MajorContentForm'
@@ -10,11 +11,31 @@ import DataLinkageForm from './SectionDetails/DataLinkageForm'
 
 import ReviewQuestionnaire from './ReviewQuestionnaire'
 
-
-const content = (currentSection, handleClick) => {
-    switch (currentSection) {
+const getChild = (sectionName) => {
+    switch(sectionName){
         case 'A':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+            return <CohortForm />
+        case 'B': 
+            return <EnrollmentCountsForm />
+        case 'C':
+            return <MajorContentForm />
+        case 'D':
+            return <CancerInfoForm />
+        case 'E':
+            return  <MortalityForm />
+        case 'F':
+            return <DataLinkageForm />
+        case 'G':
+            return <SpecimenForm />
+        default: 
+            return <Message />
+    }
+}
+
+const content = (currentSection, handleClick, status) => {
+   /* switch (currentSection) {
+        case 'A':
+            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
                 <CohortForm />
             </ReviewQuestionnaire>
         case 'B':
@@ -46,11 +67,16 @@ const content = (currentSection, handleClick) => {
                 <Message />
             </ReviewQuestionnaire>
     }
+    */
+   return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
+       {getChild(currentSection)}
+   </ReviewQuestionnaire>
 }
 
 const ReviewCohort = (...props) => {
     const [current, setCurrent] = useState('A')
-    return content(current, setCurrent)
+    const {status} = useParams()
+    return content(current, setCurrent, status)
 }
 
 export default ReviewCohort

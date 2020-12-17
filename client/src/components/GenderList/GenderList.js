@@ -69,6 +69,13 @@ class GenderList extends Component {
 						lookup: dict
 					});
 				}
+				if(this.props.hasOnly){
+					let allGenders = {...this.state}
+					allGenders.list.sort((a,b) => b.id - a.id)
+					for(let k of allGenders.list)
+						if(k.gender != 'All' && k.gender != 'Unknown')
+							k.gender = k.gender+'s only'
+				}
 			});
 	}
 
@@ -93,6 +100,7 @@ class GenderList extends Component {
 		if (!hasBoth) {
 			f_list = f_list.filter(r => r.gender != "All");
 		}
+	
 		/*f_list.forEach(alert(r => r.gender))*/
 		const list = f_list.map((item, idx) => {
 			const key = "gender_" + item.id;
@@ -168,11 +176,11 @@ class GenderList extends Component {
 			<div className="filter-component-block">
 				<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
 					<button className="btn btn-default dropdown-toggle gender-list-for-testing" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
-						Gender&nbsp;
+						Sex&nbsp;
 				<span className="badge">{this.props.values.length}</span>
 					</button>
 					<div className="dropdown-menu filter-component-dropdown">
-						<h4>Gender</h4>
+						<h4>Sex</h4>
 						<button className="btn btn-primary pull-right" type="button" onClick={this.handleClick}>X</button>
 						<ul>
 							{list}

@@ -595,7 +595,7 @@ insert into lu_cohort_status values (2, "Draft");
 insert into lu_cohort_status values (3,"Submitted");
 insert into lu_cohort_status values (4,"In Review");
 insert into lu_cohort_status values (5,"Published");
-insert into lu_cohort_status values (6,"Returned");
+insert into lu_cohort_status values (6,"Rejected");
 
 /*
  Generate data for lookup table lu_gender

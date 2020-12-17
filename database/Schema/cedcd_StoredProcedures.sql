@@ -435,6 +435,16 @@ BEGIN
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: cohort_owner
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS select_cohort_owner //
+CREATE PROCEDURE `select_cohort_owner`()
+BEGIN
+	select id, first_name, last_name, email from user
+	where access_level='CohortAdmin' order by last_name, first_name;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_lookup
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cohort_lookup` //
@@ -449,6 +459,7 @@ BEGIN
     select * from lu_specimen where id < 10;
 	  select * from lu_cohort_status;
 END //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
@@ -820,6 +831,7 @@ CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
 BEGIN
 	DECLARE success INT DEFAULT 1;
     DECLARE new_id INT DEFAULT cohort_id;
+   
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
       SET success = 0;
@@ -827,10 +839,11 @@ BEGIN
 	END;
 
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
-    IF @cohort_status = 'published' THEN CALL inspect_cohort(cohort_id, new_id); END IF;
+    IF @cohort_status = 'published' THEN CALL select_unpublished_cohort_id(cohort_id, new_id); END IF;
     START TRANSACTION;
-
+	
     set @cohort_id = new_id;
+    set @old_id = cohort_id;
     set @params = params;
     set @query = "
         insert into cancer_info (
@@ -967,21 +980,26 @@ BEGIN
             ci_tumor_genetic_markers_data_describe = values(ci_tumor_genetic_markers_data_describe),
             ci_histologically_confirmed = values(ci_histologically_confirmed),
             ci_cancer_subtype_histological = values(ci_cancer_subtype_histological),
-            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)";
+            ci_cancer_subtype_molecular = values(ci_cancer_subtype_molecular)
+            ";
 
     PREPARE stmt FROM @query;
 	EXECUTE stmt using @cohort_id, @params;
 	DEALLOCATE PREPARE stmt;
 
+	
     COMMIT;
 	
-    SELECT success;
-    IF cohort_id <> new_id THEN
-    BEGIN
-		SELECT new_id AS duplicated_cohort_id;
-        SELECT `status` from cohort WHERE id = new_id;
-    END;
+	IF success = 1 then
+      if cohort_id <> new_id THEN
+        SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
+      else
+         select success;
+      end if;
+    else
+        select success;
     END IF;
+    
 END //
 
 
@@ -1394,7 +1412,7 @@ BEGIN
   set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status,l_status.id as status_id, concat(u1.first_name, ' ', u1.last_name) create_by, 
 	 (case when ch.publish_by is null then null else (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.publish_by) end) publish_by,
 	 (case when ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time 
-	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE ch.create_by=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
+	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE IFNULL(ch.create_by, 1)=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
   
   set @query = concat(@query, @orderBy, @paging);
 	
@@ -1471,7 +1489,7 @@ BEGIN
         ,specimen_url
         ,publication_url
         
-	FROM cohort_basic WHERE id = `targetID`;
+	FROM cohort_basic WHERE cohort_id = `targetID`;
     
     select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
     from person where category_id = 1 and cohort_id = `targetID`;
@@ -2419,6 +2437,12 @@ BEGIN
     PREPARE stmt2 FROM @query2;
 	EXECUTE stmt2 using @cohort_id;
 	DEALLOCATE PREPARE stmt2;
+    
+    set @query3 = "select u.email from cohort c join cohort_user_mapping um on c.acronym = um.cohort_acronym join user u on um.cohort_user_id = u.id where c.id = ? and um.cohort_user_id in (11, 12);";
+    
+    PREPARE stmt3 FROM @query3;
+    EXECUTE stmt3 using @cohort_id;
+    DEALLOCATE PREPARE stmt3;
 
 END //
 
@@ -2714,12 +2738,43 @@ DROP PROCEDURE IF EXISTS reset_cohort_status //
 CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30))
 begin
 	DECLARE rowAffacted int default 0;
+    DECLARE flag INT DEFAULT 1;
+ 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+	
+    START TRANSACTION;
 	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
     begin
 		update cohort set `status` = cohort_status where id = targetID;
-        if row_count() > 0 then set rowAffacted = 1; end if;
 	end;
 	end if;
-    select rowAffacted;
+    commit;
+    select flag as rowAffacted;
  end //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: insert_new_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `insert_new_cohort` //
+
+CREATE PROCEDURE `insert_new_cohort`(in info JSON)
+BEGIN
+	DECLARE i INT DEFAULT 0;
+
+	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+	
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NOW());
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+	WHILE i < JSON_LENGTH(@owners) DO
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+		SELECT i + 1 INTO i;	
+	end WHILE;
+END //
+
 DELIMITER ;
