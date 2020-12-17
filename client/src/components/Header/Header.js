@@ -9,7 +9,7 @@ export default function Header({ props }) {
         e.preventDefault();
         // can not use normal 301 response, since session is not properly cleared
         const response = await fetch('/api/logout');
-        window.location.href = await response.json();
+        window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
     }
 
     return (
