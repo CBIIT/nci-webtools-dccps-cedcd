@@ -24,7 +24,7 @@ async function login(request, response) {
         let userName, userRole, userType;
 
         if (!smUser || process.env.NODE_ENV === 'development') {
-            userName = 'admin';
+            userName = 'admin2';
             userType = loginType;
             userRole = userType === 'internal'
                 ? 'SystemAdmin' 
@@ -45,50 +45,61 @@ async function login(request, response) {
             [userName]
         );
 
-        const userId = user.id;
-        if (!userRole) {
-            userRole = user.activeStatus === 'Y'
-                ? user.accessLevel
-                : null
-        }
-
-        const cohortAcronyms = await mysql.query(
-            `SELECT DISTINCT cohort_acronym as acronym
-            FROM cohort_user_mapping 
-            WHERE cohort_user_id = ? AND active = 'Y'
-            ORDER BY acronym ASC`,
-            [userId]
-        );
-
-        let cohorts = [];
-
-        for (const {acronym} of cohortAcronyms) {
-            const [editableCohorts] = await mysql.query(
-                `call select_editable_cohort_by_acronym(?)`,
-                [acronym]
+        if (user) {
+            const userId = user.id;
+            if (!userRole) {
+                userRole = user.activeStatus === 'Y'
+                    ? user.accessLevel
+                    : null
+            }
+    
+            const cohortAcronyms = await mysql.query(
+                `SELECT DISTINCT cohort_acronym as acronym
+                FROM cohort_user_mapping 
+                WHERE cohort_user_id = ? AND active = 'Y'
+                ORDER BY acronym ASC`,
+                [userId]
             );
-            cohorts.push(...editableCohorts);
+    
+            let cohorts = [];
+    
+            for (const {acronym} of cohortAcronyms) {
+                const [editableCohorts] = await mysql.query(
+                    `call select_editable_cohort_by_acronym(?)`,
+                    [acronym]
+                );
+                cohorts.push(...editableCohorts);
+            }
+            
+            session.user = {
+                id: userId,
+                type: userType,
+                name: userName,
+                role: userRole,
+                cohorts: cohorts,
+                active: user.activeStatus === 'Y',
+            };
+        } else {
+            session.user = {
+                id: null,
+                type: null,
+                name: null,
+                role: null,
+                cohorts: [],
+                active: false
+            };
         }
-        
-        session.user = {
-            id: userId,
-            type: userType,
-            name: userName,
-            role: userRole,
-            cohorts: cohorts,
-            active: user.activeStatus === 'Y',
-        };
 
         let redirectUrl = '/';
 
-        if (!session.user.active) {
+        if (!user || !session.user.active) {
             redirectUrl = '/unauthorized';
         } else if (/SystemAdmin/.test(session.user.role)) {
             redirectUrl = '/admin/managecohort';
         } else if (/CohortAdmin/.test(session.user.role)) {
-            if (cohorts.length === 1) {
-                redirectUrl = `/cohort/questionnaire/${cohorts[0].id}`;
-            } else if (cohorts.length > 1) {
+            if (session.user.cohorts.length === 1) {
+                redirectUrl = `/cohort/questionnaire/${session.user.cohorts[0].id}`;
+            } else if (session.user.cohorts.length > 1) {
                 redirectUrl = `/cohort/select`;
             }
         }
@@ -98,7 +109,7 @@ async function login(request, response) {
     } catch (e) {
         console.error('authentication error', e);
         request.session.destroy(error => {
-            response.status(301).redirect('/');
+            response.status(301).redirect('/unauthorized');
         });
     }
 }
