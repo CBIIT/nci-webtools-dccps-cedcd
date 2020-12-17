@@ -1,11 +1,11 @@
 const maxAgeValidator = (value, isRequired, minAge) => {
     if(isRequired && value === '')
-        return 'Please provide a value'
+        return 'Required Filed'
     else if(!/^\s*[1-9][0-9][0-9]?\s*$/.test(value))
         return 'Invalid age'
     else{
         if(minAge && parseInt(value) < parseInt(minAge))
-            return 'max age is less than min age'
+            return 'Max Age Is Less Than Min Age'
     }
 }
 

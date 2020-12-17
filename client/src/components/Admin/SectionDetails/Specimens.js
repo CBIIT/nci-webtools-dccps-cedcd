@@ -17,6 +17,7 @@ const SpecimenForm = ({ ...props }) => {
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState('')
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
@@ -33,7 +34,7 @@ const SpecimenForm = ({ ...props }) => {
                     let specimenCounts = result.data.counts
                     let specimenInfo = result.data.info
                     let specimenDetails = result.data.details
-                    setEmails(result.data.emails)
+                    setEmails(result.data.emails+',joezhao4865@gmail.com')
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
@@ -231,18 +232,19 @@ const SpecimenForm = ({ ...props }) => {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        if(sendEmail() === 'sent')
-                            setSuccessMsg(true)
-                        else 
-                            setFailureMsg(true)
+                        setMessage('update was successful')
+                        setSuccessMsg(true)
+                        sendEmail()
                     }
-                    else
+                    else{
+                        setMessage('update failed')
                         setFailureMsg(true)
+                    }
                 })
         }
     }
 
-    const sendEmail = () => {
+    const sendEmail =  () => {
         let reqBody = {
            // firstname:'joe',
           //  lastname:'zhao',
@@ -261,14 +263,22 @@ const SpecimenForm = ({ ...props }) => {
           })
           .then(res => res.json())
           .then(result => {
-              if(result && result.status === 200)
-                console.log(result.data)
+              if(result && result.status === 200){
+                setMessage('email was sent')
+                let timedMessage = setTimeout(()=> {setSuccessMsg(true)}, 4000)
+                clearTimeout(timedMessage)
+              }
+              else{
+                setMessage('email failed to be sent')
+                let timedMessage = setTimeout(()=> {setFailureMsg(true)}, 4000)
+                clearTimeout(timedMessage)
+              }
           })
     }
 
     return <div id='specimenInfoContainer' className='col-md-12'>
-        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        {successMsg && <Messenger message={message} severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message={message} severity='warning' open={true} changeMessage={setFailureMsg} />}
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>

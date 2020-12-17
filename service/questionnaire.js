@@ -221,13 +221,13 @@ router.post('/update_mortality/:id', function (req, res) {
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
         if (result && result[0] && result[0][0].rowAffacted > 0){           
-            if(result[1]) {
+            if(Array.isArray(result[1])) {
                 const updatedMortality = {}
                 updatedMortality.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if(result[2]) updatedMortality.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedMortality })
             }else
-                 dres.json({ status: 200, message: 'update successful' })
+                res.json({ status: 200, message: 'update successful' })
         }
         else
             res.json({ status: 500, message: 'update failed' })
@@ -263,7 +263,8 @@ router.post('/update_dlh/:id', function (req, res) {
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
         if (result && result[0] && result[0][0].rowAffacted > 0){
-            if(result[1]) {
+            if(Array.isArray(result[1])) {
+                
                 const updatedDlh = {}
                 updatedDlh.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if(result[2]) updatedDlh.status = result[2][0].status
@@ -330,12 +331,15 @@ router.post('/update_cancer_info/:id', async function (req, res) {
     const { mysql } = app.locals;
     const { id } = params;
     try {
-        const [result] = await mysql.query(
-            'CALL update_cancer_info(?, ?)', 
-            [id, JSON.stringify(body)]
-        );
-        if (result) {
-            res.json({ status: 200, message: 'update successful', result })
+        const [result] = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
+        logger.info(result[0].success)
+        logger.info(result[0].duplicated_cohort_id)
+        logger.info(result[0].status)
+        if (result && result[0] && result[0].success === 1) {
+            if(result[0].duplicated_cohort_id){
+                res.json({status: 200, message: 'update successful', data: {duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status}})
+            }else
+                res.json({ status: 200, message: 'update successful' })
         } else {
             throw new Error("SQL Exception");
         }
@@ -521,10 +525,13 @@ router.post('/get_specimen/:id', function (req, res) {
             specimenData.details = result[2][0]
             specimenData.counts = {}
             specimenData.emails = ''
-        
-           for(let e of result[3])
-                temp.push(e.email)
-            specimenData.emails = temp.join(',')
+
+            if(result[3].length > 0){
+                for(let e of result[3])
+                    temp.push(e.email)
+                specimenData.emails = temp.join(',')
+            }
+
             for (let k of result[0])
                 specimenData.counts[k.cellId] = k.counts
             res.json({ status: 200, data: specimenData })

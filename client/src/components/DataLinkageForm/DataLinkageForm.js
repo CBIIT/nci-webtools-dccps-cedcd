@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { $CombinedState } from 'redux'
 import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
 import validator from '../../validators'
+import Messenger from '../Snackbar/Snackbar'
+import CenterModal from '../Modal/Modal'
 
 const DataLinkageForm = ({ ...props }) => {
 
@@ -13,6 +16,12 @@ const DataLinkageForm = ({ ...props }) => {
     //const cohortId = +window.location.pathname.split('/').pop();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
+    const [proceed, setProceed] = useState(false)
+    const [saved, setSaved] = useState(false)
 
 
     const [errors, setErrors] = useState({
@@ -197,16 +206,18 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                     }
                     if (!proceed)
-                        alert('Data was successfully saved')
+                        setSuccessMsg(true)
                     else
                         props.sectionPicker('G')
                 } else {
-                    alert(result.message)
+                    setSuccessMsg(true)
                 }
             })
     }
 
+
     const handleSave = () => {
+        setSaved(true)
 
         if (validateInput()) {
             dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
@@ -214,30 +225,47 @@ const DataLinkageForm = ({ ...props }) => {
             saveDataLinkage(cohortId, false, 'complete')
         }
         else {
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId, false, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(false)
         }
     }
 
     const handleSaveContinue = () => {
+        setSaved(true)
+
         if (validateInput()) {
             dispatch(allactions.dataLinkageActions.setSectionFStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('F', 'complete'))
             saveDataLinkage(cohortId, true, 'complete')
         }
         else {
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
-                saveDataLinkage(cohortId, true, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(true)
         }
     }
 
+    const confirmSaveStay = () => {
+        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+        saveDataLinkage(cohortId, false, 'incomplete')
+
+        setModalShow(false)
+    }
+
+    const confirmSaveContinue = () => {
+
+        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
+        saveDataLinkage(cohortId, true, 'incomplete')
+
+        setModalShow(false)
+    }
+
+
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
 
         <div className='col-md-12'>
             <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
@@ -312,7 +340,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please select which repositories:</span>
+                <span className='col-md-5'>If yes, please select which repositories (Select all that apply):</span>
             </div>
 
             <div className='col-md-12'>
@@ -364,7 +392,7 @@ const DataLinkageForm = ({ ...props }) => {
 
         <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please specify:</span>
+                <span className='col-md-5'>If yes, please specify (Select all that apply):</span>
             </div>
 
             <div className='col-md-12'>
@@ -420,18 +448,18 @@ const DataLinkageForm = ({ ...props }) => {
 
 
         <div className='col-md-12' style={{ position: 'relative' }}>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left'}}>
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
             </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right'}}>
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
                 <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
                     <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
                 </span>
                 <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px',  paddingLeft: '0', paddingRight: '0' }} />
+                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
                 </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' style={{paddingLeft: '0', paddingRight: '0'}} disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' style={{ paddingLeft: '0', paddingRight: '0' }} disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
             </span>
         </div>
     </div >

@@ -274,7 +274,15 @@ const CancerInfoForm = ({ ...props }) => {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify([info])
-            }).then(r => r.json());
+            }).then(r => r.json())
+              .then(result => {
+                  if(result && result.data){
+                      console.log("new id: "+result.data.duplicated_cohort_id)
+                      console.log("new stats: "+result.data.status)
+                      dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                      dispatch({type: 'SET_COHORT_STATUS', value: result.data.status})
+                  }
+              });
 
             await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
                 method: 'POST',
