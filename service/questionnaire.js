@@ -309,11 +309,13 @@ router.post('/update_cancer_count/:id', async function (req, res) {
     const { mysql } = app.locals;
     const { id } = params;
     try {
-        const result = await mysql.query('CALL update_cancer_count(?, ?)', [id, JSON.stringify(body)])
-        console.log(result);
+        const [result] = await mysql.query(
+            'CALL update_cancer_count(?, ?)', 
+            [id, JSON.stringify(body)]
+        );
 
-        if (result && result[0] && result[0][0].success === 1) {
-            res.json({ status: 200, message: 'update successful' })
+        if (result) {
+            res.json({ status: 200, message: 'update successful', result })
         } else {
             throw new Error("SQL Exception");
         }
@@ -328,9 +330,12 @@ router.post('/update_cancer_info/:id', async function (req, res) {
     const { mysql } = app.locals;
     const { id } = params;
     try {
-        const [result] = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
-        if (result && result[0] && result[0].success === 1) {
-            res.json({ status: 200, message: 'update successful' })
+        const [result] = await mysql.query(
+            'CALL update_cancer_info(?, ?)', 
+            [id, JSON.stringify(body)]
+        );
+        if (result) {
+            res.json({ status: 200, message: 'update successful', result })
         } else {
             throw new Error("SQL Exception");
         }
