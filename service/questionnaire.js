@@ -330,8 +330,14 @@ router.post('/update_cancer_info/:id', async function (req, res) {
     const { id } = params;
     try {
         const [result] = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
+        logger.info(result[0].success)
+        logger.info(result[0].duplicated_cohort_id)
+        logger.info(result[0].status)
         if (result && result[0] && result[0].success === 1) {
-            res.json({ status: 200, message: 'update successful' })
+            if(result[0].duplicated_cohort_id){
+                res.json({status: 200, message: 'update successful', data: {duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status}})
+            }else
+                res.json({ status: 200, message: 'update successful' })
         } else {
             throw new Error("SQL Exception");
         }

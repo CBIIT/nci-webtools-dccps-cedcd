@@ -21,7 +21,7 @@ const CohortForm = ({ ...props }) => {
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
 
-    const errorMsg = 'missing required field value'
+    const errorMsg = 'Required Field'
 
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
@@ -163,8 +163,6 @@ const CohortForm = ({ ...props }) => {
         })
             .then(res => res.json())
             .then(result => {
-                console.dir(result.newCohortInfo)
-
                 if (result.status === 200) {
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
@@ -331,7 +329,7 @@ const CohortForm = ({ ...props }) => {
         if (currentState) {//if any of the checkboxes is checked remove error
             dispatch(allactions.cohortErrorActions[errorname](true))
         } else {// if none of them is checked
-            dispatch(allactions.cohortErrorActions[errorname](false, 'please select at least one value'))
+            dispatch(allactions.cohortErrorActions[errorname](false, 'Required Field'))
         }
         if (furtherProcessing) {
             if (!event.target.checked) {
@@ -442,7 +440,7 @@ const CohortForm = ({ ...props }) => {
                         </div>
                         <div id='question6' className='col-md-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? missing required field value if applicable</label>
+                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? Required Field if applicable</label>
                             </div>
                             {window.innerWidth <= 1000 ?
                                 <div className='col-xs-12' style={{}}>
@@ -588,7 +586,7 @@ const CohortForm = ({ ...props }) => {
                                         <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' disabled={!cohort.eligible_disease} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
                                     </div>
                                     <div className='col-md-12 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                        <div style={{ marginBottom: '5px' }}>missing required field value any eligibility criteria in addition to age and sex</div>
+                                        <div style={{ marginBottom: '5px' }}>Required Field any eligibility criteria in addition to age and sex</div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                             <span className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                                 <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name='eligible_disease_other_specify' value={cohort.eligible_disease_other_specify} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
@@ -603,7 +601,7 @@ const CohortForm = ({ ...props }) => {
                                 <label style={{ paddingLeft: '0' }}>A.9{' '}Enrollment Information</label>
                             </div>
                             <div className='col-xs-12'>
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
                                     Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
@@ -611,22 +609,22 @@ const CohortForm = ({ ...props }) => {
                                 </span>
                             </div>
                             <div className='col-xs-12'>
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Started in year<span style={{ color: 'red' }}>*</span></span>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Started in year<span style={{ color: 'red' }}>*</span></span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_year_start && saved ? <Reminder message={errors.enrollment_year_start}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} />}
                                 </span>
                             </div>
                             <div className='col-xs-12' >
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Ended in year<span style={{ color: 'red' }}>*</span></span>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Ended in year<span style={{ color: 'red' }}>*</span></span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_year_end && saved ? <Reminder message={errors.enrollment_year_end}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_end' placeholder='yyyy' value={cohort.enrollment_year_end} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_end', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enroll
                                 EndYear' placeholder='yyyy' value={cohort.enrollment_year_end} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_end', e.target.value, true, 'year') }} />}
                                 </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '3px' : '15px' }}>
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Is enrollment ongoing?<span style={{ color: 'red' }}>*</span></span>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Is enrollment ongoing?<span style={{ color: 'red' }}>*</span></span>
                                 <span className='col-md-1 col-xs-6' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_ongoing && saved ? <Reminder message='please choose one'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='0' checked={cohort.enrollment_ongoing === 0} onChange={e => {
+                                    {errors.enrollment_ongoing && saved ? <Reminder message='Required Field'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='0' checked={cohort.enrollment_ongoing === 0} onChange={e => {
                                         dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_target(true))
@@ -639,7 +637,7 @@ const CohortForm = ({ ...props }) => {
                                     }} />{' '}No</span>}
                                 </span>
                                 <span className='col-md-1 col-xs-6' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_ongoing && saved ? <Reminder message='please choose one'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
+                                    {errors.enrollment_ongoing && saved ? <Reminder message='Required Field'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
                                         dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_target(true))
@@ -652,26 +650,26 @@ const CohortForm = ({ ...props }) => {
                                     }} />{' '}Yes</span>} </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, missing required field value the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
+                                    If still enrolling, Required Field the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} />}
+                                    {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} />}
                                 </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
-                                <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, missing required field value when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
+                                <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
+                                    If still enrolling, Required Field when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} />}
+                                    {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0} disabled={cohort.enrollment_ongoing == 0}/></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0} disabled={cohort.enrollment_ongoing == 0}/>}
                                 </span>
 
                             </div>
 
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0', paddingRight: '0' }}>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.enrollment_age_min && saved ? <Reminder message={errors.enrollment_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} />}
                                     </span>
@@ -681,14 +679,14 @@ const CohortForm = ({ ...props }) => {
                                     </span>
                                 </div>
                                 <div>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.enrollment_age_median && saved ? <Reminder message={errors.enrollment_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} />
                                         }
                                     </span>
                                 </div>
                                 <div>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.enrollment_age_mean && saved ? <Reminder message={errors.enrollment_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} />}
                                     </span>
@@ -696,7 +694,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12'>
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0', paddingRight: '0' }}>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.current_age_min && saved ? <Reminder message={errors.current_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} />}
                                     </span>
@@ -706,13 +704,13 @@ const CohortForm = ({ ...props }) => {
                                     </span>
                                 </div>
                                 <div>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.current_age_median && saved ? <Reminder message={errors.current_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} />}
                                     </span>
                                 </div>
                                 <div>
-                                    <span className='col-md-6 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
+                                    <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                         {errors.current_age_mean && saved ? <Reminder message={errors.current_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} />}
                                     </span>
@@ -902,7 +900,7 @@ const CohortForm = ({ ...props }) => {
                         <div id='question14' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='cl-xs-12' style={{paddingLeft: '0'}}>
-                                    <b>A.14{' '}What strategies does your cohort use to engage participants?<span style={{color: 'red' }}>*</span>(Select all that apply)</b>
+                                    <b>A.14{' '}What strategies does your cohort use to engage participants?<span style={{color: 'red' }}>*</span>{' '}(Select all that apply)</b>
                                     {errors.strategy && saved ? <span style={{color: 'red', marginLeft: '10px'}}>{errorMsg}</span> : ''}
                                 </span>
                             </div>
