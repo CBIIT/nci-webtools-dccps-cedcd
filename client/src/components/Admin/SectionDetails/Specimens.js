@@ -4,9 +4,8 @@ import allactions from '../../../actions'
 import validator from '../../../validators'
 import Messenger from '../../Snackbar/Snackbar'
 import Reminder from '../../Tooltip/Tooltip'
+import './Specimens.scss'
 
-
-import './SpecimenForm.css'
 
 const SpecimenForm = ({ ...props }) => {
     const specimen = useSelector(state => state.specimenReducer)
@@ -34,7 +33,7 @@ const SpecimenForm = ({ ...props }) => {
                     let specimenCounts = result.data.counts
                     let specimenInfo = result.data.info
                     let specimenDetails = result.data.details
-                    setEmails(result.data.emails+',joezhao4865@gmail.com')
+                    setEmails(result.data.emails + ',joezhao4865@gmail.com')
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
@@ -194,16 +193,16 @@ const SpecimenForm = ({ ...props }) => {
                             }
 
                             // details part
-                           /* dispatch(allactions.specimenActions.setBioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
-                            dispatch(allactions.specimenActions.setBioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
-                            dispatch(allactions.specimenActions.setBioMemberInStudy(specimenDetails.bio_member_in_study))
-                            dispatch(allactions.specimenActions.setBioMetaOutcomesInCancerStudy(specimenDetails.bio_meta_outcomes_other_study_specify))
-                            dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
-                            dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
-                            dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
-                            dispatch(allactions.specimenActions.setBioSeparationPlatform(specimenDetails.bio_separation_platform))
-                            dispatch(allactions.specimenActions.setBioYearSamplesSent(specimenDetails.bio_year_samples_sent))
-                            */
+                            /* dispatch(allactions.specimenActions.setBioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
+                             dispatch(allactions.specimenActions.setBioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
+                             dispatch(allactions.specimenActions.setBioMemberInStudy(specimenDetails.bio_member_in_study))
+                             dispatch(allactions.specimenActions.setBioMetaOutcomesInCancerStudy(specimenDetails.bio_meta_outcomes_other_study_specify))
+                             dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
+                             dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
+                             dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
+                             dispatch(allactions.specimenActions.setBioSeparationPlatform(specimenDetails.bio_separation_platform))
+                             dispatch(allactions.specimenActions.setBioYearSamplesSent(specimenDetails.bio_year_samples_sent))
+                             */
 
                         })
                     }
@@ -236,7 +235,7 @@ const SpecimenForm = ({ ...props }) => {
                         setSuccessMsg(true)
                         sendEmail()
                     }
-                    else{
+                    else {
                         setMessage('update failed')
                         setFailureMsg(true)
                     }
@@ -244,36 +243,36 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
-    const sendEmail =  () => {
+    const sendEmail = () => {
         let reqBody = {
-           // firstname:'joe',
-          //  lastname:'zhao',
-           // organization:'NIH',
-          //  phone:'',
+            // firstname:'joe',
+            //  lastname:'zhao',
+            // organization:'NIH',
+            //  phone:'',
             email: userEmails,
-            topic:'test',
-            message:'this is test on sending email'
-          };
-          fetch('/api/questionnaire/sendEmail',{
+            topic: 'test',
+            message: 'this is test on sending email'
+        };
+        fetch('/api/questionnaire/sendEmail', {
             method: "POST",
             body: JSON.stringify(reqBody),
             headers: {
-                  'Content-Type': 'application/json'
-              }
-          })
-          .then(res => res.json())
-          .then(result => {
-              if(result && result.status === 200){
-                setMessage('email was sent')
-                let timedMessage = setTimeout(()=> {setSuccessMsg(true)}, 4000)
-                clearTimeout(timedMessage)
-              }
-              else{
-                setMessage('email failed to be sent')
-                let timedMessage = setTimeout(()=> {setFailureMsg(true)}, 4000)
-                clearTimeout(timedMessage)
-              }
-          })
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+                    setMessage('email was sent')
+                    let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                    clearTimeout(timedMessage)
+                }
+                else {
+                    setMessage('email failed to be sent')
+                    let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                    clearTimeout(timedMessage)
+                }
+            })
     }
 
     return <div id='specimenInfoContainer' className='col-md-12'>
@@ -284,7 +283,7 @@ const SpecimenForm = ({ ...props }) => {
                 <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
             </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Specimen Collected</div>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Did you collect any of the following specimens</div>
                 <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
                     <table className='table table-stripe table-responsive'>
                         <thead>
@@ -463,221 +462,232 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
                                 </td>
                             </tr>
-                            <tr style={{ backgroundColor: '#01857b' }}>
-                                <td colspan='3'>
-                                    <span style={{ color: 'white' }}>Do you have:</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.9 Genotyping Data (SNP)</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.10  Sequencing Data – Exome</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.11  Sequencing Data – Whole Genome</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.13  Transcriptomics Data</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.14 Microbiome Data (16S RNA, metagenomics)</td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR) <strong> {'   '} If yes, please answer G15 a-i </strong></td>
-                                <td>
-                                    <div className='col-xs-12'>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 0}
-                                        />{' '}No</span>
-                                        <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr >
-
-                                <td colspan='3'>
-                                    {/* G15 a */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 0}
-                                        />{' '}No</span>
-                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 1}
-                                        />{' '}Yes</span>
-
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 b */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15b {'  '}What are the disease outcome(s) in your study?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCancerStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCancerStudy === 1}
-                                            />{' '}Cancer</span>
-                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCvdStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCvdStudy === 1}
-                                            />{' '}CVD</span>
-                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInDiabetesStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInDiabetesStudy === 1}
-                                            />{' '}Diabetes</span>
-                                            <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
-                                            />{' '}Other</span>
-                                            <span className='col-xs-12'>
-                                                <textarea className="form-control resize-vertical" maxlength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
-                                                    value={specimen.bioMetaOutcomesOtherStudySpecify || ''} />
-                                            </span>
-                                        </div>
-                                    </div>
-
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 c */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 0}
-                                        />{' '}No</span>
-                                        <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 1}
-                                        />{' '}Yes</span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 d */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15d {'  '}What is the number of participants with metabolomics data in your study?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-2'>
-                                            <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
-                                                value={specimen.bioMemberInStudy} />
-                                        </span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 e */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15e {'  '}Which laboratory or company was used for the analysis?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioLabsUsedForAnalysis' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
-                                                value={specimen.bioLabsUsedForAnalysis || ''} />
-                                        </span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 f */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15f {'  '}Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioAnalyticalPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
-                                                value={specimen.bioAnalyticalPlatform || ''} />
-                                        </span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 g*/}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-xs-12'>
-                                            <textarea className="form-control resize-vertical" maxlength={200} name='bioSeparationPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
-                                                value={specimen.bioSeparationPlatform || ''} />
-                                        </span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 h */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15h {'  '}How many metabolites were measured?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-2'>
-                                            <input maxLength='200' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
-                                                value={specimen.bioNumberMetabolitesMeasured} />
-                                        </span>
-                                    </div>
-
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
-                                    {/* G15 i */}
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-12' style={{ paddingLeft: '0' }} > G.15i {'  '} What year were samples analyzed?</span>
-                                    </div>
-                                    <div className='col-md-12' style={{ marginBottom: '8px' }}>
-                                        <span className='col-md-1' style={{ paddingRight: '0' }}>
-
-                                            <input style={{ marign: 'auto' }} className='form-control'
-                                                name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1} />
-
-                                        </span>
-                                    </div>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
+
+                <div style={{ marginTop: '15px' }}>
+                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Did you have </div>
+                    <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
+                        <table>
+                            <tbody>
+
+                                <tr style={{ backgroundColor: '#01857b' }}>
+                                    <td colspan='3'>
+                                        <span style={{ color: 'white' }}>Do you have:</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.9 Genotyping Data (SNP)</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.10  Sequencing Data – Exome</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.11  Sequencing Data – Whole Genome</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.13  Transcriptomics Data</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.14 Microbiome Data (16S RNA, metagenomics)</td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan='2'>G.15 Metabolomic Data (from MS and/or NMR) <strong> {'   '} If yes, please answer G15 a-i </strong></td>
+                                    <td>
+                                        <div className='col-xs-12'>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 0}
+                                            />{' '}No</span>
+                                            <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr >
+
+                                    <td colspan='3'>
+                                        {/* G15 a */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15a {'  '}Are the biospecimens collected fasting samples?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 0}
+                                            />{' '}No</span>
+                                            <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMetaFastingSample' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaFastingSample === 1}
+                                            />{' '}Yes</span>
+
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 b */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15b {'  '}What are the disease outcome(s) in your study?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                                <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCancerStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCancerStudy === 1}
+                                                />{' '}Cancer</span>
+                                                <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInCvdStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInCvdStudy === 1}
+                                                />{' '}CVD</span>
+                                                <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInDiabetesStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInDiabetesStudy === 1}
+                                                />{' '}Diabetes</span>
+                                                <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
+                                                />{' '}Other</span>
+                                                <span className='col-xs-12'>
+                                                    <textarea className="form-control resize-vertical" maxlength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
+                                                        value={specimen.bioMetaOutcomesOtherStudySpecify || ''} />
+                                                </span>
+                                            </div>
+                                        </div>
+
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 c */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 0}
+                                            />{' '}No</span>
+                                            <span className='col-md-2'><input type='radio' style={{ marign: 'auto' }} name='bioMemberOfMetabolomicsStudies' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMemberOfMetabolomicsStudies === 1}
+                                            />{' '}Yes</span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 d */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15d {'  '}What is the number of participants with metabolomics data in your study?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-2'>
+                                                <input maxLength='20' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioMemberInStudy} />
+                                            </span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 e */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15e {'  '}Which laboratory or company was used for the analysis?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-xs-12'>
+                                                <textarea className="form-control resize-vertical" maxlength={200} name='bioLabsUsedForAnalysis' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioLabsUsedForAnalysis || ''} />
+                                            </span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 f */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15f {'  '}Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-xs-12'>
+                                                <textarea className="form-control resize-vertical" maxlength={200} name='bioAnalyticalPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioAnalyticalPlatform || ''} />
+                                            </span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 g*/}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-xs-12'>
+                                                <textarea className="form-control resize-vertical" maxlength={200} name='bioSeparationPlatform' disabled={specimen.bioMetabolomicData !== 1} placeholder='(Max 200 characters)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioSeparationPlatform || ''} />
+                                            </span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 h */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }}> G.15h {'  '}How many metabolites were measured?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-2'>
+                                                <input maxLength='200' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='(input a number)' style={{ marign: 'auto' }}
+                                                    value={specimen.bioNumberMetabolitesMeasured} />
+                                            </span>
+                                        </div>
+
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}> </div>
+                                        {/* G15 i */}
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-12' style={{ paddingLeft: '0' }} > G.15i {'  '} What year were samples analyzed?</span>
+                                        </div>
+                                        <div className='col-md-12' style={{ marginBottom: '8px' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0' }}>
+
+                                                <input style={{ marign: 'auto' }} className='form-control'
+                                                    name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1} />
+
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Biospecimen Counts</div>
-                <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}>Biospecimen Counts</div>
+                <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
                     <div><label>G.16 </label></div>
                     <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available in your current inventory. If you do not have exact counts, please enter approximate counts. (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.) </p>
                     <table className='table table-stripe table-responsive'>
@@ -1051,12 +1061,12 @@ const SpecimenForm = ({ ...props }) => {
             </div>
             <div style={{ position: 'relative' }}>
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('F')} />
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' disabled />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'left' }} value='Previous' onClick={() => props.sectionPicker('F')} />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'left' }} value='Next' disabled />
                 </span>
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve'  onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)}/> 
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)}/> 
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve' onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)} />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject' onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)} />
                 </span>
             </div>
         </div>
