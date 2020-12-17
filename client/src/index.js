@@ -9,7 +9,7 @@ import {createStore, compose, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { initializeLookup } from './reducers/lookupReducer';
-import './main.scss';
+import './index.scss';
 
 
 const history = createBrowserHistory();

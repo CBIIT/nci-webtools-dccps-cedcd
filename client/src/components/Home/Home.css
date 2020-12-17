@@ -121,6 +121,7 @@ img {
     border-bottom: none !important;
     background-color: rgba(0,0,0,0) !important;
     padding: 0 0 0 0 !important;
+    margin-top: 20px !important;
     margin-bottom: 10px !important;
 }
 .card-top-coloring{
