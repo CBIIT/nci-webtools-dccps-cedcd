@@ -1,16 +1,12 @@
 /* EXTERNAL GLOBAL CSS */
+// Bootstrap v4.5.3
 @import '~bootstrap/scss/bootstrap';
+// Bootstrap v3.3.7
+@import '../public/assets/css/bootstrap-v3';
+// Font styles
 @import './typography.scss';
 
 /* CORE-STRCTURE -------------------------------------------------------- */ 
-html {
-  font-family: sans-serif;
-  -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-  font-size: 10px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
 body {
   width: 100%;
   margin: 0 auto 0 auto;
@@ -29,10 +25,10 @@ body {
   margin: 0 auto 0 auto;
 }
 
-// .no-gutters {
-//   padding-left:0;
-//   padding-right:0;
-// }
+.no-gutters {
+  padding-left:0;
+  padding-right:0;
+}
 
 /* HEADER-NCI -------------------------------------------------------- */ 
 #header-nci-bg {
@@ -225,9 +221,9 @@ body {
   display: flex;
 }
 
-// #cohortSelectPage #cedcd-home-filter {
-//   margin-bottom: 0;
-// }
+#cohortSelectPage #cedcd-home-filter {
+  margin-bottom: 0;
+}
 
 #selectPage #cedcd-home-filter {
   margin-bottom: 2rem;
@@ -262,12 +258,12 @@ body {
   z-index:9001 !important;
 }
 
-// .selectOr { /* Probably not needed */
-//   width: 16px;
-//   margin: 11px 1% 0 1%;
-//   padding: 0 0 0 0;
-//   float: left;
-// }
+.selectOr { /* Probably not needed */
+  width: 16px;
+  margin: 11px 1% 0 1%;
+  padding: 0 0 0 0;
+  float: left;
+}
 
 /* Cohort Details Floating Submit Button */
 #floatingSubmitButtonContainer {
@@ -300,17 +296,17 @@ body {
   top:0px !important;
 }
 
-// .fadein, .fadeout {
-//     opacity: 0;
-//     -moz-transition: opacity 0.4s ease-in-out;
-//     -o-transition: opacity 0.4s ease-in-out;
-//     -webkit-transition: opacity 0.4s ease-in-out;
-//     transition: opacity 0.4s ease-in-out;
-// }
+.fadein, .fadeout {
+    opacity: 0;
+    -moz-transition: opacity 0.4s ease-in-out;
+    -o-transition: opacity 0.4s ease-in-out;
+    -webkit-transition: opacity 0.4s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
+}
 
-// .fadein {
-//     opacity: 1;
-// }
+.fadein {
+    opacity: 1;
+}
 
 /********************/
 #cedcd-home-cohorts-inner, #cedcd-cohorts-inner {
@@ -1434,3 +1430,5 @@ tr.compare-row--hover, .body-header--hover {
   outline: none;
   background: #F9F7EF;
 }
+
+// BOOTSTRAP V4 OVERRIDES 
