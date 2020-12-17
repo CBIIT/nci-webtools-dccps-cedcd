@@ -24,7 +24,7 @@ async function login(request, response) {
         let userName, userRole, userType;
 
         if (!smUser || process.env.NODE_ENV === 'development') {
-            userName = 'admin2';
+            userName = 'admin';
             userType = loginType;
             userRole = userType === 'internal'
                 ? 'SystemAdmin' 
