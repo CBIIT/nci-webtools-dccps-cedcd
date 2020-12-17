@@ -38,14 +38,14 @@ export default function Header({ props }) {
                     </> || <>
                             <a
                                 className="login-button"
-                                href="/login/external"
+                                href="/private/external"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 External Login
                         </a>
                             <a
                                 className="login-button"
-                                href="/login/internal"
+                                href="/private/internal"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 NIH Login
