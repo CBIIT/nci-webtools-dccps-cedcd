@@ -468,11 +468,11 @@ const SpecimenForm = ({ ...props }) => {
                         <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioRepeatedSampleSameIndividual(0)); dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true)) }} />{" "}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioRepeatedSampleSameIndividual(1)); dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -485,11 +485,11 @@ const SpecimenForm = ({ ...props }) => {
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTumorBlockInfo(0)); dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTumorBlockInfo(1)); dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -509,11 +509,11 @@ const SpecimenForm = ({ ...props }) => {
                         <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioGenotypingData(0)); dispatch(allactions.specimenErrorActions.bioGenotypingData(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
+                                <span><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioGenotypingData(1)); dispatch(allactions.specimenErrorActions.bioGenotypingData(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -526,11 +526,11 @@ const SpecimenForm = ({ ...props }) => {
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataExome(0)); dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataExome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -541,11 +541,11 @@ const SpecimenForm = ({ ...props }) => {
                         <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataWholeGenome(0)); dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataWholeGenome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -558,11 +558,11 @@ const SpecimenForm = ({ ...props }) => {
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioEpigeneticOrMetabolicMarkers(0)); dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioEpigeneticOrMetabolicMarkers(1)); dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -574,11 +574,11 @@ const SpecimenForm = ({ ...props }) => {
                         <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTranscriptomicsData(0)); dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTranscriptomicsData(1)); dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
@@ -591,11 +591,11 @@ const SpecimenForm = ({ ...props }) => {
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioMicrobiomeData(0)); dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true)) }} />{' '}No</span>
                             </div>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
+                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioMicrobiomeData(1)); dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true)) }} />{' '}Yes</span>
                             </div>
                         </div>
