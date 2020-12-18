@@ -256,7 +256,7 @@ const SpecimenForm = ({ ...props }) => {
                     console.log(error)
                 })
         } // end if
-    }, [])
+    }, [hasErrors])
 
     const saveSpecimen = (id = 79, hasErrors, proceed = false) => {
         console.log(specimen)
