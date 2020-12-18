@@ -41,8 +41,14 @@ actions[t.setBioUrineBaseline] = (state, action) => ({ ...state, bioUrineBaselin
 actions[t.setBioUrineOtherTime] = (state, action) => ({ ...state, bioUrineOtherTime: action.value })
 actions[t.setBioFecesBaseline] = (state, action) => ({ ...state, bioFecesBaseline: action.value })
 actions[t.setBioFecesOtherTime] = (state, action) => ({ ...state, bioFecesOtherTime: action.value })
-actions[t.setBioOtherBaseline] = (state, action) => ({ ...state, bioOtherBaseline: action.value })
-actions[t.setBioOtherOtherTime] = (state, action) => ({ ...state, bioOtherOtherTime: action.value })
+actions[t.setBioOtherBaseline] = (state, action) => ({
+    ...state, bioOtherBaseline: action.value,
+    bioOtherBaselineSpecify: action.value ? state.bioOtherBaselineSpecify : ''
+})
+actions[t.setBioOtherOtherTime] = (state, action) => ({
+    ...state, bioOtherOtherTime: action.value,
+    ioOtherOtherTimeSpecify: action.value ? state.bioOtherOtherTimeSpecify : ''
+})
 actions[t.setBioRepeatedSampleSameIndividual] = (state, action) => ({ ...state, bioRepeatedSampleSameIndividual: action.value })
 actions[t.setBioTumorBlockInfo] = (state, action) => ({ ...state, bioTumorBlockInfo: action.value })
 actions[t.setBioGenotypingData] = (state, action) => ({ ...state, bioGenotypingData: action.value })
@@ -52,16 +58,31 @@ actions[t.setBioEpigeneticOrMetabolicMarkers] = (state, action) => ({ ...state, 
 actions[t.setBioOtherOmicsData] = (state, action) => ({ ...state, bioOtherOmicsData: action.value })
 actions[t.setBioTranscriptomicsData] = (state, action) => ({ ...state, bioTranscriptomicsData: action.value })
 actions[t.setBioMicrobiomeData] = (state, action) => ({ ...state, bioMicrobiomeData: action.value })
-actions[t.setBioMetabolomicData] = (state, action) => ({ ...state, bioMetabolomicData: action.value })
+actions[t.setBioMetabolomicData] = (state, action) => ({
+    ...state, bioMetabolomicData: action.value,
+    bioMetaOutcomesInCancerStudy: action.value ? state.bioMetaOutcomesInCancerStudy : '',
+    bioMetaOutcomesInCvdStudy: action.value ? state.bioMetaOutcomesInCvdStudy : '',
+    bioMetaOutcomesInDiabetesStudy: action.value ? state.bioMetaOutcomesInDiabetesStudy : '',
+    bioMetaOutcomesInOtherStudy: action.value ? state.bioMetaOutcomesInOtherStudy : '',
+    bioMetaOutcomesOtherStudySpecify: action.value ? state.bioMetaOutcomesOtherStudySpecify : '',
+    bioMemberInStudy: action.value ? state.bioMemberInStudy : '',
+    bioLabsUsedForAnalysis: action.value ? state.bioLabsUsedForAnalysis : '',
+    bioAnalyticalPlatform: action.value ? state.bioAnalyticalPlatform : '',
+    bioSeparationPlatform: action.value ? state.bioSeparationPlatform : ''
+})
 actions[t.setBioMetaFastingSample] = (state, action) => ({ ...state, bioMetaFastingSample: action.value })
 actions[t.setBioMetaOutcomesInCancerStudy] = (state, action) => ({ ...state, bioMetaOutcomesInCancerStudy: action.value })
 actions[t.setBioMetaOutcomesInCvdStudy] = (state, action) => ({ ...state, bioMetaOutcomesInCvdStudy: action.value })
 actions[t.setBioMetaOutcomesInDiabetesStudy] = (state, action) => ({ ...state, bioMetaOutcomesInDiabetesStudy: action.value })
-actions[t.setBioMetaOutcomesInOtherStudy] = (state, action) => ({ ...state, bioMetaOutcomesInOtherStudy: action.value })
+actions[t.setBioMetaOutcomesInOtherStudy] = (state, action) => ({
+    ...state, bioMetaOutcomesInOtherStudy: action.value,
+    bioMetaOutcomesOtherStudySpecify: action.value ? state.bioMetaOutcomesOtherStudySpecify : ''
+})
 actions[t.setBioMemberOfMetabolomicsStudies] = (state, action) => ({ ...state, bioMemberOfMetabolomicsStudies: action.value })
 actions[t.setBioOtherBaselineSpecify] = (state, action) => ({ ...state, bioOtherBaselineSpecify: action.value })
 actions[t.setBioOtherOtherTimeSpecify] = (state, action) => ({ ...state, bioOtherOtherTimeSpecify: action.value })
 actions[t.setBioMetaOutcomesOtherStudySpecify] = (state, action) => ({ ...state, bioMetaOutcomesOtherStudySpecify: action.value })
+
 actions[t.setBioMemberInStudy] = (state, action) => {
     if ((/^\d*$/.test(action.value))) return { ...state, bioMemberInStudy: action.value }
 }

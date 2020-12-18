@@ -586,7 +586,7 @@ const SpecimenForm = ({ ...props }) => {
                                                 <span className='col-xs-12'><input className='col-xs-1' type='checkbox' style={{ marign: 'auto' }} name='bioMetaOutcomesInOtherStudy' disabled={specimen.bioMetabolomicData !== 1} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
                                                 />{' '}Other</span>
                                                 <span className='col-xs-12'>
-                                                    <textarea className="form-control resize-vertical" maxlength={100} name='setBioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
+                                                    <textarea className="form-control resize-vertical" maxlength={100} name='bioMetaOutcomesOtherStudySpecify' disabled={specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1} placeholder='(Max 100 characters)' style={{ marign: 'auto' }}
                                                         value={specimen.bioMetaOutcomesOtherStudySpecify || ''} />
                                                 </span>
                                             </div>

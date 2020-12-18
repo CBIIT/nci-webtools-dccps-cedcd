@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
-import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../Modal/Modal'
@@ -24,8 +23,6 @@ const SpecimenForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
-    const [hasErrors, setHasErrors] = useState(false)
-    const [proceed, setProceed] = useState(false)
     const [activePanel, setActivePanel] = useState('panelA')
     //const cohortId = window.location.pathname.split('/').pop();
 
@@ -44,6 +41,7 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const populateErrors = (value, requiredOrNot, valueType) => {
+
         const result = getValidationResult(value, requiredOrNot, valueType)
         console.log(result)
         if (result) {
@@ -52,6 +50,30 @@ const SpecimenForm = ({ ...props }) => {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
         }
     }
+
+    const refreshErrors = () => (errors.bioBloodBaseline && errors.bioBloodOtherTime) || /* G1 */
+        (errors.bioBloodBaseline && (errors.bioBloodBaselineSerum || errors.bioBloodBaselinePlasma || errors.bioBloodBaselineBuffyCoat || errors.bioBloodBaselineOtherDerivative)) ||
+        (errors.bioBloodOtherTime && (errors.bioBloodOtherTimeSerum || errors.bioBloodOtherTimePlasma || errors.bioBloodOtherTimeBuffyCoat || errors.bioBloodOtherTimeOtherDerivative)) ||
+        (errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) || /* G2 */
+        (errors.bioTissueBaseline && errors.bioTissueOtherTime) || /* G3 */
+        (errors.bioUrineBaseline && errors.bioUrineOtherTime) || /* G4 */
+        (errors.bioFecesBaseline && errors.bioFecesOtherTime) || /* G5 */
+        (errors.bioOtherBaseline && errors.bioOtherOtherTime) || /* G6 */
+        (+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify) || /* G6 -specify */
+        (+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify) || /* G6 -specify */
+        (errors.bioRepeatedSampleSameIndividua) || /* G7 */
+        (errors.bioTumorBlockInfo) || /* G8 */
+        (errors.bioGenotypingData) || /* G9 */
+        (errors.bioSequencingDataExome) || /* G10 */
+        (errors.bioSequencingDataWholeGenome) || /* G11 */
+        (errors.bioEpigeneticOrMetabolicMarkers) || /* G12 */
+        (errors.bioTranscriptomicsData) || /* G13 */
+        (errors.bioMicrobiomeData) || /* G14 */
+        (errors.bioMetabolomicData) || /* G15 */
+        (+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent)
+
+
+
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
@@ -202,6 +224,23 @@ const SpecimenForm = ({ ...props }) => {
                                     case 'bio_metabolomic_data': // specimen_id 40
                                         dispatch(allactions.specimenActions.setBioMetabolomicData(specimenInfo[k].collected_yn))
                                         dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+                                        if (specimenInfo[k].collected_yn == null || +specimenInfo[k].collected_yn === 0) {
+                                            dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                            dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                            dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                            dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                            dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+
+                                            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+                                            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                                            dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+
+                                        }
                                         break
                                     case 'bio_meta_fasting_sample': // specimen_id 41
                                         dispatch(allactions.specimenActions.setBioMetaFastingSample(specimenInfo[k].collected_yn))
@@ -244,7 +283,17 @@ const SpecimenForm = ({ ...props }) => {
                             dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
                             dispatch(allactions.specimenActions.setBioSeparationPlatform(specimenDetails.bio_separation_platform))
                             dispatch(allactions.specimenActions.setBioYearSamplesSent(specimenDetails.bio_year_samples_sent))
-                            if (specimenDetails.bio_year_samples_sent) dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+
+                            dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                            dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                            dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                            dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
+                            dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))
+                            dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))
+                            dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                            if (specimenDetails.bio_year_samples_sent && +specimenDetails.bio_year_samples_sent > 1900 && +specimenDetails.bio_year_samples_sent < 2100) dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+
 
 
                         })
@@ -256,10 +305,11 @@ const SpecimenForm = ({ ...props }) => {
                     console.log(error)
                 })
         } // end if
-    }, [hasErrors])
+    }, [])
 
     const saveSpecimen = (id = 79, errorsRemain = true, proceed = false) => {
         console.log(specimen)
+
 
         fetch(`/api/questionnaire/update_specimen/${id}`, {
             method: "POST",
@@ -298,11 +348,11 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = false;
-        for (let k of Object.keys(errors)) errorsRemain |= errors[k]
-        errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
-        errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
 
+        console.log(errors)
+        let errorsRemain = refreshErrors()
+
+        console.log(errorsRemain)
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -311,10 +361,6 @@ const SpecimenForm = ({ ...props }) => {
         } else {
             //setDisplay('block')
             setModalShow(true)
-            setProceed(false)
-            //  specimen.sectionGStatus = 'incomplete'
-            // if (window.confirm('there are validation errors, are you sure to save?'))
-            //     saveSpecimen(cohortId)
         }
     }
 
@@ -343,46 +389,74 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.1 Blood  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
-                        {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && <span style={{ color: 'red' }}>Missing required Filed</span>}
-
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-
                                 <span className='col-xs-12'><input type='checkbox' name='bioBloodBaseline' checked={specimen.bioBloodBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaseline(+specimen.bioBloodBaseline === 1)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => {
+                                        dispatch(allactions.specimenActions.setBioBloodBaseline(+e.target.checked));
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaseline(e.target.checked))
+                                    }} />{' '} Collected at baseline</span>
 
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, types of aliquots</small></span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineSerum' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineSerum === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaselineSerum(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true)) }} />{' '}Serum</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodBaselineSerum(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(e.target.checked))
+                                        }} />{' '}Serum</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselinePlasma' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselinePlasma === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaselinePlasma(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(true)) }} />{' '}Plasma</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodBaselinePlasma(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(e.target.checked))
+                                        }} />{' '}Plasma</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineBuffyCoat' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineBuffyCoat === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaselineBuffyCoat(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(true)) }} />{' '}Buffy Coat</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodBaselineBuffyCoat(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(e.target.checked))
+                                        }} />{' '}Buffy Coat</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineOtherDerivative' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineOtherDerivative === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaselineOtherDerivative(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(true)) }} />{' '}Other blood derivative</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodBaselineOtherDerivative(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(e.target.checked))
+                                        }} />{' '}Other blood derivative</span>
                                 </div>
                             </div>
 
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
 
                                 <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTime' checked={specimen.bioBloodOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTime(+specimen.bioBloodOtherTime === 1)) }} />{' '} Collected at other time points</span>
+                                    onChange={(e) => {
+                                        dispatch(allactions.specimenActions.setBioBloodOtherTime(+e.target.checked));
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTime(e.target.checked))
+                                    }} />{' '} Collected at other time points</span>
 
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, types of aliquots</small></span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeSerum' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeSerum === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTimeSerum(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(true)) }} />{' '}Serum</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodOtherTimeSerum(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(e.target.checked))
+                                        }} />{' '}Serum</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimePlasma' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimePlasma === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTimePlasma(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(true)) }} />{' '}Plasma</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodOtherTimePlasma(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(e.target.checked))
+                                        }} />{' '}Plasma</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeBuffyCoat' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTimeBuffyCoat(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(true)) }} />{' '}Buffy Coat</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodOtherTimeBuffyCoat(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(e.target.checked))
+                                        }} />{' '}Buffy Coat</span>
                                     <span className='col-xs-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeOtherDerivative' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
-                                        onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTimeOtherDerivative(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(true)) }} />{' '}Other blood derivative</span>
+                                        onChange={(e) => {
+                                            dispatch(allactions.specimenActions.setBioBloodOtherTimeOtherDerivative(+e.target.checked));
+                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(e.target.checked))
+                                        }} />{' '}Other blood derivative</span>
                                 </div>
                             </div>
                         </div>
+                        {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -392,12 +466,19 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => {
+                                        dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(+e.target.checked));
+                                        dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(e.target.checked))
+                                    }} />{' '} Collected at baseline</span>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }} > <span className='col-xs-12'><input type='checkbox' name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 1}
-                                onChange={(e) => { dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{' '} Collected at other time points</span>
+                                onChange={(e) => {
+                                    dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(+e.target.checked));
+                                    dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(e.target.checked))
+                                }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
+                        {(errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -407,13 +488,20 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioTissueBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioTissueBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => {
+                                        dispatch(allactions.specimenActions.setBioTissueBaseline(+e.target.checked));
+                                        dispatch(allactions.specimenErrorActions.bioTissueBaseline(e.target.checked))
+                                    }} />{' '} Collected at baseline</span>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioTissueOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{' '} Collected at other time points</span>
+                                    onChange={(e) => {
+                                        dispatch(allactions.specimenActions.setBioTissueOtherTime(+e.target.checked));
+                                        dispatch(allactions.specimenErrorActions.bioTissueOtherTime(e.target.checked))
+                                    }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
+                        {(errors.bioTissueBaseline && errors.bioTissueOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -423,13 +511,14 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{' '} Collected at other time points</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
+                        {(errors.bioUrineBaseline && errors.bioUrineOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -439,13 +528,14 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{' '} Collected at other time points</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
+                        {(errors.bioFecesBaseline && errors.bioFecesOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -455,27 +545,46 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, please specify</small></span>
                                     <span className='col-xs-12' style={{ paddingTop: '0.5rem' }}>
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={specimen.bioOtherBaseline !== 1} placeholder='Max of 200 characters'
-                                            value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))} />
+                                        {specimen.bioOtherBaseline && errors.bioOtherBaselineSpecify && saved ? <Reminder message={'Missing required field'}>
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
+                                                placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
+                                                value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
+                                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
+                                        </Reminder> :
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
+                                                placeholder='Max of 200 characters'
+                                                value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
+                                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
+                                        }
                                     </span>
                                 </div>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '} Collected at other time points</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, please specify</small></span>
                                     <span className='col-xs-12' style={{ paddingTop: '0.5rem' }}>
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherOtherTimeSpecify' disabled={specimen.bioOtherOtherTime !== 1} placeholder='Max of 200 characters'
-                                            value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))} />
+                                        {specimen.bioOtherOtherTime && errors.bioOtherOtherTimeSpecify && saved ? <Reminder message={'Missing required field'}>
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherOtherTimeSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
+                                                placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
+                                                value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
+                                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
+                                        </Reminder> :
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
+                                                placeholder='Max of 200 characters'
+                                                value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
+                                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
+                                        }
                                     </span>
                                 </div>
                             </div>
                         </div>
+                        {(errors.bioOtherBaseline && errors.bioOtherOtherTime) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                     </div>
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -491,6 +600,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioRepeatedSampleSameIndividual(1)); dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioRepeatedSampleSameIndividual) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -508,6 +618,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTumorBlockInfo(1)); dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioTumorBlockInfo) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -532,6 +643,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioGenotypingData(1)); dispatch(allactions.specimenErrorActions.bioGenotypingData(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioGenotypingData) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -549,6 +661,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataExome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioSequencingDataExome) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
@@ -564,6 +677,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioSequencingDataWholeGenome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioSequencingDataWholeGenome) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -581,6 +695,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioEpigeneticOrMetabolicMarkers(1)); dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioEpigeneticOrMetabolicMarkers) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -597,6 +712,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioTranscriptomicsData(1)); dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioTranscriptomicsData) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -614,6 +730,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioMicrobiomeData(1)); dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioMicrobiomeData) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -637,6 +754,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span className='col-xs-6'><input type='radio' style={{ marign: 'auto' }} name='bioMetabolomicData' checked={specimen.bioMetabolomicData === 1}
                                     onClick={() => { dispatch(allactions.specimenActions.setBioMetabolomicData(1)); dispatch(allactions.specimenErrorActions.bioMetabolomicData(true)) }} />{' '}Yes</span>
                             </div>
+                            {(errors.bioMetabolomicData) && saved && <span className='col-md-4 col-xs-12' style={{ color: 'red' }}>Missing required field</span>}
                         </div>
                     </div>
 
@@ -688,11 +806,23 @@ const SpecimenForm = ({ ...props }) => {
                                         dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
                                     }} />{' '}Other, please specify: </span>
                                 <span className='col-xs-12' style={{ paddingTop: '0.5rem' }}>
-                                    <textarea className="form-control resize-vertical" maxLength={200} name='setBioMetaOutcomesOtherStudySpecify'
-                                        disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1}
-                                        placeholder='Max of 200 characters' style={{ marign: 'auto' }}
-                                        value={specimen.bioMetaOutcomesOtherStudySpecify || ''}
-                                        onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(+e.target.value))} />
+                                    {+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved ?
+                                        <Reminder message={'Missing required field'}>
+                                            <textarea className="form-control resize-vertical" maxLength={200} name='bioMetaOutcomesOtherStudySpecify'
+                                                disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
+                                                placeholder='Max of 200 characters' style={{ marign: 'auto', border: '1px solid red' }}
+                                                value={specimen.bioMetaOutcomesOtherStudySpecify}
+                                                onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(+e.target.value))}
+                                                onBlur={() => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(specimen.bioMetaOutcomesOtherStudySpecify))} />
+                                        </Reminder> :
+                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioMetaOutcomesOtherStudySpecify'
+                                            disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
+                                            placeholder='Max of 200 characters' style={{ marign: 'auto' }}
+                                            value={specimen.bioMetaOutcomesOtherStudySpecify}
+                                            onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(+e.target.value))}
+                                            onBlur={() => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(specimen.bioMetaOutcomesOtherStudySpecify))} />
+                                    }
+
                                 </span>
                             </div>
                         </div>
@@ -781,18 +911,18 @@ const SpecimenForm = ({ ...props }) => {
                         <div className='specimenInfo col-md-12' >
                             <span className='col-md-1 col-xs-3' style={{ paddingRight: '0' }}>
                                 {
-                                    errors.bioYearSamplesSent ?
-                                        <Reminder message={'invaliad or empty year value'}>
+                                    (specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent) && saved ?
+                                        <Reminder message={'invaliad year value'}>
                                             <input style={{ marign: 'auto', border: '1px solid red' }}
                                                 className='form-control' name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1}
                                                 onChange={e => dispatch(allactions.specimenActions.setBioYearSamplesSent(e.target.value))}
                                                 onBlur={(e) => { populateErrors(e.target.value, true, 'year') }} />
                                         </Reminder>
                                         :
-                                        <input style={{ marign: 'auto' }} className='form-control'
+                                        <input style={{ marign: 'auto' }} className='form-control' maxLength='4'
                                             name='bioYearSamplesSent' placeholder='yyyy' value={specimen.bioYearSamplesSent} disabled={specimen.bioMetabolomicData !== 1}
                                             onChange={e => dispatch(allactions.specimenActions.setBioYearSamplesSent(e.target.value))}
-                                            onBlur={(e) => { populateErrors('bioYearSamplesSent', e.target.value, true, 'year') }} />
+                                            onBlur={(e) => { populateErrors(e.target.value, true, 'year') }} />
                                 }
                             </span>
                         </div>
@@ -800,60 +930,17 @@ const SpecimenForm = ({ ...props }) => {
 
                 </div>
             </div>
-
-            <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelF' ? '' : 'panelF')}>Biospecimen Counts</div>
-            <div className={activePanel === 'panelF' ? 'panel-active' : 'panellet'}>
-                <div className="my-3">
-                    <label className="d-block">G.16</label>
-                    <div> <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available
-                    in your current inventory. If you do not have exact counts, please enter approximate counts.
-                    (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
-                </p></div>
-                </div>
-
-                <table className='table table-stripe table-responsive'>
-                    <thead>
-                        <tr>
-                            <th className='col-sm-1 center' >ICD-9</th>
-                            <th className='col-sm-1 center' > ICD-10</th>
-                            <th className='col-sm-3 center' >Cancer Site/Type</th>
-                            <th className='col-sm-1 center' >Serum and/or Plasma</th>
-                            <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
-                            <th className='col-sm-1 center' >Saliva and/or Buccal</th>
-                            <th className='col-sm-1 center' >Urine</th>
-                            <th className='col-sm-1 center' >Feces</th>
-                            <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
-                            <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {lookup.cancer.map(c => {
-                            const keyPrefix = `${cohortId}_${c.id}`;
-                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
-                                `${c.id}-${k.id}`);;
-
-
-                            return <tr key={keyPrefix}>
-                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
-                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
-                                <td className="bg-light">{c.cancer}</td>
-
-                                {inputKeys.map((key, i) =>
-                                    <td><input className='inputWriter center' name={key} value={specimen.counts[key]}
-                                        onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))} />
-                                    </td>
-                                )}
-                            </tr>
-                        })}
-                    </tbody>
-                </table>
-
-            </div>
             <div style={{ marginTop: '15px' }}>
-                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}>Biospecimen Counts</div>
-                <div className={activePanel === 'panelD' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <div><label>G.16</label></div>
-                    <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available in your current inventory. If you do not have exact counts, please enter approximate counts. (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.) </p>
+                <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelF' ? '' : 'panelF')}>Biospecimen Counts</div>
+                <div className={activePanel === 'panelF' ? 'panel-active' : 'panellet'}>
+                    <div className="my-3">
+                        <label className="d-block">G.16</label>
+                        <div> <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available
+                        in your current inventory. If you do not have exact counts, please enter approximate counts.
+                        (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
+                </p></div>
+                    </div>
+
                     <table className='table table-stripe table-responsive'>
                         <thead>
                             <tr>
@@ -870,357 +957,28 @@ const SpecimenForm = ({ ...props }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>No Cancer</td>
-                                <td><input className='inputWriter center' name='29-1' value={specimen.counts['29-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-2' value={specimen.counts['29-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-3' value={specimen.counts['29-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-4' value={specimen.counts['29-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-5' value={specimen.counts['29-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-6' value={specimen.counts['29-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='29-7' value={specimen.counts['29-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('29-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>141-149</td>
-                                <td>C00-C14</td>
-                                <td>Oropharyngeal</td>
-                                <td><input className='inputWriter center' name='2-1' value={specimen.counts['2-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-2' value={specimen.counts['2-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-3' value={specimen.counts['2-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-4' value={specimen.counts['2-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-5' value={specimen.counts['2-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-6' value={specimen.counts['2-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='2-7' value={specimen.counts['2-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('2-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>150</td>
-                                <td>C15</td>
-                                <td>Esophagus</td>
-                                <td><input className='inputWriter center' name='3-1' value={specimen.counts['3-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-2' value={specimen.counts['3-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-3' value={specimen.counts['3-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-4' value={specimen.counts['3-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-5' value={specimen.counts['3-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-6' value={specimen.counts['3-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='3-7' value={specimen.counts['3-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('3-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>151</td>
-                                <td>C16</td>
-                                <td>Stomach</td>
-                                <td><input className='inputWriter center' name='4-1' value={specimen.counts['4-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-2' value={specimen.counts['4-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-3' value={specimen.counts['4-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-4' value={specimen.counts['4-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-5' value={specimen.counts['4-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-6' value={specimen.counts['4-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='4-7' value={specimen.counts['4-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('4-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>152</td>
-                                <td>C17</td>
-                                <td>Small intestine</td>
-                                <td><input className='inputWriter center' name='5-1' value={specimen.counts['5-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-2' value={specimen.counts['5-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-3' value={specimen.counts['5-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-4' value={specimen.counts['5-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-5' value={specimen.counts['5-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-6' value={specimen.counts['5-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='5-7' value={specimen.counts['5-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('5-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>153</td>
-                                <td>C18</td>
-                                <td>Colon</td>
-                                <td><input className='inputWriter center' name='6-1' value={specimen.counts['6-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-2' value={specimen.counts['6-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-3' value={specimen.counts['6-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-4' value={specimen.counts['6-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-5' value={specimen.counts['6-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-6' value={specimen.counts['6-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='6-7' value={specimen.counts['6-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('6-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>154</td>
-                                <td>C19-C21</td>
-                                <td>Rectum and anus</td>
-                                <td><input className='inputWriter center' name='7-1' value={specimen.counts['7-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-2' value={specimen.counts['7-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-3' value={specimen.counts['7-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-4' value={specimen.counts['7-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-5' value={specimen.counts['7-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-6' value={specimen.counts['7-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='7-7' value={specimen.counts['7-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('7-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>155</td>
-                                <td>C22</td>
-                                <td>Liver and intrahepatic bile ducts</td>
-                                <td><input className='inputWriter center' name='8-1' value={specimen.counts['8-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-2' value={specimen.counts['8-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-3' value={specimen.counts['8-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-4' value={specimen.counts['8-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-5' value={specimen.counts['8-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-6' value={specimen.counts['8-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='8-7' value={specimen.counts['8-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('8-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>156</td>
-                                <td>C23, C24</td>
-                                <td>Gallbladder and extrahepatic bile ducts</td>
-                                <td><input className='inputWriter center' name='9-1' value={specimen.counts['9-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-2' value={specimen.counts['9-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-3' value={specimen.counts['9-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-4' value={specimen.counts['9-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-5' value={specimen.counts['9-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-6' value={specimen.counts['9-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='9-7' value={specimen.counts['9-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('9-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>157</td>
-                                <td>C25</td>
-                                <td>Pancreas</td>
-                                <td><input className='inputWriter center' name='10-1' value={specimen.counts['10-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-2' value={specimen.counts['10-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-3' value={specimen.counts['10-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-4' value={specimen.counts['10-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-5' value={specimen.counts['10-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-6' value={specimen.counts['10-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='10-7' value={specimen.counts['10-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('10-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>162</td>
-                                <td>C34</td>
-                                <td>Lung and bronchus</td>
-                                <td><input className='inputWriter center' name='11-1' value={specimen.counts['11-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-2' value={specimen.counts['11-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-3' value={specimen.counts['11-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-4' value={specimen.counts['11-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-5' value={specimen.counts['11-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-6' value={specimen.counts['11-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='11-7' value={specimen.counts['11-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('11-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>170</td>
-                                <td>C40, C41</td>
-                                <td>Bone</td>
-                                <td><input className='inputWriter center' name='12-1' value={specimen.counts['12-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-2' value={specimen.counts['12-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-3' value={specimen.counts['12-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-4' value={specimen.counts['12-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-5' value={specimen.counts['12-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-6' value={specimen.counts['12-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='12-7' value={specimen.counts['12-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('12-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>172</td>
-                                <td>C43</td>
-                                <td>Melanoma (excluding mucosal sites)</td>
-                                <td><input className='inputWriter center' name='13-1' value={specimen.counts['13-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-2' value={specimen.counts['13-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-3' value={specimen.counts['13-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-4' value={specimen.counts['13-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-5' value={specimen.counts['13-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-6' value={specimen.counts['13-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='13-7' value={specimen.counts['13-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('13-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>174-175</td>
-                                <td>C50</td>
-                                <td>Invasive Breast Cancer</td>
-                                <td><input className='inputWriter center' name='14-1' value={specimen.counts['14-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-2' value={specimen.counts['14-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-3' value={specimen.counts['14-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-4' value={specimen.counts['14-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-5' value={specimen.counts['14-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-6' value={specimen.counts['14-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='14-7' value={specimen.counts['14-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('14-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>233</td>
-                                <td>D05.1</td>
-                                <td>Ductal carcinoma in situ of breast </td>
-                                <td><input className='inputWriter center' name='15-1' value={specimen.counts['15-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-2' value={specimen.counts['15-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-3' value={specimen.counts['15-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-4' value={specimen.counts['15-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-5' value={specimen.counts['15-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-6' value={specimen.counts['15-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='15-7' value={specimen.counts['15-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('15-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>180</td>
-                                <td>C53</td>
-                                <td>Cervix (Squamous cell carcinoma, Adenocarcinoma)</td>
-                                <td><input className='inputWriter center' name='16-1' value={specimen.counts['16-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-2' value={specimen.counts['16-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-3' value={specimen.counts['16-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-4' value={specimen.counts['16-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-5' value={specimen.counts['16-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-6' value={specimen.counts['16-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='16-7' value={specimen.counts['16-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('16-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>233</td>
-                                <td>D06.1</td>
-                                <td>Cervical carcinoma in situ (CIN II/III, CIS, AIS)</td>
-                                <td><input className='inputWriter center' name='17-1' value={specimen.counts['17-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-2' value={specimen.counts['17-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-3' value={specimen.counts['17-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-4' value={specimen.counts['17-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-5' value={specimen.counts['17-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-6' value={specimen.counts['17-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='17-7' value={specimen.counts['17-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('17-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>182</td>
-                                <td>C54</td>
-                                <td>Corpus, body of uterus</td>
-                                <td><input className='inputWriter center' name='18-1' value={specimen.counts['18-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-2' value={specimen.counts['18-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-3' value={specimen.counts['18-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-4' value={specimen.counts['18-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-5' value={specimen.counts['18-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-6' value={specimen.counts['18-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='18-7' value={specimen.counts['18-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('18-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>183</td>
-                                <td>C56</td>
-                                <td>Ovary, fallopian tube, broad ligament</td>
-                                <td><input className='inputWriter center' name='19-1' value={specimen.counts['19-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-2' value={specimen.counts['19-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-3' value={specimen.counts['19-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-4' value={specimen.counts['19-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-5' value={specimen.counts['19-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-6' value={specimen.counts['19-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='19-7' value={specimen.counts['19-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('19-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>185</td>
-                                <td>C61</td>
-                                <td>Prostate</td>
-                                <td><input className='inputWriter center' name='20-1' value={specimen.counts['20-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-2' value={specimen.counts['20-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-3' value={specimen.counts['20-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-4' value={specimen.counts['20-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-5' value={specimen.counts['20-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-6' value={specimen.counts['20-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='20-7' value={specimen.counts['20-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('20-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>188</td>
-                                <td>C67</td>
-                                <td>Bladder</td>
-                                <td><input className='inputWriter center' name='21-1' value={specimen.counts['21-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-2' value={specimen.counts['21-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-3' value={specimen.counts['21-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-4' value={specimen.counts['21-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-5' value={specimen.counts['21-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-6' value={specimen.counts['21-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='21-7' value={specimen.counts['21-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('21-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>189</td>
-                                <td>C64-C66, C68</td>
-                                <td>Kidney and other unspecified urinary organs </td>
-                                <td><input className='inputWriter center' name='22-1' value={specimen.counts['22-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-2' value={specimen.counts['22-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-3' value={specimen.counts['22-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-4' value={specimen.counts['22-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-5' value={specimen.counts['22-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-6' value={specimen.counts['22-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='22-7' value={specimen.counts['22-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('22-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>191</td>
-                                <td>C71</td>
-                                <td>Brain</td>
-                                <td><input className='inputWriter center' name='23-1' value={specimen.counts['23-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-2' value={specimen.counts['23-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-3' value={specimen.counts['23-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-4' value={specimen.counts['23-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-5' value={specimen.counts['23-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-6' value={specimen.counts['23-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='23-7' value={specimen.counts['23-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('23-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>193</td>
-                                <td>C73</td>
-                                <td>Thyroid</td>
-                                <td><input className='inputWriter center' name='24-1' value={specimen.counts['24-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-2' value={specimen.counts['24-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-3' value={specimen.counts['24-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-4' value={specimen.counts['24-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-5' value={specimen.counts['24-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-6' value={specimen.counts['24-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='24-7' value={specimen.counts['24-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('24-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>201</td>
-                                <td>C81</td>
-                                <td>Hodgkin Lymphoma </td>
-                                <td><input className='inputWriter center' name='25-1' value={specimen.counts['25-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-2' value={specimen.counts['25-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-3' value={specimen.counts['25-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-4' value={specimen.counts['25-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-5' value={specimen.counts['25-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-6' value={specimen.counts['25-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='25-7' value={specimen.counts['25-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('25-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>200, 202</td>
-                                <td>C82-85</td>
-                                <td>Non-Hodgkin Lymphoma</td>
-                                <td><input className='inputWriter center' name='26-1' value={specimen.counts['26-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-2' value={specimen.counts['26-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-3' value={specimen.counts['26-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-4' value={specimen.counts['26-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-5' value={specimen.counts['26-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-6' value={specimen.counts['26-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='26-7' value={specimen.counts['26-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('26-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>203</td>
-                                <td>C90</td>
-                                <td>Myeloma</td>
-                                <td><input className='inputWriter center' name='27-1' value={specimen.counts['27-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-2' value={specimen.counts['27-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-3' value={specimen.counts['27-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-4' value={specimen.counts['27-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-5' value={specimen.counts['27-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-6' value={specimen.counts['27-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='27-7' value={specimen.counts['27-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('27-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td>204-208</td>
-                                <td>C91-95</td>
-                                <td>Leukemia</td>
-                                <td><input className='inputWriter center' name='28-1' value={specimen.counts['28-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-2' value={specimen.counts['28-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-3' value={specimen.counts['28-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-4' value={specimen.counts['28-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-5' value={specimen.counts['28-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-6' value={specimen.counts['28-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='28-7' value={specimen.counts['28-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('28-7', e.target.value))} /></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>All Other Cancers</td>
-                                <td><input className='inputWriter center' name='1-1' value={specimen.counts['1-1']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-1', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-2' value={specimen.counts['1-2']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-2', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-3' value={specimen.counts['1-3']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-3', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-4' value={specimen.counts['1-4']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-4', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-5' value={specimen.counts['1-5']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-5', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-6' value={specimen.counts['1-6']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-6', e.target.value))} /></td>
-                                <td><input className='inputWriter center' name='1-7' value={specimen.counts['1-7']} onChange={e => dispatch(allactions.specimenActions.setSpecimenCount('1-7', e.target.value))} /></td>
-                            </tr>
+                            {lookup.cancer.map(c => {
+                                const keyPrefix = `${cohortId}_${c.id}`;
+                                const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                    `${c.id}-${k.id}`);;
 
+
+                                return <tr key={keyPrefix}>
+                                    <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
+                                    <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
+                                    <td className="bg-light">{c.cancer}</td>
+
+                                    {inputKeys.map((key, i) =>
+                                        <td><input className='inputWriter center' name={key} value={specimen.counts[key]}
+                                            onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))} />
+                                        </td>
+                                    )}
+                                </tr>
+                            })}
                         </tbody>
                     </table>
+
+
                 </div>
             </div>
 
