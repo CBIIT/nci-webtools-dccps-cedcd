@@ -76,7 +76,7 @@ const CohortForm = ({ ...props }) => {
             </div>
             <div>
                 <form id='currentForm' readOnly>
-                    {/* START Cohort Collapsable Question Sections */}
+                    {/* START Basic Information Collapsable Question Sections */}
                     <div className="row">
                         <div id="attachments" className="cohortInfo col-md-12">
                             {/* START Cohort Information */}
@@ -562,7 +562,7 @@ const CohortForm = ({ ...props }) => {
                             {/* END Documents */}
                         </div>
                     </div>
-                    {/* END Cohort Collapsable Question Sections */}
+                    {/* END Basic Information Collapsable Question Sections */}
                 </form>
 
                 {/*<div style={{ display: 'flex', justifyContent: 'flex-end' }}>
