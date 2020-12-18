@@ -258,7 +258,7 @@ const SpecimenForm = ({ ...props }) => {
         } // end if
     }, [hasErrors])
 
-    const saveSpecimen = (id = 79, hasErrors, proceed = false) => {
+    const saveSpecimen = (id = 79, errorsRemain = true, proceed = false) => {
         console.log(specimen)
 
         fetch(`/api/questionnaire/update_specimen/${id}`, {
@@ -272,7 +272,7 @@ const SpecimenForm = ({ ...props }) => {
             .then(result => {
 
                 if (result.status === 200) {
-                    if (Object.entries(errors).length === 0)
+                    if (!errorsRemain)
                         dispatch(allactions.sectionActions.setSectionStatus('G', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('G', 'incomplete'))
@@ -295,16 +295,34 @@ const SpecimenForm = ({ ...props }) => {
                 console.log(result)
             })
     }
+
     const handleSave = () => {
-        if (Object.entries(errors).length === 0) {
+        setSaved(true)
+        let errorsRemain = false;
+        for (let k of Object.keys(errors)) errorsRemain |= errors[k]
+        errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
+        errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
+
+
+        if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
-            saveSpecimen(cohortId)
+            dispatch(allactions.specimenActions.setSectionGStatus('complete'))
+            saveSpecimen(cohortId, errorsRemain)
         } else {
             //setDisplay('block')
-            specimen.sectionGStatus = 'incomplete'
-            if (window.confirm('there are validation errors, are you sure to save?'))
-                saveSpecimen(cohortId)
+            setModalShow(true)
+            setProceed(false)
+            //  specimen.sectionGStatus = 'incomplete'
+            // if (window.confirm('there are validation errors, are you sure to save?'))
+            //     saveSpecimen(cohortId)
         }
+    }
+
+    const confirmSaveStay = () => {
+        specimen.sectionGStatus = 'incomplete'
+        dispatch(allactions.specimenActions.setSectionGStatus('incomplete'));
+        saveSpecimen(cohortId);
+        setModalShow(false)
     }
 
 
@@ -312,6 +330,7 @@ const SpecimenForm = ({ ...props }) => {
 
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
 
         <div className='specimenInfo col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
@@ -324,12 +343,14 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.1 Blood  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                        {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && <span style={{ color: 'red' }}>Missing required Filed</span>}
+
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
 
                                 <span className='col-xs-12'><input type='checkbox' name='bioBloodBaseline' checked={specimen.bioBloodBaseline === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaseline(true)) }} />{' '} Collected at baseline</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodBaseline(+specimen.bioBloodBaseline === 1)) }} />{' '} Collected at baseline</span>
 
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, types of aliquots</small></span>
@@ -347,7 +368,7 @@ const SpecimenForm = ({ ...props }) => {
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
 
                                 <span className='col-xs-12'><input type='checkbox' name='bioBloodOtherTime' checked={specimen.bioBloodOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true)) }} />{' '} Collected at other time</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioBloodOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBloodOtherTime(+specimen.bioBloodOtherTime === 1)) }} />{' '} Collected at other time points</span>
 
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, types of aliquots</small></span>
@@ -374,7 +395,7 @@ const SpecimenForm = ({ ...props }) => {
                                     onChange={(e) => { dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{' '} Collected at baseline</span>
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }} > <span className='col-xs-12'><input type='checkbox' name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 1}
-                                onChange={(e) => { dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{' '} Collected at other time</span>
+                                onChange={(e) => { dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
                     </div>
@@ -390,7 +411,7 @@ const SpecimenForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioTissueOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{' '} Collected at other time</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioTissueOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
                     </div>
@@ -406,7 +427,7 @@ const SpecimenForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{' '} Collected at other time</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
                     </div>
@@ -422,7 +443,7 @@ const SpecimenForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{' '} Collected at other time</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{' '} Collected at other time points</span>
                             </div>
                         </div>
                     </div>
@@ -445,7 +466,7 @@ const SpecimenForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-xs-12'><input type='checkbox' name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
-                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '} Collected at other time</span>
+                                    onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '} Collected at other time points</span>
                                 <div className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                     <span className='col-xs-12'><small>If collected, please specify</small></span>
                                     <span className='col-xs-12' style={{ paddingTop: '0.5rem' }}>
