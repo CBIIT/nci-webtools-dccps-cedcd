@@ -22,6 +22,7 @@ const MajorContentForm = ({ ...props }) => {
     const [proceed, setProceed] = useState(false)
     //const cohortId = +window.location.pathname.split('/').pop();
     
+    
 
     useEffect(() => {
         if (!majorContent.hasLoaded) {
@@ -235,7 +236,12 @@ const MajorContentForm = ({ ...props }) => {
 
                 })//end of then
         }//end of if
-    }, [hasErrors])
+    }, [])
+
+
+    const refreshErrors = () => (errors.seStatusBaseLine&&errors.seStatusFollowUp)||(errors.educationBaseLine&&errors.educationFollowUp) || (errors.maritalStatusBaseLine&&errors.maritalStatusFollowUp)||(errors.originBaseLine&&errors.originFollowUp) || (errors.empStatusBaseLine&&errors.empStatusFollowUp)||(errors.insuranceStatusBaseLine&&errors.insuranceStatusFollowUp)||(errors.anthropometryBaseLine&&errors.anthropometryFollowUp)||(errors.dietaryBaseLine&&errors.dietaryFollowUp)||(errors.supplementBaseLine&&errors.supplementFollowUp)||(errors.medicineBaseLine&&errors.medicineFollowUp)||(errors.prescriptionBaseLine&&errors.prescriptionFollowUp)||(errors.nonprescriptionBaseLine&&errors.nonprescriptionFollowUp)||(errors.alcoholBaseLine&&errors.alcoholFollowUp)||(errors.cigaretteBaseLine&&errors.cigaretteFollowUp)||(errors.cigarBaseLine&&errors.cigarFollowUp&&errors.pipeBaseLine&&errors.pipeFollowUp&&errors.tobaccoBaseLine&&errors.tobaccoFollowUp&&errors.ecigarBaseLine&&errors.ecigarFollowUp&&errors.noncigarOtherBaseLine&&errors.noncigarOtherFollowUp)||(!errors.noncigarOtherBaseLine&&errors.noncigarBaseLineSpecify)||(!errors.noncigarOtherFollowUp&&errors.noncigarFollowUpSpecify)||(errors.physicalBaseLine&&errors.physicalFollowUp)||(errors.sleepBaseLine&&errors.sleepFollowUp)||(errors.reproduceBaseLine&&errors.reproduceFollowUp)||(errors.reportedHealthBaseLine&&errors.reportedHealthFollowUp)&&(errors.lifeBaseLine&&errors.lifeFollowUp)||(errors.socialSupportBaseLine&&errors.socialSupportFollowUp)||(errors.cognitionBaseLine&errors.cognitionFollowUp)||(errors.depressionBaseLine&&errors.depressionFollowUp)||(errors.psychosocialBaseLine&&errors.psychosocialFollowUp)||(errors.fatigueBaseLine&&errors.fatigueFollowUp)||(errors.cancerHistoryBaseLine&&errors.cancerHistoryFollowUp)||(errors.cancerPedigreeBaseLine&&errors.cancerPedigreeFollowUp)||(errors.physicalMeasureBaseLine&&errors.physicalMeasureFollowUp)||(errors.exposureBaseLine&&errors.exposureFollowUp)||(errors.residenceBaseLine&&errors.residenceFollowUp)&&(errors.diabetesBaseLine&&errors.diabetesFollowUp)||(errors.strokeBaseLine&&errors.strokeFollowUp)||(errors.copdBaseLine&&errors.copdFollowUp)||(errors.cardiovascularBaseLine&&errors.cardiovascularFollowUp)||(errors.osteoporosisBaseLine&&errors.osteoporosisFollowUp)||(errors.mentalBaseLine&&errors.mentalFollowUp)||(errors.cognitiveDeclineBaseLine&&errors.cognitiveDeclineFollowUp)||(errors.cancerToxicity&&errors.cancerLateEffects&&errors.cancerSymptom&&errors.cancerOther)||(!errors.cancerOther&&errors.cancerOtherSpecify)
+
+    
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
@@ -286,11 +292,14 @@ const MajorContentForm = ({ ...props }) => {
     const handleSave = () => {
         setSaved(true)
         //console.log(errors.cigarFollowUp +' '+ errors.pipeFollowUp +' '+ errors.tobaccoFollowUp +' '+ errors.ecigarFollowUp +' '+ errors.noncigarOtherFollowUp)
+        /*
         let errorsRemain = false;
         for (let k of Object.keys(errors)) errorsRemain |= errors[k]
         errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
         errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
-        
+        */
+       let errorsRemain = refreshErrors()
+       console.log(errorsRemain)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -304,10 +313,8 @@ const MajorContentForm = ({ ...props }) => {
 
     const handleSaveContinue = () => {
         setSaved(true)
-        let errorsRemain = false;
-        for (let k of Object.keys(errors)) errorsRemain |= errors[k]
-        errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
-        errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        let errorsRemain = refreshErrors()
+        console.log(errorsRemain)
         
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
@@ -347,11 +354,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.1 Socio-economic Status{' '} <small>(Select all that apply)</small></label></span>
-                            {console.log('ln 350 '+errors.seStatusBaseLine)}
-                            {console.log('ln 351 '+errors.seStatusFollowUp)}
-                            {console.log('edBaseLine '+majorContent.seStatusBaseLine)}
-                            {console.log('edFollowUp '+majorContent.seStatusFollowUp)}
-                            {(errors.seStatusBaseLine && errors.seStatusFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -369,7 +372,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.2 Education Level{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.educationBaseLine && errors.educationFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.educationBaseLine && errors.educationFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -387,7 +390,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.3 Marital Status{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) && saved &&  <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -405,7 +408,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.4 Language/Country origin{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.originBaseLine && errors.originFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.originBaseLine && errors.originFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -423,7 +426,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.5 Employment Status{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.empStatusBaseLine && errors.empStatusFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.empStatusBaseLine && errors.empStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -441,7 +444,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.6 Health Insurance Status{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -459,7 +462,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-5 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.7 Anthropometry(e.g. weight, height){' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.anthropometryBaseLine && errors.anthropometryFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.anthropometryBaseLine && errors.anthropometryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -477,7 +480,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.8 Dietary Intake{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.dietaryBaseLine && errors.dietaryFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.dietaryBaseLine && errors.dietaryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -495,7 +498,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.9 Dietary Supplement Use{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.supplementBaseLine && errors.supplementFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.supplementBaseLine && errors.supplementFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -513,7 +516,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-7 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.10 Complementary and Alternative Medicine{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.medicineBaseLine && errors.medicineFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.medicineBaseLine && errors.medicineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -531,7 +534,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-7 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.11 Prescription Medication Use(not related to cancer treatment){' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.prescriptionBaseLine && errors.prescriptionFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.prescriptionBaseLine && errors.prescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -549,7 +552,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-7 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.12 Non-prescription Medication Use(not related to cancer treatment){' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.nonprescriptioinBaseLine && errors.nonprescriptionFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.nonprescriptioinBaseLine && errors.nonprescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -567,7 +570,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C. 13 Alcohol Consumption{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.alcoholBaseLine && errors.alcoholFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.alcoholBaseLine && errors.alcoholFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -585,7 +588,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C. 14 Cigarette Smoking{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.cigaretteBaseLine && errors.cigaretteFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.cigaretteBaseLine && errors.cigaretteFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -603,7 +606,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-6 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C. 15 Use of tobacco products other than cigarettes{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
@@ -667,7 +670,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.16 Physical activity{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.physicalBaseLine && errors.physicalFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.physicalBaseLine && errors.physicalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -685,7 +688,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.17 Sleep habits{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.sleepBaseLine && errors.sleepFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.sleepBaseLine && errors.sleepFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -703,7 +706,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.18 Reproductive history{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.reproduceBaseLine && errors.reproduceFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.reproduceBaseLine && errors.reproduceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -721,7 +724,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.19 Self-reported health{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -739,7 +742,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.20 Quality of life{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.lifeBaseLine && errors.lifeFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.lifeBaseLine && errors.lifeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -757,7 +760,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.21 Social support{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.socialSupportBaseLine && errors.socialSupportFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.socialSupportBaseLine && errors.socialSupportFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -775,7 +778,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.22 Cognitive function{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.cognitionBaseLine && errors.cognitionFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.cognitionBaseLine && errors.cognitionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -793,7 +796,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.23 Depression{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.depressionBaseLine && errors.depressionFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.depressionBaseLine && errors.depressionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -811,7 +814,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0', paddingRight: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.24 Other psycosocial variables{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.psychosocialBaseLine && errors.psychosocialFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.psychosocialBaseLine && errors.psychosocialFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -829,7 +832,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.25 Fatigue{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.fatigueBaseLine && errors.fatigueFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.fatigueBaseLine && errors.fatigueFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -839,7 +842,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-xs-12'>
-                                <input type='checkbox' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(e.target.checked)) }} />{' '} Collected during follow-up
+                                <input type='checkbox' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setFatigueFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(e.target.checked)) }} />{' '} Collected during follow-up
                                 </span>
                             </div>
                         </div>
@@ -847,7 +850,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.26 Family history of cancer{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -865,7 +868,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-5 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.27 Family history of cancer with pedigrees{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -883,7 +886,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-7 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.28 Physical function measures (e.g. grip strength, gait speed, etc.){' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -901,7 +904,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-xs-12' style={{paddingLeft: '0'}}><b className="d-block control-label">C.29 Environmental or occupational exposures(e.g. air contaminants/quality, occupational exposures and history, water source){' '} <small>(Select all that apply)</small></b>
-                            {(errors.exposureBaseLine && errors.exposureFollowUp) && <span  className='col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.exposureBaseLine && errors.exposureFollowUp) && saved && <span  className='col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </span>
                         </div>
                         <div className='col-md-8 col-xs-12'>
@@ -920,7 +923,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <div className='col-xs-12' style={{paddingLeft: '0'}}>
                             <span className='col-md-7 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.30 Residential history information(zip code, GIS) over time{' '} <small>(Select all that apply)</small></label></span>
-                            {(errors.residenceBaseLine && errors.residenceFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                            {(errors.residenceBaseLine && errors.residenceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                         </div>
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -947,7 +950,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">a. Diabetes{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.diabetesBaseLine && errors.diabetesFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.diabetesBaseLine && errors.diabetesFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -965,7 +968,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">b. Stroke{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.strokeBaseLine && errors.strokeFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.strokeBaseLine && errors.strokeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -983,7 +986,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">c. COPD and/or emphysema{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.copdBaseLine && errors.copdFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -1001,7 +1004,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">d. Cardiovascular disease{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -1019,7 +1022,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">e. Osteoporosis{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -1037,7 +1040,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">f. Mental health{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.mentalBaseLine && errors.mentalFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -1055,7 +1058,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">g. Cognitive decline{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
@@ -1076,7 +1079,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-md-8 col-sm-4 col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">32. Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
-                                {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
+                                {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{color: 'red'}}>Required Filed</span>}
                             </div>
                             <div className='col-md-6 col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-xs-12'>
