@@ -221,7 +221,7 @@ router.post('/update_mortality/:id', function (req, res) {
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
         if (result && result[0] && result[0][0].rowAffacted > 0){           
-            if(result[1]) {
+            if(Array.isArray(result[1])) {
                 const updatedMortality = {}
                 updatedMortality.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if(result[2]) updatedMortality.status = result[2][0].status
