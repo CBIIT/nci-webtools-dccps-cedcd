@@ -291,15 +291,7 @@ const MajorContentForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        //console.log(errors.cigarFollowUp +' '+ errors.pipeFollowUp +' '+ errors.tobaccoFollowUp +' '+ errors.ecigarFollowUp +' '+ errors.noncigarOtherFollowUp)
-        /*
-        let errorsRemain = false;
-        for (let k of Object.keys(errors)) errorsRemain |= errors[k]
-        errorsRemain &= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther)
-        errorsRemain |= (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
-        */
-       let errorsRemain = refreshErrors()
-       console.log(errorsRemain)
+        let errorsRemain = refreshErrors()
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -313,9 +305,7 @@ const MajorContentForm = ({ ...props }) => {
 
     const handleSaveContinue = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
-        console.log(errorsRemain)
-        
+        let errorsRemain = refreshErrors()       
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
