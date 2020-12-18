@@ -812,14 +812,14 @@ const SpecimenForm = ({ ...props }) => {
                                                 disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
                                                 placeholder='Max of 200 characters' style={{ marign: 'auto', border: '1px solid red' }}
                                                 value={specimen.bioMetaOutcomesOtherStudySpecify}
-                                                onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(+e.target.value))}
+                                                onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(e.target.value))}
                                                 onBlur={() => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(specimen.bioMetaOutcomesOtherStudySpecify))} />
                                         </Reminder> :
                                         <textarea className="form-control resize-vertical" maxLength={200} name='bioMetaOutcomesOtherStudySpecify'
                                             disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
                                             placeholder='Max of 200 characters' style={{ marign: 'auto' }}
                                             value={specimen.bioMetaOutcomesOtherStudySpecify}
-                                            onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(+e.target.value))}
+                                            onChange={(e) => dispatch(allactions.specimenActions.setBioMetaOutcomesOtherStudySpecify(e.target.value))}
                                             onBlur={() => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(specimen.bioMetaOutcomesOtherStudySpecify))} />
                                     }
 
