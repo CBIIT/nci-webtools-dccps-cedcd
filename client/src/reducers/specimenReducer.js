@@ -47,7 +47,7 @@ actions[t.setBioOtherBaseline] = (state, action) => ({
 })
 actions[t.setBioOtherOtherTime] = (state, action) => ({
     ...state, bioOtherOtherTime: action.value,
-    ioOtherOtherTimeSpecify: action.value ? state.bioOtherOtherTimeSpecify : ''
+    bioOtherOtherTimeSpecify: action.value ? state.bioOtherOtherTimeSpecify : ''
 })
 actions[t.setBioRepeatedSampleSameIndividual] = (state, action) => ({ ...state, bioRepeatedSampleSameIndividual: action.value })
 actions[t.setBioTumorBlockInfo] = (state, action) => ({ ...state, bioTumorBlockInfo: action.value })
