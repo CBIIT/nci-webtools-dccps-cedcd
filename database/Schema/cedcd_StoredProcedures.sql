@@ -440,7 +440,7 @@ END //
 DROP PROCEDURE IF EXISTS select_cohort_owner //
 CREATE PROCEDURE `select_cohort_owner`()
 BEGIN
-	select first_name, last_name, email from user
+	select id, first_name, last_name, email from user
 	where access_level='CohortAdmin' order by last_name, first_name;
 END //
 
@@ -459,6 +459,7 @@ BEGIN
     select * from lu_specimen where id < 10;
 	  select * from lu_cohort_status;
 END //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
@@ -2757,4 +2758,26 @@ begin
     commit;
     select flag as rowAffacted;
  end //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: insert_new_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `insert_new_cohort` //
+
+CREATE PROCEDURE `insert_new_cohort`(in info JSON)
+BEGIN
+	DECLARE i INT DEFAULT 0;
+
+	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+	
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NOW());
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+	WHILE i < JSON_LENGTH(@owners) DO
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+		SELECT i + 1 INTO i;	
+	end WHILE;
+END //
+
 DELIMITER ;

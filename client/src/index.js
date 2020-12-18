@@ -9,6 +9,9 @@ import {createStore, compose, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { initializeLookup } from './reducers/lookupReducer';
+import './index.scss';
+
+
 const history = createBrowserHistory();
 export const UserSessionContext = React.createContext(null);
 const store = createStore(rootReducer, compose(
