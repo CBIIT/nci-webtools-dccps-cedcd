@@ -11,12 +11,24 @@ actions[t.setSpecimenCount] = (state, action) => {
 }
 
 actions[t.setSpecimenLoaded] = (state, action) => ({ ...state, specimenLoaded: action.value })
-actions[t.setBioBloodBaseline] = (state, action) => ({ ...state, bioBloodBaseline: action.value })
+actions[t.setBioBloodBaseline] = (state, action) => ({
+    ...state, bioBloodBaseline: action.value,
+    bioBloodBaselineSerum: action.value ? state.bioBloodBaselineSerum : '',
+    bioBloodBaselinePlasma: action.value ? state.bioBloodBaselinePlasma : '',
+    bioBloodBaselineBuffyCoat: action.value ? state.bioBloodBaselineBuffyCoat : '',
+    bioBloodBaselineOtherDerivative: action.value ? state.bioBloodBaselineOtherDerivative : ''
+})
 actions[t.setBioBloodBaselineSerum] = (state, action) => ({ ...state, bioBloodBaselineSerum: action.value })
 actions[t.setBioBloodBaselinePlasma] = (state, action) => ({ ...state, bioBloodBaselinePlasma: action.value })
 actions[t.setBioBloodBaselineBuffyCoat] = (state, action) => ({ ...state, bioBloodBaselineBuffyCoat: action.value })
 actions[t.setBioBloodBaselineOtherDerivative] = (state, action) => ({ ...state, bioBloodBaselineOtherDerivative: action.value })
-actions[t.setBioBloodOtherTime] = (state, action) => ({ ...state, bioBloodOtherTime: action.value })
+actions[t.setBioBloodOtherTime] = (state, action) => ({
+    ...state, bioBloodOtherTime: action.value,
+    bioBloodOtherTimeSerum: action.value ? state.bioBloodOtherTimeSerum : '',
+    bioBloodOtherTimePlasma: action.value ? state.bioBloodOtherTimePlasma : '',
+    bioBloodOtherTimeBuffyCoat: action.value ? state.bioBloodOtherTimeBuffyCoat : '',
+    bioBloodOtherTimeOtherDerivative: action.value ? state.bioBloodOtherTimeOtherDerivative : ''
+})
 actions[t.setBioBloodOtherTimeSerum] = (state, action) => ({ ...state, bioBloodOtherTimeSerum: action.value })
 actions[t.setBioBloodOtherTimePlasma] = (state, action) => ({ ...state, bioBloodOtherTimePlasma: action.value })
 actions[t.setBioBloodOtherTimeBuffyCoat] = (state, action) => ({ ...state, bioBloodOtherTimeBuffyCoat: action.value })

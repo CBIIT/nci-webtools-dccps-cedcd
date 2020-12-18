@@ -15,6 +15,7 @@ const SpecimenForm = ({ ...props }) => {
     const errors = useSelector(state => state.specimenInfoErrorReducer)
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const lookup = useSelector(state => state.lookupReducer)
 
 
     const dispatch = useDispatch()
@@ -322,8 +323,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.1 Blood <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.1 Blood  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -366,8 +366,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.2 Buccal/Saliva <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.2 Buccal/Saliva  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -382,8 +381,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.3 Tissue (include tumor and/or normal){'  '} <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.3 Tissue (include tumor and/or normal){'  '}  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -399,8 +397,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.4 Urine <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.4 Urine  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -416,8 +413,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.5 Feces <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.5 Feces  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -433,8 +429,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.6 Other(e.g. toenails) <small>(Select all that apply)</small>
-                            <span style={{ color: 'red' }}>*</span></label>
+                            G.6 Other(e.g. toenails)  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
 
                         <div className='col-md-8 col-xs-12'>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -465,7 +460,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.7 Did you collect repeated samples over multiple timepoints for the same individuals?
-                        <span style={{ color: 'red' }}>*</span></label>
+                            <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 0}
@@ -481,7 +476,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.8 If your cohort does not currently collect tumor blocks, do you have information on where the blocks are kept/stored?
-                        <span style={{ color: 'red' }}>*</span></label>
+                            <span style={{ color: 'red' }}>*</span></label>
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
@@ -506,7 +501,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.9 Genotyping Data (SNP)
-                        <span style={{ color: 'red' }}>*</span></label>
+                          <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
@@ -522,7 +517,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.10  Sequencing Data – Exome
-                        <span style={{ color: 'red' }}>*</span></label>
+                            <span style={{ color: 'red' }}>*</span></label>
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
@@ -538,7 +533,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.11  Sequencing Data – Whole Genome
-                        <span style={{ color: 'red' }}>*</span></label>
+                          <span style={{ color: 'red' }}>*</span> </label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
@@ -554,7 +549,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)
-                        <span style={{ color: 'red' }}>*</span></label>
+                          <span style={{ color: 'red' }}>*</span></label>
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
@@ -571,7 +566,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.13  Transcriptomics Data
-                        <span style={{ color: 'red' }}>*</span></label>
+                          <span style={{ color: 'red' }}>*</span></label>
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
                                 <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
@@ -587,7 +582,7 @@ const SpecimenForm = ({ ...props }) => {
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
                             G.14 Microbiome Data (16S RNA, metagenomics)
-                        <span style={{ color: 'red' }}>*</span></label>
+                          <span style={{ color: 'red' }}>*</span></label>
 
                         <div className='col-md-12 col-xs-12'>
                             <div className='col-md-2 col-xs-6' style={{ paddingLeft: '0' }}>
@@ -609,7 +604,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                         <label className="d-block control-label">
-                            G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: 'red' }}>*</span><small>{'   '} If yes, please answer G15 a-i</small>
+                            G.15 Metabolomic Data (from MS and/or NMR) <span style={{ color: 'red' }}>*</span><small>{'   '} If yes, please answer G15 a-i</small>
                         </label>
 
                         <div className='col-md-12 col-xs-12'>
@@ -670,7 +665,7 @@ const SpecimenForm = ({ ...props }) => {
                                     onChange={(e) => {
                                         dispatch(allactions.specimenActions.setBioMetaOutcomesInOtherStudy(+e.target.checked));
                                         dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                    }} />{' '}Other</span>
+                                    }} />{' '}Other, please specify: </span>
                                 <span className='col-xs-12' style={{ paddingTop: '0.5rem' }}>
                                     <textarea className="form-control resize-vertical" maxLength={200} name='setBioMetaOutcomesOtherStudySpecify'
                                         disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || specimen.bioMetabolomicData !== 1}
@@ -703,7 +698,7 @@ const SpecimenForm = ({ ...props }) => {
                         {/* G15 d */}
                         <label className="d-block control-label">G.15d {'  '}What is the number of participants with metabolomics data in your study?</label>
                         <div className='specimenInfo col-md-12' >
-                            <span className='col-md-2'>
+                            <span className='col-md-2 col-xs-5'>
                                 <input maxLength='15' className='form-control' name='bioMemberInStudy' disabled={specimen.bioMetabolomicData !== 1} placeholder='number only' style={{ marign: 'auto' }}
                                     value={specimen.bioMemberInStudy} onChange={e => dispatch(allactions.specimenActions.setBioMemberInStudy(e.target.value))} />
                             </span>
@@ -752,7 +747,7 @@ const SpecimenForm = ({ ...props }) => {
 
                         <label className="d-block control-label">G.15h {'  '}How many metabolites were measured?</label>
                         <div className='specimenInfo col-md-12' >
-                            <span className='col-md-2'>
+                            <span className='col-md-2 col-xs-5'>
                                 <input maxLength='15' className='form-control' name='bioNumberMetabolitesMeasured' disabled={specimen.bioMetabolomicData !== 1} placeholder='number only' style={{ marign: 'auto' }}
                                     value={specimen.bioNumberMetabolitesMeasured} onChange={e => dispatch(allactions.specimenActions.setBioNumberMetabolitesMeasured(e.target.value))} />
                             </span>
@@ -763,7 +758,7 @@ const SpecimenForm = ({ ...props }) => {
 
                         <label className="d-block control-label"> G.15i {'  '} What year were samples analyzed?</label>
                         <div className='specimenInfo col-md-12' >
-                            <span className='col-md-1' style={{ paddingRight: '0' }}>
+                            <span className='col-md-1 col-xs-3' style={{ paddingRight: '0' }}>
                                 {
                                     errors.bioYearSamplesSent ?
                                         <Reminder message={'invaliad or empty year value'}>
@@ -783,6 +778,55 @@ const SpecimenForm = ({ ...props }) => {
                     </div>
 
                 </div>
+            </div>
+
+            <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelF' ? '' : 'panelF')}>Biospecimen Counts</div>
+            <div className={activePanel === 'panelF' ? 'panel-active' : 'panellet'}>
+                <div className="my-3">
+                    <label className="d-block">G.16</label>
+                    <div> <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available
+                    in your current inventory. If you do not have exact counts, please enter approximate counts.
+                    (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
+                </p></div>
+                </div>
+
+                <table className='table table-stripe table-responsive'>
+                    <thead>
+                        <tr>
+                            <th className='col-sm-1 center' >ICD-9</th>
+                            <th className='col-sm-1 center' > ICD-10</th>
+                            <th className='col-sm-3 center' >Cancer Site/Type</th>
+                            <th className='col-sm-1 center' >Serum and/or Plasma</th>
+                            <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
+                            <th className='col-sm-1 center' >Saliva and/or Buccal</th>
+                            <th className='col-sm-1 center' >Urine</th>
+                            <th className='col-sm-1 center' >Feces</th>
+                            <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
+                            <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {lookup.cancer.map(c => {
+                            const keyPrefix = `${cohortId}_${c.id}`;
+                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                `${c.id}-${k.id}`);;
+
+
+                            return <tr key={keyPrefix}>
+                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
+                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
+                                <td className="bg-light">{c.cancer}</td>
+
+                                {inputKeys.map((key, i) =>
+                                    <td><input className='inputWriter center' name={key} value={specimen.counts[key]}
+                                        onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))} />
+                                    </td>
+                                )}
+                            </tr>
+                        })}
+                    </tbody>
+                </table>
+
             </div>
             <div style={{ marginTop: '15px' }}>
                 <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}>Biospecimen Counts</div>
@@ -1158,6 +1202,7 @@ const SpecimenForm = ({ ...props }) => {
                     </table>
                 </div>
             </div>
+
             <div style={{ position: 'relative' }}>
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('F')} />
@@ -1174,7 +1219,7 @@ const SpecimenForm = ({ ...props }) => {
                 </span>
             </div>
         </div>
-    </div>
+    </div >
 }
 
 export default SpecimenForm
