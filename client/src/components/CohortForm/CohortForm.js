@@ -111,16 +111,17 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.strategy_other !== 1) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
                         if ([4, 2, 1].includes(currentCohort.eligible_gender_id)) { dispatch(allactions.cohortErrorActions.eligible_gender_id(true)) }
 
-                        if (currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) { console.log('deleting error'); dispatch(allactions.cohortErrorActions.dataCollection(true)) }
+                        if (currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) {dispatch(allactions.cohortErrorActions.dataCollection(true)) }
 
                         if (currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.requirements(true)) }
                         if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
-
+                        /*
                         if (currentCohort.questionnaire_url) { dispatch(allactions.cohortErrorActions.questionnaire(true)) }
                         if (currentCohort.main_cohort_url) { dispatch(allactions.cohortErrorActions.main(true)) }
                         if (currentCohort.data_url) { dispatch(allactions.cohortErrorActions.data(true)) }
                         if (currentCohort.specimen_url) { dispatch(allactions.cohortErrorActions.specimen(true)) }
                         if (currentCohort.publication_url) { dispatch(allactions.cohortErrorActions.publication(true)) }
+                        */
                         //just need to remove the first investigator error on load, since only investigator 0 has errors initially
                         if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
                         if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
@@ -376,13 +377,19 @@ const CohortForm = ({ ...props }) => {
     
 
     const handleUpload = (fileData, category) => {
-        if (fileData.name) {
+        if (fileData) {
+            console.dir(fileData)
             const formData = new FormData();
+            for (let i = 0; i < fileData.length; i++) {
+                formData.append('cohortFile', fileData[i])
+            }
+            /*
             formData.append(
                 'cohortFile',
-                fileData,
-                fileData.name
+                fileData
+                //fileData.name
             );
+            */
             fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
                 method: "POST",
                 body: formData
@@ -988,7 +995,7 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td className={errors.questionnaire && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true)) }} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true)) }} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -1005,7 +1012,7 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td className={errors.main && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName} value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); dispatch(allactions.cohortErrorActions.main(e.target.value, true)) }} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName} value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); dispatch(allactions.cohortErrorActions.main(e.target.value, true)) }} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -1022,7 +1029,7 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName} value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)); dispatch(allactions.cohortErrorActions.data(e.target.value, true)) }} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName} value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)); dispatch(allactions.cohortErrorActions.data(e.target.value, true)) }} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -1039,7 +1046,7 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName} value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)); dispatch(allactions.cohortErrorActions.specimen(e.target.value, true)) }} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName} value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)); dispatch(allactions.cohortErrorActions.specimen(e.target.value, true)) }} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -1056,11 +1063,11 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)); dispatch(allactions.cohortErrorActions.publication(e.target.value, true)) }} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)) }} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
-                                                                <td><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.publication((e.target.files[0].name || cohort.publication_url), true)) }} disabled={cohort.publication_url} /></td>
+                                                                <td><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)) }}  /></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1072,44 +1079,44 @@ const CohortForm = ({ ...props }) => {
                                     <table className='table table-stripe table-responsive table-borderless'>
                                         <thead>
                                             <tr>
-                                                <th style={{ textAlign: 'center' }}>Document</th>
+                                                <th className='col-md-3' style={{ textAlign: 'center' }}>Document</th>
                                                 <th style={{ textAlign: 'center' }}>Website URL (preferred)</th>
                                                 <th style={{ textAlign: 'center' }}>Attached (if url not applicable)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td>Questionnaires<span style={{ color: 'red' }}>*</span></td>
-                                                <td className={errors.questionnaire && saved ? 'errorBackground' : ''} ><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)); dispatch(allactions.cohortErrorActions.questionnaire(e.target.value, true)) }} /></td>
+                                                <td>Questionnaires</td>
+                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <input type='file' name='cohortFile' formEncType='multiple/part' value={cohort.questioinnaireFileName} onChange={e => { handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.questionnaire_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.questionnaire((e.target.files[0].name || cohort.questionnaire_url), true)) }} disabled={cohort.questionnaire_url} />
+                                                    <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
                                                 </td>
 
                                             </tr>
                                             <tr>
-                                                <td>Main cohort protocol<span style={{ color: 'red' }}>*</span></td>
-                                                <td className={errors.main && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName} value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)); dispatch(allactions.cohortErrorActions.main(e.target.value, true)) }} /></td>
+                                                <td>Main cohort protocol</td>
+                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.main_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.main((e.target.files[0].name || cohort.main_cohort_url), true)) }} disabled={cohort.main_cohort_url} />
+                                                    <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.main_file(e.target.files[0].name))}} />
                                                 </td>
 
                                             </tr>
                                             <tr>
-                                                <td>Data sharing policy<span style={{ color: 'red' }}>*</span></td>
-                                                <td className={errors.data && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName} value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)); dispatch(allactions.cohortErrorActions.data(e.target.value, true)) }} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.data_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.data((e.target.files[0].name || cohort.data_url), true)) }} disabled={cohort.data_url} /></td>
+                                                <td>Data sharing policy</td>
+                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.data_file(e.target.files[0].name))}} /></td>
 
                                             </tr>
                                             <tr>
-                                                <td>Biospecimen sharing policy<span style={{ color: 'red' }}>*</span></td>
-                                                <td className={errors.specimen && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName} value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)); dispatch(allactions.cohortErrorActions.specimen(e.target.value, true)) }} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.specimen((e.target.files[0].name || cohort.specimen_url), true)) }} disabled={cohort.specimen_url} /></td>
+                                                <td>Biospecimen sharing policy</td>
+                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file'  name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name))}} /></td>
 
                                             </tr>
                                             <tr>
-                                                <td>Publication(authorship) policy<span style={{ color: 'red' }}>*</span></td>
-                                                <td className={errors.publication && saved ? 'errorBackground' : ''}><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' disabled={cohort.publicationFileName} onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)); dispatch(allactions.cohortErrorActions.publication(e.target.value, true)) }} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name)); dispatch(allactions.cohortErrorActions.publication((e.target.files[0].name || cohort.publication_url), true)) }} disabled={cohort.publication_url} /></td>
+                                                <td>Publication(authorship) policy</td>
+                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 4); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name))}} /></td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -111,7 +111,13 @@ actions[t.setMainCohortFile] = (state, action) => ({...state, mainCohortFile: ac
 actions[t.setDataFile] = (state, action) => ({...state, dataFile: action.value})
 actions[t.setSpecimenFile] = (state, action) => ({...state, specimenFile: action.value})
 actions[t.setPublicationFile] = (state, action) => ({...state, publicationFile: action.value})
-actions[t.setQuestionnaireFileName] = (state, action) => ({...state, questionnaireFileName: action.value})
+
+actions[t.setQuestionnaireFileName] = (state, action) => {
+    let cloned = {...state}
+    cloned.questionnaireFileName.push(action.value)
+    return cloned
+}
+
 actions[t.setMainFileName] = (state, action) => ({...state, mainFileName: action.value})
 actions[t.setDataFileName] = (state, action) => ({...state, dataFileName: action.value})
 actions[t.setSpecimenFileName] = (state, action) => ({...state, specimenFileName: action.value})
