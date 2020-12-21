@@ -2118,7 +2118,7 @@ end //
 
 DROP PROCEDURE if EXISTS `update_specimen_section_data` //
 
-CREATE  PROCEDURE `update_specimen_section_data`(in cohortID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_section_data`(in targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
@@ -2400,6 +2400,9 @@ bio_separation_platform = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatf
 bio_number_metabolites_measured = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured')),
 bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent'))
   where cohort_id = `cohortID`;
+
+  update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
+        cohort_id = `cohortID` and page_code = 'G';
   
   commit;
   select flag as rowsAffacted;
@@ -2764,12 +2767,15 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+
+	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
-	insert into cohort (name,acronym,status,publish_by,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName')),JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),"new",NULL,NOW());
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NOW());
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
 	WHILE i < JSON_LENGTH(@owners) DO
-		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),,'Y',NOW());
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
 		SELECT i + 1 INTO i;	
 	end WHILE;
 END //

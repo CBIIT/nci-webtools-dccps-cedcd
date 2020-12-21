@@ -178,24 +178,6 @@ const MortalityForm = ({ ...props }) => {
             })
     }
 
-    /*
-    const handleSave = () => {
-
-        if (validateInput()) {
-            //Complete
-            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
-            dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(cohortId, false, 'complete')
-        }
-        else {
-            //Incomplete
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(cohortId, false, 'incomplete')
-            }
-        }
-    }*/
 
     const handleSave = () => {
 
@@ -241,23 +223,6 @@ const MortalityForm = ({ ...props }) => {
         setModalShow(false)
     }
 
-    /*
-    const handleSaveContinue = () => {
-        if (validateInput()) {
-            //Complete
-            dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
-            dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
-            saveMortality(cohortId, true, 'complete')
-        }
-        else {
-            //Incomplete
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(cohortId, true, 'incomplete')
-            }
-        }
-    }*/
 
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
 

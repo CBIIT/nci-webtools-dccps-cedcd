@@ -1,0 +1,33 @@
+/* Contact Form */
+#contactOverlay.modal {
+}
+#contactOverlay.modal.fade .modal-dialog {
+  transform: translate(50%,0);
+}
+#contactOverlay.modal.in .modal-dialog {
+  transform: translate(0,0);
+}
+#contactOverlay .modal-dialog {
+  width: 960px;
+  max-width: 100%;
+  min-height: 700px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  margin:0;
+  position: absolute;
+  display: flex;
+}
+#contactOverlay .modal-content {
+  padding: 3rem;
+}
+#contactOverlay .close {
+  float: none;
+  font-size: 6rem;
+  opacity:1;
+  color:#62269E;
+  position: absolute;
+  right:2rem;
+  top:1rem;
+  z-index: 900;
+}

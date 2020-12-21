@@ -26,7 +26,8 @@ class App extends Component {
   }
   componentDidMount() {
     this.updateTab();
-    window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100);
+    window.addEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
+    //window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100); //results in memory leak
     window.addEventListener('resize', () => {
       if(window.innerWidth <= 800) this.setState({showImage: false})
       else this.setState({showImage: true})
@@ -34,6 +35,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
+    window.removeEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
     window.removeEventListener('resize', () => {
       if(window.innerWidth <= 800) this.setState({showImage: false})
       else this.setState({showImage: true})
