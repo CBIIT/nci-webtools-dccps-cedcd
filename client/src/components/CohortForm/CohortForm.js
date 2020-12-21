@@ -1097,26 +1097,26 @@ const CohortForm = ({ ...props }) => {
                                                 <td>Main cohort protocol</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 1); dispatch(allactions.cohortActions.main_file(e.target.files[0].name))}} />
+                                                    <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
                                                 </td>
 
                                             </tr>
                                             <tr>
                                                 <td>Data sharing policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 2); dispatch(allactions.cohortActions.data_file(e.target.files[0].name))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple /></td>
 
                                             </tr>
                                             <tr>
                                                 <td>Biospecimen sharing policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file'  name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 3); dispatch(allactions.cohortActions.specimen_file(e.target.files[0].name))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file'  name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple /></td>
 
                                             </tr>
                                             <tr>
                                                 <td>Publication(authorship) policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files[0], 4); dispatch(allactions.cohortActions.publication_file(e.target.files[0].name))}} /></td>
+                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple /></td>
                                             </tr>
                                         </tbody>
                                     </table>

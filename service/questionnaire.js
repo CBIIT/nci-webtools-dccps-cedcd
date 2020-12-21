@@ -39,12 +39,14 @@ router.post('/upload/:id/:category', async function (req, res, next) {
             //cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
         }
         Array.from(cohortFiles).forEach(f => {f.mv(`FileBank/CohortID_${req.params.id}/${f.name}`); uploadedFiles.filenames.push(f.name)})
+        
         let proc = 'add_file_attachment'
         let params = []
         params.push(req.params.id)
         params.push(req.params.category)
         params.push(JSON.stringify(uploadedFiles))
-        /*mysql.callProcedure(proc, params, function (result) {
+        logger.debug(params)
+      /*  mysql.callProcedure(proc, params, function (result) {
             res.json({ status: 200 })
          })
     */  
