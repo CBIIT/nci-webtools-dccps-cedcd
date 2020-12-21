@@ -1,22 +1,46 @@
-import React from 'react'
+import React from 'react';
+import { Modal } from 'react-bootstrap';
 import "./Modal.css"
 const CenterModal = (props) => {
-    const showHideClassName = props.show ? "modal display-block" : "modal display-none";
   return (
-    props.show ? 
-    <div className="modal display-block">
-      <section className="modal-main">
-        <div className='modalHeader'>{props.title || <h2>Saving Confirmation</h2>}</div>
-        <div className='modalBody'>{props.body || <span>There are validation erros, are you sure to save?</span>}</div>
-        <div className='modalFooter'>{props.footer || 
+    <Modal show={props.show} animation={false}>
+      <Modal.Header className="modalHeader">
+        <Modal.Title>
+          { props.title || 
+            <h2>Saving Confirmation</h2>
+          }
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body className="text-center">
+        { props.body || 
+          <span>There are validation errors, are you sure to save?</span>
+        }
+      </Modal.Body>
+      <Modal.Footer>
+        { props.footer || 
             <div>
-            <button className='btn btn-secondary' style={{marginRight: '5px', border: '1px solid #1c8282', backgroundColor: 'white', color: '#1c8282', paddingTop: '5px'}} onClick={props.handleClose}>Close</button>
-            <button className='btn btn-primary'  style={{marginRight: '10px'}} onClick={props.handleContentSave}>Save</button>
+              <button className='btn btn-primary' 
+                style={{
+                  marginRight: '5px', 
+                  // border: '1px solid #1c8282', 
+                  // backgroundColor: 'white', 
+                  // color: '#1c8282', 
+                  // paddingTop: '5px'
+                }} 
+                onClick={props.handleClose}>
+                  Close
+              </button>
+              <button className='btn btn-primary'  
+                style={{
+                  marginRight: '10px'
+                }} 
+                onClick={props.handleContentSave}>
+                  Save
+              </button>
             </div>
         }
-        </div>
-      </section>
-    </div> : ''
+      </Modal.Footer>
+    </Modal>
   )
 }
 
