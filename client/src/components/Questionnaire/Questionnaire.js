@@ -10,7 +10,7 @@ const Questionnaire = ({...props}) => {
 
     return isAuthorized && <div>
         <QuestionnaireHeader activeSection={props.activeSection} handler={props.handler} />
-        {React.cloneElement(props.children, {sectionPicker: props.handler})}
+        {React.cloneElement(props.children, {sectionPicker: props.handler, userId: userSession.id})}
     </div> || <Unauthorized />;
 }
 

@@ -25,6 +25,8 @@ const MajorContentForm = ({ ...props }) => {
     
 
     useEffect(() => {
+        //let id = 118
+        //window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', `/cohort/questionnaire/${id}`)
         if (!majorContent.hasLoaded) {
             fetch(`/api/questionnaire/major_content/${cohortId}`, {
                 method: 'POST'
