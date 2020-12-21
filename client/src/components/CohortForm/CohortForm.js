@@ -593,7 +593,7 @@ const CohortForm = ({ ...props }) => {
                                         <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' disabled={!cohort.eligible_disease} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
                                     </div>
                                     <div className='col-md-12 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                        <div style={{ marginBottom: '5px' }}>Required Field any eligibility criteria in addition to age and sex</div>
+                                        <div style={{ marginBottom: '5px' }}>Please specify any eligibility criteria in addition to age and sex</div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                             <span className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                                 <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name='eligible_disease_other_specify' value={cohort.eligible_disease_other_specify} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
@@ -1116,7 +1116,12 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <td>Publication(authorship) policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}><input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple /></td>
+                                                <td style={{ verticalAlign: 'middle' }}>
+                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
+                                                    </span>
+                                                    <span className='col-md-1 badge'></span>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

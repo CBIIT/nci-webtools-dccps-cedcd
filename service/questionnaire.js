@@ -45,11 +45,13 @@ router.post('/upload/:id/:category', async function (req, res, next) {
         params.push(req.params.id)
         params.push(req.params.category)
         params.push(JSON.stringify(uploadedFiles))
-        logger.debug(params)
-      /*  mysql.callProcedure(proc, params, function (result) {
-            res.json({ status: 200 })
-         })
-    */  
+        //logger.debug(params)
+        mysql.callJsonProcedure(proc, params, function (result) {
+            if(result && result[0] && result[0][0].rowsAffacted > 0)
+                res.json({ status: 200 })
+            else
+                res.json({status: 500})
+         }) 
     })
     
     
