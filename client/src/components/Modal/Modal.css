@@ -1,60 +1,12 @@
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width:50%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-  }
-  
-  .modal-main {
-    border-radius: 10px;
-    position:fixed;
-    background: white;
-    width: 50%;
-    height: 30%;
-    top:50%;
-    left:50%;
-    transform: translate(-50%,-50%);
-  }
-  
-  .modal-main h2{
-      color: purple;
-      font-weight: bold;
-  }
+.modal-content {
+  border-radius: 10px !important;
+}
 
-  .display-block {
-    display: block;
-  }
-  
-  .display-none {
-    display: none;
-  }
+.modal-content h2{
+  color: purple;
+  font-weight: bold;
+}
 
-  .modalHeader{
-      border-bottom: 1px solid lightgray;
-      color: white;
-      text-align: center;
-      height: 20%;
-  }
-
-  .modalBody{
-      text-align: center;
-      height: 50%;
-      position: relative;
-  }
-
-  .modalBody span{
-    position: relative;
-    font-size: 2rem;
-    top: 40%;
-  }
-
-  .modalFooter{
-      border-top: 1px solid lightgray;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      height: 30%;
-      padding: 5px;
-  }
+.modal-body span{
+  font-size: 2rem;
+}

@@ -653,13 +653,99 @@ th.comRowHeader:hover {
   vertical-align: text-top;
 }
 
+.cohortInfo > .cedcd-btn {
+  font-size: 110%;
+  color: #135B5D;
+  font-weight: 400;
+  margin: 8px 0 0 0;
+  padding: 20px 10px 20px 20px;
+  background: #f3f2f1;
+  width: 100%;
+  text-align: left;
+  vertical-align: middle;
+  border-radius: 8px 8px 8px 8px;
+  transition: all 0.4s ease-in-out;
+  display: inline-block;
+  white-space: nowrap;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+}
+
+.cohortInfo > .cedcd-btn:hover, .cohortInfo > .cedcd-btn:focus {
+  font-size: 110%;
+  color: #135B5D;
+  background: rgba(221,241,239,1.00);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cohortInfo > .cedcd-btn.active {
+  background: rgba(221,241,239,1.00);
+  border-radius: 10px 10px 0 0;
+}
+
+.cohortInfo .cedcd-btn:hover .triangle {
+  border-color: transparent transparent transparent #135B5D;
+}
+
+.cohortInfo .cedcd-btn.active .triangle {
+  transform: rotate(90deg);
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent #135B5D;
+}
+
+.cohortInfo .cedcd-btn.active:hover .triangle {
+  border-color: transparent transparent transparent #135B5D;
+}
+
 .cohortInfoBody {
   display: none;
   margin: 0;
   padding-bottom: 10px;
   padding-left: 36px;
   padding-right: 20px;
-  background: rgba(221,241,239,1.00);
+  background: rgba(238,248,247,1.00);
+}
+
+.cohortInfo ul {
+  font-size: 100%;
+  margin: 0;
+  padding: 0 0 15px 0;
+  line-height: 130%;
+  list-style: none;
+}
+
+.cohortInfo ul li {
+  padding: 4px 0 4px 0;
+}
+
+.cohortInfoBody ul li {
+  padding: 5px 0 2px 26px;
+}
+
+.cohortInfoBody ul.links-list li {
+  margin-bottom: 0px !important;
+}
+
+.panellet {
+  padding: 0 18px;
+  /* background-color: white; */
+  display: none;
+  overflow: hidden;
+}
+
+.panel-active {
+  padding: 0 18px;
+  /* background-color: white; */
+  display: block;
+  overflow: hidden;
 }
 
 /* ABOUT ---------------------------------------------------------------- */

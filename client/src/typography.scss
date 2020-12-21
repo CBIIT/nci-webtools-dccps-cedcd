@@ -192,28 +192,12 @@ ul.table-controls {
 ul.results-nav li {
   list-style: none;
 }
-.cohortInfo ul {
-  font-size: 100%;
-  margin: 0;
-  padding: 0 0 15px 0;
-  line-height: 130%;
-  list-style: none;
-}
-.cohortInfo ul li {
-  padding: 4px 0 4px 0;
-}
-.cohortInfoBody ul li {
-  padding: 5px 0 2px 26px;
-}
 .links-list {
   list-style: none;
 }
 .links-list li {
   line-height: 125%;
   margin-bottom: 18px;
-}
-.cohortInfoBody ul.links-list li {
-  margin-bottom: 0px !important;
 }
 #mainNavBar li .arrow.down {
   border-top:0px solid transparent;
@@ -956,41 +940,6 @@ a#cd_website:hover {
 }
 /* End Button Links */
 /* Button Elements */
-.cohortInfo > .cedcd-btn {
-  font-size: 110%;
-  color: #135B5D;
-  font-weight: 400;
-  margin: 8px 0 0 0;
-  padding: 20px 10px 20px 20px;
-  background: #f3f2f1;
-  width: 100%;
-  text-align: left;
-  vertical-align: middle;
-  border-radius: 8px 8px 8px 8px;
-  transition: all 0.4s ease-in-out;
-  display: inline-block;
-  white-space: nowrap;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-}
-.cohortInfo > .cedcd-btn:hover, .cohortInfo > .cedcd-btn:focus {
-  font-size: 110%;
-  color: #135B5D;
-  background: rgba(221,241,239,1.00);
-  cursor: pointer;
-  text-decoration: underline;
-}
-.cohortInfo > .cedcd-btn.active {
-  background: rgba(221,241,239,1.00);
-  border-radius: 10px 10px 0 0;
-}
 #prof-main .cohortInfo .cedcd-btn.active:hover {
   color: #135B5D;
 }
@@ -1003,17 +952,6 @@ a#cd_website:hover {
   border-width: 5px 0 5px 8px;
   border-color: transparent transparent transparent #135B5D;
   transition: all 0.5s ease-in;
-}
-.cohortInfo .cedcd-btn:hover .triangle {
-  border-color: transparent transparent transparent #135B5D;
-}
-.cohortInfo .cedcd-btn.active .triangle {
-  transform: rotate(90deg);
-  border-width: 5px 0 5px 8px;
-  border-color: transparent transparent transparent #135B5D;
-}
-.cohortInfo .cedcd-btn.active:hover .triangle {
-  border-color: transparent transparent transparent #135B5D;
 }
 .modal-footer button.btn {
   color: rgba(19,91,91,1.00);

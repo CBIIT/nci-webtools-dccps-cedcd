@@ -14,17 +14,3 @@
 .active, .accordion:hover {
     background-color: #ccc;
 }
-
-.panellet {
-    padding: 0 0;
-    background-color: white;
-    display: none;
-    overflow: hidden;
-}
-
-.panel-active {
-    padding: 0 0;
-    background-color: white;
-    display: block;
-    overflow: hidden;
-}
