@@ -22,21 +22,21 @@ class App extends Component {
   }
 
   handleAdmin(v) {
-    this.setState({admin: v})
+    this.setState({ admin: v })
   }
   componentDidMount() {
     this.updateTab();
     window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100);
     window.addEventListener('resize', () => {
-      if(window.innerWidth <= 800) this.setState({showImage: false})
-      else this.setState({showImage: true})
+      if (window.innerWidth <= 800) this.setState({ showImage: false })
+      else this.setState({ showImage: true })
     })
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', () => {
-      if(window.innerWidth <= 800) this.setState({showImage: false})
-      else this.setState({showImage: true})
+      if (window.innerWidth <= 800) this.setState({ showImage: false })
+      else this.setState({ showImage: true })
     })
   }
 
@@ -76,7 +76,12 @@ class App extends Component {
         this.setState({ currTab: 7 });
       }, 100);
     }
-     else if (path.indexOf("/admin/managecohort") >= 0) {
+    else if (path.indexOf("/admin/managecohort") >= 0) {
+      setTimeout(() => {
+        this.setState({ currTab: 8 });
+      }, 100);
+    }
+    else if (path.indexOf("/admin/manage") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 8 });
       }, 100);
@@ -98,12 +103,12 @@ class App extends Component {
         {this.state.showImage && <Header />}
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
-            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} isAdmin={this.state.admin}/>
+            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} isAdmin={this.state.admin} />
           </div>
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          <MainContent setAdmin={(x) => this.handleAdmin(x)}/>
+          <MainContent setAdmin={(x) => this.handleAdmin(x)} />
           <div className="clearFix"></div>
         </div>
       </div>
