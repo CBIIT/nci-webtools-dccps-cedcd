@@ -10,7 +10,7 @@ export default function Header({ props }) {
         e.preventDefault();
         // can not use normal 301 response, since session is not properly cleared
         const response = await fetch('/api/logout');
-        window.location.href = await response.json();
+        window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
     }
 
     return (
@@ -39,14 +39,14 @@ export default function Header({ props }) {
                     </> || <>
                             <a
                                 className="login-button"
-                                href="/login/external"
+                                href="/private/external"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 External Login
                         </a>
                             <a
                                 className="login-button"
-                                href="/login/internal"
+                                href="/private/internal"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 NIH Login
