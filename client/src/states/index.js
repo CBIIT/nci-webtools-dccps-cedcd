@@ -81,11 +81,16 @@ const InitialStates = {
         dataFile: true,
         specimenFile: true,
         publicationFile: true,
-        questionnaireFileName: '',
-        mainFileName: '',
-        dataFileName: '',
-        specimenFileName: '',
-        publicationFileName: '',
+        questionnaireFileName: [],
+        questionnaireCount: 0,
+        mainFileName: [],
+        mainCount: 0,
+        dataFileName: [],
+        dataCount: 0,
+        specimenFileName: [],
+        specimenCount: 0,
+        publicationFileName: [],
+        publicationCount: 0,
         questionnaire_url: '',
         main_cohort_url: '',
         data_url: '',
@@ -127,12 +132,14 @@ const InitialStates = {
         strategy: 'Required Field',
         data_collected_other_specify: 'Required Field',
         restrictions_other_specify: 'Required Field',
-        strategy_other_specify: 'Required Field',
+        strategy_other_specify: 'Required Field'
+        /*
         questionnaire: true,
         main: true,
         data: true,
         specimen: true,
         publication: true
+        */
     },
     enrollmentCount: {
         'hasLoaded': false,

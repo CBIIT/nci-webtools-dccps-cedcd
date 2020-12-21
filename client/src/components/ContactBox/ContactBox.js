@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './ContactBox.scss'
 
 class ContactBox extends Component {
     constructor(props){
