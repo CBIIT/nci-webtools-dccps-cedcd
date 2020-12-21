@@ -34,7 +34,7 @@ module.exports = function (app) {
 	app.use('/api/user', m_user);
 	app.use('/api/questionnaire', m_questionnaire);
 	app.use('/api/managecohort', m_admin);
-	app.use('/login/:loginType', login);
+	app.use('/private/:loginType', login);
 	app.use('/api/logout', logout);
 	app.use('/api/user-session', getUserSession);
 

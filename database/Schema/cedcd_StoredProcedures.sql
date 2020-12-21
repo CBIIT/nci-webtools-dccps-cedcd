@@ -2118,7 +2118,7 @@ end //
 
 DROP PROCEDURE if EXISTS `update_specimen_section_data` //
 
-CREATE  PROCEDURE `update_specimen_section_data`(in cohortID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_section_data`(in targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
@@ -2400,6 +2400,9 @@ bio_separation_platform = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatf
 bio_number_metabolites_measured = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured')),
 bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent'))
   where cohort_id = `cohortID`;
+
+  update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
+        cohort_id = `cohortID` and page_code = 'G';
   
   commit;
   select flag as rowsAffacted;

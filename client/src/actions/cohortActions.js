@@ -334,6 +334,16 @@ const publication_file = (v) => ({type: t.setPublicationFileName, value: v})
 
 const data_file = (v) => ({type: t.setDataFileName, value: v})
 
+const questionnaireFileName = (v) => ({type: t.setQuestionnaireFileName, value: v})
+
+const mainFileName = (v) => ({type: t.setMainFileName, value: v})
+
+const dataFileName = (v) => ({type: t.setDataFileName, value: v})
+
+const specimenFileName = (v) => ({type: t.setSpecimenFileName, value: v})
+
+const publicationFileName = (v) => ({type: t.setPublicationFileName, value: v})
+
 const questionnaire_url = (v) => ({type: t.setQuestionnaireUrl, url: v})
 
 const main_cohort_url = (v) => ({type: t.setMainCohortUrl, url: v})
@@ -426,6 +436,11 @@ export default {
     data_file,
     specimen_file,
     publication_file,
+    questionnaireFileName,
+    mainFileName,
+    dataFileName,
+    specimenFileName,
+    publicationFileName,
     questionnaire_url,
     main_cohort_url,
     data_url,

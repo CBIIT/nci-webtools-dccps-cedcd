@@ -41,12 +41,13 @@ const strategy = (toRemove, v) => ({ type: t.strategy, value: v, remove: toRemov
 const data_collected_other_specify = (toRemove, v) => ({ type: t.data_collected_other_specify, value: v, remove: toRemove})
 const restrictions_other_specify = (toRemove, v) => ({ type: t.restrictions_other_specify, value: v, remove: toRemove})
 const strategy_other_specify = (toRemove, v) => ({ type: t.strategy_other_specify, value: v, remove: toRemove})
+/*
 const questionnaire = (toRemove, v) => ({ type: t.questionnaire, value: v, remove: toRemove})
 const main = (toRemove, v) => ({ type: t.main, value: v, remove: toRemove})
 const data = (toRemove, v) => ({ type: t.data, value: v, remove: toRemove})
 const specimen = (toRemove, v) => ({ type: t.specimen, value: v, remove: toRemove})
 const publication = (toRemove, v) => ({ type: t.publication, value: v, remove: toRemove})
-
+*/
 export default {
     completionDate,
     cohort_web_site,
@@ -88,10 +89,11 @@ export default {
     strategy,
     data_collected_other_specify,
     restrictions_other_specify,
-    strategy_other_specify,
+    strategy_other_specify/*
     questionnaire,
     main,
     data,
     specimen,
     publication,
+    */
 }
