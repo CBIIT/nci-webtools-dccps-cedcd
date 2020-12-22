@@ -7,7 +7,7 @@ import Investigator from '../Investigator/Investigator'
 import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.css'

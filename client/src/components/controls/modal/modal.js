@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import "./Modal.css"
+import "./modal.css"
 const CenterModal = (props) => {
   return (
     <Modal show={props.show} animation={false}>

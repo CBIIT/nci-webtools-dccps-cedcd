@@ -5,7 +5,7 @@ import validator from '../../validators'
 import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 import './SpecimenForm.css'
 

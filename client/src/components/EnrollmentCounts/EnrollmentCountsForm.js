@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker'
 import allactions from '../../actions'
 //import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
