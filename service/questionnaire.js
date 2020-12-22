@@ -28,9 +28,50 @@ router.post('/sendEmail', async function (req, res, next) {
 	}
 })
 
-router.post('/upload/:id/:category', async function (req, res, next) {
+router.post('/get_updated_cohortID', function(req, res){
+    let proc = 'select_unpublished_cohort_id'
+    mysql.callProcedure(proc, [req.body.oldID, req.body.newID], function(result){
+        logger.debug(result)
+        if(result&&result[0])
+            res.json({status: 200, data: result[0][0].new_id})
+        else
+            res.json({status:500})
+    })
+
+})
+
+router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile
-    let uploadedFiles = {filenames: []}  
+
+    let uploadedFiles = {filenames: []} 
+    Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
+    let proc = 'add_file_attachment'
+        let params = []
+        params.push(req.params.id)
+        params.push(req.params.category)
+        params.push(JSON.stringify(uploadedFiles))
+        
+        mysql.callJsonProcedure(proc, params, function (result) {
+            if(result && result[0] && result[0][0].rowsAffacted > 0){
+                const returnedData = {}
+                //logger.debug(result)
+                returnedData.new_ID = result[1][0].new_id
+                returnedData.files = result[2]
+                fs.access(`FileBank/CohortID_${returnedData.new_ID}`, (err) => {
+                    if (err) {
+                        fs.mkdirSync(`FileBank/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
+                            if (err) res.json({ status: 500 })
+                        });
+                        //cohortFile.mv(`FileBank/CohortID_${req.params.id}/${cohortFile.name}`)
+                    }
+                    cohortFiles.forEach(f => {f.mv(`FileBank/CohortID_${returnedData.new_ID}/${f.name}`)})   
+                }) 
+                res.json({ status: 200, data: returnedData})
+            }        
+            else
+                res.json({status: 500})
+         }) 
+/*
     fs.access(`FileBank/CohortID_${req.params.id}`, (err) => {
         if (err) {
             fs.mkdirSync(`FileBank/CohortID_${req.params.id}`, { recursive: true }, (err) => {
@@ -40,22 +81,19 @@ router.post('/upload/:id/:category', async function (req, res, next) {
         }
         Array.from(cohortFiles).forEach(f => {f.mv(`FileBank/CohortID_${req.params.id}/${f.name}`); uploadedFiles.filenames.push(f.name)})
         
-        let proc = 'add_file_attachment'
-        let params = []
-        params.push(req.params.id)
-        params.push(req.params.category)
-        params.push(JSON.stringify(uploadedFiles))
-        //logger.debug(params)
-        mysql.callJsonProcedure(proc, params, function (result) {
-            if(result && result[0] && result[0][0].rowsAffacted > 0)
-                res.json({ status: 200 })
-            else
-                res.json({status: 500})
-         }) 
+        
+    }) 
+    */ 
+})
+
+router.post('/deleteFile', function(req, res){
+    let proc = 'delete_cohort_file'
+    mysql.callProcedure(proc, [req.body.id], function(result){
+        if(result && result[0] && result[0][0].rowsAffacted > 0)
+            res.json({status: 200})
+        else
+            res.json({status: 500})
     })
-    
-    
-    
 })
 
 router.post('/update_cohort_basic/:id', function (req, res) {
@@ -107,30 +145,30 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         basic_info.sectionStatus = results[5]
         basic_info.cohortStatus = results[6][0].cohort_status
 
+    
         if(results[7] && Array.isArray(results[7])){
-            basic_info.attachments = {
-                questinnaire: [],
-                main:[],
-                data:[],
-                specimen:[],
-                publication:[]
-            }
+            basic_info.cohort.questionnaireFileName = []
+            basic_info.cohort.mainFileName =  []
+            basic_info.cohort.dataFileName = []
+            basic_info.cohort.specimenFileName = []
+            basic_info.cohort.publicationFileName = []
+    
             for(let a of results[7]){
-                switch(a.category){
-                    case 'questionnaire':
-                        basic_info.attachments.questinnaire.push(a.filename)
+                switch(a.fileCategory){
+                    case 0:
+                        basic_info.cohort.questionnaireFileName.push(a)
                         break;
-                    case 'main':
-                        basic_info.attachments.main.push(a.filename)
+                    case 1:
+                        basic_info.cohort.mainFileName.push(a)
                         break;
-                    case 'data':
-                        basic_info.attachments.data.push(a.filename)
+                    case 2:
+                        basic_info.cohort.dataFileName.push(a)
                         break;
-                    case 'specimen':
-                        basic_info.attachments.specimen.push(a.filename)
+                    case 3:
+                        basic_info.cohort.specimenFileName.push(a)
                         break;
                     default:
-                        basic_info.attachments.publication.push(a.filename)
+                        basic_info.cohort.publicationFileName.push(a)
                         break;
                 }
             }

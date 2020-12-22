@@ -117,11 +117,12 @@ actions[t.setMainFileName] = (state, action) => ({...state, mainFileName: action
 actions[t.setDataFileName] = (state, action) => ({...state, dataFileName: action.value})
 actions[t.setSpecimenFileName] = (state, action) => ({...state, specimenFileName: action.value})
 actions[t.setPublicationFileName] = (state, action) => ({...state, publicationFileName: action.value})
-
+/*
 actions[t.setMainFileName] = (state, action) => ({...state, mainFileName: action.value})
 actions[t.setDataFileName] = (state, action) => ({...state, dataFileName: action.value})
 actions[t.setSpecimenFileName] = (state, action) => ({...state, specimenFileName: action.value})
 actions[t.setPublicationFileName] = (state, action) => ({...state, publicationFileName: action.value})
+*/
 actions[t.setQuestionnaireUrl] = (state, action) => ({...state, questionnaire_url: action.url === 'null' ? '' : action.url})
 actions[t.setMainCohortUrl] = (state, action) => ({...state, main_cohort_url: action.url === 'null' ? '' : action.url})
 actions[t.setDataUrl] = (state, action) => ({...state, data_url: action.url === 'null' ? '' : action.url})

@@ -47,3 +47,12 @@
  .react-datepicker__day--today {
    border: 1px solid red;
  }
+
+ .closer {
+     color: red;
+     text-align: center;
+ }
+
+ .closer:hover, .upperCloser:hover{
+     cursor: hand;
+ }
