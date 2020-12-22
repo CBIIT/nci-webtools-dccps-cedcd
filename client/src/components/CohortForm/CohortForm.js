@@ -10,7 +10,7 @@ import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
 
 import "react-datepicker/dist/react-datepicker.css";
-import './CohortForm.css'
+import './CohortForm.scss'
 import cohortErrorActions from '../../actions/cohortErrorActions'
 
 const CohortForm = ({ ...props }) => {
