@@ -40,10 +40,11 @@ async function login(request, response) {
             `SELECT 
                 id, 
                 access_level as accessLevel, 
-                active_status as activeStatus,
+                active_status as activeStatus
             FROM user where user_name = ? `,
             [userName]
         );
+
 
         if (user) {
             const userId = user.id;
