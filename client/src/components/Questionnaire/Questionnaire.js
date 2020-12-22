@@ -1,12 +1,18 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 import QuestionnaireHeader from '../QuestionnaireHeader/QuestionnaireHeader'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import { UserSessionContext } from '../../index';
+import { fetchCohort } from '../../reducers/cohort';
 
 const Questionnaire = ({...props}) => {
+    const dispatch = useDispatch();
+    const cohortID = useSelector(state => state.cohortIDReducer);
     const userSession = useContext(UserSessionContext);
     const isAuthorized = (process.env.NODE_ENV === 'development')
         || (userSession && userSession.role === 'CohortAdmin');
+
+    useEffect(() => {cohortID && dispatch(fetchCohort(cohortID))}, [cohortID]);
 
     return isAuthorized && <div>
         <QuestionnaireHeader activeSection={props.activeSection} handler={props.handler} />
