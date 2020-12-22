@@ -3,7 +3,7 @@ import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 const MortalityForm = ({ ...props }) => {
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 
 

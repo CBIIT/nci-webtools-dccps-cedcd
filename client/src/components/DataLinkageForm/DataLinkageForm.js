@@ -5,7 +5,7 @@ import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 const DataLinkageForm = ({ ...props }) => {
 

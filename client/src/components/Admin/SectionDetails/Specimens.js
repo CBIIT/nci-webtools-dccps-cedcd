@@ -285,7 +285,7 @@ const SpecimenForm = ({ ...props }) => {
             <div style={{ marginTop: '15px' }}>
                 <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Did you collect any of the following specimens</div>
                 <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
-                    <table className='table table-stripe table-responsive'>
+                    <table className='table table-striped table-responsive'>
                         <thead>
                             <tr>
                                 <th className='col-xs-4'>Did you collect any of the following specimens</th>
@@ -690,373 +690,375 @@ const SpecimenForm = ({ ...props }) => {
                 <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{ padding: '0' }}>
                     <div><label>G.16 </label></div>
                     <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available in your current inventory. If you do not have exact counts, please enter approximate counts. (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.) </p>
-                    <table className='table table-stripe table-responsive'>
-                        <thead>
-                            <tr>
-                                <th className='col-sm-1 center' >ICD-9</th>
-                                <th className='col-sm-1 center' > ICD-10</th>
-                                <th className='col-sm-3 center' >Cancer Site/Type</th>
-                                <th className='col-sm-1 center' >Serum and/or Plasma</th>
-                                <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
-                                <th className='col-sm-1 center' >Saliva and/or Buccal</th>
-                                <th className='col-sm-1 center' >Urine</th>
-                                <th className='col-sm-1 center' >Feces</th>
-                                <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
-                                <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>No Cancer</td>
-                                <td><input className='inputWriter center' name='29-1' value={specimen.counts['29-1']} /></td>
-                                <td><input className='inputWriter center' name='29-2' value={specimen.counts['29-2']} /></td>
-                                <td><input className='inputWriter center' name='29-3' value={specimen.counts['29-3']} /></td>
-                                <td><input className='inputWriter center' name='29-4' value={specimen.counts['29-4']} /></td>
-                                <td><input className='inputWriter center' name='29-5' value={specimen.counts['29-5']} /></td>
-                                <td><input className='inputWriter center' name='29-6' value={specimen.counts['29-6']} /></td>
-                                <td><input className='inputWriter center' name='29-7' value={specimen.counts['29-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>141-149</td>
-                                <td>C00-C14</td>
-                                <td>Oropharyngeal</td>
-                                <td><input className='inputWriter center' name='2-1' value={specimen.counts['2-1']} /></td>
-                                <td><input className='inputWriter center' name='2-2' value={specimen.counts['2-2']} /></td>
-                                <td><input className='inputWriter center' name='2-3' value={specimen.counts['2-3']} /></td>
-                                <td><input className='inputWriter center' name='2-4' value={specimen.counts['2-4']} /></td>
-                                <td><input className='inputWriter center' name='2-5' value={specimen.counts['2-5']} /></td>
-                                <td><input className='inputWriter center' name='2-6' value={specimen.counts['2-6']} /></td>
-                                <td><input className='inputWriter center' name='2-7' value={specimen.counts['2-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>150</td>
-                                <td>C15</td>
-                                <td>Esophagus</td>
-                                <td><input className='inputWriter center' name='3-1' value={specimen.counts['3-1']} /></td>
-                                <td><input className='inputWriter center' name='3-2' value={specimen.counts['3-2']} /></td>
-                                <td><input className='inputWriter center' name='3-3' value={specimen.counts['3-3']} /></td>
-                                <td><input className='inputWriter center' name='3-4' value={specimen.counts['3-4']} /></td>
-                                <td><input className='inputWriter center' name='3-5' value={specimen.counts['3-5']} /></td>
-                                <td><input className='inputWriter center' name='3-6' value={specimen.counts['3-6']} /></td>
-                                <td><input className='inputWriter center' name='3-7' value={specimen.counts['3-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>151</td>
-                                <td>C16</td>
-                                <td>Stomach</td>
-                                <td><input className='inputWriter center' name='4-1' value={specimen.counts['4-1']} /></td>
-                                <td><input className='inputWriter center' name='4-2' value={specimen.counts['4-2']} /></td>
-                                <td><input className='inputWriter center' name='4-3' value={specimen.counts['4-3']} /></td>
-                                <td><input className='inputWriter center' name='4-4' value={specimen.counts['4-4']} /></td>
-                                <td><input className='inputWriter center' name='4-5' value={specimen.counts['4-5']} /></td>
-                                <td><input className='inputWriter center' name='4-6' value={specimen.counts['4-6']} /></td>
-                                <td><input className='inputWriter center' name='4-7' value={specimen.counts['4-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>152</td>
-                                <td>C17</td>
-                                <td>Small intestine</td>
-                                <td><input className='inputWriter center' name='5-1' value={specimen.counts['5-1']} /></td>
-                                <td><input className='inputWriter center' name='5-2' value={specimen.counts['5-2']} /></td>
-                                <td><input className='inputWriter center' name='5-3' value={specimen.counts['5-3']} /></td>
-                                <td><input className='inputWriter center' name='5-4' value={specimen.counts['5-4']} /></td>
-                                <td><input className='inputWriter center' name='5-5' value={specimen.counts['5-5']} /></td>
-                                <td><input className='inputWriter center' name='5-6' value={specimen.counts['5-6']} /></td>
-                                <td><input className='inputWriter center' name='5-7' value={specimen.counts['5-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>153</td>
-                                <td>C18</td>
-                                <td>Colon</td>
-                                <td><input className='inputWriter center' name='6-1' value={specimen.counts['6-1']} /></td>
-                                <td><input className='inputWriter center' name='6-2' value={specimen.counts['6-2']} /></td>
-                                <td><input className='inputWriter center' name='6-3' value={specimen.counts['6-3']} /></td>
-                                <td><input className='inputWriter center' name='6-4' value={specimen.counts['6-4']} /></td>
-                                <td><input className='inputWriter center' name='6-5' value={specimen.counts['6-5']} /></td>
-                                <td><input className='inputWriter center' name='6-6' value={specimen.counts['6-6']} /></td>
-                                <td><input className='inputWriter center' name='6-7' value={specimen.counts['6-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>154</td>
-                                <td>C19-C21</td>
-                                <td>Rectum and anus</td>
-                                <td><input className='inputWriter center' name='7-1' value={specimen.counts['7-1']} /></td>
-                                <td><input className='inputWriter center' name='7-2' value={specimen.counts['7-2']} /></td>
-                                <td><input className='inputWriter center' name='7-3' value={specimen.counts['7-3']} /></td>
-                                <td><input className='inputWriter center' name='7-4' value={specimen.counts['7-4']} /></td>
-                                <td><input className='inputWriter center' name='7-5' value={specimen.counts['7-5']} /></td>
-                                <td><input className='inputWriter center' name='7-6' value={specimen.counts['7-6']} /></td>
-                                <td><input className='inputWriter center' name='7-7' value={specimen.counts['7-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>155</td>
-                                <td>C22</td>
-                                <td>Liver and intrahepatic bile ducts</td>
-                                <td><input className='inputWriter center' name='8-1' value={specimen.counts['8-1']} /></td>
-                                <td><input className='inputWriter center' name='8-2' value={specimen.counts['8-2']} /></td>
-                                <td><input className='inputWriter center' name='8-3' value={specimen.counts['8-3']} /></td>
-                                <td><input className='inputWriter center' name='8-4' value={specimen.counts['8-4']} /></td>
-                                <td><input className='inputWriter center' name='8-5' value={specimen.counts['8-5']} /></td>
-                                <td><input className='inputWriter center' name='8-6' value={specimen.counts['8-6']} /></td>
-                                <td><input className='inputWriter center' name='8-7' value={specimen.counts['8-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>156</td>
-                                <td>C23, C24</td>
-                                <td>Gallbladder and extrahepatic bile ducts</td>
-                                <td><input className='inputWriter center' name='9-1' value={specimen.counts['9-1']} /></td>
-                                <td><input className='inputWriter center' name='9-2' value={specimen.counts['9-2']} /></td>
-                                <td><input className='inputWriter center' name='9-3' value={specimen.counts['9-3']} /></td>
-                                <td><input className='inputWriter center' name='9-4' value={specimen.counts['9-4']} /></td>
-                                <td><input className='inputWriter center' name='9-5' value={specimen.counts['9-5']} /></td>
-                                <td><input className='inputWriter center' name='9-6' value={specimen.counts['9-6']} /></td>
-                                <td><input className='inputWriter center' name='9-7' value={specimen.counts['9-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>157</td>
-                                <td>C25</td>
-                                <td>Pancreas</td>
-                                <td><input className='inputWriter center' name='10-1' value={specimen.counts['10-1']} /></td>
-                                <td><input className='inputWriter center' name='10-2' value={specimen.counts['10-2']} /></td>
-                                <td><input className='inputWriter center' name='10-3' value={specimen.counts['10-3']} /></td>
-                                <td><input className='inputWriter center' name='10-4' value={specimen.counts['10-4']} /></td>
-                                <td><input className='inputWriter center' name='10-5' value={specimen.counts['10-5']} /></td>
-                                <td><input className='inputWriter center' name='10-6' value={specimen.counts['10-6']} /></td>
-                                <td><input className='inputWriter center' name='10-7' value={specimen.counts['10-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>162</td>
-                                <td>C34</td>
-                                <td>Lung and bronchus</td>
-                                <td><input className='inputWriter center' name='11-1' value={specimen.counts['11-1']} /></td>
-                                <td><input className='inputWriter center' name='11-2' value={specimen.counts['11-2']} /></td>
-                                <td><input className='inputWriter center' name='11-3' value={specimen.counts['11-3']} /></td>
-                                <td><input className='inputWriter center' name='11-4' value={specimen.counts['11-4']} /></td>
-                                <td><input className='inputWriter center' name='11-5' value={specimen.counts['11-5']} /></td>
-                                <td><input className='inputWriter center' name='11-6' value={specimen.counts['11-6']} /></td>
-                                <td><input className='inputWriter center' name='11-7' value={specimen.counts['11-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>170</td>
-                                <td>C40, C41</td>
-                                <td>Bone</td>
-                                <td><input className='inputWriter center' name='12-1' value={specimen.counts['12-1']} /></td>
-                                <td><input className='inputWriter center' name='12-2' value={specimen.counts['12-2']} /></td>
-                                <td><input className='inputWriter center' name='12-3' value={specimen.counts['12-3']} /></td>
-                                <td><input className='inputWriter center' name='12-4' value={specimen.counts['12-4']} /></td>
-                                <td><input className='inputWriter center' name='12-5' value={specimen.counts['12-5']} /></td>
-                                <td><input className='inputWriter center' name='12-6' value={specimen.counts['12-6']} /></td>
-                                <td><input className='inputWriter center' name='12-7' value={specimen.counts['12-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>172</td>
-                                <td>C43</td>
-                                <td>Melanoma (excluding mucosal sites)</td>
-                                <td><input className='inputWriter center' name='13-1' value={specimen.counts['13-1']} /></td>
-                                <td><input className='inputWriter center' name='13-2' value={specimen.counts['13-2']} /></td>
-                                <td><input className='inputWriter center' name='13-3' value={specimen.counts['13-3']} /></td>
-                                <td><input className='inputWriter center' name='13-4' value={specimen.counts['13-4']} /></td>
-                                <td><input className='inputWriter center' name='13-5' value={specimen.counts['13-5']} /></td>
-                                <td><input className='inputWriter center' name='13-6' value={specimen.counts['13-6']} /></td>
-                                <td><input className='inputWriter center' name='13-7' value={specimen.counts['13-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>174-175</td>
-                                <td>C50</td>
-                                <td>Invasive Breast Cancer</td>
-                                <td><input className='inputWriter center' name='14-1' value={specimen.counts['14-1']} /></td>
-                                <td><input className='inputWriter center' name='14-2' value={specimen.counts['14-2']} /></td>
-                                <td><input className='inputWriter center' name='14-3' value={specimen.counts['14-3']} /></td>
-                                <td><input className='inputWriter center' name='14-4' value={specimen.counts['14-4']} /></td>
-                                <td><input className='inputWriter center' name='14-5' value={specimen.counts['14-5']} /></td>
-                                <td><input className='inputWriter center' name='14-6' value={specimen.counts['14-6']} /></td>
-                                <td><input className='inputWriter center' name='14-7' value={specimen.counts['14-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>233</td>
-                                <td>D05.1</td>
-                                <td>Ductal carcinoma in situ of breast </td>
-                                <td><input className='inputWriter center' name='15-1' value={specimen.counts['15-1']} /></td>
-                                <td><input className='inputWriter center' name='15-2' value={specimen.counts['15-2']} /></td>
-                                <td><input className='inputWriter center' name='15-3' value={specimen.counts['15-3']} /></td>
-                                <td><input className='inputWriter center' name='15-4' value={specimen.counts['15-4']} /></td>
-                                <td><input className='inputWriter center' name='15-5' value={specimen.counts['15-5']} /></td>
-                                <td><input className='inputWriter center' name='15-6' value={specimen.counts['15-6']} /></td>
-                                <td><input className='inputWriter center' name='15-7' value={specimen.counts['15-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>180</td>
-                                <td>C53</td>
-                                <td>Cervix (Squamous cell carcinoma, Adenocarcinoma)</td>
-                                <td><input className='inputWriter center' name='16-1' value={specimen.counts['16-1']} /></td>
-                                <td><input className='inputWriter center' name='16-2' value={specimen.counts['16-2']} /></td>
-                                <td><input className='inputWriter center' name='16-3' value={specimen.counts['16-3']} /></td>
-                                <td><input className='inputWriter center' name='16-4' value={specimen.counts['16-4']} /></td>
-                                <td><input className='inputWriter center' name='16-5' value={specimen.counts['16-5']} /></td>
-                                <td><input className='inputWriter center' name='16-6' value={specimen.counts['16-6']} /></td>
-                                <td><input className='inputWriter center' name='16-7' value={specimen.counts['16-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>233</td>
-                                <td>D06.1</td>
-                                <td>Cervical carcinoma in situ (CIN II/III, CIS, AIS)</td>
-                                <td><input className='inputWriter center' name='17-1' value={specimen.counts['17-1']} /></td>
-                                <td><input className='inputWriter center' name='17-2' value={specimen.counts['17-2']} /></td>
-                                <td><input className='inputWriter center' name='17-3' value={specimen.counts['17-3']} /></td>
-                                <td><input className='inputWriter center' name='17-4' value={specimen.counts['17-4']} /></td>
-                                <td><input className='inputWriter center' name='17-5' value={specimen.counts['17-5']} /></td>
-                                <td><input className='inputWriter center' name='17-6' value={specimen.counts['17-6']} /></td>
-                                <td><input className='inputWriter center' name='17-7' value={specimen.counts['17-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>182</td>
-                                <td>C54</td>
-                                <td>Corpus, body of uterus</td>
-                                <td><input className='inputWriter center' name='18-1' value={specimen.counts['18-1']} /></td>
-                                <td><input className='inputWriter center' name='18-2' value={specimen.counts['18-2']} /></td>
-                                <td><input className='inputWriter center' name='18-3' value={specimen.counts['18-3']} /></td>
-                                <td><input className='inputWriter center' name='18-4' value={specimen.counts['18-4']} /></td>
-                                <td><input className='inputWriter center' name='18-5' value={specimen.counts['18-5']} /></td>
-                                <td><input className='inputWriter center' name='18-6' value={specimen.counts['18-6']} /></td>
-                                <td><input className='inputWriter center' name='18-7' value={specimen.counts['18-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>183</td>
-                                <td>C56</td>
-                                <td>Ovary, fallopian tube, broad ligament</td>
-                                <td><input className='inputWriter center' name='19-1' value={specimen.counts['19-1']} /></td>
-                                <td><input className='inputWriter center' name='19-2' value={specimen.counts['19-2']} /></td>
-                                <td><input className='inputWriter center' name='19-3' value={specimen.counts['19-3']} /></td>
-                                <td><input className='inputWriter center' name='19-4' value={specimen.counts['19-4']} /></td>
-                                <td><input className='inputWriter center' name='19-5' value={specimen.counts['19-5']} /></td>
-                                <td><input className='inputWriter center' name='19-6' value={specimen.counts['19-6']} /></td>
-                                <td><input className='inputWriter center' name='19-7' value={specimen.counts['19-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>185</td>
-                                <td>C61</td>
-                                <td>Prostate</td>
-                                <td><input className='inputWriter center' name='20-1' value={specimen.counts['20-1']} /></td>
-                                <td><input className='inputWriter center' name='20-2' value={specimen.counts['20-2']} /></td>
-                                <td><input className='inputWriter center' name='20-3' value={specimen.counts['20-3']} /></td>
-                                <td><input className='inputWriter center' name='20-4' value={specimen.counts['20-4']} /></td>
-                                <td><input className='inputWriter center' name='20-5' value={specimen.counts['20-5']} /></td>
-                                <td><input className='inputWriter center' name='20-6' value={specimen.counts['20-6']} /></td>
-                                <td><input className='inputWriter center' name='20-7' value={specimen.counts['20-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>188</td>
-                                <td>C67</td>
-                                <td>Bladder</td>
-                                <td><input className='inputWriter center' name='21-1' value={specimen.counts['21-1']} /></td>
-                                <td><input className='inputWriter center' name='21-2' value={specimen.counts['21-2']} /></td>
-                                <td><input className='inputWriter center' name='21-3' value={specimen.counts['21-3']} /></td>
-                                <td><input className='inputWriter center' name='21-4' value={specimen.counts['21-4']} /></td>
-                                <td><input className='inputWriter center' name='21-5' value={specimen.counts['21-5']} /></td>
-                                <td><input className='inputWriter center' name='21-6' value={specimen.counts['21-6']} /></td>
-                                <td><input className='inputWriter center' name='21-7' value={specimen.counts['21-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>189</td>
-                                <td>C64-C66, C68</td>
-                                <td>Kidney and other unspecified urinary organs </td>
-                                <td><input className='inputWriter center' name='22-1' value={specimen.counts['22-1']} /></td>
-                                <td><input className='inputWriter center' name='22-2' value={specimen.counts['22-2']} /></td>
-                                <td><input className='inputWriter center' name='22-3' value={specimen.counts['22-3']} /></td>
-                                <td><input className='inputWriter center' name='22-4' value={specimen.counts['22-4']} /></td>
-                                <td><input className='inputWriter center' name='22-5' value={specimen.counts['22-5']} /></td>
-                                <td><input className='inputWriter center' name='22-6' value={specimen.counts['22-6']} /></td>
-                                <td><input className='inputWriter center' name='22-7' value={specimen.counts['22-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>191</td>
-                                <td>C71</td>
-                                <td>Brain</td>
-                                <td><input className='inputWriter center' name='23-1' value={specimen.counts['23-1']} /></td>
-                                <td><input className='inputWriter center' name='23-2' value={specimen.counts['23-2']} /></td>
-                                <td><input className='inputWriter center' name='23-3' value={specimen.counts['23-3']} /></td>
-                                <td><input className='inputWriter center' name='23-4' value={specimen.counts['23-4']} /></td>
-                                <td><input className='inputWriter center' name='23-5' value={specimen.counts['23-5']} /></td>
-                                <td><input className='inputWriter center' name='23-6' value={specimen.counts['23-6']} /></td>
-                                <td><input className='inputWriter center' name='23-7' value={specimen.counts['23-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>193</td>
-                                <td>C73</td>
-                                <td>Thyroid</td>
-                                <td><input className='inputWriter center' name='24-1' value={specimen.counts['24-1']} /></td>
-                                <td><input className='inputWriter center' name='24-2' value={specimen.counts['24-2']} /></td>
-                                <td><input className='inputWriter center' name='24-3' value={specimen.counts['24-3']} /></td>
-                                <td><input className='inputWriter center' name='24-4' value={specimen.counts['24-4']} /></td>
-                                <td><input className='inputWriter center' name='24-5' value={specimen.counts['24-5']} /></td>
-                                <td><input className='inputWriter center' name='24-6' value={specimen.counts['24-6']} /></td>
-                                <td><input className='inputWriter center' name='24-7' value={specimen.counts['24-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>201</td>
-                                <td>C81</td>
-                                <td>Hodgkin Lymphoma </td>
-                                <td><input className='inputWriter center' name='25-1' value={specimen.counts['25-1']} /></td>
-                                <td><input className='inputWriter center' name='25-2' value={specimen.counts['25-2']} /></td>
-                                <td><input className='inputWriter center' name='25-3' value={specimen.counts['25-3']} /></td>
-                                <td><input className='inputWriter center' name='25-4' value={specimen.counts['25-4']} /></td>
-                                <td><input className='inputWriter center' name='25-5' value={specimen.counts['25-5']} /></td>
-                                <td><input className='inputWriter center' name='25-6' value={specimen.counts['25-6']} /></td>
-                                <td><input className='inputWriter center' name='25-7' value={specimen.counts['25-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>200, 202</td>
-                                <td>C82-85</td>
-                                <td>Non-Hodgkin Lymphoma</td>
-                                <td><input className='inputWriter center' name='26-1' value={specimen.counts['26-1']} /></td>
-                                <td><input className='inputWriter center' name='26-2' value={specimen.counts['26-2']} /></td>
-                                <td><input className='inputWriter center' name='26-3' value={specimen.counts['26-3']} /></td>
-                                <td><input className='inputWriter center' name='26-4' value={specimen.counts['26-4']} /></td>
-                                <td><input className='inputWriter center' name='26-5' value={specimen.counts['26-5']} /></td>
-                                <td><input className='inputWriter center' name='26-6' value={specimen.counts['26-6']} /></td>
-                                <td><input className='inputWriter center' name='26-7' value={specimen.counts['26-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>203</td>
-                                <td>C90</td>
-                                <td>Myeloma</td>
-                                <td><input className='inputWriter center' name='27-1' value={specimen.counts['27-1']} /></td>
-                                <td><input className='inputWriter center' name='27-2' value={specimen.counts['27-2']} /></td>
-                                <td><input className='inputWriter center' name='27-3' value={specimen.counts['27-3']} /></td>
-                                <td><input className='inputWriter center' name='27-4' value={specimen.counts['27-4']} /></td>
-                                <td><input className='inputWriter center' name='27-5' value={specimen.counts['27-5']} /></td>
-                                <td><input className='inputWriter center' name='27-6' value={specimen.counts['27-6']} /></td>
-                                <td><input className='inputWriter center' name='27-7' value={specimen.counts['27-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td>204-208</td>
-                                <td>C91-95</td>
-                                <td>Leukemia</td>
-                                <td><input className='inputWriter center' name='28-1' value={specimen.counts['28-1']} /></td>
-                                <td><input className='inputWriter center' name='28-2' value={specimen.counts['28-2']} /></td>
-                                <td><input className='inputWriter center' name='28-3' value={specimen.counts['28-3']} /></td>
-                                <td><input className='inputWriter center' name='28-4' value={specimen.counts['28-4']} /></td>
-                                <td><input className='inputWriter center' name='28-5' value={specimen.counts['28-5']} /></td>
-                                <td><input className='inputWriter center' name='28-6' value={specimen.counts['28-6']} /></td>
-                                <td><input className='inputWriter center' name='28-7' value={specimen.counts['28-7']} /></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td>All Other Cancers</td>
-                                <td><input className='inputWriter center' name='1-1' value={specimen.counts['1-1']} /></td>
-                                <td><input className='inputWriter center' name='1-2' value={specimen.counts['1-2']} /></td>
-                                <td><input className='inputWriter center' name='1-3' value={specimen.counts['1-3']} /></td>
-                                <td><input className='inputWriter center' name='1-4' value={specimen.counts['1-4']} /></td>
-                                <td><input className='inputWriter center' name='1-5' value={specimen.counts['1-5']} /></td>
-                                <td><input className='inputWriter center' name='1-6' value={specimen.counts['1-6']} /></td>
-                                <td><input className='inputWriter center' name='1-7' value={specimen.counts['1-7']} /></td>
-                            </tr>
+                    <div className="table-responsive">
+                        <table className='table table-striped '>
+                            <thead>
+                                <tr>
+                                    <th className='col-sm-1 center' >ICD-9</th>
+                                    <th className='col-sm-1 center' > ICD-10</th>
+                                    <th className='col-sm-3 center' >Cancer Site/Type</th>
+                                    <th className='col-sm-1 center' >Serum and/or Plasma</th>
+                                    <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
+                                    <th className='col-sm-1 center' >Saliva and/or Buccal</th>
+                                    <th className='col-sm-1 center' >Urine</th>
+                                    <th className='col-sm-1 center' >Feces</th>
+                                    <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
+                                    <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>No Cancer</td>
+                                    <td><input className='inputWriter center' name='29-1' value={specimen.counts['29-1']} /></td>
+                                    <td><input className='inputWriter center' name='29-2' value={specimen.counts['29-2']} /></td>
+                                    <td><input className='inputWriter center' name='29-3' value={specimen.counts['29-3']} /></td>
+                                    <td><input className='inputWriter center' name='29-4' value={specimen.counts['29-4']} /></td>
+                                    <td><input className='inputWriter center' name='29-5' value={specimen.counts['29-5']} /></td>
+                                    <td><input className='inputWriter center' name='29-6' value={specimen.counts['29-6']} /></td>
+                                    <td><input className='inputWriter center' name='29-7' value={specimen.counts['29-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>141-149</td>
+                                    <td>C00-C14</td>
+                                    <td>Oropharyngeal</td>
+                                    <td><input className='inputWriter center' name='2-1' value={specimen.counts['2-1']} /></td>
+                                    <td><input className='inputWriter center' name='2-2' value={specimen.counts['2-2']} /></td>
+                                    <td><input className='inputWriter center' name='2-3' value={specimen.counts['2-3']} /></td>
+                                    <td><input className='inputWriter center' name='2-4' value={specimen.counts['2-4']} /></td>
+                                    <td><input className='inputWriter center' name='2-5' value={specimen.counts['2-5']} /></td>
+                                    <td><input className='inputWriter center' name='2-6' value={specimen.counts['2-6']} /></td>
+                                    <td><input className='inputWriter center' name='2-7' value={specimen.counts['2-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>150</td>
+                                    <td>C15</td>
+                                    <td>Esophagus</td>
+                                    <td><input className='inputWriter center' name='3-1' value={specimen.counts['3-1']} /></td>
+                                    <td><input className='inputWriter center' name='3-2' value={specimen.counts['3-2']} /></td>
+                                    <td><input className='inputWriter center' name='3-3' value={specimen.counts['3-3']} /></td>
+                                    <td><input className='inputWriter center' name='3-4' value={specimen.counts['3-4']} /></td>
+                                    <td><input className='inputWriter center' name='3-5' value={specimen.counts['3-5']} /></td>
+                                    <td><input className='inputWriter center' name='3-6' value={specimen.counts['3-6']} /></td>
+                                    <td><input className='inputWriter center' name='3-7' value={specimen.counts['3-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>151</td>
+                                    <td>C16</td>
+                                    <td>Stomach</td>
+                                    <td><input className='inputWriter center' name='4-1' value={specimen.counts['4-1']} /></td>
+                                    <td><input className='inputWriter center' name='4-2' value={specimen.counts['4-2']} /></td>
+                                    <td><input className='inputWriter center' name='4-3' value={specimen.counts['4-3']} /></td>
+                                    <td><input className='inputWriter center' name='4-4' value={specimen.counts['4-4']} /></td>
+                                    <td><input className='inputWriter center' name='4-5' value={specimen.counts['4-5']} /></td>
+                                    <td><input className='inputWriter center' name='4-6' value={specimen.counts['4-6']} /></td>
+                                    <td><input className='inputWriter center' name='4-7' value={specimen.counts['4-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>152</td>
+                                    <td>C17</td>
+                                    <td>Small intestine</td>
+                                    <td><input className='inputWriter center' name='5-1' value={specimen.counts['5-1']} /></td>
+                                    <td><input className='inputWriter center' name='5-2' value={specimen.counts['5-2']} /></td>
+                                    <td><input className='inputWriter center' name='5-3' value={specimen.counts['5-3']} /></td>
+                                    <td><input className='inputWriter center' name='5-4' value={specimen.counts['5-4']} /></td>
+                                    <td><input className='inputWriter center' name='5-5' value={specimen.counts['5-5']} /></td>
+                                    <td><input className='inputWriter center' name='5-6' value={specimen.counts['5-6']} /></td>
+                                    <td><input className='inputWriter center' name='5-7' value={specimen.counts['5-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>153</td>
+                                    <td>C18</td>
+                                    <td>Colon</td>
+                                    <td><input className='inputWriter center' name='6-1' value={specimen.counts['6-1']} /></td>
+                                    <td><input className='inputWriter center' name='6-2' value={specimen.counts['6-2']} /></td>
+                                    <td><input className='inputWriter center' name='6-3' value={specimen.counts['6-3']} /></td>
+                                    <td><input className='inputWriter center' name='6-4' value={specimen.counts['6-4']} /></td>
+                                    <td><input className='inputWriter center' name='6-5' value={specimen.counts['6-5']} /></td>
+                                    <td><input className='inputWriter center' name='6-6' value={specimen.counts['6-6']} /></td>
+                                    <td><input className='inputWriter center' name='6-7' value={specimen.counts['6-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>154</td>
+                                    <td>C19-C21</td>
+                                    <td>Rectum and anus</td>
+                                    <td><input className='inputWriter center' name='7-1' value={specimen.counts['7-1']} /></td>
+                                    <td><input className='inputWriter center' name='7-2' value={specimen.counts['7-2']} /></td>
+                                    <td><input className='inputWriter center' name='7-3' value={specimen.counts['7-3']} /></td>
+                                    <td><input className='inputWriter center' name='7-4' value={specimen.counts['7-4']} /></td>
+                                    <td><input className='inputWriter center' name='7-5' value={specimen.counts['7-5']} /></td>
+                                    <td><input className='inputWriter center' name='7-6' value={specimen.counts['7-6']} /></td>
+                                    <td><input className='inputWriter center' name='7-7' value={specimen.counts['7-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>155</td>
+                                    <td>C22</td>
+                                    <td>Liver and intrahepatic bile ducts</td>
+                                    <td><input className='inputWriter center' name='8-1' value={specimen.counts['8-1']} /></td>
+                                    <td><input className='inputWriter center' name='8-2' value={specimen.counts['8-2']} /></td>
+                                    <td><input className='inputWriter center' name='8-3' value={specimen.counts['8-3']} /></td>
+                                    <td><input className='inputWriter center' name='8-4' value={specimen.counts['8-4']} /></td>
+                                    <td><input className='inputWriter center' name='8-5' value={specimen.counts['8-5']} /></td>
+                                    <td><input className='inputWriter center' name='8-6' value={specimen.counts['8-6']} /></td>
+                                    <td><input className='inputWriter center' name='8-7' value={specimen.counts['8-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>156</td>
+                                    <td>C23, C24</td>
+                                    <td>Gallbladder and extrahepatic bile ducts</td>
+                                    <td><input className='inputWriter center' name='9-1' value={specimen.counts['9-1']} /></td>
+                                    <td><input className='inputWriter center' name='9-2' value={specimen.counts['9-2']} /></td>
+                                    <td><input className='inputWriter center' name='9-3' value={specimen.counts['9-3']} /></td>
+                                    <td><input className='inputWriter center' name='9-4' value={specimen.counts['9-4']} /></td>
+                                    <td><input className='inputWriter center' name='9-5' value={specimen.counts['9-5']} /></td>
+                                    <td><input className='inputWriter center' name='9-6' value={specimen.counts['9-6']} /></td>
+                                    <td><input className='inputWriter center' name='9-7' value={specimen.counts['9-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>157</td>
+                                    <td>C25</td>
+                                    <td>Pancreas</td>
+                                    <td><input className='inputWriter center' name='10-1' value={specimen.counts['10-1']} /></td>
+                                    <td><input className='inputWriter center' name='10-2' value={specimen.counts['10-2']} /></td>
+                                    <td><input className='inputWriter center' name='10-3' value={specimen.counts['10-3']} /></td>
+                                    <td><input className='inputWriter center' name='10-4' value={specimen.counts['10-4']} /></td>
+                                    <td><input className='inputWriter center' name='10-5' value={specimen.counts['10-5']} /></td>
+                                    <td><input className='inputWriter center' name='10-6' value={specimen.counts['10-6']} /></td>
+                                    <td><input className='inputWriter center' name='10-7' value={specimen.counts['10-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>162</td>
+                                    <td>C34</td>
+                                    <td>Lung and bronchus</td>
+                                    <td><input className='inputWriter center' name='11-1' value={specimen.counts['11-1']} /></td>
+                                    <td><input className='inputWriter center' name='11-2' value={specimen.counts['11-2']} /></td>
+                                    <td><input className='inputWriter center' name='11-3' value={specimen.counts['11-3']} /></td>
+                                    <td><input className='inputWriter center' name='11-4' value={specimen.counts['11-4']} /></td>
+                                    <td><input className='inputWriter center' name='11-5' value={specimen.counts['11-5']} /></td>
+                                    <td><input className='inputWriter center' name='11-6' value={specimen.counts['11-6']} /></td>
+                                    <td><input className='inputWriter center' name='11-7' value={specimen.counts['11-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>170</td>
+                                    <td>C40, C41</td>
+                                    <td>Bone</td>
+                                    <td><input className='inputWriter center' name='12-1' value={specimen.counts['12-1']} /></td>
+                                    <td><input className='inputWriter center' name='12-2' value={specimen.counts['12-2']} /></td>
+                                    <td><input className='inputWriter center' name='12-3' value={specimen.counts['12-3']} /></td>
+                                    <td><input className='inputWriter center' name='12-4' value={specimen.counts['12-4']} /></td>
+                                    <td><input className='inputWriter center' name='12-5' value={specimen.counts['12-5']} /></td>
+                                    <td><input className='inputWriter center' name='12-6' value={specimen.counts['12-6']} /></td>
+                                    <td><input className='inputWriter center' name='12-7' value={specimen.counts['12-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>172</td>
+                                    <td>C43</td>
+                                    <td>Melanoma (excluding mucosal sites)</td>
+                                    <td><input className='inputWriter center' name='13-1' value={specimen.counts['13-1']} /></td>
+                                    <td><input className='inputWriter center' name='13-2' value={specimen.counts['13-2']} /></td>
+                                    <td><input className='inputWriter center' name='13-3' value={specimen.counts['13-3']} /></td>
+                                    <td><input className='inputWriter center' name='13-4' value={specimen.counts['13-4']} /></td>
+                                    <td><input className='inputWriter center' name='13-5' value={specimen.counts['13-5']} /></td>
+                                    <td><input className='inputWriter center' name='13-6' value={specimen.counts['13-6']} /></td>
+                                    <td><input className='inputWriter center' name='13-7' value={specimen.counts['13-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>174-175</td>
+                                    <td>C50</td>
+                                    <td>Invasive Breast Cancer</td>
+                                    <td><input className='inputWriter center' name='14-1' value={specimen.counts['14-1']} /></td>
+                                    <td><input className='inputWriter center' name='14-2' value={specimen.counts['14-2']} /></td>
+                                    <td><input className='inputWriter center' name='14-3' value={specimen.counts['14-3']} /></td>
+                                    <td><input className='inputWriter center' name='14-4' value={specimen.counts['14-4']} /></td>
+                                    <td><input className='inputWriter center' name='14-5' value={specimen.counts['14-5']} /></td>
+                                    <td><input className='inputWriter center' name='14-6' value={specimen.counts['14-6']} /></td>
+                                    <td><input className='inputWriter center' name='14-7' value={specimen.counts['14-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>233</td>
+                                    <td>D05.1</td>
+                                    <td>Ductal carcinoma in situ of breast </td>
+                                    <td><input className='inputWriter center' name='15-1' value={specimen.counts['15-1']} /></td>
+                                    <td><input className='inputWriter center' name='15-2' value={specimen.counts['15-2']} /></td>
+                                    <td><input className='inputWriter center' name='15-3' value={specimen.counts['15-3']} /></td>
+                                    <td><input className='inputWriter center' name='15-4' value={specimen.counts['15-4']} /></td>
+                                    <td><input className='inputWriter center' name='15-5' value={specimen.counts['15-5']} /></td>
+                                    <td><input className='inputWriter center' name='15-6' value={specimen.counts['15-6']} /></td>
+                                    <td><input className='inputWriter center' name='15-7' value={specimen.counts['15-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>180</td>
+                                    <td>C53</td>
+                                    <td>Cervix (Squamous cell carcinoma, Adenocarcinoma)</td>
+                                    <td><input className='inputWriter center' name='16-1' value={specimen.counts['16-1']} /></td>
+                                    <td><input className='inputWriter center' name='16-2' value={specimen.counts['16-2']} /></td>
+                                    <td><input className='inputWriter center' name='16-3' value={specimen.counts['16-3']} /></td>
+                                    <td><input className='inputWriter center' name='16-4' value={specimen.counts['16-4']} /></td>
+                                    <td><input className='inputWriter center' name='16-5' value={specimen.counts['16-5']} /></td>
+                                    <td><input className='inputWriter center' name='16-6' value={specimen.counts['16-6']} /></td>
+                                    <td><input className='inputWriter center' name='16-7' value={specimen.counts['16-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>233</td>
+                                    <td>D06.1</td>
+                                    <td>Cervical carcinoma in situ (CIN II/III, CIS, AIS)</td>
+                                    <td><input className='inputWriter center' name='17-1' value={specimen.counts['17-1']} /></td>
+                                    <td><input className='inputWriter center' name='17-2' value={specimen.counts['17-2']} /></td>
+                                    <td><input className='inputWriter center' name='17-3' value={specimen.counts['17-3']} /></td>
+                                    <td><input className='inputWriter center' name='17-4' value={specimen.counts['17-4']} /></td>
+                                    <td><input className='inputWriter center' name='17-5' value={specimen.counts['17-5']} /></td>
+                                    <td><input className='inputWriter center' name='17-6' value={specimen.counts['17-6']} /></td>
+                                    <td><input className='inputWriter center' name='17-7' value={specimen.counts['17-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>182</td>
+                                    <td>C54</td>
+                                    <td>Corpus, body of uterus</td>
+                                    <td><input className='inputWriter center' name='18-1' value={specimen.counts['18-1']} /></td>
+                                    <td><input className='inputWriter center' name='18-2' value={specimen.counts['18-2']} /></td>
+                                    <td><input className='inputWriter center' name='18-3' value={specimen.counts['18-3']} /></td>
+                                    <td><input className='inputWriter center' name='18-4' value={specimen.counts['18-4']} /></td>
+                                    <td><input className='inputWriter center' name='18-5' value={specimen.counts['18-5']} /></td>
+                                    <td><input className='inputWriter center' name='18-6' value={specimen.counts['18-6']} /></td>
+                                    <td><input className='inputWriter center' name='18-7' value={specimen.counts['18-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>183</td>
+                                    <td>C56</td>
+                                    <td>Ovary, fallopian tube, broad ligament</td>
+                                    <td><input className='inputWriter center' name='19-1' value={specimen.counts['19-1']} /></td>
+                                    <td><input className='inputWriter center' name='19-2' value={specimen.counts['19-2']} /></td>
+                                    <td><input className='inputWriter center' name='19-3' value={specimen.counts['19-3']} /></td>
+                                    <td><input className='inputWriter center' name='19-4' value={specimen.counts['19-4']} /></td>
+                                    <td><input className='inputWriter center' name='19-5' value={specimen.counts['19-5']} /></td>
+                                    <td><input className='inputWriter center' name='19-6' value={specimen.counts['19-6']} /></td>
+                                    <td><input className='inputWriter center' name='19-7' value={specimen.counts['19-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>185</td>
+                                    <td>C61</td>
+                                    <td>Prostate</td>
+                                    <td><input className='inputWriter center' name='20-1' value={specimen.counts['20-1']} /></td>
+                                    <td><input className='inputWriter center' name='20-2' value={specimen.counts['20-2']} /></td>
+                                    <td><input className='inputWriter center' name='20-3' value={specimen.counts['20-3']} /></td>
+                                    <td><input className='inputWriter center' name='20-4' value={specimen.counts['20-4']} /></td>
+                                    <td><input className='inputWriter center' name='20-5' value={specimen.counts['20-5']} /></td>
+                                    <td><input className='inputWriter center' name='20-6' value={specimen.counts['20-6']} /></td>
+                                    <td><input className='inputWriter center' name='20-7' value={specimen.counts['20-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>188</td>
+                                    <td>C67</td>
+                                    <td>Bladder</td>
+                                    <td><input className='inputWriter center' name='21-1' value={specimen.counts['21-1']} /></td>
+                                    <td><input className='inputWriter center' name='21-2' value={specimen.counts['21-2']} /></td>
+                                    <td><input className='inputWriter center' name='21-3' value={specimen.counts['21-3']} /></td>
+                                    <td><input className='inputWriter center' name='21-4' value={specimen.counts['21-4']} /></td>
+                                    <td><input className='inputWriter center' name='21-5' value={specimen.counts['21-5']} /></td>
+                                    <td><input className='inputWriter center' name='21-6' value={specimen.counts['21-6']} /></td>
+                                    <td><input className='inputWriter center' name='21-7' value={specimen.counts['21-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>189</td>
+                                    <td>C64-C66, C68</td>
+                                    <td>Kidney and other unspecified urinary organs </td>
+                                    <td><input className='inputWriter center' name='22-1' value={specimen.counts['22-1']} /></td>
+                                    <td><input className='inputWriter center' name='22-2' value={specimen.counts['22-2']} /></td>
+                                    <td><input className='inputWriter center' name='22-3' value={specimen.counts['22-3']} /></td>
+                                    <td><input className='inputWriter center' name='22-4' value={specimen.counts['22-4']} /></td>
+                                    <td><input className='inputWriter center' name='22-5' value={specimen.counts['22-5']} /></td>
+                                    <td><input className='inputWriter center' name='22-6' value={specimen.counts['22-6']} /></td>
+                                    <td><input className='inputWriter center' name='22-7' value={specimen.counts['22-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>191</td>
+                                    <td>C71</td>
+                                    <td>Brain</td>
+                                    <td><input className='inputWriter center' name='23-1' value={specimen.counts['23-1']} /></td>
+                                    <td><input className='inputWriter center' name='23-2' value={specimen.counts['23-2']} /></td>
+                                    <td><input className='inputWriter center' name='23-3' value={specimen.counts['23-3']} /></td>
+                                    <td><input className='inputWriter center' name='23-4' value={specimen.counts['23-4']} /></td>
+                                    <td><input className='inputWriter center' name='23-5' value={specimen.counts['23-5']} /></td>
+                                    <td><input className='inputWriter center' name='23-6' value={specimen.counts['23-6']} /></td>
+                                    <td><input className='inputWriter center' name='23-7' value={specimen.counts['23-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>193</td>
+                                    <td>C73</td>
+                                    <td>Thyroid</td>
+                                    <td><input className='inputWriter center' name='24-1' value={specimen.counts['24-1']} /></td>
+                                    <td><input className='inputWriter center' name='24-2' value={specimen.counts['24-2']} /></td>
+                                    <td><input className='inputWriter center' name='24-3' value={specimen.counts['24-3']} /></td>
+                                    <td><input className='inputWriter center' name='24-4' value={specimen.counts['24-4']} /></td>
+                                    <td><input className='inputWriter center' name='24-5' value={specimen.counts['24-5']} /></td>
+                                    <td><input className='inputWriter center' name='24-6' value={specimen.counts['24-6']} /></td>
+                                    <td><input className='inputWriter center' name='24-7' value={specimen.counts['24-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>201</td>
+                                    <td>C81</td>
+                                    <td>Hodgkin Lymphoma </td>
+                                    <td><input className='inputWriter center' name='25-1' value={specimen.counts['25-1']} /></td>
+                                    <td><input className='inputWriter center' name='25-2' value={specimen.counts['25-2']} /></td>
+                                    <td><input className='inputWriter center' name='25-3' value={specimen.counts['25-3']} /></td>
+                                    <td><input className='inputWriter center' name='25-4' value={specimen.counts['25-4']} /></td>
+                                    <td><input className='inputWriter center' name='25-5' value={specimen.counts['25-5']} /></td>
+                                    <td><input className='inputWriter center' name='25-6' value={specimen.counts['25-6']} /></td>
+                                    <td><input className='inputWriter center' name='25-7' value={specimen.counts['25-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>200, 202</td>
+                                    <td>C82-85</td>
+                                    <td>Non-Hodgkin Lymphoma</td>
+                                    <td><input className='inputWriter center' name='26-1' value={specimen.counts['26-1']} /></td>
+                                    <td><input className='inputWriter center' name='26-2' value={specimen.counts['26-2']} /></td>
+                                    <td><input className='inputWriter center' name='26-3' value={specimen.counts['26-3']} /></td>
+                                    <td><input className='inputWriter center' name='26-4' value={specimen.counts['26-4']} /></td>
+                                    <td><input className='inputWriter center' name='26-5' value={specimen.counts['26-5']} /></td>
+                                    <td><input className='inputWriter center' name='26-6' value={specimen.counts['26-6']} /></td>
+                                    <td><input className='inputWriter center' name='26-7' value={specimen.counts['26-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>203</td>
+                                    <td>C90</td>
+                                    <td>Myeloma</td>
+                                    <td><input className='inputWriter center' name='27-1' value={specimen.counts['27-1']} /></td>
+                                    <td><input className='inputWriter center' name='27-2' value={specimen.counts['27-2']} /></td>
+                                    <td><input className='inputWriter center' name='27-3' value={specimen.counts['27-3']} /></td>
+                                    <td><input className='inputWriter center' name='27-4' value={specimen.counts['27-4']} /></td>
+                                    <td><input className='inputWriter center' name='27-5' value={specimen.counts['27-5']} /></td>
+                                    <td><input className='inputWriter center' name='27-6' value={specimen.counts['27-6']} /></td>
+                                    <td><input className='inputWriter center' name='27-7' value={specimen.counts['27-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td>204-208</td>
+                                    <td>C91-95</td>
+                                    <td>Leukemia</td>
+                                    <td><input className='inputWriter center' name='28-1' value={specimen.counts['28-1']} /></td>
+                                    <td><input className='inputWriter center' name='28-2' value={specimen.counts['28-2']} /></td>
+                                    <td><input className='inputWriter center' name='28-3' value={specimen.counts['28-3']} /></td>
+                                    <td><input className='inputWriter center' name='28-4' value={specimen.counts['28-4']} /></td>
+                                    <td><input className='inputWriter center' name='28-5' value={specimen.counts['28-5']} /></td>
+                                    <td><input className='inputWriter center' name='28-6' value={specimen.counts['28-6']} /></td>
+                                    <td><input className='inputWriter center' name='28-7' value={specimen.counts['28-7']} /></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td>All Other Cancers</td>
+                                    <td><input className='inputWriter center' name='1-1' value={specimen.counts['1-1']} /></td>
+                                    <td><input className='inputWriter center' name='1-2' value={specimen.counts['1-2']} /></td>
+                                    <td><input className='inputWriter center' name='1-3' value={specimen.counts['1-3']} /></td>
+                                    <td><input className='inputWriter center' name='1-4' value={specimen.counts['1-4']} /></td>
+                                    <td><input className='inputWriter center' name='1-5' value={specimen.counts['1-5']} /></td>
+                                    <td><input className='inputWriter center' name='1-6' value={specimen.counts['1-6']} /></td>
+                                    <td><input className='inputWriter center' name='1-7' value={specimen.counts['1-7']} /></td>
+                                </tr>
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div style={{ position: 'relative' }}>
