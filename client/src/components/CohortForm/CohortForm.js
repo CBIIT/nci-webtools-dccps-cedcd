@@ -176,6 +176,7 @@ const CohortForm = ({ ...props }) => {
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
+                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }
                     if (result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
                     if (!proceed) {
@@ -388,22 +389,6 @@ const CohortForm = ({ ...props }) => {
                 formData.append('cohortFile', fileData[i], fileData[i].name)
                 fileList.push(fileData[i].name)
             }
-
-    /*
-            await fetch(`/api/questionnaire/get_updated_cohortID`, {
-                method: 'POST',
-                body: JSON.stringify({oldID: tempId}),
-                headers: {'Content-Type': 'application/json'}
-            }).then(res => res.json())
-            .then(result => {
-                console.log(result.data)
-                if(result&&result.status == 200){
-                    if(result.data && result.data != cohortID){
-                        dispatch(allactions.cohortIDAction.setCohortId(result.data))
-                    }
-                }
-            })
-            */
             
             fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
                 method: "POST",
@@ -420,7 +405,10 @@ const CohortForm = ({ ...props }) => {
                         case 4: dispatchName = 'publicationFileName'; break;                              
                     }
                     if(dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
-                    if(result.data != cohortID) dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
+                    if(result.data.new_ID != cohortID){
+                         dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
+                         window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
+                    }
                 }
             }) 
             
@@ -440,7 +428,7 @@ const CohortForm = ({ ...props }) => {
             <div style={{width: '96%', margin: 'auto'}}>
                 {files.map(f => <div className='col-xs-12' style={{marginBottom: '3px', paddingLeft: '0'}}>
                     <span className='col-xs-10'>{f.filename}</span>
-                    <span className='col-xs-2 closer' onClick={()=>deleteFileFromList(fileListName, f.fileId, f.fileCategory) }>x</span>
+                    <span className='col-xs-2 closer' onClick={()=>deleteFileFromList(fileListName, f.fileId, cohortID) }>x</span>
                 </div>)}
             </div>
             <hr style={{ border: '0', clear: 'both', display: 'block', marginTop: '8px', marginBottom: '5px', backgroundColor: '#f2f2f2', height: '1px'}}/>
@@ -459,10 +447,10 @@ const CohortForm = ({ ...props }) => {
         })
     }
 
-    const deleteFileFromList = (fileListName, fileId, categoryID) => {
+    const deleteFileFromList = (fileListName, fileId, cohort_ID) => {
         fetch(`/api/questionnaire/deleteFile`,  {
             method: "POST", 
-            body: JSON.stringify({id: fileId}),
+            body: JSON.stringify({id: fileId, cohortId: cohort_ID}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -471,6 +459,10 @@ const CohortForm = ({ ...props }) => {
             if(result && result.status == 200){
                 batch(()=>{
                     let resultList = cohort[fileListName].filter(r => r.fileId != fileId)
+                    if(result.data && result.data != cohortID){
+                        dispatch(allactions.cohortIDAction.setCohortId(result.data))
+                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data))
+                    }
                     if(resultList.length > 0){
                         setCurrentFileList(resultList)
                         dispatch(allactions.cohortActions[fileListName](resultList))
