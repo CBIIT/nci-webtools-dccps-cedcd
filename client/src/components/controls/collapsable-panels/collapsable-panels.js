@@ -19,13 +19,14 @@ export const CollapsablePanel = ({
                 onClick={onClick}>
                 <span className="triangle"></span>{ panelTitle }
             </button>
-            <div className="cohortInfoBody" 
+            <div className="px-5 py-4" 
                 id="more" 
                 aria-hidden={(activePanel && panelName && activePanel === panelName) || condition ? 'false' : 'true'} 
                 style={{
-                    display: (activePanel && panelName && activePanel === panelName) || condition ? 'block' : 'none'
+                    display: (activePanel && panelName && activePanel === panelName) || condition ? 'block' : 'none',
+                    background: 'rgba(238,248,247,1.00)'
                 }}>
-                <div className={(activePanel && panelName && activePanel === panelName) || condition ? 'panel-active' : 'panellet'}>
+                <div style={{overflow: 'hidden'}}>
                     { children }
                 </div>
             </div>
