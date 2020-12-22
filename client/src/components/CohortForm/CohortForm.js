@@ -419,7 +419,6 @@ const CohortForm = ({ ...props }) => {
                         case 3: dispatchName = 'specimenFileName'; break;
                         case 4: dispatchName = 'publicationFileName'; break;                              
                     }
-                    console.dir(result)
                     if(dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                     if(result.data != cohortID) dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
                 }
@@ -430,7 +429,7 @@ const CohortForm = ({ ...props }) => {
 
     const file_list = (title='', fileListName, files=[]) => {
         return <div className='col-md-6 col-xs-12' style={{border: '1px solid lightgrey', marginTop: '10px', padding: '0'}}>
-            <div style={{height: '40px', backgroundColor: '#01857b', color: 'white', margin: '0 0 10px 0', verticalAlign: 'middle'}}>
+            <div style={{height: '40px', backgroundColor: '#01857b', color: 'white', margin: '0 0 10px 0'}}>
                 <span className='col-xs-10'><h4><b>{title}</b></h4></span>
                 <span className='col-xs-2 upperCloser' style={{textAlign: 'center'}} onClick={()=> setFileListShow(false)}><h4>X</h4></span>
             </div>
@@ -502,7 +501,7 @@ const CohortForm = ({ ...props }) => {
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-        <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
+        <div className='col-md-12'>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
             </div>
@@ -1089,7 +1088,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
                                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
                                                                     </span>
-                                                                    <span className='col-xs-1 badge upperCloser' onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length || 0}</span>
+                                                                    <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -1111,7 +1110,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
                                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
                                                                     </span>
-                                                                    <span className='col-xs-1 badge upperCloser' onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length || 0}</span>
+                                                                    <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -1133,7 +1132,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
                                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
                                                                     </span>
-                                                                    <span className='col-xs-1 badge upperCloser' onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length || 0}</span>
+                                                                    <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -1155,7 +1154,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
                                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
                                                                     </span>
-                                                                    <span className='col-xs-1 badge upperCloser' onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length || 0}</span>
+                                                                    <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -1177,7 +1176,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
                                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
                                                                     </span>
-                                                                    <span className='col-xs-1 badge upperCloser' onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length || 0}</span>
+                                                                    <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -1190,7 +1189,7 @@ const CohortForm = ({ ...props }) => {
                                     <table className='table table-stripe table-responsive table-borderless'>
                                         <thead>
                                             <tr>
-                                                <th className='col-md-3' style={{ textAlign: 'center' }}>Document</th>
+                                                <th className='col-sm-3' style={{ textAlign: 'center' }}>Document</th>
                                                 <th style={{ textAlign: 'center' }}>Website URL (preferred)</th>
                                                 <th style={{ textAlign: 'center' }}>Attached (if url not applicable)</th>
                                             </tr>
@@ -1200,10 +1199,10 @@ const CohortForm = ({ ...props }) => {
                                                 <td>Questionnaires</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>  
-                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
                                                         <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
                                                     </span>
-                                                    <span className={cohort.questionnaireFileName.length > 0 ? 'col-md-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
+                                                    <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
                                                 </td>
 
                                             </tr>
@@ -1211,10 +1210,10 @@ const CohortForm = ({ ...props }) => {
                                                 <td>Main cohort protocol</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
                                                     <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
                                                     </span>
-                                                    <span className={cohort.mainFileName.length > 0 ? 'col-md-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
+                                                    <span className={cohort.mainFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
                                                 </td>
 
                                             </tr>
@@ -1222,10 +1221,10 @@ const CohortForm = ({ ...props }) => {
                                                 <td>Data sharing policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
                                                     </span>
-                                                    <span className={cohort.dataFileName.length > 0 ? 'col-md-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
+                                                    <span className={cohort.dataFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
                                                 </td>
 
                                             </tr>
@@ -1233,21 +1232,20 @@ const CohortForm = ({ ...props }) => {
                                                 <td>Biospecimen sharing policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
                                                     </span>
-                                                    <span className={cohort.specimenFileName.length > 0 ? 'col-md-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
+                                                    <span className={cohort.specimenFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
                                                 </td>
-
                                             </tr>
                                             <tr>
                                                 <td>Publication(authorship) policy</td>
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-md-11' style={{paddingLeft: '0'}}>
+                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
                                                         <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
                                                     </span>
-                                                    <span className={cohort.publicationFileName.length > 0 ? 'col-md-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
+                                                    <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
                                                 </td>
                                             </tr>
                                         </tbody>
