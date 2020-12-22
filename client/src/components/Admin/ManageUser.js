@@ -19,11 +19,11 @@ class ManageUser extends Component {
 			list: [],
 			dataList: [],
 			filter: {
-				cohortstatus: [],
-				cohortSearch: '',
+				userRole: [],
+				userNameSearch: '',
 			},
 			orderBy: {
-				column: "acronym",
+				column: "last_name",
 				order: "asc"
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
@@ -33,52 +33,18 @@ class ManageUser extends Component {
 	}
 
 
-	handleCohortStatusClick = (v) => {
-		const state = Object.assign({}, this.state);
-		let filter = state.filter;
-		let list = state.dataList;
-		let paging = state.pageInfo;
-		let idx = filter.cohortstatus.indexOf(v.id);
 
-		if (idx > -1) {
-			//remove element
-			filter.cohortstatus.splice(idx, 1);
-		}
-		else {
-			//add element
-			filter.cohortstatus.push(v.id);
-		}
-
-		list = list.filter(function (item) {
-			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
-			if (!filter.cohortSearch || (item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			if (!filter.cohortSearch || (item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			return false;
-		}
-		);
-
-		paging.total = list.length;
-
-		this.setState({
-			filter: filter,
-			list: list,
-			pageInfo: paging
-		});
-
-	}
-
-	handleCohortSearchChange(changeEvent) {
+	handleuserNameSearchChange(changeEvent) {
 		const state = Object.assign({}, this.state);
 		let filter = state.filter;
 		let list = state.dataList;
 		let paging = state.pageInfo;
 
-		filter.cohortSearch = changeEvent.target.value;
+		filter.userNameSearch = changeEvent.target.value;
 
 		list = list.filter(function (item) {
-			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
-			if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+			if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
+			if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
 			return false;
 		}
 		);
@@ -102,8 +68,8 @@ class ManageUser extends Component {
 
 		let list = state.dataList;
 		let filter = {
-			cohortstatus: [],
-			cohortSearch: ''
+			userRole: [],
+			userNameSearch: ''
 		};
 		let paging = state.pageInfo;
 		paging.total = list.length;
@@ -137,7 +103,7 @@ class ManageUser extends Component {
 			reqBody.filter = filter;
 		}
 
-		fetch('/api/managecohort/admincohortlist', {
+		fetch('/api/managecohort/adminuserlist', {
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -198,7 +164,7 @@ class ManageUser extends Component {
 		else {
 			reqBody.paging.page = i;
 		}
-		fetch('/api/managecohort/admincohortlist', {
+		fetch('/api/managecohort/adminuserlist', {
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -233,7 +199,7 @@ class ManageUser extends Component {
 
 		reqBody.paging.page = -1;
 
-		fetch('/api/managecohort/admincohortlist', {
+		fetch('/api/managecohort/adminuserlist', {
 			method: "POST",
 			body: JSON.stringify(reqBody),
 			headers: {
@@ -284,40 +250,27 @@ class ManageUser extends Component {
 		let content = list.map((item, index) => {
 			let id = item.id;
 			//let view_url = '/cohort?id=' + id;
-			let review_url = `/admin/viewcohort/${item.status.toLowerCase()}/${id}`;
-			let view = "View";
-			let review = "Review";
-			let addNewCohortUrl = `/admin/newcohort`
+			let editUserLink = `/admin/edituser/${id}`;
+			let editUser = "Edit";
+			let newUserLink = `/admin/newuser`
 
 			let select_id = "select_" + id;
-			if (item.status.toLowerCase() === 'submitted' || item.status.toLowerCase() === 'in review') {
-				return (
-					<tr key={id}>
-						<td>{item.name}</td>
-						<td>{item.acronym}</td>
-						<td className="text-capitalize">{item.status}</td>
-						<td>{item.create_by}</td>
-						<td>{item.update_time}</td>
-						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{review}</Link>
-						</td>
-					</tr>
-				);
-			} else {
-				return (
-					<tr key={id}>
-						<td>{item.name}</td>
-						<td>{item.acronym}</td>
-						<td className="text-capitalize">{item.status}</td>
-						<td>{item.create_by}</td>
-						<td>{item.update_time}</td>
-						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.status.toLowerCase() != 'new' ? view : null}</Link>
-						</td>
-					</tr>
-				);
 
-			}
+			return (
+				<tr key={id}>
+					<td className="text-capitalize">{item.name}</td>
+					<td>{item.email}</td>
+					<td>{item.user_role}</td>
+
+					<td>{item.cohort_list}</td>
+					<td>{item.last_login}</td>
+					<td style={{ textDecoration: 'underline' }}>
+						<Link to={editUserLink} onClick={this.saveHistory}>{editUser}</Link>
+					</td>
+				</tr>
+			);
+
+
 		});
 		if (content.length === 0) {
 			content = (
@@ -336,28 +289,15 @@ class ManageUser extends Component {
 					<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
 					<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '0' }}>
-						<div className="col-md-3 col-6" >
+						<div className="col-md-4 col-6" >
 							<div className="form-group has-feedback has-search">
 								<span className="glyphicon glyphicon-search form-control-feedback"></span>
-								<input type="text" className="form-control" value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
+								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " onChange={(e) => this.handleuserNameSearchChange(e)} />
 							</div>
 						</div>
-						<div className="col-md-2 col-6">
-							<div id="cohortstatus" className="filter-component">
-								<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
-							</div>
-						</div>
-						<div className="col-md-3 col-12" style={{ "paddingLeft": "0" }}>
-							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
-								<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
-									<i className="fas fa-times" ></i> Clear All </a>
 
-								<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
-							</div>
-
-						</div>
-						<div className="col-md-4 col-12">
-							<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
+						<div className="col-md-8 col-12">
+							<div className="row" style={{ "display": "flex", "paddingRight": "0px", float: "right" }}>
 								<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
 								</div>
@@ -374,11 +314,11 @@ class ManageUser extends Component {
 								<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
 									<thead>
 										<tr id="summaryHeader" className="col-header">
-											{this.renderTableHeader("name", "30%")}
-											{this.renderTableHeader("acronym", "10%")}
-											{this.renderTableHeader("status", "15%")}
-											{this.renderTableHeader("create_by", "20%")}
-											{this.renderTableHeader("update_time", "15%")}
+											{this.renderTableHeader("name", "15%")}
+											{this.renderTableHeader("email", "15%")}
+											{this.renderTableHeader("user_role", "10%")}
+											{this.renderTableHeader("cohort_list", "20%")}
+											{this.renderTableHeader("last_login", "10%")}
 											{this.renderTableHeader("action", "10%")}
 										</tr>
 									</thead>

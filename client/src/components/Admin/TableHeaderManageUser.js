@@ -7,21 +7,21 @@ class TableHeaderManageUser extends Component {
   render() {
     let name;
     if (this.props.value === "name") {
-      name = "Cohort Name";
-    } else if (this.props.value === "cohort_id") {
+      name = "User Name";
+    } else if (this.props.value === "id") {
       name = "id";
     }
-    else if (this.props.value === "acronym") {
-      name = "Acronym";
+    else if (this.props.value === "email") {
+      name = "Email";
     }
-    else if (this.props.value === "status") {
-      name = "Status";
+    else if (this.props.value === "user_role") {
+      name = "Role";
     }
-    else if (this.props.value === "create_by") {
-      name = "Submitted By";
+    else if (this.props.value === "cohort_list") {
+      name = "Cohort";
     }
-    else if (this.props.value === "update_time") {
-      name = "Last Updated";
+    else if (this.props.value === "last_login") {
+      name = "Last Login Date";
     }
     else {
       name = "Action";
