@@ -2780,4 +2780,66 @@ BEGIN
 	end WHILE;
 END //
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_all_users
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_all_users` //
+
+CREATE  PROCEDURE `select_all_users`(in columnName varchar(40), in columnOrder varchar(10),
+									in pageIndex int, in pageSize int)
+BEGIN 
+    
+   set @status_query = " and 1=1 ";
+  
+  if columnName != "" then
+		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+	else
+		set @orderBy = "order by u.last_name desc";
+  end if;
+    
+  if pageIndex > -1 then
+		set @paging = concat(' limit ',pageIndex,',',pageSize,' ');
+	else
+		set @paging = "";
+  end if;
+    
+  set @query = concat("select id, concat(u.last_name,', ', u.first_name) as name, u.email,
+       ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
+	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id
+   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, 
+(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+    from user u where IFNULL(u.active_status, 'Y') ='Y' ", 
+    @orderBy, @paging);
+	
+  PREPARE stmt FROM @query;
+	EXECUTE stmt;
+    select found_rows() as total;
+	DEALLOCATE PREPARE stmt;
+  
+END //
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_user_profile
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_user_profile` //
+
+CREATE PROCEDURE `select_user_profile`(in usid int)
+BEGIN 
+ 
+  set @query = concat("select u.last_name, u.first_name, u.email,
+       ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
+	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
+   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
+(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+    from user u where IFNULL(u.active_status, 'Y') ='Y' and u.id = ", usid); 
+
+	
+  PREPARE stmt FROM @query;
+	EXECUTE stmt;
+    select found_rows() as total;
+	DEALLOCATE PREPARE stmt;
+    
+END //
+
 DELIMITER ;
