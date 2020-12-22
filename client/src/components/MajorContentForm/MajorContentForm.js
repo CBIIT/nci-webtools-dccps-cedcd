@@ -559,7 +559,7 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C. 13 Alcohol Consumption{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.13 Alcohol Consumption{' '} <small>(Select all that apply)</small></label></span>
                                 {(errors.alcoholBaseLine && errors.alcoholFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
@@ -577,7 +577,7 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C. 14 Cigarette Smoking{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.14 Cigarette Smoking{' '} <small>(Select all that apply)</small></label></span>
                                 {(errors.cigaretteBaseLine && errors.cigaretteFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-8 col-xs-12'>
@@ -595,10 +595,10 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C. 15 Use of tobacco products other than cigarettes{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes{' '} <small>(Select all that apply)</small></label></span>
                                 {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
+                            <div className='col-md-9 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>If data was At baseline, please specify all tobacco products that apply</span>
                                 </div>
@@ -628,7 +628,7 @@ const MajorContentForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                            <div className='col-md-8 col-xs-12'>
+                            <div className='col-md-9 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>If data was At baseline, please specify all tobacco products that apply</span>
                                 </div>
