@@ -942,7 +942,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='col-md-12 col-xs-12'>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes{' '} </div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.diabetesBaseLine && errors.diabetesFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -960,7 +960,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke{' '} </div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.strokeBaseLine && errors.strokeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -978,7 +978,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema{' '} </div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -996,7 +996,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease{' '} </div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -1014,7 +1014,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis{' '}</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -1032,7 +1032,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health{' '}</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -1050,7 +1050,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline{' '}</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline{' '} <small>(Select all that apply)</small></div></span>
                                     {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-md-8 col-xs-12'>
@@ -1072,7 +1072,7 @@ const MajorContentForm = ({ ...props }) => {
                     <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{ padding: 0 }}>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">32. Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
                                 {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
