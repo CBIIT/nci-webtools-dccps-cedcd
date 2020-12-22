@@ -19,17 +19,3 @@
 .accordian:hover span{
     border-bottom: 1px solid blue;
 }
-
-.panellet {
-    padding: 0 0;
-    background-color: white;
-    display: none;
-    overflow: hidden;
-}
-
-.panel-active {
-    padding: 0 0;
-    background-color: white;
-    display: block;
-    overflow: hidden;
-}

@@ -209,7 +209,7 @@ class Home extends Component {
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
 			<div className="row-for-home-grid" style={{"margin-bottom":"50px"}}>
 				<div className="column-for-home-grid" style={{ "padding-left":"0px"}}>
-					<Link to={"select"} className="link-text"  onClick={_ => window.onlocationchange()}>
+					<Link to={"select"} className="link-text">
 						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"5da9d3"}}>
 								{/*<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"100%"}}></img>*/}
@@ -222,7 +222,7 @@ class Home extends Component {
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
-					<Link to={"enrollment"} className="link-text"  onClick={_ => window.onlocationchange()}>
+					<Link to={"enrollment"} className="link-text">
 						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"cf5848"}}>
 							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"30px" }}></img>
@@ -234,7 +234,7 @@ class Home extends Component {
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
-					<Link to={"cancer"} className="link-text"  onClick={_ => window.onlocationchange()}>
+					<Link to={"cancer"} className="link-text">
 					<div className="animation-card" style={{"background-color":"#c27600"}} align="center">
 						<div className="card-top-coloring" style={{"background-color":"ffbf58"}}>
 						<img src="./assets/img/Cancer_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
@@ -246,7 +246,7 @@ class Home extends Component {
 					</Link>
 				</div>
 				<div className="column-for-home-grid" style={{ "padding-right":"0px"}}>
-					<Link to={"biospecimen"} className="link-text"  onClick={_ => window.onlocationchange()}>
+					<Link to={"biospecimen"} className="link-text">
 						<div className="animation-card" style={{"background-color":"#588c35"}} align="center">
 							<div className="card-top-coloring" style={{"background-color":"99b883"}}>
 							<img src="./assets/img/Biospecimen_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>

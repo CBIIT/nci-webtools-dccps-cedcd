@@ -21,20 +21,6 @@
     border-bottom: 1px solid blue;
 }
 
-.panellet {
-    padding: 0 18px;
-    background-color: white;
-    display: none;
-    overflow: hidden;
-}
-
-.panel-active {
-    padding: 0 18px;
-    background-color: white;
-    display: block;
-    overflow: hidden;
-}
-
 .errorBackground {
     background-color:  #f66;
 }
@@ -43,11 +29,15 @@
     width: 342px;
  }
 
- .errorDate,
+ .react-datepicker__input-container input[class*='errorDate']{
+    border: 1px solid red;
+ }
+ /*
+ .errorDate, .react-datepicker__input-container input,
  .react-datepicker__day--today {
    border: 1px solid red;
  }
-
+*/
  .closer {
      color: red;
      text-align: center;
@@ -56,3 +46,4 @@
  .closer:hover, .upperCloser:hover{
      cursor: hand;
  }
+ 

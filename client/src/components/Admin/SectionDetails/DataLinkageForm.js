@@ -9,7 +9,7 @@ const DataLinkageForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const radioError = 'please choose one'
     const cohortId = +window.location.pathname.split('/').pop();
-
+    const [activePanel, setActivePanel] = useState('panelA')
 
     useEffect(() => {
         if (!dataLinkage.hasLoaded) {
@@ -55,179 +55,206 @@ const DataLinkageForm = ({ ...props }) => {
 
 
 
-    return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+    return (
+        <div id='mortalityContainer' className='col-md-12'>
+            <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
+                {/* START Data Linkage & Harmonization Collapsable Question Sections */}
+                <div className="row">
+                    <div id="attachments" className="cohortInfo col-md-12">
+                        {/* START Data Linkage & Harmonization */}
+                        <button type="button" 
+                            className={'cedcd-btn ' + (activePanel === 'panelA' ? 'active' : '')} 
+                            aria-expanded={activePanel === 'panelA'} 
+                            aria-controls="more" 
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
+                            <span className="triangle"></span>Data Linkage & Harmonization
+                        </button>
+                        <div className="cohortInfoBody" 
+                            id="more" 
+                            aria-hidden={activePanel === 'panelA' ? 'false' : 'true'} 
+                            style={{
+                                display: activePanel === 'panelA' ? 'block' : 'none'
+                            }}>
+                            <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
+                                <div className='col-md-12'>
+                                    <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
+                                <div className='form-group col-md-12'>
+                                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
 
-        <div className='col-md-12'>
-            <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
+                                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+                                </div>
 
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-        </div>
+                                <div className='form-group col-md-12'>
+                                    <label className='col-md-12'>If yes, please specify:</label>
+                                    <div className='col-md-12'>
+                                        <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} ></input>
+                                    </div>
+                                </div>
 
-        <div className='form-group col-md-12'>
-            <label className='col-md-12'>If yes, please specify:</label>
-            <div className='col-md-12'>
-                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Specify data link (Max 500 characters)' value={dataLinkage.haveDataLinkSpecify} ></input>
-            </div>
-        </div>
+                                <div className='col-md-12'>
+                                    <label htmlFor='haveHarmonization' className='col-md-12'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
 
-        <div className='col-md-12'>
-            <label htmlFor='haveHarmonization' className='col-md-12'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
-        </div>
+                                <div className='form-group col-md-12'>
+                                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
 
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
+                                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+                                </div>
 
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-        </div>
+                                <div className='form-group col-md-12'>
+                                    <label className='col-md-12'>If part of a consortium, please specify:</label>
+                                    <div className='col-md-12'>
+                                        <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify}
+                                            placeholder='Specify Consortum (Max 500 characters)'></input>
+                                    </div>
+                                </div>
 
-        <div className='form-group col-md-12'>
-            <label className='col-md-12'>If part of a consortium, please specify:</label>
-            <div className='col-md-12'>
-                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify}
-                    placeholder='Specify Consortum (Max 500 characters)'></input>
-            </div>
-        </div>
+                                <div className='col-md-12'>
+                                    <label htmlFor='haveDeposited' className='col-md-12'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
 
-        <div className='col-md-12'>
-            <label htmlFor='haveDeposited' className='col-md-12'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
-        </div>
+                                <div className='form-group col-md-12'>
+                                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
 
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
+                                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
 
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
+                                </div>
 
-        </div>
+                                <div>
+                                    <div className='form-group col-md-12'>
+                                        <span className='col-md-5'>If yes, please select which repositories:</span>
+                                    </div>
 
-        <div>
-            <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please select which repositories:</span>
-            </div>
+                                    <div className='col-md-12'>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='dbGaP' checked={dataLinkage.dbGaP === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>dbGaP</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>BioLINCC</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='otherRepo' checked={dataLinkage.otherRepo === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>otherRepo</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-            <div className='col-md-12'>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dbGaP' checked={dataLinkage.dbGaP === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
+                                <div className='col-md-12' style={{ marginTop: '1em' }}>
+                                    <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
+
+                                <div className='form-group col-md-12'>
+                                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
+
+                                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+
+                                </div>
+
+                                <div>
+                                    <div className='form-group col-md-12'>
+                                        <span className='col-md-5'>If yes, please specify:</span>
+                                    </div>
+
+                                    <div className='col-md-12'>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>Policy attached (PDF)</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>Website, please specify: </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div className='form-group col-md-12' style={{ marginTop: '1em' }}>
+                                        <div className='col-md-8'>
+                                            <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL}
+                                                placeholder='Specify website url (Max 300 characters)'></input>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='col-md-12'>
+                                    <label htmlFor='createdRepo' className='col-md-12'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
+
+                                <div className='form-group col-md-12'>
+                                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
+
+                                    <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+                                </div>
+
+                                <div className='col-md-12'>
+                                    <label className='col-md-12'>If yes, please specify location:</label>
+                                    <div className='col-md-8'>
+                                        <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify}
+                                            placeholder='Specify enclave location (Max 300 characters)'></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* END Data Linkage & Harmonization */}
+                </div>
+                {/* END Data Linkage & Harmonization Collapsable Question Sections */}
+                <div style={{ position: 'relative' }}>
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('E')} />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('G')} />
                     </span>
-                    <span>dbGaP</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
                     </span>
-                    <span>BioLINCC</span>
                 </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='otherRepo' checked={dataLinkage.otherRepo === 1} disabled={dataLinkage.haveDeposited !== 1} style={{ width: '30px' }} />
-                    </span>
-                    <span>otherRepo</span>
-                </div>
+                
             </div>
         </div>
-
-        <div className='col-md-12' style={{ marginTop: '1em' }}>
-            <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-
-        </div>
-
-        <div>
-            <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please specify:</span>
-            </div>
-
-            <div className='col-md-12'>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} style={{ width: '30px' }} />
-                    </span>
-                    <span>Policy attached (PDF)</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} style={{ width: '30px' }} />
-                    </span>
-                    <span>Website, please specify: </span>
-                </div>
-
-            </div>
-
-            <div className='form-group col-md-12' style={{ marginTop: '1em' }}>
-                <div className='col-md-8'>
-                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL}
-                        placeholder='Specify website url (Max 300 characters)'></input>
-                </div>
-            </div>
-        </div>
-
-        <div className='col-md-12'>
-            <label htmlFor='createdRepo' className='col-md-12'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-        </div>
-
-        <div className='col-md-12'>
-            <label className='col-md-12'>If yes, please specify location:</label>
-            <div className='col-md-8'>
-                <input name='createdRepoSpecify' className='form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify}
-                    placeholder='Specify enclave location (Max 300 characters)'></input>
-            </div>
-        </div>
-
-        <div style={{ position: 'relative' }}>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('E')} />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('G')} />
-            </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
-            </span>
-        </div>
-    </div >
+    )
 }
 
 export default DataLinkageForm;

@@ -5,7 +5,7 @@ import classNames from 'classnames'
 import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
-import CenterModal from '../Modal/Modal';
+import CenterModal from '../controls/modal/modal';
 import { update } from 'lodash';
 const { 
     setCancerCount, 

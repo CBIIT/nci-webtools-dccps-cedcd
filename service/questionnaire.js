@@ -10,8 +10,7 @@ var mail = require('../components/mail');
 
 router.use((request, response, next) => {
     const { session } = request;
-    if (process.env.NODE_ENV !== 'development' &&
-        (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role))) {
+    if (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role)) {
         response.status(400).json('Unauthorized').end();
     } else {
         next();
@@ -295,7 +294,7 @@ router.post('/update_mortality/:id', function (req, res) {
                 if(result[2]) updatedMortality.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedMortality })
             }else
-                 dres.json({ status: 200, message: 'update successful' })
+                res.json({ status: 200, message: 'update successful' })
         }
         else
             res.json({ status: 500, message: 'update failed' })
@@ -331,7 +330,8 @@ router.post('/update_dlh/:id', function (req, res) {
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
         if (result && result[0] && result[0][0].rowAffacted > 0){
-            if(result[1]) {
+            if(Array.isArray(result[1])) {
+                
                 const updatedDlh = {}
                 updatedDlh.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if(result[2]) updatedDlh.status = result[2][0].status
@@ -377,11 +377,13 @@ router.post('/update_cancer_count/:id', async function (req, res) {
     const { mysql } = app.locals;
     const { id } = params;
     try {
-        const result = await mysql.query('CALL update_cancer_count(?, ?)', [id, JSON.stringify(body)])
-        console.log(result);
+        const [result] = await mysql.query(
+            'CALL update_cancer_count(?, ?)', 
+            [id, JSON.stringify(body)]
+        );
 
-        if (result && result[0] && result[0][0].success === 1) {
-            res.json({ status: 200, message: 'update successful' })
+        if (result) {
+            res.json({ status: 200, message: 'update successful', result })
         } else {
             throw new Error("SQL Exception");
         }

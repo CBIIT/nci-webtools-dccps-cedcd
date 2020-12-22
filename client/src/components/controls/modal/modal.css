@@ -1,0 +1,12 @@
+.modal-content {
+  border-radius: 10px !important;
+}
+
+.modal-content h2{
+  color: purple;
+  font-weight: bold;
+}
+
+.modal-body span{
+  font-size: 2rem;
+}

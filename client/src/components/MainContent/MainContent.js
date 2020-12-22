@@ -14,7 +14,9 @@ import ManageCohort from '../Admin/ManageCohort'
 import ReviewCohort from '../Admin/ReviewCohort'
 import NewCohort from '../Admin/AddNewCohort'
 import SelectCohort from '../SelectCohort/SelectCohort';
+import ManageUser from '../Admin/ManageUser'
 import NewUser from '../Admin/AddNewUser'
+// import EditUser from '../Admin/EditUser'
 import Unauthorized from '../Unauthorized/Unauthorized';
 
 
@@ -50,8 +52,10 @@ class MainContent extends Component {
         <Route path={match + '/cohort/select'} component={SelectCohort} />
         <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />} />
         <Route path={match + '/admin/viewcohort/:status/:id/'} render={() => <ReviewCohort setAdmin={this.props.setAdmin} />} />
-        <Route path={match + '/admin/newcohort'} component={NewCohort} />
-        <Route path={match + '/admin/newuser'} component={NewUser} />
+        <Route path={match + '/admin/manageuser'} render={() => <ManageUser setAdmin={this.props.setAdmin} />} />
+        <Route path={match + '/admin/newcohort'} render={() => <NewCohort setAdmin={this.props.setAdmin} />} />
+        <Route path={match + '/admin/newuser'} render={() => <NewUser setAdmin={this.props.setAdmin} />} />
+        {/* <Route path={match + '/admin/edituser/:id'} render={() => <EditUser setAdmin={this.props.setAdmin} />} /> */}
         <Route path={match + '/unauthorized'} component={Unauthorized} />
       </Switch>
     );

@@ -52,6 +52,7 @@ const setBioAnalyticalPlatform = (v) => ({ type: t.setBioAnalyticalPlatform, val
 const setBioSeparationPlatform = (v) => ({ type: t.setBioSeparationPlatform, value: v })
 const setBioNumberMetabolitesMeasured = (v) => ({ type: t.setBioNumberMetabolitesMeasured, value: v })
 const setBioYearSamplesSent = (v) => ({ type: t.setBioYearSamplesSent, value: v })
+const setSectionGStatus = (v) => ({ type: t.setSectionGStatus, value: v })
 
 
 export default {
@@ -101,5 +102,6 @@ export default {
     setBioAnalyticalPlatform,
     setBioSeparationPlatform,
     setBioNumberMetabolitesMeasured,
-    setBioYearSamplesSent
+    setBioYearSamplesSent,
+    setSectionGStatus
 }

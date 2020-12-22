@@ -10,6 +10,7 @@ const MortalityForm = ({ ...props }) => {
     const dispatch = useDispatch();
 
     const cohortId = +window.location.pathname.split('/').pop();
+    const [activePanel, setActivePanel] = useState('panelA')
 
     useEffect(() => {
         if (!mortality.hasLoaded) {
@@ -79,148 +80,175 @@ const MortalityForm = ({ ...props }) => {
 
 
 
-    return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+    return (
+        <div id='mortalityContainer' className='col-md-12'>
+            <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
+                {/* START Mortality Collapsable Question Sections */}
+                <div className="row">
+                    <div id="attachments" className="cohortInfo col-md-12">
+                        {/* START Mortality */}
+                        <button type="button" 
+                            className={'cedcd-btn ' + (activePanel === 'panelA' ? 'active' : '')} 
+                            aria-expanded={activePanel === 'panelA'} 
+                            aria-controls="more" 
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
+                            <span className="triangle"></span>Mortality
+                        </button>
+                        <div className="cohortInfoBody" 
+                            id="more" 
+                            aria-hidden={activePanel === 'panelA' ? 'false' : 'true'} 
+                            style={{
+                                display: activePanel === 'panelA' ? 'block' : 'none'
+                            }}>
+                            <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
 
-        <div className='form-group col-sm-12'>
-            <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
-            <div className="col-sm-2">
-                <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} placeholder='yyyy' />
-            </div>
-        </div>
-
-
-        <div className='form-group col-md-12' style={{ marginTop: '10px' }}>
-            <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)</label>
-        </div>
-
-        <div className='col-md-12'>
-            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='deathIndex' checked={mortality.deathIndex === 1} style={{ width: '30px' }} />
-                </span>
-                <span>U.S. National Death Index (NDI) linkage</span>
-            </div>
-            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='deathCertificate' checked={mortality.deathCertificate === 1} style={{ width: '30px' }} />
-                </span>
-                <span>Death Certificates</span>
-            </div>
-            <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                    <input type='checkbox' name='otherDeath' checked={mortality.otherDeath === 1} style={{ width: '30px' }} />
-                </span>
-                <span>Other</span>
-            </div>
-        </div>
-
-        <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
-            <div className='col-sm-7'>
-                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} disabled={mortality.otherDeath !== 1} placeholder='Specify confirmation of death (Max 200 characters)' />
-            </div>
-        </div>
-
-        <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
-            <label htmlFor='haveDeathDate' className='col-md-12'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
-        </div>
+                                <div className='form-group col-sm-12'>
+                                    <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
+                                    <div className="col-sm-2">
+                                        <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} placeholder='yyyy' />
+                                    </div>
+                                </div>
 
 
-        <div className='form-group col-md-9' >
-            <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeathDate' checked={mortality.haveDeathDate === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
+                                <div className='form-group col-md-12' style={{ marginTop: '10px' }}>
+                                    <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)</label>
+                                </div>
 
-            <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeathDate' checked={mortality.haveDeathDate === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
+                                <div className='col-md-12'>
+                                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                            <input type='checkbox' name='deathIndex' checked={mortality.deathIndex === 1} style={{ width: '30px' }} />
+                                        </span>
+                                        <span>U.S. National Death Index (NDI) linkage</span>
+                                    </div>
+                                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                            <input type='checkbox' name='deathCertificate' checked={mortality.deathCertificate === 1} style={{ width: '30px' }} />
+                                        </span>
+                                        <span>Death Certificates</span>
+                                    </div>
+                                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                            <input type='checkbox' name='otherDeath' checked={mortality.otherDeath === 1} style={{ width: '30px' }} />
+                                        </span>
+                                        <span>Other</span>
+                                    </div>
+                                </div>
 
-        </div>
+                                <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
+                                    <div className='col-sm-7'>
+                                        <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} disabled={mortality.otherDeath !== 1} placeholder='Specify confirmation of death (Max 200 characters)' />
+                                    </div>
+                                </div>
 
-        <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
-            <label htmlFor='haveDeathCause' className='col-md-12'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-9' >
-            <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 0} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 1} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-
-        </div>
-
-        <div>
-            <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, what type of death code was used?</span>
-            </div>
+                                <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+                                    <label htmlFor='haveDeathDate' className='col-md-12'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+                                </div>
 
 
-            <div className='col-md-12'>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
+                                <div className='form-group col-md-9' >
+                                    <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeathDate' checked={mortality.haveDeathDate === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
+
+                                    <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeathDate' checked={mortality.haveDeathDate === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+
+                                </div>
+
+                                <div className='form-group col-md-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+                                    <label htmlFor='haveDeathCause' className='col-md-12'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+                                </div>
+
+                                <div className='form-group col-md-9' >
+                                    <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 0} style={{ width: '30px' }} />
+                                        <span>No</span>
+                                    </span>
+
+                                    <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
+                                        <input type='radio' name='haveDeathCause' checked={mortality.haveDeathCause === 1} style={{ width: '30px' }} />
+                                        <span>Yes</span>
+                                    </span>
+
+                                </div>
+
+                                <div>
+                                    <div className='form-group col-md-12'>
+                                        <span className='col-md-5'>If yes, what type of death code was used?</span>
+                                    </div>
+
+
+                                    <div className='col-md-12'>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>ICD-9</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>ICD-10</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>Not Coded</span>
+                                        </div>
+                                        <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                                            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                                                <input type='checkbox' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
+                                            </span>
+                                            <span>Other Code</span>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
+                                        <div className='col-sm-7'>
+                                            <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='col-sm-12'>
+                                    <label htmlFor='deathNumbers' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
+                                </div>
+                                <div className='form-group col-sm-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
+
+                                    <div className="col-sm-2">
+                                        <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                         {/* END Mortality */}
+                    </div>
+                    {/* END Mortality Collapsable Question Sections */}
+                </div>
+                
+                <div className='col-sm-12' style={{ marginTop: '10px', marginBottom: '20px' }}>
+                </div>
+                <div style={{ position: 'relative' }}>
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('D')} />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('F')} />
                     </span>
-                    <span>ICD-9</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
                     </span>
-                    <span>ICD-10</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} style={{ width: '30px' }} />
-                    </span>
-                    <span>Not Coded</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) }} style={{ width: '30px' }} />
-                    </span>
-                    <span>Other Code</span>
-                </div>
-
-
-            </div>
-
-            <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
-                <div className='col-sm-7'>
-                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Specify death code (Max 200 characters)' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
                 </div>
             </div>
         </div>
-
-        <div className='col-sm-12'>
-            <label htmlFor='deathNumbers' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-        <div className='form-group col-sm-12' style={{ marginTop: '10px', marginBottom: '0px' }}>
-
-            <div className="col-sm-2">
-                <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} />
-            </div>
-        </div>
-        <div className='col-sm-12' style={{ marginTop: '10px', marginBottom: '20px' }}>
-
-        </div>
-
-        <div style={{ position: 'relative' }}>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('D')} />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Next' onClick={() => props.sectionPicker('F')} />
-            </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
-            </span>
-        </div>
-    </div>
+    )
 }
 
 export default MortalityForm;

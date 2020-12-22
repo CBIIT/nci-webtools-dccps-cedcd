@@ -51,6 +51,23 @@ router.post('/owners', function (req, res) {
 	})
 });
 
+router.post('/add', function(req, res){
+
+	let func = 'insert_new_cohort'
+	let body = JSON.stringify(req.body)
+	let params = []
+	params.push(body)
+	logger.debug(body)
+
+    mysql.callJsonProcedure(func, params, function (result) {
+
+		if(result)
+			res.json({status: 200, message: 'update successful'})
+		else
+			res.json({status: 500, message: 'update failed'})
+	})
+});
+
 router.post('/lookup', function (req, res) {
 	let body = req.body;
 	let category = body.category || "";

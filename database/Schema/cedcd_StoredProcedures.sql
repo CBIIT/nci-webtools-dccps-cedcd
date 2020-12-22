@@ -440,7 +440,7 @@ END //
 DROP PROCEDURE IF EXISTS select_cohort_owner //
 CREATE PROCEDURE `select_cohort_owner`()
 BEGIN
-	select first_name, last_name, email from user
+	select id, first_name, last_name, email from user
 	where access_level='CohortAdmin' order by last_name, first_name;
 END //
 
@@ -459,6 +459,7 @@ BEGIN
     select * from lu_specimen where id < 10;
 	  select * from lu_cohort_status;
 END //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_mortality
@@ -2117,7 +2118,7 @@ end //
 
 DROP PROCEDURE if EXISTS `update_specimen_section_data` //
 
-CREATE  PROCEDURE `update_specimen_section_data`(in cohortID int, in info JSON)
+CREATE  PROCEDURE `update_specimen_section_data`(in targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
@@ -2399,6 +2400,9 @@ bio_separation_platform = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatf
 bio_number_metabolites_measured = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured')),
 bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent'))
   where cohort_id = `cohortID`;
+
+  update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
+        cohort_id = `cohortID` and page_code = 'G';
   
   commit;
   select flag as rowsAffacted;
@@ -2754,4 +2758,88 @@ begin
     commit;
     select flag as rowAffacted;
  end //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: insert_new_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `insert_new_cohort` //
+
+CREATE PROCEDURE `insert_new_cohort`(in info JSON)
+BEGIN
+	DECLARE i INT DEFAULT 0;
+
+	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+	
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NOW());
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+	WHILE i < JSON_LENGTH(@owners) DO
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+		SELECT i + 1 INTO i;	
+	end WHILE;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_all_users
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_all_users` //
+
+CREATE  PROCEDURE `select_all_users`(in columnName varchar(40), in columnOrder varchar(10),
+									in pageIndex int, in pageSize int)
+BEGIN 
+    
+   set @status_query = " and 1=1 ";
+  
+  if columnName != "" then
+		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+	else
+		set @orderBy = "order by u.last_name desc";
+  end if;
+    
+  if pageIndex > -1 then
+		set @paging = concat(' limit ',pageIndex,',',pageSize,' ');
+	else
+		set @paging = "";
+  end if;
+    
+  set @query = concat("select id, concat(u.last_name,', ', u.first_name) as name, u.email,
+       ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
+	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id
+   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, 
+(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+    from user u where IFNULL(u.active_status, 'Y') ='Y' ", 
+    @orderBy, @paging);
+	
+  PREPARE stmt FROM @query;
+	EXECUTE stmt;
+    select found_rows() as total;
+	DEALLOCATE PREPARE stmt;
+  
+END //
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_user_profile
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_user_profile` //
+
+CREATE PROCEDURE `select_user_profile`(in usid int)
+BEGIN 
+ 
+  set @query = concat("select u.last_name, u.first_name, u.email,
+       ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
+	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
+   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
+(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+    from user u where IFNULL(u.active_status, 'Y') ='Y' and u.id = ", usid); 
+
+	
+  PREPARE stmt FROM @query;
+	EXECUTE stmt;
+    select found_rows() as total;
+	DEALLOCATE PREPARE stmt;
+    
+END //
+
 DELIMITER ;

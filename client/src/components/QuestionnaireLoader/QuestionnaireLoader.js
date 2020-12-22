@@ -6,7 +6,7 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from '../MortalityForm/MortalityForm'
-import SpecimenForm from '../SpecimenForm/Specimens'
+import SpecimenForm from '../SpecimenForm/SpecimensForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 const content = (currentSection, handleClick) => {
     switch (currentSection) {

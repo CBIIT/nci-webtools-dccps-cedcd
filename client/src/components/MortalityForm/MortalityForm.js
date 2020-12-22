@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
+import Messenger from '../Snackbar/Snackbar'
+import CenterModal from '../controls/modal/modal'
 
 const MortalityForm = ({ ...props }) => {
 
@@ -10,6 +12,12 @@ const MortalityForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
+    const [proceed, setProceed] = useState(false)
+    const [saved, setSaved] = useState(false)
 
 
     const radioError = 'please choose one'
@@ -160,52 +168,67 @@ const MortalityForm = ({ ...props }) => {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                     }
                     if (!proceed) {
-                        alert('Data was successfully saved')
+                        setSuccessMsg(true)
                     }
                     else
                         props.sectionPicker('F')
                 } else {
-                    alert(result.message)
+                    setSuccessMsg(true)
                 }
             })
     }
 
+
     const handleSave = () => {
 
         if (validateInput()) {
-            //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
             saveMortality(cohortId, false, 'complete')
         }
         else {
-            //Incomplete
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(cohortId, false, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(false)
         }
     }
 
     const handleSaveContinue = () => {
+
         if (validateInput()) {
-            //Complete
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
             saveMortality(cohortId, true, 'complete')
         }
         else {
-            //Incomplete
-            if (window.confirm('there are validation errors, are you sure you want to save?')) {
-                dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
-                saveMortality(cohortId, true, 'incomplete')
-            }
+            setModalShow(true)
+            setProceed(true)
         }
     }
 
+    const confirmSaveStay = () => {
+
+        dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
+        saveMortality(cohortId, false, 'incomplete')
+
+        setModalShow(false)
+    }
+
+    const confirmSaveContinue = ()  => {
+
+        dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
+        dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
+        saveMortality(cohortId, true, 'incomplete')
+
+        setModalShow(false)
+    }
+
+
     return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
 
         <div className='form-group col-sm-12'>
             <label htmlFor='mortalityYear' className='col-sm-12' style={{ lineHeight: '2em' }}>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
@@ -217,7 +240,7 @@ const MortalityForm = ({ ...props }) => {
 
 
         <div className='form-group col-md-12' style={{ marginTop: '10px' }}>
-            <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (select all that apply)</label>
+            <label htmlFor='confirmDeath' className='col-md-5'>E.2 How did your cohort confirm death? (Select all that apply)</label>
         </div>
 
         <div className='col-md-12'>
@@ -243,7 +266,7 @@ const MortalityForm = ({ ...props }) => {
 
         <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
             <div className='col-sm-7'>
-                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max 200 characters' />
+                <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max of 200 characters' />
             </div>
             {errors.otherDeathSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherDeathSpecify}</div>}
         </div>
@@ -291,7 +314,7 @@ const MortalityForm = ({ ...props }) => {
 
         <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, what type of death code was used?</span>
+                <span className='col-md-5'>If yes, what type of death code was used? (Select all that apply)</span>
             </div>
 
 
@@ -327,7 +350,7 @@ const MortalityForm = ({ ...props }) => {
 
             <div className="col-sm-12 form-group" style={{ marginTop: '1em' }}>
                 <div className='col-sm-7'>
-                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max 200 characters' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max of 200 characters' value={mortality.otherCodeSpecify} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
                 </div>
                 {errors.otherCodeSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.otherCodeSpecify}</div>}
             </div>
@@ -350,14 +373,14 @@ const MortalityForm = ({ ...props }) => {
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('D')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('F')} />
             </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right'}}>
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
                 <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
                     <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
                 </span>
                 <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0',paddingRight:'0' }} />
+                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
                 </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} style={{paddingLeft: '0',paddingRight:'0'}} /></span>
+                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} style={{ paddingLeft: '0', paddingRight: '0' }} /></span>
             </span>
         </div>
 

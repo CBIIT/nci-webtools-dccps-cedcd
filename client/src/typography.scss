@@ -54,7 +54,7 @@ h3 {
   font-size: 1.6rem;
   font-weight: 400;
   color: #525349;
-  background: #ffffff url(../img/arrow-square.png) no-repeat 1% -49px;
+  background: #ffffff url(/assets/img/arrow-square.png) no-repeat 1% -49px;
   padding: 4px 10px 4px 22px;
   margin: 2px 0 0 0;
   border: none;
@@ -124,7 +124,7 @@ li {
   font-size: 90%;
   margin-top: 20px;
   padding-bottom: 10px;
-  /*background: url(../img/bg_footer_rule.png) center bottom no-repeat;*/
+  /*background: url(/assets/img/bg_footer_rule.png) center bottom no-repeat;*/
 }
 #footer .footer-nav li {
   color: white;
@@ -132,7 +132,7 @@ li {
   display: inline;
   margin: 0 0 0 0;
   padding: 2px 0;
-  background: url(../img/bg_footer_nav.png) center right no-repeat;
+  background: url(/assets/img/bg_footer_nav.png) center right no-repeat;
 }
 #footer .footer-nav li.no-right {
   background: none;
@@ -192,28 +192,12 @@ ul.table-controls {
 ul.results-nav li {
   list-style: none;
 }
-.cohortInfo ul {
-  font-size: 100%;
-  margin: 0;
-  padding: 0 0 15px 0;
-  line-height: 130%;
-  list-style: none;
-}
-.cohortInfo ul li {
-  padding: 4px 0 4px 0;
-}
-.cohortInfoBody ul li {
-  padding: 5px 0 2px 26px;
-}
 .links-list {
   list-style: none;
 }
 .links-list li {
   line-height: 125%;
   margin-bottom: 18px;
-}
-.cohortInfoBody ul.links-list li {
-  margin-bottom: 0px !important;
 }
 #mainNavBar li .arrow.down {
   border-top:0px solid transparent;
@@ -406,7 +390,7 @@ a:hover {
   color: rgba(0,0,0,0);
 }
 .table-pager a.arrow.prev {
-  background: url(../img/bg_arrow_prev.png) no-repeat 95%;
+  background: url(/assets/img/bg_arrow_prev.png) no-repeat 95%;
   width: 17px;
   overflow: hidden;
 }
@@ -416,7 +400,7 @@ a:hover {
   color:gray !important;
 }
 .table-pager a.arrow.next {
-  background: url(../img/bg_arrow_next.png) no-repeat;
+  background: url(/assets/img/bg_arrow_next.png) no-repeat;
   width: 17px;
   overflow: hidden;
 }
@@ -443,7 +427,7 @@ a:hover {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 400;
-  background: #fff url(../img/bg_cohort_profile.png) no-repeat 8px center;
+  background: #fff url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
   width: 66px;
   margin: 4px auto;
   padding: 6px 2px 3px 32px;
@@ -454,7 +438,7 @@ a:hover {
 }
 .cedcd-table a:hover.cohort-profile {
   color: #ffffff;
-  background: #135B5D url(../img/bg_cohort_profile.png) no-repeat 8px center;
+  background: #135B5D url(/assets/img/bg_cohort_profile.png) no-repeat 8px center;
   border: #135B5D 1px solid;
 }
 .cedcd-table th.sortable a, #cohort_name a, #cohort_acronym a, #date_form_completed a, #status_timestamp a, #status a, th.sortable a {
@@ -605,7 +589,7 @@ ul.results-nav li a {
   font-weight: 400;
   letter-spacing: .5px;
   text-align: left;
-  background: url(../img/bg_results_nav.png) no-repeat 100% center;
+  background: url(/assets/img/bg_results_nav.png) no-repeat 100% center;
   margin: 0 6% 2px 6%;
   padding: 8px 15% 8px 0;
   border-bottom: #457F7F 1px solid;
@@ -617,11 +601,11 @@ ul.results-nav li.last-item a {
   border-bottom: #135B5D 1px solid;
 }
 ul.results-nav li a:hover {
-  background: url(../img/bg_results_nav_hover.png) no-repeat 115% center;
+  background: url(/assets/img/bg_results_nav_hover.png) no-repeat 115% center;
   padding: 8px 10% 8px 5%;
 }
 ul.results-nav li.active a {
-  background: url(../img/bg_results_nav_active.png) no-repeat 100% center;
+  background: url(/assets/img/bg_results_nav_active.png) no-repeat 100% center;
   padding: 8px 10% 8px 5%;
 }
 ul.results-nav li a.inactive {
@@ -640,25 +624,25 @@ a.expand-link {
   margin: 10px 0 0 2%;
   padding: 0 0 0 24px;
   display: block;
-  background: url(../img/bg_more_info.png) left center no-repeat;
+  background: url(/assets/img/bg_more_info.png) left center no-repeat;
   transition: all 200ms ease-out;
 }
 a:hover.expand-link {
   margin: 10px 0 0 2%;
   padding: 0 0 0 24px;
   display: block;
-  background: url(../img/bg_more_info_hover.png) left center no-repeat;
+  background: url(/assets/img/bg_more_info_hover.png) left center no-repeat;
 }
 .link-docx {
-  background: url(../img/ico_Doc.png) no-repeat left 5px;
+  background: url(/assets/img/ico_Doc.png) no-repeat left 5px;
   padding-left: 20px;
 }
 .link-pdf {
-  background: url(../img/ico_PDF.png) no-repeat left 5px;
+  background: url(/assets/img/ico_PDF.png) no-repeat left 5px;
   padding-left: 25px !important;
 }
 .link-excel {
-  background: url(../img/ico_Excel.png) no-repeat left 5px;
+  background: url(/assets/img/ico_Excel.png) no-repeat left 5px;
   padding-left: 20px;
 }
 .link-url {
@@ -956,41 +940,6 @@ a#cd_website:hover {
 }
 /* End Button Links */
 /* Button Elements */
-.cohortInfo > .cedcd-btn {
-  font-size: 110%;
-  color: #135B5D;
-  font-weight: 400;
-  margin: 8px 0 0 0;
-  padding: 20px 10px 20px 20px;
-  background: #f3f2f1;
-  width: 100%;
-  text-align: left;
-  vertical-align: middle;
-  border-radius: 8px 8px 8px 8px;
-  transition: all 0.4s ease-in-out;
-  display: inline-block;
-  white-space: nowrap;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-}
-.cohortInfo > .cedcd-btn:hover, .cohortInfo > .cedcd-btn:focus {
-  font-size: 110%;
-  color: #135B5D;
-  background: rgba(221,241,239,1.00);
-  cursor: pointer;
-  text-decoration: underline;
-}
-.cohortInfo > .cedcd-btn.active {
-  background: rgba(221,241,239,1.00);
-  border-radius: 10px 10px 0 0;
-}
 #prof-main .cohortInfo .cedcd-btn.active:hover {
   color: #135B5D;
 }
@@ -1003,17 +952,6 @@ a#cd_website:hover {
   border-width: 5px 0 5px 8px;
   border-color: transparent transparent transparent #135B5D;
   transition: all 0.5s ease-in;
-}
-.cohortInfo .cedcd-btn:hover .triangle {
-  border-color: transparent transparent transparent #135B5D;
-}
-.cohortInfo .cedcd-btn.active .triangle {
-  transform: rotate(90deg);
-  border-width: 5px 0 5px 8px;
-  border-color: transparent transparent transparent #135B5D;
-}
-.cohortInfo .cedcd-btn.active:hover .triangle {
-  border-color: transparent transparent transparent #135B5D;
 }
 .modal-footer button.btn {
   color: rgba(19,91,91,1.00);
