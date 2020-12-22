@@ -23,7 +23,7 @@ async function login(request, response) {
     try {
         let userName, userRole, userType;
 
-        if (!smUser || process.env.NODE_ENV === 'development') {
+        if (!smUser) {
             userName = 'admin';
             userType = loginType;
             userRole = userType === 'internal'
@@ -45,6 +45,7 @@ async function login(request, response) {
             [userName]
         );
 
+
         if (user) {
             const userId = user.id;
             if (!userRole) {
@@ -52,6 +53,13 @@ async function login(request, response) {
                     ? user.accessLevel
                     : null
             }
+
+            // update last login date
+            await mysql.query(
+                `update user set last_login = now() 
+                where user_name = ?`,
+                [userName]
+            );
     
             const cohortAcronyms = await mysql.query(
                 `SELECT DISTINCT cohort_acronym as acronym
@@ -86,7 +94,7 @@ async function login(request, response) {
                 name: null,
                 role: null,
                 cohorts: [],
-                active: false
+                active: false,
             };
         }
 

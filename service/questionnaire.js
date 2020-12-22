@@ -10,8 +10,7 @@ var mail = require('../components/mail');
 
 router.use((request, response, next) => {
     const { session } = request;
-    if (process.env.NODE_ENV !== 'development' &&
-        (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role))) {
+    if (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role)) {
         response.status(400).json('Unauthorized').end();
     } else {
         next();
