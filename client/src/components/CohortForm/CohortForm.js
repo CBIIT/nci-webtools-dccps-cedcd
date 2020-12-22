@@ -475,10 +475,12 @@ const CohortForm = ({ ...props }) => {
                                 </span>
                             </div>
                         </div>
-                        <div id='question3' className='col-xs-12' style={{ display: 'flex', flexDirection: 'column', paddingBottom: '10px' }}>
-                            <div id='a3a' className='col-md-8 col-xs-12' style={{ paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px' }}>
+                        <div id='question3' className='col-xs-12' style={{ paddingBottom: '10px' }}>
+                            <div id='a3a' className='col-xs-12' style={{ paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px' }}>
                                 <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.5a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
+                                <div className='col-md-8' style={{ paddingLeft: '0', paddingRight:'5px'}}>
                                 <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} displayStyle={saved} />
+                                </div>
                             </div>
                             {window.innerWidth <= 1000 ? <div id='a3b' className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <div style={{ marginBottom: '5px', paddingLeft: '15px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
@@ -493,7 +495,7 @@ const CohortForm = ({ ...props }) => {
                                 </div>
                                 <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact} displayStyle={saved} leftPadding='0' />
                             </div> :
-                                <div id='a3b' className='col-md-12'>
+                                <div id='a3b' className='col-xs-12'>
                                     <div style={{ marginBottom: '5px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
                                     <div style={{ marginBottom: '15px' }}>
                                         <span className='col-md-6' style={{ paddingLeft: '0', marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
@@ -754,12 +756,12 @@ const CohortForm = ({ ...props }) => {
                                 </div>
                             }
                         </div>
-                        <div id='question12' className='col-md-12' style={{ paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+                        <div id='question12' className='col-md-12' style={{ paddingBottom: '10px' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='col-md-8 col-xs-12' style={{paddingLeft: '0'}}><label style={{ paddingLeft: '0' }}>A.12{' '}How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span>  (Select all that apply) </label></span>
                                 {errors.dataCollection && saved ?<span className='col-md-4 col-xs-12' style={{paddingLeft: '0', color: 'red'}}>{errorMsg}</span> : ''}
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div >
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
@@ -817,7 +819,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                         </div>
 
-                        <div id='question13' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+                        <div id='question13' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '5px' }}>
                                 <span className='col-xs-12' style={{paddingLeft: '0'}}><b>A.13{' '}Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)</b>
                                 {errors.requirements && saved ? <span style={{color: 'red', marginLeft: '10px'}}>{errorMsg}</span> : ''}</span>
@@ -904,14 +906,14 @@ const CohortForm = ({ ...props }) => {
                             </div>
                         </div>
 
-                        <div id='question14' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px', display: 'flex', flexDirection: 'column' }}>
+                        <div id='question14' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='cl-xs-12' style={{paddingLeft: '0'}}>
                                     <b>A.14{' '}What strategies does your cohort use to engage participants?<span style={{color: 'red' }}>*</span>{' '}(Select all that apply)</b>
                                     {errors.strategy && saved ? <span style={{color: 'red', marginLeft: '10px'}}>{errorMsg}</span> : ''}
                                 </span>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div>
                                 <div>
                                      <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
@@ -969,7 +971,7 @@ const CohortForm = ({ ...props }) => {
                                         :
                                         <span className='col-md-12' style={{ paddingLeft: '35px', paddingRight: '0' }}>
                                             {saved && errors.strategy_other_specify ?
-                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} />}
+                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} />}
                                         </span>
                                     }
                                 </div>
