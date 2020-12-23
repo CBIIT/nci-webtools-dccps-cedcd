@@ -168,12 +168,12 @@ const EnrollmentCountsForm = ({...props}) => {
                     activePanel={activePanel}
                     panelTitle='Enrollment Counts'
                     onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
-                    <form  style={{boxSizing: 'border-box', overflowX: window.innerWidth <= 1000 ? 'scroll' : ''}}>
-                        <div style={{marginBottom: '10px'}}>
+                    <form className="row">
+                        <div className="col-12">
                             <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                         </div>
-                        <div className="table-responsive">
-                            <table className='table-striped'>
+                        <div className="col-12 mb-4 table-responsive">
+                            <table className='table table-striped'>
                                 <thead>
                                     <tr>
                                         <th rowSpan='3' style={{fontSize: '1.5rem', paddingRight: '0', width: '15%'}}>Racial Categories</th>
@@ -319,33 +319,94 @@ const EnrollmentCountsForm = ({...props}) => {
                             </span>
                         </div>
                         */}
-                        <div className='form-group col-md-12' style={{paddingLeft: '0', marginTop: '10px'}}>
-                            <div className='col-md-12' style={{paddingLeft: '0'}}>
-                                <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label>
-                                <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    {errors.mostRecentDate && saved ? <Reminder message={errors.mostRecentDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
-                                    }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))}}} /></span>}
-                                </span>
+                        <div className='col-9 form-group'>
+                            <div className='row align-items-center'>
+                                <div className="col-md-6">
+                                    <span>
+                                        <label>
+                                            B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span>
+                                        </label>
+                                    </span>
+                                </div>
+                                {/* <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label> */}
+                                <div className='col-md-3'>
+                                    {errors.mostRecentDate && saved ? 
+                                        <Reminder message={errors.mostRecentDate}>
+                                            {/* <span className='' style={{padding: '0'}}> */}
+                                                <DatePicker className='form-control errorDate' 
+                                                    popperProps={{
+                                                        positionFixed: true // fix overflow hidden
+                                                    }}
+                                                    placeholderText='MM/DD/YYYY' 
+                                                    selected={enrollmentCount.mostRecentDate ? 
+                                                        new Date(enrollmentCount.mostRecentDate) : 
+                                                        null
+                                                    } 
+                                                    onChange={date => {
+                                                        dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); 
+                                                        if (!date) {
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))
+                                                        }else { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                        }
+                                                    }}/>
+                                            {/* </span> */}
+                                        </Reminder> : 
+                                        // <span className='' style={{padding: '0'}}>
+                                            <DatePicker className='form-control' 
+                                                popperProps={{
+                                                    positionFixed: true // fix overflow hidden
+                                                }}
+                                                placeholderText='MM/DD/YYYY' 
+                                                selected={enrollmentCount.mostRecentDate ? 
+                                                    new Date(enrollmentCount.mostRecentDate) : 
+                                                    null
+                                                } 
+                                                onChange={date => {
+                                                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                     if (!date) { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))
+                                                        } else { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                        }
+                                                }} />
+                                        // </span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </form>
                 </CollapsablePanel>
             </CollapsablePanelContainer>
             
-            <div className="mt-3">
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('A')}  />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('C')} />
-                </span>
-                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
-                    </span>
-                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
-                    </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
-                </span>
+            <div className="mt-3 d-flex flex-wrap justify-content-between">
+                <div className="d-flex flex-no-wrap">
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Previous' 
+                        onClick={() => props.sectionPicker('A')} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Next' 
+                        onClick={() => props.sectionPicker('C')} />
+                </div>
+                <div className="d-flex flex-no-wrap">
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Save' 
+                        onClick={handleSave} 
+                        disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Save & Continue' 
+                        onClick={handleSaveContinue} 
+                        disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Submit For Review' 
+                        onClick={() => resetCohortStatus(cohortID, 'submitted')} 
+                        disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} />
+                </div>
             </div>  
 
         </div>
