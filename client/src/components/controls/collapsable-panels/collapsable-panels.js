@@ -2,7 +2,7 @@ import React from 'react';
 import classNames from 'classnames'
 import './collapsable-panels.scss';
 
-export const CollapsablePanel = ({
+export const CollapsiblePanel = ({
     className = '',
     panelName = '',
     activePanel = '',
@@ -38,7 +38,7 @@ export const CollapsablePanel = ({
 }
 
 
-export const CollapsablePanelContainer = ({
+export const CollapsiblePanelContainer = ({
     children = []
 }) => {
 

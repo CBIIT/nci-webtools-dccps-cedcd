@@ -114,7 +114,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                 </div>
             <div>
                 <form id='currentForm' style={{ boxSizing: 'border-box' }} readOnly >
-                    {/* START Enrollment Counts Collapsable Question Sections */}
+                    {/* START Enrollment Counts Collapsible Question Sections */}
                     <div className="row">
                         <div id="attachments" className="cohortInfo col-md-12">
                             {/* START Enrollment Counts */}
@@ -293,7 +293,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             {/* END Enrollment Counts */}
                         </div>
                     </div>
-                    {/* END Enrollment Counts Collapsable Question Sections */}
+                    {/* END Enrollment Counts Collapsible Question Sections */}
                 </form>
             </div>
             {/*<div style={{ position: 'relative' }}>

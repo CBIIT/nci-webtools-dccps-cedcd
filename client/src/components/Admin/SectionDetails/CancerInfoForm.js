@@ -112,7 +112,7 @@ const CancerInfoForm = ({ ...props }) => {
 
     return lookup && 
         <div id="cancerInfoContainer" className="p-3 px-5">
-            {/* START Cancer Information Collapsable Question Sections */}
+            {/* START Cancer Information Collapsible Question Sections */}
             <div className="row">
                 <div id="attachments" className="cohortInfo col-md-12">
                     {/* START Cancer Counts */}
@@ -404,7 +404,7 @@ const CancerInfoForm = ({ ...props }) => {
                     {/* END Cancer Information */}
                 </div>
             </div>
-            {/* END Cancer Information Collapsable Question Sections */}
+            {/* END Cancer Information Collapsible Question Sections */}
 
             {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
             <div style={{ position: 'relative' }}>

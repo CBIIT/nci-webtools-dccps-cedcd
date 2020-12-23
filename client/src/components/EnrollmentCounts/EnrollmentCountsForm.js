@@ -6,7 +6,7 @@ import allactions from '../../actions'
 //import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
-import { CollapsablePanelContainer, CollapsablePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
@@ -162,8 +162,8 @@ const EnrollmentCountsForm = ({...props}) => {
                 Record actual, not planned, recruitment counts
             </div>
 
-            <CollapsablePanelContainer>
-                <CollapsablePanel
+            <CollapsiblePanelContainer>
+                <CollapsiblePanel
                     panelName='panelA'
                     activePanel={activePanel}
                     panelTitle='Enrollment Counts'
@@ -376,8 +376,8 @@ const EnrollmentCountsForm = ({...props}) => {
                             </div>
                         </div>
                     </form>
-                </CollapsablePanel>
-            </CollapsablePanelContainer>
+                </CollapsiblePanel>
+            </CollapsiblePanelContainer>
             
             <div className="mt-3 d-flex flex-wrap justify-content-between">
                 <div className="d-flex flex-no-wrap">

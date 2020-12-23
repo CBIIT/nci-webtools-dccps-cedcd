@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import './Information.css';
 import Moment from 'react-moment';
 import qs from 'query-string';
-import { CollapsablePanelContainer, CollapsablePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 class Information extends Component {
 
@@ -293,14 +293,14 @@ class Information extends Component {
 	            </div>
 	          </div>
 
-			  <CollapsablePanelContainer>
-			  	<CollapsablePanel
+			  <CollapsiblePanelContainer>
+			  	<CollapsiblePanel
 					condition={this.state.description}
 					panelTitle = 'Cohort Description'
 					onClick={this.descriptionClick}>
 				   	<div id="cd_description" dangerouslySetInnerHTML={{__html: desc}}/>
-				</CollapsablePanel>
-				<CollapsablePanel
+				</CollapsiblePanel>
+				<CollapsiblePanel
 					condition={this.state.protocol}
 					panelTitle = 'Questionnaires'
 					onClick={this.protocolClick}>
@@ -312,16 +312,16 @@ class Information extends Component {
 	                <div id="quest_attachments">
 	                  	{this.renderLinks(1)}
 	                </div>
-				</CollapsablePanel>
-				<CollapsablePanel
+				</CollapsiblePanel>
+				<CollapsiblePanel
 					condition={this.state.data}
 					panelTitle = 'Data, Biospecimen, and Authorship Policies'
 					onClick={this.dataClick}>
 				   	<div id="pol_attachments">
 	                  	{this.renderLinks(2)}
 	                </div>
-				</CollapsablePanel>
-			  </CollapsablePanelContainer>
+				</CollapsiblePanel>
+			  </CollapsiblePanelContainer>
 	        </div>
 	      );
   	}

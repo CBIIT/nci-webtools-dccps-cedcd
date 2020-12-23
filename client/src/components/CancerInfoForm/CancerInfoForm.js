@@ -6,7 +6,7 @@ import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
-import { CollapsablePanel, CollapsablePanelContainer } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanel, CollapsiblePanelContainer } from '../controls/collapsable-panels/collapsable-panels';
 
 const {
     setCancerCount,
@@ -371,7 +371,7 @@ const CancerInfoForm = ({ ...props }) => {
 
     return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
         
-        <CollapsablePanel
+        <CollapsiblePanel
             condition={activePanel === 'panelA'}
             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
             panelTitle="Cancer Counts">
@@ -433,9 +433,9 @@ const CancerInfoForm = ({ ...props }) => {
                     </tbody>
                 </table>
             </div>
-        </CollapsablePanel>
+        </CollapsiblePanel>
 
-        <CollapsablePanel
+        <CollapsiblePanel
             condition={activePanel === 'panelB'}
             onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
             panelTitle="Cancer Information">
@@ -653,7 +653,7 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
                 </div>
             </form>
-        </ CollapsablePanel>
+        </ CollapsiblePanel>
 
         <CenterModal
             show={modal.show}
