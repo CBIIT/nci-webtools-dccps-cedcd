@@ -6,6 +6,8 @@ import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
+import Messenger from '../Snackbar/Snackbar'
+import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 const {
@@ -441,16 +443,19 @@ const CancerInfoForm = ({ ...props }) => {
             panelTitle="Cancer Information">
             <form>
                 <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label required">
-                        D.2 Most recent date confirmed cancer case ascertainment:
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                        D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
                     </label>
+                    
+                    <Reminder title="This field is required" tooltipDisabled={!errors.ci_confirmed_cancer_date} placement="right">
                     <DatePicker
                         id="ci_confirmed_cancer_date"
                         className="form-control readonly"
                         selected={form.ci_confirmed_cancer_date}
                         onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
                     />
-                    {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">This field is required.</span>}
+                    </Reminder>
+                    {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">This field is required.</span>} */}
                 </div>
 
                 <div className={"form-group"}>
@@ -466,17 +471,19 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
                     <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
-                        <textarea
-                            className="form-control resize-vertical"
-                            aria-label="How were your cancer cases ascertained?"
-                            name="ci_ascertained_other_specify"
-                            value={form.ci_ascertained_other_specify || ''}
-                            onChange={e => setFormValue(e.target.name, e.target.value)}
-                            placeholder="Max of 300 Characters"
-                            maxLength={300}
-                            disabled={+form.ci_ascertained_other !== 1}
-                        />
-                        {submitted && errors.ci_ascertained_other_specify && <span className="help-block">This field is required.</span>}
+                        <Reminder title="This field is required" tooltipDisabled={!errors.ci_ascertained_other_specify}>
+                            <textarea
+                                className="form-control resize-vertical"
+                                aria-label="How were your cancer cases ascertained?"
+                                name="ci_ascertained_other_specify"
+                                value={form.ci_ascertained_other_specify || ''}
+                                onChange={e => setFormValue(e.target.name, e.target.value)}
+                                placeholder="Max of 300 Characters"
+                                maxLength={300}
+                                disabled={+form.ci_ascertained_other !== 1}
+                            />
+                        </Reminder>
+                        {/* {submitted && errors.ci_ascertained_other_specify && <span className="help-block">This field is required.</span>} */}
                     </div>
                 </div>
 
@@ -529,18 +536,20 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
-                            <textarea
-                                className="form-control resize-vertical"
-                                aria-label="Specify the treatment information you have"
-                                name="ci_treatment_data_other_specify"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_treatment_data_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                disabled={+form.ci_treatment_data_other !== 1}
-                            />
-                            {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">This field is required.</span>}
+                            <Reminder title="This field is required" tooltipDisabled={!errors.ci_treatment_data_other_specify}>
+                                <textarea
+                                    className="form-control resize-vertical"
+                                    aria-label="Specify the treatment information you have"
+                                    name="ci_treatment_data_other_specify"
+                                    disabled={+form.ci_cancer_treatment_data === 0}
+                                    value={form.ci_treatment_data_other_specify || ''}
+                                    onChange={e => setFormValue(e.target.name, e.target.value)}
+                                    placeholder="Max of 200 Characters"
+                                    maxLength={200}
+                                    disabled={+form.ci_treatment_data_other !== 1}
+                                />
+                            </Reminder>
+                            {/* {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">This field is required.</span>} */}
                         </div>
                     </div>
 
@@ -558,18 +567,20 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
-                            <textarea
-                                className="form-control resize-vertical"
-                                name="ci_data_source_other_specify"
-                                aria-label="Specify the data sources the treatment information is from"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_data_source_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                disabled={+form.ci_data_source_other !== 1}
-                            />
-                            {submitted && errors.ci_data_source_other_specify && <span className="help-block">This field is required.</span>}
+                            <Reminder title="This field is required" tooltipDisabled={!errors.ci_data_source_other_specify}>
+                                <textarea
+                                    className="form-control resize-vertical"
+                                    name="ci_data_source_other_specify"
+                                    aria-label="Specify the data sources the treatment information is from"
+                                    disabled={+form.ci_cancer_treatment_data === 0}
+                                    value={form.ci_data_source_other_specify || ''}
+                                    onChange={e => setFormValue(e.target.name, e.target.value)}
+                                    placeholder="Max of 200 Characters"
+                                    maxLength={200}
+                                    disabled={+form.ci_data_source_other !== 1}
+                                />
+                            </Reminder>
+                            {/* {submitted && errors.ci_data_source_other_specify && <span className="help-block">This field is required.</span>} */}
                         </div>
                     </div>
 
@@ -616,18 +627,20 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
 
                     <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                        <textarea
-                            className="form-control resize-vertical"
-                            name="ci_tumor_genetic_markers_data_describe"
-                            aria-label="Do you have tumor genetic markers data? Please describe:"
-                            length="40"
-                            value={form.ci_tumor_genetic_markers_data_describe || ''}
-                            onChange={e => setFormValue(e.target.name, e.target.value)}
-                            placeholder="Max of 200 Characters"
-                            maxLength={200}
-                            disabled={+form.ci_tumor_genetic_markers_data !== 1}
-                        />
-                        {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">This field is required.</span>}
+                        <Reminder title="This field is required" tooltipDisabled={!errors.ci_tumor_genetic_markers_data_describe}>
+                            <textarea
+                                className="form-control resize-vertical"
+                                name="ci_tumor_genetic_markers_data_describe"
+                                aria-label="Do you have tumor genetic markers data? Please describe:"
+                                length="40"
+                                value={form.ci_tumor_genetic_markers_data_describe || ''}
+                                onChange={e => setFormValue(e.target.name, e.target.value)}
+                                placeholder="Max of 200 Characters"
+                                maxLength={200}
+                                disabled={+form.ci_tumor_genetic_markers_data !== 1}
+                            />
+                        </Reminder>
+                        {/* {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">This field is required.</span>} */}
                     </div>
                 </div>
 
