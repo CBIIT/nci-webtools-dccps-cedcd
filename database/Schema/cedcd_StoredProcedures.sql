@@ -2474,10 +2474,16 @@ CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in ol
 BEGIN
 
  DECLARE flag INT DEFAULT 1;
- DECLARE pi_cursor cursor for select id from person where cohort_id = old_cohort_id and category = 3;
+ 
+ -- DECLARE finished INTEGER DEFAULT 0;
+ -- DECLARE old_PI_Id INT;
+ 
+ -- DECLARE pi_cursor cursor for select id from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '';
+ /*
  DECLARE finished INTEGER DEFAULT 0;
  DECLARE old_PI_Id INT;
  DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+ */
  
  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -2485,6 +2491,8 @@ BEGIN
       ROLLBACK;
 	END;
 
+
+-- DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
 set sql_mode='';
 SET SQL_SAFE_UPDATES = 0;
 
@@ -2512,27 +2520,23 @@ insert into cohort_basic select null, a.* from cohort_temp a;
 
 -- insert into person, attachment
 -- first person who are not PIs
+drop table if exists temp_person;
+set sql_mode='';
+create table temp_person select * from person where 1=2;
+
+insert into temp_person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
+select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
+from person where cohort_id = old_cohort_id and name is not null and name != '';
+
 insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
 select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
-from person where cohort_id = old_cohort_id and category_id <> 3 and name is not null;
+from temp_person where cohort_id = new_cohort_id and name is not null and name != '';
 
--- use a cursor to insert person and get the mapping
-OPEN pi_cursor;
-getNewPID: LOOP
-		FETCH pi_cursor INTO old_PI_Id;
-		IF finished = 1 THEN 
-			LEAVE getNewPID;
-		END IF;
-		-- build email list
-		BEGIN
-			Insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
-            select new_cohort_id, 3, name, position, institution, phone, email, now(), now() from person 
-            where cohort_id = old_cohort_id and category_id = 3 and name is not null;
-            Insert into mapping_old_PI_Id_To_New (cohort_id, old_PI_Id, new_PI_Id) values (old_cohort_id, old_PI_Id, last_insert_id());
-        END; 
-	END LOOP getNewPID;
-
-CLOSE pi_cursor;
+insert into mapping_old_PI_Id_To_New 
+select new_cohort_id, old.id, new.id 
+from person new 
+join (select * from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '') as old
+on new.name = old.name where new.cohort_id = new_cohort_id;
 
 insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
 select new_cohort_id,  attachment_type, category, filename, website, status, now(), now() 
