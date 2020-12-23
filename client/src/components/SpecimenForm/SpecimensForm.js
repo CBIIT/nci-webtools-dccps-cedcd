@@ -4,7 +4,7 @@ import allactions from '../../actions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 
 
 const SpecimenForm = ({ ...props }) => {
@@ -994,49 +994,50 @@ const SpecimenForm = ({ ...props }) => {
                                 (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
                 </p></div>
                             </div>
-
-                            <table className='table table-stripe table-responsive'>
-                                <thead>
-                                    <tr>
-                                        <th className='col-sm-1 center' >ICD-9</th>
-                                        <th className='col-sm-1 center' > ICD-10</th>
-                                        <th className='col-sm-3 center' >Cancer Site/Type</th>
-                                        <th className='col-sm-1 center' >Serum and/or Plasma</th>
-                                        <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
-                                        <th className='col-sm-1 center' >Saliva and/or Buccal</th>
-                                        <th className='col-sm-1 center' >Urine</th>
-                                        <th className='col-sm-1 center' >Feces</th>
-                                        <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
-                                        <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {lookup.cancer.map(c => {
-                                        const keyPrefix = `${cohortId}_${c.id}`;
-                                        const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
-                                            `${c.id}-${k.id}`);;
-
-
-                                        return <tr key={keyPrefix}>
-                                            <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
-                                            <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
-                                            <td className="bg-light">{c.cancer}</td>
-
-                                            {inputKeys.map((key, i) =>
-                                                <td><input className='inputWriter center' name={key} value={specimen.counts[key]}
-                                                    onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))} />
-                                                </td>
-                                            )}
+                            <div className="table-responsive">
+                                <table className='table table-striped'>
+                                    <thead>
+                                        <tr>
+                                            <th className='col-sm-1 center' >ICD-9</th>
+                                            <th className='col-sm-1 center' > ICD-10</th>
+                                            <th className='col-sm-3 center' >Cancer Site/Type</th>
+                                            <th className='col-sm-1 center' >Serum and/or Plasma</th>
+                                            <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
+                                            <th className='col-sm-1 center' >Saliva and/or Buccal</th>
+                                            <th className='col-sm-1 center' >Urine</th>
+                                            <th className='col-sm-1 center' >Feces</th>
+                                            <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
+                                            <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
                                         </tr>
-                                    })}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {lookup.cancer.map(c => {
+                                            const keyPrefix = `${cohortId}_${c.id}`;
+                                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                                `${c.id}-${k.id}`);;
+
+
+                                            return <tr key={keyPrefix}>
+                                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
+                                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
+                                                <td className="bg-light">{c.cancer}</td>
+
+                                                {inputKeys.map((key, i) =>
+                                                    <td><input className='inputWriter center' name={key} value={specimen.counts[key]}
+                                                        onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))} />
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                     {/* End Part D */}
                 </div>
             </div>
-            {/* END Specimen Information Collapsable Question Sections */}
+            {/* END Specimen Information Collapsible Question Sections */}
 
             <div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>
                 <span className='col-md-6 col-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>

@@ -26,10 +26,24 @@
 }
 
 .react-datepicker__input-container input {
-    width: 342px;
+    width: 340px;
  }
 
- .errorDate,
+ .react-datepicker__input-container input[class*='errorDate']{
+    border: 1px solid red;
+ }
+ /*
+ .errorDate, .react-datepicker__input-container input,
  .react-datepicker__day--today {
    border: 1px solid red;
  }
+*/
+ .closer {
+     color: red;
+     text-align: center;
+ }
+
+ .closer:hover, .upperCloser:hover{
+     cursor: hand;
+ }
+ 

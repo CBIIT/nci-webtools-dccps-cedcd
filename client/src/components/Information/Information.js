@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import './Information.css';
 import Moment from 'react-moment';
 import qs from 'query-string';
-
+import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 class Information extends Component {
 
@@ -275,8 +275,9 @@ class Information extends Component {
 	            <div className="rightLink"> <span className="lastUpdated">Last Updated: <span id="cd_lastupdate"><Moment format="MM/DD/YYYY">{info.update_time}</Moment></span></span> </div>
 	            <div id="cd_errorMsg" className="errorText"></div>
 	          </div>
-	          <div className="row topMatter">
-	            <div className="cohortInfo col-md-6">
+
+	          <div className="row" style={{marginBottom: '2rem'}}>
+	            <div className="col-md-6" style={{borderRight: '1px solid #000'}}>
 	              <h3>Cohort Collaboration Contact</h3>
 	              <p className="profile-contact-intro" style={{fontStyle:'italic',fontSize:'.80em'}}>If interested in collaborating with the cohort on a project, please contact:</p>
 	              <ul id="cd_contact">
@@ -285,21 +286,25 @@ class Information extends Component {
 	              	<a href={mailto}>
 	              		<i className="far fa-envelope"></i> {info.collab_email}</a></li><li><i className="fas fa-phone"></i> {info.collab_phone}</li></ul>
 	            </div>
-	            <div className="cohortInfo col-md-6 last">
+	            <div className="col-md-6" style={{paddingLeft: '4rem'}}>
 	              <h3>Principal Investigators</h3>
 	              <ul id="piList">{pis}</ul>
 	              {website}
 	            </div>
 	          </div>
-	          <div className="row bottomMatter">
-	            <div id="attachments" className="cohortInfo col-md-12">
-	              <button type="button" className={description.className} aria-expanded={description.expanded} aria-controls="more" onClick={this.descriptionClick}><span className="triangle"></span>Cohort Description</button>
-	              <div className="cohortInfoBody" id="more" aria-hidden={description.hidden} style={description.style}>
-					<div id="cd_description" dangerouslySetInnerHTML={{__html: desc}}/>
-	              </div>
-	              <button type="button" className={protocol.className} aria-expanded={protocol.expanded} aria-controls="protocols" onClick={this.protocolClick}><span className="triangle"></span>Questionnaires</button>
-	              <div className="cohortInfoBody" id="protocols" aria-hidden={protocol.hidden} style={protocol.style}>
-	                <h3 style={{"display":"none"}}>Study Protocol</h3>
+
+			  <CollapsiblePanelContainer>
+			  	<CollapsiblePanel
+					condition={this.state.description}
+					panelTitle = 'Cohort Description'
+					onClick={this.descriptionClick}>
+				   	<div id="cd_description" dangerouslySetInnerHTML={{__html: desc}}/>
+				</CollapsiblePanel>
+				<CollapsiblePanel
+					condition={this.state.protocol}
+					panelTitle = 'Questionnaires'
+					onClick={this.protocolClick}>
+				   	<h3 style={{"display":"none"}}>Study Protocol</h3>
 	                <div id="prot_attachments" style={{"display":"none"}}>
 	                	{this.renderLinks(0)}
 	                </div>
@@ -307,15 +312,16 @@ class Information extends Component {
 	                <div id="quest_attachments">
 	                  	{this.renderLinks(1)}
 	                </div>
-	              </div>
-	              <button type="button" className={data.className} aria-expanded={data.expanded} aria-controls="policies" onClick={this.dataClick}><span className="triangle"></span>Data, Biospecimen, and Authorship Policies</button>
-	              <div className="cohortInfoBody" id="policies" aria-hidden={data.hidden} style={data.style}>
-	                <div id="pol_attachments">
+				</CollapsiblePanel>
+				<CollapsiblePanel
+					condition={this.state.data}
+					panelTitle = 'Data, Biospecimen, and Authorship Policies'
+					onClick={this.dataClick}>
+				   	<div id="pol_attachments">
 	                  	{this.renderLinks(2)}
 	                </div>
-	              </div>
-	            </div>
-	          </div>
+				</CollapsiblePanel>
+			  </CollapsiblePanelContainer>
 	        </div>
 	      );
   	}

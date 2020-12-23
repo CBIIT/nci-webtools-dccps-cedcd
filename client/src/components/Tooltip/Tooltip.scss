@@ -1,0 +1,9 @@
+.tooltip-danger {
+    .arrow::before {
+        border-top-color: red !important;
+    }
+
+    .tooltip-inner {
+        background-color: red;
+    }
+}

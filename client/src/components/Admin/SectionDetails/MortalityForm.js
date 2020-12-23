@@ -83,7 +83,7 @@ const MortalityForm = ({ ...props }) => {
     return (
         <div id='mortalityContainer' className='col-md-12'>
             <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-                {/* START Mortality Collapsable Question Sections */}
+                {/* START Mortality Collapsible Question Sections */}
                 <div className="row">
                     <div id="attachments" className="cohortInfo col-md-12">
                         {/* START Mortality */}
@@ -231,7 +231,7 @@ const MortalityForm = ({ ...props }) => {
                         </div>
                          {/* END Mortality */}
                     </div>
-                    {/* END Mortality Collapsable Question Sections */}
+                    {/* END Mortality Collapsible Question Sections */}
                 </div>
                 
                 <div className='col-sm-12' style={{ marginTop: '10px', marginBottom: '20px' }}>

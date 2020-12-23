@@ -5,7 +5,8 @@ import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 const DataLinkageForm = ({ ...props }) => {
 
@@ -22,7 +23,11 @@ const DataLinkageForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
-
+    const [activePanels, setActivePanels] = useState({A: true});
+    const toggleActivePanel = name => setActivePanels({
+        ...activePanels, 
+        [name]: !activePanels[name]
+    })
 
     const [errors, setErrors] = useState({
         haveDataLink: '',
@@ -262,206 +267,211 @@ const DataLinkageForm = ({ ...props }) => {
     }
 
 
-    return <div className='col-md-12' style={{ marginTop: '20px', paddingLeft: '0px' }}>
+    return <div className="p-3 px-5">
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
 
-        <div className='col-md-12'>
-            <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) }} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDataLink(1))} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-            {errors.haveDataLink !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLink}</div>}
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-12'>If yes, please specify:</span>
+        <CollapsiblePanel 
+            condition={activePanels.A} 
+            onClick={_ => toggleActivePanel('A')} 
+            panelTitle="Data Linkage & Harmonization">
             <div className='col-md-12'>
-                <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                <label htmlFor='haveDataLink' className='col-md-12'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
             </div>
-            {errors.haveDataLinkSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLinkSpecify}</div>}
-        </div>
-
-        <div className='col-md-12'>
-            <label htmlFor='haveHarmonization' className='col-md-12'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) }} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveHarmonization(1))} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-            {errors.haveHarmonization !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonization}</div>}
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-12'>If yes, please specify:</span>
-            <div className='col-md-12'>
-                <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
-            </div>
-            {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonizationSpecify}</div>}
-        </div>
-
-        <div className='col-md-12'>
-            <label htmlFor='haveDeposited' className='col-md-12'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => {
-                    dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
-                    dispatch(allactions.dataLinkageActions.setdbGaP(0))
-                    dispatch(allactions.dataLinkageActions.setbioLinCC(0))
-                    dispatch(allactions.dataLinkageActions.setOtherRepo(0))
-                }} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDeposited(1))} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-            {errors.haveDeposited !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeposited}</div>}
-        </div>
-
-        <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please select which repositories (Select all that apply):</span>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) }} style={{ width: '30px' }} />
+                    <span>No</span>
+                </span>
+
+                <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveDataLink' checked={dataLinkage.haveDataLink === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDataLink(1))} style={{ width: '30px' }} />
+                    <span>Yes</span>
+                </span>
+                {errors.haveDataLink !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLink}</div>}
             </div>
 
-            <div className='col-md-12'>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dbGaP' checked={dataLinkage.dbGaP === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2))} style={{ width: '30px' }} />
-                    </span>
-                    <span>dbGaP</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2))} style={{ width: '30px' }} />
-                    </span>
-                    <span>BioLINCC</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='otherRepo' checked={dataLinkage.otherRepo === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2))} style={{ width: '30px' }} />
-                    </span>
-                    <span>otherRepo</span>
-                </div>
-                {errors.deposit !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <div className='col-md-4' style={{ color: 'red' }}>{errors.deposit}</div>
-                </div>}
-            </div>
-        </div>
-
-        <div className='col-md-12' style={{ marginTop: '1em' }}>
-            <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
-        </div>
-
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => {
-                    dispatch(allactions.dataLinkageActions.setDataOnline(0));
-                    dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
-                    dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
-                    dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
-                }} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnline(1))} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-            {errors.dataOnline !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnline}</div>}
-        </div>
-
-        <div>
             <div className='form-group col-md-12'>
-                <span className='col-md-5'>If yes, please specify (Select all that apply):</span>
+                <span className='col-md-12'>If yes, please specify:</span>
+                <div className='col-md-12'>
+                    <input name='haveDataLinkSpecify' className='form-control' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                </div>
+                {errors.haveDataLinkSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDataLinkSpecify}</div>}
             </div>
 
             <div className='col-md-12'>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2))} style={{ width: '30px' }} />
-                    </span>
-                    <span>Policy attached (PDF)</span>
-                </div>
-                <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
-                        <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite + 1) % 2))} style={{ width: '30px' }} />
-                    </span>
-                    <span>Website, please specify: </span>
-                </div>
-                {errors.dataOnlineSelected !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
-                    <div className='col-md-4' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>
-                </div>}
+                <label htmlFor='haveHarmonization' className='col-md-12'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
             </div>
 
-            <div className='form-group col-md-12' style={{ marginTop: '1em' }}>
+            <div className='form-group col-md-12'>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) }} style={{ width: '30px' }} />
+                    <span>No</span>
+                </span>
+
+                <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveHarmonization(1))} style={{ width: '30px' }} />
+                    <span>Yes</span>
+                </span>
+                {errors.haveHarmonization !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonization}</div>}
+            </div>
+
+            <div className='form-group col-md-12'>
+                <span className='col-md-12'>If yes, please specify:</span>
+                <div className='col-md-12'>
+                    <input name='haveHarmonizationSpecify' className='form-control' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
+                </div>
+                {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveHarmonizationSpecify}</div>}
+            </div>
+
+            <div className='col-md-12'>
+                <label htmlFor='haveDeposited' className='col-md-12'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
+            </div>
+
+            <div className='form-group col-md-12'>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => {
+                        dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
+                        dispatch(allactions.dataLinkageActions.setdbGaP(0))
+                        dispatch(allactions.dataLinkageActions.setbioLinCC(0))
+                        dispatch(allactions.dataLinkageActions.setOtherRepo(0))
+                    }} style={{ width: '30px' }} />
+                    <span>No</span>
+                </span>
+
+                <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} onClick={() => dispatch(allactions.dataLinkageActions.setHaveDeposited(1))} style={{ width: '30px' }} />
+                    <span>Yes</span>
+                </span>
+                {errors.haveDeposited !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.haveDeposited}</div>}
+            </div>
+
+            <div>
+                <div className='form-group col-md-12'>
+                    <span className='col-md-5'>If yes, please select which repositories (Select all that apply):</span>
+                </div>
+
+                <div className='col-md-12'>
+                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                            <input type='checkbox' name='dbGaP' checked={dataLinkage.dbGaP === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2))} style={{ width: '30px' }} />
+                        </span>
+                        <span>dbGaP</span>
+                    </div>
+                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                            <input type='checkbox' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2))} style={{ width: '30px' }} />
+                        </span>
+                        <span>BioLINCC</span>
+                    </div>
+                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                            <input type='checkbox' name='otherRepo' checked={dataLinkage.otherRepo === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2))} style={{ width: '30px' }} />
+                        </span>
+                        <span>otherRepo</span>
+                    </div>
+                    {errors.deposit !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <div className='col-md-4' style={{ color: 'red' }}>{errors.deposit}</div>
+                    </div>}
+                </div>
+            </div>
+
+            <div className='col-md-12' style={{ marginTop: '1em' }}>
+                <label htmlFor='dataOnline' className='col-md-12'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
+            </div>
+
+            <div className='form-group col-md-12'>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => {
+                        dispatch(allactions.dataLinkageActions.setDataOnline(0));
+                        dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
+                        dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
+                        dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                    }} style={{ width: '30px' }} />
+                    <span>No</span>
+                </span>
+
+                <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='dataOnline' checked={dataLinkage.dataOnline === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnline(1))} style={{ width: '30px' }} />
+                    <span>Yes</span>
+                </span>
+                {errors.dataOnline !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.dataOnline}</div>}
+            </div>
+
+            <div>
+                <div className='form-group col-md-12'>
+                    <span className='col-md-5'>If yes, please specify (Select all that apply):</span>
+                </div>
+
+                <div className='col-md-12'>
+                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                            <input type='checkbox' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2))} style={{ width: '30px' }} />
+                        </span>
+                        <span>Policy attached (PDF)</span>
+                    </div>
+                    <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', width: '50px' }}>
+                            <input type='checkbox' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} onClick={() => dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite + 1) % 2))} style={{ width: '30px' }} />
+                        </span>
+                        <span>Website, please specify: </span>
+                    </div>
+                    {errors.dataOnlineSelected !== '' && <div className='col-md-8' style={{ padding: '0', margin: '0' }}>
+                        <div className='col-md-4' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>
+                    </div>}
+                </div>
+
+                <div className='form-group col-md-12' style={{ marginTop: '1em' }}>
+                    <div className='col-md-8'>
+                        <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
+                    </div>
+                    {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.dataOnlineURL}</div>}
+                </div>
+            </div>
+
+            <div className='col-md-12'>
+                <label htmlFor='createdRepo' className='col-md-12'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
+            </div>
+
+            <div className='form-group col-md-12'>
+                <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify('')) }} style={{ width: '30px' }} />
+                    <span>No</span>
+                </span>
+
+                <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
+                    <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 1} onClick={() => dispatch(allactions.dataLinkageActions.setCreatedRepo(1))} style={{ width: '30px' }} />
+                    <span>Yes</span>
+                </span>
+                {errors.createdRepo !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.createdRepo}</div>}
+            </div>
+
+            <div className='col-md-12'>
+                <span className='col-md-12'>If yes, please specify:</span>
                 <div className='col-md-8'>
-                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
+                    <input name='createdRepoSpecify' className='form-group form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
                 </div>
-                {errors.dataOnlineURL !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.dataOnlineURL}</div>}
+                {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
             </div>
-        </div>
 
-        <div className='col-md-12'>
-            <label htmlFor='createdRepo' className='col-md-12'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
-        </div>
 
-        <div className='form-group col-md-12'>
-            <span className='col-md-1' style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 0} onClick={() => { dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify('')) }} style={{ width: '30px' }} />
-                <span>No</span>
-            </span>
-
-            <span className="col-md-1" style={{ paddingRight: '0', marginRight: '0', whiteSpace: 'nowrap' }}>
-                <input type='radio' name='createdRepo' checked={dataLinkage.createdRepo === 1} onClick={() => dispatch(allactions.dataLinkageActions.setCreatedRepo(1))} style={{ width: '30px' }} />
-                <span>Yes</span>
-            </span>
-            {errors.createdRepo !== '' && <div className='col-md-3' style={{ color: 'red' }}>{errors.createdRepo}</div>}
-        </div>
-
-        <div className='col-md-12'>
-            <span className='col-md-12'>If yes, please specify:</span>
-            <div className='col-md-8'>
-                <input name='createdRepoSpecify' className='form-group form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
+            <div className='col-md-12' style={{ position: 'relative' }}>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')} />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
+                </span>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' style={{ paddingLeft: '0', paddingRight: '0' }} disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                </span>
             </div>
-            {errors.createdRepoSpecify !== '' && <div className='col-md-3' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
-        </div>
-
-
-        <div className='col-md-12' style={{ position: 'relative' }}>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')} />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
-            </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
-                <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
-                </span>
-                <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
-                </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' style={{ paddingLeft: '0', paddingRight: '0' }} disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
-            </span>
-        </div>
+        </CollapsiblePanel>
     </div >
 }
 

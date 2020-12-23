@@ -19,9 +19,7 @@ import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
 import Workbook from '../Workbook/Workbook';
-import Accordion from 'react-bootstrap/Accordion';
-import Card from 'react-bootstrap/Card';
-import { Collapse } from 'reactstrap';
+
 
 class Details extends Component {
 
@@ -1265,9 +1263,7 @@ class Details extends Component {
 									{this.state.collapse ? "Click to Collapse" : "Click to Expand"}
 								</p>
 							</div>
-							<Collapse isOpen={this.state.collapse}>
-								{this.renderSearchFilters()}
-							</Collapse>
+							{this.state.collapse && this.renderSearchFilters()}
 						</div>
 					</div>
 					<div className="filter-block home col-md-12">
