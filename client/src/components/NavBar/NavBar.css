@@ -3,8 +3,7 @@
   display: inline-block;
   height: inherit;
   box-sizing: border-box;
-  align-items: right;
-  text-align: left;
+  
 }
 .miniDropdown .dropdown:hover{
   background-color: #01857b;
@@ -20,9 +19,10 @@
 
 .dropdown-content {
   display: none;
-  position: auto;
-  align-items: right;
-  text-align: left;
+  position: absolute;
+  left: -70;
+  
+
   /*right: -42px; */
   margin-top: 10px;
   background-color: #052f30;
