@@ -529,7 +529,7 @@ const CohortForm = ({ ...props }) => {
                                     {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '10px' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span></Reminder> : <span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '30px' }}><input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span>}
                                 </div>
                                 :
-                                <div className='col-md-8' style={{ maxWidth: '670px' }}>
+                                <div className='col-md-8' style={{ maxWidth: '690px' }}>
                                     {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{ margin: '0', padding: '0' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span></Reminder> : <span className='col-md-12' style={{ margin: '0', padding: '0' }}><input className='form-control' name='cohort_web_site' placeholder='Max of 200 characters' maxLength='200' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span>}
                                 </div>
                             }
@@ -553,7 +553,7 @@ const CohortForm = ({ ...props }) => {
                         <div id='question3' className='col-xs-12' style={{ paddingBottom: '10px' }}>
                             <div id='a3a' className='col-xs-12' style={{ paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px' }}>
                                 <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.5a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
-                                <div className='col-md-8' style={{ paddingLeft: '0', paddingRight:'5px'}}>
+                                <div className='col-md-8' style={{ paddingLeft: '0', paddingRight:'10px'}}>
                                 <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} displayStyle={saved} />
                                 </div>
                             </div>
