@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import CohortForm from './SectionDetails/CohortForm'
 import EnrollmentCountsForm from './SectionDetails/EnrollmentCountsForm'
 import MajorContentForm from './SectionDetails/MajorContentForm'
@@ -9,8 +10,8 @@ import MortalityForm from './SectionDetails/MortalityForm'
 import SpecimenForm from './SectionDetails/Specimens'
 import DataLinkageForm from './SectionDetails/DataLinkageForm'
 import Messenger from '../Snackbar/Snackbar'
-
 import ReviewQuestionnaire from './ReviewQuestionnaire'
+import allactions from '../../actions';
 
 const getChild = (sectionName, props) => {
     switch (sectionName) {
@@ -35,10 +36,14 @@ const getChild = (sectionName, props) => {
 
 export default function ReviewCohort(props) {
     const { status } = useParams()
+    const dispatch = useDispatch();
 
     // todo: replace with the following:
     // const cohortId = useSelector(state => state.adminCohortIDReducer)
+    // and initialize cohortID when url state changes
     const cohortId = +window.location.pathname.split('/').pop();
+    useEffect(() => { dispatch(allactions.cohortIDAction.setCohortId(cohortId)) }, []);
+
     const [currentSection, setCurrentSection] = useState('A')
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
