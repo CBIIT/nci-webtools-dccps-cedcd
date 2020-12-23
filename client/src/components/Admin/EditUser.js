@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
-import CenterModal from '../Modal/Modal'
+import CenterModal from '../controls/modal/modal'
 import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
 import './AddNewCohort.css';

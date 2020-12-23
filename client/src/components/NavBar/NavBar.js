@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./NavBar.css";
+import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
 import { UserSessionContext } from '../../index';
