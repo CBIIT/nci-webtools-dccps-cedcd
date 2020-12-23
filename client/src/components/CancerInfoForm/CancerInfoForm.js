@@ -6,10 +6,10 @@ import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
-import { update } from 'lodash';
-const { 
-    setCancerCount, 
-    setCancerInfoFormValue,
+import { CollapsablePanel, CollapsablePanelContainer } from '../controls/collapsable-panels/collapsable-panels';
+
+const {
+    setCancerCount,
     mergeCancerCounts,
     mergeCancerInfoFormValues,
 } = allactions.cancerInfoActions;
@@ -53,9 +53,9 @@ const CancerInfoForm = ({ ...props }) => {
         if (!cohort || !Object.keys(cohort).length || !lookup)
             return;
 
-        let { 
-            cancer_count: cancerCount, 
-            cancer_info: cancerInfo 
+        let {
+            cancer_count: cancerCount,
+            cancer_info: cancerInfo
         } = cohort;
 
         // populate counts
@@ -64,7 +64,7 @@ const CancerInfoForm = ({ ...props }) => {
         for (let cancer of lookup.cancer) {
             for (let gender of [lookupMap.male, lookupMap.female]) {
                 for (let caseType of [lookupMap.prevalent, lookupMap.incident]) {
-                    const entry = cancerCount.find(count => 
+                    const entry = cancerCount.find(count =>
                         +count.cohort_id === +cohortId &&
                         count.cancer_id === cancer.id &&
                         count.gender_id === gender.id &&
@@ -78,8 +78,8 @@ const CancerInfoForm = ({ ...props }) => {
         }
 
         // process form data
-        const formValues = getUpdatedFormValues({...cancerInfo[0]});
-        console.log({formValues})
+        const formValues = getUpdatedFormValues({ ...cancerInfo[0] });
+        console.log({ formValues })
 
         dispatch(mergeCancerCounts(counts));
         dispatch(mergeCancerInfoFormValues(formValues));
@@ -100,7 +100,7 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     function getUpdatedFormValues(form) {
-        let formUpdates = {...form};
+        let formUpdates = { ...form };
 
         // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
         if (form.ci_confirmed_cancer_date && form.ci_confirmed_cancer_date.constructor !== Date) {
@@ -206,7 +206,7 @@ const CancerInfoForm = ({ ...props }) => {
         setSubmitted(true);
 
         async function onConfirm() {
-            updateModal({show: false});
+            updateModal({ show: false });
             await saveCohort();
         }
 
@@ -232,7 +232,7 @@ const CancerInfoForm = ({ ...props }) => {
         setSubmitted(true);
 
         async function onConfirm() {
-            updateModal({show: false});
+            updateModal({ show: false });
             await saveCohort();
             props.sectionPicker('E');
         }
@@ -260,6 +260,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         try {
             let info = { ...form };
+            let id = +cohortId;
 
             if (info.ci_confirmed_cancer_date) {
                 const dateTime = info.ci_confirmed_cancer_date.getTime();
@@ -270,21 +271,25 @@ const CancerInfoForm = ({ ...props }) => {
                 info.ci_confirmed_cancer_year = null;
             }
 
-            await fetch(`/api/questionnaire/update_cancer_info/${cohortId}`, {
+            await fetch(`/api/questionnaire/update_cancer_info/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify([info])
             }).then(r => r.json())
-              .then(result => {
-                  if(result && result.data){
-                      console.log("new id: "+result.data.duplicated_cohort_id)
-                      console.log("new stats: "+result.data.status)
-                      dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                      dispatch({type: 'SET_COHORT_STATUS', value: result.data.status})
-                  }
-              });
+                .then(result => {
+                    if (result && result.data) {
+                        const { duplicated_cohort_id: newCohortId, status } = result.data;
+                        // console.log("new id: "+newCohortId)
+                        // console.log("new stats: "+status)
 
-            await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
+                        if (newCohortId && +newCohortId !== id)
+                            id = newCohortId;
+                        dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
+                        dispatch({ type: 'SET_COHORT_STATUS', value: status })
+                    }
+                });
+
+            await fetch(`/api/questionnaire/update_cancer_count/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(Object.entries(counts).map(([key, value]) => {
@@ -294,7 +299,7 @@ const CancerInfoForm = ({ ...props }) => {
                 }))
             }).then(r => r.json());
 
-            await fetch(`/api/questionnaire/cohort/${cohortId}`, {
+            await fetch(`/api/questionnaire/cohort/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({
@@ -305,7 +310,7 @@ const CancerInfoForm = ({ ...props }) => {
                 })
             }).then(r => r.json());
 
-            dispatch(loadCohort(cohortId));
+            dispatch(loadCohort(id));
 
             updateModal({
                 show: true,
@@ -322,7 +327,7 @@ const CancerInfoForm = ({ ...props }) => {
                 show: true,
                 title: <h2>Error: Could Not Update Cohort Information</h2>,
                 body: <div className="my-3">
-                    There was an error processing your request. Please try again later or contact 
+                    There was an error processing your request. Please try again later or contact
                     <a href="mailto:CEDCDWebAdmin@mail.nih.gov">CEDCDWebAdmin@mail.nih.gov</a> if this issue persists.
                     <br />
                     Your changes to {cohort.name} have <strong>not</strong> been saved.
@@ -365,8 +370,11 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
-        <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
+        
+        <CollapsablePanel
+            condition={activePanel === 'panelA'}
+            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+            panelTitle="Cancer Counts">
             <div className="my-3">
                 <label className="d-block">D.1 Cancer Counts</label>
                 <div>Please enter the number of participants with these cancers by sex.</div>
@@ -392,16 +400,16 @@ const CancerInfoForm = ({ ...props }) => {
                         {lookup.cancer.map(c => {
                             const keyPrefix = `${cohortId}_${c.id}`;
                             const inputTypes = [
-                                {sex: 'male', caseType: 'prevalent'},
-                                {sex: 'male', caseType: 'incident'},
-                                {sex: 'female', caseType: 'prevalent'},
-                                {sex: 'female', caseType: 'incident'},
+                                { sex: 'male', caseType: 'prevalent' },
+                                { sex: 'male', caseType: 'incident' },
+                                { sex: 'female', caseType: 'prevalent' },
+                                { sex: 'female', caseType: 'incident' },
                             ]
 
-                            const inputKeys = inputTypes.map(({sex, caseType}) => 
+                            const inputKeys = inputTypes.map(({ sex, caseType }) =>
                                 `${keyPrefix}_${lookupMap[sex].id}_${lookupMap[caseType].id}`
                             );
-                            
+
                             return <tr key={keyPrefix}>
                                 <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
                                 <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
@@ -425,13 +433,15 @@ const CancerInfoForm = ({ ...props }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </CollapsablePanel>
 
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information</div>
-        <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
+        <CollapsablePanel
+            condition={activePanel === 'panelB'}
+            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+            panelTitle="Cancer Information">
             <form>
                 <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label required">
                         D.2 Most recent date confirmed cancer case ascertainment:
                     </label>
                     <DatePicker
@@ -601,8 +611,8 @@ const CancerInfoForm = ({ ...props }) => {
                         D.9 Do you have tumor genetic markers data?
                     </label>
                     {[
-                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No'},
-                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)'},
+                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
                     ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
 
                     <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
@@ -643,7 +653,7 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
                 </div>
             </form>
-        </div>
+        </ CollapsablePanel>
 
         <CenterModal
             show={modal.show}
@@ -665,7 +675,7 @@ const CancerInfoForm = ({ ...props }) => {
         </div>
       */}
 
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }} className="my-4">
             <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('C')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('E')} />
