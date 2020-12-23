@@ -1037,7 +1037,7 @@ const SpecimenForm = ({ ...props }) => {
                     {/* End Part D */}
                 </div>
             </div>
-            {/* END Specimen Information Collapsable Question Sections */}
+            {/* END Specimen Information Collapsible Question Sections */}
 
             <div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>
                 <span className='col-md-6 col-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>

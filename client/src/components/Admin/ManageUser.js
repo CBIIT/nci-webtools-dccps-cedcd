@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
-import CohortStatusList from './CohortStatusList';
 import TableHeaderManageUser from './TableHeaderManageUser';
 import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
 import './ManageCohort.css';
-import { filter, size } from 'lodash';
 
 class ManageUser extends Component {
 
@@ -23,7 +21,7 @@ class ManageUser extends Component {
 				userNameSearch: '',
 			},
 			orderBy: {
-				column: "last_name",
+				column: "name",
 				order: "asc"
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
@@ -254,7 +252,6 @@ class ManageUser extends Component {
 			let editUser = "Edit";
 			let newUserLink = `/admin/newuser`
 
-			let select_id = "select_" + id;
 
 			return (
 				<tr key={id}>
@@ -263,6 +260,7 @@ class ManageUser extends Component {
 					<td>{item.user_role}</td>
 
 					<td>{item.cohort_list}</td>
+					<td>{item.active_status}</td>
 					<td>{item.last_login}</td>
 					<td style={{ textDecoration: 'underline' }}>
 						<Link to={editUserLink} onClick={this.saveHistory}>{editUser}</Link>
@@ -295,8 +293,14 @@ class ManageUser extends Component {
 								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " onChange={(e) => this.handleuserNameSearchChange(e)} />
 							</div>
 						</div>
+						<div className="col-md-2 col-6" style={{ "paddingLeft": "0" }}>
+							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
+								<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
+							</div>
 
-						<div className="col-md-8 col-12">
+						</div>
+
+						<div className="col-md-6 col-12">
 							<div className="row" style={{ "display": "flex", "paddingRight": "0px", float: "right" }}>
 								<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
@@ -318,6 +322,7 @@ class ManageUser extends Component {
 											{this.renderTableHeader("email", "15%")}
 											{this.renderTableHeader("user_role", "10%")}
 											{this.renderTableHeader("cohort_list", "20%")}
+											{this.renderTableHeader("active_status", "10%")}
 											{this.renderTableHeader("last_login", "10%")}
 											{this.renderTableHeader("action", "10%")}
 										</tr>

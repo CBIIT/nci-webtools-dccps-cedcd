@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
-import "./NavBar.css";
+import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
 import { UserSessionContext } from '../../index';
@@ -196,8 +196,8 @@ const NavBar = (props) => {
                   Admin
             </a>
                 <div className="dropdown-content" >
-                  <a target="_self" href="/admin/managecohort" style={{ textAlign: "left" }} >Manage Cohorts</a>
-                  <a target="_self" href="/admin/manageuser" style={{ textAlign: "left" }} >Manage Users</a>
+                  <a target="_self" href="/admin/managecohort"  >Manage Cohorts</a>
+                  <a target="_self" href="/admin/manageuser"  >Manage Users</a>
                 </div>
               </div>
             </li>

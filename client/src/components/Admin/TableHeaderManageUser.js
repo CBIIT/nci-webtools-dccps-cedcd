@@ -20,6 +20,9 @@ class TableHeaderManageUser extends Component {
     else if (this.props.value === "cohort_list") {
       name = "Cohort";
     }
+    else if (this.props.value === "active_status") {
+      name = "Active";
+    }
     else if (this.props.value === "last_login") {
       name = "Last Login Date";
     }

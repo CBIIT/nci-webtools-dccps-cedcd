@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter} from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import App from './components/App/App';
 import { unregister } from './registerServiceWorker';
-import {createBrowserHistory} from 'history';
-import {Provider}  from 'react-redux';
-import {createStore, compose, applyMiddleware} from 'redux';
+import { createBrowserHistory } from 'history';
+import { Provider } from 'react-redux';
+import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
-import { initializeLookup } from './reducers/lookupReducer';
+import { getLookupTables } from './reducers/lookupReducer';
 import './index.scss';
 
 
@@ -24,7 +24,11 @@ const store = createStore(rootReducer, compose(
 (async function main() {
 	const response = await fetch('/api/user-session');
 	const userSession = await response.json();
-	store.dispatch(initializeLookup());
+	const lookupTables = await getLookupTables();
+	store.dispatch({
+		type: 'SET_LOOKUP',
+		value: lookupTables,
+	});
 
 	ReactDOM.render(
 		<UserSessionContext.Provider value={userSession}>
@@ -33,10 +37,10 @@ const store = createStore(rootReducer, compose(
 					<App />
 				</BrowserRouter>
 			</Provider>
-		</UserSessionContext.Provider>, 
+		</UserSessionContext.Provider>,
 		document.getElementById('root')
 	);
-		
+
 	unregister();
 })();
 

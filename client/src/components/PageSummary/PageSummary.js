@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Alert } from 'reactstrap';
 import './PageSummary.css';
 
 class PageSummary extends Component {

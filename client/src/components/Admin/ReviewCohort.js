@@ -1,82 +1,158 @@
-import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import CohortForm from './SectionDetails/CohortForm'
 import EnrollmentCountsForm from './SectionDetails/EnrollmentCountsForm'
 import MajorContentForm from './SectionDetails/MajorContentForm'
-import CancerInfoForm from './SectionDetails/CancerInfoForm'
+import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from './SectionDetails/MortalityForm'
 import SpecimenForm from './SectionDetails/Specimens'
 import DataLinkageForm from './SectionDetails/DataLinkageForm'
-
+import Messenger from '../Snackbar/Snackbar'
 import ReviewQuestionnaire from './ReviewQuestionnaire'
+import allactions from '../../actions';
 
-const getChild = (sectionName) => {
-    switch(sectionName){
+const getChild = (sectionName, props) => {
+    switch (sectionName) {
         case 'A':
-            return <CohortForm />
-        case 'B': 
-            return <EnrollmentCountsForm />
+            return <CohortForm {...props} />
+        case 'B':
+            return <EnrollmentCountsForm {...props} />
         case 'C':
-            return <MajorContentForm />
+            return <MajorContentForm {...props} />
         case 'D':
-            return <CancerInfoForm />
+            return <CancerInfoForm {...props} />
         case 'E':
-            return  <MortalityForm />
+            return <MortalityForm {...props} />
         case 'F':
-            return <DataLinkageForm />
+            return <DataLinkageForm {...props} />
         case 'G':
-            return <SpecimenForm />
-        default: 
+            return <SpecimenForm {...props} />
+        default:
             return <Message />
     }
 }
 
-const content = (currentSection, handleClick, status) => {
-   /* switch (currentSection) {
-        case 'A':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
-                <CohortForm />
-            </ReviewQuestionnaire>
-        case 'B':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <EnrollmentCountsForm />
-            </ReviewQuestionnaire>
-        case 'C':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <MajorContentForm />
-            </ReviewQuestionnaire>
-        case 'D':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <CancerInfoForm />
-            </ReviewQuestionnaire>
-        case 'E':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <MortalityForm />
-            </ReviewQuestionnaire>
-        case 'F':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <DataLinkageForm />
-            </ReviewQuestionnaire>
-        case 'G':
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <SpecimenForm />
-            </ReviewQuestionnaire>
-        default:
-            return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <Message />
-            </ReviewQuestionnaire>
+export default function ReviewCohort(props) {
+    const { status } = useParams()
+    const dispatch = useDispatch();
+
+    // todo: replace with the following:
+    // const cohortId = useSelector(state => state.adminCohortIDReducer)
+    // and initialize cohortID when url state changes
+    const cohortId = +window.location.pathname.split('/').pop();
+    useEffect(() => { dispatch(allactions.cohortIDAction.setCohortId(cohortId)) }, []);
+
+    const [currentSection, setCurrentSection] = useState('A')
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState('')
+    const [userEmails, setEmails] = useState('')
+
+
+ /* switch (currentSection) {
+         case 'A':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
+                 <CohortForm />
+             </ReviewQuestionnaire>
+         case 'B':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <EnrollmentCountsForm />
+             </ReviewQuestionnaire>
+         case 'C':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <MajorContentForm />
+             </ReviewQuestionnaire>
+         case 'D':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <CancerInfoForm />
+             </ReviewQuestionnaire>
+         case 'E':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <MortalityForm />
+             </ReviewQuestionnaire>
+         case 'F':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <DataLinkageForm />
+             </ReviewQuestionnaire>
+         case 'G':
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <SpecimenForm />
+             </ReviewQuestionnaire>
+         default:
+             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
+                 <Message />
+             </ReviewQuestionnaire>
+     }
+     */
+
+
+    const sendEmail = () => {
+        let reqBody = {
+            // firstname:'joe',
+            //  lastname:'zhao',
+            // organization:'NIH',
+            //  phone:'',
+            email: userEmails,
+            topic: 'test',
+            message: 'this is test on sending email'
+        };
+        fetch('/api/questionnaire/sendEmail', {
+            method: "POST",
+            body: JSON.stringify(reqBody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+                    setMessage('email was sent')
+                    let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                    clearTimeout(timedMessage)
+                }
+                else {
+                    setMessage('email failed to be sent')
+                    let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                    clearTimeout(timedMessage)
+                }
+            })
+    }    
+
+    const resetCohortStatus = (cohortID, nextStatus) => {
+        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+                method: "POST"
+            }).then(res => res.json())
+                .then(result => {
+                    if (result && result.status === 200) {
+                        setMessage('update was successful')
+                        setSuccessMsg(true)
+                        sendEmail()
+                    }
+                    else {
+                        setMessage('update failed')
+                        setFailureMsg(true)
+                    }
+                })
+        }
     }
-    */
-   return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
-       {getChild(currentSection)}
-   </ReviewQuestionnaire>
-}
 
-const ReviewCohort = (...props) => {
-    const [current, setCurrent] = useState('A')
-    const {status} = useParams()
-    return content(current, setCurrent, status)
-}
+    const handleApprove = () => {
+        resetCohortStatus(cohortId, 'published')
+    }
 
-export default ReviewCohort
+    const handleReject = () => {
+        resetCohortStatus(cohortId, 'returned')
+    }
+
+    return <>
+        {successMsg && <Messenger message={message} severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message={message} severity='warning' open={true} changeMessage={setFailureMsg} />}
+
+        <ReviewQuestionnaire activeSection={currentSection} handler={setCurrentSection} cohortStatus={status}>
+            {getChild(currentSection, { isReadOnly: true, cohortId, handleApprove, handleReject })}
+        </ReviewQuestionnaire>
+    </>    
+}

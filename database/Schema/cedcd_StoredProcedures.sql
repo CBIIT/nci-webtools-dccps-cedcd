@@ -2819,9 +2819,9 @@ BEGIN
    set @status_query = " and 1=1 ";
   
   if columnName != "" then
-		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+		set @orderBy = concat(" order by ",columnName," , name ",columnOrder," ");
 	else
-		set @orderBy = "order by u.last_name desc";
+		set @orderBy = "order by name asc";
   end if;
     
   if pageIndex > -1 then
@@ -2832,14 +2832,16 @@ BEGIN
     
   set @query = concat("select id, concat(u.last_name,', ', u.first_name) as name, u.email,
        ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
-	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
-   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id
-   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, 
-(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-    from user u where IFNULL(u.active_status, 'Y') ='Y' ", 
-    @orderBy, @paging);
+	   ( case when access_level like '%Admin' then 'All' 
+	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+        from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id
+        group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, 
+       IFNULL(u.active_status, 'Y') as active_status,
+       (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+        from user u where 1=1 ", 
+          @orderBy, @paging);
 	
-  PREPARE stmt FROM @query;
+    PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
@@ -2856,9 +2858,9 @@ BEGIN
   set @query = concat("select u.last_name, u.first_name, u.email,
        ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
 	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
-   from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
-   group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
-(case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
+        from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
+       group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
+       ( case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
     from user u where IFNULL(u.active_status, 'Y') ='Y' and u.id = ", usid); 
 
 	
@@ -2866,6 +2868,37 @@ BEGIN
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
+    
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_user_profile
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_user_profile` //
+
+CREATE PROCEDURE `update_user_profile`(in userID int, in info JSON)
+Begin
+   DECLARE i INT DEFAULT 0;
+    update user set email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
+                    last_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , json_unquote(json_extract(info, '$.last_name'))),
+                    first_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , json_unquote(json_extract(info, '$.first_name'))),
+                     access_level = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , json_unquote(json_extract(info, '$.user_role'))),
+                     update_time= now()
+                 where id = `userID`;
+ 
+ 	SET @cohortList = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_list'));
+    if(JSON_LENGTH(@cohortList) > 0) then
+      update cohort_user_mapping set active='N' where cohort_user_id = `userID`;
+		WHILE i < JSON_LENGTH(@cohortList) DO
+			SELECT JSON_EXTRACT(@cohortList, concat('$[',i,']')) INTO @cohortAcronym;
+            insert into cohort_user_mapping (cohort_acronym, cohort_user_id, active, create_time, update_time)
+            values (replace(@cohortAcronym, '"',''), `userID`, 'Y' , now(), now() )
+            on duplicate key update active  = 'Y';
+	        SELECT i + 1 INTO i;
+		END WHILE;
+        END IF;
+
+	select row_count() as rowAffacted;
     
 END //
 

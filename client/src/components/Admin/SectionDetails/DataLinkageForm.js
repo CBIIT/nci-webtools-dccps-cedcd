@@ -58,7 +58,7 @@ const DataLinkageForm = ({ ...props }) => {
     return (
         <div id='mortalityContainer' className='col-md-12'>
             <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-                {/* START Data Linkage & Harmonization Collapsable Question Sections */}
+                {/* START Data Linkage & Harmonization Collapsible Question Sections */}
                 <div className="row">
                     <div id="attachments" className="cohortInfo col-md-12">
                         {/* START Data Linkage & Harmonization */}
@@ -240,7 +240,7 @@ const DataLinkageForm = ({ ...props }) => {
                     </div>
                     {/* END Data Linkage & Harmonization */}
                 </div>
-                {/* END Data Linkage & Harmonization Collapsable Question Sections */}
+                {/* END Data Linkage & Harmonization Collapsible Question Sections */}
                 <div style={{ position: 'relative' }}>
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                         <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'left'}} value='Previous' onClick={() => props.sectionPicker('E')} />

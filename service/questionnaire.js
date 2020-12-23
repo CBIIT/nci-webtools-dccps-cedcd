@@ -19,22 +19,22 @@ router.use((request, response, next) => {
 
 
 router.post('/sendEmail', async function (req, res, next) {
-    try{
+    try {
         await mail.sendMail(config.mail.from, req.body.email, req.body.topic, req.body.message, "");
         res.json({ status: 200, data: 'sent' });
-	} catch (e) {
-		res.json({ status: 200, data: 'failed' });
-	}
+    } catch (e) {
+        res.json({ status: 200, data: 'failed' });
+    }
 })
 
-router.post('/get_updated_cohortID', function(req, res){
+router.post('/get_updated_cohortID', function (req, res) {
     let proc = 'select_unpublished_cohort_id'
-    mysql.callProcedure(proc, [req.body.oldID, req.body.newID], function(result){
+    mysql.callProcedure(proc, [req.body.oldID, req.body.newID], function (result) {
         logger.debug(result)
-        if(result&&result[0])
-            res.json({status: 200, data: result[0][0].new_id})
+        if (result && result[0])
+            res.json({ status: 200, data: result[0][0].new_id })
         else
-            res.json({status:500})
+            res.json({ status: 500 })
     })
 
 })
@@ -75,17 +75,17 @@ router.post('/upload/:id/:category', function (req, res, next) {
          }) 
 })
 
-router.post('/deleteFile', function(req, res){
+router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
-    mysql.callProcedure(proc, [req.body.id, req.body.cohortId], function(result){
-        if(result && result[0] && result[0][0].rowsAffacted > 0){
-            if(Array.isArray(result[1]))
-                res.json({status: 200, data: result[1][0].new_id})
+    mysql.callProcedure(proc, [req.body.id, req.body.cohortId], function (result) {
+        if (result && result[0] && result[0][0].rowsAffacted > 0) {
+            if (Array.isArray(result[1]))
+                res.json({ status: 200, data: result[1][0].new_id })
             else
-                res.json({status: 200})
+                res.json({ status: 200 })
         }
         else
-            res.json({status: 500})
+            res.json({ status: 500 })
     })
 })
 
@@ -138,16 +138,16 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         basic_info.sectionStatus = results[5]
         basic_info.cohortStatus = results[6][0].cohort_status
 
-    
-        if(results[7] && Array.isArray(results[7])){
+
+        if (results[7] && Array.isArray(results[7])) {
             basic_info.cohort.questionnaireFileName = []
-            basic_info.cohort.mainFileName =  []
+            basic_info.cohort.mainFileName = []
             basic_info.cohort.dataFileName = []
             basic_info.cohort.specimenFileName = []
             basic_info.cohort.publicationFileName = []
-    
-            for(let a of results[7]){
-                switch(a.fileCategory){
+
+            for (let a of results[7]) {
+                switch (a.fileCategory) {
                     case 0:
                         basic_info.cohort.questionnaireFileName.push(a)
                         break;
@@ -281,13 +281,13 @@ router.post('/update_mortality/:id', function (req, res) {
 
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
-        if (result && result[0] && result[0][0].rowAffacted > 0){           
-            if(Array.isArray(result[1])) {
+        if (result && result[0] && result[0][0].rowAffacted > 0) {
+            if (Array.isArray(result[1])) {
                 const updatedMortality = {}
                 updatedMortality.duplicated_cohort_id = result[1][0].duplicated_cohort_id
-                if(result[2]) updatedMortality.status = result[2][0].status
+                if (result[2]) updatedMortality.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedMortality })
-            }else
+            } else
                 res.json({ status: 200, message: 'update successful' })
         }
         else
@@ -323,14 +323,14 @@ router.post('/update_dlh/:id', function (req, res) {
 
     mysql.callJsonProcedure(func, params, function (result) {
         logger.debug(result)
-        if (result && result[0] && result[0][0].rowAffacted > 0){
-            if(Array.isArray(result[1])) {
-                
+        if (result && result[0] && result[0][0].rowAffacted > 0) {
+            if (Array.isArray(result[1])) {
+
                 const updatedDlh = {}
                 updatedDlh.duplicated_cohort_id = result[1][0].duplicated_cohort_id
-                if(result[2]) updatedDlh.status = result[2][0].status
+                if (result[2]) updatedDlh.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedDlh })
-            }else
+            } else
                 res.json({ status: 200, message: 'update successful' })
         }
         else
@@ -372,7 +372,7 @@ router.post('/update_cancer_count/:id', async function (req, res) {
     const { id } = params;
     try {
         const [result] = await mysql.query(
-            'CALL update_cancer_count(?, ?)', 
+            'CALL update_cancer_count(?, ?)',
             [id, JSON.stringify(body)]
         );
 
@@ -397,9 +397,9 @@ router.post('/update_cancer_info/:id', async function (req, res) {
         logger.info(result[0].duplicated_cohort_id)
         logger.info(result[0].status)
         if (result && result[0] && result[0].success === 1) {
-            if(result[0].duplicated_cohort_id){
-                res.json({status: 200, message: 'update successful', data: {duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status}})
-            }else
+            if (result[0].duplicated_cohort_id) {
+                res.json({ status: 200, message: 'update successful', data: { duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status } })
+            } else
                 res.json({ status: 200, message: 'update successful' })
         } else {
             throw new Error("SQL Exception");
@@ -563,6 +563,7 @@ router.get('/lookup', async (request, response) => {
                 person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),
                 race: await mysql.query(`SELECT id, race FROM lu_race`),
                 specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
+                allcohortlist: await mysql.query(`select distinct acronym as id, acronym from cohort`),
             }
         }
         response.json(lookup);
@@ -581,14 +582,14 @@ router.post('/get_specimen/:id', function (req, res) {
     mysql.callProcedure(func, params, function (result) {
         if (result && result[0]) {
             const specimenData = {}
-            let temp =[]
+            let temp = []
             specimenData.info = result[1]
             specimenData.details = result[2][0]
             specimenData.counts = {}
             specimenData.emails = ''
 
-            if(result[3].length > 0){
-                for(let e of result[3])
+            if (result[3].length > 0) {
+                for (let e of result[3])
                     temp.push(e.email)
                 specimenData.emails = temp.join(',')
             }
@@ -607,10 +608,10 @@ router.post('/reset_cohort_status/:id/:status', function (req, res) {
     let params = []
     params.push(req.params.id, req.params.status)
     mysql.callProcedure(func, params, function (result) {
-    if (result && result[0] && result[0][0].rowAffacted > 0)
-        res.json({ status: 200, message: 'update was successful' })
-    else
-        res.json({ status: 500, message: 'update failed' })
+        if (result && result[0] && result[0][0].rowAffacted > 0)
+            res.json({ status: 200, message: 'update was successful' })
+        else
+            res.json({ status: 500, message: 'update failed' })
     })
 })
 
