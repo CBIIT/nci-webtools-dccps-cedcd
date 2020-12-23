@@ -1,3 +1,29 @@
+
+
+import React from 'react'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import './Tooltip.scss';
+
+export default function Reminder(props) {
+    return props.disabled
+        ? props.children
+        : <OverlayTrigger
+            trigger={props.trigger}
+            overlay={
+                <Tooltip 
+                    className="tooltip-danger"
+                    id="tooltip"   
+                    placement={props.placement || 'top'}>
+                    {props.message}
+                </Tooltip>
+            }>
+            {props.children}
+        </OverlayTrigger>
+}
+
+
+/*
+
 import React from 'react'
 import {
     createMuiTheme,
@@ -33,3 +59,5 @@ const Reminder = ({ ...props }) => {
 }
 
 export default Reminder
+
+*/
