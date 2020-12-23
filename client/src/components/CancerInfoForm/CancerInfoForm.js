@@ -20,16 +20,17 @@ const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+    const isReadOnly = props.isReadOnly || /admin/.test(window.location.pathname);
 
     const section = useSelector(state => state.sectionReducer)
-    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer) || props.cohortId;
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
     const [submitted, setSubmitted] = useState(false);
     const [successMsg, setSuccessMsg] = useState(false)
-    const [failureMsg, setFailureMsg] = useState(false)    
+    const [failureMsg, setFailureMsg] = useState(false)
     const [modal, setModal] = useState({ show: false });
     const updateModal = state => setModal({ ...modal, ...state });
     const setCount = (key, value) => dispatch(setCancerCount(key, value));
@@ -338,6 +339,8 @@ const CancerInfoForm = ({ ...props }) => {
                     value={value}
                     disabled={disabled}
                     onChange={e => {
+                        if (isReadOnly) 
+                            return false;
                         setFormValue(
                             e.target.name,
                             type === 'checkbox'
@@ -346,7 +349,8 @@ const CancerInfoForm = ({ ...props }) => {
                         );
                         if (onChange)
                             onChange(e);
-                    }} />
+                    }}
+                    readOnly={isReadOnly} />
                 {label}
             </label>
         </div>
@@ -409,6 +413,7 @@ const CancerInfoForm = ({ ...props }) => {
                                             name={key}
                                             value={counts[key] || 0}
                                             onChange={ev => setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0))}
+                                            readOnly={isReadOnly}
                                         />
                                     </td>
                                 )}
@@ -428,14 +433,15 @@ const CancerInfoForm = ({ ...props }) => {
                     <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
                         D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
                     </label>
-                    
+
                     <Reminder title="This field is required" tooltipDisabled={!errors.ci_confirmed_cancer_date} placement="right">
-                    <DatePicker
-                        id="ci_confirmed_cancer_date"
-                        className="form-control readonly"
-                        selected={form.ci_confirmed_cancer_date}
-                        onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
-                    />
+                        <DatePicker
+                            id="ci_confirmed_cancer_date"
+                            className="form-control readonly"
+                            selected={form.ci_confirmed_cancer_date}
+                            readOnly={isReadOnly}
+                            onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
+                        />
                     </Reminder>
                     {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">This field is required.</span>} */}
                 </div>
@@ -462,6 +468,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 onChange={e => setFormValue(e.target.name, e.target.value)}
                                 placeholder="Max of 300 Characters"
                                 maxLength={300}
+                                readOnly={isReadOnly}
                                 disabled={+form.ci_ascertained_other !== 1}
                             />
                         </Reminder>
@@ -528,6 +535,7 @@ const CancerInfoForm = ({ ...props }) => {
                                     onChange={e => setFormValue(e.target.name, e.target.value)}
                                     placeholder="Max of 200 Characters"
                                     maxLength={200}
+                                    readOnly={isReadOnly}
                                     disabled={+form.ci_treatment_data_other !== 1}
                                 />
                             </Reminder>
@@ -559,6 +567,7 @@ const CancerInfoForm = ({ ...props }) => {
                                     onChange={e => setFormValue(e.target.name, e.target.value)}
                                     placeholder="Max of 200 Characters"
                                     maxLength={200}
+                                    readOnly={isReadOnly}
                                     disabled={+form.ci_data_source_other !== 1}
                                 />
                             </Reminder>
@@ -619,6 +628,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 onChange={e => setFormValue(e.target.name, e.target.value)}
                                 placeholder="Max of 200 Characters"
                                 maxLength={200}
+                                readOnly={isReadOnly}
                                 disabled={+form.ci_tumor_genetic_markers_data !== 1}
                             />
                         </Reminder>
@@ -659,32 +669,29 @@ const CancerInfoForm = ({ ...props }) => {
                 <button className="btn btn-primary mx-2" onClick={e => updateModal({ show: false })}>Save</button>
             </div>}
         />
-        {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
-        {/* please update your code if you don't like my code
-        <div className="d-flex justify-content-between">
-            <button className="btn btn-primary" onClick={() => props.sectionPicker('C')}>Go Back</button>
-            <div>
-                <button className="btn btn-primary mr-2" onClick={handleSave}>Save</button>
-                <button className="btn btn-primary" onClick={handleSaveContinue}>Save &amp; Continue</button>
-            </div>
-        </div>
-      */}
-
-        <div style={{ position: 'relative' }} className="my-4">
+        {<div style={{ position: 'relative' }} className="my-4">
             <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('C')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('E')} />
             </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+
+            {!isReadOnly ? <>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
                 </span>
-                <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
-            </span>
-        </div>
+            </> : <>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
+                </span>            
+            </>}
+        </div>}
     </div>
 }
 
