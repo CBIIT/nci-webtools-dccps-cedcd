@@ -1080,7 +1080,7 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Questionnarie</th>
                                                 <td style={{ padding: '0' }}>
-                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table table-borderless'>
+                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
@@ -1102,7 +1102,7 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Main cohort protocol</th>
                                                 <td style={{ padding: '0' }}>
-                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table table-borderless'>
+                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
@@ -1124,7 +1124,7 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Data sharing policy</th>
                                                 <td style={{ padding: '0' }}>
-                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table table-borderless'>
+                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
@@ -1146,7 +1146,7 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Biospecimen sharing policy</th>
                                                 <td style={{ padding: '0' }}>
-                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table table-borderless'>
+                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
@@ -1168,7 +1168,7 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Publication (authorship) policy</th>
                                                 <td style={{ padding: '0' }}>
-                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table table-borderless'>
+                                                    <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
@@ -1190,70 +1190,72 @@ const CohortForm = ({ ...props }) => {
                                         </tbody>
                                     </table>
                                     :
-                                    <table className='table table-stripe table-responsive table-borderless'>
-                                        <thead>
-                                            <tr>
-                                                <th className='col-sm-3' style={{ textAlign: 'center' }}>Document</th>
-                                                <th style={{ textAlign: 'center' }}>Website URL (preferred)</th>
-                                                <th style={{ textAlign: 'center' }}>Attached (if url not applicable)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Questionnaires</td>
-                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}>  
-                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
-                                                    </span>
-                                                    <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
-                                                </td>
+                                    <div className="table-responsive">
+                                        <table className='table table-stripe'>
+                                            <thead>
+                                                <tr>
+                                                    <th className='col-sm-3' style={{ textAlign: 'center' }}>Document</th>
+                                                    <th style={{ textAlign: 'center' }}>Website URL (preferred)</th>
+                                                    <th style={{ textAlign: 'center' }}>Attached (if url not applicable)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Questionnaires</td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
+                                                    <td style={{ verticalAlign: 'middle' }}>  
+                                                        <span className='col-sm-11' style={{paddingLeft: '0'}}>
+                                                            <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
+                                                        </span>
+                                                        <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
+                                                    </td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Main cohort protocol</td>
-                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                    <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
-                                                    </span>
-                                                    <span className={cohort.mainFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
-                                                </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Main cohort protocol</td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
+                                                    <td style={{ verticalAlign: 'middle' }}>
+                                                        <span className='col-sm-11' style={{paddingLeft: '0'}}>
+                                                        <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
+                                                        </span>
+                                                        <span className={cohort.mainFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
+                                                    </td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Data sharing policy</td>
-                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
-                                                    </span>
-                                                    <span className={cohort.dataFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
-                                                </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Data sharing policy</td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
+                                                    <td style={{ verticalAlign: 'middle' }}>
+                                                        <span className='col-sm-11' style={{paddingLeft: '0'}}>
+                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
+                                                        </span>
+                                                        <span className={cohort.dataFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
+                                                    </td>
 
-                                            </tr>
-                                            <tr>
-                                                <td>Biospecimen sharing policy</td>
-                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
-                                                    </span>
-                                                    <span className={cohort.specimenFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Publication(authorship) policy</td>
-                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
-                                                    </span>
-                                                    <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                                </tr>
+                                                <tr>
+                                                    <td>Biospecimen sharing policy</td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
+                                                    <td style={{ verticalAlign: 'middle' }}>
+                                                        <span className='col-sm-11' style={{paddingLeft: '0'}}>
+                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
+                                                        </span>
+                                                        <span className={cohort.specimenFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Publication(authorship) policy</td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
+                                                    <td style={{ verticalAlign: 'middle' }}>
+                                                        <span className='col-sm-11' style={{paddingLeft: '0'}}>
+                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
+                                                        </span>
+                                                        <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 }
                             </div>
                         </div>
