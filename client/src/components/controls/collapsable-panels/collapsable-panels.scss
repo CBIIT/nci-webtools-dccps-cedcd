@@ -38,6 +38,8 @@
   
 .cedcd-btn:hover .triangle {
     border-color: transparent transparent transparent #135B5D;
+    transition: all 0.1s;
+
   }
   
 .cedcd-btn.active .triangle {
@@ -80,15 +82,11 @@
 }
 
 .panellet {
-  padding: 0 18px;
-  /* background-color: white; */
   display: none;
   overflow: hidden;
 }
 
 .panel-active {
-  padding: 0 18px;
-  /* background-color: white; */
   display: block;
   overflow: hidden;
 }

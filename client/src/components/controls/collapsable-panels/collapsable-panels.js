@@ -1,31 +1,35 @@
 import React from 'react';
+import classNames from 'classnames'
 import './collapsable-panels.scss';
 
-export const CollapsablePanel = ({
+export const CollapsiblePanel = ({
+    className = '',
     panelName = '',
     activePanel = '',
     panelTitle = '',
     onClick = () => {},
     children = [],
-    condition = false
+    condition = false,
 }) => { 
+    const isActive = (activePanel && panelName && activePanel === panelName) || condition;
 
     return (
-        <div>
+        <div className={className}>
             <button type="button" 
-                className={'cedcd-btn ' + ((activePanel && panelName && activePanel === panelName) || condition ? 'active' : '')} 
-                aria-expanded={(activePanel && panelName && activePanel === panelName) || condition} 
+                className={classNames('cedcd-btn',  isActive && 'active')} 
+                aria-expanded={isActive} 
                 aria-controls="more" 
                 onClick={onClick}>
                 <span className="triangle"></span>{ panelTitle }
             </button>
-            <div className="cohortInfoBody" 
+            <div className="px-5 py-4" 
                 id="more" 
-                aria-hidden={(activePanel && panelName && activePanel === panelName) || condition ? 'false' : 'true'} 
+                aria-hidden={isActive ? 'false' : 'true'} 
                 style={{
-                    display: (activePanel && panelName && activePanel === panelName) || condition ? 'block' : 'none'
+                    display: isActive ? 'block' : 'none',
+                    background: 'rgba(238,248,247,1.00)'
                 }}>
-                <div className={(activePanel && panelName && activePanel === panelName) || condition ? 'panel-active' : 'panellet'}>
+                <div style={{overflow: 'hidden'}}>
                     { children }
                 </div>
             </div>
@@ -34,7 +38,7 @@ export const CollapsablePanel = ({
 }
 
 
-export const CollapsablePanelContainer = ({
+export const CollapsiblePanelContainer = ({
     children = []
 }) => {
 

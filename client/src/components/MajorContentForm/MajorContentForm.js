@@ -4,6 +4,7 @@ import allactions from '../../actions'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 
 const MajorContentForm = ({ ...props }) => {
@@ -339,8 +340,11 @@ const MajorContentForm = ({ ...props }) => {
             </div>
             <div>
                 <form>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}><span>Major Content Domains</span></div>
-                    <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} style={{ padding: 0 }}>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelA'}
+                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                        panelTitle="Major Content Domains">
+                    
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status{' '} <small>(Select all that apply)</small></label></span>
@@ -928,9 +932,13 @@ const MajorContentForm = ({ ...props }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}><span>Other Medical Condition</span>s</div>
-                    <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} style={{ padding: 0 }}>
+                    </CollapsiblePanel>
+
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelB'}
+                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                        panelTitle="Other Medical Conditions">
+
                         {/*} <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{paddingLeft: '0'}}>
                                 <span className='col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.31 Other Medical Conditions</label></span>
@@ -1067,9 +1075,12 @@ const MajorContentForm = ({ ...props }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}><span>Cancer Related Conditions</span></div>
-                    <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} style={{ padding: 0 }}>
+                    </CollapsiblePanel>
+
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelC'}
+                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                        panelTitle="Cancer Related Conditions">
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
@@ -1117,9 +1128,9 @@ const MajorContentForm = ({ ...props }) => {
                                 </span>
                             </div>
                         </div>
-                    </div>
+                    </CollapsiblePanel>
                 </form>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} className="my-4">
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                         <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('B')} />
                         <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('D')} />

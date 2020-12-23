@@ -184,7 +184,7 @@ const MajorContentForm = ({ ...props }) => {
             </div>
             <div>
                 <form id='currentFormMC' >
-                    {/* START Major Content Collapsable Question Sections */}
+                    {/* START Major Content Collapsible Question Sections */}
                     <div className="row">
                         <div id="attachments" className="cohortInfo col-md-12">
                             {/* START Question C1 through C14 */}
@@ -785,7 +785,7 @@ const MajorContentForm = ({ ...props }) => {
                             {/* END Question C30 & C31 */}
                         </div>
                     </div>
-                    {/* END Major Content Collapsable Question Sections */}
+                    {/* END Major Content Collapsible Question Sections */}
                 </form>
                 {/*<div style={{ position: 'relative' }}>
                     <span onClick={() => props.sectionPicker('B')} style={{ position: 'relative', float: 'left' }}>

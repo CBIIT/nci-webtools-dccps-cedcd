@@ -6,10 +6,12 @@ import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
-import { update } from 'lodash';
-const { 
-    setCancerCount, 
-    setCancerInfoFormValue,
+import Messenger from '../Snackbar/Snackbar'
+import Reminder from '../Tooltip/Tooltip'
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+
+const {
+    setCancerCount,
     mergeCancerCounts,
     mergeCancerInfoFormValues,
 } = allactions.cancerInfoActions;
@@ -18,14 +20,17 @@ const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+    const isReadOnly = props.isReadOnly;
 
     const section = useSelector(state => state.sectionReducer)
-    const cohortId = useSelector(state => state.cohortIDReducer)
+    const cohortId = useSelector(state => state.cohortIDReducer) || props.cohortId;
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
     const [submitted, setSubmitted] = useState(false);
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)
     const [modal, setModal] = useState({ show: false });
     const updateModal = state => setModal({ ...modal, ...state });
     const setCount = (key, value) => dispatch(setCancerCount(key, value));
@@ -53,9 +58,9 @@ const CancerInfoForm = ({ ...props }) => {
         if (!cohort || !Object.keys(cohort).length || !lookup)
             return;
 
-        let { 
-            cancer_count: cancerCount, 
-            cancer_info: cancerInfo 
+        let {
+            cancer_count: cancerCount,
+            cancer_info: cancerInfo
         } = cohort;
 
         // populate counts
@@ -64,7 +69,7 @@ const CancerInfoForm = ({ ...props }) => {
         for (let cancer of lookup.cancer) {
             for (let gender of [lookupMap.male, lookupMap.female]) {
                 for (let caseType of [lookupMap.prevalent, lookupMap.incident]) {
-                    const entry = cancerCount.find(count => 
+                    const entry = cancerCount.find(count =>
                         +count.cohort_id === +cohortId &&
                         count.cancer_id === cancer.id &&
                         count.gender_id === gender.id &&
@@ -78,8 +83,8 @@ const CancerInfoForm = ({ ...props }) => {
         }
 
         // process form data
-        const formValues = getUpdatedFormValues({...cancerInfo[0]});
-        console.log({formValues})
+        const formValues = getUpdatedFormValues({ ...cancerInfo[0] });
+        console.log({ formValues })
 
         dispatch(mergeCancerCounts(counts));
         dispatch(mergeCancerInfoFormValues(formValues));
@@ -100,7 +105,7 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     function getUpdatedFormValues(form) {
-        let formUpdates = {...form};
+        let formUpdates = { ...form };
 
         // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
         if (form.ci_confirmed_cancer_date && form.ci_confirmed_cancer_date.constructor !== Date) {
@@ -206,7 +211,7 @@ const CancerInfoForm = ({ ...props }) => {
         setSubmitted(true);
 
         async function onConfirm() {
-            updateModal({show: false});
+            updateModal({ show: false });
             await saveCohort();
         }
 
@@ -232,7 +237,7 @@ const CancerInfoForm = ({ ...props }) => {
         setSubmitted(true);
 
         async function onConfirm() {
-            updateModal({show: false});
+            updateModal({ show: false });
             await saveCohort();
             props.sectionPicker('E');
         }
@@ -260,6 +265,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         try {
             let info = { ...form };
+            let id = +cohortId;
 
             if (info.ci_confirmed_cancer_date) {
                 const dateTime = info.ci_confirmed_cancer_date.getTime();
@@ -270,21 +276,25 @@ const CancerInfoForm = ({ ...props }) => {
                 info.ci_confirmed_cancer_year = null;
             }
 
-            await fetch(`/api/questionnaire/update_cancer_info/${cohortId}`, {
+            await fetch(`/api/questionnaire/update_cancer_info/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify([info])
             }).then(r => r.json())
-              .then(result => {
-                  if(result && result.data){
-                      console.log("new id: "+result.data.duplicated_cohort_id)
-                      console.log("new stats: "+result.data.status)
-                      dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                      dispatch({type: 'SET_COHORT_STATUS', value: result.data.status})
-                  }
-              });
+                .then(result => {
+                    if (result && result.data) {
+                        const { duplicated_cohort_id: newCohortId, status } = result.data;
+                        // console.log("new id: "+newCohortId)
+                        // console.log("new stats: "+status)
 
-            await fetch(`/api/questionnaire/update_cancer_count/${cohortId}`, {
+                        if (newCohortId && +newCohortId !== id)
+                            id = newCohortId;
+                        dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
+                        dispatch({ type: 'SET_COHORT_STATUS', value: status })
+                    }
+                });
+
+            await fetch(`/api/questionnaire/update_cancer_count/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify(Object.entries(counts).map(([key, value]) => {
@@ -294,7 +304,7 @@ const CancerInfoForm = ({ ...props }) => {
                 }))
             }).then(r => r.json());
 
-            await fetch(`/api/questionnaire/cohort/${cohortId}`, {
+            await fetch(`/api/questionnaire/cohort/${id}`, {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({
@@ -305,33 +315,12 @@ const CancerInfoForm = ({ ...props }) => {
                 })
             }).then(r => r.json());
 
-            dispatch(loadCohort(cohortId));
-
-            updateModal({
-                show: true,
-                title: <h2>Cohort Information Updated</h2>,
-                body: <div className="my-3">Your changes to the {cohort.name} have been saved.</div>,
-                footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Close</button>
-                </div>
-            })
+            dispatch(loadCohort(id));
+            setSuccessMsg(true);
 
         } catch (e) {
             console.log(e);
-            updateModal({
-                show: true,
-                title: <h2>Error: Could Not Update Cohort Information</h2>,
-                body: <div className="my-3">
-                    There was an error processing your request. Please try again later or contact 
-                    <a href="mailto:CEDCDWebAdmin@mail.nih.gov">CEDCDWebAdmin@mail.nih.gov</a> if this issue persists.
-                    <br />
-                    Your changes to {cohort.name} have <strong>not</strong> been saved.
-                </div>,
-                footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Close</button>
-                </div>
-            });
-
+            setFailureMsg(true);
         } finally {
             dispatch(allactions.sectionActions.setSectionStatus(
                 'D',
@@ -350,6 +339,8 @@ const CancerInfoForm = ({ ...props }) => {
                     value={value}
                     disabled={disabled}
                     onChange={e => {
+                        if (isReadOnly) 
+                            return false;
                         setFormValue(
                             e.target.name,
                             type === 'checkbox'
@@ -358,15 +349,20 @@ const CancerInfoForm = ({ ...props }) => {
                         );
                         if (onChange)
                             onChange(e);
-                    }} />
+                    }}
+                    readOnly={isReadOnly} />
                 {label}
             </label>
         </div>
     }
 
     return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>Cancer Counts</div>
-        <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <CollapsiblePanel
+            condition={activePanel === 'panelA'}
+            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+            panelTitle="Cancer Counts">
             <div className="my-3">
                 <label className="d-block">D.1 Cancer Counts</label>
                 <div>Please enter the number of participants with these cancers by sex.</div>
@@ -392,16 +388,16 @@ const CancerInfoForm = ({ ...props }) => {
                         {lookup.cancer.map(c => {
                             const keyPrefix = `${cohortId}_${c.id}`;
                             const inputTypes = [
-                                {sex: 'male', caseType: 'prevalent'},
-                                {sex: 'male', caseType: 'incident'},
-                                {sex: 'female', caseType: 'prevalent'},
-                                {sex: 'female', caseType: 'incident'},
+                                { sex: 'male', caseType: 'prevalent' },
+                                { sex: 'male', caseType: 'incident' },
+                                { sex: 'female', caseType: 'prevalent' },
+                                { sex: 'female', caseType: 'incident' },
                             ]
 
-                            const inputKeys = inputTypes.map(({sex, caseType}) => 
+                            const inputKeys = inputTypes.map(({ sex, caseType }) =>
                                 `${keyPrefix}_${lookupMap[sex].id}_${lookupMap[caseType].id}`
                             );
-                            
+
                             return <tr key={keyPrefix}>
                                 <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
                                 <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
@@ -417,6 +413,7 @@ const CancerInfoForm = ({ ...props }) => {
                                             name={key}
                                             value={counts[key] || 0}
                                             onChange={ev => setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0))}
+                                            readOnly={isReadOnly}
                                         />
                                     </td>
                                 )}
@@ -425,22 +422,28 @@ const CancerInfoForm = ({ ...props }) => {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </CollapsiblePanel>
 
-        <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>Cancer Information</div>
-        <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
+        <CollapsiblePanel
+            condition={activePanel === 'panelB'}
+            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+            panelTitle="Cancer Information">
             <form>
                 <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
                     <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
-                        D.2 Most recent date confirmed cancer case ascertainment:
+                        D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
                     </label>
-                    <DatePicker
-                        id="ci_confirmed_cancer_date"
-                        className="form-control readonly"
-                        selected={form.ci_confirmed_cancer_date}
-                        onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
-                    />
-                    {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">This field is required.</span>}
+
+                    <Reminder message="This field is required" disabled={!errors.ci_confirmed_cancer_date} placement="right">
+                        <DatePicker
+                            id="ci_confirmed_cancer_date"
+                            className="form-control readonly"
+                            selected={form.ci_confirmed_cancer_date}
+                            readOnly={isReadOnly}
+                            onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
+                        />
+                    </Reminder>
+                    {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">This field is required.</span>} */}
                 </div>
 
                 <div className={"form-group"}>
@@ -456,17 +459,20 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
                     <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
-                        <textarea
-                            className="form-control resize-vertical"
-                            aria-label="How were your cancer cases ascertained?"
-                            name="ci_ascertained_other_specify"
-                            value={form.ci_ascertained_other_specify || ''}
-                            onChange={e => setFormValue(e.target.name, e.target.value)}
-                            placeholder="Max of 300 Characters"
-                            maxLength={300}
-                            disabled={+form.ci_ascertained_other !== 1}
-                        />
-                        {submitted && errors.ci_ascertained_other_specify && <span className="help-block">This field is required.</span>}
+                        <Reminder message="This field is required" disabled={!errors.ci_ascertained_other_specify}>
+                            <textarea
+                                className="form-control resize-vertical"
+                                aria-label="How were your cancer cases ascertained?"
+                                name="ci_ascertained_other_specify"
+                                value={form.ci_ascertained_other_specify || ''}
+                                onChange={e => setFormValue(e.target.name, e.target.value)}
+                                placeholder="Max of 300 Characters"
+                                maxLength={300}
+                                readOnly={isReadOnly}
+                                disabled={+form.ci_ascertained_other !== 1}
+                            />
+                        </Reminder>
+                        {/* {submitted && errors.ci_ascertained_other_specify && <span className="help-block">This field is required.</span>} */}
                     </div>
                 </div>
 
@@ -519,18 +525,21 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
-                            <textarea
-                                className="form-control resize-vertical"
-                                aria-label="Specify the treatment information you have"
-                                name="ci_treatment_data_other_specify"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_treatment_data_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                disabled={+form.ci_treatment_data_other !== 1}
-                            />
-                            {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">This field is required.</span>}
+                            <Reminder message="This field is required" disabled={!errors.ci_treatment_data_other_specify}>
+                                <textarea
+                                    className="form-control resize-vertical"
+                                    aria-label="Specify the treatment information you have"
+                                    name="ci_treatment_data_other_specify"
+                                    disabled={+form.ci_cancer_treatment_data === 0}
+                                    value={form.ci_treatment_data_other_specify || ''}
+                                    onChange={e => setFormValue(e.target.name, e.target.value)}
+                                    placeholder="Max of 200 Characters"
+                                    maxLength={200}
+                                    readOnly={isReadOnly}
+                                    disabled={+form.ci_treatment_data_other !== 1}
+                                />
+                            </Reminder>
+                            {/* {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">This field is required.</span>} */}
                         </div>
                     </div>
 
@@ -548,18 +557,21 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
-                            <textarea
-                                className="form-control resize-vertical"
-                                name="ci_data_source_other_specify"
-                                aria-label="Specify the data sources the treatment information is from"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_data_source_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                disabled={+form.ci_data_source_other !== 1}
-                            />
-                            {submitted && errors.ci_data_source_other_specify && <span className="help-block">This field is required.</span>}
+                            <Reminder message="This field is required" disabled={!errors.ci_data_source_other_specify}>
+                                <textarea
+                                    className="form-control resize-vertical"
+                                    name="ci_data_source_other_specify"
+                                    aria-label="Specify the data sources the treatment information is from"
+                                    disabled={+form.ci_cancer_treatment_data === 0}
+                                    value={form.ci_data_source_other_specify || ''}
+                                    onChange={e => setFormValue(e.target.name, e.target.value)}
+                                    placeholder="Max of 200 Characters"
+                                    maxLength={200}
+                                    readOnly={isReadOnly}
+                                    disabled={+form.ci_data_source_other !== 1}
+                                />
+                            </Reminder>
+                            {/* {submitted && errors.ci_data_source_other_specify && <span className="help-block">This field is required.</span>} */}
                         </div>
                     </div>
 
@@ -601,23 +613,26 @@ const CancerInfoForm = ({ ...props }) => {
                         D.9 Do you have tumor genetic markers data?
                     </label>
                     {[
-                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No'},
-                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)'},
+                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
+                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
                     ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
 
                     <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                        <textarea
-                            className="form-control resize-vertical"
-                            name="ci_tumor_genetic_markers_data_describe"
-                            aria-label="Do you have tumor genetic markers data? Please describe:"
-                            length="40"
-                            value={form.ci_tumor_genetic_markers_data_describe || ''}
-                            onChange={e => setFormValue(e.target.name, e.target.value)}
-                            placeholder="Max of 200 Characters"
-                            maxLength={200}
-                            disabled={+form.ci_tumor_genetic_markers_data !== 1}
-                        />
-                        {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">This field is required.</span>}
+                        <Reminder message="This field is required" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
+                            <textarea
+                                className="form-control resize-vertical"
+                                name="ci_tumor_genetic_markers_data_describe"
+                                aria-label="Do you have tumor genetic markers data? Please describe:"
+                                length="40"
+                                value={form.ci_tumor_genetic_markers_data_describe || ''}
+                                onChange={e => setFormValue(e.target.name, e.target.value)}
+                                placeholder="Max of 200 Characters"
+                                maxLength={200}
+                                readOnly={isReadOnly}
+                                disabled={+form.ci_tumor_genetic_markers_data !== 1}
+                            />
+                        </Reminder>
+                        {/* {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">This field is required.</span>} */}
                     </div>
                 </div>
 
@@ -643,7 +658,7 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
                 </div>
             </form>
-        </div>
+        </ CollapsiblePanel>
 
         <CenterModal
             show={modal.show}
@@ -654,32 +669,29 @@ const CancerInfoForm = ({ ...props }) => {
                 <button className="btn btn-primary mx-2" onClick={e => updateModal({ show: false })}>Save</button>
             </div>}
         />
-        {/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
-        {/* please update your code if you don't like my code
-        <div className="d-flex justify-content-between">
-            <button className="btn btn-primary" onClick={() => props.sectionPicker('C')}>Go Back</button>
-            <div>
-                <button className="btn btn-primary mr-2" onClick={handleSave}>Save</button>
-                <button className="btn btn-primary" onClick={handleSaveContinue}>Save &amp; Continue</button>
-            </div>
-        </div>
-      */}
-
-        <div style={{ position: 'relative' }}>
+        {<div style={{ position: 'relative' }} className="my-4">
             <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('C')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('E')} />
             </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+
+            {!isReadOnly ? <>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
                 </span>
-                <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
-            </span>
-        </div>
+            </> : <>
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
+                </span>            
+            </>}
+        </div>}
     </div>
 }
 

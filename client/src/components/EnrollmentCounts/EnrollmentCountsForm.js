@@ -6,7 +6,7 @@ import allactions from '../../actions'
 //import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
-import { CollapsablePanelContainer, CollapsablePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
@@ -162,18 +162,18 @@ const EnrollmentCountsForm = ({...props}) => {
                 Record actual, not planned, recruitment counts
             </div>
 
-            <CollapsablePanelContainer>
-                <CollapsablePanel
+            <CollapsiblePanelContainer>
+                <CollapsiblePanel
                     panelName='panelA'
                     activePanel={activePanel}
                     panelTitle='Enrollment Counts'
                     onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
-                    <form  style={{boxSizing: 'border-box', overflowX: window.innerWidth <= 1000 ? 'scroll' : ''}}>
-                        <div style={{marginBottom: '10px'}}>
+                    <form className="row">
+                        <div className="col-12">
                             <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                         </div>
-                        <div className="table-responsive">
-                            <table className='table-striped'>
+                        <div className="col-12 mb-4 table-responsive">
+                            <table className='table table-striped'>
                                 <thead>
                                     <tr>
                                         <th rowSpan='3' style={{fontSize: '1.5rem', paddingRight: '0', width: '15%'}}>Racial Categories</th>
@@ -199,7 +199,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>American Indian / Alaska Native</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>American Indian / Alaska Native</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='111'  value={enrollmentCount['111']} onChange={(e) => updateCells('111', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='112'  value={enrollmentCount['112']} onChange={(e) => updateCells('112', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='113'  value={enrollmentCount['113']} onChange={(e) => updateCells('113', e.target.value)} /></td>
@@ -213,7 +213,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>Asian</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>Asian</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='211'  value={enrollmentCount['211']} onChange={(e) => updateCells('211', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='212'  value={enrollmentCount['212']} onChange={(e) => updateCells('212', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='213'  value={enrollmentCount['213']} onChange={(e) => updateCells('213', e.target.value)} /></td>
@@ -227,7 +227,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.3rem', backgroundColor: '01857b', color: 'white'}}>Native Hawaiian or other pacific islander</th>
+                                        <th style={{fontSize: '1.3rem', backgroundColor: '#01857b', color: 'white'}}>Native Hawaiian or other pacific islander</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='311'  value={enrollmentCount['311']} onChange={(e) => updateCells('311', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='312'  value={enrollmentCount['312']} onChange={(e) => updateCells('312', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='313'  value={enrollmentCount['313']} onChange={(e) => updateCells('313', e.target.value)} /></td>
@@ -241,7 +241,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>Black or African American</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>Black or African American</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='411'  value={enrollmentCount['411']} onChange={(e) => updateCells('411', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='412'  value={enrollmentCount['412']} onChange={(e) => updateCells('412', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='413'  value={enrollmentCount['413']} onChange={(e) => updateCells('413', e.target.value)} /></td>
@@ -255,7 +255,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>white</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>white</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='511'  value={enrollmentCount['511']} onChange={(e) => updateCells('511', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='512'  value={enrollmentCount['512']} onChange={(e) => updateCells('512', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='513'  value={enrollmentCount['513']} onChange={(e) => updateCells('513', e.target.value)} /></td>
@@ -269,7 +269,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More than one race</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More than one race</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='611'  value={enrollmentCount['611']} onChange={(e) => updateCells('611', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='612'  value={enrollmentCount['612']} onChange={(e) => updateCells('612', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='613'  value={enrollmentCount['613']} onChange={(e) => updateCells('613', e.target.value)} /></td>
@@ -283,7 +283,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.4rem', backgroundColor: '01857b', color: 'white'}}>Unknown or not reported</th>
+                                        <th style={{fontSize: '1.4rem', backgroundColor: '#01857b', color: 'white'}}>Unknown or not reported</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='711'  value={enrollmentCount['711']} onChange={(e) => updateCells('711', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='712'  value={enrollmentCount['712']} onChange={(e) => updateCells('712', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='713'  value={enrollmentCount['713']} onChange={(e) => updateCells('713', e.target.value)} /></td>
@@ -297,7 +297,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>Total</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>Total</th>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='811'  value={enrollmentCount['811']} /></td>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='812'  value={enrollmentCount['812']} /></td>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='813'  value={enrollmentCount['813']} /></td>
@@ -319,33 +319,94 @@ const EnrollmentCountsForm = ({...props}) => {
                             </span>
                         </div>
                         */}
-                        <div className='form-group col-md-12' style={{paddingLeft: '0', marginTop: '10px'}}>
-                            <div className='col-md-12' style={{paddingLeft: '0'}}>
-                                <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label>
-                                <span className='col-md-4' style={{marginLeft: '0', paddingLeft:'0', paddingRight: '0'}}>
-                                    {errors.mostRecentDate && saved ? <Reminder message={errors.mostRecentDate}><span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control errorDate' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
-                                    }}} /></span></Reminder> : <span className='col-md-12' style={{padding: '0'}}><DatePicker className='form-control' placeholderText='MM/DD/YYYY' selected={enrollmentCount.mostRecentDate ? new Date(enrollmentCount.mostRecentDate) : null} onChange={date => {dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); if(!date){dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))}else{ dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))}}} /></span>}
-                                </span>
+                        <div className='col-9 form-group'>
+                            <div className='row align-items-center'>
+                                <div className="col-md-6">
+                                    <span>
+                                        <label>
+                                            B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span>
+                                        </label>
+                                    </span>
+                                </div>
+                                {/* <label className='col-md-5' style={{paddingLeft: '0', marginRight: '0', lineHeight: '2em'}}>B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span></label> */}
+                                <div className='col-md-3'>
+                                    {errors.mostRecentDate && saved ? 
+                                        <Reminder message={errors.mostRecentDate}>
+                                            {/* <span className='' style={{padding: '0'}}> */}
+                                                <DatePicker className='form-control errorDate' 
+                                                    popperProps={{
+                                                        positionFixed: true // fix overflow hidden
+                                                    }}
+                                                    placeholderText='MM/DD/YYYY' 
+                                                    selected={enrollmentCount.mostRecentDate ? 
+                                                        new Date(enrollmentCount.mostRecentDate) : 
+                                                        null
+                                                    } 
+                                                    onChange={date => {
+                                                        dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); 
+                                                        if (!date) {
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))
+                                                        }else { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                        }
+                                                    }}/>
+                                            {/* </span> */}
+                                        </Reminder> : 
+                                        // <span className='' style={{padding: '0'}}>
+                                            <DatePicker className='form-control' 
+                                                popperProps={{
+                                                    positionFixed: true // fix overflow hidden
+                                                }}
+                                                placeholderText='MM/DD/YYYY' 
+                                                selected={enrollmentCount.mostRecentDate ? 
+                                                    new Date(enrollmentCount.mostRecentDate) : 
+                                                    null
+                                                } 
+                                                onChange={date => {
+                                                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                     if (!date) { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'please provide a value'))
+                                                        } else { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                        }
+                                                }} />
+                                        // </span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </form>
-                </CollapsablePanel>
-            </CollapsablePanelContainer>
+                </CollapsiblePanel>
+            </CollapsiblePanelContainer>
             
-            <div className="mt-3">
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0'}}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('A')}  />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('C')} />
-                </span>
-                <span  className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)}/>
-                    </span>
-                    <span className='col-xs-4' onClick={handleSaveContinue}  style={{margin: '0', padding: '0'}}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{marginRight: '5px', marginBottom: '5px'}}/>
-                    </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')}  style={{margin: '0', padding: '0'}}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span> 
-                </span>
+            <div className="mt-3 d-flex flex-wrap justify-content-between">
+                <div className="d-flex flex-no-wrap">
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Previous' 
+                        onClick={() => props.sectionPicker('A')} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Next' 
+                        onClick={() => props.sectionPicker('C')} />
+                </div>
+                <div className="d-flex flex-no-wrap">
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Save' 
+                        onClick={handleSave} 
+                        disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Save & Continue' 
+                        onClick={handleSaveContinue} 
+                        disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                    <input type='button' 
+                        className='btn btn-primary' 
+                        value='Submit For Review' 
+                        onClick={() => resetCohortStatus(cohortID, 'submitted')} 
+                        disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} />
+                </div>
             </div>  
 
         </div>
