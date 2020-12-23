@@ -20,7 +20,7 @@ const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const lookup = useSelector(state => state.lookupReducer)
     const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
-    const isReadOnly = props.isReadOnly || /admin/.test(window.location.pathname);
+    const isReadOnly = props.isReadOnly;
 
     const section = useSelector(state => state.sectionReducer)
     const cohortId = useSelector(state => state.cohortIDReducer) || props.cohortId;
