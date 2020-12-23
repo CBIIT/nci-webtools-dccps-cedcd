@@ -1804,9 +1804,44 @@ END//
 DROP PROCEDURE IF EXISTS add_file_attachment //
 
 CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in fileName varchar(150))
+
 begin
-	insert into attachment (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
-    values (targetID, 1, categoryType, fileName, '', 1, NOW(), NOW());
+	DECLARE i INT default 0;
+    DECLARE flag INT DEFAULT 1;
+	DECLARE new_id INT DEFAULT 0;
+   
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+
+    SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+
+    IF @cohort_status = 'published' then 
+	   call select_unpublished_cohort_id(targetID, new_id); 
+    else 
+       set new_id = targetID;
+    END IF;
+    
+    IF new_id > 0 THEN
+    BEGIN
+    START TRANSACTION;
+	SET @filenames = JSON_UNQUOTE(JSON_EXTRACT(info, '$.filenames'));
+		WHILE i < JSON_LENGTH(@filenames) DO
+			SELECT JSON_EXTRACT(@filenames, concat('$[',i,']')) INTO @filename;
+            set @filename = replace(@filename, '"', '');
+			insert into attachment (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
+			values (new_id, 1, categoryType, @fileName, '', 1, NOW(), NOW());
+			SELECT i + 1 INTO i;
+		END WHILE;
+	COMMIT;
+    END;
+    END IF;
+    SELECT flag as rowsAffacted;
+    SELECT new_id;
+    SELECT id AS fileId, category AS fileCategory, filename FROM attachment
+	WHERE cohort_id = new_id and category = categoryType;
 end //
 
 DROP PROCEDURE IF EXISTS get_major_content //
@@ -2474,25 +2509,14 @@ CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in ol
 BEGIN
 
  DECLARE flag INT DEFAULT 1;
- 
- -- DECLARE finished INTEGER DEFAULT 0;
- -- DECLARE old_PI_Id INT;
- 
- -- DECLARE pi_cursor cursor for select id from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '';
+ select new_cohort_id;
  /*
- DECLARE finished INTEGER DEFAULT 0;
- DECLARE old_PI_Id INT;
- DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
- */
- 
  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-
-
--- DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
+*/
 set sql_mode='';
 SET SQL_SAFE_UPDATES = 0;
 
@@ -2538,9 +2562,15 @@ from person new
 join (select * from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '') as old
 on new.name = old.name where new.cohort_id = new_cohort_id;
 
+
 insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
-select new_cohort_id,  attachment_type, category, filename, website, status, now(), now() 
-from attachment where cohort_id = old_cohort_id;
+select new_cohort_id, old.attachment_type, old.category, old.filename, old.website, old.status, now() as old_create_time, now() as old_update_time 
+from attachment as old where old.cohort_id = old_cohort_id;
+
+insert into mapping_old_file_Id_To_New (cohort_id, old_file_id, new_file_id)
+select new_cohort_id, old.id, new.id
+from attachment as new join (select * from attachment where cohort_id = old_cohort_id and attachment_type = 1) as old
+on new.filename = old.filename and new.category where new.attachment_type = 1 and new.cohort_id = new_cohort_id;
 
 -- insert into enrollment_count
 insert into enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
@@ -2901,5 +2931,42 @@ Begin
 	select row_count() as rowAffacted;
     
 END //
+
+drop procedure if exists delete_cohort_file //
+
+CREATE PROCEDURE `delete_cohort_file`(in file_Id int, in cohort_ID int)
+begin
+	DECLARE flag INT DEFAULT 1;
+	DECLARE new_id INT DEFAULT 0;
+   
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+
+    SELECT `status` INTO @cohort_status FROM cohort WHERE id = cohort_ID;
+
+    IF @cohort_status = 'published' then 
+	   call select_unpublished_cohort_id(cohort_ID, new_id); 
+    else 
+       set new_id = cohort_ID;
+    END IF;
+    
+    IF new_id > 0 THEN
+    BEGIN
+		START TRANSACTION;
+			if new_id <> cohort_ID then
+				select new_file_id into @updated_file_id from mapping_old_file_Id_To_New where old_file_id = file_Id;
+			else
+				set @updated_file_id = file_Id;
+			end if;
+			delete from attachment where id = @updated_file_id;
+		COMMIT;
+    END;
+    END IF;
+    select flag as rowsAffacted;
+    select new_id;
+end //
 
 DELIMITER ;
