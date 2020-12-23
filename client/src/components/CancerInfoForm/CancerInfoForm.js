@@ -434,7 +434,7 @@ const CancerInfoForm = ({ ...props }) => {
                         D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
                     </label>
 
-                    <Reminder title="This field is required" tooltipDisabled={!errors.ci_confirmed_cancer_date} placement="right">
+                    <Reminder message="This field is required" disabled={!errors.ci_confirmed_cancer_date} placement="right">
                         <DatePicker
                             id="ci_confirmed_cancer_date"
                             className="form-control readonly"
@@ -459,7 +459,7 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
                     <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
-                        <Reminder title="This field is required" tooltipDisabled={!errors.ci_ascertained_other_specify}>
+                        <Reminder message="This field is required" disabled={!errors.ci_ascertained_other_specify}>
                             <textarea
                                 className="form-control resize-vertical"
                                 aria-label="How were your cancer cases ascertained?"
@@ -525,7 +525,7 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
-                            <Reminder title="This field is required" tooltipDisabled={!errors.ci_treatment_data_other_specify}>
+                            <Reminder message="This field is required" disabled={!errors.ci_treatment_data_other_specify}>
                                 <textarea
                                     className="form-control resize-vertical"
                                     aria-label="Specify the treatment information you have"
@@ -557,7 +557,7 @@ const CancerInfoForm = ({ ...props }) => {
                         ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
 
                         <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
-                            <Reminder title="This field is required" tooltipDisabled={!errors.ci_data_source_other_specify}>
+                            <Reminder message="This field is required" disabled={!errors.ci_data_source_other_specify}>
                                 <textarea
                                     className="form-control resize-vertical"
                                     name="ci_data_source_other_specify"
@@ -618,7 +618,7 @@ const CancerInfoForm = ({ ...props }) => {
                     ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
 
                     <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                        <Reminder title="This field is required" tooltipDisabled={!errors.ci_tumor_genetic_markers_data_describe}>
+                        <Reminder message="This field is required" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
                             <textarea
                                 className="form-control resize-vertical"
                                 name="ci_tumor_genetic_markers_data_describe"
