@@ -1506,6 +1506,12 @@ BEGIN
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
     
     select `status` as cohort_status from cohort where id = targetID;
+    
+    select
+     id as fileId,
+	 category as fileCategory,
+     filename from attachment
+     where cohort_id = targetID and filename !='' and filename is not null;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
