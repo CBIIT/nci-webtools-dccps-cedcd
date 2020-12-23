@@ -385,6 +385,7 @@ const CohortForm = ({ ...props }) => {
         if (fileData) {
             let fileList = []
             const formData = new FormData();
+            
             for (let i = 0; i < fileData.length; i++) {
                 formData.append('cohortFile', fileData[i], fileData[i].name)
                 fileList.push(fileData[i].name)
@@ -1192,7 +1193,7 @@ const CohortForm = ({ ...props }) => {
                                                 <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
                                                 <td style={{ verticalAlign: 'middle' }}>  
                                                     <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
+                                                        <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }}  multiple />
                                                     </span>
                                                     <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
                                                 </td>

@@ -43,13 +43,17 @@ router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile
 
     let uploadedFiles = {filenames: []} 
-    Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
+    if(cohortFiles.length > 1)
+        Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
+    else
+        uploadedFiles.filenames.push(cohortFiles.name)
     let proc = 'add_file_attachment'
         let params = []
         params.push(req.params.id)
         params.push(req.params.category)
         params.push(JSON.stringify(uploadedFiles))
-        
+        logger.debug(uploadedFiles)
+    
         mysql.callJsonProcedure(proc, params, function (result) {
             if(result && result[0] && result[0][0].rowsAffacted > 0){
                 const returnedData = {}
