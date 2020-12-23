@@ -23,7 +23,7 @@ overrides: {
 const Reminder = ({...props}) => {
     return  <MuiThemeProvider theme={defaultTheme}>
         <MuiThemeProvider theme={theme}>
-            <Tooltip title={props.message} TransitionComponent={Zoom}>
+            <Tooltip title={props.message} TransitionComponent={Zoom} {...props}>
             {props.children}
             </Tooltip>
         </MuiThemeProvider>
