@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.scss'
@@ -499,8 +500,10 @@ const CohortForm = ({ ...props }) => {
             </div>
             <div>
                 <form id='currentForm'>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}><span>Cohort Information</span></div>
-                    <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'}>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelA'}
+                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                        panelTitle="Cohort Information">
                         <div className='form-group col-md-12'>
                             <div className='col-md-4' style={{ marginBottom: '5px' }}><b>A.1a Cohort Name</b></div>
                             <div className='col-md-8'>{cohort.cohort_name}</div>
@@ -588,9 +591,11 @@ const CohortForm = ({ ...props }) => {
                                 </div>
                             }
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}><span>Principal Investigators</span></div>
-                    <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'}>
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelB'}
+                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                        panelTitle="Principal Investigators">
                         <div id='question4' className='col-md-12' style={{ paddingTop: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '15px' }}>
                                 <label className='col-md-3' style={{ paddingLeft: '0', lineHeight: '1.5em' }}>A.6{' '} Cohort Principal Investigator(s)</label>
@@ -623,9 +628,12 @@ const CohortForm = ({ ...props }) => {
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}><span>Eligibility  & Enrollment</span></div>
-                    <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'}>
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelC'}
+                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                        panelTitle="Eligibility & Enrollment">
+
                         <div id='question8' className='col-md-12' style={{ marginBottom: window.innerWidth <= 1000 ? '' : '8px', paddingTop: '5px', display: 'flex', flexDirection: 'column' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <label>A.8{' '}Eligibility Criteria</label>
@@ -801,9 +809,11 @@ const CohortForm = ({ ...props }) => {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}><span>Requirements & Strategies</span></div>
-                    <div className={activePanel === 'panelD' ? 'panel-active' : 'panellet'}>
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelD'}
+                        onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
+                        panelTitle="Requirements & Strategies">
                         <div id='question10' className='col-md-12' style={{ marginBottom: window.innerWidth <= 800 ? '0' : '15px' }}>
                             <div className='col-md-12' style={{ marginBottom: '13px' }}>
                                 <label className='col-md-8' style={{ padding: '0', margin: '0' }}>A.10{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{ color: 'red' }}>*</span></label>
@@ -1053,9 +1063,11 @@ const CohortForm = ({ ...props }) => {
 
                             </div>
                         </div>
-                    </div>
-                    <div className='accordion' onClick={() => setActivePanel(activePanel === 'panelE' ? '' : 'panelE')}><span>Documents</span></div>
-                    <div className={activePanel === 'panelE' ? 'panel-active' : 'panellet'} style={{ paddingLeft: window.innerWidth <= 1000 ? '0' : '' }}>
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelE'}
+                        onClick={() => setActivePanel(activePanel === 'panelE' ? '' : 'panelE')}
+                        panelTitle="Documents">
                         <div id='question15' className='col-md-12' style={{ paddingLeft: window.innerWidth <= 1000 ? '0' : '', paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '10px' }}>
                                 <label style={{ paddingLeft: '0' }}>A.15 {' '} Required Documents</label>
@@ -1245,10 +1257,10 @@ const CohortForm = ({ ...props }) => {
                                 }
                             </div>
                         </div>
-                    </div>
+                    </CollapsiblePanel>
                 </form>
             </div>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} className="my-4">
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' disabled />
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('B')} />
