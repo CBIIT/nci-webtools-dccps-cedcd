@@ -79,7 +79,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
-                    {asTitleCase(status)}
+                    {asTitleCase(status) || 'Not available'}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Updated Date: </strong>
