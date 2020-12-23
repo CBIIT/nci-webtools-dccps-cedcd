@@ -28,6 +28,8 @@ const CancerInfoForm = ({ ...props }) => {
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
     const [submitted, setSubmitted] = useState(false);
+    const [successMsg, setSuccessMsg] = useState(false)
+    const [failureMsg, setFailureMsg] = useState(false)    
     const [modal, setModal] = useState({ show: false });
     const updateModal = state => setModal({ ...modal, ...state });
     const setCount = (key, value) => dispatch(setCancerCount(key, value));
@@ -313,32 +315,11 @@ const CancerInfoForm = ({ ...props }) => {
             }).then(r => r.json());
 
             dispatch(loadCohort(id));
-
-            updateModal({
-                show: true,
-                title: <h2>Cohort Information Updated</h2>,
-                body: <div className="my-3">Your changes to the {cohort.name} have been saved.</div>,
-                footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Close</button>
-                </div>
-            })
+            setSuccessMsg(true);
 
         } catch (e) {
             console.log(e);
-            updateModal({
-                show: true,
-                title: <h2>Error: Could Not Update Cohort Information</h2>,
-                body: <div className="my-3">
-                    There was an error processing your request. Please try again later or contact
-                    <a href="mailto:CEDCDWebAdmin@mail.nih.gov">CEDCDWebAdmin@mail.nih.gov</a> if this issue persists.
-                    <br />
-                    Your changes to {cohort.name} have <strong>not</strong> been saved.
-                </div>,
-                footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Close</button>
-                </div>
-            });
-
+            setFailureMsg(true);
         } finally {
             dispatch(allactions.sectionActions.setSectionStatus(
                 'D',
@@ -372,7 +353,8 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
-        
+        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CollapsiblePanel
             condition={activePanel === 'panelA'}
             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
