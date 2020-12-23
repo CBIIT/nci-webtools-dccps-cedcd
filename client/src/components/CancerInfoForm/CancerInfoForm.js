@@ -6,7 +6,7 @@ import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
-import { CollapsiblePanel, CollapsiblePanelContainer } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 
 const {
     setCancerCount,
