@@ -199,7 +199,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>American Indian / Alaska Native</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>American Indian / Alaska Native</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='111'  value={enrollmentCount['111']} onChange={(e) => updateCells('111', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='112'  value={enrollmentCount['112']} onChange={(e) => updateCells('112', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='113'  value={enrollmentCount['113']} onChange={(e) => updateCells('113', e.target.value)} /></td>
@@ -213,7 +213,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>Asian</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>Asian</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='211'  value={enrollmentCount['211']} onChange={(e) => updateCells('211', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='212'  value={enrollmentCount['212']} onChange={(e) => updateCells('212', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='213'  value={enrollmentCount['213']} onChange={(e) => updateCells('213', e.target.value)} /></td>
@@ -227,7 +227,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.3rem', backgroundColor: '01857b', color: 'white'}}>Native Hawaiian or other pacific islander</th>
+                                        <th style={{fontSize: '1.3rem', backgroundColor: '#01857b', color: 'white'}}>Native Hawaiian or other pacific islander</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='311'  value={enrollmentCount['311']} onChange={(e) => updateCells('311', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='312'  value={enrollmentCount['312']} onChange={(e) => updateCells('312', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='313'  value={enrollmentCount['313']} onChange={(e) => updateCells('313', e.target.value)} /></td>
@@ -241,7 +241,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>Black or African American</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>Black or African American</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='411'  value={enrollmentCount['411']} onChange={(e) => updateCells('411', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='412'  value={enrollmentCount['412']} onChange={(e) => updateCells('412', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='413'  value={enrollmentCount['413']} onChange={(e) => updateCells('413', e.target.value)} /></td>
@@ -255,7 +255,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>white</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>white</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='511'  value={enrollmentCount['511']} onChange={(e) => updateCells('511', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='512'  value={enrollmentCount['512']} onChange={(e) => updateCells('512', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='513'  value={enrollmentCount['513']} onChange={(e) => updateCells('513', e.target.value)} /></td>
@@ -269,7 +269,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More than one race</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More than one race</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='611'  value={enrollmentCount['611']} onChange={(e) => updateCells('611', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='612'  value={enrollmentCount['612']} onChange={(e) => updateCells('612', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='613'  value={enrollmentCount['613']} onChange={(e) => updateCells('613', e.target.value)} /></td>
@@ -283,7 +283,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.4rem', backgroundColor: '01857b', color: 'white'}}>Unknown or not reported</th>
+                                        <th style={{fontSize: '1.4rem', backgroundColor: '#01857b', color: 'white'}}>Unknown or not reported</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='711'  value={enrollmentCount['711']} onChange={(e) => updateCells('711', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='712'  value={enrollmentCount['712']} onChange={(e) => updateCells('712', e.target.value)} /></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='713'  value={enrollmentCount['713']} onChange={(e) => updateCells('713', e.target.value)} /></td>
@@ -297,7 +297,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '01857b', color: 'white'}}>Total</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white'}}>Total</th>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='811'  value={enrollmentCount['811']} /></td>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='812'  value={enrollmentCount['812']} /></td>
                                         <td style={{padding: '0', backgroundColor: 'lightgray'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='813'  value={enrollmentCount['813']} /></td>
