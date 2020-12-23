@@ -1809,7 +1809,7 @@ END//
 
 DROP PROCEDURE IF EXISTS add_file_attachment //
 
-CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in fileName varchar(150))
+CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in info JSON)
 
 begin
 	DECLARE i INT default 0;
@@ -2515,14 +2515,12 @@ CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in ol
 BEGIN
 
  DECLARE flag INT DEFAULT 1;
- select new_cohort_id;
- /*
  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-*/
+
 set sql_mode='';
 SET SQL_SAFE_UPDATES = 0;
 
@@ -2556,7 +2554,7 @@ create table temp_person select * from person where 1=2;
 
 insert into temp_person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
 select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
-from person where cohort_id = old_cohort_id and name is not null and name != '';
+from person  where cohort_id = old_cohort_id and name is not null and name != '';
 
 insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
 select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
@@ -2580,8 +2578,8 @@ on new.filename = old.filename and new.category where new.attachment_type = 1 an
 
 -- insert into enrollment_count
 insert into enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
-select new_cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, now(), now() 
-from enrollment_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.race_id, old.ethnicity_id, old.gender_id, old.enrollment_counts, now() as col1, now() as col2
+from enrollment_count as old where old.cohort_id =old_cohort_id;
 
 -- ---- insert into dlh --
 drop table if exists cohort_temp;
@@ -2600,8 +2598,8 @@ insert into dlh select null, a.* from cohort_temp a;
 
 -- insert into cancer_count
 insert into cancer_count (cohort_id,cancer_id,gender_id, case_type_id,cancer_counts, create_time, update_time)
-select new_cohort_id, cancer_id,gender_id, case_type_id,cancer_counts, now(), now() 
-from cancer_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.cancer_id,old.gender_id, old.case_type_id,old.cancer_counts, now() as col1, now() as col2
+from cancer_count as old where old.cohort_id =old_cohort_id;
 
 drop table if exists cohort_temp;
 
@@ -2645,8 +2643,8 @@ insert into mortality select null, a.* from cohort_temp a;
 
 -- insert into specimen_count
 insert into specimen_count (cohort_id,cancer_id,specimen_id, specimens_counts, create_time, update_time)
-select new_cohort_id, cancer_id,specimen_id, specimens_counts, now(), now() 
-from specimen_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.cancer_id,old.specimen_id, old.specimens_counts, now() as col1, now() as col2
+from specimen_count as old where old.cohort_id =old_cohort_id;
 
 insert into specimen_collected_type
 select null, new_cohort_id, c.id as specimen_id, b.collected_yn,
@@ -2673,8 +2671,8 @@ insert into specimen select null, a.* from cohort_temp a;
 
 -- insert into technology
 insert into technology (cohort_id,tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, create_time, update_time)
-select new_cohort_id, tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, now(), now() 
-from technology where cohort_id =old_cohort_id;
+select new_cohort_id, old.tech_use_of_mobile, old.tech_use_of_mobile_describe, old.tech_use_of_cloud, old.tech_use_of_cloud_describe, now() as col1, now() as col2
+from technology as old where old.cohort_id =old_cohort_id;
 
 -- insert update supporting tables ,for published cohort, 
 insert into cohort_edit_status (cohort_id, page_code, status)
@@ -2923,13 +2921,15 @@ Begin
                  where id = `userID`;
  
  	SET @cohortList = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_list'));
-    if(JSON_LENGTH(@cohortList) > 0) then
+    if(JSON_LENGTH(@cohortList) > 0 || JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) <> 'Admin') then
       update cohort_user_mapping set active='N' where cohort_user_id = `userID`;
 		WHILE i < JSON_LENGTH(@cohortList) DO
 			SELECT JSON_EXTRACT(@cohortList, concat('$[',i,']')) INTO @cohortAcronym;
+            if(replace(@cohortAcronym, '"','') <> 'All') then
             insert into cohort_user_mapping (cohort_acronym, cohort_user_id, active, create_time, update_time)
             values (replace(@cohortAcronym, '"',''), `userID`, 'Y' , now(), now() )
             on duplicate key update active  = 'Y';
+            end if;
 	        SELECT i + 1 INTO i;
 		END WHILE;
         END IF;
