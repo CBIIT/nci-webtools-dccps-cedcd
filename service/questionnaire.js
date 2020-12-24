@@ -40,11 +40,12 @@ router.post('/get_updated_cohortID', function (req, res) {
 })
 
 router.post('/upload/:id/:category', function (req, res, next) {
-    let cohortFiles = req.files.cohortFile
+    let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
 
     let uploadedFiles = {filenames: []} 
     if(cohortFiles.length > 1)
-        Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
+        //Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
+        cohortFiles.forEach(f => uploadedFiles.filenames.push(f.name))
     else
         uploadedFiles.filenames.push(cohortFiles.name)
     let proc = 'add_file_attachment'
@@ -66,7 +67,8 @@ router.post('/upload/:id/:category', function (req, res, next) {
                             if (err) res.json({ status: 500 })
                         });
                     }
-                    cohortFiles.forEach(f => {f.mv(`FileBank/CohortID_${returnedData.new_ID}/${f.name}`)})   
+                    if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => {f.mv(`FileBank/CohortID_${returnedData.new_ID}/${f.name}`)})  
+                    else cohortFiles.mv(`FileBank/CohortID_${returnedData.new_ID}/${cohortFiles.name}`) 
                 }) 
                 res.json({ status: 200, data: returnedData})
             }        
