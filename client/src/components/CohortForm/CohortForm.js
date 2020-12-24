@@ -563,7 +563,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             {window.innerWidth <= 1000 ? <div id='a3b' className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <div style={{ marginBottom: '5px', paddingLeft: '15px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
-                                <div style={{ marginBottom: '20px' }}><span className='col-xs-8' style={{ marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
+                                <div style={{ marginBottom: '20px' }}><span className='col-xs-8' style={{ marginRight: '0' }}>Is this the same person who completed the form ?</span>
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span></Reminder> :
                                         <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span>
                                     }
