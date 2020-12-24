@@ -604,7 +604,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-9 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>If data was At baseline, please specify all tobacco products that apply</span>
+                                    <span className='col-xs-12'>If data was collected at baseline, please specify all tobacco products that apply</span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
@@ -634,7 +634,7 @@ const MajorContentForm = ({ ...props }) => {
 
                             <div className='col-md-9 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>If data was At baseline, please specify all tobacco products that apply</span>
+                                    <span className='col-xs-12'>If data was collected during follow-up, please specify all tobacco products that apply</span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
