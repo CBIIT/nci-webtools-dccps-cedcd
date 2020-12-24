@@ -590,7 +590,7 @@ router.post('/get_specimen/:id', function (req, res) {
 
             if (result[3].length > 0) {
                 for (let e of result[3])
-                    temp.push(e.email)
+                    if(e.email) temp.push(e.email)
                 specimenData.emails = temp.join(',')
             }
 
