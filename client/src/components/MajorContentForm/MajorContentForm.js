@@ -349,7 +349,7 @@ const MajorContentForm = ({ ...props }) => {
 
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status</label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
 
@@ -385,7 +385,7 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.2 Education Level{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.2 Education Level<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.educationBaseLine && errors.educationFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
 
@@ -408,242 +408,445 @@ const MajorContentForm = ({ ...props }) => {
                                     <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
                                     <div className='col-lg-6 col-xs-12'>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{" "}No</span>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationFollowUp' checked={majorContent.educationFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationFollowUp(0)); dispatch(allactions.majorContentErrorActions.educationFollowUp(true)) }} />{" "}No</span>
                                         </div>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{' '}Yes</span>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationFollowUp' checked={majorContent.educationFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationFollowUp(1)); dispatch(allactions.majorContentErrorActions.educationFollowUp(true)) }} />{' '}Yes</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            {/*<div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='educationBaseLine' checked={majorContent.educationBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
-                                </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='educationFollowUp' checked={majorContent.educationFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
-                                </div>
-                                </div>*/}
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.3 Marital Status{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.3 Marital Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.4 Language/Country origin{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.4 Language/Country origin<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.originBaseLine && errors.originFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='originBaseLine' checked={majorContent.originBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originBaseLine' checked={majorContent.originBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setOriginBaseLine(0)); dispatch(allactions.majorContentErrorActions.originBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originBaseLine' checked={majorContent.originBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setOriginBaseLine(1)); dispatch(allactions.majorContentErrorActions.originBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='originFollowUp' checked={majorContent.originFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originFollowUp' checked={majorContent.originFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setOriginFollowUp(0)); dispatch(allactions.majorContentErrorActions.originFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originFollowUp' checked={majorContent.originFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setOriginFollowUp(1)); dispatch(allactions.majorContentErrorActions.originFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.5 Employment Status{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.5 Employment Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.empStatusBaseLine && errors.empStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEmpStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.originBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEmpStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEmpStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEmpStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.6 Health Insurance Status{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.6 Health Insurance Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.7 Anthropometry(e.g. weight, height){' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.7 Anthropometry(e.g. weight, height)<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.anthropometryBaseLine && errors.anthropometryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAnthropometryBaseLine(0)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAnthropometryBaseLine(1)); dispatch(allactions.majorContentErrorActions.setAnthropometryBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAnthropometryFollowUp(0)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAnthropometryFollowUp(1)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.8 Dietary Intake{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.8 Dietary Intake<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.dietaryBaseLine && errors.dietaryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDietaryBaseLine(0)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDietaryBaseLine(1)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDietaryFollowUp(0)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDietaryFollowUp(1)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.9 Dietary Supplement Use{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.9 Dietary Supplement Use<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.supplementBaseLine && errors.supplementFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='supplementBaseLine' checked={majorContent.supplementBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementBaseLine' checked={majorContent.supplementBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSupplementBaseLine(0)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementBaseLine' checked={majorContent.supplementBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSupplementBaseLine(1)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='supplementFollowUp' checked={majorContent.supplementFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementFollowUp' checked={majorContent.supplementFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSupplementFollowUp(0)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementFollowUp' checked={majorContent.supplementFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSupplementFollowUp(1)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.10 Complementary and Alternative Medicine{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.10 Complementary and Alternative Medicine<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.medicineBaseLine && errors.medicineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='medicineBaseLine' checked={majorContent.medicineBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineBaseLine' checked={majorContent.medicineBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMedicineBaseLine(0)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineBaseLine' checked={majorContent.medicineBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMedicineBaseLine(1)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='medicineFollowUp' checked={majorContent.medicineFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineFollowUp' checked={majorContent.medicineFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMedicineFollowUp(0)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineFollowUp' checked={majorContent.medicineFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setMedicineFollowUp(1)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.11 Prescription Medication Use(not related to cancer treatment){' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.11 Prescription Medication Use(not related to cancer treatment)<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.prescriptionBaseLine && errors.prescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(0)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(1)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(0)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(1)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.12 Non-prescription Medication Use(not related to cancer treatment){' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.12 Non-prescription Medication Use(not related to cancer treatment)<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.nonprescriptioinBaseLine && errors.nonprescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(0)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(1)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(0)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(1)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.13 Alcohol Consumption{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.13 Alcohol Consumption<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.alcoholBaseLine && errors.alcoholFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAlcoholBaseLine(0)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAlcoholBaseLine(1)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAlcoholFollowUp(0)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setAlcoholFollowUp(1)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.14 Cigarette Smoking{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.14 Cigarette Smoking<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.cigaretteBaseLine && errors.cigaretteFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCigaretteBaseLine(0)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCigaretteBaseLine(1)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCigaretteFollowUp(0)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCigaretteFollowUp(1)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -713,272 +916,534 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.16 Physical activity{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.16 Physical activity<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.physicalBaseLine && errors.physicalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalBaseLine' checked={majorContent.physicalBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalBaseLine(0)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalBaseLine(1)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalFollowUp' checked={majorContent.physicalFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalFollowUp(0)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalFollowUp(1)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.17 Sleep habits{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.17 Sleep habits<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.sleepBaseLine && errors.sleepFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepBaseLine' checked={majorContent.sleepBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSleepBaseLine(0)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSleepBaseLine(1)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepFollowUp' checked={majorContent.sleepFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSleepFollowUp(0)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSleepFollowUp(1)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.18 Reproductive history{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.18 Reproductive history<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.reproduceBaseLine && errors.reproduceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReproduceBaseLine(0)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReproduceBaseLine(1)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReproduceFollowUp(0)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReproduceFollowUp(1)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.19 Self-reported health{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.19 Self-reported health<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(0)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(1)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(0)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(1)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.20 Quality of life{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.20 Quality of life<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.lifeBaseLine && errors.lifeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeBaseLine' checked={majorContent.lifeBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setLifeBaseLine(0)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setLifeBaseLine(1)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeFollowUp' checked={majorContent.lifeFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setLifeFollowUp(0)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setLifeFollowUp(1)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.21 Social support{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.21 Social support<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.socialSupportBaseLine && errors.socialSupportFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(0)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(1)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(0)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(1)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.22 Cognitive function{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.22 Cognitive function<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.cognitionBaseLine && errors.cognitionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCognitionBaseLine(0)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCognitionBaseLine(1)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCognitionFollowUp(0)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCognitionFollowUp(1)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.23 Depression{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.23 Depression<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.depressionBaseLine && errors.depressionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionBaseLine' checked={majorContent.depressionBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDepressionBaseLine(0)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDepressionBaseLine(1)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionFollowUp' checked={majorContent.depressionFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDepressionFollowUp(0)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setDepressionFollowUp(1)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.24 Other psycosocial variables{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.24 Other psycosocial variables<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.psychosocialBaseLine && errors.psychosocialFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(0)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(1)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(0)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(1)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.25 Fatigue{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.25 Fatigue<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.fatigueBaseLine && errors.fatigueFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setFatigueBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setFatigueBaseLine(0)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setFatigueBaseLine(1)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setFatigueFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setFatigueFollowUp(0)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setFatigueFollowUp(1)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.26 Family history of cancer{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.26 Family history of cancer<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(0)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(1)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(0)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(1)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.27 Family history of cancer with pedigrees{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.27 Family history of cancer with pedigrees<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(0)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(1)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeFollowUp' checked={majorContent.cancerPedigreeFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(0)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(1)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.28 Physical function measures (e.g. grip strength, gait speed, etc.){' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.28 Physical function measures (e.g. grip strength, gait speed, etc.)<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(0)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(1)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(0)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(1)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-12' style={{ paddingLeft: '0' }}><b className="d-block control-label">C.29 Environmental or occupational exposures(e.g. air contaminants/quality, occupational exposures and history, water source){' '} <small>(Select all that apply)</small></b>
+                                <span className='col-xs-12' style={{ paddingLeft: '0' }}><b className="d-block control-label">C.29 Environmental or occupational exposures(e.g. air contaminants/quality, occupational exposures and history, water source)<span style={{ color: 'red' }}>*</span></b>
                                     {(errors.exposureBaseLine && errors.exposureFollowUp) && saved && <span className='col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </span>
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureBaseLine' checked={majorContent.exposureBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setExposureBaseLine(0)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setExposureBaseLine(1)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='exposureFollowUp' checked={majorContent.exposureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureFollowUp' checked={majorContent.exposureFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setExposureFollowUp(0)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureFollowUp' checked={majorContent.exposureFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setExposureFollowUp(1)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.30 Residential history information(zip code, GIS) over time{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.30 Residential history information(zip code, GIS) over time<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.residenceBaseLine && errors.residenceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(e.target.checked)) }} />{' '} At baseline
-                                </span>
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceBaseLine' checked={majorContent.residenceBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setResidenceBaseLine(0)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setResidenceBaseLine(1)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceFollowUp' checked={majorContent.residenceFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setResidenceFollowUp(0)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setResidenceFollowUp(1)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1000,127 +1465,249 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='col-md-12 col-xs-12'>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes</div></span>
                                     {(errors.diabetesBaseLine && errors.diabetesFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setDiabetesBaseLine(0)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setDiabetesBaseLine(1)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setDiabetesFollowUp(0)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setDiabetesFollowUp(1)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke</div></span>
                                     {(errors.strokeBaseLine && errors.strokeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeBaseLine' checked={majorContent.strokeBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setStrokeBaseLine(0)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setStrokeBaseLine(1)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='strokeFollowUp' checked={majorContent.strokeFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeFollowUp' checked={majorContent.strokeFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setStrokeFollowUp(0)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeFollowUp' checked={majorContent.strokeFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setStrokeFollowUp(1)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema</div></span>
                                     {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='copdBaseLine' checked={majorContent.copdBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdBaseLine' checked={majorContent.copdBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCopdBaseLine(0)); dispatch(allactions.majorContentErrorActions.copdBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdBaseLine' checked={majorContent.copdBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCopdBaseLine(1)); dispatch(allactions.majorContentErrorActions.copdBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='copdFollowUp' checked={majorContent.copdFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdFollowUp' checked={majorContent.copdFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCopdFollowUp(0)); dispatch(allactions.majorContentErrorActions.copdFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdFollowUp' checked={majorContent.copdFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCopdFollowUp(1)); dispatch(allactions.majorContentErrorActions.copdFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease</div></span>
                                     {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(0)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(1)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(0)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(1)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis</div></span>
                                     {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(0)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(1)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(0)); dispatch(allactions.majorContentErrorActions.osteoporosisFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(1)); dispatch(allactions.majorContentErrorActions.osteoporosisFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health</div></span>
                                     {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalBaseLine' checked={majorContent.mentalBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setMentalBaseLine(0)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setMentalBaseLine(1)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalFollowUp' checked={majorContent.mentalFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setMentalFollowUp(0)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setMentalFollowUp(1)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline{' '} <small>(Select all that apply)</small></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline</div></span>
                                     {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
-                                <div className='col-md-8 col-xs-12'>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(e.target.checked)) }} />{' '} At baseline
-                                    </span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(0)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(1)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-xs-12'>
-                                            <input type='checkbox' name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(e.target.checked)) }} />{' '} During follow-up
-                                    </span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 0}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(0)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1}
+                                                    onClick={() => { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(1)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
