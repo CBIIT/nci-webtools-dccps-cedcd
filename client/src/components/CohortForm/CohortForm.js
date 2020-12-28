@@ -545,7 +545,7 @@ const CohortForm = ({ ...props }) => {
                                         dispatch(allactions.cohortActions.completionDate(date)); if (!date) { dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg)) } else {
                                             dispatch(allactions.cohortErrorActions.completionDate(true))
                                         }
-                                    }} /></span>}
+                                    }} disabled={isReadOnly} /></span>}
                                 </span>
                             </div>
                         </div>
