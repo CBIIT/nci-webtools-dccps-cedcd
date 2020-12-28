@@ -371,9 +371,7 @@ const SpecimenForm = ({ ...props }) => {
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
 
         <div className='specimenInfo col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
-            </div>
+
             {/* START Specimen */}
             <div className="row">
                 <div id="specimen" className="cohortInfo col-md-12">
@@ -392,6 +390,10 @@ const SpecimenForm = ({ ...props }) => {
                             display: activePanel === 'panelA' ? 'block' : 'none'
                         }}>
                         <div className={activePanel === 'panelA' ? 'panel-active row' : 'panellet row'} >
+
+                            <div style={{ marginTop: '20px'}}>
+                                <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
+                            </div>
 
                             <div className='specimenInfo my-3 col-12'>
                                 <label className="d-block control-label">
@@ -632,11 +634,6 @@ const SpecimenForm = ({ ...props }) => {
 
                                 <div className='col-12'>
                                     <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        {/*<span className='col-12'><input type='checkbox' name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
-                                        */}
-
-
                                         <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
                                         <div className='col-lg-6 col-xs-12'>
                                             <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
@@ -666,8 +663,6 @@ const SpecimenForm = ({ ...props }) => {
                                         </span>
                                     </div>
                                     <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
-                                        {/*<span className='col-12'><input type='checkbox' name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>*/}
                                         <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
                                         <div className='col-lg-6 col-xs-12'>
                                             <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
