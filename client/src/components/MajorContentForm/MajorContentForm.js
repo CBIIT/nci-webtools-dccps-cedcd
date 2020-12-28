@@ -1465,7 +1465,7 @@ const MajorContentForm = ({ ...props }) => {
                         <div className='col-md-12 col-xs-12'>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.diabetesBaseLine && errors.diabetesFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
 
@@ -1501,7 +1501,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.strokeBaseLine && errors.strokeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1536,7 +1536,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1571,7 +1571,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1606,7 +1606,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
 
@@ -1642,7 +1642,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
 
@@ -1678,7 +1678,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline</div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
