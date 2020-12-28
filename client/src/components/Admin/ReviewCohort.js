@@ -7,7 +7,7 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from './SectionDetails/MortalityForm'
-import SpecimenForm from './SectionDetails/Specimens'
+import SpecimenForm from '../SpecimenForm/SpecimensForm'
 import DataLinkageForm from './SectionDetails/DataLinkageForm'
 import Messenger from '../Snackbar/Snackbar'
 import ReviewQuestionnaire from './ReviewQuestionnaire'
@@ -81,7 +81,7 @@ export default function ReviewCohort(props) {
                     clearTimeout(timedMessage)
                 }
             })
-    }    
+    }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
@@ -117,5 +117,5 @@ export default function ReviewCohort(props) {
         <ReviewQuestionnaire activeSection={currentSection} handler={setCurrentSection} cohortStatus={status}>
             {getChild(currentSection, { isReadOnly: true, cohortId, handleApprove, handleReject })}
         </ReviewQuestionnaire>
-    </>    
+    </>
 }
