@@ -1506,6 +1506,12 @@ BEGIN
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
     
     select `status` as cohort_status from cohort where id = targetID;
+    
+    select
+     id as fileId,
+	 category as fileCategory,
+     filename from attachment
+     where cohort_id = targetID and filename !='' and filename is not null;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -2476,7 +2482,7 @@ BEGIN
 	EXECUTE stmt2 using @cohort_id;
 	DEALLOCATE PREPARE stmt2;
     
-    set @query3 = "select u.email from cohort c join cohort_user_mapping um on c.acronym = um.cohort_acronym join user u on um.cohort_user_id = u.id where c.id = ? and um.cohort_user_id in (11, 12);";
+    set @query3 = "select u.email from cohort c join cohort_user_mapping um on c.acronym = um.cohort_acronym join user u on um.cohort_user_id = u.id where c.id = ?";
     
     PREPARE stmt3 FROM @query3;
     EXECUTE stmt3 using @cohort_id;

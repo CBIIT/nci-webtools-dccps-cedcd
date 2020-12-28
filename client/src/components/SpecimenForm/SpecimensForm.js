@@ -371,9 +371,7 @@ const SpecimenForm = ({ ...props }) => {
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
 
         <div className='specimenInfo col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
-            </div>
+
             {/* START Specimen */}
             <div className="row">
                 <div id="specimen" className="cohortInfo col-md-12">
@@ -391,155 +389,239 @@ const SpecimenForm = ({ ...props }) => {
                         style={{
                             display: activePanel === 'panelA' ? 'block' : 'none'
                         }}>
-                        <div className={activePanel === 'panelA' ? 'panel-active' : 'panellet'} >
+                        <div className={activePanel === 'panelA' ? 'panel-active row' : 'panellet row'} >
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+                            <div style={{ marginTop: '20px'}}>
+                                <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
+                            </div>
+
+                            <div className='specimenInfo my-3 col-12'>
                                 <label className="d-block control-label">
-                                    G.1 Blood  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                                    G.1 Blood  <span style={{ color: 'red' }}>*</span></label>
 
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioBloodBaseline' checked={specimen.bioBloodBaseline === 1}
-                                            onChange={(e) => {
-                                                dispatch(allactions.specimenActions.setBioBloodBaseline(+e.target.checked));
-                                                dispatch(allactions.specimenErrorActions.bioBloodBaseline(e.target.checked))
-                                            }} />{' '} Collected at baseline</span>
-
-                                        <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                            <span className='col-12'><small>If collected, types of aliquots</small></span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineSerum' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineSerum === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodBaselineSerum(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(e.target.checked))
-                                                }} />{' '}Serum</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselinePlasma' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselinePlasma === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodBaselinePlasma(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(e.target.checked))
-                                                }} />{' '}Plasma</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineBuffyCoat' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineBuffyCoat === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodBaselineBuffyCoat(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(e.target.checked))
-                                                }} />{' '}Buffy Coat</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineOtherDerivative' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineOtherDerivative === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodBaselineOtherDerivative(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(e.target.checked))
-                                                }} />{' '}Other blood derivative</span>
+                                <div className='form-group col-md-8 col-xs-12'>
+                                    <div className='col-12' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBloodBaseline' checked={specimen.bioBloodBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaseline(0)); dispatch(allactions.specimenErrorActions.bioBloodBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBloodBaseline' checked={specimen.bioBloodBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBloodBaseline(1)); dispatch(allactions.specimenErrorActions.bioBloodBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-
-                                        <span className='col-12'><input type='checkbox' name='bioBloodOtherTime' checked={specimen.bioBloodOtherTime === 1}
+                                    <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                        <span className='col-12'><small>If collected, types of aliquots</small></span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineSerum' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineSerum === 1}
                                             onChange={(e) => {
-                                                dispatch(allactions.specimenActions.setBioBloodOtherTime(+e.target.checked));
-                                                dispatch(allactions.specimenErrorActions.bioBloodOtherTime(e.target.checked))
-                                            }} />{' '} Collected at other time points</span>
+                                                dispatch(allactions.specimenActions.setBioBloodBaselineSerum(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(e.target.checked))
+                                            }} />{' '}Serum</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselinePlasma' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselinePlasma === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodBaselinePlasma(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(e.target.checked))
+                                            }} />{' '}Plasma</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineBuffyCoat' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineBuffyCoat === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodBaselineBuffyCoat(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(e.target.checked))
+                                            }} />{' '}Buffy Coat</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineOtherDerivative' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineOtherDerivative === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodBaselineOtherDerivative(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(e.target.checked))
+                                            }} />{' '}Other blood derivative</span>
+                                    </div>
+                                </div>
 
-                                        <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                            <span className='col-12'><small>If collected, types of aliquots</small></span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeSerum' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeSerum === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodOtherTimeSerum(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(e.target.checked))
-                                                }} />{' '}Serum</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimePlasma' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimePlasma === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodOtherTimePlasma(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(e.target.checked))
-                                                }} />{' '}Plasma</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeBuffyCoat' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodOtherTimeBuffyCoat(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(e.target.checked))
-                                                }} />{' '}Buffy Coat</span>
-                                            <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeOtherDerivative' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
-                                                onChange={(e) => {
-                                                    dispatch(allactions.specimenActions.setBioBloodOtherTimeOtherDerivative(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(e.target.checked))
-                                                }} />{' '}Other blood derivative</span>
+                                <div className='col-md-8 col-xs-12'>
+                                    <div className='col-12' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBloodOtherTime' checked={specimen.bioBloodOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTime(0)); dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBloodOtherTime' checked={specimen.bioBloodOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBloodOtherTime(1)); dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                        <span className='col-12'><small>If collected, types of aliquots</small></span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeSerum' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeSerum === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodOtherTimeSerum(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(e.target.checked))
+                                            }} />{' '}Serum</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimePlasma' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimePlasma === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodOtherTimePlasma(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(e.target.checked))
+                                            }} />{' '}Plasma</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeBuffyCoat' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodOtherTimeBuffyCoat(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(e.target.checked))
+                                            }} />{' '}Buffy Coat</span>
+                                        <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeOtherDerivative' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
+                                            onChange={(e) => {
+                                                dispatch(allactions.specimenActions.setBioBloodOtherTimeOtherDerivative(+e.target.checked));
+                                                dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(e.target.checked))
+                                            }} />{' '}Other blood derivative</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                            {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
+
+
+                            <div className='specimenInfo my-3 row col-12' style={{ marginLeft: '0' }}>
+                                <label className="d-block control-label">
+                                    G.2 Buccal/Saliva  <span style={{ color: 'red' }}>*</span></label>
+
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(0)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(1)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(0)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(1)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
+                                {(errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) && saved && <div className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</div>}
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+                            <div className='specimenInfo my-3 row col-md-12 col-12' style={{ marginLeft: '0' }}>
                                 <label className="d-block control-label">
-                                    G.2 Buccal/Saliva  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                                    G.3 Tissue (include tumor and/or normal){'  '}  <span style={{ color: 'red' }}>*</span></label>
 
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 1}
-                                            onChange={(e) => {
-                                                dispatch(allactions.specimenActions.setBioBuccalSalivaBaseline(+e.target.checked));
-                                                dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(e.target.checked))
-                                            }} />{' '} Collected at baseline</span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioTissueBaseline(0)); dispatch(allactions.specimenErrorActions.bioTissueBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioTissueBaseline(1)); dispatch(allactions.specimenErrorActions.bioTissueBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }} > <span className='col-12'><input type='checkbox' name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 1}
-                                        onChange={(e) => {
-                                            dispatch(allactions.specimenActions.setBioBuccalSalivaOtherTime(+e.target.checked));
-                                            dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(e.target.checked))
-                                        }} />{' '} Collected at other time points</span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioTissueOtherTime(0)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioTissueOtherTime(1)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                {(errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
+                                {(errors.bioTissueBaseline && errors.bioTissueOtherTime) && saved && <div className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</div>}
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+                            <div className='specimenInfo my-3 row col-md-12 col-12' style={{ marginLeft: '0' }}>
                                 <label className="d-block control-label">
-                                    G.3 Tissue (include tumor and/or normal){'  '}  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                                    G.4 Urine  <span style={{ color: 'red' }}>*</span></label>
 
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 1}
-                                            onChange={(e) => {
-                                                dispatch(allactions.specimenActions.setBioTissueBaseline(+e.target.checked));
-                                                dispatch(allactions.specimenErrorActions.bioTissueBaseline(e.target.checked))
-                                            }} />{' '} Collected at baseline</span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioUrineBaseline(0)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioUrineBaseline(1)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 1}
-                                            onChange={(e) => {
-                                                dispatch(allactions.specimenActions.setBioTissueOtherTime(+e.target.checked));
-                                                dispatch(allactions.specimenErrorActions.bioTissueOtherTime(e.target.checked))
-                                            }} />{' '} Collected at other time points</span>
+
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioUrineOtherTime(0)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioUrineOtherTime(1)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                {(errors.bioTissueBaseline && errors.bioTissueOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
+                                {(errors.bioUrineBaseline && errors.bioUrineOtherTime) && saved && <div className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</div>}
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+                            <div className='specimenInfo my-3 row col-md-12 col-12' style={{ marginLeft: '0' }}>
                                 <label className="d-block control-label">
-                                    G.4 Urine  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                                    G.5 Feces  <span style={{ color: 'red' }}>*</span></label>
 
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioFecesBaseline(0)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioFecesBaseline(1)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioUrineOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
-                                    </div>
-                                </div>
-                                {(errors.bioUrineBaseline && errors.bioUrineOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                            </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
-                                <label className="d-block control-label">
-                                    G.5 Feces  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
-
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
-                                    </div>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioFecesOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
+                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioFecesOtherTime(0)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioFecesOtherTime(1)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 {(errors.bioFecesBaseline && errors.bioFecesOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
@@ -547,49 +629,68 @@ const SpecimenForm = ({ ...props }) => {
 
                             <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
-                                    G.6 Other(e.g. toenails)  <span style={{ color: 'red' }}>*</span><small>(Select all that apply)</small>   </label>
+                                    G.6 Other(e.g. toenails)  <span style={{ color: 'red' }}>*</span></label>
 
-                                <div className='col-md-8 col-12'>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherBaseline(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(e.target.checked)) }} />{' '} Collected at baseline</span>
-                                        <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                            <span className='col-12'><small>If collected, please specify</small></span>
-                                            <span className='col-12' style={{ paddingTop: '0.5rem' }}>
-                                                {specimen.bioOtherBaseline && errors.bioOtherBaselineSpecify && saved ? <Reminder message={'Missing required field'}>
-                                                    <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
-                                                        placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
-                                                        value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
-                                                        onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
-                                                </Reminder> :
-                                                    <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
-                                                        placeholder='Max of 200 characters'
-                                                        value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
-                                                        onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
-                                                }
-                                            </span>
+                                <div className='col-12'>
+                                    <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioOtherBaseline(0)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '}Yes</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className='col-md-6 col-12' style={{ paddingLeft: '0' }}>
-                                        <span className='col-12'><input type='checkbox' name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
-                                            onChange={(e) => { dispatch(allactions.specimenActions.setBioOtherOtherTime(+e.target.checked)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(e.target.checked)) }} />{' '} Collected at other time points</span>
-                                        <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                            <span className='col-12'><small>If collected, please specify</small></span>
-                                            <span className='col-12' style={{ paddingTop: '0.5rem' }}>
-                                                {specimen.bioOtherOtherTime && errors.bioOtherOtherTimeSpecify && saved ? <Reminder message={'Missing required field'}>
-                                                    <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherOtherTimeSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
-                                                        placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
-                                                        value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
-                                                        onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
-                                                </Reminder> :
-                                                    <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
-                                                        placeholder='Max of 200 characters'
-                                                        value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
-                                                        onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
-                                                }
-                                            </span>
+                                    <div className='col-sm-12 col-xs-12' style={{ paddingLeft: '0' }}>
+                                        <small>If collected, please specify</small>
+                                        <span className='col-12' style={{ paddingTop: '0.5rem' }}>
+                                            {specimen.bioOtherBaseline && errors.bioOtherBaselineSpecify && saved ? <Reminder message={'Missing required field'}>
+                                                <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
+                                                    placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
+                                                    value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
+                                                    onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
+                                            </Reminder> :
+                                                <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
+                                                    placeholder='Max of 200 characters'
+                                                    value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherBaselineSpecify(e.target.value))}
+                                                    onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} />
+                                            }
+                                        </span>
+                                    </div>
+                                    <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
+                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                        <div className='col-lg-6 col-xs-12'>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 0}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioOtherOtherTime(0)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{" "}No</span>
+                                            </div>
+                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
+                                                    onClick={() => { dispatch(allactions.specimenActions.setBioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '}Yes</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div className='col-sm-12 col-xs-12' style={{ paddingLeft: '0' }}>
+                                        <small>If collected, please specify</small>
+                                        <span className='col-12' style={{ paddingTop: '0.5rem' }}>
+                                            {specimen.bioOtherOtherTime && errors.bioOtherOtherTimeSpecify && saved ? <Reminder message={'Missing required field'}>
+                                                <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherOtherTimeSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
+                                                    placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
+                                                    value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
+                                                    onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
+                                            </Reminder> :
+                                                <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
+                                                    placeholder='Max of 200 characters'
+                                                    value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.setBioOtherOtherTimeSpecify(e.target.value))}
+                                                    onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} />
+                                            }
+                                        </span>
+                                    </div>
+
                                 </div>
                                 {(errors.bioOtherBaseline && errors.bioOtherOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
                             </div>
@@ -631,6 +732,7 @@ const SpecimenForm = ({ ...props }) => {
 
                         </div>
                     </div>
+
 
                     {/* END Part A */}
 
@@ -1055,9 +1157,9 @@ const SpecimenForm = ({ ...props }) => {
                         <input type='button' className='col-md-4  col-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
                 </span>
             </div>
-
         </div>
-    </div >
+    </div>
+
 }
 
 export default SpecimenForm

@@ -33,7 +33,7 @@ const SpecimenForm = ({ ...props }) => {
                     let specimenCounts = result.data.counts
                     let specimenInfo = result.data.info
                     let specimenDetails = result.data.details
-                    setEmails(result.data.emails + ',joezhao4865@gmail.com')
+                    setEmails(result.data.emails)
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
