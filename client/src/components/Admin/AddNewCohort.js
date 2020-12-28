@@ -69,17 +69,8 @@ class AddNewCohort extends Component {
     })
   }
 
-  handleClear = () => {
-    this.setState({
-      name_error: "",
-      acronym_error: "",
-      org_required: false,
-      notes_error: "",
-      cohortName: "",
-      cohortAcronym: "",
-      cohortOwners: [],
-      notes: ""
-    });
+  handleCancel = () =>{
+    window.location.assign(window.location.origin + '/admin/managecohort/')
   }
 
   handleChange(field, event) {
@@ -263,7 +254,7 @@ class AddNewCohort extends Component {
                   </div>
                   <div className="bttn-group">
                     <input type="submit" className="bttn_submit" value="Submit" />
-                    <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleClear}>Clear</a>
+                    <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleCancel}>Cancel</a>
                   </div>
                 </form>
               </div>

@@ -336,31 +336,51 @@ const MajorContentForm = ({ ...props }) => {
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
-            </div>
+
             <div>
                 <form>
                     <CollapsiblePanel
                         condition={activePanel === 'panelA'}
                         onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
                         panelTitle="Major Content Domains">
-                    
+
+                        <div >
+                            <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
+                        </div>
+
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status</label></span>
                                 {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
-                                </span>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }} disabled={isReadOnly}/>{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }} disabled={isReadOnly}/>{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
-                                </span>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} disabled={isReadOnly}/>{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} disabled={isReadOnly}/>{' '}Yes</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -369,7 +389,37 @@ const MajorContentForm = ({ ...props }) => {
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.2 Education Level{' '} <small>(Select all that apply)</small></label></span>
                                 {(errors.educationBaseLine && errors.educationFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-                            <div className='col-md-8 col-xs-12'>
+
+                            <div className='col-12'>
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(0)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(1)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
+                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
+                                    <div className='col-lg-6 col-xs-12'>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{" "}No</span>
+                                        </div>
+                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{' '}Yes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/*<div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
                                         <input type='checkbox' name='educationBaseLine' checked={majorContent.educationBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
@@ -380,7 +430,7 @@ const MajorContentForm = ({ ...props }) => {
                                         <input type='checkbox' name='educationFollowUp' checked={majorContent.educationFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
-                            </div>
+                                </div>*/}
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
