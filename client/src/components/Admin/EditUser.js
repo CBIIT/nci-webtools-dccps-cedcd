@@ -301,8 +301,9 @@ const EditUser = ({ ...props }) => {
                                 <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                     {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
-                                    <input style={{ paddingLeft: '0' }} className="col-md-4 col-12" name="user_lastName" type="text" id="user_lastName" value={lastName}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" id="user_lastName" value={lastName}
                                         onChange={(e) => setLastName(e.target.value)} />
+                                    </span>
                                 </div>
                                 <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
@@ -327,8 +328,8 @@ const EditUser = ({ ...props }) => {
                                     <input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
                                         onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                 </div>
-                                <div id="ctl11_div_organization" className="my-3 col-md-12 col-12">
-                                    <label className="col-md-12 col-12" htmlFor="cu_organization" style={{ paddingLeft: '0' }}>Cohort </label>
+                                <div id="ctl11_div_organization" className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+                                    <label className="col-md-12 col-12" htmlFor="cu_organization" >Cohort </label>
                                     {userRole === 'Admin' ?
                                         <div className="col-md-6 col-12" style={{ paddingLeft: '0' }}>
                                             <input style={{ paddingLeft: '0' }} className="col-md-4 col-12" value="All" readOnly />

@@ -995,7 +995,7 @@ const SpecimenForm = ({ ...props }) => {
                 </p></div>
                             </div>
                             <div className="table-responsive">
-                                <table className='table table-striped'>
+                                <table className='table table-condensed table-valign-middle'>
                                     <thead>
                                         <tr>
                                             <th className='col-sm-1 center' >ICD-9</th>
