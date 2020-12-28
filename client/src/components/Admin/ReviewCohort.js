@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import CohortForm from './SectionDetails/CohortForm'
+import CohortForm from '../CohortForm/CohortForm'
 import EnrollmentCountsForm from './SectionDetails/EnrollmentCountsForm'
 import MajorContentForm from './SectionDetails/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
