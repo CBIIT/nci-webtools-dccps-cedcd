@@ -370,7 +370,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                         } else { 
                                                             dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
                                                         }
-                                                }} />
+                                                }} disabled={isReadOnly}/>
                                         // </span>
                                     }
                                 </div>

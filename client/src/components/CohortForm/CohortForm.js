@@ -1244,7 +1244,7 @@ const CohortForm = ({ ...props }) => {
                                                     <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} disabled={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple disabled={isReadOnly} />
+                                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
                                                     </td>

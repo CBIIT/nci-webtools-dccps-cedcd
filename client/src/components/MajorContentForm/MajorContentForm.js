@@ -14,6 +14,7 @@ const MajorContentForm = ({ ...props }) => {
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const cohortId = useSelector(state => state.cohortIDReducer)
     const dispatch = useDispatch()
+    const isReadOnly = props.isReadOnly || false
     const [activePanel, setActivePanel] = useState('panelA')
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
@@ -353,12 +354,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -371,12 +372,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='educationBaseLine' checked={majorContent.educationBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='educationBaseLine' checked={majorContent.educationBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='educationFollowUp' checked={majorContent.educationFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='educationFollowUp' checked={majorContent.educationFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEducationFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.educationFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -389,12 +390,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -407,12 +408,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='originBaseLine' checked={majorContent.originBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='originBaseLine' checked={majorContent.originBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='originFollowUp' checked={majorContent.originFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='originFollowUp' checked={majorContent.originFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setOriginFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.originFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -425,12 +426,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setEmpStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -443,12 +444,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -461,12 +462,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setAnthropometryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -479,12 +480,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setDietaryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -497,12 +498,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='supplementBaseLine' checked={majorContent.supplementBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='supplementBaseLine' checked={majorContent.supplementBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='supplementFollowUp' checked={majorContent.supplementFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='supplementFollowUp' checked={majorContent.supplementFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSupplementFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -515,12 +516,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='medicineBaseLine' checked={majorContent.medicineBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='medicineBaseLine' checked={majorContent.medicineBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='medicineFollowUp' checked={majorContent.medicineFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='medicineFollowUp' checked={majorContent.medicineFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMedicineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -533,12 +534,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -551,12 +552,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -569,12 +570,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setAlcoholFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -587,12 +588,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCigaretteFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -608,25 +609,25 @@ const MajorContentForm = ({ ...props }) => {
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigarBaseLine' checked={majorContent.cigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarBaseLine(e.target.checked)) }} />{' '} Cigars
+                                        <input type='checkbox' name='cigarBaseLine' checked={majorContent.cigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} Cigars
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPipeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeBaseLine(e.target.checked)) }} />{' '} Pipes
+                                        <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPipeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} Pipes
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }} />{' '} Chewing Tabacco
+                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} Chewing Tabacco
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }} />{' '} E-cigarettes
+                                        <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} E-cigarettes
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(!e.target.checked)) }} /> {' '} Other
+                                        <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(!e.target.checked)) }} disabled={isReadOnly}/> {' '} Other
                                 </span>
                                 </div>
                                 <div>
                                     <span className='col-sm-12'>
                                         <span className='col-md-11 col-sm-10 col-xs-12' >
-                                            {majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarBaseLineSpecify' className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine} />}
+                                            {majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarBaseLineSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarBaseLineSpecify' className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine||isReadOnly} />}
                                         </span>
                                     </span>
                                 </div>
@@ -638,24 +639,24 @@ const MajorContentForm = ({ ...props }) => {
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigarFollowUp' checked={majorContent.cigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setCigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarFollowUp(e.target.checked)) }} />{' '} Cigars
+                                        <input type='checkbox' name='cigarFollowUp' checked={majorContent.cigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setCigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} Cigars
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setPipeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeFollowUp(e.target.checked)) }} /> {' '} Pipes </span>
+                                        <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setPipeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeFollowUp(e.target.checked)) }} disabled={isReadOnly}/> {' '} Pipes </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} />{' '} Chewing Tabacco
+                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setTobaccoFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} Chewing Tabacco
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }} />{' '} E-cigarettes
+                                        <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { dispatch(allactions.majorContentActions.setEcigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} E-cigarettes
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify((!e.target.checked) || majorContent.noncigarFollowUpSpecify)) }} />  {' '} Other
+                                        <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify((!e.target.checked) || majorContent.noncigarFollowUpSpecify)) }} disabled={isReadOnly}/>  {' '} Other
                                 </span>
                                 </div>
                                 <div>
                                     <span className='col-sm-12'>
                                         <span className='col-md-11 col-sm-10 col-xs-12' >
-                                            {majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarFollowUpSpecify' className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp} />}
+                                            {majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='(Max of 200 characters)' maxLength='200' name='noncigarFollowUpSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarFollowUpSpecify' className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp||isReadOnly} />}
                                         </span>
                                     </span>
                                 </div>
@@ -669,12 +670,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -687,12 +688,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setSleepFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -705,12 +706,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReproduceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -723,12 +724,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -741,12 +742,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setLifeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -759,12 +760,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -777,12 +778,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -795,12 +796,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDepressionFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -813,12 +814,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -831,12 +832,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setFatigueBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setFatigueBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setFatigueFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setFatigueFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -849,12 +850,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -867,12 +868,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='depressionFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -885,12 +886,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -904,12 +905,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='exposureFollowUp' checked={majorContent.exposureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='exposureFollowUp' checked={majorContent.exposureFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setExposureFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -922,12 +923,12 @@ const MajorContentForm = ({ ...props }) => {
                             <div className='col-md-8 col-xs-12'>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(e.target.checked)) }} />{' '} At baseline
+                                        <input type='checkbox' name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                 </span>
                                 </div>
                                 <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                        <input type='checkbox' name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setResidenceFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                 </span>
                                 </div>
                             </div>
@@ -956,12 +957,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setDiabetesFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -974,12 +975,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='strokeFollowUp' checked={majorContent.strokeFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='strokeFollowUp' checked={majorContent.strokeFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setStrokeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -992,12 +993,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='copdBaseLine' checked={majorContent.copdBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='copdBaseLine' checked={majorContent.copdBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='copdFollowUp' checked={majorContent.copdFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='copdFollowUp' checked={majorContent.copdFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCopdFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.copdFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -1010,12 +1011,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -1028,12 +1029,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -1046,12 +1047,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1} onChange={(e) => { dispatch(allactions.majorContentActions.setMentalFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -1064,12 +1065,12 @@ const MajorContentForm = ({ ...props }) => {
                                 <div className='col-md-8 col-xs-12'>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(e.target.checked)) }} />{' '} At baseline
+                                            <input type='checkbox' name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(e.target.checked)) }} disabled={isReadOnly}/>{' '} At baseline
                                     </span>
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
                                         <span className='col-xs-12'>
-                                            <input type='checkbox' name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(e.target.checked)) }} />{' '} During follow-up
+                                            <input type='checkbox' name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1} onClick={(e) => { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(e.target.checked)) }} disabled={isReadOnly}/>{' '} During follow-up
                                     </span>
                                     </div>
                                 </div>
@@ -1092,7 +1093,7 @@ const MajorContentForm = ({ ...props }) => {
                                         <input type='checkbox' checked={majorContent.cancerToxicity === 1} onChange={
                                             e => {
                                                 dispatch(allactions.majorContentActions.setCancerToxicity(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerToxicity(e.target.checked))
-                                            }} />
+                                            }} disabled={isReadOnly}/>
                                     </span>
                                     <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
                                 </span>
@@ -1100,7 +1101,7 @@ const MajorContentForm = ({ ...props }) => {
                                     <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
                                         <input type='checkbox' checked={majorContent.cancerLateEffects === 1} onChange={
                                             e => { dispatch(allactions.majorContentActions.setCancerLateEffects(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerLateEffects(e.target.checked)) }
-                                        } />
+                                        } disabled={isReadOnly}/>
                                     </span>
                                     <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Late effects of treatment (e.g., cardiotoxicity, lymphedema)</span>
                                 </span>
@@ -1108,14 +1109,14 @@ const MajorContentForm = ({ ...props }) => {
                                     <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
                                         <input type='checkbox' checked={majorContent.cancerSymptom === 1} onChange={
                                             e => { dispatch(allactions.majorContentActions.setCancerSymptom(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerSymptom(e.target.checked)) }
-                                        } />
+                                        } disabled={isReadOnly}/>
                                     </span><span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Symptom management (e.g., fatigue, pain, sexual dysfunction)</span>
                                 </span>
                                 <span className='col-xs-12'>
                                     <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
                                         <input type='checkbox' checked={majorContent.cancerOther === 1} onChange={
                                             e => { dispatch(allactions.majorContentActions.setCancerOther(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify((!e.target.checked) || majorContent.cancerOtherSpecify)) }}
-                                        />
+                                            disabled={isReadOnly}/>
                                     </span>
                                     <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Other</span>
                                 </span>
@@ -1123,7 +1124,7 @@ const MajorContentForm = ({ ...props }) => {
                             <div>
                                 <span className='col-sm-12'>
                                     <span className='col-md-11 col-sm-10 col-xs-12' >
-                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} />}
+                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} disabled={isReadOnly}/>}
                                     </span>
                                 </span>
                             </div>
@@ -1137,12 +1138,12 @@ const MajorContentForm = ({ ...props }) => {
                     </span>
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
                         <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} />
                         </span>
                         <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
+                            <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
                         </span>
-                        <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                        <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete' || isReadOnly} /></span>
                     </span>
                 </div>
             </div>
