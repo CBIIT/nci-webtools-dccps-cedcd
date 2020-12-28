@@ -623,9 +623,8 @@ const SpecimenForm = ({ ...props }) => {
                                             </div>
                                         </div>
                                     </div>
-                                    {(errors.bioFecesBaseline && errors.bioFecesOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
                                 </div>
-
+                                {(errors.bioFecesBaseline && errors.bioFecesOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
                             </div>
 
                             <div className='specimenInfo my-3 col-md-12 col-12'>
