@@ -396,11 +396,11 @@ const MajorContentForm = ({ ...props }) => {
                                     <div className='col-lg-6 col-xs-12'>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
                                             <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 0}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(0)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} />{" "}No</span>
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(0)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} disabled={isReadOnly}/>{" "}No</span>
                                         </div>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
                                             <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 1}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(1)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} />{' '}Yes</span>
+                                                onClick={() => { dispatch(allactions.majorContentActions.setEducationBaseLine(1)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }} disabled={isReadOnly}/>{' '}Yes</span>
                                         </div>
                                     </div>
                                 </div>
@@ -410,11 +410,11 @@ const MajorContentForm = ({ ...props }) => {
                                     <div className='col-lg-6 col-xs-12'>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
                                             <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{" "}No</span>
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} disabled={isReadOnly}/>{" "}No</span>
                                         </div>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
                                             <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
-                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} />{' '}Yes</span>
+                                                onClick={() => { dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }} disabled={isReadOnly}/>{' '}Yes</span>
                                         </div>
                                     </div>
                                 </div>
