@@ -195,9 +195,10 @@ const NavBar = (props) => {
                 <a target="_self" href="/admin/managecohort" >
                   Admin
             </a>
-                <div className="dropdown-content" >
-                  <a target="_self" href="/admin/managecohort"  >Manage Cohorts</a>
-                  <a target="_self" href="/admin/manageuser"  >Manage Users</a>
+                <div className="admindropdown-content" >
+                  <a target="_self" href="/admin/managecohort"  ><span className="text-left">Manage Cohorts</span></a>
+                  <div class="dropdown-divider" style={{ margin: "0px" }} ></div>
+                  <a target="_self" href="/admin/manageuser"  ><span className="text-left">Manage Users</span></a>
                 </div>
               </div>
             </li>

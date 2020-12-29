@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import CohortForm from './SectionDetails/CohortForm'
-import EnrollmentCountsForm from './SectionDetails/EnrollmentCountsForm'
-import MajorContentForm from './SectionDetails/MajorContentForm'
+import CohortForm from '../CohortForm/CohortForm'
+import EnrollmentCountsForm from '../EnrollmentCounts/EnrollmentCountsForm'
+import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
-import Message from '../Message/Message'
 import MortalityForm from './SectionDetails/MortalityForm'
-import SpecimenForm from './SectionDetails/Specimens'
 import DataLinkageForm from './SectionDetails/DataLinkageForm'
+import SpecimenForm from '../SpecimenForm/SpecimensForm'
+import Message from '../Message/Message'
 import Messenger from '../Snackbar/Snackbar'
 import ReviewQuestionnaire from './ReviewQuestionnaire'
 import allactions from '../../actions';
@@ -51,43 +51,6 @@ export default function ReviewCohort(props) {
     const [userEmails, setEmails] = useState('')
 
 
- /* switch (currentSection) {
-         case 'A':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)} cohortStatus={status}>
-                 <CohortForm />
-             </ReviewQuestionnaire>
-         case 'B':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <EnrollmentCountsForm />
-             </ReviewQuestionnaire>
-         case 'C':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <MajorContentForm />
-             </ReviewQuestionnaire>
-         case 'D':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <CancerInfoForm />
-             </ReviewQuestionnaire>
-         case 'E':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <MortalityForm />
-             </ReviewQuestionnaire>
-         case 'F':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <DataLinkageForm />
-             </ReviewQuestionnaire>
-         case 'G':
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <SpecimenForm />
-             </ReviewQuestionnaire>
-         default:
-             return <ReviewQuestionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                 <Message />
-             </ReviewQuestionnaire>
-     }
-     */
-
-
     const sendEmail = () => {
         let reqBody = {
             // firstname:'joe',
@@ -118,7 +81,7 @@ export default function ReviewCohort(props) {
                     clearTimeout(timedMessage)
                 }
             })
-    }    
+    }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
@@ -154,5 +117,5 @@ export default function ReviewCohort(props) {
         <ReviewQuestionnaire activeSection={currentSection} handler={setCurrentSection} cohortStatus={status}>
             {getChild(currentSection, { isReadOnly: true, cohortId, handleApprove, handleReject })}
         </ReviewQuestionnaire>
-    </>    
+    </>
 }

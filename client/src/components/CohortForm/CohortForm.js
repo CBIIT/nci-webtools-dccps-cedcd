@@ -21,7 +21,7 @@ const CohortForm = ({ ...props }) => {
     const errors = useSelector(state => state.cohortErrorReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const dispatch = useDispatch()
-
+    const isReadOnly = props.isReadOnly||false
     const errorMsg = 'Required Field'
 
     const [successMsg, setSuccessMsg] = useState(false)
@@ -120,13 +120,7 @@ const CohortForm = ({ ...props }) => {
 
                         if (currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.requirements(true)) }
                         if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
-                        /*
-                        if (currentCohort.questionnaire_url) { dispatch(allactions.cohortErrorActions.questionnaire(true)) }
-                        if (currentCohort.main_cohort_url) { dispatch(allactions.cohortErrorActions.main(true)) }
-                        if (currentCohort.data_url) { dispatch(allactions.cohortErrorActions.data(true)) }
-                        if (currentCohort.specimen_url) { dispatch(allactions.cohortErrorActions.specimen(true)) }
-                        if (currentCohort.publication_url) { dispatch(allactions.cohortErrorActions.publication(true)) }
-                        */
+                        
                         //just need to remove the first investigator error on load, since only investigator 0 has errors initially
                         if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
                         if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
@@ -192,12 +186,13 @@ const CohortForm = ({ ...props }) => {
     }
     const handleSave = () => {
         setSaved(true)
+/*
         if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
         if (!(cohort.mainFileName || cohort.main_cohort_url)) { dispatch(allactions.cohortErrorActions.main(false, true)) }
         if (!(cohort.specimenFileName || cohort.specimen_url)) { dispatch(allactions.cohortErrorActions.specimen(false, true)) }
         if (!(cohort.dataFileName || cohort.data_url)) { dispatch(allactions.cohortErrorActions.data(false, true)) }
         if (!(cohort.publicationFileName || cohort.publication_url)) { dispatch(allactions.cohortErrorActions.publication(false, true)) }
-
+*/
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
@@ -430,7 +425,7 @@ const CohortForm = ({ ...props }) => {
             <div style={{width: '96%', margin: 'auto'}}>
                 {files.map(f => <div className='col-xs-12' style={{marginBottom: '3px', paddingLeft: '0'}}>
                     <span className='col-xs-10'>{f.filename}</span>
-                    <span className='col-xs-2 closer' onClick={()=>deleteFileFromList(fileListName, f.fileId, cohortID) }>x</span>
+                    {!isReadOnly && <span className='col-xs-2 closer' onClick={()=>deleteFileFromList(fileListName, f.fileId, cohortID) }>x</span>}
                 </div>)}
             </div>
             <hr style={{ border: '0', clear: 'both', display: 'block', marginTop: '8px', marginBottom: '5px', backgroundColor: '#f2f2f2', height: '1px'}}/>
@@ -521,20 +516,20 @@ const CohortForm = ({ ...props }) => {
                                 <p style={{ fontSize: '16px' }}>Please provide a short paragraph describing your cohort. This will be used as an overall narrative description of your cohort on the CEDCD website.  You may provide a link to a description on your cohort’s website.</p>
                             </div>
                             <div style={{ paddingLeft: window.innerWidth <= 1000 ? '15px' : '' }}>
-                                <span className='col-md-12'><textarea style={{ height: '100%' }} className='form-control' name='cohortDes' cols='20' rows='15' placeholder='(Max of 5000 characters)' maxLength='5000' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.cohort_description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} /></span>
+                                <span className='col-md-12'><textarea style={{ height: '100%' }} className='form-control' name='cohortDes' cols='20' rows='15' placeholder='(Max of 5000 characters)' maxLength='5000' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.cohort_description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} readOnly={isReadOnly} /></span>
                             </div>
                         </div>
                         <div id='question6' className='col-md-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? Required Field if applicable</label>
+                                <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? Please specify if applicable</label>
                             </div>
                             {window.innerWidth <= 1000 ?
                                 <div className='col-xs-12' style={{}}>
-                                    {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '10px' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span></Reminder> : <span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '30px' }}><input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span>}
+                                    {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '10px' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly} /></span></Reminder> : <span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '30px' }}><input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly}/></span>}
                                 </div>
                                 :
                                 <div className='col-md-8' style={{ maxWidth: '690px' }}>
-                                    {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{ margin: '0', padding: '0' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span></Reminder> : <span className='col-md-12' style={{ margin: '0', padding: '0' }}><input className='form-control' name='cohort_web_site' placeholder='Max of 200 characters' maxLength='200' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} /></span>}
+                                    {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{ margin: '0', padding: '0' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly}/></span></Reminder> : <span className='col-md-12' style={{ margin: '0', padding: '0' }}><input className='form-control' name='cohort_web_site' placeholder='Max of 200 characters' maxLength='200' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly}/></span>}
                                 </div>
                             }
                         </div>
@@ -550,7 +545,7 @@ const CohortForm = ({ ...props }) => {
                                         dispatch(allactions.cohortActions.completionDate(date)); if (!date) { dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg)) } else {
                                             dispatch(allactions.cohortErrorActions.completionDate(true))
                                         }
-                                    }} /></span>}
+                                    }} disabled={isReadOnly} /></span>}
                                 </span>
                             </div>
                         </div>
@@ -558,36 +553,36 @@ const CohortForm = ({ ...props }) => {
                             <div id='a3a' className='col-xs-12' style={{ paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px' }}>
                                 <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.5a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
                                 <div className='col-md-8' style={{ paddingLeft: '0', paddingRight:'10px'}}>
-                                <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} displayStyle={saved} />
+                                <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} disabled={isReadOnly} displayStyle={saved} />
                                 </div>
                             </div>
                             {window.innerWidth <= 1000 ? <div id='a3b' className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <div style={{ marginBottom: '5px', paddingLeft: '15px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
                                 <div style={{ marginBottom: '20px' }}><span className='col-xs-8' style={{ marginRight: '0' }}>Is this the same person who completed the form ?</span>
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span></Reminder> :
-                                        <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span>
+                                        <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} disabled={isReadOnly}/>{' '}No</span>
                                     }
 
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span></Reminder> :
-                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span>
+                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} disabled={isReadOnly}/>{' '}Yes</span>
                                     }
                                 </div>
-                                <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact} displayStyle={saved} leftPadding='0' />
+                                <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contactm||isReadOnly} displayStyle={saved} leftPadding='0' />
                             </div> :
                                 <div id='a3b' className='col-xs-12'>
                                     <div style={{ marginBottom: '5px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
                                     <div style={{ marginBottom: '15px' }}>
                                         <span className='col-md-6' style={{ paddingLeft: '0', marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
                                         {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span></Reminder> :
-                                            <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span>
+                                            <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} disabled={isReadOnly} />{' '}No</span>
                                         }
 
                                         {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span></Reminder> :
-                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span>
+                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} disabled={isReadOnly} />{' '}Yes</span>
                                         }
                                     </div>
                                     <div id='contacterInfo' className='col-md-8' style={{ paddingLeft: '0' }}>
-                                        <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact} displayStyle={saved} leftPadding='0' />
+                                        <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact||isReadOnly} displayStyle={saved} leftPadding='0' />
                                     </div>
                                 </div>
                             }
@@ -601,11 +596,11 @@ const CohortForm = ({ ...props }) => {
                             <div className='col-md-12' style={{ marginBottom: '15px' }}>
                                 <label className='col-md-3' style={{ paddingLeft: '0', lineHeight: '1.5em' }}>A.6{' '} Cohort Principal Investigator(s)</label>
                                 <span className='col-md-3'>
-                                    <button className='btn btn-primary btn-sm' onClick={(e) => { e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let idx = cohort.investigators.length; dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }} style={{ position: 'absolute', left: 0 }}>Add New Investigator</button></span>
+                                    <button className='btn btn-primary btn-sm' onClick={(e) => { e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let idx = cohort.investigators.length; dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }} style={{ position: 'absolute', left: 0 }} disabled={isReadOnly}>Add New Investigator</button></span>
                             </div>
                             <div className={window.innerWidth <= 1000 ? 'col-xs-12' : 'col-md-12'} style={{ paddingLeft: '0' }}>
                                 {
-                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_' + idx} name={'investigator_name_' + idx} institution={'investigator_inst_' + idx} email={'investigator_email_' + idx} handleRemove={removeInvestigator} errors={errors} displayStyle={saved} /></div>
+                                    cohort.investigators.map((item, idx) => <div className='col-md-12'><Investigator key={idx} id={'investigator_' + idx} name={'investigator_name_' + idx} institution={'investigator_inst_' + idx} email={'investigator_email_' + idx} handleRemove={removeInvestigator} errors={errors} disabled={isReadOnly} displayStyle={saved} /></div>
                                     )
                                 }
                             </div>
@@ -614,7 +609,7 @@ const CohortForm = ({ ...props }) => {
                             <div className='col-md-12' style={{ marginBottom: '10px', marginRight: '0' }}>
                                 <label style={{ paddingLeft: '0' }}>A.7{' '}If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?</label>
                             </div>
-                            <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' errors={errors} disabled={cohort.sameAsSomeone == 0 || cohort.sameAsSomeone == 1} displayStyle={saved} />
+                            <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' errors={errors} disabled={cohort.sameAsSomeone == 0 || cohort.sameAsSomeone == 1 || isReadOnly} displayStyle={saved} />
                             <div className='col-md-5' style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ marginBottom: '20px' }}>
                                     <input type='radio' name='sameAsSomeone' value='0' checked={cohort.sameAsSomeone == 0} onChange={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, '0', 'collaborator')} />{' '}
@@ -623,7 +618,7 @@ const CohortForm = ({ ...props }) => {
                                 {
                                     cohort.clarification_contact === 0 ?
                                         <div style={{ margin: '0', padding: '0', minWidth: '500px' }}>
-                                            <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1} onChange={(e) => setPerson(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1', 'collaborator')} />{' '}
+                                            <input type='radio' name='sameAsSomeone' value='1' checked={cohort.sameAsSomeone == 1} onChange={(e) => setPerson(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, '1', 'collaborator')} disabled={isReadOnly}/>{' '}
                                             <span htmlFor='sameAsSomeone' style={{ padding: '0', margin: '0' }}>{' '} Same as the contact person for clarification of this form(5b) </span>
                                         </div> : ''
                                 }
@@ -651,7 +646,7 @@ const CohortForm = ({ ...props }) => {
                                             <input type='radio' name='eligible_gender_id' value='4' checked={cohort.eligible_gender_id === 4} onChange={() => removeEligbleGenderError(4)} />{' '} All
                             </span>}*/}
                                     <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
-                                            <input type='radio' name='eligible_gender_id' value='4' checked={cohort.eligible_gender_id === 4} onChange={() => removeEligbleGenderError(4)} />{' '} All
+                                            <input type='radio' name='eligible_gender_id' value='4' checked={cohort.eligible_gender_id === 4} onChange={() => removeEligbleGenderError(4)} disabled={isReadOnly} />{' '} All
                                     </div>
                                     {/*{errors.eligible_gender_id && saved ? <Reminder message={errors.eligible_gender_id}><span className='col-sm-12' style={{ borderBottom: '1px solid red', color: 'red' }}>
                                         <input type='radio' name='eligible_gender_id' value='2' checked={cohort.eligible_gender_id === 2} onChange={() => removeEligbleGenderError(2)} />{' '} Males only
@@ -659,7 +654,7 @@ const CohortForm = ({ ...props }) => {
                                             <input type='radio' name='eligible_gender_id' value='2' checked={cohort.eligible_gender_id === 2} onChange={() => removeEligbleGenderError(2)} />{' '} Males only
                                     </span>}*/}
                                     <div className='col-xs-12'  style={{paddingLeft: '0', marginBottom: '5px'}}>
-                                            <input type='radio' name='eligible_gender_id' value='2' checked={cohort.eligible_gender_id === 2} onChange={() => removeEligbleGenderError(2)} />{' '} Males only
+                                            <input type='radio' name='eligible_gender_id' value='2' checked={cohort.eligible_gender_id === 2} onChange={() => removeEligbleGenderError(2)} disabled={isReadOnly}/>{' '} Males only
                                     </div>
                                     {/*{errors.eligible_gender_id && saved ? <Reminder message={errors.eligible_gender_id}><span style={{ borderBottom: '1px solid red', color: 'red' }}>
                                         <input type='radio' name='eligible_gender_id' value='1' checked={cohort.eligible_gender_id === 1} onChange={() => removeEligbleGenderError(1)} />{' '} Females only
@@ -667,22 +662,22 @@ const CohortForm = ({ ...props }) => {
                                             <input type='radio' name='eligible_gender_id' value='1' checked={cohort.eligible_gender_id === 1} onChange={() => removeEligbleGenderError(1)} />{' '} Females only
                                 </span>}*/}
                                     <div className='col-xs-12'  style={{paddingLeft: '0', marginBottom: '5px'}}>
-                                            <input type='radio' name='eligible_gender_id' value='1' checked={cohort.eligible_gender_id === 1} onChange={() => removeEligbleGenderError(1)} />{' '} Females only
+                                            <input type='radio' name='eligible_gender_id' value='1' checked={cohort.eligible_gender_id === 1} onChange={() => removeEligbleGenderError(1)} disabled={isReadOnly}/>{' '} Females only
                                     </div>
                                 </div>
                                 <div className='col-xs-12' style={{ marginBottom: '18px' }}>
                                     <div style={{ paddingLeft: '0', marginBottom: '5px' }}>Baseline population consists of</div>
                                     <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '5px' }}>
-                                        <input type='checkbox' name='cancerSurvivors' checked={cohort.eligible_disease} onChange={() => dispatch(allactions.cohortActions.eligible_disease())} />{' '} Cancer survivors only, specify cancer site(s)
+                                        <input type='checkbox' name='cancerSurvivors' checked={cohort.eligible_disease} onChange={() => dispatch(allactions.cohortActions.eligible_disease())} readOnly={isReadOnly}/>{' '} Cancer survivors only, specify cancer site(s)
                                     </div>
                                     <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', marginBottom: window.innerWidth <= 1000 ? '10px' : '20px' }}>
-                                        <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' disabled={!cohort.eligible_disease} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
+                                        <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' disabled={!cohort.eligible_disease} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} readOnly={isReadOnly} />
                                     </div>
                                     <div className='col-md-12 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                         <div style={{ marginBottom: '5px' }}>Please specify any eligibility criteria in addition to age and sex</div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
                                             <span className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name='eligible_disease_other_specify' value={cohort.eligible_disease_other_specify} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} />
+                                                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name='eligible_disease_other_specify' value={cohort.eligible_disease_other_specify} onChange={e => dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))} readOnly={isReadOnly} />
                                             </span>
                                         </div>
                                     </div>
@@ -698,20 +693,20 @@ const CohortForm = ({ ...props }) => {
                                     Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_total && saved ? <Reminder message={errors.enrollment_total}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} />}
+                                    {errors.enrollment_total && saved ? <Reminder message={errors.enrollment_total}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_total' value={cohort.enrollment_total} onChange={e => dispatch(allactions.cohortActions.enrollment_total(e.target.value))} onBlur={(e) => { populateErrors('enrollment_total', e.target.value, true, 'number') }} readOnly={isReadOnly}/>}
                                 </span>
                             </div>
                             <div className='col-xs-12'>
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Started in year<span style={{ color: 'red' }}>*</span></span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_year_start && saved ? <Reminder message={errors.enrollment_year_start}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} />}
+                                    {errors.enrollment_year_start && saved ? <Reminder message={errors.enrollment_year_start}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_start' placeholder='yyyy' value={cohort.enrollment_year_start} onChange={e => dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_start', e.target.value, true, 'year') }} readOnly={isReadOnly}/>}
                                 </span>
                             </div>
                             <div className='col-xs-12' >
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Ended in year<span style={{ color: 'red' }}>*</span></span>
                                 <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_year_end && saved ? <Reminder message={errors.enrollment_year_end}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_end' placeholder='yyyy' value={cohort.enrollment_year_end} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_end', e.target.value, true, 'year') }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enroll
-                                EndYear' placeholder='yyyy' value={cohort.enrollment_year_end} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_end', e.target.value, true, 'year') }} />}
+                                EndYear' placeholder='yyyy' value={cohort.enrollment_year_end} onChange={e => dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_end', e.target.value, true, 'year') }} readOnly={isReadOnly}/>}
                                 </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '3px' : '15px' }}>
@@ -727,7 +722,7 @@ const CohortForm = ({ ...props }) => {
                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                    }} />{' '}No</span>}
+                                    }} disabled={isReadOnly}/>{' '}No</span>}
                                 </span>
                                 <span className='col-md-1 col-xs-6' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_ongoing && saved ? <Reminder message='Required Field'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
@@ -740,14 +735,14 @@ const CohortForm = ({ ...props }) => {
                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                         dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                    }} />{' '}Yes</span>} </span>
+                                    }} disabled={isReadOnly} />{' '}Yes</span>} </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
                                     If still enrolling, Required Field the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} />}
+                                    {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />}
                                 </span>
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
@@ -755,7 +750,7 @@ const CohortForm = ({ ...props }) => {
                                     If still enrolling, Required Field when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                    {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0} disabled={cohort.enrollment_ongoing == 0}/></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0} disabled={cohort.enrollment_ongoing == 0}/>}
+                                    {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />}
                                 </span>
 
                             </div>
@@ -764,24 +759,24 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0', paddingRight: '0' }}>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.enrollment_age_min && saved ? <Reminder message={errors.enrollment_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} />}
+                                        {errors.enrollment_age_min && saved ? <Reminder message={errors.enrollment_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_min' value={cohort.enrollment_age_min} onChange={e => dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))} onBlur={(e) => { populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) }} readOnly={isReadOnly}/>}
                                     </span>
                                     <span className='col-md-1 col-xs-1' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', marginLeft: window.innerWidth <= 1000 ? '' : '5px', marginRight: window.innerWidth <= 1000 ? '' : '5px', padding: '0', width: '15px' }}> to </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                        {errors.enrollment_age_max && saved ? <Reminder message={errors.enrollment_age_max}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_max' value={cohort.enrollment_age_max} onChange={e => dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))} onBlur={(e) => { populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_max' value={cohort.enrollment_age_max} onChange={e => dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))} onBlur={(e) => { populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) }} />}
+                                        {errors.enrollment_age_max && saved ? <Reminder message={errors.enrollment_age_max}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_max' value={cohort.enrollment_age_max} onChange={e => dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))} onBlur={(e) => { populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) }} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_max' value={cohort.enrollment_age_max} onChange={e => dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))} onBlur={(e) => { populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) }} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                                 <div>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.enrollment_age_median && saved ? <Reminder message={errors.enrollment_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} />
+                                        {errors.enrollment_age_median && saved ? <Reminder message={errors.enrollment_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_median' value={cohort.enrollment_age_median} onChange={e => dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} readOnly={isReadOnly}/>
                                         }
                                     </span>
                                 </div>
                                 <div>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.enrollment_age_mean && saved ? <Reminder message={errors.enrollment_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} />}
+                                        {errors.enrollment_age_mean && saved ? <Reminder message={errors.enrollment_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_age_mean' value={cohort.enrollment_age_mean} onChange={e => dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                             </div>
@@ -789,23 +784,23 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0', paddingRight: '0' }}>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.current_age_min && saved ? <Reminder message={errors.current_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} />}
+                                        {errors.current_age_min && saved ? <Reminder message={errors.current_age_min}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_min' value={cohort.current_age_min} onChange={e => dispatch(allactions.cohortActions.current_age_min(e.target.value))} onBlur={e => populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)} readOnly={isReadOnly}/>}
                                     </span>
                                     <span className='col-md-1 col-xs-1' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', marginLeft: window.innerWidth <= 1000 ? '' : '5px', marginRight: window.innerWidth <= 1000 ? '' : '5px', padding: '0', width: '15px' }}> to </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                        {errors.current_age_max && saved ? <Reminder message={errors.current_age_max}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_max' value={cohort.current_age_max} onChange={e => dispatch(allactions.cohortActions.current_age_max(e.target.value))} onBlur={e => populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_max' value={cohort.current_age_max} onChange={e => dispatch(allactions.cohortActions.current_age_max(e.target.value))} onBlur={e => populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)} />}
+                                        {errors.current_age_max && saved ? <Reminder message={errors.current_age_max}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_max' value={cohort.current_age_max} onChange={e => dispatch(allactions.cohortActions.current_age_max(e.target.value))} onBlur={e => populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_max' value={cohort.current_age_max} onChange={e => dispatch(allactions.cohortActions.current_age_max(e.target.value))} onBlur={e => populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                                 <div>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>Median age<span style={{ color: 'red' }}>*</span></span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.current_age_median && saved ? <Reminder message={errors.current_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} />}
+                                        {errors.current_age_median && saved ? <Reminder message={errors.current_age_median}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_median' value={cohort.current_age_median} onChange={e => dispatch(allactions.cohortActions.current_age_median(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                                 <div>
                                     <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}> Mean age<span style={{ color: 'red' }}>*</span> </span>
                                     <span className='col-md-1 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
-                                        {errors.current_age_mean && saved ? <Reminder message={errors.current_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} />}
+                                        {errors.current_age_mean && saved ? <Reminder message={errors.current_age_mean}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='current_age_mean' value={cohort.current_age_mean} onChange={e => dispatch(allactions.cohortActions.current_age_mean(e.target.value))} onBlur={e => populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                             </div>
@@ -821,7 +816,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-md-8'>
                                 <span className='col-md-12' style={{ paddingLeft: '0', paddingRight: '6px', marginLeft: '0' }}>
-                                    {errors.time_interval && saved ? <Reminder message={errors.time_interval}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='time_interval' value={cohort.time_interval} onChange={e => dispatch(allactions.cohortActions.time_interval(e.target.value))} onBlur={(e) => { populateErrors('time_interval', e.target.value, true, 'string') }} /></Reminder> : <input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='time_interval' value={cohort.time_interval} onChange={e => dispatch(allactions.cohortActions.time_interval(e.target.value))} onBlur={(e) => { populateErrors('time_interval', e.target.value, true, 'string') }} />}
+                                    {errors.time_interval && saved ? <Reminder message={errors.time_interval}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='time_interval' value={cohort.time_interval} onChange={e => dispatch(allactions.cohortActions.time_interval(e.target.value))} onBlur={(e) => { populateErrors('time_interval', e.target.value, true, 'string') }} /></Reminder> : <input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='time_interval' value={cohort.time_interval} onChange={e => dispatch(allactions.cohortActions.time_interval(e.target.value))} onBlur={(e) => { populateErrors('time_interval', e.target.value, true, 'string') }} readOnly={isReadOnly}/>}
                                 </span>
                             </div>
                         </div>
@@ -830,14 +825,14 @@ const CohortForm = ({ ...props }) => {
                                 <div className='col-xs-12'>
                                     <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '13px', fontWeight: 'bold' }}>A.11{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></div>
                                     <div className='col-xs-12' style={{ padding: '0' }}>
-                                        {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} />}
+                                        {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} readOnly={isReadOnly}/>}
                                     </div>
                                 </div>
                                 :
                                 <div className='col-md-12'>
                                     <label className='col-md-6' style={{ paddingLeft: '0' }}>A.11{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></label>
                                     <span className='col-md-2'>
-                                        {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} />}
+                                        {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} readOnly={isReadOnly}/>}
                                     </span>
                                 </div>
                             }
@@ -851,7 +846,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='data_collected_in_person' checked={cohort.data_collected_in_person == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person')} />
+                                                <input type='checkbox' name='data_collected_in_person' checked={cohort.data_collected_in_person == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}In person</div>
                                         </div>
@@ -859,7 +854,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                      <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='data_collected_phone' checked={cohort.data_collected_phone == 1} onClick={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone')} />
+                                                <input type='checkbox' name='data_collected_phone' checked={cohort.data_collected_phone == 1} onClick={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Phone interview</div>
                                         </div>
@@ -867,7 +862,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='data_collected_paper' checked={cohort.data_collected_paper == 1} onClick={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper')} />
+                                                <input type='checkbox' name='data_collected_paper' checked={cohort.data_collected_paper == 1} onClick={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Self-administered via paper</div>
                                         </div>
@@ -875,7 +870,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='data_collected_web' checked={cohort.data_collected_web == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web')} />
+                                                <input type='checkbox' name='data_collected_web' checked={cohort.data_collected_web == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Self-administered via web-based device</div>
                                     </div>
@@ -883,7 +878,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                         <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='data_collected_other' checked={cohort.data_collected_other == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true)} />
+                                                <input type='checkbox' name='data_collected_other' checked={cohort.data_collected_other == 1} onChange={(e) => updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true)} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Other</div>
                                         </div>
@@ -893,12 +888,12 @@ const CohortForm = ({ ...props }) => {
                                         window.innerWidth <= 1000 ?
                                             <div>
                                                 {saved && errors.data_collected_other_specify ?
-                                                    <Reminder message={errors.data_collected_other_specify}><input style={{ border: '1px solid red' }} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} />}
+                                                    <Reminder message={errors.data_collected_other_specify}><input style={{ border: '1px solid red' }} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} disabled={isReadOnly} />}
                                             </div>
                                             :
                                             <span className='col-md-12' style={{ paddingLeft: '35px', paddingRight: '0' }}>
                                                 {saved && errors.data_collected_other_specify ?
-                                                    <Reminder message={errors.data_collected_other_specify}><input style={{ border: '1px solid red' }} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} />}
+                                                    <Reminder message={errors.data_collected_other_specify}><input style={{ border: '1px solid red' }} name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.data_collected_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))} onBlur={() => populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')} disabled={!cohort.data_collected_other} disabled={isReadOnly} />}
                                             </span>
                                     }
                                 </div>
@@ -915,7 +910,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='requireNone' checked={cohort.requireNone == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone')} />
+                                                <input type='checkbox' name='requireNone' checked={cohort.requireNone == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}None</div>
                                         </div>
@@ -923,7 +918,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='requireCollab' checked={cohort.requireCollab == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab')} />
+                                                <input type='checkbox' name='requireCollab' checked={cohort.requireCollab == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Require collaboration with cohort investigattors</div>
                                         </div>
@@ -931,7 +926,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='requireIrb' checked={cohort.requireIrb == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb')} />
+                                                <input type='checkbox' name='requireIrb' checked={cohort.requireIrb == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Require IRB approvals</div>
                                         </div>
@@ -939,7 +934,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                         <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='requireData' checked={cohort.requireData == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData')} />
+                                                <input type='checkbox' name='requireData' checked={cohort.requireData == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Require data use agreements and/or materrial transfer agreement</div>
                                         </div>
@@ -947,7 +942,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='restrictGenoInfo' checked={cohort.restrictGenoInfo == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo')} />
+                                                <input type='checkbox' name='restrictGenoInfo' checked={cohort.restrictGenoInfo == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Restrictions in the consent related to genetic information</div>
                                         </div>
@@ -955,7 +950,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='restrictOtherDb' checked={cohort.restrictOtherDb == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb')} />
+                                                <input type='checkbox' name='restrictOtherDb' checked={cohort.restrictOtherDb == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Restrictions in the consent related to linking to other databases</div>
                                         </div>
@@ -963,7 +958,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='restrictCommercial' checked={cohort.restrictCommercial == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial')} />
+                                                <input type='checkbox' name='restrictCommercial' checked={cohort.restrictCommercial == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Restrictions on commercial use</div>
                                         </div>
@@ -971,7 +966,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                         <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                            <input type='checkbox' name='restrictOther' checked={cohort.restrictOther == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true)} />
+                                            <input type='checkbox' name='restrictOther' checked={cohort.restrictOther == 1} onChange={(e) => updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true)} disabled={isReadOnly} />
                                         </div>
                                         <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Other</div>
                                     </div>
@@ -980,12 +975,12 @@ const CohortForm = ({ ...props }) => {
                                     {window.innerWidth <= 1000 ?
                                         <div>
                                             {saved && errors.restrictions_other_specify ?
-                                                <Reminder message={errors.restrictions_other_specify}><input style={{ border: '1px solid red' }} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} />}
+                                                <Reminder message={errors.restrictions_other_specify}><input style={{ border: '1px solid red' }} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther||isReadOnly} />}
                                         </div>
                                         :
                                         <span className='col-md-12' style={{ paddingLeft: '35px', paddingRight: '0' }}>
                                             {saved && errors.restrictions_other_specify ?
-                                                <Reminder message={errors.restrictions_other_specify}><input style={{ border: '1px solid red' }} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} />}
+                                                <Reminder message={errors.restrictions_other_specify}><input style={{ border: '1px solid red' }} name='restrictions_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther} /></Reminder> : <input name='data_collected_other_specify' className='form-control' value={cohort.restrictions_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))} onBlur={() => populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')} disabled={!cohort.restrictOther || isReadOnly}  />}
                                         </span>
                                     }
                                 </div>
@@ -1003,7 +998,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                      <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_routine' checked={cohort.strategy_routine == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine')} />
+                                                <input type='checkbox' name='strategy_routine' checked={cohort.strategy_routine == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Nothing beyond mailing questionnaires or other routine contacts</div>
                                         </div>
@@ -1011,7 +1006,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_mailing' checked={cohort.strategy_mailing == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing')} />
+                                                <input type='checkbox' name='strategy_mailing' checked={cohort.strategy_mailing == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Send newsletters or other general mailings (e.g., birthday cards)</div>
                                         </div>
@@ -1019,7 +1014,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_aggregate_study' checked={cohort.strategy_aggregate_study == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study')} />
+                                                <input type='checkbox' name='strategy_aggregate_study' checked={cohort.strategy_aggregate_study == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Return aggregate study results (e.g., recent findings) </div>
                                         </div>
@@ -1027,7 +1022,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_individual_study' checked={cohort.strategy_individual_study == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study')} />
+                                                <input type='checkbox' name='strategy_individual_study' checked={cohort.strategy_individual_study == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Individual study results (e.g., nutrient values) </div>
                                         </div>
@@ -1035,7 +1030,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                     <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_invitation' checked={cohort.strategy_invitation == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation')} />
+                                                <input type='checkbox' name='strategy_invitation' checked={cohort.strategy_invitation == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation')} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Invite participation on research committees </div>
                                         </div>
@@ -1043,7 +1038,7 @@ const CohortForm = ({ ...props }) => {
                                 <div>
                                         <div className='col-xs-12' style={{ padding: '0', margin: '0' }}>
                                             <div className='col-xs-1' style={{ paddingRight: '0', marginRight: '0', width: window.innerWidth <= 800 ? '' : '50px' }}>
-                                                <input type='checkbox' name='strategy_other' checked={cohort.strategy_other == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true)} />
+                                                <input type='checkbox' name='strategy_other' checked={cohort.strategy_other == 1} onChange={(e) => updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true)} disabled={isReadOnly} />
                                             </div>
                                             <div className='col-xs-11' style={{ paddingLeft: '0' }}>{' '}Other </div>
                                         </div>
@@ -1052,12 +1047,12 @@ const CohortForm = ({ ...props }) => {
                                     {window.innerWidth <= 1000 ?
                                         <div>
                                             {saved && errors.strategy_other_specify ?
-                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} />}
+                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other||isReadOnly} />}
                                         </div>
                                         :
                                         <span className='col-md-12' style={{ paddingLeft: '35px', paddingRight: '0' }}>
                                             {saved && errors.strategy_other_specify ?
-                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} />}
+                                                <Reminder message={errors.strategy_other_specify}><input style={{ border: '1px solid red' }} name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other} /></Reminder> : <input name='strategy_other_specify' className='form-control' value={cohort.strategy_other_specify} placeholder='Max of 200 characters' maxLength='200' onChange={e => dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))} onBlur={() => populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')} disabled={!cohort.strategy_other||isReadOnly} />}
                                         </span>
                                     }
                                 </div>
@@ -1085,13 +1080,13 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' disabled={cohort.questionnaireFileName} value={cohort.questionnaire_url} onChange={e => dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) } /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} onChange={e => dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) } /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                 <td>
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
-                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
+                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple disabled={isReadOnly} />
                                                                     </span>
                                                                     <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
                                                                 </td>
@@ -1107,13 +1102,13 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={cohort.mainFileName} value={cohort.main_cohort_url} onChange={e => dispatch(allactions.cohortActions.main_cohort_url(e.target.value))} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly}  value={cohort.main_cohort_url} onChange={e => dispatch(allactions.cohortActions.main_cohort_url(e.target.value))} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                 <td>
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
-                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
+                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple disabled={isReadOnly} />
                                                                     </span>
                                                                     <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
                                                                 </td>
@@ -1129,13 +1124,13 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={cohort.dataFileName} value={cohort.data_url} onChange={e => dispatch(allactions.cohortActions.data_url(e.target.value))} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly}  value={cohort.data_url} onChange={e => dispatch(allactions.cohortActions.data_url(e.target.value))} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                 <td>
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
-                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
+                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple disabled={isReadOnly} />
                                                                     </span>
                                                                     <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
                                                                 </td>
@@ -1151,13 +1146,13 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={cohort.specimenFileName} value={cohort.specimen_url} onChange={e => dispatch(allactions.cohortActions.specimen_url(e.target.value))} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly}  value={cohort.specimen_url} onChange={e => dispatch(allactions.cohortActions.specimen_url(e.target.value))} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                 <td>
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
-                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
+                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple disabled={isReadOnly} />
                                                                     </span>
                                                                     <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
                                                                 </td>
@@ -1173,13 +1168,13 @@ const CohortForm = ({ ...props }) => {
                                                         <tbody>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => dispatch(allactions.cohortActions.publication_url(e.target.value))} /></td>
+                                                                <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => dispatch(allactions.cohortActions.publication_url(e.target.value))} disabled={isReadOnly} /></td>
                                                             </tr>
                                                             <tr>
                                                                 <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                 <td >
                                                                     <span className='col-xs-10' style={{paddingLeft: '0', paddingRight: '0'}}>
-                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
+                                                                        <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple disabled={isReadOnly} />
                                                                     </span>
                                                                     <span className='col-xs-2 badge upperCloser' onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
                                                                 </td>
@@ -1203,10 +1198,10 @@ const CohortForm = ({ ...props }) => {
                                             <tbody>
                                                 <tr>
                                                     <td>Questionnaires</td>
-                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} /></td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} readOnly={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>  
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                            <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple />
+                                                            <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
                                                     </td>
@@ -1214,10 +1209,10 @@ const CohortForm = ({ ...props }) => {
                                                 </tr>
                                                 <tr>
                                                     <td>Main cohort protocol</td>
-                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} /></td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value))}} readOnly={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                        <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple />
+                                                        <input style={{paddingRight: '0', marginRight: '0', borderRight: '0'}} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1)}} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.mainFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
                                                     </td>
@@ -1225,10 +1220,10 @@ const CohortForm = ({ ...props }) => {
                                                 </tr>
                                                 <tr>
                                                     <td>Data sharing policy</td>
-                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} /></td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value))}} disabled={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple />
+                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2)}} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.dataFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
                                                     </td>
@@ -1236,20 +1231,20 @@ const CohortForm = ({ ...props }) => {
                                                 </tr>
                                                 <tr>
                                                     <td>Biospecimen sharing policy</td>
-                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} /></td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value))}} disabled={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple />
+                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3)}} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.specimenFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Publication(authorship) policy</td>
-                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} /></td>
+                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value))}} disabled={isReadOnly} /></td>
                                                     <td style={{ verticalAlign: 'middle' }}>
                                                         <span className='col-sm-11' style={{paddingLeft: '0'}}>
-                                                            <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple />
+                                                            <input type='file' name='cohortFile'  formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4)}} multiple disabled={isReadOnly} />
                                                         </span>
                                                         <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={()=> showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
                                                     </td>
@@ -1270,12 +1265,12 @@ const CohortForm = ({ ...props }) => {
                 </span>
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
                     <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)|| isReadOnly} />
                     </span>
                     <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
                     </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
                 </span>
             </div>
             {fileListShow && file_list(fileListTile, currentFileListName, currentFileList)}                           
