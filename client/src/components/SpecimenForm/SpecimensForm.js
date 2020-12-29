@@ -1309,8 +1309,8 @@ const SpecimenForm = ({ ...props }) => {
                 </div>
             </div>
             {/* END Specimen Information Collapsible Question Sections */}
-
-            {<div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>
+            <div style={{ position: 'relative' }} className="my-4">
+            {/*<div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>*/}
                 <span className='col-md-6 col-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('F')} />
                     <input type='button' className='col-md-3 col-6 btn btn-primary' value='Next' disabled />
@@ -1335,7 +1335,7 @@ const SpecimenForm = ({ ...props }) => {
 
                         </span>
                     </>}
-            </div>}
+            </div>
 
         </div>
     </div>
