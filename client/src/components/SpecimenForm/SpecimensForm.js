@@ -496,7 +496,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
 
                                     <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                        <span className='col-12'><small>If collected, types of aliquots</small></span>
+                                        <span className='col-12'><small>If collected, types of aliquots (Select all that apply)</small></span>
                                         <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodBaselineSerum' disabled={+specimen.bioBloodBaseline !== 1} checked={specimen.bioBloodBaselineSerum === 1}
                                             onChange={(e) => {
                                                 if (isReadOnly) return false;
@@ -544,7 +544,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </div>
 
                                     <div className='col-12' style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                                        <span className='col-12'><small>If collected, types of aliquots</small></span>
+                                        <span className='col-12'><small>If collected, types of aliquots (Select all that apply)</small></span>
                                         <span className='col-12'><input type='checkbox' style={{ marginLeft: '10' }} name='bioBloodOtherTimeSerum' disabled={+specimen.bioBloodOtherTime !== 1} checked={specimen.bioBloodOtherTimeSerum === 1}
                                             onChange={(e) => {
                                                 if (isReadOnly)
