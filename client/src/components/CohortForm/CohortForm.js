@@ -95,20 +95,20 @@ const CohortForm = ({ ...props }) => {
                         if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
 
                         if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
-                        if ([0, 1].includes(currentCohort.clarification_contact) ) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
-                        if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
+                        if ([0, 1].includes(currentCohort.clarification_contact) ) {dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
+                        if (currentCohort.data_collected_other !== 1) {dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
                         if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
                         if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
                         if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
                         if (currentCohort.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
-                        if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
+                        if ([0, 1].includes(currentCohort.enrollment_ongoing)) {dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
                         if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
                         if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
                         if (currentCohort.enrollment_age_max) { dispatch(allactions.cohortErrorActions.enrollment_age_max(true)) }
                         if (currentCohort.enrollment_age_mean) { dispatch(allactions.cohortErrorActions.enrollment_age_mean(true)) }
-                        if (currentCohort.enrollment_age_median) { dispatch(allactions.cohortErrorActions.enrollment_age_median(true)) }
+                        if (currentCohort.enrollment_age_median) {dispatch(allactions.cohortErrorActions.enrollment_age_median(true)) }
                         if (currentCohort.current_age_min) { dispatch(allactions.cohortErrorActions.current_age_min(true)) }
-                        if (currentCohort.current_age_max) { dispatch(allactions.cohortErrorActions.current_age_max(true)) }
+                        if (currentCohort.current_age_max) {dispatch(allactions.cohortErrorActions.current_age_max(true)) }
                         if (currentCohort.current_age_mean) { dispatch(allactions.cohortErrorActions.current_age_mean(true)) }
                         if (currentCohort.current_age_median) { dispatch(allactions.cohortErrorActions.current_age_median(true)) }
                         if (currentCohort.time_interval) { dispatch(allactions.cohortErrorActions.time_interval(true)) }
@@ -187,11 +187,11 @@ const CohortForm = ({ ...props }) => {
     const handleSave = () => {
         setSaved(true)
 /*
-        if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
-        if (!(cohort.mainFileName || cohort.main_cohort_url)) { dispatch(allactions.cohortErrorActions.main(false, true)) }
-        if (!(cohort.specimenFileName || cohort.specimen_url)) { dispatch(allactions.cohortErrorActions.specimen(false, true)) }
-        if (!(cohort.dataFileName || cohort.data_url)) { dispatch(allactions.cohortErrorActions.data(false, true)) }
-        if (!(cohort.publicationFileName || cohort.publication_url)) { dispatch(allactions.cohortErrorActions.publication(false, true)) }
+        if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
+        if (!(cohort.mainFileName || cohort.main_cohort_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.main(false, true)) }
+        if (!(cohort.specimenFileName || cohort.specimen_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.specimen(false, true)) }
+        if (!(cohort.dataFileName || cohort.data_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.data(false, true)) }
+        if (!(cohort.publicationFileName || cohort.publication_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.publication(false, true)) }
 */
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
@@ -739,7 +739,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, Required Field the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
+                                    If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_target && saved ? <Reminder message={errors.enrollment_target}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_target' value={cohort.enrollment_target} onChange={e => dispatch(allactions.cohortActions.enrollment_target(e.target.value))} onBlur={(e) => { populateErrors('enrollment_target', e.target.value, true, 'number') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />}
@@ -747,7 +747,7 @@ const CohortForm = ({ ...props }) => {
                             </div>
                             <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '8px' : '' }}>
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
-                                    If still enrolling, Required Field when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
+                                    If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </span>
                                 <span className='col-md-1' style={{ paddingLeft: '0', paddingRight: '0', paddingBottom: '5px' }}>
                                     {errors.enrollment_year_complete && saved ? <Reminder message={errors.enrollment_year_complete}><input style={{ paddingLeft: '8px', paddingRight: '0', border: '1px solid red' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} /></Reminder> : <input style={{ paddingLeft: '8px', paddingRight: '0' }} className='form-control' name='enrollment_year_complete' placeholder='yyyy' value={cohort.enrollment_year_complete} onChange={e => dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))} onBlur={(e) => { populateErrors('enrollment_year_complete', e.target.value, true, 'year') }} disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />}
