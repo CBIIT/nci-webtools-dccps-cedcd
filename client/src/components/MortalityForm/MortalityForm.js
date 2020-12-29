@@ -5,6 +5,7 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import './MortalityForm.css';
 
 const MortalityForm = ({ ...props }) => {
 
@@ -380,19 +381,19 @@ const MortalityForm = ({ ...props }) => {
         </CollapsiblePanel>
 
 
-        <div className='col-md-12' style={{ position: 'relative' }}>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
+        <div className='my-4' style={{ position: 'relative' }}>
+            <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('D')} />
                 <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('F')} />
             </span>
-            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
+            <span className='zero-padding col-md-6 col-xs-12 ' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
                 <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
                     <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
                 </span>
                 <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                    <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px', paddingLeft: '0', paddingRight: '0' }} />
+                    <input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px'}} />
                 </span>
-                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} style={{ paddingLeft: '0', paddingRight: '0' }} /></span>
+                <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
             </span>
         </div>
 
