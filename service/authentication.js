@@ -86,6 +86,7 @@ async function login(request, response) {
                 role: userRole,
                 cohorts: cohorts,
                 active: user.activeStatus === 'Y',
+                headers,
             };
         } else {
             session.user = {
@@ -95,6 +96,7 @@ async function login(request, response) {
                 role: null,
                 cohorts: [],
                 active: false,
+                headers,
             };
         }
 
