@@ -5,6 +5,7 @@ import './QuestionnaireHeader.css'
 
 const QuestionnaireHeader = ({ ...props }) => {
     const sectionStatus = useSelector(state => state.sectionReducer)
+    //const dispatch = useDispatch()
     const cohort = useSelector(state => state.cohortReducer);
     const {
         status,
@@ -13,6 +14,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     } = useSelector(state => state.cohort);
     const publishDate = publishTime ? parseISO(publishTime) : null;
     const updateDate = updateTime ? parseISO(updateTime) : null;
+    const cohortStatus = useSelector(state => state.cohortStatusReducer)
 
     const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
