@@ -103,6 +103,10 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
                         if ([0, 1].includes(currentCohort.enrollment_ongoing)) {dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
                         if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
+                        if (currentCohort.enrollment_ongoing === 1) {
+                            if (currentCohort.enrollment_target >= 0 ) dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                            if (currentCohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                        }
                         if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
                         if (currentCohort.enrollment_age_max) { dispatch(allactions.cohortErrorActions.enrollment_age_max(true)) }
                         if (currentCohort.enrollment_age_mean) { dispatch(allactions.cohortErrorActions.enrollment_age_mean(true)) }
@@ -1258,6 +1262,7 @@ const CohortForm = ({ ...props }) => {
                     </CollapsiblePanel>
                 </form>
             </div>
+            {!isReadOnly ? 
             <div style={{ position: 'relative' }} className="my-4">
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' disabled />
@@ -1273,6 +1278,9 @@ const CohortForm = ({ ...props }) => {
                     <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
                 </span>
             </div>
+            : 
+            <div></div>
+            }
             {fileListShow && file_list(fileListTile, currentFileListName, currentFileList)}                           
         </div>
     </div>
