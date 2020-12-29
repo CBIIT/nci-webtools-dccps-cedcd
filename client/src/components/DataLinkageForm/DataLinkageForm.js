@@ -18,7 +18,6 @@ const DataLinkageForm = ({ ...props }) => {
     //const cohortId = +window.location.pathname.split('/').pop();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
-    const isReadOnly = props.isReadOnly
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
