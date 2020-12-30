@@ -1411,7 +1411,8 @@ BEGIN
     
   set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status,l_status.id as status_id, concat(u1.first_name, ' ', u1.last_name) create_by, 
 	 (case when ch.publish_by is null then null else (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.publish_by) end) publish_by,
-	 (case when ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time 
+	 (case when ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else null end) as update_time,
+	  (case when lower(ch.status) in ('submitted', 'in review') then 'review' else 'view' end) action
 	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE IFNULL(ch.create_by, 1)=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
   
   set @query = concat(@query, @orderBy, @paging);
