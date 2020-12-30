@@ -20,7 +20,7 @@
 .admindropdown-content {
   display: none;
   position: absolute;
-  left: -70px;
+  left: -52px;
   text-align: left !important;
   margin-top: 10px;
   background-color: #135b5d;
@@ -33,7 +33,7 @@
 /* Links inside the dropdown */
 .admindropdown-content a {
   color: black;
-  padding: 8px 0px;
+  padding: 8px 10px;
  
   text-align: left !important;
   text-decoration: none;
@@ -87,11 +87,12 @@ ul#mainNav li.icon {
   }
 
   ul#subNav li.miniDropdown a.miniLink:hover{
-    color: red;
+    background-color: #135B5D;
   }
 
   ul#subNav li a {
     color: white;
+    background-color: #135B5D;
   }
 
   ul#mainNav li.icon {
@@ -103,7 +104,7 @@ ul#mainNav li.icon {
     line-height: 1.5em;
   }
 
-  ul#mainNav li.icon:hover {
+  ul#mainNav ul#subNav li.icon:hover {
     background-color: #01857b;
     cursor: hand;
   }

@@ -295,8 +295,9 @@ const EditUser = ({ ...props }) => {
                                 <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Account Email<span className="required">*</span></label>
                                     {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
-                                    <input style={{ paddingLeft: '0' }} className="col-md-4 col-12" name="user_email" type="text" id="user_email" value={userEmail}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="text" id="user_email" value={userEmail}
                                         onChange={(e) => setUserEmail(e.target.value)} />
+                                    </span>
                                 </div>
                                 <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
@@ -308,8 +309,9 @@ const EditUser = ({ ...props }) => {
                                 <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
                                     {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
-                                    <input style={{ paddingLeft: '0' }} className="col-md-4 col-12" name="user_firstName" type="text" id="user_firstName" value={firstName}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" id="user_firstName" value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)} />
+                                    </span>
                                 </div>
                                 <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12" >
                                     <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
@@ -323,11 +325,7 @@ const EditUser = ({ ...props }) => {
                                         />{' '}Cohort Owner</span>
                                     </div>
                                 </div>
-                                <div id="ctl11_div_message" className=" my-3 col-md-12 col-12">
 
-                                    <input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
-                                        onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
-                                </div>
                                 <div id="ctl11_div_organization" className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
                                     <label className="col-md-12 col-12" htmlFor="cu_organization" >Cohort </label>
                                     {userRole === 'Admin' ?
@@ -345,6 +343,12 @@ const EditUser = ({ ...props }) => {
                                             </div>
                                         </div>
                                     }
+                                </div>
+                                <div id="ctl11_div_message" className=" my-3 col-md-12 col-12">
+
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" type='checkbox' name='active_status' checked={activeStatus === 'Y'}
+                                        onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
+                                        </span>
                                 </div>
 
 

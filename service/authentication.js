@@ -12,7 +12,7 @@ async function login(request, response) {
     const { mysql } = app.locals;
     const { 
         user_auth_type: userAuthType, 
-        fed_email: fedEmail, 
+        user_email: userEmail, 
         sm_user: smUser
     } = headers;
 
@@ -33,7 +33,7 @@ async function login(request, response) {
             // otherwise, update user-session variable when hitting authRoutes
             const isFederated = userAuthType === 'federated';
             userType = isFederated ? 'external' : 'internal';
-            userName = isFederated ? fedEmail : smUser;
+            userName = isFederated ? userEmail : smUser;
         }
 
         const [user] = await mysql.query(
@@ -86,6 +86,7 @@ async function login(request, response) {
                 role: userRole,
                 cohorts: cohorts,
                 active: user.activeStatus === 'Y',
+                // headers,
             };
         } else {
             session.user = {
@@ -95,6 +96,7 @@ async function login(request, response) {
                 role: null,
                 cohorts: [],
                 active: false,
+                // headers,
             };
         }
 
