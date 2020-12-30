@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import { useSelector } from 'react-redux'
 import { parseISO } from 'date-fns';
 import './QuestionnaireHeader.css'
 
 const QuestionnaireHeader = ({ ...props }) => {
     const sectionStatus = useSelector(state => state.sectionReducer)
-    //const dispatch = useDispatch()
     const cohort = useSelector(state => state.cohortReducer);
     const {
         status,
@@ -14,8 +13,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     } = useSelector(state => state.cohort);
     const publishDate = publishTime ? parseISO(publishTime) : null;
     const updateDate = updateTime ? parseISO(updateTime) : null;
-    const cohortStatus = useSelector(state => state.cohortStatusReducer)
-
+    
     const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
@@ -95,7 +93,15 @@ const QuestionnaireHeader = ({ ...props }) => {
         </div>
 
         <div className="d-md-none">
-            <div id='sectionA' onClick={() => props.handler('A')} style={{ marginBottom: '5px' }}>
+            <div id='sectionA' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span>
+                        </div>
+                    </div>
+                </div>
+                :
                 <div onMouseEnter={() => setARing('blue')} onMouseMove={() => setARing('blue')} onMouseOut={() => setARing('')}>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: ARing ? `3px solid ${ARing}` : '3px solid ' + pickColor(sectionStatus['A']) }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}>
@@ -103,8 +109,17 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+            }
             </div>
-            <div id='sectionB' onClick={() => props.handler('B')} style={{ marginBottom: '5px' }}>
+            <div id='sectionB' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('B')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span>
+                        </div>
+                    </div>
+                </div>
+                :
                 <div onMouseEnter={() => setBRing('blue')} onMouseMove={() => setBRing('blue')} onMouseOut={() => setBRing('')}>
                     <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: BRing ? `3px solid ${BRing}` : '3px solid ' + pickColor(sectionStatus['B']) }}>
                         <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}>
@@ -112,8 +127,17 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+                }
             </div>
-            <div id='sectionC' onClick={() => props.handler('C')} style={{ marginBottom: '5px' }}>
+            <div id='sectionC' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('C')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span>
+                        </div>
+                    </div>
+                </div>
+                :
                 <div onMouseEnter={() => setCRing('blue')} onMouseMove={() => setCRing('blue')} onMouseOut={() => setCRing('')}>
                     <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: CRing ? `3px solid ${CRing}` : '3px solid ' + pickColor(sectionStatus['C']) }}>
                         <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}>
@@ -121,8 +145,17 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+            }
             </div>
-            <div id='sectionD' onClick={() => props.handler('D')} style={{ marginBottom: '5px' }}>
+            <div id='sectionD' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('D')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span>
+                        </div>
+                    </div>
+                </div>
+                :
                 <div onMouseEnter={() => setDRing('blue')} onMouseMove={() => setDRing('blue')} onMouseOut={() => setDRing('')}>
                     <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: DRing ? `3px solid ${DRing}` : '3px solid ' + pickColor(sectionStatus['D']) }}>
                         <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}>
@@ -130,8 +163,17 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+            }
             </div>
-            <div id='sectionE' onClick={() => props.handler('E')} style={{ marginBottom: '5px' }}>
+            <div id='sectionE' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('E')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span>
+                        </div>
+                    </div>
+                    </div>
+                        :
                 <div onMouseEnter={() => setERing('blue')} onMouseMove={() => setERing('blue')} onMouseOut={() => setERing('')}>
                     <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E']) }}>
                         <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}>
@@ -139,8 +181,18 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+                }
             </div>
-            <div id='sectionF' onClick={() => props.handler('F')} style={{ marginBottom: '5px' }}>
+
+            <div id='sectionF' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('F')} style={{ marginBottom: '5px' }}>
+            {['submitted', 'in review'].includes(status) ? <div>
+                <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                        <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}>
+                            <span style={props.activeSection === 'F' ? activeStyle : {}}>Data Linkage & Harmonization</span>
+                        </div>
+                    </div>
+                </div>
+                        :
                 <div onMouseEnter={() => setFRing('blue')} onMouseMove={() => setFRing('blue')} onMouseOut={() => setFRing('')}>
                     <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: FRing ? `3px solid ${FRing}` : '3px solid ' + pickColor(sectionStatus['F']) }}>
                         <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}>
@@ -148,100 +200,159 @@ const QuestionnaireHeader = ({ ...props }) => {
                         </div>
                     </div>
                 </div>
+                }
             </div>
-            <div id='sectionF' onClick={() => props.handler('G')} style={{ marginBottom: '5px' }}>
-                <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
-                    <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
-                        <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
-                            <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
+            <div id='sectionF' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('G')} style={{ marginBottom: '5px' }}>
+                {['submitted', 'in review'].includes(status) ? <div>
+                        <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                            <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
+                                <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                    :
+                    <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
+                        <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
+                            <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
+                                <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
         <div className="d-none d-md-block">
             <div style={{ display: 'flex' }}>
-                <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('A')}>
+                <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('A')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setARing('blue')} onMouseMove={() => setARing('blue')} onMouseOut={() => setARing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ARing ? `3px solid ${ARing}` : '3px solid ' + pickColor(sectionStatus['A']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span></div>
                 </div>
-                <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('B')}>
+                <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('B')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setBRing('blue')} onMouseMove={() => setBRing('blue')} onMouseOut={() => setBRing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: BRing ? `3px solid ${BRing}` : '3px solid ' + pickColor(sectionStatus['B']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span></div>
                 </div>
-                <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('C')}>
+                <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('C')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setCRing('blue')} onMouseMove={() => setCRing('blue')} onMouseOut={() => setCRing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: CRing ? `3px solid ${CRing}` : '3px solid ' + pickColor(sectionStatus['C']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span></div>
                 </div>
-                <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('D')}>
+                <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('D')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setDRing('blue')} onMouseMove={() => setDRing('blue')} onMouseOut={() => setDRing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: DRing ? `3px solid ${DRing}` : '3px solid ' + pickColor(sectionStatus['D']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
                 </div>
-                <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('E')}>
+                <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('E')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setERing('blue')} onMouseMove={() => setERing('blue')} onMouseOut={() => setERing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }                   
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span></div>
                 </div>
-                <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('F')}>
+                <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('F')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setFRing('blue')} onMouseMove={() => setFRing('blue')} onMouseOut={() => setFRing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: FRing ? `3px solid ${FRing}` : '3px solid ' + pickColor(sectionStatus['F']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px', paddingLeft: '0', paddingRight: '0', width: '214px' }}><span style={props.activeSection === 'F' ? specialHeader : {}}>Data Linkage & Harmonization</span></div>
                 </div>
-                <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => props.handler('G')}>
+                <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('G')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        {['submitted', 'in review'].includes(status) ? <div>
+                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
+                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            </div>
+                        </div>
+                    :
                         <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}></div>
                             </div>
                         </div>
+                        }
                         <div style={{ flex: '1' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'G' ? activeStyle : {}}>Specimens</span></div>

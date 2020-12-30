@@ -1329,9 +1329,9 @@ const SpecimenForm = ({ ...props }) => {
                 </> : <>
                         <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
                             <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                                onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)} />
+                                onClick={handleApprove} disabled={!['submitted', 'in review'].includes(cohortStatus)} />
                             <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                                onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)} />
+                                onClick={handleReject} disabled={!['submitted', 'in review'].includes(cohortStatus)} />
 
                         </span>
                     </>}
