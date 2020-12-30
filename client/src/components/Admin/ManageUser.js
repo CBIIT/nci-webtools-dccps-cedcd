@@ -279,7 +279,7 @@ class ManageUser extends Component {
       		    </p><p></p>
 					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "0", "paddingBottom": "0px" }}>
 						<div className="col-md-4 col-8" style={{ "paddingBottom": "0px" }}>
-							<div className="form-group has-feedback has-search">
+							<div className="form-group has-feedback has-search" style={{ "paddingBottom": "0px", "marginBottom": "0" }}>
 								<span className="glyphicon glyphicon-search form-control-feedback"></span>
 								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email "
 									onChange={(e) => this.handleuserNameSearchChange(e)} />
@@ -289,12 +289,12 @@ class ManageUser extends Component {
 							<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 						</div>
 
-						<div className="col-md-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px" }}>
+						<div className="col-md-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
 
-							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
+							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px", "paddingBottom": "0px", "marginBottom": "0px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
 							</div>
-							<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative", "paddingBottom": "0px" }}>
+							<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative", "paddingBottom": "0px", "marginBottom": "0px" }}>
 								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
 							</div>
 
