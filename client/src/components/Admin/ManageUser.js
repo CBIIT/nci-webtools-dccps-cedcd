@@ -48,6 +48,7 @@ class ManageUser extends Component {
 		);
 
 		paging.total = list.length;
+		console.log("paging total " + paging.total)
 
 		this.setState({
 			filter: filter,
@@ -57,26 +58,8 @@ class ManageUser extends Component {
 
 	}
 
-	handleCohortPageSizeChange = (e) => {
+	handleUserPageSizeChange = (e) => {
 		this.pageData(1, null, null, e.target.value);
-	}
-
-	clearFilter = () => {
-		const state = Object.assign({}, this.state);
-
-		let list = state.dataList;
-		let filter = {
-			userRole: [],
-			userNameSearch: ''
-		};
-		let paging = state.pageInfo;
-		paging.total = list.length;
-		paging.page = 1;
-		this.setState({
-			filter: filter,
-			list: list.slice(0, paging.pageSize),
-			pageInfo: paging
-		});
 	}
 
 
@@ -152,6 +135,8 @@ class ManageUser extends Component {
 			paging: state.pageInfo
 		};
 
+		console.log(reqBody)
+
 		if (pagesize != -1) {
 			reqBody.paging.pageSize = pagesize;
 		}
@@ -195,6 +180,8 @@ class ManageUser extends Component {
 			paging: state.pageInfo
 		};
 
+		console.log(" step 1 : " + reqBody)
+
 		reqBody.paging.page = -1;
 
 		fetch('/api/managecohort/adminuserlist', {
@@ -208,8 +195,11 @@ class ManageUser extends Component {
 			.then(result => {
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
+				console.log(" step 2 total " + reqBody.paging.total)
 				reqBody.paging.page = 1;
+				console.log(" step 3 total " + reqBody.paging.total)
 				if (this._isMounted) {
+					console.log(" step 4 total " + reqBody.paging.total)
 					this.setState(prevState => (
 						{
 							list: list.slice(0, reqBody.paging.pageSize),
@@ -256,6 +246,7 @@ class ManageUser extends Component {
 			return (
 				<tr key={id}>
 					<td className="text-capitalize">{item.name}</td>
+					<td> {item.user_name}</td>
 					<td>{item.email}</td>
 					<td>{item.user_role}</td>
 
@@ -319,12 +310,13 @@ class ManageUser extends Component {
 									<thead>
 										<tr id="summaryHeader" className="col-header">
 											{this.renderTableHeader("name", "15%")}
+											{this.renderTableHeader("user_name", "15%")}
 											{this.renderTableHeader("email", "15%")}
 											{this.renderTableHeader("user_role", "10%")}
 											{this.renderTableHeader("cohort_list", "20%")}
-											{this.renderTableHeader("active_status", "10%")}
-											{this.renderTableHeader("last_login", "10%")}
-											{this.renderTableHeader("action", "10%")}
+											{this.renderTableHeader("active_status", "5%")}
+											{this.renderTableHeader("last_login", "15%")}
+											{this.renderTableHeader("action", "5%")}
 										</tr>
 									</thead>
 									<tbody>
@@ -339,7 +331,7 @@ class ManageUser extends Component {
 
 						<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
 							<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
-								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
+								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleUserPageSizeChange(e)} >
 									<option>Page Size</option>
 									<option value="5">5</option>
 									<option value="10">10</option>

@@ -7,9 +7,12 @@ class TableHeaderManageUser extends Component {
   render() {
     let name;
     if (this.props.value === "name") {
-      name = "User Name";
+      name = "Name";
     } else if (this.props.value === "id") {
       name = "id";
+    }
+    else if (this.props.value === "user_name") {
+      name = "User Account";
     }
     else if (this.props.value === "email") {
       name = "Email";
@@ -43,7 +46,7 @@ class TableHeaderManageUser extends Component {
     }
     return (
       <th className="sortable" width={this.props.width} scope="col">
-        <a href="javascript:void(0);" onClick={this.props.onClick}>{name}
+        <a href="javascript:void(0);" onClick={this.props.onClick} style={{ textDecoration: "none" }}>{name}
           {cls}
         </a>
       </th>
