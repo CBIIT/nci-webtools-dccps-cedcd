@@ -190,15 +190,16 @@ const NavBar = (props) => {
           }
           {/* use target=_self to enforce apache login rules (force normal navigation) */}
           {props.isAdmin === 1 ?
-            <li className="dropdown">
-              <div id="dropHeader" style={{ marginTop: "8px" }}>
-                <a target="_self" href="/admin/managecohort" >
+            <li className="dropdown" style={{ padding: "0px", margin: "0px" }}  >
+
+              <div id="dropHeader" style={{ margin: "0px", paddingLeft: "0px" }} >
+                <a target="_self" href="/admin/managecohort" style={{ height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px" }} >
                   Admin
             </a>
-                <div className="admindropdown-content" >
-                  <a target="_self" href="/admin/managecohort"  ><span className="text-left">Manage Cohorts</span></a>
-                  <div class="dropdown-divider" style={{ margin: "0px" }} ></div>
-                  <a target="_self" href="/admin/manageuser"  ><span className="text-left">Manage Users</span></a>
+                <div className="admindropdown-content" style={{ margin: "1px" }}>
+                  <a style={{ justifyContent: 'left' }} target="_self" href="/admin/managecohort">Manage Cohorts</a>
+                  <div className="dropdown-divider" style={{ margin: "0px" }} ></div>
+                  <a style={{ justifyContent: 'left' }} target="_self" href="/admin/manageuser">Manage Users</a>
                 </div>
               </div>
             </li>
