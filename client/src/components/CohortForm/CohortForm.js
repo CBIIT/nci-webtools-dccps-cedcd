@@ -490,7 +490,7 @@ const CohortForm = ({ ...props }) => {
         saveCohort(cohortID, true); setModalShow(false)
     }
 
-    return <div id='cohortContainer' className='col-md-12'>
+    return <div id='cohortContainer' className='container-fluid'>
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />

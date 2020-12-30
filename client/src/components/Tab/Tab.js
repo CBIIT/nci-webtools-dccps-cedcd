@@ -41,7 +41,7 @@ export default function Tab(props) {
   else if(props.value === 7){
     name="Questionnaire"
     url = userSession && userSession.cohorts && userSession.cohorts[0]
-      ? `/cohort/questionnaire/${userSession.cohorts[0]}`
+      ? `/cohort/questionnaire/${userSession.cohorts[0].id}`
       : 'home'
     target = "_self"
   }

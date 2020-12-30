@@ -8,49 +8,36 @@ import Message from '../Message/Message'
 import MortalityForm from '../MortalityForm/MortalityForm'
 import SpecimenForm from '../SpecimenForm/SpecimensForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
-const content = (currentSection, handleClick) => {
+//import { defaultProps } from 'react-select/src/Select'
+const content = (currentSection, readOnlyOrNot=false) => {
     switch (currentSection) {
         case 'A':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <CohortForm />
-            </Questionnaire>
+            return <CohortForm isReadOnly={readOnlyOrNot} />
         case 'B':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <EnrollmentCountsForm />
-            </Questionnaire>
+            return <EnrollmentCountsForm isReadOnly={readOnlyOrNot}/>
         case 'C':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <MajorContentForm />
-            </Questionnaire>
+            return <MajorContentForm isReadOnly={readOnlyOrNot}/>
         case 'D':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <CancerInfoForm />
-            </Questionnaire>
+            return <CancerInfoForm isReadOnly={readOnlyOrNot}/>
         case 'E':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <MortalityForm />
-            </Questionnaire>
+            return <MortalityForm isReadOnly={readOnlyOrNot}/>
         case 'F':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <DataLinkageForm />
-            </Questionnaire>
+            return <DataLinkageForm isReadOnly={readOnlyOrNot}/>
         case 'G':
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <SpecimenForm />
-            </Questionnaire>
+            return <SpecimenForm isReadOnly={readOnlyOrNot}/>
         default:
-            return <Questionnaire activeSection={currentSection} handler={(section) => handleClick(section)}>
-                <Message />
-            </Questionnaire>
+            return <Message isReadOnly={readOnlyOrNot}/>
     }
 }
 
 const QuestionnaireLoader = (props) => {
     const [current, setCurrent] = useState('A')
     useEffect(() => {
-        props.setAdmin(2)
+        props.isReadOnly ? props.setAdmin(1) : props.setAdmin(2)
     }, [])
-    return content(current, setCurrent)
+    return <Questionnaire activeSection={current} handler={(section) => setCurrent(section)} isReadOnly={props.isReadOnly} >
+     {content(current, props.isReadOnly)}
+     </Questionnaire>
 }
 
 export default QuestionnaireLoader

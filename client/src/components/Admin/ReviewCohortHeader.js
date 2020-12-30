@@ -7,8 +7,9 @@ import './ReviewCohortHeader.css'
 const ReviewCohorHeader = ({ ...props }) => {
     const sectionStatus = useSelector(state => state.sectionReducer)
     const cohort = useSelector(state => state.cohortReducer)
+    const cohortStatus = props.currentStatus
     const {
-        cohortStatus,
+        //cohortStatus,
         publish_time: publishTime,
         update_time: updateTime,
     } = useSelector(state => state.cohort);
@@ -86,7 +87,7 @@ const ReviewCohorHeader = ({ ...props }) => {
             <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['published', 'submitted', 'in review'].includes(cohortStatus) ? '' : props.handler('A')}>
                 <div style={{ display: 'flex' }}>
                     <div style={{ flex: '1' }}></div>
-                    {['published', 'submitted', 'in review'].includes(cohortStatus) ? <div>
+                    {['submitted', 'in review'].includes(cohortStatus) ? <div>
                         <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                             <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                         </div>
