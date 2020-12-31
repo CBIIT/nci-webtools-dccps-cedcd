@@ -179,9 +179,6 @@ class ManageUser extends Component {
 			orderBy: state.orderBy,
 			paging: state.pageInfo
 		};
-
-		console.log(" step 1 : " + reqBody)
-
 		reqBody.paging.page = -1;
 
 		fetch('/api/managecohort/adminuserlist', {
@@ -195,11 +192,8 @@ class ManageUser extends Component {
 			.then(result => {
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
-				console.log(" step 2 total " + reqBody.paging.total)
 				reqBody.paging.page = 1;
-				console.log(" step 3 total " + reqBody.paging.total)
 				if (this._isMounted) {
-					console.log(" step 4 total " + reqBody.paging.total)
 					this.setState(prevState => (
 						{
 							list: list.slice(0, reqBody.paging.pageSize),
