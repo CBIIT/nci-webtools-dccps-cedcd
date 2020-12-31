@@ -7,6 +7,8 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { fetchCohort } from '../../reducers/cohort';
+
 import './DataLinkageForm.css';
 
 const DataLinkageForm = ({ ...props }) => {
@@ -151,8 +153,6 @@ const DataLinkageForm = ({ ...props }) => {
         }
         else
             copy.deposit = ''
-
-        console.log(dataLinkage)
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
@@ -208,11 +208,15 @@ const DataLinkageForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
-                    if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId){
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        if (result.data.status)
-                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                        }
+                        if (result.data.status && result.data.status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
+                        }                   
                     }
                     if (!proceed)
                         setSuccessMsg(true)

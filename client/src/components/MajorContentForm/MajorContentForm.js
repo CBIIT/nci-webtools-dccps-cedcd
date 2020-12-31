@@ -5,7 +5,7 @@ import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
-
+import { fetchCohort } from '../../reducers/cohort';
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
@@ -283,8 +283,10 @@ const MajorContentForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        if (result.data.status)
-                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
+                        if(result.data.status && result.data.status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id))
+                        }
                     }
                     if (!proceed)
                         setSuccessMsg(true)

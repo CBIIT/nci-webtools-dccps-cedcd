@@ -7,6 +7,7 @@ import allactions from '../../actions'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { fetchCohort } from '../../reducers/cohort';
 
 import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
@@ -96,10 +97,14 @@ const EnrollmentCountsForm = ({...props}) => {
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'incomplete'))
                     }
                     if(result.data){
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID)
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID){
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        if (result.data.status)
-                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))                    
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                        }
+                        if (result.data.status && result.data.status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
+                        }                   
                     }
                     if(!proceed)
                         setSuccessMsg(true) 
@@ -138,11 +143,9 @@ const EnrollmentCountsForm = ({...props}) => {
     }
 
     const confirmSaveStay = () => {
-        console.dir('before dispatch'+enrollmentCount)
         enrollmentCount.sectionBStatus='incomplete'
         
         dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'));
-        console.dir('after dispatch'+enrollmentCount)
         saveEnrollment(cohortID);setModalShow(false)
     }
 
@@ -169,10 +172,31 @@ const EnrollmentCountsForm = ({...props}) => {
                     activePanel={activePanel}
                     panelTitle='Enrollment Counts'
                     onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
-                    <form className="row">
+                    <form className="row" >
                         <div className="col-12">
                             <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                         </div>
+ {/*}                       <div className='d-md-none'>
+                            <table className='miniCountsTable col-12'>
+                                <tbody>
+                                <tr>
+                                    <th  colSpan='4'>American Indian/Alaska Native</th>
+                                    
+                                </tr>
+                                <tr>
+                                    <th colSpan='3' >Not Hispanic or Latino</th>
+                                    <th  >Total</th>
+                                </tr>
+                                <tr>
+                                    <th>Female</th>
+                                    <th>Male</th>
+                                    <th>Unknown</th>
+                                    <th></th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+*/}
                         <div className="col-12 mb-4 table-responsive">
                             <table className='table table-condensed'>
                                 <thead>
@@ -380,34 +404,6 @@ const EnrollmentCountsForm = ({...props}) => {
                 </CollapsiblePanel>
             </CollapsiblePanelContainer>
             <div  style={{ position: 'relative' }} className="my-4">
-            {/* <div className="mt-3 d-flex flex-wrap justify-content-between">
-               <div className="d-flex flex-no-wrap">
-                    <input type='button' 
-                        className='btn btn-primary' 
-                        value='Previous' 
-                        onClick={() => props.sectionPicker('A')} />
-                    <input type='button' 
-                        className='btn btn-primary' 
-                        value='Next' 
-                        onClick={() => props.sectionPicker('C')} />
-                </div>
-                <div className="d-flex flex-no-wrap">
-                    <input type='button' 
-                        className='btn btn-primary' 
-                        value='Save' 
-                        onClick={handleSave} 
-                        disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} />
-                    <input type='button' 
-                        className='btn btn-primary' 
-                        value='Save & Continue' 
-                        onClick={handleSaveContinue} 
-                        disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} />
-                    <input type='button' 
-                        className='btn btn-primary' 
-                        value='Submit For Review' 
-                        onClick={() => resetCohortStatus(cohortID, 'submitted')} 
-                        disabled = {['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete' || isReadOnly} />
-                </div>*/}
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('A')} />
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('C')} />
@@ -420,7 +416,7 @@ const EnrollmentCountsForm = ({...props}) => {
                         <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
                             <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
                         </span>
-                        <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
+                        <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A !== 'complete' || section.B !== 'complete' || section.C !== 'complete' || section.D !== 'complete' || section.E !== 'complete' || section.F !== 'complete' || section.G !== 'complete'} /></span>
                     </span>
                     :
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
@@ -431,7 +427,6 @@ const EnrollmentCountsForm = ({...props}) => {
                     </span>
                 }        
             </div>  
-
         </div>
     )
 }

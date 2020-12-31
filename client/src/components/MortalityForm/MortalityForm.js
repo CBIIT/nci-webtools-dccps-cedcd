@@ -5,6 +5,7 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
 
 const MortalityForm = ({ ...props }) => {
@@ -168,10 +169,14 @@ const MortalityForm = ({ ...props }) => {
             .then(result => {
                 if (result.status === 200) {
                     if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId){
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        if (result.data.status)
-                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                        }
+                        if (result.data.status && result.data.status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
+                        }
                     }
                     if (!proceed) {
                         setSuccessMsg(true)

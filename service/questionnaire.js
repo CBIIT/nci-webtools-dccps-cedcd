@@ -93,7 +93,7 @@ router.post('/deleteFile', function (req, res) {
 
 router.post('/update_cohort_basic/:id', function (req, res) {
     logger.debug(req.body)
-    req.body.cohort_description = req.body.cohort_description.replace(/\n/g, '\\n')
+    req.body.cohort_description = req.body.cohort_description ? req.body.cohort_description.replace(/\n/g, '\\n') : req.body.cohort_description
     let body = JSON.stringify(req.body)
     let proc = 'update_cohort_basic'
     let params = []
@@ -101,7 +101,6 @@ router.post('/update_cohort_basic/:id', function (req, res) {
     params.push(body)
 
     mysql.callJsonProcedure(proc, params, function (result) {
-        logger.debug(result)
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             const updatedCohortInfo = {}
             if (Array.isArray(result[1])) {
@@ -182,12 +181,14 @@ router.post('/upsert_enrollment_counts/:id', function (req, res) {
 
     mysql.callJsonProcedure(proc, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
-            if (Array.isArray(result[1])) {
+            
+            if (Array.isArray(result[1])) { 
                 const updatedCounts = {}
                 updatedCounts.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedCounts.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedCounts })
-            } else
+            }
+             else
                 res.json({ status: 200, message: 'update successful' })
         }
         else
@@ -395,9 +396,7 @@ router.post('/update_cancer_info/:id', async function (req, res) {
     const { id } = params;
     try {
         const [result] = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
-        logger.info(result[0].success)
-        logger.info(result[0].duplicated_cohort_id)
-        logger.info(result[0].status)
+        
         if (result && result[0] && result[0].success === 1) {
             if (result[0].duplicated_cohort_id) {
                 res.json({ status: 200, message: 'update successful', data: { duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status } })
@@ -424,7 +423,13 @@ router.post('/update_specimen/:id', function (req, res) {
 
     mysql.callJsonProcedure(func, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0)
-            res.json({ status: 200, message: 'update successful' })
+            if(Array.isArray(result[1])){
+                const updatedSpecimen = {}
+                updatedSpecimen.duplicated_cohort_id = result[1][0].duplicated_cohort_id
+                if (result[2]) updatedSpecimen.status = result[2][0].status
+                res.json({ status: 200, message: 'update successful', data: updatedSpecimen })
+            } else
+                res.json({ status: 200, message: 'update successful' })
         else
             res.json({ status: 500, message: 'update failed' })
     })

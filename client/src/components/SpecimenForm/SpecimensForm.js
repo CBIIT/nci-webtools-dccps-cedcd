@@ -5,7 +5,7 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
-
+import { fetchCohort } from '../../reducers/cohort';
 
 const SpecimenForm = ({ ...props }) => {
 
@@ -339,11 +339,15 @@ const SpecimenForm = ({ ...props }) => {
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('G', 'incomplete'))
                     }
-                    if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                    if(result.data){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId){
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        if (result.data.status)
-                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                        }
+                        if (result.data.status && result.data.status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
+                        }                   
                     }
                     if (!proceed) {
                         setSuccessMsg(true)

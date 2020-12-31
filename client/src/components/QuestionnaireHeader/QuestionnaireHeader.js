@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { parseISO } from 'date-fns';
 import './QuestionnaireHeader.css'
@@ -13,7 +13,6 @@ const QuestionnaireHeader = ({ ...props }) => {
     } = useSelector(state => state.cohort);
     const publishDate = publishTime ? parseISO(publishTime) : null;
     const updateDate = updateTime ? parseISO(updateTime) : null;
-    
     const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
@@ -79,19 +78,19 @@ const QuestionnaireHeader = ({ ...props }) => {
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
-                    {asTitleCase(status) || 'Not available'}
+                    {asTitleCase(status) || ''}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Updated Date: </strong>
-                    {asDateString(updateDate) || 'Not available'}
+                    {asDateString(updateDate) || ''}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Published Date: </strong>
-                    {asDateString(publishDate) || 'Not available'}
+                    {asDateString(publishDate) || ''}
                 </div>
             </div>
         </div>
-
+        
         <div className="d-md-none">
             <div id='sectionA' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
             {['submitted', 'in review'].includes(status) ? <div>

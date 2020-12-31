@@ -9,6 +9,7 @@ import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { fetchCohort } from '../../reducers/cohort';
 
 const {
     setCancerCount,
@@ -286,11 +287,17 @@ const CancerInfoForm = ({ ...props }) => {
                         const { duplicated_cohort_id: newCohortId, status } = result.data;
                         // console.log("new id: "+newCohortId)
                         // console.log("new stats: "+status)
-
-                        if (newCohortId && +newCohortId !== id)
-                            id = newCohortId;
-                        dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
-                        dispatch({ type: 'SET_COHORT_STATUS', value: status })
+                        if (status && status != cohortStatus){
+                            dispatch(({type: 'SET_COHORT_STATUS', value: status})) 
+                            dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
+                        } else{
+                        if (newCohortId && +newCohortId !== id){
+                                id = newCohortId;
+                                dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
+                                window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            }
+                        }
+                        //dispatch({ type: 'SET_COHORT_STATUS', value: status })
                     }
                 });
 
