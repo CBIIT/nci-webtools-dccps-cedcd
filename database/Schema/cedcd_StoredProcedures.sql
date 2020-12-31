@@ -1949,13 +1949,13 @@ begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
     DECLARE cohortID INT DEFAULT 0;
-    /*
+    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-    */
+    
     SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
 
     IF @cohort_status = 'published' then call select_unpublished_cohort_id(targetID, cohortID); 
@@ -2179,52 +2179,63 @@ begin
 	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT( @counts, '$."29-6"')) where cancer_id = 29 and specimen_id = 6 and cohort_id = `cohortID`;
 	update specimen_count set specimens_counts = JSON_UNQUOTE(JSON_EXTRACT( @counts, '$."29-7"')) where cancer_id = 29 and specimen_id = 7 and cohort_id = `cohortID`;
   
-  update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaseline')) where specimen_id = 11 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineSerum')) where specimen_id = 12 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselinePlasma')) where specimen_id = 13 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineBuffyCoat')) where specimen_id = 14 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineOtherDerivative')) where specimen_id = 15 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTime')) where specimen_id = 16 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeSerum')) where specimen_id = 17 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimePlasma')) where specimen_id = 18 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeBuffyCoat')) where specimen_id = 19 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeOtherDerivative')) where specimen_id = 20 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaBaseline')) where specimen_id = 21 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaOtherTime')) where specimen_id = 22 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueBaseline')) where specimen_id = 23 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueOtherTime')) where specimen_id = 24 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineBaseline')) where specimen_id = 25 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineOtherTime')) where specimen_id = 26 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesBaseline')) where specimen_id = 27 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesOtherTime')) where specimen_id = 28 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaseline')) where specimen_id = 29 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTime')) where specimen_id = 30 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioRepeatedSampleSameIndividual')) where specimen_id = 31 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTumorBlockInfo')) where specimen_id = 32 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioGenotypingData')) where specimen_id = 33 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataExome')) where specimen_id = 34 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataWholeGenome')) where specimen_id = 35 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioEpigeneticOrMetabolicMarkers')) where specimen_id = 36 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOmicsData')) where specimen_id = 37 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTranscriptomicsData')) where specimen_id = 38 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMicrobiomeData')) where specimen_id = 39 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetabolomicData')) where specimen_id = 40 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaFastingSample')) where specimen_id = 41 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCancerStudy')) where specimen_id = 42 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCvdStudy')) where specimen_id = 43 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInDiabetesStudy')) where specimen_id = 44 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInOtherStudy')) where specimen_id = 45 and cohort_id = `cohortID`;
-update specimen_collected_type set collected_yn = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberOfMetabolomicsStudies')) where specimen_id = 46 and cohort_id = `cohortID`;
+    update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaseline'))='', 0, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaseline')) ) where specimen_id = 11 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineSerum'))='',0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineSerum'))) where specimen_id = 12 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselinePlasma'))='', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineSerum'))) where specimen_id = 13 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineBuffyCoat'))='', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineSerum'))) where specimen_id = 14 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineOtherDerivative'))= '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodBaselineOtherDerivative'))) where specimen_id = 15 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTime'))= '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTime'))) where specimen_id = 16 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeSerum')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeSerum'))) where specimen_id = 17 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimePlasma')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimePlasma'))) where specimen_id = 18 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeBuffyCoat')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeBuffyCoat'))) where specimen_id = 19 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeOtherDerivative'))= '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBloodOtherTimeOtherDerivative')))  where specimen_id = 20 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaBaseline')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaBaseline')))where specimen_id = 21 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaOtherTime')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioBuccalSalivaOtherTime'))) where specimen_id = 22 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueBaseline')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueBaseline'))) where specimen_id = 23 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueOtherTime')) = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTissueOtherTime'))) where specimen_id = 24 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineBaseline'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineBaseline'))) where specimen_id = 25 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineOtherTime'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioUrineOtherTime'))) where specimen_id = 26 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesBaseline'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesBaseline'))) where specimen_id = 27 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesOtherTime'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioFecesOtherTime'))) where specimen_id = 28 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaseline'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaseline'))) where specimen_id = 29 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTime'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTime'))) where specimen_id = 30 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioRepeatedSampleSameIndividual'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioRepeatedSampleSameIndividual'))) where specimen_id = 31 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTumorBlockInfo'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTumorBlockInfo'))) where specimen_id = 32 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioGenotypingData'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioGenotypingData'))) where specimen_id = 33 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataExome'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataExome'))) where specimen_id = 34 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataWholeGenome'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSequencingDataWholeGenome'))) where specimen_id = 35 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioEpigeneticOrMetabolicMarkers'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioEpigeneticOrMetabolicMarkers'))) where specimen_id = 36 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOmicsData'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOmicsData'))) where specimen_id = 37 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTranscriptomicsData'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioTranscriptomicsData'))) where specimen_id = 38 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMicrobiomeData'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMicrobiomeData'))) where specimen_id = 39 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetabolomicData'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetabolomicData'))) where specimen_id = 40 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaFastingSample'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaFastingSample'))) where specimen_id = 41 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCancerStudy'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCancerStudy'))) where specimen_id = 42 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCvdStudy'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInCvdStudy'))) where specimen_id = 43 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInDiabetesStudy'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInDiabetesStudy'))) where specimen_id = 44 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInOtherStudy'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesInOtherStudy'))) where specimen_id = 45 and cohort_id = `cohortID`;
+update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberOfMetabolomicsStudies'))  = '', 0,JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberOfMetabolomicsStudies'))) where specimen_id = 46 and cohort_id = `cohortID`;
   
-  update specimen set bio_other_baseline_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify')),
-  bio_other_other_time_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify')),
-bio_meta_outcomes_other_study_specify = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify')),
-bio_member_in_study = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy')),
-bio_labs_used_for_analysis = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis')),
-bio_analytical_platform = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioAnalyticalPlatform')),
-bio_separation_platform = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatform')),
-bio_number_metabolites_measured = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured')),
-bio_year_samples_sent = JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent'))
+  
+  update specimen set 
+  bio_other_baseline_specify = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify')) ='null' 
+     OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify')) ='' , null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherBaselineSpecify'))),
+  bio_other_other_time_specify = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify'))='null' 
+     OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify'))='',  null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioOtherOtherTimeSpecify'))),
+  bio_meta_outcomes_other_study_specify = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify')) ='null' 
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify'))='',null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMetaOutcomesOtherStudySpecify'))),
+  bio_member_in_study = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy')) ='null' 
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy'))='',null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioMemberInStudy'))),
+  bio_labs_used_for_analysis = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis'))='null' 
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis')) ='' ,null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioLabsUsedForAnalysis'))),
+  bio_analytical_platform = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioAnalyticalPlatform')) = 'null'
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioAnalyticalPlatform'))='', null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioAnalyticalPlatform'))),
+  bio_separation_platform = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatform')) = 'null'
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatform')) = '', null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioSeparationPlatform'))),
+  bio_number_metabolites_measured = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured')) = 'null' 
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured'))='', null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioNumberMetabolitesMeasured'))),
+  bio_year_samples_sent = if(JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent'))='null' 
+    OR JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent')) ='' , null, JSON_UNQUOTE(JSON_EXTRACT( info, '$.bioYearSamplesSent')))
   where cohort_id = `cohortID`;
 
   update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
@@ -2298,8 +2309,8 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort_from_published` //
 
 CREATE  PROCEDURE `insert_new_cohort_from_published`(in new_cohort_id int, in old_cohort_id int)
 BEGIN
-
  DECLARE flag INT DEFAULT 1;
+ 
  DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
@@ -2339,7 +2350,7 @@ create table temp_person select * from person where 1=2;
 
 insert into temp_person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
 select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
-from person where cohort_id = old_cohort_id and name is not null and name != '';
+from person  where cohort_id = old_cohort_id and name is not null and name != '';
 
 insert into person (cohort_id, category_id, name, position, institution, phone, email, create_time, update_time)
 select new_cohort_id, category_id, name, position, institution, phone, email, now(), now() 
@@ -2350,7 +2361,6 @@ select new_cohort_id, old.id, new.id
 from person new 
 join (select * from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '') as old
 on new.name = old.name  and new.category_id and old.category_id where new.cohort_id = new_cohort_id and new.category_id = 3;
-
 
 insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
 select new_cohort_id, old.attachment_type, old.category, old.filename, old.website, old.status, now() as old_create_time, now() as old_update_time 
@@ -2363,8 +2373,8 @@ on new.filename = old.filename and new.category where new.attachment_type = 1 an
 
 -- insert into enrollment_count
 insert into enrollment_count (cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time)
-select new_cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, now(), now() 
-from enrollment_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.race_id, old.ethnicity_id, old.gender_id, old.enrollment_counts, now() as col1, now() as col2
+from enrollment_count as old where old.cohort_id =old_cohort_id;
 
 -- ---- insert into dlh --
 drop table if exists cohort_temp;
@@ -2383,8 +2393,8 @@ insert into dlh select null, a.* from cohort_temp a;
 
 -- insert into cancer_count
 insert into cancer_count (cohort_id,cancer_id,gender_id, case_type_id,cancer_counts, create_time, update_time)
-select new_cohort_id, cancer_id,gender_id, case_type_id,cancer_counts, now(), now() 
-from cancer_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.cancer_id,old.gender_id, old.case_type_id,old.cancer_counts, now() as col1, now() as col2
+from cancer_count as old where old.cohort_id =old_cohort_id;
 
 drop table if exists cohort_temp;
 
@@ -2428,8 +2438,8 @@ insert into mortality select null, a.* from cohort_temp a;
 
 -- insert into specimen_count
 insert into specimen_count (cohort_id,cancer_id,specimen_id, specimens_counts, create_time, update_time)
-select new_cohort_id, cancer_id,specimen_id, specimens_counts, now(), now() 
-from specimen_count where cohort_id =old_cohort_id;
+select new_cohort_id, old.cancer_id,old.specimen_id, old.specimens_counts, now() as col1, now() as col2
+from specimen_count as old where old.cohort_id =old_cohort_id;
 
 insert into specimen_collected_type
 select null, new_cohort_id, c.id as specimen_id, b.collected_yn,
@@ -2456,8 +2466,8 @@ insert into specimen select null, a.* from cohort_temp a;
 
 -- insert into technology
 insert into technology (cohort_id,tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, create_time, update_time)
-select new_cohort_id, tech_use_of_mobile, tech_use_of_mobile_describe, tech_use_of_cloud, tech_use_of_cloud_describe, now(), now() 
-from technology where cohort_id =old_cohort_id;
+select new_cohort_id, old.tech_use_of_mobile, old.tech_use_of_mobile_describe, old.tech_use_of_cloud, old.tech_use_of_cloud_describe, now() as col1, now() as col2
+from technology as old where old.cohort_id =old_cohort_id;
 
 -- insert update supporting tables ,for published cohort, 
 insert into cohort_edit_status (cohort_id, page_code, status)
@@ -2735,13 +2745,13 @@ DROP PROCEDURE IF EXISTS `select_user_profile` //
 CREATE PROCEDURE `select_user_profile`(in usid int)
 BEGIN 
  
-   set @query = concat("select u.last_name, u.first_name, u.email,
-       ( case when access_level like '%Admin' then 'Admin' else 'Cohort Owner' end) as user_role,
-	   ( case when access_level like '%Admin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+    set @query = concat("select u.user_name, u.last_name, u.first_name, u.email,
+       ( case when access_level like '%SystemAdmin' then 'Admin' else 'Cohort Owner' end) as user_role,
+	   ( case when access_level like '%SystemAdmin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
         from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
        group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
        ( case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-    from user u where IFNULL(u.active_status, 'Y') ='Y' and u.id = ", usid); 
+    from user u where  u.id = ", usid); 
 	
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
@@ -2763,16 +2773,42 @@ END //
 DROP PROCEDURE IF EXISTS `update_user_profile` //
 
 CREATE PROCEDURE `update_user_profile`(in userID int, in info JSON)
-Begin
-   DECLARE i INT DEFAULT 0;
-    update user set email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
+begin
+    DECLARE i INT DEFAULT 0;
+   DECLARE new_id INT DEFAULT userID;
+	
+    DECLARE flag INT DEFAULT 1;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+    
+     START transaction;
+     if(`userID` = 0 ) then
+        insert into  user ( user_name, email,last_name, first_name, access_level, active_status, create_time) values (  
+        if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , json_unquote(json_extract(info, '$.user_name'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , json_unquote(json_extract(info, '$.last_name'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , json_unquote(json_extract(info, '$.first_name'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
+		  if(json_unquote(json_extract(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , json_unquote(json_extract(info, '$.active_status'))) ,
+		  now());
+        
+        set new_id = last_insert_id();
+     else     
+        update user set email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
+					user_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , json_unquote(json_extract(info, '$.user_name'))),
                     last_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , json_unquote(json_extract(info, '$.last_name'))),
                     first_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , json_unquote(json_extract(info, '$.first_name'))),
-                     access_level = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
+                      access_level = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
 					 if(json_unquote(json_extract(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
+                     active_status = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , json_unquote(json_extract(info, '$.active_status'))) ,
                      update_time= now()
                  where id = `userID`;
- 
+   end if;
+   
  	SET @cohortList = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_list'));
     if(JSON_LENGTH(@cohortList) > 0 || JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) <> 'Admin') then
       update cohort_user_mapping set active='N' where cohort_user_id = `userID`;
@@ -2780,15 +2816,17 @@ Begin
 			SELECT JSON_EXTRACT(@cohortList, concat('$[',i,']')) INTO @cohortAcronym;
             if(replace(@cohortAcronym, '"','') <> 'All') then
             insert into cohort_user_mapping (cohort_acronym, cohort_user_id, active, create_time, update_time)
-            values (replace(@cohortAcronym, '"',''), `userID`, 'Y' , now(), now() )
+            values (replace(@cohortAcronym, '"',''), new_id, 'Y' , now(), now() )
             on duplicate key update active  = 'Y';
             end if;
 	        SELECT i + 1 INTO i;
 		END WHILE;
         END IF;
+        
+        commit;
 
-	select row_count() as rowAffacted;
-    
+	select flag as rowAffacted;
+
 END //
 
 

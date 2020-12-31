@@ -87,11 +87,12 @@ ul#mainNav li.icon {
   }
 
   ul#subNav li.miniDropdown a.miniLink:hover{
-    color: red;
+    background-color: #135B5D;
   }
 
   ul#subNav li a {
     color: white;
+    background-color: #135B5D;
   }
 
   ul#mainNav li.icon {
@@ -103,7 +104,7 @@ ul#mainNav li.icon {
     line-height: 1.5em;
   }
 
-  ul#mainNav li.icon:hover {
+  ul#mainNav ul#subNav li.icon:hover {
     background-color: #01857b;
     cursor: hand;
   }

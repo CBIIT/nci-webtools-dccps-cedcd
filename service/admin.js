@@ -112,9 +112,10 @@ router.post('/getUserProfile/:id', function (req, res) {
 
 		userProfile.info = result[0]
 		userProfile.result = result[1]
+		userProfile.emailList = result[2]
 
 
-		if (userProfile)
+		if (userProfile && userProfile.info)
 			res.json({ status: 200, data: userProfile })
 		else
 			res.json({ status: 500, message: 'failed to load data' })

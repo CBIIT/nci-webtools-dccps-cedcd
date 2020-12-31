@@ -108,12 +108,12 @@ const NavBar = (props) => {
               {props.isAdmin === 1 ?
                 <li className="miniDropdown" onClick={() => setContent(miniDropdownContent == 'none' ? 'flex' : 'none')} style={{ paddingLeft: '0' }}>
                   <div id="miniDropHeader" >
-                    <a style={{ paddingLeft: '10px' }} target="_self" href="/admin/managecohort">
+                    <a style={{ paddingLeft: '10px' }} target="_self" href="#">
                       Admin
               </a>
-                    <div style={{ display: miniDropdownContent, flexDirection: 'column', justifyContent: 'space-evenly', backgroundColor: 'black', paddingLeft: '10px', maring: '0' }}>
-                      <a className='miniLink' style={{ height: '30px', lineHeight: '1.8em' }} target="_self" href="/admin/managecohort">Manage Cohorts</a>
-                      <a className='miniLink' style={{ height: '30px', lineHeight: '1.8em' }} target="_self" href="/admin/manageuser">Manage Users</a>
+                    <div style={{ display: miniDropdownContent, flexDirection: 'column', justifyContent: 'space-evenly', paddingLeft: '0px', maring: '0' }}>
+                      <a className='miniLink' style={{ height: '30px', lineHeight: '1.8em', paddingLeft: '15px', }} target="_self" href="/admin/managecohort">Manage Cohorts</a>
+                      <a className='miniLink' style={{ height: '30px', lineHeight: '1.8em', paddingLeft: '15px', }} target="_self" href="/admin/manageuser">Manage Users</a>
                     </div>
                   </div>
                 </li> : ''
