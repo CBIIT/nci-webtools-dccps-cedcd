@@ -354,7 +354,7 @@ const DataLinkageForm = ({ ...props }) => {
                 </span>
                 {errors.haveDataLink !== '' && <div className='col-md-3 error'>{errors.haveDataLink}</div>}
 
-                <span className='col-md-12 specify'>If yes, please specify:</span>
+                <div className='col-md-12 specify'>If yes, please specify:</div>
 
                 <div className='col-md-12'>
                     <input name='haveDataLinkSpecify' className='form-control specify' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
@@ -378,7 +378,7 @@ const DataLinkageForm = ({ ...props }) => {
                 </span>
                 {errors.haveHarmonization !== '' && <div className='col-md-3 error'>{errors.haveHarmonization}</div>}
 
-                <span className='col-md-12 specify'>If yes, please specify:</span>
+                <div className='col-md-12 specify'>If yes, please specify:</div>
                 <div className='col-md-12'>
                     <input name='haveHarmonizationSpecify' className='form-control specify' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
                 </div>
@@ -459,7 +459,7 @@ const DataLinkageForm = ({ ...props }) => {
             </div>
 
             <div className='form-group specify col-md-12'>
-                <label className='col-md-5 question' style={{ fontWeight: 'normal' }}>If yes, please specify (Select all that apply):</label>
+                <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please specify (Select all that apply):</label>
 
                 <div className='col-md-8 zero-padding'>
                     <span className='col-md-1 checkbox-padding'>
@@ -500,7 +500,7 @@ const DataLinkageForm = ({ ...props }) => {
                 </span>
                 {errors.createdRepo !== '' && <div className='col-md-3 error'>{errors.createdRepo}</div>}
 
-                <span className='col-md-12 specify'>If yes, please specify:</span>
+                <div className='col-md-12 specify'>If yes, please specify:</div>
                 <div className='col-md-8'>
                     <input name='createdRepoSpecify' className='specify form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
                 </div>
