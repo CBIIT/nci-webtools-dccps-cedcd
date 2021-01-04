@@ -996,11 +996,12 @@ BEGIN
     COMMIT;
 	
 	IF success = 1 then
-      if cohort_id <> new_id THEN
-        SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
-      else
-         select success;
-      end if;
+    begin
+	  if exists (select * from cohort where id = new_id and status = 'new') then
+		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+	  end if;
+	  SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
+	end;
     else
         select success;
     END IF;
@@ -2243,6 +2244,11 @@ update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( 
   
   commit;
   select flag as rowsAffacted;
+  SELECT cohortID as duplicated_cohort_id;
+  if exists (select * from cohort where id = cohortID and status = 'new') then
+	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
+  end if;
+  SELECT `status` from cohort where id = cohortID;
   end ;
   end if ;
   

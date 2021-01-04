@@ -10,7 +10,7 @@ const Questionnaire = ({...props}) => {
     const cohortID = useSelector(state => state.cohortIDReducer);
     const userSession = useContext(UserSessionContext);
     const isAuthorized = (process.env.NODE_ENV === 'development')
-        || (userSession && userSession.role === 'CohortAdmin');
+        || (userSession && (userSession.role === 'CohortAdmin' || userSession.role === 'SystemAdmin'));
 
     useEffect(() => {cohortID && dispatch(fetchCohort(cohortID))}, [cohortID]);
 
