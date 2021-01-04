@@ -2723,8 +2723,8 @@ BEGIN
        ( case when access_level like '%SystemAdmin' then 'Admin' else 'Cohort Owner' end) as user_role,
 	   ( case when access_level like '%SystemAdmin' then 'All' 
 	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
-        from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id
-        group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, 
+        from (select * from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = u.id order by cohort_acronym ) as a
+        group by cohort_user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
        (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
         from user u where u.id > 1 ", 
@@ -2749,7 +2749,7 @@ BEGIN
        ( case when access_level like '%SystemAdmin' then 'Admin' else 'Cohort Owner' end) as user_role,
 	   ( case when access_level like '%SystemAdmin' then 'All' else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
         from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and cohort_user_id = ", usid, "
-       group by cohort_user_id order by cohort_acronym ) end) AS cohort_list, active_status,
+       group by cohort_user_id ) end) AS cohort_list, active_status,
        ( case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
     from user u where  u.id = ", usid); 
 	
@@ -2758,7 +2758,7 @@ BEGIN
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
     
-	set @query1 = concat("select distinct email from user order by email "); 
+	set @query1 = concat("select distinct email, user_name from user order by email "); 
 	PREPARE stmt1 FROM @query1;
 	EXECUTE stmt1;
     select found_rows() as total;

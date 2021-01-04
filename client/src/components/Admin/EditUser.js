@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom";
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
@@ -11,19 +11,13 @@ import './AddNewCohort.css';
 
 const EditUser = ({ ...props }) => {
 
-    const [userProfile, setUserProfile] = useState({
-        email: '',
-        first_name: '',
-        last_name: '',
-        user_name: '',
-        user_role: '',
-        cohort_list: '',
-        active_status: ''
-    })
     const [activeStatus, setActiveStatus] = useState('Y');
-    const [allEmail, setAllEmail] = useState([]);
     const [cohortList, setCohortList] = useState([]);
-    const [currentEmail, setCurrentEmail] = useState('');
+    const [currentUser, setCurrentUser] = useState({
+        email: '',
+        user_name: ''
+    });
+    const [existingList, setExistingList] = useState([]);
     const [failureMsg, setFailureMsg] = useState(false);
     const [firstName, setFirstName] = useState('');
     const history = useHistory();
@@ -54,45 +48,50 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
+        const fetchUserData = async function () {
+            const result = await fetch(`/api/managecohort/getUserProfile/${userId}`, {
+                method: 'POST', headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(res => res.json());
+
+            if (result.data.info[0] !== undefined) {
+                const data = result.data.info[0]
+                setExistingList(result.data.emailList)
+                let resultStatus = result.data.result[0].total
+
+                if (+resultStatus === 1) {
+                    setUserEmail(data.email)
+                    setFirstName(data.first_name)
+                    setLastName(data.last_name)
+                    setUserName(data.user_name || '')
+                    setUserRole(data.user_role)
+                    setActiveStatus(data.active_status)
+                    if (data.cohort_list) setCohortList(data.cohort_list.split(','))
+                    setCurrentUser({ email: data.email, user_name: data.user_name })
+                }
+            } else {
+                setNonExistUser(true)
+            }
+        };
+
+        const fetchExistingDate = async function () {
+            const result = await fetch(`/api/managecohort/getUserProfile/0`, {
+                method: 'POST', headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(res => res.json());
+            setExistingList(result.data.emailList)
+        };
 
         if (!isNew) {
-            fetch(`/api/managecohort/getUserProfile/${userId}`, {
-                method: 'POST',
-            }).then(res => res.json())
-                .then(result => {
-
-                    if (result.data.info[0] !== undefined) {
-                        const data = result.data.info[0]
-                        const emailList = result.data.emailList;
-                        console.log(emailList.email)
-                        setAllEmail(result.data.emailList)
-                        let resultStatus = result.data.result[0].total
-
-                        if (+resultStatus === 1) {
-                            setUserProfile(data)
-                            setUserEmail(data.email)
-                            setFirstName(data.first_name)
-                            setLastName(data.last_name)
-                            setUserName(data.user_name)
-                            setUserRole(data.user_role)
-                            setActiveStatus(data.active_status)
-                            setCohortList(data.cohort_list.split(','))
-                            setCurrentEmail(data.email)
-                        }
-                    } else {
-                        setNonExistUser(true)
-                    }
-
-                })
+            fetchUserData();
         } else {
-            fetch(`/api/managecohort/getUserProfile/0`, {
-                method: 'POST',
-            }).then(res => res.json())
-                .then(result => {
-                    setAllEmail(result.data.emailList)
-
-                })
+            fetchExistingDate();
         }
+
     }, [])
 
 
@@ -109,27 +108,27 @@ const EditUser = ({ ...props }) => {
         }
 
         if (validateInput()) {
-            console.log(JSON.stringify(userInfo))
             let uid = isNew ? 0 : userId
-            fetch(`/api/managecohort/updateUserProfile/${uid}`, {
-                method: "POST",
-                body: JSON.stringify(userInfo),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(res => res.json())
-                .then(result => {
-                    if (result.status === 200) {
-                        setSuccessMsg(true)
-                    } else {
-                        setFailureMsg(true)
+            const saveData = async function () {
+                const result = await fetch(`/api/managecohort/updateUserProfile/${uid}`, {
+                    method: "POST",
+                    body: JSON.stringify(userInfo),
+                    headers: {
+                        'Content-Type': 'application/json'
                     }
-                })
+                }).then(res => res.json());
+                if (result.status === 200) {
+                    setSuccessMsg(true)
+                } else {
+                    setFailureMsg(true)
+                }
+            };
+            saveData();
         }
         else {
             setModalShow(true)
         }
+
     }
 
     const handleBlur = (e) => {
@@ -236,13 +235,12 @@ const EditUser = ({ ...props }) => {
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.cohortList_error = (cohortList && cohortList.length) ? '' : 'Missing required field'
 
-        if ((isNull(copy.email_error) && currentEmail !== userEmail) || isNew) {
-            console.log(isNew)
-            if (allEmail.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
+        if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
+            if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
         }
-        console.log(copy)
-        console.log(userEmail)
-        console.log(currentEmail)
+        if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
+            if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
+        }
 
         setErrors(copy);
 
@@ -255,7 +253,6 @@ const EditUser = ({ ...props }) => {
 
     const handleCohortClick = (v, allIds, e) => {
         let cohort = [...cohortList];
-        console.dir(cohort)
         if (v) {
             let idx = cohort.indexOf(v.acronym);
             if (idx > -1) {
@@ -278,9 +275,6 @@ const EditUser = ({ ...props }) => {
             }
         }
     }
-    const confirmSaveStay = () => {
-        setModalShow(false)
-    }
 
     return <UserSessionContext.Consumer>
         {userSession => (
@@ -289,7 +283,15 @@ const EditUser = ({ ...props }) => {
             <div id='editUserContainer' className='col-md-12'>
                 {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
                 {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
-                <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
+
+                <CenterModal
+                    show={modalShow}
+                    title={modalShow.title || <h2>Confirmation Required</h2>}
+                    body={modalShow.body || <div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
+                    footer={modalShow.footer || <div>
+                        <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
+                    </div>}
+                />
 
                 <div id="editUserForm" className="row pop-form col-md-12">
                     <div id="edituser-main" className="col">
@@ -309,7 +311,7 @@ const EditUser = ({ ...props }) => {
                                     <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Account Email<span className="required">*</span></label>
                                         {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="text" id="user_email" value={userEmail}
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
                                             placeholder='Valid email address'
                                             onChange={(e) => {
                                                 setUserEmail(e.target.value);
@@ -368,7 +370,7 @@ const EditUser = ({ ...props }) => {
                                             </div>
                                             :
                                             <div className="col-md-6 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                                <span>{cohortList.toString()} </span>
+                                                <span>{cohortList.sort(function (a, b) { return a.localeCompare(b); }).join(', ')} </span>
                                                 <div className="col-sm-6 ">
                                                     {
                                                         cohortAllList(cohortList)
