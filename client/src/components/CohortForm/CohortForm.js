@@ -533,12 +533,7 @@ const CohortForm = ({ ...props }) => {
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-<<<<<<< HEAD
-        <FileModal show={fileModal} handleClose={() => setFileModal(false)} title={<div style={{ height: '100%', color: 'white' }}><span className='col-xs-10'><h4><b>{fileListTile}</b></h4></span><span className='col-xs-2 upperCloser' style={{ textAlign: 'center' }} onClick={() => setFileModal(false)}><h4>X</h4></span>
-        </div>} body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{ height: '40px' }} onClick={() => setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>} />
-=======
         <FileModal show={fileModal} handleClose={() => setFileModal(false)}  body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{height: '40px'}} onClick={()=> setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>}/> 
->>>>>>> cedcd-new-feature
         <div className='col-md-12'>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
