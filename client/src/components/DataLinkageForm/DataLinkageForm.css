@@ -3,3 +3,32 @@
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+
+.form-group{
+    margin-bottom: 2rem !important;
+}
+
+.question{
+    margin-bottom: .5rem;
+}
+
+.specify{
+    margin-top: .5rem;
+}
+
+.error-input{
+    color: red;
+    line-height: 2em;
+}
+
+.error{
+    color: red;
+}
+
+.checkbox-padding{
+    width: 50px;
+}
+
+.click-width{
+    width: 30px;
+}

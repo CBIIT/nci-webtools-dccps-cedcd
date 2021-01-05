@@ -422,7 +422,7 @@ const MortalityForm = ({ ...props }) => {
                 <label htmlFor='deathNumbers question' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
 
                 <div className="col-sm-2">
-                    <input name='deathNumbers' className='form-group form-control' value={mortality.deathNumbers} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
+                    <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
                 </div>
                 {errors.deathNumbers !== '' && <div className='col-md-3 error-input'>{errors.deathNumbers}</div>}
 
