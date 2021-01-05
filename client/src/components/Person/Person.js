@@ -62,7 +62,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
     return (
         <Col sm="12">
             <Form.Group as={Row} className="mb-1">
-                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                <Form.Label column sm={4} style={{ fontWeight: 'normal' }}>
                     Name<span style={{color: 'red'}}>*</span>
                 </Form.Label>
                 <Col sm="6">
@@ -97,7 +97,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                 </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-1">
-                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                <Form.Label column sm={4} style={{ fontWeight: 'normal' }}>
                     Position with the cohort<span style={{color: 'red'}}>*</span>
                 </Form.Label>
                 <Col sm="6">
@@ -132,7 +132,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                 </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-1">
-                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                <Form.Label column sm={4} style={{ fontWeight: 'normal' }}>
                     Phone
                 </Form.Label>
                 <Col sm="6">
@@ -190,7 +190,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                 </Col>
             </Form.Group>
             <Form.Group as={Row} className="mb-1">
-                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                <Form.Label column sm={4} style={{ fontWeight: 'normal' }}>
                     Email<span style={{color: 'red'}}>*</span>
                 </Form.Label>
                 <Col sm="6">

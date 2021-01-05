@@ -519,7 +519,7 @@ const CohortForm = ({ ...props }) => {
 
                             {/* A.1a Cohort Name */}
                             <Form.Group as={Row} className="mb-1">
-                                <Form.Label column sm="3">
+                                <Form.Label column sm="4">
                                     A.1a Cohort Name
                                 </Form.Label>
                                 <Col sm="6">
@@ -529,7 +529,7 @@ const CohortForm = ({ ...props }) => {
   
                             {/* A.1b Cohort Abbreviation */}
                             <Form.Group as={Row}>
-                                <Form.Label column sm="3">
+                                <Form.Label column sm="4">
                                     A.1b Cohort Abbreviation
                                 </Form.Label>
                                 <Col sm="3">
@@ -567,7 +567,7 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                     A.3 Does the cohort have a website? Please specify if applicable
                                 </Form.Label>
-                                <Col sm="6">
+                                <Col sm="7">
                                     {errors.cohort_web_site && saved ? 
                                         <Reminder message={errors.cohort_web_site}>
                                             <Form.Control type="text" style={{ border: '1px solid red' }} 
@@ -599,7 +599,7 @@ const CohortForm = ({ ...props }) => {
                             
                             {/* A.4 Date Form Completed */}
                             <Form.Group as={Row}>
-                                <Form.Label column sm="3">
+                                <Form.Label column sm="4">
                                     A.4 Date Form Completed<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="3">
@@ -650,9 +650,6 @@ const CohortForm = ({ ...props }) => {
                                     errors={errors} 
                                     disabled={isReadOnly} 
                                     displayStyle={saved} />
-                                {/* <Form.Label column sm="3">
-                                    Name
-                                </Form.Label> */}
                             </Form.Group>
 
                             {/* A.5b Contact Person */}
@@ -660,7 +657,7 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                     A.5b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
-                                <Form.Label column sm="3" style={{ fontWeight: 'normal' }}>
+                                <Form.Label column sm="4" style={{ fontWeight: 'normal' }}>
                                     Is this the person to contact with questions about this form?
                                 </Form.Label>
                                 <Col sm="6" className="align-self-center">
