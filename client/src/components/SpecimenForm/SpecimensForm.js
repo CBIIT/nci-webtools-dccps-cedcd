@@ -460,7 +460,7 @@ const SpecimenForm = ({ ...props }) => {
                         aria-expanded={activePanel === 'panelA'}
                         aria-controls="more"
                         onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
-                        <span className="triangle"></span>Did you collect any of the following specimens?
+                        <span className="triangle"></span>Specimen Collected
                             </button>
                     <div className="cohortInfoBody"
                         id="more"

@@ -176,27 +176,28 @@ const EnrollmentCountsForm = ({...props}) => {
                         <div className="col-12">
                             <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                         </div>
- {/*}                       <div className='d-md-none'>
+                    {/*    <div className='d-md-none'>
                             <table className='miniCountsTable col-12'>
                                 <tbody>
-                                <tr>
-                                    <th  colSpan='4'>American Indian/Alaska Native</th>
-                                    
-                                </tr>
-                                <tr>
-                                    <th colSpan='3' >Not Hispanic or Latino</th>
-                                    <th  >Total</th>
-                                </tr>
-                                <tr>
-                                    <th>Female</th>
-                                    <th>Male</th>
-                                    <th>Unknown</th>
-                                    <th></th>
-                                </tr>
+                                    <tr>
+                                        <th className='col-4' style={{paddingLeft: '18px'}}>American Indian/Alaska Native</th>
+                                        <th> Not Hispanic or Latino</th>
+                                        <td className='col-8' style={{padding: '0'}}>
+                                            <table>
+                                                <thead>
+                                                    <tr >
+                                                        <th>Female</th>
+                                                        <th>Male</th>
+                                                        <th>Unknown</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-*/}
+                        */}
                         <div className="col-12 mb-4 table-responsive">
                             <table className='table table-condensed'>
                                 <thead>
