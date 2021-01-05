@@ -8,7 +8,12 @@ export default function SessionLogoutModal() {
     const remainingTimeThreshold = 1000 * 60 * 5;
     const [remainingTime, setRemainingTime] = useState(initialRemainingTime);
 
-    const formatMinutes = ms => `${String(Math.floor(ms / 1000 / 60)).padStart(2, '0')}:${String(Math.floor((ms / 1000) % 60)).padStart(2, '0')}`;
+    const formatMinutes = ms => 
+        [ms / 1000 / 60, ms / 1000 % 60]
+            .map(Math.floor)
+            .map(String)
+            .map(str => str.padStart(2, '0'))
+            .join(':');
 
     useEffect(() => {
         function onClick() {
