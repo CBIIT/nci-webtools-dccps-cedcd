@@ -7,7 +7,7 @@ module.exports = {
 }
 
 async function login(request, response) {
-    const { headers, session, app, params } = request;
+    const { headers, session, app, params, query } = request;
     const { loginType } = params;
     const { mysql } = app.locals;
     const { 
@@ -18,6 +18,10 @@ async function login(request, response) {
 
     if (!['internal', 'external'].includes(loginType)) {
         return response.status(301).redirect('/');
+    }
+
+    if (query.refresh) {
+        return response.json(true);
     }
 
     try {
