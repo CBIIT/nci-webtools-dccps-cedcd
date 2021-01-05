@@ -22,7 +22,6 @@ export default function SessionLogoutModal() {
     useEffect(() => {
         const intervalId = window.setInterval(() => {
             if (userSession) {
-                console.log({remainingTime, remainingTimeThreshold})
                 let newRemainingTime = Math.max(0, remainingTime - 1000);
                 setRemainingTime(newRemainingTime)
                 if (newRemainingTime <= 0)
@@ -33,7 +32,7 @@ export default function SessionLogoutModal() {
     }, [remainingTime]);
 
     async function resetRemainingTime() {
-        const response = await fetch(`/private/${userSession.loginType}`);
+        const response = await fetch(`/private/${userSession.loginType}?refresh=${new Date().getTime()}`);
         setRemainingTime(initialRemainingTime);
     }
 
