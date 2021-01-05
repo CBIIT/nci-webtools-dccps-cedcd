@@ -3,8 +3,11 @@ import validator from '../../validators'
 import allactions from '../../actions'
 import {useSelector, useDispatch} from 'react-redux'
 import Reminder from '../Tooltip/Tooltip'
-
 import "react-datepicker/dist/react-datepicker.css";
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const Person =({id, type, name, position, phone, email, colWidth, errors, disabled, displayStyle, leftPadding}) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -56,62 +59,172 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
         dispatch(allactions.cohortActions.completerName(cohort.completerName))
     }, [])
 
-    return window.innerWidth <= 1000 ?  <div id={id} className='col-md-12'>
-            <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
-                <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>Name<span style={{color: 'red'}}>*</span></div>
-                {errors[name] && displayStyle ? <Reminder message={errors[name]}><div className='col-xs-12' style={{padding: '0'}}>
-                <input style={{border: '1px solid red'}} className='form-control' name={name}  placeholder='Max of 100 characters' maxLength='100' value={cohort[name]} onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/></div></Reminder> : <div className='col-md-12' style={{padding: '0'}}>
-                <input className='form-control' name={name} value={cohort[name]}  placeholder='Max of 100 characters' maxLength='100' onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}} readOnly={disabled}/></div>}  
-            </div>
-            <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
-                <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>Position with the cohort<span style={{color: 'red'}}>*</span></div>
-                {errors[position] && displayStyle ? <Reminder message={errors[position]}><div className='col-xs-12' style={{padding: '0'}}>
-                <input style={{border: '1px solid red'}} className='form-control' name={position} placeholder='Max of 100 characters' maxLength='100' value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}}/></div></Reminder> : <div className='col-md-12' style={{padding: '0'}}>
-                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name={position} value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}} readOnly={disabled}/></div>}  
-            </div>
-            <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
-                <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>Phone</div>
-                    <div className='col-xs-12' style={{padding: '0', margin: '0'}}><input maxLength='10' className='form-control' title='country code' value={cohort[type]} onChange={e => {dispatch(allactions.cohortActions.country_code(type, e.target.value)); populateErrors(phone, cohort[phone], true, 'phone', e.target.value); dispatch(allactions.cohortActions[phone]( processPhoneNumber(e.target.value, cohort[phone])))}} onBlur={e =>{ 
-                        if(/^\+\s*$/.test(e.target.value))dispatch(allactions.cohortActions.country_code(type, '+1'))}
-                    } disabled={disabled}/></div>
-                    {errors[phone] && displayStyle ? <Reminder message={errors[phone]}><div className='col-xs-12' style={{padding: '0', margin: '0'}}><input style={{border: '1px solid red'}} className='form-control' placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} maxLength='100' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone', cohort[type])}}/></div></Reminder> : <div className='col-xs-12' style={{padding: '0', margin: '0'}}><input className='form-control' placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} maxLength='100' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))} onBlur={(e) => populateErrors(phone, e.target.value, true, 'phone', cohort[type])}  readOnly={disabled}/></div>} 
-            </div>
-            <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>
-                <div className='col-xs-12' style={{paddingLeft: '0', marginBottom: '5px'}}>Email<span style={{color: 'red'}}>*</span></div>
-                {errors[email] && displayStyle ? <Reminder message={errors[email]}><div className='col-xs-12' style={{padding: '0'}}>
-                <input style={{border: '1px solid red'}} placeholder='Max of 100 characters' maxLength='100' className='form-control' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'string')}}/></div></Reminder> : <div className='col-md-12' style={{padding: '0'}}>
-                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'string')}} readOnly={disabled}/></div>}  
-            </div>
-    </div>
-     : 
-    <div id={id} className={'col-md-'+colWidth} style={{marginLeft: '0', paddingLeft: leftPadding}}>                        
-            <div className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Name<span style={{color: 'red'}}>*</span></span>
-                {errors[name] && displayStyle ? <Reminder message={errors[name]}><span className='col-md-7'>
-                <input style={{border: '1px solid red'}} placeholder='Max of 100 characters' maxLength='100' className='form-control' name={name} value={cohort[name]} onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-7'>
-                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' name={name} value={cohort[name]} onChange={e => dispatch(allactions.cohortActions[name](e.target.value))} onBlur={(e) => {populateErrors(name, e.target.value, true, 'string')}} readOnly={disabled}/></span>}  
-            </div>
-            <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Position with the cohort<span style={{color: 'red'}}>*</span></span>
-                {errors[position] && displayStyle ? <Reminder message={errors[position]}><span className='col-md-7'>
-                <input style={{border: '1px solid red'}} placeholder='Max of 100 characters' maxLength='100' className='form-control' name={position} value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}}/></span></Reminder> : <span className='col-md-7'><input className='form-control' placeholder='Max of 100 characters' maxLength='100' name={position} value={cohort[position]} onChange={e => dispatch(allactions.cohortActions[position](e.target.value))} onBlur={(e) => {populateErrors(position, e.target.value, true, 'string')}}  readOnly={disabled}/></span>}
-            </div>
-            <div  className='col-md-12' style={{paddingLeft: '0', marginBottom: '4px'}}>
-                <span className='col-md-5' style={{ paddingLeft: '0', lineHeight: '2em'}}>Phone</span>
-                <span className='col-md-7'>
-                    <span className='col-md-2' style={{padding: '0', margin: '0'}}><input maxLength='10' className='form-control' style={{padding: '5px'}} title='country code' value={cohort[type]} onChange={e => {dispatch(allactions.cohortActions.country_code(type, e.target.value)); dispatch(allactions.cohortActions[phone]( processPhoneNumber(e.target.value, cohort[phone]))); if(cohort[phone]) {populateErrors(phone, cohort[phone], true, 'phone', e.target.value)} else {dispatch(allactions.cohortErrorActions[phone](true))}}} onBlur={e =>{ 
-                        if(/^\+\s*$/.test(e.target.value))dispatch(allactions.cohortActions.country_code(type, '+1'))}
-                    } readOnly={disabled}/></span>
-                   {errors[phone] && displayStyle ? <Reminder message={errors[phone]}><span className='col-md-10' style={{padding: '0', margin: '0'}}><input style={{border: '1px solid red'}} className='form-control' placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} maxLength='100' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))} onBlur={(e) => {populateErrors(phone, e.target.value, true, 'phone', cohort[type])}}/></span></Reminder> : <span className='col-md-10' style={{padding: '0', margin: '0'}}><input className='form-control' placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} maxLength='100' name={phone} value={cohort[phone]} onChange={e => dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))} onBlur={(e) => populateErrors(phone, e.target.value, true, 'phone', cohort[type])}  readOnly={disabled}/></span>}
-                </span> 
-            </div>
-            <div className='col-md-12'  style={{paddingLeft: '0'}}>
-                <span className='col-md-5' style={{lineHeight: '2em', paddingLeft: '0'}}>Email<span style={{color: 'red'}}>*</span></span>
-                {errors[email] && displayStyle ? <Reminder message={errors[email]}><span className='col-md-7'>
-                <input style={{border: '1px solid red'}} placeholder='Max of 100 characters' maxLength='100' className='form-control' type='phone' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}/></span></Reminder> : <span className='col-md-7'>
-                <input className='form-control' placeholder='Max of 100 characters' maxLength='100' type='phone' name={email} value={cohort[email]} onChange={e => dispatch(allactions.cohortActions[email](e.target.value))} onBlur={(e) => {populateErrors(email, e.target.value, true, 'email')}}  readOnly={disabled}/></span>}
-            </div>    
-        </div>
+    return (
+        <Col sm="12">
+            <Form.Group as={Row} className="mb-1">
+                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                    Name<span style={{color: 'red'}}>*</span>
+                </Form.Label>
+                <Col sm="6">
+                    {errors[name] && displayStyle ? 
+                        <Reminder message={errors[name]}>
+                            <Form.Control type="text" 
+                                style={{ border: '1px solid red' }} 
+                                placeholder='(Max of 100 characters)' 
+                                maxLength="100"
+                                name={name} 
+                                value={cohort[name]} 
+                                onChange={e => 
+                                    dispatch(allactions.cohortActions[name](e.target.value))
+                                } 
+                                onBlur={e => 
+                                    populateErrors(name, e.target.value, true, 'string')
+                                } />
+                        </Reminder> : 
+                        <Form.Control type="text"
+                            placeholder='(Max of 100 characters)' 
+                            maxLength="100"
+                            name={name} 
+                            value={cohort[name]} 
+                            onChange={e => 
+                                dispatch(allactions.cohortActions[name](e.target.value))
+                            } 
+                            onBlur={e => 
+                                populateErrors(name, e.target.value, true, 'string')
+                            }
+                            readOnly={disabled} />
+                    }  
+                </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-1">
+                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                    Position with the cohort<span style={{color: 'red'}}>*</span>
+                </Form.Label>
+                <Col sm="6">
+                    {errors[position] && displayStyle ? 
+                        <Reminder message={errors[position]}>
+                            <Form.Control type="text"
+                                style={{ border: '1px solid red' }} 
+                                placeholder='(Max of 100 characters)' 
+                                maxLength="100" 
+                                name={position} 
+                                value={cohort[position]} 
+                                onChange={e => 
+                                    dispatch(allactions.cohortActions[position](e.target.value))
+                                } 
+                                onBlur={e => 
+                                    populateErrors(position, e.target.value, true, 'string')
+                                } />
+                        </Reminder> : 
+                        <Form.Control type="text"
+                            placeholder='(Max of 100 characters)' 
+                            maxLength="100" 
+                            name={position} 
+                            value={cohort[position]} 
+                            onChange={e => 
+                                dispatch(allactions.cohortActions[position](e.target.value))
+                            } 
+                            onBlur={e => 
+                                populateErrors(position, e.target.value, true, 'string')
+                            }  
+                            readOnly={disabled} />
+                    }
+                </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-1">
+                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                    Phone
+                </Form.Label>
+                <Col sm="6">
+                    <InputGroup>
+                        <Form.Control type="text"
+                            maxLength="10"
+                            style={{ width: '20%' }} 
+                            title='country code' 
+                            value={cohort[type]} 
+                            onChange={e => {
+                                dispatch(allactions.cohortActions.country_code(type, e.target.value)); 
+                                dispatch(allactions.cohortActions[phone]( processPhoneNumber(e.target.value, cohort[phone]))); 
+                                if(cohort[phone]) {
+                                    populateErrors(phone, cohort[phone], true, 'phone', e.target.value);
+                                } else {
+                                    dispatch(allactions.cohortErrorActions[phone](true));
+                                }
+                            }} 
+                            onBlur={e => {
+                                if (/^\+\s*$/.test(e.target.value)) {
+                                    dispatch(allactions.cohortActions.country_code(type, '+1'));
+                                }
+                            }}
+                            readOnly={disabled} />
+                        {errors[phone] && displayStyle ? 
+                            <Reminder message={errors[phone]}>
+                                <Form.Control type="text" 
+                                    style={{ border: '1px solid red', width: '80%' }} 
+                                    placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
+                                    maxLength="100" 
+                                    name={phone} 
+                                    value={cohort[phone]} 
+                                    onChange={e => 
+                                        dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
+                                    } 
+                                    onBlur={e => 
+                                        populateErrors(phone, e.target.value, true, 'phone', cohort[type])
+                                    } />
+                            </Reminder> :
+                            <Form.Control type="text" 
+                                style={{ width: '80%' }}
+                                placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
+                                maxLength="100" 
+                                name={phone} 
+                                value={cohort[phone]} 
+                                onChange={e => 
+                                    dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
+                                } 
+                                onBlur={e => 
+                                    populateErrors(phone, e.target.value, true, 'phone', cohort[type])
+                                }  
+                                readOnly={disabled} />
+                        }
+                    </InputGroup>
+                </Col>
+            </Form.Group>
+            <Form.Group as={Row} className="mb-1">
+                <Form.Label column sm={3} style={{ fontWeight: 'normal' }}>
+                    Email<span style={{color: 'red'}}>*</span>
+                </Form.Label>
+                <Col sm="6">
+                    {errors[email] && displayStyle ? 
+                        <Reminder message={errors[email]}>
+                            <Form.Control type="text" 
+                                style={{ border: '1px solid red' }} 
+                                placeholder="(Max of 100 characters)"
+                                maxLength="100" 
+                                name={email} 
+                                value={cohort[email]} 
+                                onChange={e => 
+                                    dispatch(allactions.cohortActions[email](e.target.value))
+                                } 
+                                onBlur={e => 
+                                    populateErrors(email, e.target.value, true, 'email')
+                                } />
+                        </Reminder> :
+                        <Form.Control type="text" 
+                            placeholder="(Max of 100 characters)" 
+                            maxLength="100" 
+                            name={email} 
+                            value={cohort[email]} 
+                            onChange={e => 
+                                dispatch(allactions.cohortActions[email](e.target.value))
+                            } 
+                            onBlur={e => 
+                                populateErrors(email, e.target.value, true, 'email')}
+                            readOnly={disabled} />
+                    }
+                </Col>
+            </Form.Group> 
+        </Col>
+    )
 }
 
 export default Person
