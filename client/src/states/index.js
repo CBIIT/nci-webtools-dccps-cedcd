@@ -30,7 +30,7 @@ const InitialStates = {
         collaboratorPhone: '',
         collaboratorCountry: '+1',
         collaboratorEmail: '',
-        sameAsSomeone: false,
+        sameAsSomeone: null,
         cohort_description: '',
         hasAWebSite: false,
         cohort_web_site: '',
