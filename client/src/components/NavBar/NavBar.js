@@ -12,23 +12,12 @@ const NavBar = (props) => {
     // setLogin(false)
     const response = await fetch('/api/logout');
     window.location.href = await response.json();
-
   }
-  const [miniMenu, setMiniMenu] = useState(false)
-  const [showSubMenu, setSubMenuShow] = useState(false)
+  const [showSubMenu, setSubMenuShow] = useState(true)
   const [miniDropdownContent, setContent] = useState('none')
-  useEffect(() => {
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  })
-
-  const handleResize = () => {
-    window.innerWidth <= 800 ? setMiniMenu(true) : setMiniMenu(false)
-  }
 
   const toggleSubMenu = () => {
+    console.log(showSubMenu);
     setSubMenuShow(!showSubMenu)
   }
 
@@ -36,8 +25,8 @@ const NavBar = (props) => {
   if (active === '/')
     active = '/home'
 
-  return (
-    miniMenu || window.innerWidth <= 800 ?
+  return <>
+    <div className="d-block d-md-none">
       <div>
         <ul id="mainNav">
           <Tab
@@ -49,8 +38,8 @@ const NavBar = (props) => {
           />
           <li className='icon' onClick={toggleSubMenu}><a href='#' style={{ height: '100%', color: 'white' }}>&#9776;</a></li>
         </ul>
-        {showSubMenu ?
-          <div className='col-sm-12' style={{ width: '100%', backgroundColor: '#135B5D', margin: '0', padding: '0' }}>
+        {showSubMenu &&
+          <div className="m-0 p-0" style={{ backgroundColor: '#135B5D'}}>
             <ul id='subNav'>
               <Tab
                 id="searchCohortsTab"
@@ -95,17 +84,16 @@ const NavBar = (props) => {
                 onClick={() => props.onClick(6)}
               />
               {/*<TourBox currTab={this.props.currTab}  />*/}
-              {
-                props.isAdmin === 2 ?
+              {userSession && /CohortAdmin/.test(userSession.role) &&
                   <Tab
                     id="newCohortTab"
                     value={7}
                     currTab={props.currTab}
                     onClick={() => props.onClick(7)}
-                  /> : ''
+                  /> 
               }
               {/* use target=_self to enforce apache login rules (force normal navigation) */}
-              {props.isAdmin === 1 ?
+              {userSession && /SystemAdmin/.test(userSession.role) &&
                 <li className="miniDropdown" onClick={() => setContent(miniDropdownContent == 'none' ? 'flex' : 'none')} style={{ paddingLeft: '0' }}>
                   <div id="miniDropHeader" >
                     <a style={{ paddingLeft: '10px' }} target="_self" href="#">
@@ -116,16 +104,20 @@ const NavBar = (props) => {
                       <a className='miniLink' style={{ height: '30px', lineHeight: '1.8em', paddingLeft: '15px', }} target="_self" href="/admin/manageuser">Manage Users</a>
                     </div>
                   </div>
-                </li> : ''
+                </li>
               }
-              {userSession && <li><a href='#' onClick={logout}>Log out</a></li> || <li><a href='/login/external' >External Login</a></li>}
-              {!userSession && <li><a href='/login/internal' >NIH Login</a></li>}
+              {userSession ? <>
+                <li><a href='#' onClick={logout}>Log out</a></li>
+              </> : <>
+                <li><a href='/login/external' >External Login</a></li>
+                <li><a href='/login/internal' >NIH Login</a></li>
+              </>}
             </ul>
           </div>
-          : ''
         }
       </div>
-      :
+    </div>
+    <div className="d-none d-md-block">
       <div className='topnav'>
         <ul id="mainNav">
           <Tab
@@ -179,17 +171,16 @@ const NavBar = (props) => {
             onClick={() => props.onClick(6)}
           />
           <TourBox currTab={props.currTab} />
-          {
-            props.isAdmin === 2 ?
-              <Tab
-                id="newCohortTab"
-                value={7}
-                currTab={props.currTab}
-                onClick={() => props.onClick(7)}
-              /> : ''
+          {userSession && /CohortAdmin/.test(userSession.role) &&
+            <Tab
+              id="newCohortTab"
+              value={7}
+              currTab={props.currTab}
+              onClick={() => props.onClick(7)}
+            />
           }
           {/* use target=_self to enforce apache login rules (force normal navigation) */}
-          {props.isAdmin === 1 ?
+          {userSession && /SystemAdmin/.test(userSession.role) &&
             <li className="dropdown" style={{ padding: "0px", margin: "0px" }}  >
 
               <div id="dropHeader" style={{ margin: "0px", paddingLeft: "0px" }} >
@@ -203,12 +194,12 @@ const NavBar = (props) => {
                 </div>
               </div>
             </li>
-            : ''
           }
           <li className='icon' onClick={toggleSubMenu}><a style={{ height: '100%', color: 'white' }}>&#9776;</a></li>
         </ul>
       </div>
-  );
+    </div>
+  </>;
 }
 
 export default NavBar;
