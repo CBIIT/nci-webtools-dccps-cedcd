@@ -76,7 +76,7 @@ const EditUser = ({ ...props }) => {
             }
         };
 
-        const fetchExistingDate = async function () {
+        const fetchExistingData = async function () {
             const result = await fetch(`/api/managecohort/getUserProfile/0`, {
                 method: 'POST', headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +89,7 @@ const EditUser = ({ ...props }) => {
         if (!isNew) {
             fetchUserData();
         } else {
-            fetchExistingDate();
+            fetchExistingData();
         }
 
     }, [])
@@ -215,14 +215,16 @@ const EditUser = ({ ...props }) => {
                 <div className="dropdown-menu filter-component-dropdown">
                     <h4>Select Cohort(s)</h4>
                     <button className="btn btn-primary pull-right" type="button" onClick={handleClick}>X</button>
-                    <ul>
+                    <ul style={{ listStyle: "none" }}>
                         {list}
                     </ul>
                 </div>
             </div>
+            {/*
             <ul className="picked-options">
                 {checkedList}
             </ul>
+            */}
         </div>
     }
 
@@ -286,9 +288,9 @@ const EditUser = ({ ...props }) => {
 
                 <CenterModal
                     show={modalShow}
-                    title={modalShow.title || <h2>Confirmation Required</h2>}
-                    body={modalShow.body || <div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
-                    footer={modalShow.footer || <div>
+                    title={<h2>Confirmation Required</h2>}
+                    body={<div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
+                    footer={<div>
                         <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
                     </div>}
                 />
@@ -305,7 +307,7 @@ const EditUser = ({ ...props }) => {
                                     value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
                             </div></div>
                             :
-                            <div id="edituser-col-1" className="col-md-12 col-6">
+                            <div id="edituser-col-1" className="col-md-12 col-12">
                                 <form >
                                     <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                                     <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
@@ -362,24 +364,27 @@ const EditUser = ({ ...props }) => {
                                         </div>
 
                                         {userRole === 'Admin' ?
-                                            <div className="col-md-6 col-12" >
+                                            <div className="col-md-6 col-6" >
                                                 <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
                                                     <input className="form-control" type="text" value="All" readOnly />
                                                 </span>
 
                                             </div>
                                             :
-                                            <div className="col-md-6 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                                <span>{cohortList.sort(function (a, b) { return a.localeCompare(b); }).join(', ')} </span>
-                                                <div className="col-sm-6 ">
+                                            <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
+
+                                                <div className="col-md-3 col-sm-5 col-12 ">
                                                     {
                                                         cohortAllList(cohortList)
                                                     }
                                                 </div>
+                                                <div className="col-md-8 col-sm-8 col-12" >
+                                                    <span style={{ lineHeight: "2em" }}>{cohortList.sort(function (a, b) { return a.localeCompare(b); }).join(', ')} </span>
+                                                </div>
                                             </div>
                                         }
                                     </div>
-                                    <div className=" my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+                                    <div className=" my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
                                         <div className=" col-md-4 col-6">
                                             <span className="col-md-4 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
                                                 onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
