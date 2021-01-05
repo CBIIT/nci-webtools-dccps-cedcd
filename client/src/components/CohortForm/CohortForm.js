@@ -447,15 +447,16 @@ const CohortForm = ({ ...props }) => {
         }
     }
     // model definition
-    const file_list = (title = '', fileListName, files = [], deleteFileFromList = f => f) => {
-        //    const file_list = (title='', fileListName, files=[]) => {
-        return <div className='col-xs-12' style={{ border: '1px solid lightgrey', marginTop: '10px', padding: '0' }}>
-            <div style={{ height: '40px', backgroundColor: '#01857b', color: 'white', margin: '0 0 10px 0' }}>
+    const file_list = (title='', fileListName, files=[], deleteFileFromList=f=>f) => {
+    //    const file_list = (title='', fileListName, files=[]) => {
+        return <div className='col-xs-12' style={{border: '1px solid lightgrey', marginTop: '10px', padding: '0'}}>
+            <div style={{position: 'relative', height: '40px', backgroundColor: '#01857b', color: 'white', margin: '0 0 10px 0'}}>
                 <span className='col-xs-10'><h4><b>{title}</b></h4></span>
-                <span className='col-xs-2 upperCloser' style={{ textAlign: 'center' }} onClick={() => setFileListShow(false)}><h4>X</h4></span>
-            </div>
-            <div style={{ height: '30px', width: '96%', margin: 'auto', backgroundColor: '#f2f2f2', boxShadow: '0 1px #ccc' }}>
-                <span className='col-md-10 col-xs-9 specialSpan' style={{ fontSize: '1.5rem' }}><h5>File Name</h5></span>
+                {/*<span className='col-xs-2 upperCloser' style={{textAlign: 'center'}} onClick={()=> setFileModal(false)}><h4>X</h4></span>*/}
+                <input type="button" style={{position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em'}} value='x' onClick={()=> setFileModal(false)} />
+            </div> 
+            <div style={{height: '30px', width: '96%', margin: 'auto', backgroundColor: '#f2f2f2', boxShadow: '0 1px #ccc'}}>
+                <span className='col-md-10 col-xs-9 specialSpan' style={{fontSize: '1.5rem'}}><h5>File Name</h5></span>
                 <span className='col-md-2 col-xs-3 specialSpan'><h5>Remove</h5></span>
             </div>
             <div>
@@ -532,8 +533,12 @@ const CohortForm = ({ ...props }) => {
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
+<<<<<<< HEAD
         <FileModal show={fileModal} handleClose={() => setFileModal(false)} title={<div style={{ height: '100%', color: 'white' }}><span className='col-xs-10'><h4><b>{fileListTile}</b></h4></span><span className='col-xs-2 upperCloser' style={{ textAlign: 'center' }} onClick={() => setFileModal(false)}><h4>X</h4></span>
         </div>} body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{ height: '40px' }} onClick={() => setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>} />
+=======
+        <FileModal show={fileModal} handleClose={() => setFileModal(false)}  body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{height: '40px'}} onClick={()=> setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>}/> 
+>>>>>>> cedcd-new-feature
         <div className='col-md-12'>
             <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                 If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts

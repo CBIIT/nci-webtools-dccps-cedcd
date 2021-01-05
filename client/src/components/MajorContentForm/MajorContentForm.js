@@ -161,17 +161,17 @@ const MajorContentForm = ({ ...props }) => {
                         if ([0,1].includes(content[12].followup)) {  dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }
                         if ([0,1].includes(content[13].baseline)) {  dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }
                         if ([0,1].includes(content[13].followup)) {  dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }
-                        if (content[14].baseline == null || content[14].baseline == 1) {  dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
-                        if (content[15].baseline == null || content[15].baseline == 1) {  dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
-                        if (content[16].baseline == null || content[16].baseline == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
-                        if (content[17].baseline == null || content[17].baseline == 1) {  dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
-                        if (content[18].baseline == null || content[18].baseline == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
+                        if (content[14].baseline == 1) {  dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
+                        if (content[15].baseline == 1) {  dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
+                        if (content[16].baseline == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
+                        if (content[17].baseline == 1) {  dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
+                        if (content[18].baseline == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
 
-                        if (content[14].followup == null || content[14].followup == 1) {  dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
-                        if (content[15].followup == null || content[15].followup == 1) {  dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
-                        if (content[16].followup == null || content[16].followup == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
-                        if (content[17].followup == null || content[17].followup == 1) {  dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
-                        if (content[18].followup == null || content[18].followup == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
+                        if (content[14].followup == 1) {  dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
+                        if (content[15].followup == 1) {  dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
+                        if (content[16].followup == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
+                        if (content[17].followup == 1) {  dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
+                        if (content[18].followup == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
                         if (content[18].baseline == 0 || content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
 
 
@@ -224,10 +224,10 @@ const MajorContentForm = ({ ...props }) => {
                             if ([0,1].includes(content[40].followup)) {  dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
                         }
 
-                        if (cancerInfo.cancerToxicity == null || cancerInfo.cancerToxicity == 1) {  dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
-                        if (cancerInfo.cancerLateEffects == null || cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
-                        if (cancerInfo.cancerSymptom == null || cancerInfo.cancerSymptom == 1) {  dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
-                        if (cancerInfo.cancerOther == null || cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
+                        if (cancerInfo.cancerToxicity == 1) {  dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
+                        if (cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
+                        if (cancerInfo.cancerSymptom == 1) {  dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
+                        if (cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
 
                         //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
                         //{dispatch(allactions.majorContentErrorActions.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
@@ -246,6 +246,7 @@ const MajorContentForm = ({ ...props }) => {
     /*const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) */
 
     const refreshErrors = () => {
+        console.log(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp)
         for(let k of Object.keys(errors)){
             if(errors[k]) return true;
         }
