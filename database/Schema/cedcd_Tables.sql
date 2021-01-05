@@ -26,7 +26,8 @@ CREATE TABLE `user` (
   `salt` varchar(50) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`)
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `user_user_name_uindex` (`user_name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `lu_cancer`;
@@ -245,9 +246,11 @@ CREATE TABLE `cancer_count` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `cancer_count_pk` (`cohort_id`,`cancer_id`,`gender_id`,`case_type_id`),
   KEY `cancer_count_cancer_id_idx` (`cancer_id`),
   KEY `cancer_count_gender_id_idx` (`gender_id`),
   KEY `cancer_count_cohort_id` (`cohort_id`),
+  KEY `cc_case_type_id` (`case_type_id`),
   CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -299,6 +302,7 @@ CREATE TABLE `cancer_info` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `cancer_info_cohort_id_uindex` (`cohort_id`),
   KEY `cancer_info_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `cancer_info_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;

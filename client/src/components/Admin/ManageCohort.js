@@ -61,7 +61,7 @@ class ManageCohort extends Component {
 
 		this.setState({
 			filter: filter,
-			list: list,
+			list: list.slice(0, paging.pageSize),
 			pageInfo: paging
 		});
 
@@ -74,20 +74,20 @@ class ManageCohort extends Component {
 		let paging = state.pageInfo;
 
 		filter.cohortSearch = changeEvent.target.value;
-
-		list = list.filter(function (item) {
-			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
-			if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			return false;
-		}
-		);
+		if (changeEvent.target.value)
+			list = list.filter(function (item) {
+				if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
+				if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+				if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
+				return false;
+			}
+			);
 
 		paging.total = list.length;
 
 		this.setState({
 			filter: filter,
-			list: list,
+			list: list.slice(0, paging.pageSize),
 			pageInfo: paging
 		});
 
@@ -322,7 +322,7 @@ class ManageCohort extends Component {
 		if (content.length === 0) {
 			content = (
 				<tr>
-					<td colSpan="3">Nothing to display</td>
+					<td colSpan="6">Nothing to display</td>
 				</tr>
 			);
 		}
@@ -395,7 +395,6 @@ class ManageCohort extends Component {
 						<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
 							<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
 								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
-									<option>Page Size</option>
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15">15</option>
