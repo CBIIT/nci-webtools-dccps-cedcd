@@ -2295,20 +2295,22 @@ END //
 DROP PROCEDURE IF EXISTS `select_unpublished_cohort_id` //
 
 CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int)
-begin
-    set new_id = targetID; -- assume it is draft
-    if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
-        if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
-            select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
-        else -- if copy not exists, create a new one
-           insert cohort (name, acronym, status, publish_by, create_time, update_time) select name, acronym, 'draft', null, now(), now() from cohort
-           where id = targetID;
-           set new_id = last_insert_id();
-           call insert_new_cohort_from_published(new_id, targetID);
- 
-        end if;
-    end if;
-end //
+BEGIN
+	DECLARE i INT DEFAULT 0;
+
+	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+	
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NULL);
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
+    
+	WHILE i < JSON_LENGTH(@owners) DO
+		insert into cohort_user_mapping (cohort_acronym,cohort_user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+		SELECT i + 1 INTO i;	
+	end WHILE;
+END//
 
 
 DROP PROCEDURE IF EXISTS `insert_new_cohort_from_published` //
