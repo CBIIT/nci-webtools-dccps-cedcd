@@ -62,6 +62,7 @@ const CohortForm = ({ ...props }) => {
                             dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
                         }
                         for (let k of Object.keys(currentCohort)) {
+                            //if(k==='eligible_disease') console.log(currentCohort.eligible_disease)
                             dispatch(allactions.cohortActions[k](currentCohort[k]))
                         }
                         if (completer)
@@ -840,7 +841,8 @@ const CohortForm = ({ ...props }) => {
                                     <div className='col-xs-12' style={{ marginBottom: '18px' }}>
                                         <div style={{ paddingLeft: '0', marginBottom: '5px' }}>Baseline population consists of</div>
                                         <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '5px' }}>
-                                            <input type='checkbox' name='cancerSurvivors' checked={cohort.eligible_disease} onChange={() => dispatch(allactions.cohortActions.eligible_disease())} readOnly={isReadOnly} />{' '} Cancer survivors only, specify cancer site(s)
+                                            {console.log(cohort.eligible_disease)}
+                                            <input type='checkbox' name='cancerSurvivors' checked={cohort.eligible_disease} onChange={() => dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))} readOnly={isReadOnly} />{' '} Cancer survivors only, specify cancer site(s)
                                         </div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', marginBottom: window.innerWidth <= 1000 ? '10px' : '20px' }}>
                                             <input name='cancerSites' className='form-control' value={cohort.eligible_disease_cancer_specify} maxLength='100' placeholder='Max of 100 characters' readOnly={!cohort.eligible_disease || isReadOnly} onChange={e => dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))} />
