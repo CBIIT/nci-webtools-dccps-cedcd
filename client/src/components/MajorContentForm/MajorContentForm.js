@@ -863,7 +863,7 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
                                 {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-9 col-xs-12'>
@@ -1547,7 +1547,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or Emphysema<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1582,7 +1582,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular Disease<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1653,7 +1653,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental Health<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
 
@@ -1689,7 +1689,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive Decline<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1731,7 +1731,7 @@ const MajorContentForm = ({ ...props }) => {
                         panelTitle="Cancer Related Conditions">
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
                                 {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -1770,7 +1770,7 @@ const MajorContentForm = ({ ...props }) => {
                             <div>
                                 <span className='col-sm-12'>
                                     <span className='col-md-11 col-sm-10 col-xs-12' >
-                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} disabled={isReadOnly}/>}
+                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} readOnly={!majorContent.cancerOther || isReadOnly} />}
                                     </span>
                                 </span>
                             </div>

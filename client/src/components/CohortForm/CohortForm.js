@@ -563,21 +563,21 @@ const CohortForm = ({ ...props }) => {
                                 <span className='col-md-12'><textarea style={{ height: '100%' }} className='form-control' name='cohortDes' cols='20' rows='15' placeholder='(Max of 5000 characters)' maxLength='5000' style={{ resize: 'none', fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }} value={cohort.cohort_description} onChange={e => dispatch(allactions.cohortActions.cohort_description(e.target.value))} readOnly={isReadOnly} /></span>
                             </div>
                         </div>
-                        <div id='question6' className='col-md-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '' }}>
+                        <div id='question6' className='col-md-12 mb-3' style={{ marginTop: window.innerWidth > 800 ? '15px' : '' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <label className='col-md-6' style={{ paddingLeft: '0' }}>A.3{' '}Does the cohort have a website ? Please specify if applicable</label>
                             </div>
                             {window.innerWidth <= 1000 ?
-                                <div className='col-xs-12' style={{}}>
+                                <div className='col-xs-12 mb-3' style={{}}>
                                     {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '10px' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly} /></span></Reminder> : <span className='col-xs-12' style={{ margin: '0', paddingLeft: '0', paddingRight: '30px' }}><input className='form-control' placeholder='Max of 200 characters' maxLength='200' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly} /></span>}
                                 </div>
                                 :
-                                <div className='col-md-8' style={{ maxWidth: '690px' }}>
+                                <div className='col-md-8 mb-3' style={{maxWidth: '690px' }}>
                                     {errors.cohort_web_site && saved ? <Reminder message={errors.cohort_web_site}><span className='col-md-12' style={{ margin: '0', padding: '0' }}><input style={{ border: '1px solid red' }} placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cohort_web_site' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly} /></span></Reminder> : <span className='col-md-12' style={{ margin: '0', padding: '0' }}><input className='form-control' name='cohort_web_site' placeholder='Max of 200 characters' maxLength='200' value={cohort.cohort_web_site} onChange={e => dispatch(allactions.cohortActions.cohort_web_site(e.target.value))} onBlur={(e) => { populateErrors('cohort_web_site', e.target.value, false, 'string') }} readOnly={isReadOnly} /></span>}
                                 </div>
                             }
                         </div>
-                        <div className='form-group col-xs-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '8px' }}>
+                       {/* <div className='form-group col-xs-12' style={{ marginTop: window.innerWidth > 800 ? '15px' : '8px' }}>
                             <div className='col-xs-12'>
                                 <label className='col-md-4 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', marginRight: '0', width: '298px', lineHeight: '2em' }}>A.4 Date Form Completed<span style={{ color: 'red' }}>*</span></label>
                                 <span className='col-md-4 col-xs-12' style={{ marginLeft: '0', paddingLeft: '0', paddingRight: '0' }}>
@@ -592,37 +592,37 @@ const CohortForm = ({ ...props }) => {
                                     }} readOnly={isReadOnly} /></span>}
                                 </span>
                             </div>
-                        </div>
+                        </div> */}
                         <div id='question3' className='col-xs-12' style={{ paddingBottom: '10px' }}>
                             <div id='a3a' className='col-xs-12' style={{ paddingLeft: '0', marginBottom: window.innerWidth > 800 ? '15px' : '12px' }}>
-                                <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.5a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
+                                <div className='col-xs-12' style={{ marginBottom: '5px' }}><b>A.4a{' '}Person who completed the form:</b><span style={{ color: 'red' }}>*</span></div>
                                 <div className='col-md-8' style={{ paddingLeft: '0', paddingRight: '10px' }}>
                                     <Person id='completerInfo' type='completerCountry' name='completerName' position='completerPosition' phone='completerPhone' email='completerEmail' colWidth='12' errors={errors} disabled={isReadOnly} displayStyle={saved} />
                                 </div>
                             </div>
                             {window.innerWidth <= 1000 ? <div id='a3b' className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <div style={{ marginBottom: '5px', paddingLeft: '15px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
+                                <div style={{ marginBottom: '5px', paddingLeft: '15px' }}><b>A.4b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
                                 <div style={{ marginBottom: '20px' }}><span className='col-xs-8' style={{ marginRight: '0' }}>Is this the same person who completed the form ?</span>
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span></Reminder> :
                                         <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => { !isReadOnly && dispatch(allactions.cohortActions.clarification_contact(0)) }} />{' '}No</span>
                                     }
 
                                     {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={() => dispatch(allactions.cohortActions.clarification_contact(1))} />{' '}Yes</span></Reminder> :
-                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => { !isReadOnly && setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter') }} />{' '}Yes</span>
+                                        <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => { !isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter') }} />{' '}Yes</span>
                                     }
                                 </div>
-                                <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contactm || isReadOnly} displayStyle={saved} leftPadding='0' />
+                                <Person type='contacterCountry' name='contacterName' position='contacterPosition' phone='contacterPhone' email='contacterEmail' colWidth='12' errors={errors} disabled={cohort.clarification_contact || isReadOnly} displayStyle={saved} leftPadding='0' />
                             </div> :
                                 <div id='a3b' className='col-xs-12'>
-                                    <div style={{ marginBottom: '5px' }}><b>A.5b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
+                                    <div style={{ marginBottom: '5px' }}><b>A.4b{' '}Contact Person for Clarification of this form</b><span style={{ color: 'red' }}>*</span></div>
                                     <div style={{ marginBottom: '15px' }}>
                                         <span className='col-md-6' style={{ paddingLeft: '0', marginRight: '0' }}>Is this the person to contact with questions about this form?</span>
                                         {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => dispatch(allactions.cohortActions.clarification_contact(0))} />{' '}No</span></Reminder> :
                                             <span style={{ paddingLeft: '0', marginLeft: '0', marginRight: '10px' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 0} onClick={() => { !isReadOnly && dispatch(allactions.cohortActions.clarification_contact(0)) }} />{' '}No</span>
                                         }
 
-                                        {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter')} />{' '}Yes</span></Reminder> :
-                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => { !isReadOnly && setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 1, 'contacter') }} />{' '}Yes</span>
+                                        {errors.clarification_contact && saved ? <Reminder message={errors.clarification_contact}><span style={{ paddingLeft: '0', color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => setPerson(e, '', '', '', '', 1, 'contacter')} />{' '}Yes</span></Reminder> :
+                                            <span style={{ paddingLeft: '0' }}><input type='radio' name='clarification_contact' checked={cohort.clarification_contact === 1} onClick={(e) => { !isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter') }} />{' '}Yes</span>
                                         }
                                     </div>
                                     <div id='contacterInfo' className='col-md-8' style={{ paddingLeft: '0' }}>
@@ -638,7 +638,7 @@ const CohortForm = ({ ...props }) => {
                         panelTitle="Principal Investigators">
                         <div id='question4' className='col-md-12' style={{ paddingTop: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '15px' }}>
-                                <label className='col-md-3' style={{ paddingLeft: '0', lineHeight: '1.5em' }}>A.6{' '} Cohort Principal Investigator(s)</label>
+                                <label className='col-md-3' style={{ paddingLeft: '0', lineHeight: '1.5em' }}>A.5{' '} Cohort Principal Investigator(s)</label>
                                 <span className='col-md-3'>
                                     <button className='btn btn-primary btn-sm' onClick={(e) => { e.preventDefault(); dispatch(allactions.cohortActions.addInvestigator()); let idx = cohort.investigators.length; dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }} style={{ position: 'absolute', left: 0 }} disabled={isReadOnly}>Add New Investigator</button></span>
                             </div>
@@ -651,18 +651,18 @@ const CohortForm = ({ ...props }) => {
                         </div>
                         <div id='question5' className={window.innerWidth <= 1000 ? 'col-xs-12' : 'col-md-12'} style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '10px', marginRight: '0' }}>
-                                <label style={{ paddingLeft: '0' }}>A.7{' '}If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?</label>
+                                <label style={{ paddingLeft: '0' }}>A.6{' '}If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?</label>
                             </div>
                             <Person id='collaborator' type='collaboratorCountry' name='collaboratorName' position='collaboratorPosition' phone='collaboratorPhone' email='collaboratorEmail' colWidth='7' errors={errors} disabled={cohort.sameAsSomeone === 0 || cohort.sameAsSomeone === 1 || isReadOnly} displayStyle={saved} />
                             <div className='col-md-5' style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ marginBottom: '20px' }}>
-                                    <input type='checkbox' name='sameAsCompleted' checked={cohort.sameAsSomeone === 0} onClick={(e) => { !isReadOnly && setPerson(e, cohort.completerName, cohort.completerPosition, cohort.completerPhone, cohort.completerEmail, 0, 'collaborator') }} />{' '}
-                                    <span htmlFor='sameAsCompleted'>Same as the person who completed the form(5a) </span>
+                                    <input type='checkbox' name='sameAsCompleted' checked={cohort.sameAsSomeone === 0} onClick={(e) => { !isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') }} />{' '}
+                                    <span htmlFor='sameAsCompleted'>Same as the person who completed the form(4a) </span>
                                 </div>
 
                                 <div style={{ margin: '0', padding: '0', minWidth: '500px' }}>
-                                    <input type='checkbox' name='sameAsContacted' checked={cohort.sameAsSomeone === 1} onClick={(e) => { !isReadOnly && setPerson(e, cohort.contacterName, cohort.contacterPosition, cohort.contacterPhone, cohort.contacterEmail, 1, 'collaborator') }} />{' '}
-                                    <span htmlFor='sameAsContacted' style={{ padding: '0', margin: '0' }}>{' '} Same as the contact person for clarification of this form(5b) </span>
+                                    <input type='checkbox' name='sameAsContacted' checked={cohort.sameAsSomeone === 1} onClick={(e) => { !isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') }} />{' '}
+                                    <span htmlFor='sameAsContacted' style={{ padding: '0', margin: '0' }}>{' '} Same as the contact person for clarification of this form(4b) </span>
                                 </div>
 
                             </div>
@@ -675,7 +675,7 @@ const CohortForm = ({ ...props }) => {
 
                         <div id='question8' className='col-md-12' style={{ marginBottom: window.innerWidth <= 1000 ? '' : '8px', paddingTop: '5px', display: 'flex', flexDirection: 'column' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <label>A.8{' '}Eligibility Criteria</label>
+                                <label>A.7{' '}Eligibility Criteria</label>
                             </div>
                             <div>
                                 <div className='col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '10px' : '15px' }}>
@@ -729,7 +729,7 @@ const CohortForm = ({ ...props }) => {
                         </div>
                         <div id='question9' className='col-xs-12'>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <label style={{ paddingLeft: '0' }}>A.9{' '}Enrollment Information</label>
+                                <label style={{ paddingLeft: '0' }}>A.8{' '}Enrollment Information</label>
                             </div>
                             <div className='col-xs-12'>
                                 <span className='col-md-7 col-xs-12' style={{ marginBottom: window.innerWidth <= 1000 ? '5px' : '', paddingLeft: '0' }}>
@@ -857,9 +857,9 @@ const CohortForm = ({ ...props }) => {
                         condition={activePanel === 'panelD'}
                         onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
                         panelTitle="Requirements & Strategies">
-                        <div id='question10' className='col-md-12' style={{ marginBottom: window.innerWidth <= 800 ? '0' : '15px' }}>
+                        <div id='question10 mb-3' className='col-md-12' style={{ marginBottom: window.innerWidth <= 800 ? '0' : '15px' }}>
                             <div className='col-md-12' style={{ marginBottom: '13px' }}>
-                                <label className='col-md-8' style={{ padding: '0', margin: '0' }}>A.10{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{ color: 'red' }}>*</span></label>
+                                <label className='col-md-8' style={{ padding: '0', margin: '0' }}>A.9{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{ color: 'red' }}>*</span></label>
                             </div>
                             <div className='col-md-8'>
                                 <span className='col-md-12' style={{ paddingLeft: '0', paddingRight: '6px', marginLeft: '0' }}>
@@ -870,14 +870,14 @@ const CohortForm = ({ ...props }) => {
                         <div id='question11' className='col-xs-12' style={{ marginBottom: window.innerWidth <= 800 ? '18px' : '13px' }}>
                             {window.innerWidth <= 800 ?
                                 <div className='col-xs-12'>
-                                    <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '13px', fontWeight: 'bold' }}>A.11{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></div>
+                                    <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '13px', fontWeight: 'bold' }}>A.10{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></div>
                                     <div className='col-xs-12' style={{ padding: '0' }}>
                                         {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} readOnly={isReadOnly} />}
                                     </div>
                                 </div>
                                 :
                                 <div className='col-md-12'>
-                                    <label className='col-md-6' style={{ paddingLeft: '0' }}>A.11{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></label>
+                                    <label className='col-md-6' style={{ paddingLeft: '0', lineHeight: '2em'}}>A.10{' '}Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span></label>
                                     <span className='col-md-2'>
                                         {errors.most_recent_year && saved ? <Reminder message={errors.most_recent_year}><input style={{ border: '1px solid red' }} className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} /></Reminder> : <input className='form-control' name='most_recent_year' value={cohort.most_recent_year} onChange={e => dispatch(allactions.cohortActions.most_recent_year(e.target.value))} placeholder='yyyy' onBlur={(e) => { populateErrors('most_recent_year', e.target.value, true, 'year') }} readOnly={isReadOnly} />}
                                     </span>
@@ -886,7 +886,7 @@ const CohortForm = ({ ...props }) => {
                         </div>
                         <div id='question12' className='col-md-12' style={{ paddingBottom: '10px' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
-                                <span className='col-md-8 col-xs-12' style={{ paddingLeft: '0' }}><label style={{ paddingLeft: '0' }}>A.12{' '}How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span>  (Select all that apply) </label></span>
+                                <span className='col-md-8 col-xs-12' style={{ paddingLeft: '0' }}><label style={{ paddingLeft: '0' }}>A.11{' '}How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span>  (Select all that apply) </label></span>
                                 {errors.dataCollection && saved ? <span className='col-md-4 col-xs-12' style={{ paddingLeft: '0', color: 'red' }}>{errorMsg}</span> : ''}
                             </div>
                             <div >
@@ -949,7 +949,7 @@ const CohortForm = ({ ...props }) => {
 
                         <div id='question13' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '5px' }}>
-                                <span className='col-xs-12' style={{ paddingLeft: '0' }}><b>A.13{' '}Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)</b>
+                                <span className='col-xs-12' style={{ paddingLeft: '0' }}><b>A.12{' '}Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)</b>
                                     {errors.requirements && saved ? <span style={{ color: 'red', marginLeft: '10px' }}>{errorMsg}</span> : ''}</span>
 
                             </div>
@@ -1037,7 +1037,7 @@ const CohortForm = ({ ...props }) => {
                         <div id='question14' className='col-md-12' style={{ paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-xs-12' style={{ marginBottom: '5px' }}>
                                 <span className='cl-xs-12' style={{ paddingLeft: '0' }}>
-                                    <b>A.14{' '}What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span>{' '}(Select all that apply)</b>
+                                    <b>A.13{' '}What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span>{' '}(Select all that apply)</b>
                                     {errors.strategy && saved ? <span style={{ color: 'red', marginLeft: '10px' }}>{errorMsg}</span> : ''}
                                 </span>
                             </div>
@@ -1113,7 +1113,7 @@ const CohortForm = ({ ...props }) => {
                         panelTitle="Documents">
                         <div id='question15' className='col-md-12' style={{ paddingLeft: window.innerWidth <= 1000 ? '0' : '', paddingTop: '10px', paddingBottom: '10px' }}>
                             <div className='col-md-12' style={{ marginBottom: '10px' }}>
-                                <label style={{ paddingLeft: '0' }}>A.15 {' '} Required Documents</label>
+                                <label style={{ paddingLeft: '0' }}>A.14 {' '} Required Documents</label>
                                 <p style={{ fontSize: '16px' }}>As indicated on the CEDCD Approval Form, we are requesting the following items for inclusion on the CEDCD website. If you provided approval to post this information, please attach the documents and return them with this form. If they are already available on a publicly accessible website, please just provide the website address.</p>
                             </div>
                             <div className='col-md-12'>
