@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useHistory } from "react-router-dom";
+import Select from 'react-select';
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
 import './AddNewCohort.css';
+import { id } from 'date-fns/locale';
 
 
 const EditUser = ({ ...props }) => {
 
     const [activeStatus, setActiveStatus] = useState('Y');
+    const [allCohortList, setAllCohortList] = useState(null)
     const [cohortList, setCohortList] = useState([]);
     const [currentUser, setCurrentUser] = useState({
         email: '',
@@ -24,7 +27,6 @@ const EditUser = ({ ...props }) => {
     const [lastName, setLastName] = useState('');
     const [modalShow, setModalShow] = useState(false);
     const [nonExistUser, setNonExistUser] = useState(false);
-    const [open, setOpen] = useState(false);
     const [successMsg, setSuccessMsg] = useState(false);
     const [userEmail, setUserEmail] = useState('');
     const [userName, setUserName] = useState('');
@@ -48,6 +50,8 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
+        setAllCohortList(lookup.allcohortlist.map((item,idx)=> ({value:item.acronym, label : item.acronym})))
+
         const fetchUserData = async function () {
             const result = await fetch(`/api/managecohort/getUserProfile/${userId}`, {
                 method: 'POST', headers: {
@@ -68,7 +72,7 @@ const EditUser = ({ ...props }) => {
                     setUserName(data.user_name || '')
                     setUserRole(data.user_role)
                     setActiveStatus(data.active_status)
-                    if (data.cohort_list) setCohortList(data.cohort_list.split(','))
+                    if (data.cohort_list) setCohortList(data.cohort_list.split(',').map((item, idx)=> ({value: item, label: item })))
                     setCurrentUser({ email: data.email, user_name: data.user_name })
                 }
             } else {
@@ -94,6 +98,10 @@ const EditUser = ({ ...props }) => {
 
     }, [])
 
+    const handleMultiChange = (option) => {
+       setCohortList(option)
+      }
+
 
     const handleSave = () => {
 
@@ -103,9 +111,10 @@ const EditUser = ({ ...props }) => {
             last_name: lastName,
             user_name: userName,
             user_role: userRole,
-            cohort_list: cohortList,
+            cohort_list: Object.values(cohortList).map((item,idx)=> item.label),
             active_status: activeStatus
         }
+console.log(userInfo)
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
@@ -131,103 +140,6 @@ const EditUser = ({ ...props }) => {
 
     }
 
-    const handleBlur = (e) => {
-        if (!open) {
-            return;
-        }
-        let currentTarget = e.currentTarget;
-
-        setTimeout(() => {
-            if (!currentTarget.contains(document.activeElement)) {
-                setOpen(!open)
-            }
-        }, 0);
-    }
-
-    const handleClick = () => {
-        setOpen(!open)
-    }
-
-    const cohortAllList = (selectedList) => {
-        let allIds = [];
-
-        const list = lookup.allcohortlist.map((item, idx) => {
-            allIds.push(item.acronym);
-            const key = "cohort_" + item.id;
-            let checked = (selectedList.indexOf(item.acronym) > -1);
-            return (
-                <li key={key}>
-                    <label>
-                        <span className="filter-component-input">
-                            <input type="checkbox" onChange={() => handleCohortClick(item)} checked={checked} />
-                        </span>
-                        {item.acronym}
-                    </label>
-                </li>
-            );
-        });
-        const displayMax = 4;
-        const checkedList = selectedList.map((item, idx) => {
-            const key = "s_cohort_" + idx;
-            if (idx >= displayMax) {
-                if (idx === selectedList.length - 1 && displayMax < selectedList.length) {
-                    return (
-                        <li key={key}>
-                        </li>
-                    );
-                }
-                else {
-                    return "";
-                }
-            }
-            else {
-                if (lookup.allcohortlist[item]) {
-                    const acronym = lookup.allcohortlist[item].acronym;
-                    return (
-                        <li key={key}>
-                            {acronym}
-                        </li>
-                    );
-                }
-                else {
-
-                }
-            }
-
-        });
-
-
-        let cls = "dropdown filter-component btn-group filter-component-div";
-        if (open) {
-            cls = cls + " open";
-        }
-        let expanded = open ? "true" : "false";
-
-
-
-        return <div className="filter-component-block">
-            <div className={cls} tabIndex="0" onBlur={(e) => handleBlur(e)}>
-                <button className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button"
-                    onClick={handleClick}>
-                    Select Cohorts&nbsp;
-        <span className="badge">{selectedList.length}</span>
-                </button>
-                <div className="dropdown-menu filter-component-dropdown">
-                    <h4>Select Cohort(s)</h4>
-                    <button className="btn btn-primary pull-right" type="button" onClick={handleClick}>X</button>
-                    <ul style={{ listStyle: "none" }}>
-                        {list}
-                    </ul>
-                </div>
-            </div>
-            {/*
-            <ul className="picked-options">
-                {checkedList}
-            </ul>
-            */}
-        </div>
-    }
-
     const validateInput = () => {
         let copy = { ...errors }
 
@@ -235,8 +147,7 @@ const EditUser = ({ ...props }) => {
         copy.firstName_error = isNull(firstName) ? 'Missing required field' : ''
         copy.lastName_error = isNull(lastName) ? 'Missing required field' : ''
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
-        copy.cohortList_error = (cohortList && cohortList.length) ? '' : 'Missing required field'
-
+      
         if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
             if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
         }
@@ -253,30 +164,6 @@ const EditUser = ({ ...props }) => {
         history.push(`/admin/manageuser`);
     }
 
-    const handleCohortClick = (v, allIds, e) => {
-        let cohort = [...cohortList];
-        if (v) {
-            let idx = cohort.indexOf(v.acronym);
-            if (idx > -1) {
-                //remove element
-                cohort.splice(idx, 1);
-                setCohortList(cohort)
-            }
-            else {
-                //add element
-                cohort.push(v.acronym);
-                setCohortList(cohort)
-            }
-        }
-        else {
-            //click on the "all cohort"
-            cohort = [];
-            if (e.target.checked) {
-                cohort = allIds;
-                setCohortList(cohort)
-            }
-        }
-    }
 
     return <UserSessionContext.Consumer>
         {userSession => (
@@ -310,8 +197,16 @@ const EditUser = ({ ...props }) => {
                             <div id="edituser-col-1" className="col-md-12 col-12">
                                 <form >
                                     <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
+                                    <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
+                                        <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>Account Name <span className="required">*</span></label>
+                                        {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
+                                            id="user_userName" value={userName}
+                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
+                                        </span>
+                                    </div>
                                     <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Account Email<span className="required">*</span></label>
+                                        <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
                                         {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
                                             placeholder='Valid email address'
@@ -321,14 +216,7 @@ const EditUser = ({ ...props }) => {
                                             }} />
                                         </span>
                                     </div>
-                                    <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
-                                        {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                            id="user_userName" value={userName}
-                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
-                                        </span>
-                                    </div>
+                                    
                                     <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                         {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
@@ -359,8 +247,7 @@ const EditUser = ({ ...props }) => {
 
                                     <div className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
 
-                                        <div className="col-md-12 col-12" > <label >Cohort <span className="required">*</span></label>
-                                            {(errors.cohortList_error !== '' && !cohortList.length) && <label style={{ color: 'red' }}>{errors.cohortList_error}</label>}
+                                        <div className="col-md-12 col-12" > <label >Cohort </label>
                                         </div>
 
                                         {userRole === 'Admin' ?
@@ -372,14 +259,8 @@ const EditUser = ({ ...props }) => {
                                             </div>
                                             :
                                             <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-
-                                                <div className="col-md-3 col-sm-5 col-12 ">
-                                                    {
-                                                        cohortAllList(cohortList)
-                                                    }
-                                                </div>
-                                                <div className="col-md-8 col-sm-8 col-12" >
-                                                    <span style={{ lineHeight: "2em" }}>{cohortList.sort(function (a, b) { return a.localeCompare(b); }).join(', ')} </span>
+                                               <div className="col-md-5 col-6" style={{ width: '90%' }}>
+                                                    <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
                                                 </div>
                                             </div>
                                         }

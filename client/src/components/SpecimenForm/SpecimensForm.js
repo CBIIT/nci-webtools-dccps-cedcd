@@ -117,6 +117,7 @@ const SpecimenForm = ({ ...props }) => {
                                 if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
                             }
                             for (let k of Object.keys(specimenInfo)) {
+                                if(specimenInfo[k].collected_yn)
                                 switch (specimenInfo[k].sub_category) {
                                     case 'bio_blood_baseline': // specimen_id 11
                                         dispatch(allactions.specimenActions.setBioBloodBaseline(specimenInfo[k].collected_yn))
@@ -321,11 +322,12 @@ const SpecimenForm = ({ ...props }) => {
     }, [])
 
     const saveSpecimen = (id = 79, errorsRemain = true, proceed = false) => {
-        console.log(specimen)
+        
+        const { errors, ...specimenBody } = specimen
 
         fetch(`/api/questionnaire/update_specimen/${id}`, {
             method: "POST",
-            body: JSON.stringify(specimen),
+            body: JSON.stringify(specimenBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -362,7 +364,9 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
+        console.log(specimen)
+
+        let errorsRemain = refreshErrors()||true
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -372,6 +376,7 @@ const SpecimenForm = ({ ...props }) => {
             //setDisplay('block')
             setModalShow(true)
         }
+        console.log("save status " + saved)
     }
 
     const confirmSaveStay = () => {
@@ -439,9 +444,6 @@ const SpecimenForm = ({ ...props }) => {
                 }
             })
     }
-
-
-
 
     return <div id='specimenInfoContainer' className='col-md-12'>
 
@@ -1268,11 +1270,12 @@ const SpecimenForm = ({ ...props }) => {
                 </p></div>
                             </div>
                             <div className="table-responsive">
-                                <table className='table table-condensed table-valign-middle'>
+                            <table className='table table-condensed table-valign-middle' style={{maxWidth: '1084px'}}>
                                     <thead>
                                         <tr>
                                             <th className='col-sm-1 center' >ICD-9</th>
                                             <th className='col-sm-1 center' > ICD-10</th>
+                                           
                                             <th className='col-sm-3 center' >Cancer Site/Type</th>
                                             <th className='col-sm-1 center' >Serum and/or Plasma</th>
                                             <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
@@ -1282,7 +1285,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
                                             <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
                                         </tr>
-                                    </thead>
+                                  </thead> 
                                     <tbody>
                                         {lookup.cancer.map(c => {
                                             const keyPrefix = `${cohortId}_${c.id}`;
@@ -1290,14 +1293,14 @@ const SpecimenForm = ({ ...props }) => {
                                                 `${c.id}-${k.id}`);;
 
 
-                                            return <tr key={keyPrefix}>
-                                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
-                                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
-                                                <td className="bg-light">{c.cancer}</td>
+                                            return <tr key={keyPrefix} style={{height: '35px', padding: '0'}}>
+                                                <td className={c.icd9 ? "bg-light" : "bg-grey"}  style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 1px 0 3px'}}>{c.icd9}</td>
+                                                <td className={c.icd10 ? "bg-light" : "bg-grey"}  style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 2px 0 5px'}}>{c.icd10}</td>
+                                                <td className="bg-light" style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 2px 0 5px '}}>{c.cancer}</td>
 
                                                 {inputKeys.map((key, i) =>
-                                                    <td key={key}><input className="form-control border-0 p-0 bg-transparent text-right"
-                                                        name={key} value={specimen.counts[key] || 0} type="number"
+                                                    <td key={key}><input className="border-0 p-0 bg-transparent text-right"
+                                                        name={key} style={{width: '99%'}} value={specimen.counts[key] || 0} type="number"
                                                         onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))}
                                                         readOnly={isReadOnly} />
                                                     </td>
