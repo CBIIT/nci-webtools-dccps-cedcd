@@ -117,7 +117,7 @@ const SpecimenForm = ({ ...props }) => {
                                 if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
                             }
                             for (let k of Object.keys(specimenInfo)) {
-                                if(specimenInfo[k].collected_yn)
+                                if([0,1].includes(specimenInfo[k].collected_yn)  )
                                 switch (specimenInfo[k].sub_category) {
                                     case 'bio_blood_baseline': // specimen_id 11
                                         dispatch(allactions.specimenActions.setBioBloodBaseline(specimenInfo[k].collected_yn))

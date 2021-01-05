@@ -161,17 +161,17 @@ const MajorContentForm = ({ ...props }) => {
                         if ([0,1].includes(content[12].followup)) {  dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }
                         if ([0,1].includes(content[13].baseline)) {  dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }
                         if ([0,1].includes(content[13].followup)) {  dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }
-                        if (content[14].baseline == null || content[14].baseline == 1) {  dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
-                        if (content[15].baseline == null || content[15].baseline == 1) {  dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
-                        if (content[16].baseline == null || content[16].baseline == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
-                        if (content[17].baseline == null || content[17].baseline == 1) {  dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
-                        if (content[18].baseline == null || content[18].baseline == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
+                        if (content[14].baseline == 1) {  dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
+                        if (content[15].baseline == 1) {  dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
+                        if (content[16].baseline == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
+                        if (content[17].baseline == 1) {  dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
+                        if (content[18].baseline == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
 
-                        if (content[14].followup == null || content[14].followup == 1) {  dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
-                        if (content[15].followup == null || content[15].followup == 1) {  dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
-                        if (content[16].followup == null || content[16].followup == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
-                        if (content[17].followup == null || content[17].followup == 1) {  dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
-                        if (content[18].followup == null || content[18].followup == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
+                        if (content[14].followup == 1) {  dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
+                        if (content[15].followup == 1) {  dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
+                        if (content[16].followup == 1) {  dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
+                        if (content[17].followup == 1) {  dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
+                        if (content[18].followup == 1) {  dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
                         if (content[18].baseline == 0 || content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
 
 
@@ -224,10 +224,10 @@ const MajorContentForm = ({ ...props }) => {
                             if ([0,1].includes(content[40].followup)) {  dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
                         }
 
-                        if (cancerInfo.cancerToxicity == null || cancerInfo.cancerToxicity == 1) {  dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
-                        if (cancerInfo.cancerLateEffects == null || cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
-                        if (cancerInfo.cancerSymptom == null || cancerInfo.cancerSymptom == 1) {  dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
-                        if (cancerInfo.cancerOther == null || cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
+                        if (cancerInfo.cancerToxicity == 1) {  dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
+                        if (cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
+                        if (cancerInfo.cancerSymptom == 1) {  dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
+                        if (cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
 
                         //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
                         //{dispatch(allactions.majorContentErrorActions.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
@@ -246,6 +246,7 @@ const MajorContentForm = ({ ...props }) => {
     /*const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) */
 
     const refreshErrors = () => {
+        console.log(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp)
         for(let k of Object.keys(errors)){
             if(errors[k]) return true;
         }
@@ -862,7 +863,7 @@ const MajorContentForm = ({ ...props }) => {
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
                                 {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-9 col-xs-12'>
@@ -1546,7 +1547,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or emphysema<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or Emphysema<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1581,7 +1582,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular disease<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular Disease<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1652,7 +1653,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental health<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental Health<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
 
@@ -1688,7 +1689,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                             <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                                 <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive decline<span style={{ color: 'red' }}>*</span></div></span>
+                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive Decline<span style={{ color: 'red' }}>*</span></div></span>
                                     {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                                 </div>
                                 <div className='col-12'>
@@ -1730,7 +1731,7 @@ const MajorContentForm = ({ ...props }) => {
                         panelTitle="Cancer Related Conditions">
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?{' '} <small>(Select all that apply)</small></label></span>
+                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
                                 {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
                             <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
@@ -1769,7 +1770,7 @@ const MajorContentForm = ({ ...props }) => {
                             <div>
                                 <span className='col-sm-12'>
                                     <span className='col-md-11 col-sm-10 col-xs-12' >
-                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} disabled={isReadOnly}/>}
+                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} readOnly={!majorContent.cancerOther || isReadOnly} />}
                                     </span>
                                 </span>
                             </div>
