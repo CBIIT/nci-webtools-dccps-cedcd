@@ -2696,7 +2696,7 @@ BEGIN
 	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
-	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,NULL);
+	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,now());
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);

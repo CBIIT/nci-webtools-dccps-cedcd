@@ -40,7 +40,7 @@ class ManageUser extends Component {
 
 		filter.userNameSearch = changeEvent.target.value;
 
-		if (changeEvent.target.value)
+		if (!['', "", undefined, null].includes(changeEvent.target.value))
 			list = list.filter(function (item) {
 				if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
 				if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
