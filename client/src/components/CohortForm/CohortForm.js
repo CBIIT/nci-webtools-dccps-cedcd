@@ -96,15 +96,7 @@ const CohortForm = ({ ...props }) => {
                                     dispatch(allactions.cohortActions.country_code('collaboratorCountry', completer.collaboratorCountry))
                             }
 
-                            if (completer && collaborator.collaboratorEmail === completer.completerEmail) {
-                                dispatch(allactions.cohortActions.sameAsSomeone(0))
-                            }
-                            else if (contacter && collaborator.collaboratorEmail === contacter.contacterEmail) {
-                                dispatch(allactions.cohortActions.sameAsSomeone(1))
-                            }
-                            else {
-                                dispatch(allactions.cohortActions.sameAsSomeone(-1))
-                            }
+                            dispatch(allactions.cohortActions.sameAsSomeone(currentCohort.sameAsSomeone))
                         }
                         if (result.data.sectionStatus)
                             for (let k of result.data.sectionStatus) {
@@ -705,9 +697,9 @@ const CohortForm = ({ ...props }) => {
                                                     style={{ color: 'red', borderBottom: '1px solid red', fontWeight: 'normal' }}
                                                     name='clarification_contact' 
                                                     checked={cohort.clarification_contact === 0} 
-                                                    onClick={() => 
-                                                        dispatch(allactions.cohortActions.clarification_contact(0))
-                                                    } 
+                                                    onClick={(e) => {
+                                                        setPerson(e, '', '', '', '', 0, 'contacter')} 
+                                                    }
                                                     label="No" />                                            
                                             </Reminder> :
                                             <Form.Check type="radio"
@@ -717,8 +709,8 @@ const CohortForm = ({ ...props }) => {
                                                 style={{ fontWeight: 'normal '}}
                                                 name='clarification_contact' 
                                                 checked={cohort.clarification_contact === 0} 
-                                                onClick={() => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.clarification_contact(0))} 
+                                                onClick={(e) => 
+                                                    !isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')} 
                                                 label="No" />
                                         }
 
