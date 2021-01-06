@@ -55,6 +55,21 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
             return telNum
     }
 
+    const showValue = () => {
+
+        if(name === 'contacterName' && cohort.clarification_contact === 1){
+            return false
+        }
+        
+
+        if(name === 'collaboratorName' && cohort.sameAsSomeone !== -1){
+            return false
+        }
+
+        return true
+    }
+
+
     useEffect(() => {
         dispatch(allactions.cohortActions.completerName(cohort.completerName))
     }, [])
@@ -73,7 +88,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                                 placeholder='(Max of 100 characters)' 
                                 maxLength="100"
                                 name={name} 
-                                value={cohort[name]} 
+                                value={showValue() ? cohort[name] : ''} 
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[name](e.target.value))
                                 } 
@@ -85,7 +100,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                             placeholder='(Max of 100 characters)' 
                             maxLength="100"
                             name={name} 
-                            value={cohort[name]} 
+                            value={showValue() ? cohort[name] : ''} 
                             onChange={e => 
                                 dispatch(allactions.cohortActions[name](e.target.value))
                             } 
@@ -108,7 +123,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                                 placeholder='(Max of 100 characters)' 
                                 maxLength="100" 
                                 name={position} 
-                                value={cohort[position]} 
+                                value={showValue() ? cohort[position] : ''} 
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[position](e.target.value))
                                 } 
@@ -120,7 +135,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                             placeholder='(Max of 100 characters)' 
                             maxLength="100" 
                             name={position} 
-                            value={cohort[position]} 
+                            value={showValue() ? cohort[position] : ''} 
                             onChange={e => 
                                 dispatch(allactions.cohortActions[position](e.target.value))
                             } 
@@ -164,7 +179,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                                     placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
                                     maxLength="100" 
                                     name={phone} 
-                                    value={cohort[phone]} 
+                                    value={ showValue() ? cohort[phone] : ''} 
                                     onChange={e => 
                                         dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
                                     } 
@@ -177,7 +192,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                                 placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
                                 maxLength="100" 
                                 name={phone} 
-                                value={cohort[phone]} 
+                                value={showValue() ? cohort[phone] : ''} 
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
                                 } 
@@ -201,7 +216,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                                 placeholder="(Max of 100 characters)"
                                 maxLength="100" 
                                 name={email} 
-                                value={cohort[email]} 
+                                value={showValue() ? cohort[email] : ''} 
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[email](e.target.value))
                                 } 
@@ -213,7 +228,7 @@ const Person =({id, type, name, position, phone, email, colWidth, errors, disabl
                             placeholder="(Max of 100 characters)" 
                             maxLength="100" 
                             name={email} 
-                            value={cohort[email]} 
+                            value={showValue() ? cohort[email] : ''} 
                             onChange={e => 
                                 dispatch(allactions.cohortActions[email](e.target.value))
                             } 
