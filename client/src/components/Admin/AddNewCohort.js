@@ -210,7 +210,7 @@ class AddNewCohort extends Component {
     const success_back = this.state.background_gray ? "modal" : "non-modal";
     return <UserSessionContext.Consumer>
       {userSession => (
-        !(process.env.NODE_ENV === 'development' || (userSession && userSession.role === 'SystemAdmin')) &&
+        !(userSession && userSession.role === 'SystemAdmin') &&
         <Unauthorized /> ||
         <div className='col-md-12'>
           <div id="myModal" className={success_back} onClick={this.handleModalClick}>

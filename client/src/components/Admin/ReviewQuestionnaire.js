@@ -5,8 +5,7 @@ import { UserSessionContext } from '../../index';
 
 const ReviewQuestionnaire = ({ ...props }) => {
     const userSession = useContext(UserSessionContext);
-    const isAuthorized = (process.env.NODE_ENV === 'development')
-        || (userSession && userSession.role === 'SystemAdmin');
+    const isAuthorized = userSession && userSession.role === 'SystemAdmin';
 
     return isAuthorized && <div>
         <ReviewCohortHeader activeSection={props.activeSection} handler={props.handler} currentStatus={props.cohortStatus} />
