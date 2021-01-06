@@ -8,8 +8,6 @@ import CenterModal from '../controls/modal/modal'
 import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
 import './AddNewCohort.css';
-import { id } from 'date-fns/locale';
-
 
 const EditUser = ({ ...props }) => {
 
@@ -113,8 +111,7 @@ const EditUser = ({ ...props }) => {
             user_role: userRole,
             cohort_list: Object.values(cohortList).map((item,idx)=> item.label),
             active_status: activeStatus
-        }
-console.log(userInfo)
+        } 
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
@@ -200,8 +197,9 @@ console.log(userInfo)
                                     <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>Account Name <span className="required">*</span></label>
                                         {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                            id="user_userName" value={userName}
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
+                                            <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
+                                            id="user_userName" value={userName} maxLength = "100"
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                         </span>
                                     </div>
@@ -209,7 +207,7 @@ console.log(userInfo)
                                         <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
                                         {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
-                                            placeholder='Valid email address'
+                                            placeholder='Valid email address' maxLength = "100"
                                             onChange={(e) => {
                                                 setUserEmail(e.target.value);
                                                 if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
@@ -220,16 +218,16 @@ console.log(userInfo)
                                     <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                         {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 100 characters'
-                                            id="user_lastName" value={lastName}
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
+                                            id="user_lastName" value={lastName} maxLength = "50"
                                             onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
                                         </span>
                                     </div>
                                     <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
                                         {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 100 characters'
-                                            id="user_firstName" value={firstName}
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
+                                            id="user_firstName" value={firstName} maxLength = "50"
                                             onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                         </span>
                                     </div>

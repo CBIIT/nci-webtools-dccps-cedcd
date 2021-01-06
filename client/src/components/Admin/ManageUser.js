@@ -49,8 +49,6 @@ class ManageUser extends Component {
 			);
 
 		paging.total = list.length;
-		console.log("paging total " + paging.total)
-
 		this.setState({
 			filter: filter,
 			list: list.slice(0, paging.pageSize),
@@ -135,8 +133,6 @@ class ManageUser extends Component {
 			orderBy: state.orderBy,
 			paging: state.pageInfo
 		};
-
-		console.log(reqBody)
 
 		if (pagesize != -1) {
 			reqBody.paging.pageSize = pagesize;
