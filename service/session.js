@@ -8,6 +8,7 @@ module.exports = session({
       checkPeriod: maxSessionAge / 10
     }),
     resave: false,
+    rolling: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET || 'default session store secret'
 });
