@@ -321,7 +321,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const saveSpecimen = (id = 79, errorsRemain = true, proceed = false) => {
         
-        const { errors, ...specimenBody } = specimen
+        const { errors, error, ...specimenBody } = specimen
 
         fetch(`/api/questionnaire/update_specimen/${id}`, {
             method: "POST",
