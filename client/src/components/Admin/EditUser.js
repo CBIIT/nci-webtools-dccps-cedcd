@@ -178,7 +178,7 @@ const EditUser = ({ ...props }) => {
 
     return <UserSessionContext.Consumer>
         {userSession => (
-            !(process.env.NODE_ENV === 'development' || (userSession && userSession.role === 'SystemAdmin')) &&
+            !(userSession && userSession.role === 'SystemAdmin') &&
             <Unauthorized /> ||
             <div id='editUserContainer' className='col-md-12'>
                 {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}

@@ -329,7 +329,7 @@ class ManageCohort extends Component {
 
 		return <UserSessionContext.Consumer>
 			{userSession => (
-				!(process.env.NODE_ENV === 'development2' || (userSession && userSession.role === 'SystemAdmin')) &&
+				!(userSession && userSession.role === 'SystemAdmin') &&
 				<Unauthorized /> ||
 				<div>
 					<h1 className="welcome pg-title">Manage Cohorts</h1>

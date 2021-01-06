@@ -262,7 +262,7 @@ class ManageUser extends Component {
 
 		return <UserSessionContext.Consumer>
 			{userSession => (
-				!(process.env.NODE_ENV === 'development2' || (userSession && userSession.role === 'SystemAdmin')) &&
+				!(userSession && userSession.role === 'SystemAdmin') &&
 				<Unauthorized /> ||
 				<div className="col-md-12 col-12">
 					<h1 className="welcome pg-title">Manage Users</h1>

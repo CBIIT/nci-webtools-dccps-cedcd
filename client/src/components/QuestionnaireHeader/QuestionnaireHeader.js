@@ -63,7 +63,8 @@ const QuestionnaireHeader = ({ ...props }) => {
         <div className="mb-4">
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <p style={{ fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }}>
-                Please review and complete all sections of this questionnaire. Each section's completion status is reflected in the color of each section selector. 
+                Please review and complete all sections of this questionnaire. If your account is associated with more than one cohort, use the following link to <a href="/cohort/select" target="_self">select a different cohort</a> if needed.
+                Each section's completion status is reflected in the color of each section selector. 
                 Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
                 All fields marked with an asterisk (*) are required.
 
@@ -78,15 +79,15 @@ const QuestionnaireHeader = ({ ...props }) => {
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
-                    {asTitleCase(status) || ''}
+                    {asTitleCase(status) || 'N/A'}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Updated Date: </strong>
-                    {asDateString(updateDate) || ''}
+                    {asDateString(updateDate) || 'N/A'}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Published Date: </strong>
-                    {asDateString(publishDate) || ''}
+                    {asDateString(publishDate) || 'N/A'}
                 </div>
             </div>
         </div>

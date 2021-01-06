@@ -6,7 +6,7 @@
   "scripts": {
     "start:dev": "NODE_ENV=development && node index.js",
     "start:dev:win": "set NODE_ENV=development&&node index.js",
-    "start": "NODE_ENV=production && node index.js",
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
