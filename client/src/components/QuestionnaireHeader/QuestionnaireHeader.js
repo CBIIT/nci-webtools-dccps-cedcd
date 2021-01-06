@@ -11,8 +11,8 @@ const QuestionnaireHeader = ({ ...props }) => {
         publish_time: publishTime,
         update_time: updateTime,
     } = useSelector(state => state.cohort);
-    const publishDate = publishTime ? parseISO(publishTime) : null;
-    const updateDate = updateTime ? parseISO(updateTime) : null;
+    const publishDate = status != 'new' && publishTime ? parseISO(publishTime) : null;
+    const updateDate = status != 'new' && updateTime ? parseISO(updateTime) : null;
     const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
@@ -63,7 +63,8 @@ const QuestionnaireHeader = ({ ...props }) => {
         <div className="mb-4">
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <p style={{ fontFamily: '"PT Sans", Arial, sans-serif', fontSize: '16px' }}>
-                Please review and complete all sections of this questionnaire. Each section's completion status is reflected in the color of each section selector. 
+                Please review and complete all sections of this questionnaire. If your account is associated with more than one cohort, use the following link to <a href="/cohort/select" target="_self">select a different cohort</a> if needed.
+                Each section's completion status is reflected in the color of each section selector. 
                 Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
                 All fields marked with an asterisk (*) are required.
 

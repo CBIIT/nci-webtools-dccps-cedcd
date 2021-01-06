@@ -40,19 +40,18 @@ class ManageUser extends Component {
 
 		filter.userNameSearch = changeEvent.target.value;
 
-		list = list.filter(function (item) {
-			if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
-			if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
-			return false;
-		}
-		);
+		if (!['', "", undefined, null].includes(changeEvent.target.value))
+			list = list.filter(function (item) {
+				if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
+				if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
+				return false;
+			}
+			);
 
 		paging.total = list.length;
-		console.log("paging total " + paging.total)
-
 		this.setState({
 			filter: filter,
-			list: list,
+			list: list.slice(0, paging.pageSize),
 			pageInfo: paging
 		});
 
@@ -134,8 +133,6 @@ class ManageUser extends Component {
 			orderBy: state.orderBy,
 			paging: state.pageInfo
 		};
-
-		console.log(reqBody)
 
 		if (pagesize != -1) {
 			reqBody.paging.pageSize = pagesize;
@@ -258,7 +255,7 @@ class ManageUser extends Component {
 		if (content.length === 0) {
 			content = (
 				<tr>
-					<td colSpan="3">Nothing to display</td>
+					<td colSpan="8">Nothing to display</td>
 				</tr>
 			);
 		}
@@ -325,7 +322,6 @@ class ManageUser extends Component {
 						<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
 							<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
 								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleUserPageSizeChange(e)} >
-									<option>Page Size</option>
 									<option value="5">5</option>
 									<option value="10">10</option>
 									<option value="15">15</option>

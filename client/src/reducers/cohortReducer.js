@@ -63,7 +63,7 @@ actions[t.setDescription] = (state, action) => ({...state, cohort_description: a
 //actions[t.setHasAWebSite] = (state, action) => ({...state, hasAWebSite: action.hasUrl})
 actions[t.setWebSite] = (state, action) => ({...state, cohort_web_site: action.url})
 actions[t.setEligibleGender] = (state, action) => ({...state, eligible_gender_id: action.eligibleGender})
-actions[t.setHasCancerSite] = (state) => ({...state, eligible_disease: !state.hasCancerSite})
+actions[t.setHasCancerSite] = (state, action) => ({...state, eligible_disease: action.value})
 actions[t.setCancerSites] = (state, action) => ({...state, eligible_disease_cancer_specify: action.value})
 actions[t.setEligibilityCriteriaOther] = (state, action) => ({...state, eligible_disease_other_specify: action.value})
 actions[t.setEnrolledTotal] = (state, action) => ({...state, enrollment_total: action.total})

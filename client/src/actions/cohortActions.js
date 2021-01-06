@@ -158,8 +158,9 @@ const eligible_gender_id = (gender) => ({
     eligibleGender: gender
 })
 
-const eligible_disease = () => ({
+const eligible_disease = (v) => ({
     type: t.setHasCancerSite,
+    value: v
 })
 
 const eligible_disease_cancer_specify = (sites) => ({
