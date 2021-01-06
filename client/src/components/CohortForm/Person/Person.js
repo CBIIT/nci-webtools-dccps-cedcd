@@ -60,7 +60,6 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
         if(name === 'contacterName' && cohort.clarification_contact === 1){
             return false
         }
-        
 
         if(name === 'collaboratorName' && cohort.sameAsSomeone !== -1){
             return false
@@ -90,6 +89,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 maxLength="100"
                                 name={name} 
                                 value={showValue() ? cohort[name] : ''} 
+                                readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[name](e.target.value))
                                 } 
@@ -125,6 +125,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 maxLength="100" 
                                 name={position} 
                                 value={showValue() ? cohort[position] : ''} 
+                                readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[position](e.target.value))
                                 } 
@@ -158,6 +159,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             style={{ width: '25%' }} 
                             title='country code' 
                             value={cohort[type]} 
+                            
                             onChange={e => {
                                 dispatch(allactions.cohortActions.country_code(type, e.target.value)); 
                                 dispatch(allactions.cohortActions[phone]( processPhoneNumber(e.target.value, cohort[phone]))); 
@@ -181,6 +183,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     maxLength="100" 
                                     name={phone} 
                                     value={ showValue() ? cohort[phone] : ''} 
+                                    readOnly={disabled}
                                     onChange={e => 
                                         dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
                                     } 
@@ -218,6 +221,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 maxLength="100" 
                                 name={email} 
                                 value={showValue() ? cohort[email] : ''} 
+                                readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[email](e.target.value))
                                 } 

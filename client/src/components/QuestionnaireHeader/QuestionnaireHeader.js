@@ -79,15 +79,15 @@ const QuestionnaireHeader = ({ ...props }) => {
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
-                    {asTitleCase(status) || ''}
+                    {asTitleCase(status) || 'N/A'}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Updated Date: </strong>
-                    {asDateString(updateDate) || ''}
+                    {asDateString(updateDate) || 'N/A'}
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Published Date: </strong>
-                    {asDateString(publishDate) || ''}
+                    {asDateString(publishDate) || 'N/A'}
                 </div>
             </div>
         </div>
