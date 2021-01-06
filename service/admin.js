@@ -64,11 +64,19 @@ router.post('/admincohortlist', function (req, res) {
 
 router.post('/adminuserlist', function (req, res) {
 	let body = req.body;
+	let filter = body.filter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
 	let func = "select_all_users";
 	let params = [];
 	//form filter into Strings
+
+	if (filter.userNameSearch) {
+		params.push(filter.userNameSearch);
+	}
+	else {
+		params.push("");
+	}
 
 	if (orderBy) {
 		params.push(orderBy.column);

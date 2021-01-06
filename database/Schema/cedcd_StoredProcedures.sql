@@ -2712,11 +2712,15 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_all_users` //
 
-CREATE  PROCEDURE `select_all_users`(in columnName varchar(40), in columnOrder varchar(10),
+CREATE  PROCEDURE `select_all_users`(in cohortSearch text, in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN 
     
     set @status_query = " and 1=1 ";
+     if cohortSearch != "" then
+      set @status_query = concat(" and ( lower(first_name) like lower('%", cohortSearch, "%') or lower(last_name) like lower('%", cohortSearch, "%') 
+       or lower(email) like lower('%", cohortSearch, "%') or lower(IFNULL(user_name,'')) like lower('%", cohortSearch, "%') ) ", @status_query);
+    end if;
     if columnName != "" && columnName !="action" then 
       set @orderBy = concat(" order by ",columnName," ",columnOrder,", name asc ");
     else
@@ -2737,13 +2741,14 @@ BEGIN
         group by cohort_user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
        (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-        from user u where u.id > 1 ", 
-          @orderBy, @paging);
+        from user u where u.id > 1 ", @status_query , @orderBy, @paging);
+
 	
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
 	DEALLOCATE PREPARE stmt;
+	
 END //
 
 -- -----------------------------------------------------------------------------------------------------------

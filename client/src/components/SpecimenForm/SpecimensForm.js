@@ -5,6 +5,7 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
+import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 
 const SpecimenForm = ({ ...props }) => {
@@ -34,7 +35,6 @@ const SpecimenForm = ({ ...props }) => {
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
             case 'year':
-                console.log(value)
                 return validator.yearValidator(value, requiredOrNot)
             default:
                 return validator.stringValidator(value, requiredOrNot)
@@ -44,7 +44,6 @@ const SpecimenForm = ({ ...props }) => {
     const populateErrors = (value, requiredOrNot, valueType) => {
 
         const result = getValidationResult(value, requiredOrNot, valueType)
-        console.log(result)
         if (result) {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(false))
         } else {
@@ -106,7 +105,6 @@ const SpecimenForm = ({ ...props }) => {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {
-                    console.log(result.data)
                     let specimenCounts = result.data.counts
                     let specimenInfo = result.data.info
                     let specimenDetails = result.data.details
@@ -364,8 +362,6 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        console.log(specimen)
-
         let errorsRemain = refreshErrors()||true
 
         if (!errorsRemain) {
@@ -376,7 +372,6 @@ const SpecimenForm = ({ ...props }) => {
             //setDisplay('block')
             setModalShow(true)
         }
-        console.log("save status " + saved)
     }
 
     const confirmSaveStay = () => {
@@ -445,32 +440,18 @@ const SpecimenForm = ({ ...props }) => {
             })
     }
 
-    return <div id='specimenInfoContainer' className='col-md-12'>
+    return <div id='specimenInfoContainer' className="p-3 px-5">
 
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
 
-        <div className='specimenInfo col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
 
             {/* START Specimen */}
-            <div className="row">
-                <div id="specimen" className="cohortInfo col-md-12">
-                    {/* START Part A */}
-                    <button type="button"
-                        className={'cedcd-btn ' + (activePanel === 'panelA' ? 'active' : '')}
-                        aria-expanded={activePanel === 'panelA'}
-                        aria-controls="more"
-                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
-                        <span className="triangle"></span>Specimen Collected
-                            </button>
-                    <div className="cohortInfoBody"
-                        id="more"
-                        aria-hidden={activePanel === 'panelA' ? 'false' : 'true'}
-                        style={{
-                            display: activePanel === 'panelA' ? 'block' : 'none'
-                        }}>
-                        <div className={activePanel === 'panelA' ? 'panel-active row' : 'panellet row'} >
+            <CollapsiblePanel
+            condition={activePanel === 'panelA'}
+            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+            panelTitle="Specimen Collected">
 
                             <div style={{ marginTop: '20px' }}>
                                 <span>Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.</span>
@@ -833,34 +814,18 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
+                            </CollapsiblePanel>
 
 
-                    {/* END Part A */}
+            {/* END Part A */}
 
-                    {/* START Part B */}
-                    <button type="button"
-                        className={'cedcd-btn ' + (activePanel === 'panelB' ? 'active' : '')}
-                        aria-expanded={activePanel === 'panelB'}
-                        aria-controls="more"
-                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}>
-                        <span className="triangle"></span>Did you have ?
-                            </button>
-                    <div className="cohortInfoBody"
-                        id="more"
-                        aria-hidden={activePanel === 'panelB' ? 'false' : 'true'}
-                        style={{
-                            display: activePanel === 'panelB' ? 'block' : 'none'
-                        }}>
-
-                        <div className={activePanel === 'panelB' ? 'panel-active' : 'panellet'} >
-
-
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
-                                <label className="d-block control-label">
-                                    G.9 Genotyping Data (SNP)
-                          <span style={{ color: 'red' }}>*</span></label>
+            {/* START Part B */}
+            <CollapsiblePanel
+            condition={activePanel === 'panelB'}
+            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+            panelTitle="Did you have ?">
+            <div className='specimenInfo my-3 col-md-12 col-12'>
+                 <label className="d-block control-label"> G.9 Genotyping Data (SNP)<span style={{ color: 'red' }}>*</span></label>
                                 <div className='col-md-12 col-12'>
                                     <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
                                         <span ><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
@@ -873,8 +838,8 @@ const SpecimenForm = ({ ...props }) => {
                                     {(errors.bioGenotypingData) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
                                 </div>
                             </div>
-
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+                            
+            <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
                                     G.10  Sequencing Data – Exome
                             <span style={{ color: 'red' }}>*</span></label>
@@ -891,7 +856,7 @@ const SpecimenForm = ({ ...props }) => {
                                     {(errors.bioSequencingDataExome) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
                                 </div>
                             </div>
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+            <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
                                     G.11  Sequencing Data – Whole Genome
                           <span style={{ color: 'red' }}>*</span> </label>
@@ -908,7 +873,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+            <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
                                     G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)
                           <span style={{ color: 'red' }}>*</span></label>
@@ -926,7 +891,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+            <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
                                     G.13  Transcriptomics Data
                           <span style={{ color: 'red' }}>*</span></label>
@@ -943,7 +908,7 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                            <div className='specimenInfo my-3 col-md-12 col-12'>
+            <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
                                     G.14 Microbiome Data (16S RNA, metagenomics)
                           <span style={{ color: 'red' }}>*</span></label>
@@ -961,25 +926,14 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                        </div></div>
-                    {/* END Part B */}
+            </CollapsiblePanel>
+            {/* END Part B */}
 
-                    {/* START Part C */}
-                    <button type="button"
-                        className={'cedcd-btn ' + (activePanel === 'panelC' ? 'active' : '')}
-                        aria-expanded={activePanel === 'panelC'}
-                        aria-controls="more"
-                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}>
-                        <span className="triangle"></span>Metabolomic Data
-                            </button>
-                    <div className="cohortInfoBody"
-                        id="more"
-                        aria-hidden={activePanel === 'panelC' ? 'false' : 'true'}
-                        style={{
-                            display: activePanel === 'panelC' ? 'block' : 'none'
-                        }}>
-                        <div className={activePanel === 'panelC' ? 'panel-active' : 'panellet'} >
-
+            {/* START Part C */}
+            <CollapsiblePanel
+            condition={activePanel === 'panelC'}
+            onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+            panelTitle="Metabolomic Data">
 
                             <div className='specimenInfo my-3 col-md-12 col-12'>
                                 <label className="d-block control-label">
@@ -1242,35 +1196,23 @@ const SpecimenForm = ({ ...props }) => {
                                 </div>
                             </div>
 
-                        </div>
-                    </div>
-                    {/* END Part C */}
+                            </CollapsiblePanel>
+            {/* END Part C */}
 
-                    {/* START Part D */}
-                    <button type="button"
-                        className={'cedcd-btn ' + (activePanel === 'panelD' ? 'active' : '')}
-                        aria-expanded={activePanel === 'panelD'}
-                        aria-controls="more"
-                        onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}>
-                        <span className="triangle"></span>Biospecimen Counts
-                            </button>
-                    <div className="cohortInfoBody"
-                        id="more"
-                        aria-hidden={activePanel === 'panelD' ? 'false' : 'true'}
-                        style={{
-                            display: activePanel === 'panelD' ? 'block' : 'none'
-                        }}>
-
-                        <div className={activePanel === 'panelD' ? 'panel-active' : 'panellet'}>
-                            <div className="my-3">
-                                <label className="d-block">G.16</label>
-                                <div> <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available
+            {/* START Part D */}
+            <CollapsiblePanel
+            condition={activePanel === 'panelD'}
+            onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
+            panelTitle="Biospecimen Counts">                       
+                 <div className="my-3">
+                    <label className="d-block">G.16</label>
+                    <div> <p style={{ fontSize: '16px' }}>Please complete this table with the number of individuals with biospecimens available
                                 in your current inventory. If you do not have exact counts, please enter approximate counts.
                                 (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
                 </p></div>
-                            </div>
-                            <div className="table-responsive">
-                            <table className='table table-condensed table-valign-middle' style={{maxWidth: '1084px'}}>
+                </div>
+                <div className="table-responsive">
+                    <table className='table table-condensed table-valign-middle' style={{maxWidth: '1084px'}}>
                                     <thead>
                                         <tr>
                                             <th className='col-sm-1 center' >ICD-9</th>
@@ -1310,11 +1252,10 @@ const SpecimenForm = ({ ...props }) => {
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-                    {/* End Part D */}
-                </div>
-            </div>
+                    
+                        </CollapsiblePanel>
+            {/* End Part D */}
+                     
             {/* END Specimen Information Collapsible Question Sections */}
             <div style={{ position: 'relative' }} className="my-4">
             {/*<div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>*/}
@@ -1343,9 +1284,8 @@ const SpecimenForm = ({ ...props }) => {
                         </span>
                     </>}
             </div>
-
         </div>
-    </div>
+
 
 }
 
