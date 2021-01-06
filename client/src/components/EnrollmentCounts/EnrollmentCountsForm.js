@@ -207,20 +207,20 @@ const EnrollmentCountsForm = ({...props}) => {
                                         <th rowSpan='3' style={{width: '10%', textAlign: 'center'}}>Total</th>
                                     </tr>
                                     <tr>
-                                        <th colSpan='3' style={{textAlign: 'center'}}>Non Hispanic or Latino</th>
+                                        <th colSpan='3' style={{textAlign: 'center'}}>Not Hispanic or Latino</th>
                                         <th colSpan='3' style={{textAlign: 'center'}}>Hispanic or Latino</th>
-                                        <th colSpan='3' style={{textAlign: 'center'}}>Unknown/not reported ethnicity</th>
+                                        <th colSpan='3' style={{textAlign: 'center'}}>Unknown/Not Reported Ethnicity</th>
                                     </tr>
                                     <tr>
                                         <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
-                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>male</th>
-                                        <th style={{fontSize: '1.4rem', paddingRight: '0'}}>unknown</th>
+                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
+                                        <th style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
                                         <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
-                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>male</th>
-                                        <th  style={{fontSize: '1.4rem', paddingRight: '0'}}>unknown</th>
+                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
+                                        <th  style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
                                         <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
-                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>male</th>
-                                        <th style={{fontSize: '1.4rem', paddingRight: '0'}}>unknown</th>
+                                        <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
+                                        <th style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -253,7 +253,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.3rem', backgroundColor: '#01857b', color: 'white'}}>Native Hawaiian or other pacific islander</th>
+                                        <th style={{fontSize: '1.3rem', backgroundColor: '#01857b', color: 'white'}}>Native Hawaiian or Other Pacific Islander</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='311'  value={enrollmentCount['311']} onChange={(e) => updateCells('311', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='312'  value={enrollmentCount['312']} onChange={(e) => updateCells('312', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='313'  value={enrollmentCount['313']} onChange={(e) => updateCells('313', e.target.value)} readOnly={isReadOnly}/></td>
@@ -281,7 +281,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>white</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>White</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='511'  value={enrollmentCount['511']} onChange={(e) => updateCells('511', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='512'  value={enrollmentCount['512']} onChange={(e) => updateCells('512', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='513'  value={enrollmentCount['513']} onChange={(e) => updateCells('513', e.target.value)} readOnly={isReadOnly}/></td>
@@ -295,7 +295,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More than one race</th>
+                                        <th style={{backgroundColor: '#01857b', color: 'white', paddingTop: '14px', paddingBottom: '14px'}}>More Than One Race</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='611'  value={enrollmentCount['611']} onChange={(e) => updateCells('611', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='612'  value={enrollmentCount['612']} onChange={(e) => updateCells('612', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='613'  value={enrollmentCount['613']} onChange={(e) => updateCells('613', e.target.value)} readOnly={isReadOnly}/></td>
@@ -309,7 +309,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                     </tr>
 
                                     <tr>
-                                        <th style={{fontSize: '1.4rem', backgroundColor: '#01857b', color: 'white'}}>Unknown or not reported</th>
+                                        <th style={{fontSize: '1.4rem', backgroundColor: '#01857b', color: 'white'}}>Unknown or Not Reported</th>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='711'  value={enrollmentCount['711']} onChange={(e) => updateCells('711', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='712'  value={enrollmentCount['712']} onChange={(e) => updateCells('712', e.target.value)} readOnly={isReadOnly}/></td>
                                         <td style={{padding: '0'}}><input className='inputWriter' style={{fontSize: '1.2rem', textAlign: 'center'}} name='713'  value={enrollmentCount['713']} onChange={(e) => updateCells('713', e.target.value)} readOnly={isReadOnly}/></td>

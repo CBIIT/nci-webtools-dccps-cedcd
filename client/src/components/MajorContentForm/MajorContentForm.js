@@ -6,6 +6,9 @@ import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
@@ -348,22 +351,82 @@ const MajorContentForm = ({ ...props }) => {
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
 
             <div>
-                <form>
+                <Form>
                     <CollapsiblePanel
                         condition={activePanel === 'panelA'}
                         onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
                         panelTitle="Major Content Domains">
+                       {/* <Form.Group as={Row} className="mb-1">
+                            <Form.Label column sm="12">
+                                Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                            </Form.Label>
+                        </Form.Group>
+                        
 
+                        <Form.Group as={Row} className="mb-1">
+                            <Form.Label column sm="4">
+                                C.1 Socio-economic Status
+                            </Form.Label>
+                            <Col sm="4" style={{color: 'red'}}>
+                                {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span>Required Field</span>}
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="mb-1">
+                            <Col sm='4' >
+                                Collected at baseline
+                            </Col>
+                            <Col sm='6'>
+                                <Form.Check type="radio" xs='2'
+                                        id='seStatusBaseLine_no'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
+                                        label='No' />
+                                <Form.Check type="radio" xs='2'
+                                        id='seStatusBaseLine_yes'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1}
+                                        onClick={() => { console.log(isReadOnly); if(!isReadOnly) { dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
+                                        label='Yes' />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="mb-1">
+                            <Col sm='4'>
+                                Collected at other time
+                            </Col>
+                            <Col sm='6'>
+                                <Form.Check type="radio" 
+                                        id='seStatusFollowUp_no'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
+                                        label='No' />
+                                <Form.Check type="radio"
+                                        id='seStatusFollowUp_yes'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
+                                        label='Yes' />
+                            </Col>
+                        </Form.Group>
+*/}   
                         <div >
                             <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
                         </div>
-
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-
+                           
                             <div className='col-12'>
                                 <div className='col-sm-8' style={{ paddingLeft: '0' }}>
                                     <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
@@ -1776,7 +1839,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                         </div>
                     </CollapsiblePanel>
-                </form>
+                </Form>
                 <div style={{ position: 'relative' }} className="my-4">
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('B')} />

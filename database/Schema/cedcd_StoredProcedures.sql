@@ -1140,7 +1140,7 @@ BEGIN
 	UPDATE `cohort_basic` 
 	SET 
 		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
-		date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
+		-- get_cohort_basic_infodate_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
 		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
 		cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
@@ -1178,7 +1178,7 @@ BEGIN
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb'))  as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))  as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))  as CHAR)))),
-		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
+		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictions_other_specify')), ''),
 		strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine'))),
 		strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
 		strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
@@ -1443,7 +1443,7 @@ BEGIN
         cohort_name
         ,cohort_acronym
         ,cohort_web_site
-        ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
+        -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
         ,clarification_contact
         ,sameAsSomeone
         ,cohort_description

@@ -68,7 +68,7 @@ const InitialStates = {
         restrictOtherDb: false,
         restrictCommercial: false,
         restrictOther: false,
-        restrictOtherSpecify: '',
+        restrictions_other_specify: '',
         strategy_routine: false,
         strategy_mailing: false,
         strategy_aggregate_study: false,
@@ -93,7 +93,7 @@ const InitialStates = {
         publication_url: ''
     },
     cohortErrors: {
-        completionDate: 'Required Field',
+        //completionDate: 'Required Field',
         clarification_contact: 'Required Field',
         completerName: 'Required Field',
         completerPosition: 'Required Field',

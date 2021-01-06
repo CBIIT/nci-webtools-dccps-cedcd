@@ -140,8 +140,15 @@ const CohortForm = ({ ...props }) => {
 
                         if (currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) { dispatch(allactions.cohortErrorActions.dataCollection(true)) }
 
+                        if(currentCohort.data_collected_other_specify || !currentCohort.data_collected_other) {dispatch(allactions.cohortErrorActions.data_collected_other_specify(true))}
+
                         if (currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.requirements(true)) }
+
+                        if(currentCohort.restrictions_other_specify || !currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
+
                         if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
+
+                        if(currentCohort.strategy_other_specify || !currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
 
                         //just need to remove the first investigator error on load, since only investigator 0 has errors initially
                         if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
@@ -277,7 +284,7 @@ const CohortForm = ({ ...props }) => {
         if (result) {
             dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
         } else {
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+            dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
         }
     }
 
@@ -705,8 +712,13 @@ const CohortForm = ({ ...props }) => {
                                                     style={{ color: 'red', borderBottom: '1px solid red', fontWeight: 'normal' }}
                                                     name='clarification_contact' 
                                                     checked={cohort.clarification_contact === 0} 
-                                                    onClick={() => 
-                                                        dispatch(allactions.cohortActions.clarification_contact(0))
+                                                    onClick={() => {
+                                                        if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                            dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                        }}
                                                     } 
                                                     label="No" />                                            
                                             </Reminder> :
@@ -717,8 +729,13 @@ const CohortForm = ({ ...props }) => {
                                                 style={{ fontWeight: 'normal '}}
                                                 name='clarification_contact' 
                                                 checked={cohort.clarification_contact === 0} 
-                                                onClick={() => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.clarification_contact(0))} 
+                                                onClick={() => {
+                                                    if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                        dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                        dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                        dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                    }}}
                                                 label="No" />
                                         }
 
@@ -731,8 +748,13 @@ const CohortForm = ({ ...props }) => {
                                                     style={{ color: 'red', borderBottom: '1px solid red', fontWeight: 'normal' }}
                                                     name="clarification_contact" 
                                                     checked={cohort.clarification_contact === 1} 
-                                                    onClick={(e) => 
-                                                        setPerson(e, '', '', '', '', 1, 'contacter')} 
+                                                    onClick={(e) => {
+                                                        setPerson(e, '', '', '', '', 1, 'contacter');
+                                                        dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                    }}
                                                     label="Yes" />
                                             </Reminder> :
                                             <Form.Check type="radio"
@@ -742,9 +764,14 @@ const CohortForm = ({ ...props }) => {
                                                 style={{ fontWeight: 'normal '}}
                                                 name="clarification_contact"
                                                 checked={cohort.clarification_contact === 1} 
-                                                onClick={(e) => 
-                                                    !isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
-                                                } 
+                                                onClick={(e) => {
+                                                    if(!isReadOnly) {
+                                                        setPerson(e, '', '', '', '', 1, 'contacter');
+                                                        dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                        dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                }}} 
                                                 label="Yes" />
                                         }
                                     </div>
@@ -756,9 +783,11 @@ const CohortForm = ({ ...props }) => {
                                     email='contacterEmail' 
                                     colWidth='12' 
                                     errors={errors}
+                                   // errorRecoverFlag={cohort.clarification_contact === 1}
                                     disabled={cohort.clarification_contact||isReadOnly} 
                                     displayStyle={saved} 
-                                    leftPadding='0' />
+                                    leftPadding='0' 
+                                     />
                             </Form.Group>
                         </CollapsiblePanel>
                         
@@ -841,7 +870,6 @@ const CohortForm = ({ ...props }) => {
                                     <div className='col-xs-12' style={{ marginBottom: '18px' }}>
                                         <div style={{ paddingLeft: '0', marginBottom: '5px' }}>Baseline population consists of</div>
                                         <div className='col-xs-12' style={{ paddingLeft: '0', marginBottom: '5px' }}>
-                                            {console.log(cohort.eligible_disease)}
                                             <input type='checkbox' name='cancerSurvivors' checked={cohort.eligible_disease} onChange={() => dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))} readOnly={isReadOnly} />{' '} Cancer survivors only, specify cancer site(s)
                                         </div>
                                         <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0', paddingRight: '0', marginBottom: window.innerWidth <= 1000 ? '10px' : '20px' }}>
@@ -904,14 +932,14 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_ongoing && saved ? <Reminder message='Required Field'><span style={{ color: 'red', borderBottom: '1px solid red' }}><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
                                             dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                            dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
                                         }} />{' '}Yes</span></Reminder> : <span><input type='radio' name='enrollment_ongoing' value='1' checked={cohort.enrollment_ongoing === 1} onChange={e => {
                                             if (!isReadOnly) {
                                                 dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
                                             }
                                         }} />{' '}Yes</span>} </span>
                                 </div>
