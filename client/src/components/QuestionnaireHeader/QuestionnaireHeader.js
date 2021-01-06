@@ -11,8 +11,8 @@ const QuestionnaireHeader = ({ ...props }) => {
         publish_time: publishTime,
         update_time: updateTime,
     } = useSelector(state => state.cohort);
-    const publishDate = publishTime ? parseISO(publishTime) : null;
-    const updateDate = updateTime ? parseISO(updateTime) : null;
+    const publishDate = status != 'new' && publishTime ? parseISO(publishTime) : null;
+    const updateDate = status != 'new' && updateTime ? parseISO(updateTime) : null;
     const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
