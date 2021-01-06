@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { UserSessionContext } from '../../index';
 import './Tab.css';
 
 export default function Tab(props) {
   const userSession = useContext(UserSessionContext);
-
+  const cohortId = useSelector(state => state.cohortIDReducer);
   let name;
   let url;
   let target;
@@ -39,10 +40,18 @@ export default function Tab(props) {
     url="/contact"
   }
   else if(props.value === 7){
+    let cohorts = userSession ? userSession.cohorts : [];
+
+    if (cohortId)
+      url = `/cohort/questionnaire/${cohortId}`;
+    else if (cohorts.length === 1)
+      url = `/cohort/questionnaire/${cohorts[0].id}`;
+    else if (cohorts.length > 1)
+      url = '/cohort/select';
+    else
+      url = '/home';
+    
     name="Questionnaire"
-    url = userSession && userSession.cohorts && userSession.cohorts[0]
-      ? `/cohort/questionnaire/${userSession.cohorts[0].id}`
-      : 'home'
     target = "_self"
   }
   else{
