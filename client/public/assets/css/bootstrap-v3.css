@@ -2607,7 +2607,7 @@ input[type="search"] {
   input[type="month"].form-control {
     line-height: 34px;
   }
-  input[type="date"].input-sm,
+  /* input[type="date"].input-sm,
   input[type="time"].input-sm,
   input[type="datetime-local"].input-sm,
   input[type="month"].input-sm,
@@ -2626,7 +2626,7 @@ input[type="search"] {
   .input-group-lg input[type="datetime-local"],
   .input-group-lg input[type="month"] {
     line-height: 46px;
-  }
+  } */
 }
 .form-group {
   margin-bottom: 15px;
@@ -2796,7 +2796,7 @@ select[multiple].input-lg {
   text-align: center;
   pointer-events: none;
 }
-.input-lg + .form-control-feedback,
+/* .input-lg + .form-control-feedback,
 .input-group-lg + .form-control-feedback,
 .form-group-lg .form-control + .form-control-feedback {
   width: 46px;
@@ -2809,7 +2809,7 @@ select[multiple].input-lg {
   width: 30px;
   height: 30px;
   line-height: 30px;
-}
+} */
 .has-success .help-block,
 .has-success .control-label,
 .has-success .radio,
@@ -2832,11 +2832,11 @@ select[multiple].input-lg {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;
 }
-.has-success .input-group-addon {
+/* .has-success .input-group-addon {
   color: #3c763d;
   background-color: #dff0d8;
   border-color: #3c763d;
-}
+} */
 .has-success .form-control-feedback {
   color: #3c763d;
 }
@@ -2862,11 +2862,11 @@ select[multiple].input-lg {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #c0a16b;
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #c0a16b;
 }
-.has-warning .input-group-addon {
+/* .has-warning .input-group-addon {
   color: #8a6d3b;
   background-color: #fcf8e3;
   border-color: #8a6d3b;
-}
+} */
 .has-warning .form-control-feedback {
   color: #8a6d3b;
 }
@@ -2892,11 +2892,11 @@ select[multiple].input-lg {
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #ce8483;
 }
-.has-error .input-group-addon {
+/* .has-error .input-group-addon {
   color: #a94442;
   background-color: #f2dede;
   border-color: #a94442;
-}
+} */
 .has-error .form-control-feedback {
   color: #a94442;
 }
@@ -2926,7 +2926,7 @@ select[multiple].input-lg {
   .form-inline .form-control-static {
     display: inline-block;
   }
-  .form-inline .input-group {
+  /* .form-inline .input-group {
     display: inline-table;
     vertical-align: middle;
   }
@@ -2937,7 +2937,7 @@ select[multiple].input-lg {
   }
   .form-inline .input-group > .form-control {
     width: 100%;
-  }
+  } */
   .form-inline .control-label {
     margin-bottom: 0;
     vertical-align: middle;
@@ -3672,7 +3672,7 @@ tbody.collapse.in {
 .btn-toolbar {
   margin-left: -5px;
 }
-.btn-toolbar .btn,
+/* .btn-toolbar .btn,
 .btn-toolbar .btn-group,
 .btn-toolbar .input-group {
   float: left;
@@ -3681,7 +3681,7 @@ tbody.collapse.in {
 .btn-toolbar > .btn-group,
 .btn-toolbar > .input-group {
   margin-left: 5px;
-}
+} */
 .btn-group > .btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
   border-radius: 0;
 }
@@ -3813,27 +3813,27 @@ tbody.collapse.in {
   clip: rect(0, 0, 0, 0);
   pointer-events: none;
 }
-.input-group {
+/* .input-group {
   position: relative;
   display: table;
   border-collapse: separate;
-}
-.input-group[class*="col-"] {
+} */
+/* .input-group[class*="col-"] {
   float: none;
   padding-right: 0;
   padding-left: 0;
-}
-.input-group .form-control {
+} */
+/* .input-group .form-control {
   position: relative;
   z-index: 2;
   float: left;
   width: 100%;
   margin-bottom: 0;
-}
-.input-group .form-control:focus {
+} */
+/* .input-group .form-control:focus {
   z-index: 3;
-}
-.input-group-lg > .form-control,
+} */
+/* .input-group-lg > .form-control,
 .input-group-lg > .input-group-addon,
 .input-group-lg > .input-group-btn > .btn {
   height: 46px;
@@ -3841,8 +3841,8 @@ tbody.collapse.in {
   font-size: 18px;
   line-height: 1.3333333;
   border-radius: 6px;
-}
-select.input-group-lg > .form-control,
+} */
+/* select.input-group-lg > .form-control,
 select.input-group-lg > .input-group-addon,
 select.input-group-lg > .input-group-btn > .btn {
   height: 46px;
@@ -3864,8 +3864,8 @@ select[multiple].input-group-lg > .input-group-btn > .btn {
   font-size: 12px;
   line-height: 1.5;
   border-radius: 3px;
-}
-select.input-group-sm > .form-control,
+} */
+/* select.input-group-sm > .form-control,
 select.input-group-sm > .input-group-addon,
 select.input-group-sm > .input-group-btn > .btn {
   height: 30px;
@@ -3878,13 +3878,13 @@ select[multiple].input-group-sm > .form-control,
 select[multiple].input-group-sm > .input-group-addon,
 select[multiple].input-group-sm > .input-group-btn > .btn {
   height: auto;
-}
-.input-group-addon,
+} */
+/* .input-group-addon,
 .input-group-btn,
 .input-group .form-control {
   display: table-cell;
-}
-.input-group-addon:not(:first-child):not(:last-child),
+} */
+/* .input-group-addon:not(:first-child):not(:last-child),
 .input-group-btn:not(:first-child):not(:last-child),
 .input-group .form-control:not(:first-child):not(:last-child) {
   border-radius: 0;
@@ -3970,7 +3970,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .input-group-btn:last-child > .btn-group {
   z-index: 2;
   margin-left: -1px;
-}
+} */
 .nav {
   padding-left: 0;
   margin-bottom: 0;
@@ -4389,7 +4389,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   .navbar-form .form-control-static {
     display: inline-block;
   }
-  .navbar-form .input-group {
+  /* .navbar-form .input-group {
     display: inline-table;
     vertical-align: middle;
   }
@@ -4400,7 +4400,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
   .navbar-form .input-group > .form-control {
     width: 100%;
-  }
+  } */
   .navbar-form .control-label {
     margin-bottom: 0;
     vertical-align: middle;
@@ -5864,6 +5864,7 @@ button.close {
   background: transparent;
   border: 0;
 }
+/*
 .modal-open {
   overflow: hidden;
 }
@@ -6011,7 +6012,7 @@ button.close {
 
   line-break: auto;
 }
-/* .tooltip.in {
+ .tooltip.in {
   filter: alpha(opacity=90);
   opacity: .9;
 }

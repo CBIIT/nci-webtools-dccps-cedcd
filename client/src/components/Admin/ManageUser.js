@@ -40,7 +40,7 @@ class ManageUser extends Component {
 
 		filter.userNameSearch = changeEvent.target.value;
 
-		if (changeEvent.target.value)
+		if (!['', "", undefined, null].includes(changeEvent.target.value))
 			list = list.filter(function (item) {
 				if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
 				if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
@@ -262,7 +262,7 @@ class ManageUser extends Component {
 
 		return <UserSessionContext.Consumer>
 			{userSession => (
-				!(process.env.NODE_ENV === 'development2' || (userSession && userSession.role === 'SystemAdmin')) &&
+				!(userSession && userSession.role === 'SystemAdmin') &&
 				<Unauthorized /> ||
 				<div className="col-md-12 col-12">
 					<h1 className="welcome pg-title">Manage Users</h1>

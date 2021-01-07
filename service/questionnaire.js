@@ -493,7 +493,7 @@ router.get('/cohort/:id(\\d+)', async (request, response) => {
             throw new Error(`Invalid cohort: ${id}`);
 
         // only allow SystemAdmins to administer user mapping roles
-        const restrictedTables = process.env.NODE_ENV === 'development' || /SystemAdmin/.test(session.user.role)
+        const restrictedTables = /SystemAdmin/.test(session.user.role)
             ? []
             : ['cohort_user_mapping'];
 
@@ -530,7 +530,7 @@ router.post('/cohort(/:id(\\d+))?', async (request, response) => {
     try {
         // only allow SystemAdmins to administer user mapping roles
         // todo: store table-specific acl rules in the database
-        const restrictedTables = process.env.NODE_ENV === 'development' || /SystemAdmin/.test(session.user.role)
+        const restrictedTables = /SystemAdmin/.test(session.user.role)
             ? []
             : ['cohort_user_mapping'];
 

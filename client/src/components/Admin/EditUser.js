@@ -28,7 +28,7 @@ const EditUser = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false);
     const [userEmail, setUserEmail] = useState('');
     const [userName, setUserName] = useState('');
-    const [userRole, setUserRole] = useState('Cohort Owner');
+    const [userRole, setUserRole] = useState('');
 
     const isNew = props.isNew;
 
@@ -44,6 +44,7 @@ const EditUser = ({ ...props }) => {
         firstName_error: '',
         lastName_error: '',
         userName_error: '',
+        userRole_error: '',
         cohortList_error: ''
     })
 
@@ -99,6 +100,17 @@ const EditUser = ({ ...props }) => {
     const handleMultiChange = (option) => {
        setCohortList(option)
       }
+    
+    const resetState = () =>{
+        setUserName('')
+        setUserEmail('')
+        setFirstName('')
+        setLastName('')
+        setUserName('')
+        setUserRole('')
+        setActiveStatus('')
+        setCohortList([])
+    }
 
 
     const handleSave = () => {
@@ -125,6 +137,7 @@ const EditUser = ({ ...props }) => {
                 }).then(res => res.json());
                 if (result.status === 200) {
                     setSuccessMsg(true)
+                    resetState()
                 } else {
                     setFailureMsg(true)
                 }
@@ -144,6 +157,7 @@ const EditUser = ({ ...props }) => {
         copy.firstName_error = isNull(firstName) ? 'Missing required field' : ''
         copy.lastName_error = isNull(lastName) ? 'Missing required field' : ''
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
+        copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
       
         if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
             if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
@@ -164,7 +178,7 @@ const EditUser = ({ ...props }) => {
 
     return <UserSessionContext.Consumer>
         {userSession => (
-            !(process.env.NODE_ENV === 'development' || (userSession && userSession.role === 'SystemAdmin')) &&
+            !(userSession && userSession.role === 'SystemAdmin') &&
             <Unauthorized /> ||
             <div id='editUserContainer' className='col-md-12'>
                 {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
@@ -172,8 +186,8 @@ const EditUser = ({ ...props }) => {
 
                 <CenterModal
                     show={modalShow}
-                    title={<h2>Confirmation Required</h2>}
-                    body={<div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
+                    title={<span>Confirmation Required</span>}
+                    body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
                     footer={<div>
                         <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
                     </div>}
@@ -184,7 +198,7 @@ const EditUser = ({ ...props }) => {
                         <div id="edituser-header" className="col-md-12">
                             {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                         </div>
-                        {nonExistUser ? <div className="col-md-12 col-6">>
+                        {nonExistUser ? <div className="col-md-12 col-6">
                              <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
                             <div className="bttn-group col-md-4 col-xs-6">
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
@@ -195,7 +209,7 @@ const EditUser = ({ ...props }) => {
                                 <form >
                                     <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                                     <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>Account Name <span className="required">*</span></label>
+                                        <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
                                         {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
                                             <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
@@ -233,13 +247,16 @@ const EditUser = ({ ...props }) => {
                                     </div>
                                     <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12" >
                                         <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
+                                        {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
                                         <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
                                             <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
-                                                checked={userRole === 'Admin'} onChange={(e) => setUserRole(e.target.value)} /> Admin</span>
+                                                checked={userRole === 'Admin'} onChange={(e) => {setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
                                         </div>
                                         <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
                                             <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
-                                                checked={userRole !== 'Admin'} onChange={(e) => { setUserRole(e.target.value); setCohortList([]) }} />{' '}Cohort Owner</span>
+                                                checked={userRole === 'Cohort Owner'} onChange={(e) => { setUserRole(e.target.value); setCohortList([]); 
+                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) 
+                                                 }} />{' '}Cohort Owner</span>
                                         </div>
                                     </div>
 
