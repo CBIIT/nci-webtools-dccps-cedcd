@@ -13,62 +13,74 @@ $active-step-label-font-weight: bold;
 .stepper {
   display: flex;
   justify-content: space-between;
-  position: relative;
-
-  &:after {
-    content: '';
-    display: block;
-    position: absolute;
-    width: 98%;
-    margin-left: 1%;
-    margin-top: (
-      $step-radius
-      + $step-padding
-      + $step-border-width
-      - $line-width
-    ) / 2;
-    border-top: $line-width solid $line-color;
-    z-index: 0
-  }
 
   .step {
-    width: $step-radius + $step-padding;
-    height: $step-radius + $step-padding;
-    border: $step-border-width solid $step-border-color;
-    border-radius: 50%;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
-    cursor: pointer;
-    z-index: 1;
-  
-    .step-label {
+    flex-grow: 1;
+
+    &:not(:first-child):before,
+    &:not(:last-child):after {
+      content: '';
+      border-top: $line-width solid $line-color;
+      width: 50%;
+      top: (
+        $step-radius
+        + $step-padding
+        + $step-border-width
+        - $line-width
+      ) / 2;
       position: absolute;
-      top: $step-radius + $step-padding + $step-border-width;
-      text-align: center;
-      white-space: nowrap;
+      z-index: -1;
     }
 
-    &.active .step-label {
-      color: $active-step-label-color;
-      text-decoration: $active-step-label-decoration;
-      font-weight: $active-step-label-font-weight;
-    }
-  
-    &:hover {
-      border-color: $step-border-color-hover;
-    }
-  
     &:after {
-      content: '';
+      right: 0;
+    }
+
+    &.active {
+      .step-label {
+        color: $active-step-label-color;
+        text-decoration: $active-step-label-decoration;
+        font-weight: $active-step-label-font-weight;
+      }
+    }
+  
+    .step-label-container {
       display: flex;
       justify-content: center;
-      background-color: $step-background-color;
-      width: $step-radius;
-      height: $step-radius;
-      border-radius: 50%;
+    }
+      
+    .step-label {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      position: relative;
+      cursor: pointer;
+
+      &:hover:before {
+        border-color: $step-border-color-hover;
+      }
+      
+      &:before {
+        content: '';
+        display: block;
+        width: $step-radius + $step-padding;
+        height: $step-radius + $step-padding;
+        background-color: white;
+        border-radius: 50%;
+        border: $step-border-width solid $step-border-color;
+      }
+  
+      &:after {
+        content: '';
+        display: block;
+        width: $step-radius;
+        height: $step-radius;
+        background-color: $step-background-color;
+        border-radius: 50%;
+        position: absolute;
+        top: $step-border-width + ($step-padding / 2);
+      }
     }
   }
 }
