@@ -423,7 +423,7 @@ const MajorContentForm = ({ ...props }) => {
                         </Form.Group>
 */}   
                         <div >
-                            <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
+                            <span>Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort</span>
                         </div>
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
@@ -583,7 +583,7 @@ const MajorContentForm = ({ ...props }) => {
                                                 onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }}} />{" "}No</span>
                                         </div>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.originBaseLine === 1}
+                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 1}
                                                 onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }}} />{' '}Yes</span>
                                         </div>
                                     </div>
@@ -656,7 +656,7 @@ const MajorContentForm = ({ ...props }) => {
                                         </div>
                                         <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
                                             <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryBaseLine(1)); dispatch(allactions.majorContentErrorActions.setAnthropometryBaseLine(true)) }}} />{' '}Yes</span>
+                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryBaseLine(1)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(true)) }}} />{' '}Yes</span>
                                         </div>
                                     </div>
                                 </div>
@@ -945,7 +945,7 @@ const MajorContentForm = ({ ...props }) => {
                                         <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPipeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeBaseLine(e.target.checked)) }}}/>{' '} Pipes
                                 </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }}}/>{' '} Chewing Tabacco
+                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }}}/>{' '} Chewing Tobacco
                                 </span>
                                     <span className='col-xs-12'>
                                         <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setEcigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }}}/>{' '} E-cigarettes
@@ -974,7 +974,7 @@ const MajorContentForm = ({ ...props }) => {
                                     <span className='col-xs-12'>
                                         <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPipeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeFollowUp(e.target.checked)) }} }/> {' '} Pipes </span>
                                     <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} }/>{' '} Chewing Tabacco
+                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} }/>{' '} Chewing Tobacco
                                 </span>
                                     <span className='col-xs-12'>
                                         <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setEcigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }}}/>{' '} E-cigarettes
