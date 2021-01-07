@@ -214,6 +214,7 @@ const CohortForm = ({ ...props }) => {
             })
     }
     const handleSave = () => {
+        console.dir(errors)
         setSaved(true)
         /*
                 if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
@@ -234,6 +235,7 @@ const CohortForm = ({ ...props }) => {
     }
 
     const handleSaveContinue = () => {
+        
         setSaved(true)
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
@@ -713,9 +715,15 @@ const CohortForm = ({ ...props }) => {
                                                             type="radio"
                                                             className="mr-2"
                                                             checked={cohort.clarification_contact === 0} 
-                                                            onClick={e => 
-                                                                setPerson(e, '', '', '', '', 0, 'contacter')
-                                                            } />
+                                                            onClick={e => {
+                                                                //setPerson(e, '', '', '', '', 0, 'contacter')
+                                                                if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                    dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                }
+                                                            }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             No
                                                         </Form.Check.Label>
@@ -729,9 +737,15 @@ const CohortForm = ({ ...props }) => {
                                                         type="radio"
                                                         className="mr-2"
                                                         checked={cohort.clarification_contact === 0} 
-                                                        onClick={e => 
-                                                            !isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
-                                                        } />
+                                                        onClick={e => {
+                                                            //!isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
+                                                            if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                                dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                            }
+                                                        }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         No
                                                     </Form.Check.Label>
@@ -749,8 +763,16 @@ const CohortForm = ({ ...props }) => {
                                                             type="radio"
                                                             className="mr-2"
                                                             checked={cohort.clarification_contact === 1} 
-                                                            onClick={e => 
-                                                                setPerson(e, '', '', '', '', 1, 'contacter')
+                                                            onClick={e => {
+                                                                //setPerson(e, '', '', '', '', 1, 'contacter')
+                                                                if(!isReadOnly) {
+                                                                    setPerson(e, '', '', '', '', 1, 'contacter');
+                                                                    dispatch(allactions.cohortActions.clarification_contact(1));
+                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                    dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                            }}
                                                             } />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             Yes 
@@ -766,9 +788,17 @@ const CohortForm = ({ ...props }) => {
                                                         type="radio"
                                                         className="mr-2"
                                                         checked={cohort.clarification_contact === 1} 
-                                                        onClick={e => 
-                                                            !isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
-                                                        } />
+                                                        onClick={e => {
+                                                            //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
+                                                            if(!isReadOnly) {
+                                                                setPerson(e, '', '', '', '', 1, 'contacter');
+                                                                dispatch(allactions.cohortActions.clarification_contact(1));
+                                                                dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                        }
+                                                        }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         Yes
                                                     </Form.Check.Label>
@@ -843,6 +873,7 @@ const CohortForm = ({ ...props }) => {
                                         <Person id="collaborator"
                                             type="collaboratorCountry" 
                                             name="collaboratorName" 
+                                            //name="contacterName"
                                             position="collaboratorPosition" 
                                             phone="collaboratorPhone" 
                                             email="collaboratorEmail" 
