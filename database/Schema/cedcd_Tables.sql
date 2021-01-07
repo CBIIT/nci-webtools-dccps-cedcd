@@ -43,12 +43,12 @@ CREATE TABLE `lu_cancer` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_person_category`;
+DROP TABLE IF EXISTS `lu_case_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_person_category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category` varchar(100) NOT NULL,
+CREATE TABLE `lu_case_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `case_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -66,8 +66,8 @@ DROP TABLE IF EXISTS `lu_data_category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_data_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category` varchar(500) NOT NULL,
-  `sub_category` varchar(500) DEFAULT NULL,
+  `category` varchar(250) NOT NULL,
+  `sub_category` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -89,6 +89,16 @@ CREATE TABLE `lu_gender` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
+
+DROP TABLE IF EXISTS `lu_person_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_person_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+
 DROP TABLE IF EXISTS `lu_race`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -105,15 +115,6 @@ CREATE TABLE `lu_specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `specimen` varchar(100) NOT NULL,
   `sub_category` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
-
-DROP TABLE IF EXISTS `lu_case_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_case_type` (
-  `id` int(4) NOT NULL AUTO_INCREMENT,
-  `case_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -156,7 +157,7 @@ CREATE TABLE `cohort_basic` (
   `request_procedures_none` int(1) DEFAULT NULL,
   `sameAsSomeone` int(1) DEFAULT NULL,
   `cohort_description` varchar(5000) DEFAULT NULL,
-  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
+  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-All\n1-Female\n2-Male\n3-Unknown',
   `eligible_disease` int(1) DEFAULT NULL,
   -- hasCancerSite
   `eligible_disease_cancer_specify` varchar(100) DEFAULT NULL,
@@ -199,11 +200,11 @@ CREATE TABLE `cohort_basic` (
   `data_file_attached`  INT(1) DEFAULT NULL,
   `specimen_file_attached`  INT(1) DEFAULT NULL,
   `publication_file_attached`  INT(1) DEFAULT NULL,
-  `questionnaire_url` varchar(100) DEFAULT NULL,
-  `main_cohort_url` varchar(100) DEFAULT NULL,
-  `data_url` varchar(100) NULL,
-  `specimen_url` varchar(100) NULL,
-  `publication_url` varchar(100) NULL,
+  `questionnaire_url` varchar(200) DEFAULT NULL,
+  `main_cohort_url` varchar(200) DEFAULT NULL,
+  `data_url` varchar(200) NULL,
+  `specimen_url` varchar(200) NULL,
+  `publication_url` varchar(200) NULL,
   `enrollment_most_recent_date` datetime DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -342,10 +343,10 @@ CREATE TABLE `dlh` (
   `dlh_nih_other` int(1) DEFAULT NULL,
   `dlh_procedure_online` int(1) DEFAULT NULL,
   `dlh_procedure_website` int(1) DEFAULT NULL,
-  `dlh_procedure_url` varchar(300) DEFAULT NULL,
-  `dlh_procedure_attached` varchar(300) DEFAULT NULL,
+  `dlh_procedure_url` varchar(200) DEFAULT NULL,
+  `dlh_procedure_attached` varchar(200) DEFAULT NULL,
   `dlh_procedure_enclave` int(1) DEFAULT NULL,
-  `dlh_enclave_location` varchar(300) DEFAULT NULL,
+  `dlh_enclave_location` varchar(200) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
@@ -476,7 +477,7 @@ CREATE TABLE `specimen_collected_type` (
   `specimen_id` int NOT NULL,
   `collected_yn` int DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `specimen_collected__cohort_id_idx` (`cohort_id`),
   KEY `specimen_collected_type_idx` (`specimen_id`),
@@ -543,14 +544,14 @@ DROP TABLE IF EXISTS `cohort_user_mapping`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort_user_mapping` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cohort_acronym` varchar(100) DEFAULT NULL,
+  `cohort_acronym` varchar(100) NOT NULL,
   `user_id` int NOT NULL,
   `active` varchar(10) NOT NULL DEFAULT 'Y',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`cohort_acronym`,`user_id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `cohort_user_user_id` (`user_id`),
-  KEY `cohort_user_mapping_cohort_acronym_fk` (`cohort_acronym`),
   CONSTRAINT `cohort_user_mapping_cohort_acronym_fk` FOREIGN KEY (`cohort_acronym`) REFERENCES `cohort` (`acronym`),
   CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
