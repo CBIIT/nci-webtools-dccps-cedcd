@@ -60,10 +60,6 @@ const MortalityForm = ({ ...props }) => {
                     setEmails(result.data.emails)
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
-                        let completion = result.data.completion[0].status
-
-                        if (completion !== 'complete')
-                            completion = 'incomplete'
 
                         batch(() => {
                             dispatch(allactions.mortalityActions.setHasLoaded(true))
@@ -80,14 +76,7 @@ const MortalityForm = ({ ...props }) => {
                             dispatch(allactions.mortalityActions.setOtherCode(data.mort_death_code_used_other))
                             dispatch(allactions.mortalityActions.setOtherCodeSpecify(data.mort_death_code_used_other_specify))
                             dispatch(allactions.mortalityActions.setDeathNumbers(data.mort_number_of_deaths))
-
-                            dispatch(allactions.mortalityActions.setSectionEStatus(completion))
-                            dispatch(allactions.sectionActions.setSectionStatus('E', completion))
                         })
-                    }
-                    else {
-                        dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                        dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
                     }
                 })
         }

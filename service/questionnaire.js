@@ -293,7 +293,6 @@ router.post('/mortality/:id', function (req, res) {
         logger.debug(result)
         const mortality = {}
         mortality.info = result[0]
-        mortality.completion = result[1]
 
         if (mortality)
             res.json({ status: 200, data: mortality })
