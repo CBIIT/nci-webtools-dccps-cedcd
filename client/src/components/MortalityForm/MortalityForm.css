@@ -10,7 +10,7 @@
 }
 
 .form-group.has-error label {
-    color: red;
+    /* color: red; */
 }
 
 .question{
