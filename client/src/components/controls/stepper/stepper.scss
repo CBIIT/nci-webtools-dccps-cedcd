@@ -1,0 +1,74 @@
+$line-width: 6px;
+$line-color: rgb(153, 255, 51);
+$step-radius: 25px;
+$step-padding: 6px;
+$step-background-color: orange;
+$step-border-width: 4px;
+$step-border-color: orange;
+$step-border-color-hover: blue;
+$active-step-label-color: blue;
+$active-step-label-decoration: underline;
+$active-step-label-font-weight: bold;
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    width: 98%;
+    margin-left: 1%;
+    margin-top: (
+      $step-radius
+      + $step-padding
+      + $step-border-width
+      - $line-width
+    ) / 2;
+    border-top: $line-width solid $line-color;
+    z-index: 0
+  }
+
+  .step {
+    width: $step-radius + $step-padding;
+    height: $step-radius + $step-padding;
+    border: $step-border-width solid $step-border-color;
+    border-radius: 50%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    z-index: 1;
+  
+    .step-label {
+      position: absolute;
+      top: $step-radius + $step-padding + $step-border-width;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    &.active .step-label {
+      color: $active-step-label-color;
+      text-decoration: $active-step-label-decoration;
+      font-weight: $active-step-label-font-weight;
+    }
+  
+    &:hover {
+      border-color: $step-border-color-hover;
+    }
+  
+    &:after {
+      content: '';
+      display: flex;
+      justify-content: center;
+      background-color: $step-background-color;
+      width: $step-radius;
+      height: $step-radius;
+      border-radius: 50%;
+    }
+  }
+}
