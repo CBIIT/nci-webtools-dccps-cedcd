@@ -5864,6 +5864,7 @@ button.close {
   background: transparent;
   border: 0;
 }
+/*
 .modal-open {
   overflow: hidden;
 }
@@ -6011,7 +6012,7 @@ button.close {
 
   line-break: auto;
 }
-/* .tooltip.in {
+ .tooltip.in {
   filter: alpha(opacity=90);
   opacity: .9;
 }

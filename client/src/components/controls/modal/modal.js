@@ -1,17 +1,16 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import "./modal.css"
 const CenterModal = (props) => {
   return (
-    <Modal show={props.show} animation={false}>
-      <Modal.Header className="modalHeader">
+    <Modal show={props.show} >
+      <Modal.Header>
         <Modal.Title>
           { props.title || 
-            <h2>Saving Confirmation</h2>
+            <span>Saving Confirmation</span>
           }
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center">
+      <Modal.Body className="text-center py-5">
         { props.body || 
           <span>There are validation errors, are you sure to save?</span>
         }
@@ -19,21 +18,13 @@ const CenterModal = (props) => {
       <Modal.Footer>
         { props.footer || 
             <div>
-              <button className='btn btn-primary' 
-                style={{
-                  marginRight: '5px', 
-                  // border: '1px solid #1c8282', 
-                  // backgroundColor: 'white', 
-                  // color: '#1c8282', 
-                  // paddingTop: '5px'
-                }} 
+              <button 
+                className='btn btn-primary mr-1' 
                 onClick={props.handleClose}>
                   Close
               </button>
-              <button className='btn btn-primary'  
-                style={{
-                  marginRight: '10px'
-                }} 
+              <button 
+                className='btn btn-primary'  
                 onClick={props.handleContentSave}>
                   Save
               </button>
