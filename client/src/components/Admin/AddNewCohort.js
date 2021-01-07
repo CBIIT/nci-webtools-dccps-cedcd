@@ -55,7 +55,7 @@ class AddNewCohort extends Component {
 
         owners.map((owner) => {
           const name = owner.first_name + ' ' + owner.last_name + ' (' + owner.email + ')'
-          const option = { value: owner.id, label: name }
+          const option = { value: owner.id, label: name, name: owner.first_name + ' ' + owner.last_name, email: owner.email }
           toAddOwners.push(option)
         })
 
@@ -69,7 +69,7 @@ class AddNewCohort extends Component {
     })
   }
 
-  handleCancel = () =>{
+  handleCancel = () => {
     window.location.assign(window.location.origin + '/admin/managecohort/')
   }
 
@@ -77,6 +77,37 @@ class AddNewCohort extends Component {
     let dict = {};
     dict[field] = event.target.value;
     this.setState(dict);
+  }
+
+  sendEmail(userName, userEmail) {
+    let reqBody = {
+      templateData: {
+        user: userName,
+        cohortName: this.state.cohortName,
+        cohortAcronym: this.state.cohortAcronym,
+        website: window.location.origin
+      },
+      email: userEmail,
+      topic: 'CEDCD Cohort assigned to your account - ' + this.state.cohortAcronym,
+    };
+    fetch('/api/cohort/sendEmail', {
+      method: "POST",
+      body: JSON.stringify(reqBody),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => res.json())
+      .then(result => {
+        if (result && result.status === 200) {
+          //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+          //clearTimeout(timedMessage)
+        }
+        else {
+          //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+          //clearTimeout(timedMessage)
+        }
+      })
   }
 
 
@@ -103,7 +134,7 @@ class AddNewCohort extends Component {
         state.name_error = ''
         state.acronym_error = ''
         state.notes_error = ''
-
+        console.log(cohortList)
 
         if (state.cohortName === null || !state.cohortName) {
           state.name_error = 'required field'
@@ -139,8 +170,10 @@ class AddNewCohort extends Component {
 
         let ownerIDs = []
 
+
         if (state.cohortOwners != null) {
           state.cohortOwners.map((owner) => {
+
             ownerIDs.push(owner.value)
           })
         }
@@ -186,6 +219,14 @@ class AddNewCohort extends Component {
               notes: ""
             });
           }, 1500);
+
+          if (state.cohortOwners != null) {
+
+            state.cohortOwners.map((owner) => {
+
+              this.sendEmail(owner.name, owner.email)
+            })
+          }
         }
       });
 

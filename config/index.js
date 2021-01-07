@@ -126,8 +126,11 @@ var all = {
 		"2": "Report a Bug",
 		"3": "Question for NCI CEDCD Researcher Team",
 		"4": "Other Issues"
+	},
+	mail:{
+		"host": "mailfwd.nih.gov",
+		"port": 25,
 	}
-
 };
 
 module.exports = _.merge(all, require('./template.js'), require('./cedcd.settings'));
