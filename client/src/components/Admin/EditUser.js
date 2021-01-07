@@ -186,8 +186,8 @@ const EditUser = ({ ...props }) => {
 
                 <CenterModal
                     show={modalShow}
-                    title={<h2>Confirmation Required</h2>}
-                    body={<div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
+                    title={<span>Confirmation Required</span>}
+                    body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
                     footer={<div>
                         <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
                     </div>}

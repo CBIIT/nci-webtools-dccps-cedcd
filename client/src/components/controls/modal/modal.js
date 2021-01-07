@@ -6,13 +6,13 @@ const CenterModal = (props) => {
       <Modal.Header>
         <Modal.Title>
           { props.title || 
-            <span>Saving Confirmation</span>
+            <span>Confirmation Required</span>
           }
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="text-center py-5">
         { props.body || 
-          <span>There are validation errors, are you sure to save?</span>
+          <span>There were validation errors. Do you still wish to save your current progress?</span>
         }
       </Modal.Body>
       <Modal.Footer>
