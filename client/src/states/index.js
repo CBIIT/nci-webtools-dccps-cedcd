@@ -314,7 +314,8 @@ const InitialStates = {
         cancerLateEffects: null,
         cancerSymptom: null,
         cancerOther: null,
-        cancerOtherSpecify: ''
+        cancerOtherSpecify: '',
+        sectionCStatus: ''
     },
     majorContentError: {
         seStatusBaseLine: true,

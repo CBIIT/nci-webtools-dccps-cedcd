@@ -79,10 +79,15 @@ router.post('/upload/:id/:category', function (req, res, next) {
 
 router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
-    mysql.callProcedure(proc, [req.body.id, req.body.cohortId], function (result) {
+    let currentFile = req.body.filename
+    let cohort_ID = req.body.cohortId
+    mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
-            if (Array.isArray(result[1]))
+            if (Array.isArray(result[1])){
+                fs.unlink(`FileBank/CohortID_${cohort_ID}/${currentFile}`, (err => { 
+                    if (err) console.log(err);}))
                 res.json({ status: 200, data: result[1][0].new_id })
+            }
             else
                 res.json({ status: 200 })
         }

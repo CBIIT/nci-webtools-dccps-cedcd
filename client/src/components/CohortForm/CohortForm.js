@@ -473,7 +473,7 @@ const CohortForm = ({ ...props }) => {
                 {files.map(f =>
                     <div className='col-xs-12' style={{ marginBottom: '3px', paddingLeft: '0' }}>
                         <span className='col-xs-10'>{f.filename}</span>
-                        {!isReadOnly && <span className='col-xs-2 closer' onClick={() => deleteFileFromList(fileListName, f.fileId, cohortID)}>x</span>}
+                        {!isReadOnly && <span className='col-xs-2 closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x</span>}
                     </div>)}
             </div>
             {/*to be removed*/}
@@ -494,10 +494,10 @@ const CohortForm = ({ ...props }) => {
         })
     }
 
-    const deleteFileFromList = (fileListName, fileId, cohort_ID) => {
+    const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
         fetch(`/api/questionnaire/deleteFile`, {
             method: "POST",
-            body: JSON.stringify({ id: fileId, cohortId: cohort_ID }),
+            body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID }),
             headers: {
                 'Content-Type': 'application/json'
             }

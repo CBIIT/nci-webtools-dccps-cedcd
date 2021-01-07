@@ -92,8 +92,8 @@ const QuestionnaireHeader = ({ ...props }) => {
         </div>
         
         <div className="d-md-none">
-            <div id='sectionA' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
+            {['in review'].includes(status) ? <div>
                  <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}>
                             <span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span>
@@ -110,8 +110,8 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </div>
             }
             </div>
-            <div id='sectionB' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('B')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            <div id='sectionB' onClick={() => ['in review'].includes(status) ? '' : props.handler('B')} style={{ marginBottom: '5px' }}>
+            {['in review'].includes(status) ? <div>
                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}>
                             <span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span>
@@ -128,8 +128,8 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </div>
                 }
             </div>
-            <div id='sectionC' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('C')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            <div id='sectionC' onClick={() => ['in review'].includes(status) ? '' : props.handler('C')} style={{ marginBottom: '5px' }}>
+            {['in review'].includes(status) ? <div>
                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}>
                             <span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span>
@@ -146,8 +146,8 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </div>
             }
             </div>
-            <div id='sectionD' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('D')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            <div id='sectionD' onClick={() => ['in review'].includes(status) ? '' : props.handler('D')} style={{ marginBottom: '5px' }}>
+            {['in review'].includes(status) ? <div>
                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}>
                             <span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span>
@@ -164,8 +164,8 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </div>
             }
             </div>
-            <div id='sectionE' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('E')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            <div id='sectionE' onClick={() => ['in review'].includes(status) ? '' : props.handler('E')} style={{ marginBottom: '5px' }}>
+            {['in review'].includes(status) ? <div>
                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}>
                             <span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span>
@@ -184,7 +184,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
 
             <div id='sectionF' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('F')} style={{ marginBottom: '5px' }}>
-            {['submitted', 'in review'].includes(status) ? <div>
+            {['in review'].includes(status) ? <div>
                 <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                         <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}>
                             <span style={props.activeSection === 'F' ? activeStyle : {}}>Data Linkage & Harmonization</span>
@@ -202,7 +202,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             <div id='sectionF' onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('G')} style={{ marginBottom: '5px' }}>
-                {['submitted', 'in review'].includes(status) ? <div>
+                {['in review'].includes(status) ? <div>
                         <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                             <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
                                 <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
@@ -223,10 +223,10 @@ const QuestionnaireHeader = ({ ...props }) => {
 
         <div className="d-none d-md-block">
             <div style={{ display: 'flex' }}>
-                <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('A')}>
+                <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('A')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -242,10 +242,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span></div>
                 </div>
-                <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('B')}>
+                <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('B')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -261,10 +261,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span></div>
                 </div>
-                <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('C')}>
+                <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('C')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -280,10 +280,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span></div>
                 </div>
-                <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('D')}>
+                <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('D')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -299,10 +299,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
                 </div>
-                <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('E')}>
+                <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('E')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -318,10 +318,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span></div>
                 </div>
-                <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('F')}>
+                <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('F')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
@@ -337,10 +337,10 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px', paddingLeft: '0', paddingRight: '0', width: '214px' }}><span style={props.activeSection === 'F' ? specialHeader : {}}>Data Linkage & Harmonization</span></div>
                 </div>
-                <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['submitted', 'in review'].includes(status) ? '' : props.handler('G')}>
+                <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('G')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['submitted', 'in review'].includes(status) ? <div>
+                        {['in review'].includes(status) ? <div>
                             <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                                 <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
