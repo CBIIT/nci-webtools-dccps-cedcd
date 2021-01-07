@@ -1695,7 +1695,7 @@ BEGIN
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NOW())
+    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NULL)
 	where cohort_id = new_id;
     -- SET @rowcount = ROW_COUNT();
     SELECT flag AS rowsAffacted;
@@ -1903,7 +1903,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mental
 
 update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp'))) where cohort_id = targetID and category_id = 40 ;
 
-update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
 
         update cancer_info set mdc_acute_treatment_toxicity = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity'))),
 							   mdc_late_effects_of_treatment = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects'))),
