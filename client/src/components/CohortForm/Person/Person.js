@@ -74,7 +74,6 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
     }, [])
 
     return (
-        // <Col sm="12">
         <>
             <Form.Group as={Row} className="mb-1">
                 <Form.Label column sm={marginWidth} style={{ fontWeight: 'normal' }}>
@@ -85,7 +84,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                         <Reminder message={errors[name]}>
                             <Form.Control type="text" 
                                 style={{ border: '1px solid red' }} 
-                                placeholder='(Max of 100 characters)' 
+                                placeholder='Max of 100 characters' 
                                 maxLength="100"
                                 name={name} 
                                 value={showValue() ? cohort[name] : ''} 
@@ -98,7 +97,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 } />
                         </Reminder> : 
                         <Form.Control type="text"
-                            placeholder='(Max of 100 characters)' 
+                            placeholder='Max of 100 characters' 
                             maxLength="100"
                             name={name} 
                             value={showValue() ? cohort[name] : ''} 
@@ -121,7 +120,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                         <Reminder message={errors[position]}>
                             <Form.Control type="text"
                                 style={{ border: '1px solid red' }} 
-                                placeholder='(Max of 100 characters)' 
+                                placeholder='Max of 100 characters' 
                                 maxLength="100" 
                                 name={position} 
                                 value={showValue() ? cohort[position] : ''} 
@@ -134,7 +133,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 } />
                         </Reminder> : 
                         <Form.Control type="text"
-                            placeholder='(Max of 100 characters)' 
+                            placeholder='Max of 100 characters' 
                             maxLength="100" 
                             name={position} 
                             value={showValue() ? cohort[position] : ''} 
@@ -179,7 +178,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             <Reminder message={errors[phone]}>
                                 <Form.Control type="text" 
                                     style={{ border: '1px solid red', width: '75%' }} 
-                                    placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
+                                    placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} 
                                     maxLength="100" 
                                     name={phone} 
                                     value={ showValue() ? cohort[phone] : ''} 
@@ -193,7 +192,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             </Reminder> :
                             <Form.Control type="text" 
                                 style={{ width: '75%' }}
-                                placeholder={cohort[type] === '+1' ? '(10 digits for USA)' : '(Max of 100 characters)'} 
+                                placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} 
                                 maxLength="100" 
                                 name={phone} 
                                 value={showValue() ? cohort[phone] : ''} 
@@ -217,7 +216,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                         <Reminder message={errors[email]}>
                             <Form.Control type="email" 
                                 style={{ border: '1px solid red' }} 
-                                placeholder="(Max of 100 characters)"
+                                placeholder="Max of 100 characters"
                                 maxLength="100" 
                                 name={email} 
                                 value={showValue() ? cohort[email] : ''} 
@@ -230,7 +229,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 } />
                         </Reminder> :
                         <Form.Control type="email" 
-                            placeholder="(Max of 100 characters)" 
+                            placeholder="Max of 100 characters" 
                             maxLength="100" 
                             name={email} 
                             value={showValue() ? cohort[email] : ''} 
@@ -243,7 +242,6 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                     }
                 </Col>
             </Form.Group> 
-            {/* </Col> */}
         </>
     )
 }
