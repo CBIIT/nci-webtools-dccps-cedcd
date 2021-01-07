@@ -6,6 +6,10 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
@@ -31,7 +35,7 @@ const MortalityForm = ({ ...props }) => {
         [name]: !activePanels[name]
     })
 
-    const radioError = 'please choose one'
+    const radioError = 'Please choose one'
 
     const [errors, setErrors] = useState({
         mortalityYear: '',
@@ -102,10 +106,10 @@ const MortalityForm = ({ ...props }) => {
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
         if (mortality.otherDeath === 1) {
             if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
-                copy.otherDeathSpecify = 'please specify'
+                copy.otherDeathSpecify = 'Please specify'
             else {
                 if (mortality.otherDeathSpecify.length > 200)
-                    copy.otherDeathSpecify = 'cannot exceed 200 characters'
+                    copy.otherDeathSpecify = 'Cannot exceed 200 characters'
                 else
                     copy.otherDeathSpecify = ''
             }
@@ -118,16 +122,16 @@ const MortalityForm = ({ ...props }) => {
         if (mortality.haveDeathCause === 1) {
 
             if (mortality.icd9 === 0 && mortality.icd10 === 0 && mortality.notCoded === 0 && mortality.otherCode === 0)
-                copy.coded = 'select at least one option'
+                copy.coded = 'Select at least one option'
             else
                 copy.coded = ''
 
             if (mortality.otherCode === 1) {
                 if (mortality.otherCodeSpecify === null || !mortality.otherCodeSpecify)
-                    copy.otherCodeSpecify = 'please specify'
+                    copy.otherCodeSpecify = 'Please specify'
                 else {
                     if (mortality.otherCodeSpecify.length > 200)
-                        copy.otherCodeSpecify = 'cannot exceed 200 characters'
+                        copy.otherCodeSpecify = 'Cannot exceed 200 characters'
                     else
                         copy.otherCodeSpecify = ''
                 }
@@ -160,12 +164,12 @@ const MortalityForm = ({ ...props }) => {
             .then(result => {
                 if (result.status === 200) {
                     if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId){
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
-                        if (result.data.status && result.data.status != cohortStatus){
-                            dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 
+                        if (result.data.status && result.data.status != cohortStatus) {
+                            dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                             dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
                         }
                     }
@@ -182,7 +186,7 @@ const MortalityForm = ({ ...props }) => {
 
 
     const handleSave = () => {
-
+        setSaved(true)
         if (validateInput()) {
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
@@ -195,7 +199,7 @@ const MortalityForm = ({ ...props }) => {
     }
 
     const handleSaveContinue = () => {
-
+        setSaved(true)
         if (validateInput()) {
             dispatch(allactions.mortalityActions.setSectionEStatus('complete'))
             dispatch(allactions.sectionActions.setSectionStatus('E', 'complete'))
@@ -292,144 +296,382 @@ const MortalityForm = ({ ...props }) => {
             onClick={_ => toggleActivePanel('A')}
             panelTitle="Mortality">
 
-            <div className={classNames("col-md-12", "form-group", errors.mortalityYear && "has-error")}>
-                <label htmlFor='mortalityYear' className='col-sm-12 question'>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
-                <div className="col-sm-2">
-                    <Reminder message={errors.mortalityYear} disabled={!errors.mortalityYear} placement="right">
-                        <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
-                    </Reminder>
-                </div>
-                {/* {errors.mortalityYear !== '' && <div className='col-md-3 error-input'>{errors.mortalityYear}</div>} */}
-            </div>
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Col sm="2">
+                    {saved && errors.mortalityYear ?
+                        <Reminder message={errors.mortalityYear} disabled={!errors.mortalityYear} placement="right">
+                            <Form.Control
+                                style={{ border: '1px solid red' }}
+                                type="text"
+                                name='mortalityYear'
+                                value={mortality.mortalityYear}
+                                readOnly={isReadOnly}
+                                onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy'
+                            />
+                        </Reminder> :
+                        <Form.Control
+                            type="text"
+                            name='mortalityYear'
+                            value={mortality.mortalityYear}
+                            readOnly={isReadOnly}
+                            onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy'
+                        />
+                    }
+                </Col>
+            </Form.Group>
 
 
-            <div className={classNames("col-md-12", "form-group", errors.otherDeathSpecify && "has-error")}>
-                <label htmlFor='confirmDeath' className='col-md-12 question'>E.2 How did your cohort confirm death? (Select all that apply)</label>
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)</Form.Label>
 
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='deathIndex' checked={mortality.deathIndex === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2)) } }} />
-                    </span>
-                    <span>U.S. National Death Index (NDI) linkage</span>
-                </div>
-                <div className='col-md-8 zero-padding' >
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='deathCertificate' checked={mortality.deathCertificate === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2)) } }}  />
-                    </span>
-                    <span>Death Certificates</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='otherDeath' checked={mortality.otherDeath === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) } }} />
-                    </span>
-                    <span>Other</span>
-                </div>
+                <Col sm="12">
+                    <div key="checkbox">
+                        <Form.Check className="pl-0" name='deathIndex'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.deathIndex === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2)) } }}
+                            />
 
-                <div className="col-md-8 specify">
-                    <Reminder message={errors.otherDeathSpecify} disabled={!errors.otherDeathSpecify} placement="right">
-                        <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max of 200 characters' />
-                    </Reminder>
-                </div>
-                {/* {errors.otherDeathSpecify !== '' && <div className='col-md-3 specify error-input'>{errors.otherDeathSpecify}</div>} */}
-            </div>
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                U.S. National Death Index (NDI) linkage
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check className="pl-0" name='deathCertificate'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.deathCertificate === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2)) } }}
+                            />
+
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Death Certificates
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check className="pl-0" name='otherDeath'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.otherDeath === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) } }}
+                            />
+
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Other
+                            </Form.Check.Label>
+                        </Form.Check>
+                    </div>
+
+                    {saved && errors.otherDeathSpecify ?
+                        <Reminder message={errors.otherDeathSpecify} disabled={!errors.otherDeathSpecify} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='otherDeathSpecify'
+                                className='form-control'
+                                value={mortality.otherDeathSpecify}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 200 characters'
+                                onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='otherDeathSpecify'
+                            className='form-control'
+                            value={mortality.otherDeathSpecify}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 200 characters'
+                            onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1}
+                        />
+                    }
+                </Col>
+            </Form.Group>
+
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Col sm="6" className="align-self-center">
+                    {saved && errors.haveDeathDate ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeathDate'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={mortality.haveDeathDate === 0}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeathDate'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={mortality.haveDeathDate === 0}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.haveDeathDate ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeathDate'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={mortality.haveDeathDate === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeathDate'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={mortality.haveDeathDate === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form.Group>
+
+            <Form as={Row}>
+
+                <Form.Label column sm="12">E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Col sm="6" className="align-self-center">
+                    {saved && errors.haveDeathCause ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeathCause'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={mortality.haveDeathCause === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(allactions.mortalityActions.setHaveDeathCause(0));
+                                            dispatch(allactions.mortalityActions.setIcd9(0));
+                                            dispatch(allactions.mortalityActions.setIcd10(0));
+                                            dispatch(allactions.mortalityActions.setOtherCode(0));
+                                            dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                                        }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                            </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeathCause'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={mortality.haveDeathCause === 0}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setHaveDeathCause(0));
+                                        dispatch(allactions.mortalityActions.setIcd9(0));
+                                        dispatch(allactions.mortalityActions.setIcd10(0));
+                                        dispatch(allactions.mortalityActions.setOtherCode(0));
+                                        dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                                    }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                        </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.haveDeathCause ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeathCause'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={mortality.haveDeathCause === 1}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(allactions.mortalityActions.setHaveDeathCause(1));
+                                        }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeathCause'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={mortality.haveDeathCause === 1}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setHaveDeathCause(1));
+                                    }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
+
+            <Form.Group as={Row}>
+                <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
+                    If yes, what type of death code was used? (Select all that apply)
+                    {errors.coded && saved &&
+                        <div>
+                            <Form.Label style={{ color: 'red' }}>
+                                {errors.coded}
+                            </Form.Label>
+                        </div>
+                    }
+                </Form.Label>
+                <Col sm="12">
+                    <div key="checkbox">
+                        <Form.Check className="pl-0" name='icd9'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.icd9 === 1}
+                                disabled={mortality.haveDeathCause !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                ICD-9
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check className="pl-0" name='icd10'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.icd10 === 1}
+                                disabled={mortality.haveDeathCause !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                ICD-10
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check className="pl-0" name='notCoded'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.notCoded === 1}
+                                disabled={mortality.haveDeathCause !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Not Coded
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check className="pl-0" name='otherCode'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={mortality.otherCode === 1}
+                                disabled={mortality.haveDeathCause !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Other Code
+                            </Form.Check.Label>
+                        </Form.Check>
+                    </div>
+
+                    {saved && errors.otherCodeSpecify ?
+                        <Reminder message={errors.otherCodeSpecify} disabled={!errors.otherCodeSpecify} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='otherCodeSpecify'
+                                className='form-control'
+                                value={mortality.otherCodeSpecify}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 200 characters'
+                                onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} disabled={mortality.otherCode !== 1}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='otherCodeSpecify'
+                            className='form-control'
+                            value={mortality.otherCodeSpecify}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 200 characters'
+                            onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} disabled={mortality.otherCode !== 1}
+                        />
+                    }
+                </Col>
+            </Form.Group>
 
 
-            <div className={classNames("col-md-12", "form-group", errors.haveDeathDate && "has-error")}>
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></Form.Label>
 
-                <Reminder message={errors.haveDeathDate} disabled={!errors.haveDeathDate} placement="right">
-                    <label htmlFor='haveDeathDate' className='col-md-12 question'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
-                </Reminder>
-
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeathDate' checked={mortality.haveDeathDate === 0} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}  />
-                    <span>No</span>
-                </span>
-
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeathDate' checked={mortality.haveDeathDate === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {/* {errors.haveDeathDate !== '' && <div className='col-md-3 error' style={{ color: 'red' }}>{errors.haveDeathDate}</div>} */}
-
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", errors.haveDeathCause && "has-error")}>
-                <Reminder message={errors.haveDeathCause} disabled={!errors.haveDeathCause} placement="right">
-                    <label htmlFor='haveDeathCause' className='col-md-12 question'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
-                </Reminder>
-
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeathCause' checked={mortality.haveDeathCause === 0} onClick={() => {
-                        if (!isReadOnly) {
-                            dispatch(allactions.mortalityActions.setHaveDeathCause(0));
-                            dispatch(allactions.mortalityActions.setIcd9(0));
-                            dispatch(allactions.mortalityActions.setIcd10(0));
-                            dispatch(allactions.mortalityActions.setOtherCode(0));
-                            dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
-                        }
-                    }} />
-                    <span>No</span>
-                </span>
-
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeathCause' checked={mortality.haveDeathCause === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathCause(1)) } }}  />
-                    <span>Yes</span>
-                </span>
-                {/* {errors.haveDeathCause !== '' && <div className='col-md-3 error'>{errors.haveDeathCause}</div>} */}
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", "specify", errors.otherCodeSpecify && "has-error")}>
-                <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, what type of death code was used? (Select all that apply)</label>
-
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='icd9' checked={mortality.icd9 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2)) } }}  />
-                    </span>
-                    <span>ICD-9</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='icd10' checked={mortality.icd10 === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2)) } }}  />
-                    </span>
-                    <span>ICD-10</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding' >
-                        <input type='checkbox' className='click-width' name='notCoded' checked={mortality.notCoded === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2)) } }}  />
-                    </span>
-                    <span>Not Coded</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='otherCode' checked={mortality.otherCode === 1} disabled={mortality.haveDeathCause !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) } }} />
-                    </span>
-                    <span>Other Code</span>
-                </div>
-                <div className='col-md-8 zero-padding' >
-                    {errors.coded !== '' && <div className='col-md-4 error'>{errors.coded}</div>}
-                </div>
-
-                <div className='col-md-8 specify'>
-                    <Reminder message={errors.otherCodeSpecify} disabled={!errors.otherCodeSpecify} placement="right">
-                        <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max of 200 characters' value={mortality.otherCodeSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
-                    </Reminder>
-                </div>
-                {/* {errors.otherCodeSpecify !== '' && <div className='col-md-3 error-input specify'>{errors.otherCodeSpecify}</div>} */}
-
-            </div>
-
-
-            <div className={classNames("col-md-12", "form-group", errors.deathNumbers && "has-error")}>
-                <label htmlFor='deathNumbers question' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
-
-                <div className="col-sm-2">
-                    <Reminder message={errors.deathNumbers} disabled={!errors.deathNumbers} placement="right">
-                        <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
-                    </Reminder>
-                </div>
-                {/* {errors.deathNumbers !== '' && <div className='col-md-3 error-input'>{errors.deathNumbers}</div>} */}
-
-            </div>
+                <Col sm="2">
+                    {saved && errors.deathNumbers ?
+                        <Reminder message={errors.deathNumbers} disabled={!errors.deathNumbers} placement="right">
+                            <Form.Control
+                                style={{ border: '1px solid red' }}
+                                type="text"
+                                name='deathNumbers'
+                                value={mortality.deathNumbers}
+                                readOnly={isReadOnly}
+                                onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} placeholder='yyyy'
+                            />
+                        </Reminder> :
+                        <Form.Control
+                            type="text"
+                            name='deathNumbers'
+                            value={mortality.deathNumbers}
+                            readOnly={isReadOnly}
+                            onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} placeholder='yyyy'
+                        />
+                    }
+                </Col>
+            </Form.Group>
         </CollapsiblePanel>
 
 
@@ -461,7 +703,7 @@ const MortalityForm = ({ ...props }) => {
         </div>
 
 
-    </div>
+    </div >
 }
 
 export default MortalityForm;
