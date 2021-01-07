@@ -1,0 +1,5 @@
+.inspectorClose:hover{
+    cursor: pointer;
+    color: blue;
+    border-bottom: 1px solid blue;
+}
