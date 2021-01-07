@@ -87,7 +87,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 placeholder='Max of 100 characters' 
                                 maxLength="100"
                                 name={name} 
-                                value={showValue() ? cohort[name] : ''} 
+                                //value={showValue() ? cohort[name] : ''} 
+                                value={cohort[name]}
                                 readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[name](e.target.value))
@@ -100,7 +101,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             placeholder='Max of 100 characters' 
                             maxLength="100"
                             name={name} 
-                            value={showValue() ? cohort[name] : ''} 
+                            //value={showValue() ? cohort[name] : ''} 
+                            value={cohort[name]}
                             onChange={e => 
                                 dispatch(allactions.cohortActions[name](e.target.value))
                             } 
@@ -123,7 +125,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 placeholder='Max of 100 characters' 
                                 maxLength="100" 
                                 name={position} 
-                                value={showValue() ? cohort[position] : ''} 
+                                //value={showValue() ? cohort[position] : ''} 
+                                value = {cohort[position]}
                                 readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[position](e.target.value))
@@ -136,7 +139,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             placeholder='Max of 100 characters' 
                             maxLength="100" 
                             name={position} 
-                            value={showValue() ? cohort[position] : ''} 
+                            //value={showValue() ? cohort[position] : ''} 
+                            value={cohort[position]}
                             onChange={e => 
                                 dispatch(allactions.cohortActions[position](e.target.value))
                             } 
@@ -181,7 +185,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} 
                                     maxLength="100" 
                                     name={phone} 
-                                    value={ showValue() ? cohort[phone] : ''} 
+                                    //value={ showValue() ? cohort[phone] : ''} 
+                                    value={cohort[phone]}
                                     readOnly={disabled}
                                     onChange={e => 
                                         dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
@@ -195,7 +200,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 placeholder={cohort[type] === '+1' ? '10 digits for USA' : 'Max of 100 characters'} 
                                 maxLength="100" 
                                 name={phone} 
-                                value={showValue() ? cohort[phone] : ''} 
+                                //value={showValue() ? cohort[phone] : ''} 
+                                value={cohort[phone]}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[phone](processPhoneNumber(cohort[type], e.target.value)))
                                 } 
@@ -219,7 +225,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 placeholder="Max of 100 characters"
                                 maxLength="100" 
                                 name={email} 
-                                value={showValue() ? cohort[email] : ''} 
+                                //value={showValue() ? cohort[email] : ''} 
+                                value={cohort[email]}
                                 readOnly={disabled}
                                 onChange={e => 
                                     dispatch(allactions.cohortActions[email](e.target.value))
@@ -232,7 +239,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                             placeholder="Max of 100 characters" 
                             maxLength="100" 
                             name={email} 
-                            value={showValue() ? cohort[email] : ''} 
+                            //value={showValue() ? cohort[email] : ''} 
+                            value={cohort[email]}
                             onChange={e => 
                                 dispatch(allactions.cohortActions[email](e.target.value))
                             } 
