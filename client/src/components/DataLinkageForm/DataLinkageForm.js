@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
-import { $CombinedState } from 'redux'
+import classNames from 'classnames';
 import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
+import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 
@@ -340,7 +341,7 @@ const DataLinkageForm = ({ ...props }) => {
             onClick={_ => toggleActivePanel('A')}
             panelTitle="Data Linkage & Harmonization">
 
-            <div className='form-group col-md-12'>
+            <div className={classNames("col-md-12", "form-group", errors.haveDataLinkSpecify && "has-error")}>
                 <label htmlFor='haveDataLink' className='col-md-12 question'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
@@ -357,14 +358,16 @@ const DataLinkageForm = ({ ...props }) => {
                 <div className='col-md-12 specify'>If yes, please specify:</div>
 
                 <div className='col-md-12'>
-                    <input name='haveDataLinkSpecify' className='form-control specify' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                    <Reminder message={errors.haveDataLinkSpecify} disabled={!errors.haveDataLinkSpecify} placement="right">
+                        <input name='haveDataLinkSpecify' className='form-control specify' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
+                    </Reminder>
                 </div>
-                {errors.haveDataLinkSpecify !== '' && <div className='col-md-3 error'>{errors.haveDataLinkSpecify}</div>}
+                {/* {errors.haveDataLinkSpecify !== '' && <div className='col-md-3 error'>{errors.haveDataLinkSpecify}</div>} */}
             </div>
 
 
 
-            <div className='form-group col-md-12'>
+            <div className={classNames("col-md-12", "form-group", errors.haveHarmonizationSpecify && "has-error")}>
                 <label htmlFor='haveHarmonization' className='col-md-12 question'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
@@ -380,13 +383,17 @@ const DataLinkageForm = ({ ...props }) => {
 
                 <div className='col-md-12 specify'>If yes, please specify:</div>
                 <div className='col-md-12'>
-                    <input name='haveHarmonizationSpecify' className='form-control specify' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
+                    <Reminder message={errors.haveHarmonizationSpecify} disabled={!errors.haveHarmonizationSpecify} placement="right">
+                        <input name='haveHarmonizationSpecify' className='form-control specify' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
+                    </Reminder>
                 </div>
-                {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3 error'>{errors.haveHarmonizationSpecify}</div>}
+                {/* {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3 error'>{errors.haveHarmonizationSpecify}</div>} */}
             </div>
 
-            <div className='col-md-12'>
-                <label htmlFor='haveDeposited' className='col-md-12 question'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
+            <div className={classNames("col-md-12", "form-group", errors.haveDeposited && "has-error")}>
+                <Reminder message={errors.haveDeposited} disabled={!errors.haveDeposited} placement="right">
+                    <label htmlFor='haveDeposited' className='col-md-12 question'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
+                </Reminder>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
                     <input type='radio' className='click-width' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => {
@@ -404,12 +411,14 @@ const DataLinkageForm = ({ ...props }) => {
                     <input type='radio' className='click-width' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDeposited(1)) } }} />
                     <span>Yes</span>
                 </span>
-                {errors.haveDeposited !== '' && <div className='col-md-3 error'>{errors.haveDeposited}</div>}
+                {/* {errors.haveDeposited !== '' && <div className='col-md-3 error'>{errors.haveDeposited}</div>} */}
 
             </div>
 
-            <div className='form-group specify col-md-12'>
-                <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please select which repositories (Select all that apply):</label>
+            <div className={classNames("col-md-12", "form-group", "specify", errors.deposit && "has-error")}>
+                <Reminder message={errors.deposit} disabled={!errors.deposit} placement="right">
+                    <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please select which repositories (Select all that apply):</label>
+                </Reminder>
 
                 <div className='col-md-8 zero-padding' >
                     <span className='col-md-1 checkbox-padding'>
@@ -429,15 +438,16 @@ const DataLinkageForm = ({ ...props }) => {
                     </span>
                     <span>otherRepo</span>
                 </div>
-                {errors.deposit !== '' && <div className='col-md-8 zero-padding' >
+                {/* {errors.deposit !== '' && <div className='col-md-8 zero-padding' >
                     <div className='col-md-4 error'>{errors.deposit}</div>
-                </div>}
+                </div>} */}
 
             </div>
 
-            <div className='col-md-12'>
-                <label htmlFor='dataOnline' className='col-md-12 question'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
-
+            <div className={classNames("col-md-12", "form-group", errors.dataOnline && "has-error")}>
+                <Reminder message={errors.dataOnline} disabled={!errors.dataOnline} placement="right">
+                    <label htmlFor='dataOnline' className='col-md-12 question'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
+                </Reminder>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
                     <input type='radio' className='click-width' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => {
@@ -455,10 +465,10 @@ const DataLinkageForm = ({ ...props }) => {
                     <input type='radio' className='click-width' name='dataOnline' checked={dataLinkage.dataOnline === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnline(1)) } }} />
                     <span>Yes</span>
                 </span>
-                {errors.dataOnline !== '' && <div className='col-md-3 error'>{errors.dataOnline}</div>}
+                {/* {errors.dataOnline !== '' && <div className='col-md-3 error'>{errors.dataOnline}</div>} */}
             </div>
 
-            <div className='form-group specify col-md-12'>
+            <div className={classNames("col-md-12", "form-group", "specify", errors.dataOnlineURL && "has-error")}>
                 <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please specify (Select all that apply):</label>
 
                 <div className='col-md-8 zero-padding'>
@@ -479,14 +489,20 @@ const DataLinkageForm = ({ ...props }) => {
 
 
                 <div className='col-md-8 specify'>
-                    <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
+                    <Reminder message={errors.dataOnlineURL} disabled={!errors.dataOnlineURL} placement="right">
+                        <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
+                    </Reminder>
                 </div>
-                {errors.dataOnlineURL !== '' && <div className='col-md-3 error-input specify'>{errors.dataOnlineURL}</div>}
+                {/* {errors.dataOnlineURL !== '' && <div className='col-md-3 error-input specify'>{errors.dataOnlineURL}</div>} */}
             </div>
 
 
-            <div className='form-group col-md-12'>
-                <label htmlFor='createdRepo' className='col-md-12 question'>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></label>
+            <div className={classNames("col-md-12", "form-group", (errors.createdRepo || errors.createdRepoSpecify) && "has-error")}>
+                <label htmlFor='createdRepo' className='col-md-12 question'>
+                    <Reminder message={errors.createdRepo} disabled={!errors.createdRepo} placement="right">
+                        <span>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></span>
+                    </Reminder>
+                </label>
 
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
@@ -498,13 +514,15 @@ const DataLinkageForm = ({ ...props }) => {
                     <input type='radio'  className='click-width' name='createdRepo' checked={dataLinkage.createdRepo === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(1)) } }} />
                     <span>Yes</span>
                 </span>
-                {errors.createdRepo !== '' && <div className='col-md-3 error'>{errors.createdRepo}</div>}
+                {/* {errors.createdRepo !== '' && <div className='col-md-3 error'>{errors.createdRepo}</div>} */}
 
                 <div className='col-md-12 specify'>If yes, please specify:</div>
                 <div className='col-md-8'>
-                    <input name='createdRepoSpecify' className='specify form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
+                    <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
+                        <input name='createdRepoSpecify' className='specify form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
+                    </Reminder>
                 </div>
-                {errors.createdRepoSpecify !== '' && <div className='col-md-3 error-input specify' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>}
+                {/* {errors.createdRepoSpecify !== '' && <div className='col-md-3 error-input specify' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>} */}
 
             </div>
         </CollapsiblePanel>

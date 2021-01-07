@@ -13,6 +13,36 @@ var mortalityController = require('./details/mortalityController');
 var linkagesController = require('./details/linkagesController');
 var specimenController = require('./details/specimenController');
 const { join } = require('lodash');
+var mail = require('../components/mail');
+var fs = require('fs');
+const path = require('path');
+
+async function readTemplate(filePath, data) {
+	const template = await fs.promises.readFile(path.resolve(filePath));
+	console.log(template)
+  
+    // replace {tokens} with data values or removes them if not found
+    return String(template).replace(
+      /{[^{}]+}/g,
+      key => data[key.replace(/[{}]+/g, '')] || ''
+    );
+}
+
+router.post('/sendEmail', async function (req, res, next) {
+	logger.debug(req.body)
+    try {
+		await mail.sendMail({
+			from: 'CEDCDWebAdmin@mail.nih.gov', 
+			to: req.body.email, 
+			subject: req.body.topic,  
+			html: await readTemplate(__dirname + '/templates/email-owner-template.html', req.body.templateData),
+		});
+        res.json({ status: 200, data: 'sent' });
+    } catch (e) {
+        res.json({ status: 200, data: 'failed' });
+    }
+})
+
 
 router.post('/list', function (req, res) {
 	let body = req.body;
@@ -57,7 +87,6 @@ router.post('/add', function(req, res){
 	let body = JSON.stringify(req.body)
 	let params = []
 	params.push(body)
-	logger.debug(body)
 
     mysql.callJsonProcedure(func, params, function (result) {
 

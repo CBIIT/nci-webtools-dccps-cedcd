@@ -79,10 +79,15 @@ router.post('/upload/:id/:category', function (req, res, next) {
 
 router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
-    mysql.callProcedure(proc, [req.body.id, req.body.cohortId], function (result) {
+    let currentFile = req.body.filename
+    let cohort_ID = req.body.cohortId
+    mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
-            if (Array.isArray(result[1]))
+            if (Array.isArray(result[1])){
+                fs.unlink(`FileBank/CohortID_${cohort_ID}/${currentFile}`, (err => { 
+                    if (err) console.log(err);}))
                 res.json({ status: 200, data: result[1][0].new_id })
+            }
             else
                 res.json({ status: 200 })
         }
@@ -94,11 +99,34 @@ router.post('/deleteFile', function (req, res) {
 router.post('/update_cohort_basic/:id', function (req, res) {
     logger.debug(req.body)
     req.body.cohort_description = req.body.cohort_description ? req.body.cohort_description.replace(/\n/g, '\\n') : req.body.cohort_description
-    let body = JSON.stringify(req.body)
+    let body = {...req.body}
+    if(body.clarification_contact === 1) {
+        body.contacterName = body.completerName
+        body.contacterPosition = body.completerPosition
+        body.contacterCountry = body.completerCountry
+        body.contacterPhone = body.completerPhone
+        body.contacterEmail = body.completerEmail
+    }
+
+    if(body.sameAsSomeone === 0){
+        body.collaboratorName = body.completerName
+        body.collaboratorPosition = body.completerPosition
+        body.collaboratorCountry = body.completerCountry
+        body.collaboratorPhone = body.completerPhone
+        body.collaboratorEmail = body.completerEmail
+    }else if(body.sameAsSomeone === 1){
+        body.collaboratorName = body.contacterName
+        body.collaboratorPosition = body.contacterPosition
+        body.collaboratorCountry = body.contacterCountry
+        body.collaboratorPhone = body.contacterPhone
+        body.collaboratorEmail = body.contacterEmail
+    }
+    
+    let updatedBody = JSON.stringify(body)
     let proc = 'update_cohort_basic'
     let params = []
     params.push(req.params.id)
-    params.push(body)
+    params.push(updatedBody)
 
     mysql.callJsonProcedure(proc, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
@@ -265,7 +293,6 @@ router.post('/mortality/:id', function (req, res) {
         logger.debug(result)
         const mortality = {}
         mortality.info = result[0]
-        mortality.completion = result[1]
 
         if (mortality)
             res.json({ status: 200, data: mortality })

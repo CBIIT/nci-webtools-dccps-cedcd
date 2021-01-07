@@ -6,6 +6,9 @@ import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
@@ -243,16 +246,16 @@ const MajorContentForm = ({ ...props }) => {
     }, [])
 
 
-    /*const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) */
-
+    const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) 
+/*
     const refreshErrors = () => {
-        console.log(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp)
         for(let k of Object.keys(errors)){
-            if(errors[k]) return true;
+            if(['cancerOther, cancerToxicity, cancerSymptom, cancerLateEffects, cancerOtherSpecify, cigarBaseLine, cigarFollowUp, pipeBaseLine, pipeFollowUp, tobaccoBaseLine, tobaccoFollowUp, ecigarBaseLine, ecigarFollowUp, noncigarOtherBaseLine, noncigarOtherFollowUp'].includes[k]) continue
+            else if(errors[k]) return true;
         }
         return false
     }
-
+*/
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -304,7 +307,11 @@ const MajorContentForm = ({ ...props }) => {
     const handleSave = () => {
         setSaved(true)
         let errorsRemain = refreshErrors()
-        if (!refreshErrors()) {
+       /* errorsRemain |= (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp&&errors.tobaccoBaseLine&&errors.tobaccoFollowUp&&errors.ecigarBaseLine&&errors.ecigarFollowUp&&errors.noncigarOtherBaseLine&&errors.noncigarOtherFollowUp) || (errors.cancerToxicity&&errors.cancerLateEffects&&errors.cancerSymptom&&errors.cancerOther) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp&&errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        */
+        console.log(errorsRemain)
+        //if(!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify)
+        if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
             saveMajorContent(cohortId, errorsRemain)
@@ -336,9 +343,9 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const confirmSaveContinue = () => {
-        majorContent.sectionAStatus = 'incomplete'
+        majorContent.sectionCStatus = 'incomplete'
         dispatch(allactions.majorContentActions.setSectionCStatus('incomplete'))
-        saveMajorContent(cohortId, true); setModalShow(false)
+        saveMajorContent(cohortId, true, true); setModalShow(false)
     }
 
     return <div className='col-md-12'>
@@ -348,22 +355,82 @@ const MajorContentForm = ({ ...props }) => {
         <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
 
             <div>
-                <form>
+                <Form>
                     <CollapsiblePanel
                         condition={activePanel === 'panelA'}
                         onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
                         panelTitle="Major Content Domains">
+                       {/* <Form.Group as={Row} className="mb-1">
+                            <Form.Label column sm="12">
+                                Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                            </Form.Label>
+                        </Form.Group>
+                        
 
+                        <Form.Group as={Row} className="mb-1">
+                            <Form.Label column sm="4">
+                                C.1 Socio-economic Status
+                            </Form.Label>
+                            <Col sm="4" style={{color: 'red'}}>
+                                {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span>Required Field</span>}
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="mb-1">
+                            <Col sm='4' >
+                                Collected at baseline
+                            </Col>
+                            <Col sm='6'>
+                                <Form.Check type="radio" xs='2'
+                                        id='seStatusBaseLine_no'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
+                                        label='No' />
+                                <Form.Check type="radio" xs='2'
+                                        id='seStatusBaseLine_yes'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1}
+                                        onClick={() => { console.log(isReadOnly); if(!isReadOnly) { dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
+                                        label='Yes' />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} className="mb-1">
+                            <Col sm='4'>
+                                Collected at other time
+                            </Col>
+                            <Col sm='6'>
+                                <Form.Check type="radio" 
+                                        id='seStatusFollowUp_no'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
+                                        label='No' />
+                                <Form.Check type="radio"
+                                        id='seStatusFollowUp_yes'
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
+                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
+                                        label='Yes' />
+                            </Col>
+                        </Form.Group>
+*/}   
                         <div >
                             <span>Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort</span>
                         </div>
-
                         <div className='specimenInfo my-3 col-md-12 col-xs-12'>
                             <div className='col-xs-12' style={{ paddingLeft: '0' }}>
                                 <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status<span style={{ color: 'red' }}>*</span></label></span>
                                 {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
                             </div>
-
+                           
                             <div className='col-12'>
                                 <div className='col-sm-8' style={{ paddingLeft: '0' }}>
                                     <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
@@ -1776,7 +1843,7 @@ const MajorContentForm = ({ ...props }) => {
                             </div>
                         </div>
                     </CollapsiblePanel>
-                </form>
+                </Form>
                 <div style={{ position: 'relative' }} className="my-4">
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
                     <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('B')} />

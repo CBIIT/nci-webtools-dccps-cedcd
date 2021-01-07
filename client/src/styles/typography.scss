@@ -335,6 +335,7 @@ p.text-req-citation {
   margin: 0 0 0 0;
   padding: 0 0 10px 0;
 }
+/*
 .modal-body p {
   font-size: 103%;
   line-height: 120%;
@@ -345,7 +346,7 @@ p.text-req-citation {
 
 .feedback-modal .modal-body p {
   color:inherit;
-}
+}*/
 
 /* End Paragraphs */
 /* Links */
@@ -953,6 +954,7 @@ a#cd_website:hover {
   border-color: transparent transparent transparent #135B5D;
   transition: all 0.5s ease-in;
 }
+/*
 .modal-footer button.btn {
   color: rgba(19,91,91,1.00);
   background: #fff;
@@ -981,7 +983,7 @@ a#cd_website:hover {
 }
 .modal-footer .btn-group .btn + .btn {
   margin-left: -1px;
-}
+}*/
 
 /* End Buttons */
 #submitButtonContainer {
@@ -1050,7 +1052,7 @@ a#cd_website:hover {
 .rightLink {
   text-align: right;
 }
-.modal-title {
+/*.modal-title {
   color: rgba(19,91,91,1.00);
   font-size: 110%;
   line-height: 120%;
@@ -1074,7 +1076,7 @@ a#cd_website:hover {
   color: #135B5D;
   font-size: 90%;
   line-height: 140%;
-}
+}*/
 .invisibleLabel {
   display:none !important;
 }

@@ -186,8 +186,8 @@ const EditUser = ({ ...props }) => {
 
                 <CenterModal
                     show={modalShow}
-                    title={<h2>Confirmation Required</h2>}
-                    body={<div className="my-3">There are validation errors. Please fix these issues before update records.</div>}
+                    title={<span>Confirmation Required</span>}
+                    body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
                     footer={<div>
                         <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
                     </div>}
@@ -198,7 +198,7 @@ const EditUser = ({ ...props }) => {
                         <div id="edituser-header" className="col-md-12">
                             {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                         </div>
-                        {nonExistUser ? <div className="col-md-12 col-6">>
+                        {nonExistUser ? <div className="col-md-12 col-6">
                              <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
                             <div className="bttn-group col-md-4 col-xs-6">
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'

@@ -1140,7 +1140,7 @@ BEGIN
 	UPDATE `cohort_basic` 
 	SET 
 		cohort_web_site = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_web_site')),
-		date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
+		-- get_cohort_basic_infodate_completed =if(@completionDate is not null and @completionDate != '' and @completionDate != 'null', replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
 		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
 		cohort_description = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')),
@@ -1178,7 +1178,7 @@ BEGIN
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherDb'))  as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictCommercial'))  as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther')) = 'null', '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))  as CHAR)))),
-		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOtherSpecify')), ''),
+		restrictions_other_specify = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictOther'))= 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictions_other_specify')), ''),
 		strategy_routine = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_routine'))),
 		strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
 		strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
@@ -1443,7 +1443,7 @@ BEGIN
         cohort_name
         ,cohort_acronym
         ,cohort_web_site
-        ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
+        -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
         ,clarification_contact
         ,sameAsSomeone
         ,cohort_description
@@ -1695,7 +1695,7 @@ BEGIN
     END IF;
     
     update cohort_basic 
-    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NULL )
+    set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NULL)
 	where cohort_id = new_id;
     -- SET @rowcount = ROW_COUNT();
     SELECT flag AS rowsAffacted;
@@ -1903,7 +1903,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mental
 
 update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cognitiveDeclineFollowUp'))) where cohort_id = targetID and category_id = 40 ;
 
-update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.depressionBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.physicalMeasureFollowUp'))) where cohort_id = targetID and category_id = 41 ;
 
         update cancer_info set mdc_acute_treatment_toxicity = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity'))),
 							   mdc_late_effects_of_treatment = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects'))),

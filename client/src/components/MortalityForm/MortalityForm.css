@@ -9,6 +9,10 @@
     margin-bottom: 2rem !important;
 }
 
+.form-group.has-error label {
+    /* color: red; */
+}
+
 .question{
     margin-bottom: .5rem;
 }

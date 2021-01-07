@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import classNames from 'classnames';
 import allactions from '../../actions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
+import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
@@ -58,10 +60,6 @@ const MortalityForm = ({ ...props }) => {
                     setEmails(result.data.emails)
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
-                        let completion = result.data.completion[0].status
-
-                        if (completion !== 'complete')
-                            completion = 'incomplete'
 
                         batch(() => {
                             dispatch(allactions.mortalityActions.setHasLoaded(true))
@@ -78,14 +76,7 @@ const MortalityForm = ({ ...props }) => {
                             dispatch(allactions.mortalityActions.setOtherCode(data.mort_death_code_used_other))
                             dispatch(allactions.mortalityActions.setOtherCodeSpecify(data.mort_death_code_used_other_specify))
                             dispatch(allactions.mortalityActions.setDeathNumbers(data.mort_number_of_deaths))
-
-                            dispatch(allactions.mortalityActions.setSectionEStatus(completion))
-                            dispatch(allactions.sectionActions.setSectionStatus('E', completion))
                         })
-                    }
-                    else {
-                        dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
-                        dispatch(allactions.sectionActions.setSectionStatus('E', 'incomplete'))
                     }
                 })
         }
@@ -301,16 +292,18 @@ const MortalityForm = ({ ...props }) => {
             onClick={_ => toggleActivePanel('A')}
             panelTitle="Mortality">
 
-            <div className='form-group col-sm-12'>
+            <div className={classNames("col-md-12", "form-group", errors.mortalityYear && "has-error")}>
                 <label htmlFor='mortalityYear' className='col-sm-12 question'>E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></label>
                 <div className="col-sm-2">
-                    <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
+                    <Reminder message={errors.mortalityYear} disabled={!errors.mortalityYear} placement="right">
+                        <input name='mortalityYear' className='form-control' value={mortality.mortalityYear} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy' />
+                    </Reminder>
                 </div>
-                {errors.mortalityYear !== '' && <div className='col-md-3 error-input'>{errors.mortalityYear}</div>}
+                {/* {errors.mortalityYear !== '' && <div className='col-md-3 error-input'>{errors.mortalityYear}</div>} */}
             </div>
 
 
-            <div className='form-group col-md-12'>
+            <div className={classNames("col-md-12", "form-group", errors.otherDeathSpecify && "has-error")}>
                 <label htmlFor='confirmDeath' className='col-md-12 question'>E.2 How did your cohort confirm death? (Select all that apply)</label>
 
                 <div className='col-md-8 zero-padding'>
@@ -333,14 +326,19 @@ const MortalityForm = ({ ...props }) => {
                 </div>
 
                 <div className="col-md-8 specify">
-                    <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max of 200 characters' />
+                    <Reminder message={errors.otherDeathSpecify} disabled={!errors.otherDeathSpecify} placement="right">
+                        <input name='otherDeathSpecify' className='form-control' value={mortality.otherDeathSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1} placeholder='Max of 200 characters' />
+                    </Reminder>
                 </div>
-                {errors.otherDeathSpecify !== '' && <div className='col-md-3 specify error-input'>{errors.otherDeathSpecify}</div>}
+                {/* {errors.otherDeathSpecify !== '' && <div className='col-md-3 specify error-input'>{errors.otherDeathSpecify}</div>} */}
             </div>
 
 
-            <div className='form-group col-md-12'>
-                <label htmlFor='haveDeathDate' className='col-md-12 question'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+            <div className={classNames("col-md-12", "form-group", errors.haveDeathDate && "has-error")}>
+
+                <Reminder message={errors.haveDeathDate} disabled={!errors.haveDeathDate} placement="right">
+                    <label htmlFor='haveDeathDate' className='col-md-12 question'>E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+                </Reminder>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
                     <input type='radio' className='click-width' name='haveDeathDate' checked={mortality.haveDeathDate === 0} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}  />
@@ -351,12 +349,14 @@ const MortalityForm = ({ ...props }) => {
                     <input type='radio' className='click-width' name='haveDeathDate' checked={mortality.haveDeathDate === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
                     <span>Yes</span>
                 </span>
-                {errors.haveDeathDate !== '' && <div className='col-md-3 error' style={{ color: 'red' }}>{errors.haveDeathDate}</div>}
+                {/* {errors.haveDeathDate !== '' && <div className='col-md-3 error' style={{ color: 'red' }}>{errors.haveDeathDate}</div>} */}
 
             </div>
 
-            <div className='col-md-12'>
-                <label htmlFor='haveDeathCause' className='col-md-12 question'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+            <div className={classNames("col-md-12", "form-group", errors.haveDeathCause && "has-error")}>
+                <Reminder message={errors.haveDeathCause} disabled={!errors.haveDeathCause} placement="right">
+                    <label htmlFor='haveDeathCause' className='col-md-12 question'>E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></label>
+                </Reminder>
 
                 <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
                     <input type='radio' className='click-width' name='haveDeathCause' checked={mortality.haveDeathCause === 0} onClick={() => {
@@ -375,12 +375,11 @@ const MortalityForm = ({ ...props }) => {
                     <input type='radio' className='click-width' name='haveDeathCause' checked={mortality.haveDeathCause === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathCause(1)) } }}  />
                     <span>Yes</span>
                 </span>
-                {errors.haveDeathCause !== '' && <div className='col-md-3 error'>{errors.haveDeathCause}</div>}
+                {/* {errors.haveDeathCause !== '' && <div className='col-md-3 error'>{errors.haveDeathCause}</div>} */}
             </div>
 
-            <div className='form-group specify col-md-12'>
+            <div className={classNames("col-md-12", "form-group", "specify", errors.otherCodeSpecify && "has-error")}>
                 <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, what type of death code was used? (Select all that apply)</label>
-
 
                 <div className='col-md-8 zero-padding'>
                     <span className='col-md-1 checkbox-padding'>
@@ -411,20 +410,24 @@ const MortalityForm = ({ ...props }) => {
                 </div>
 
                 <div className='col-md-8 specify'>
-                    <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max of 200 characters' value={mortality.otherCodeSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                    <Reminder message={errors.otherCodeSpecify} disabled={!errors.otherCodeSpecify} placement="right">
+                        <input name='otherCodeSpecify' className='form-control' disabled={mortality.otherCode !== 1} placeholder='Max of 200 characters' value={mortality.otherCodeSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} />
+                    </Reminder>
                 </div>
-                {errors.otherCodeSpecify !== '' && <div className='col-md-3 error-input specify'>{errors.otherCodeSpecify}</div>}
+                {/* {errors.otherCodeSpecify !== '' && <div className='col-md-3 error-input specify'>{errors.otherCodeSpecify}</div>} */}
 
             </div>
 
 
-            <div className='form-group col-sm-12'>
+            <div className={classNames("col-md-12", "form-group", errors.deathNumbers && "has-error")}>
                 <label htmlFor='deathNumbers question' className='col-sm-12'>E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></label>
 
                 <div className="col-sm-2">
-                    <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
+                    <Reminder message={errors.deathNumbers} disabled={!errors.deathNumbers} placement="right">
+                        <input name='deathNumbers' className='form-control' value={mortality.deathNumbers} readOnly={isReadOnly} onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} />
+                    </Reminder>
                 </div>
-                {errors.deathNumbers !== '' && <div className='col-md-3 error-input'>{errors.deathNumbers}</div>}
+                {/* {errors.deathNumbers !== '' && <div className='col-md-3 error-input'>{errors.deathNumbers}</div>} */}
 
             </div>
         </CollapsiblePanel>

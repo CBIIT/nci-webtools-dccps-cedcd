@@ -64,7 +64,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                             <Reminder message={errors[name]}>
                                 <Form.Control type="text" 
                                     style={{ border: '1px solid red' }} 
-                                    placeholder="(Max of 100 characters)"
+                                    placeholder="Max of 100 characters"
                                     maxLength="100" 
                                     name={name} 
                                     value={cohort.investigators[idx].name} 
@@ -76,7 +76,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                     } />
                             </Reminder> : 
                             <Form.Control type="text" 
-                                placeholder='(Max of 100 characters)' 
+                                placeholder='Max of 100 characters' 
                                 maxLength='100' 
                                 name={name} 
                                 value={cohort.investigators[idx].name} 
@@ -99,7 +99,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                         <Reminder message={errors[institution]}>
                             <Form.Control type="text" 
                                 style={{ border: '1px solid red' }} 
-                                placeholder="(Max of 100 characters)" 
+                                placeholder="Max of 100 characters" 
                                 maxLength='100' 
                                 name={institution} 
                                 value={cohort.investigators[idx].institution} 
@@ -111,7 +111,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                 } />
                         </Reminder> : 
                         <Form.Control type="text" 
-                            placeholder="(Max of 100 characters)"
+                            placeholder="Max of 100 characters"
                             maxLength="100" 
                             name={institution} 
                             value={cohort.investigators[idx].institution} 
@@ -133,7 +133,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                             <Reminder message={errors[email]}>
                                 <Form.Control type="email"
                                     style={{ border: '1px solid red' }} 
-                                    placeholder="(Max of 100 characters)" 
+                                    placeholder="Max of 100 characters" 
                                     maxLength="100" 
                                     type='email' 
                                     name={email} 
@@ -146,7 +146,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                     } />
                             </Reminder> : 
                             <Form.Control type="email"
-                                placeholder="(Max of 100 characters)"
+                                placeholder="Max of 100 characters"
                                 maxLength="100"  
                                 name={email} 
                                 value={cohort.investigators[idx].email} 
