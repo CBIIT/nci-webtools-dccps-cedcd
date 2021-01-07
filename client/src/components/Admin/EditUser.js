@@ -198,7 +198,7 @@ const EditUser = ({ ...props }) => {
                         <div id="edituser-header" className="col-md-12">
                             {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                         </div>
-                        {nonExistUser ? <div className="col-md-12 col-6">>
+                        {nonExistUser ? <div className="col-md-12 col-6">
                              <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
                             <div className="bttn-group col-md-4 col-xs-6">
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
