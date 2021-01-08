@@ -9,6 +9,9 @@ import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 import './DataLinkageForm.css';
 
@@ -60,10 +63,6 @@ const DataLinkageForm = ({ ...props }) => {
                     console.log(result)
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
-                        let completion = result.data.completion[0].status
-
-                        if (completion !== 'complete')
-                            completion = 'incomplete'
 
                         batch(() => {
                             dispatch(allactions.dataLinkageActions.setHasLoaded(true))
@@ -81,14 +80,7 @@ const DataLinkageForm = ({ ...props }) => {
                             if (data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
-
-                            dispatch(allactions.dataLinkageActions.setSectionFStatus(completion))
-                            dispatch(allactions.sectionActions.setSectionStatus('F', completion))
                         })
-                    }
-                    else {
-                        dispatch(allactions.dataLinkageActions.setSectionFStatus('incomplete'))
-                        dispatch(allactions.sectionActions.setSectionStatus('F', 'incomplete'))
                     }
                 })
         }
@@ -117,10 +109,10 @@ const DataLinkageForm = ({ ...props }) => {
         if (dataLinkage.haveDataLink === 1) {
 
             if (!dataLinkage.haveDataLinkSpecify)
-                copy.haveDataLinkSpecify = 'please specify'
+                copy.haveDataLinkSpecify = 'Please specify'
             else {
                 if (dataLinkage.haveDataLinkSpecify.length > 500)
-                    copy.haveDataLinkSpecify = 'cannot exceed 500 characters'
+                    copy.haveDataLinkSpecify = 'Cannot exceed 500 characters'
                 else
                     copy.haveDataLinkSpecify = ''
             }
@@ -133,10 +125,10 @@ const DataLinkageForm = ({ ...props }) => {
         if (dataLinkage.haveHarmonization === 1) {
 
             if (!dataLinkage.haveHarmonizationSpecify)
-                copy.haveHarmonizationSpecify = 'please specify'
+                copy.haveHarmonizationSpecify = 'Please specify'
             else {
                 if (dataLinkage.haveHarmonizationSpecify.length > 500)
-                    copy.haveHarmonizationSpecify = 'cannot exceed 500 characters'
+                    copy.haveHarmonizationSpecify = 'Cannot exceed 500 characters'
                 else
                     copy.haveHarmonizationSpecify = ''
             }
@@ -148,7 +140,7 @@ const DataLinkageForm = ({ ...props }) => {
         if (!(dataLinkage.haveDeposited in [0, 1])) { copy.haveDeposited = radioError } else { copy.haveDeposited = '' }
         if (dataLinkage.haveDeposited === 1) {
             if (dataLinkage.dbGaP === 0 && dataLinkage.BioLINCC === 0 && dataLinkage.otherRepo === 0)
-                copy.deposit = 'select at least one option'
+                copy.deposit = 'Select at least one option'
             else
                 copy.deposit = ''
         }
@@ -157,11 +149,11 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
-            if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'select at least one option' } else { copy.dataOnlineSelected = '' }
+            if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
                 if (dataLinkage.dataOnlineURL.length > 200)
-                    copy.dataOnlineURL = 'cannot exceed 200 characters'
+                    copy.dataOnlineURL = 'Cannot exceed 200 characters'
                 else {
                     copy.dataOnlineURL = validator.urlValidator(dataLinkage.dataOnlineURL, true)
                 }
@@ -180,10 +172,10 @@ const DataLinkageForm = ({ ...props }) => {
         if (dataLinkage.createdRepo === 1) {
 
             if (!dataLinkage.createdRepoSpecify)
-                copy.createdRepoSpecify = 'please specify'
+                copy.createdRepoSpecify = 'Please specify'
             else {
                 if (dataLinkage.createdRepoSpecify.length > 200)
-                    copy.createdRepoSpecify = 'cannot exceed 200 characters'
+                    copy.createdRepoSpecify = 'Cannot exceed 200 characters'
                 else
                     copy.createdRepoSpecify = ''
             }
@@ -341,190 +333,586 @@ const DataLinkageForm = ({ ...props }) => {
             onClick={_ => toggleActivePanel('A')}
             panelTitle="Data Linkage & Harmonization">
 
-            <div className={classNames("col-md-12", "form-group", errors.haveDataLinkSpecify && "has-error")}>
-                <label htmlFor='haveDataLink' className='col-md-12 question'>F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></label>
+            <Form as={Row}>
+                <Form.Label column sm="12">F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></Form.Label>
 
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDataLink' checked={dataLinkage.haveDataLink === 0} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) } }} />
-                    <span>No</span>
-                </span>
+                <Col sm="12" className="align-self-center">
+                    {saved && errors.haveDataLink ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDataLink'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={dataLinkage.haveDataLink === 0}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) } }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDataLink'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={dataLinkage.haveDataLink === 0}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify('')) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.haveDataLink ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDataLink'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={dataLinkage.haveDataLink === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDataLink'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={dataLinkage.haveDataLink === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
 
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDataLink' checked={dataLinkage.haveDataLink === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDataLink(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {errors.haveDataLink !== '' && <div className='col-md-3 error'>{errors.haveDataLink}</div>}
-
-                <div className='col-md-12 specify'>If yes, please specify:</div>
-
-                <div className='col-md-12'>
-                    <Reminder message={errors.haveDataLinkSpecify} disabled={!errors.haveDataLinkSpecify} placement="right">
-                        <input name='haveDataLinkSpecify' className='form-control specify' disabled={dataLinkage.haveDataLink !== 1} placeholder='Max of 500 characters' value={dataLinkage.haveDataLinkSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}></input>
-                    </Reminder>
-                </div>
-                {/* {errors.haveDataLinkSpecify !== '' && <div className='col-md-3 error'>{errors.haveDataLinkSpecify}</div>} */}
-            </div>
-
-
-
-            <div className={classNames("col-md-12", "form-group", errors.haveHarmonizationSpecify && "has-error")}>
-                <label htmlFor='haveHarmonization' className='col-md-12 question'>F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></label>
-
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 0} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) } }} />
-                    <span>No</span>
-                </span>
-
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveHarmonization' checked={dataLinkage.haveHarmonization === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {errors.haveHarmonization !== '' && <div className='col-md-3 error'>{errors.haveHarmonization}</div>}
-
-                <div className='col-md-12 specify'>If yes, please specify:</div>
-                <div className='col-md-12'>
-                    <Reminder message={errors.haveHarmonizationSpecify} disabled={!errors.haveHarmonizationSpecify} placement="right">
-                        <input name='haveHarmonizationSpecify' className='form-control specify' disabled={dataLinkage.haveHarmonization !== 1} value={dataLinkage.haveHarmonizationSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))} placeholder='Max of 500 characters'></input>
-                    </Reminder>
-                </div>
-                {/* {errors.haveHarmonizationSpecify !== '' && <div className='col-md-3 error'>{errors.haveHarmonizationSpecify}</div>} */}
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", errors.haveDeposited && "has-error")}>
-                <Reminder message={errors.haveDeposited} disabled={!errors.haveDeposited} placement="right">
-                    <label htmlFor='haveDeposited' className='col-md-12 question'>F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></label>
-                </Reminder>
-
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeposited' checked={dataLinkage.haveDeposited === 0} onClick={() => {
-                        if (!isReadOnly) {
-                            dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
-                            dispatch(allactions.dataLinkageActions.setdbGaP(0))
-                            dispatch(allactions.dataLinkageActions.setbioLinCC(0))
-                            dispatch(allactions.dataLinkageActions.setOtherRepo(0))
-                        }
-                    }} />
-                    <span>No</span>
-                </span>
-
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='haveDeposited' checked={dataLinkage.haveDeposited === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDeposited(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {/* {errors.haveDeposited !== '' && <div className='col-md-3 error'>{errors.haveDeposited}</div>} */}
-
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", "specify", errors.deposit && "has-error")}>
-                <Reminder message={errors.deposit} disabled={!errors.deposit} placement="right">
-                    <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please select which repositories (Select all that apply):</label>
-                </Reminder>
-
-                <div className='col-md-8 zero-padding' >
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='dbGaP' checked={dataLinkage.dbGaP === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2)) } }} />
-                    </span>
-                    <span>dbGaP</span>
-                </div>
-                <div className='col-md-8 zero-padding' >
-                    <span className='col-md-1 checkbox-padding' >
-                        <input type='checkbox' className='click-width' name='BioLINCC' checked={dataLinkage.BioLINCC === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2)) } }} />
-                    </span>
-                    <span>BioLINCC</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='otherRepo' checked={dataLinkage.otherRepo === 1} disabled={dataLinkage.haveDeposited !== 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2)) } }} />
-                    </span>
-                    <span>otherRepo</span>
-                </div>
-                {/* {errors.deposit !== '' && <div className='col-md-8 zero-padding' >
-                    <div className='col-md-4 error'>{errors.deposit}</div>
-                </div>} */}
-
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", errors.dataOnline && "has-error")}>
-                <Reminder message={errors.dataOnline} disabled={!errors.dataOnline} placement="right">
-                    <label htmlFor='dataOnline' className='col-md-12 question'>F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></label>
-                </Reminder>
-
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='dataOnline' checked={dataLinkage.dataOnline === 0} onClick={() => {
-                        if (!isReadOnly) {
-                            dispatch(allactions.dataLinkageActions.setDataOnline(0));
-                            dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
-                            dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
-                            dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
-                        }
-                    }} />
-                    <span>No</span>
-                </span>
-
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio' className='click-width' name='dataOnline' checked={dataLinkage.dataOnline === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnline(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {/* {errors.dataOnline !== '' && <div className='col-md-3 error'>{errors.dataOnline}</div>} */}
-            </div>
-
-            <div className={classNames("col-md-12", "form-group", "specify", errors.dataOnlineURL && "has-error")}>
-                <label className='col-md-12 question' style={{ fontWeight: 'normal' }}>If yes, please specify (Select all that apply):</label>
-
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='dataOnlinePolicy' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlinePolicy === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2)) } }} />
-                    </span>
-                    <span>Policy attached (PDF)</span>
-                </div>
-                <div className='col-md-8 zero-padding'>
-                    <span className='col-md-1 checkbox-padding'>
-                        <input type='checkbox' className='click-width' name='dataOnlineWebsite' disabled={dataLinkage.dataOnline !== 1} checked={dataLinkage.dataOnlineWebsite === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite + 1) % 2)) } }} />
-                    </span>
-                    <span>Website, please specify: </span>
-                </div>
-                {errors.dataOnlineSelected !== '' && <div className='col-md-8 error' style={{ padding: '0', margin: '0' }}>
-                    <div className='col-md-4' style={{ color: 'red' }}>{errors.dataOnlineSelected}</div>
-                </div>}
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                <Col sm="12">
+                    {saved && errors.haveDataLinkSpecify ?
+                        <Reminder message={errors.haveDataLinkSpecify} disabled={!errors.haveDataLinkSpecify} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='haveDataLinkSpecify'
+                                className='form-control'
+                                value={dataLinkage.haveDataLinkSpecify}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 500 characters'
+                                disabled={dataLinkage.haveDataLink !== 1}
+                                onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='haveDataLinkSpecify'
+                            className='form-control'
+                            value={dataLinkage.haveDataLinkSpecify}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 500 characters'
+                            disabled={dataLinkage.haveDataLink !== 1}
+                            onChange={e => dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(e.target.value))}
+                        />}
+                </Col>
+            </Form.Group>
 
 
-                <div className='col-md-8 specify'>
-                    <Reminder message={errors.dataOnlineURL} disabled={!errors.dataOnlineURL} placement="right">
-                        <input name='dataOnlineURL' className='form-control' disabled={!dataLinkage.dataOnlineWebsite} value={dataLinkage.dataOnlineURL} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))} placeholder='Max of 200 characters'></input>
-                    </Reminder>
-                </div>
-                {/* {errors.dataOnlineURL !== '' && <div className='col-md-3 error-input specify'>{errors.dataOnlineURL}</div>} */}
-            </div>
+            <Form as={Row}>
+                <Form.Label column sm="12">F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></Form.Label>
 
+                <Col sm="12" className="align-self-center">
+                    {saved && errors.haveHarmonization ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveHarmonization'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={dataLinkage.haveHarmonization === 0}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) } }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveHarmonization'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={dataLinkage.haveHarmonization === 0}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify('')) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.haveHarmonization ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveHarmonization'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={dataLinkage.haveHarmonization === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveHarmonization'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={dataLinkage.haveHarmonization === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveHarmonization(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
 
-            <div className={classNames("col-md-12", "form-group", (errors.createdRepo || errors.createdRepoSpecify) && "has-error")}>
-                <label htmlFor='createdRepo' className='col-md-12 question'>
-                    <Reminder message={errors.createdRepo} disabled={!errors.createdRepo} placement="right">
-                        <span>F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></span>
-                    </Reminder>
-                </label>
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                <Col sm="12">
+                    {saved && errors.haveHarmonizationSpecify ?
+                        <Reminder message={errors.haveHarmonizationSpecify} disabled={!errors.haveHarmonizationSpecify} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='haveHarmonizationSpecify'
+                                className='form-control'
+                                value={dataLinkage.haveHarmonizationSpecify}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 500 characters'
+                                disabled={dataLinkage.haveHarmonization !== 1}
+                                onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='haveHarmonizationSpecify'
+                            className='form-control'
+                            value={dataLinkage.haveHarmonizationSpecify}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 500 characters'
+                            disabled={dataLinkage.haveHarmonization !== 1}
+                            onChange={e => dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(e.target.value))}
+                        />}
+                </Col>
+            </Form.Group>
 
+            <Form as={Row}>
+                <Form.Label column sm="12">F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Col sm="12" className="align-self-center">
+                    {saved && errors.haveDeposited ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeposited'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={dataLinkage.haveDeposited === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
+                                            dispatch(allactions.dataLinkageActions.setdbGaP(0))
+                                            dispatch(allactions.dataLinkageActions.setbioLinCC(0))
+                                            dispatch(allactions.dataLinkageActions.setOtherRepo(0))
+                                        }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeposited'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={dataLinkage.haveDeposited === 0}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.dataLinkageActions.setHaveDeposited(0));
+                                        dispatch(allactions.dataLinkageActions.setdbGaP(0))
+                                        dispatch(allactions.dataLinkageActions.setbioLinCC(0))
+                                        dispatch(allactions.dataLinkageActions.setOtherRepo(0))
+                                    }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.haveDeposited ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='haveDeposited'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={dataLinkage.haveDeposited === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDeposited(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='haveDeposited'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={dataLinkage.haveDeposited === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setHaveDeposited(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
 
-                <span className='col-md-1' style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio'  className='click-width' name='createdRepo' checked={dataLinkage.createdRepo === 0} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify('')) } }} />
-                    <span>No</span>
-                </span>
+            <Form.Group as={Row}>
+                <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
+                    If yes, please select which repositories (Select all that apply):
+                    {errors.deposit && saved &&
+                        <div>
+                            <Form.Label style={{ color: 'red' }}>
+                                {errors.deposit}
+                            </Form.Label>
+                        </div>
+                    }
+                </Form.Label>
+                <Col sm="12">
+                    <div key="checkbox">
+                        <Form.Check className="pl-0" name='dbGaP'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={dataLinkage.dbGaP === 1}
+                                disabled={dataLinkage.haveDeposited !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                dbGaP
+                            </Form.Check.Label>
+                        </Form.Check>
 
-                <span className="col-md-1" style={{ whiteSpace: 'nowrap' }}>
-                    <input type='radio'  className='click-width' name='createdRepo' checked={dataLinkage.createdRepo === 1} onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(1)) } }} />
-                    <span>Yes</span>
-                </span>
-                {/* {errors.createdRepo !== '' && <div className='col-md-3 error'>{errors.createdRepo}</div>} */}
+                        <Form.Check className="pl-0" name='BioLINCC'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={dataLinkage.BioLINCC === 1}
+                                disabled={dataLinkage.haveDeposited !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                BioLINCC
+                            </Form.Check.Label>
+                        </Form.Check>
 
-                <div className='col-md-12 specify'>If yes, please specify:</div>
-                <div className='col-md-8'>
-                    <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
-                        <input name='createdRepoSpecify' className='specify form-control' disabled={dataLinkage.createdRepo !== 1} value={dataLinkage.createdRepoSpecify} readOnly={isReadOnly} onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))} placeholder='Max of 200 characters'></input>
-                    </Reminder>
-                </div>
-                {/* {errors.createdRepoSpecify !== '' && <div className='col-md-3 error-input specify' style={{ color: 'red', lineHeight: '2em' }}>{errors.createdRepoSpecify}</div>} */}
+                        <Form.Check className="pl-0" name='otherRepo'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={dataLinkage.otherRepo === 1}
+                                disabled={dataLinkage.haveDeposited !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Other Repo
+                            </Form.Check.Label>
+                        </Form.Check>
+                    </div>
+                </Col>
+            </Form.Group>
 
-            </div>
+            <Form as={Row}>
+                <Form.Label column sm="12">F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></Form.Label>
+
+                <Col sm="12" className="align-self-center">
+                    {saved && errors.dataOnline ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='dataOnline'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={dataLinkage.dataOnline === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(allactions.dataLinkageActions.setDataOnline(0));
+                                            dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
+                                            dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
+                                            dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                                        }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='dataOnline'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={dataLinkage.dataOnline === 0}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.dataLinkageActions.setDataOnline(0));
+                                        dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
+                                        dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
+                                        dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                                    }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.dataOnline ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='dataOnline'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={dataLinkage.dataOnline === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnline(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='dataOnline'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={dataLinkage.dataOnline === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnline(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
+
+            <Form.Group as={Row}>
+                <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
+                    If yes, please select which repositories (Select all that apply):
+                    {errors.dataOnlineSelected && saved &&
+                        <div>
+                            <Form.Label style={{ color: 'red' }}>
+                                {errors.dataOnlineSelected}
+                            </Form.Label>
+                        </div>
+                    }
+                </Form.Label>
+                <Col sm="12">
+                    <div key="checkbox">
+                        <Form.Check className="pl-0" name='dataOnlinePolicy'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={dataLinkage.dataOnlinePolicy === 1}
+                                disabled={dataLinkage.dataOnline !== 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2)) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Policy attached (PDF)
+                            </Form.Check.Label>
+                        </Form.Check>
+                        <Form.Check className="pl-0" name='dataOnlineWebsite'>
+                            <Form.Check.Input bsPrefix
+                                type='checkbox'
+                                className="mr-2"
+                                checked={dataLinkage.dataOnlineWebsite === 1}
+                                disabled={dataLinkage.dataOnline !== 1}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.dataLinkageActions.setDataOnlineWebsite((dataLinkage.dataOnlineWebsite + 1) % 2))
+                                        dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                                    }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Website, please specify:
+                            </Form.Check.Label>
+                        </Form.Check>
+                    </div>
+
+                    {saved && errors.dataOnlineURL ?
+                        <Reminder message={errors.dataOnlineURL} disabled={!errors.dataOnlineURL} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='dataOnlineURL'
+                                className='form-control'
+                                value={dataLinkage.dataOnlineURL}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 200 characters'
+                                disabled={!dataLinkage.dataOnlineWebsite}
+                                onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='dataOnlineURL'
+                            className='form-control'
+                            value={dataLinkage.dataOnlineURL}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 200 characters'
+                            disabled={!dataLinkage.dataOnlineWebsite}
+                            onChange={e => dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value))}
+                        />}
+                </Col>
+            </Form.Group>
+
+            <Form as={Row}>
+                <Form.Label column sm="12">F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></Form.Label>
+
+                <Col sm="12" className="align-self-center">
+                    {saved && errors.createdRepo ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='createdRepo'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    type="radio"
+                                    className="mr-2"
+                                    checked={dataLinkage.createdRepo === 0}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify('')) } }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='createdRepo'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                type="radio"
+                                className="mr-2"
+                                checked={dataLinkage.createdRepo === 0}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify('')) } }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                    {saved && errors.createdRepo ?
+                        <Reminder>
+                            <Form.Check type='radio'
+                                name='createdRepo'
+                                inline
+                                style={{ color: 'red' }} >
+                                <Form.Check.Input
+                                    type='radio'
+                                    className="mr-2"
+                                    checked={dataLinkage.createdRepo === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(1)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                                </Form.Check.Label>
+                            </Form.Check>
+                        </Reminder> :
+                        <Form.Check type='radio'
+                            name='createdRepo'
+                            inline>
+                            <Form.Check.Input
+                                type='radio'
+                                className="mr-2"
+                                checked={dataLinkage.createdRepo === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(allactions.dataLinkageActions.setCreatedRepo(1)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                    }
+                </Col>
+            </Form>
+
+            <Form.Group as={Row}>
+                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                <Col sm="12">
+                    {saved && errors.createdRepoSpecify ?
+                        <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
+                            <Form.Control type='text'
+                                style={{ border: '1px solid red' }}
+                                name='createdRepoSpecify'
+                                className='form-control'
+                                value={dataLinkage.createdRepoSpecify}
+                                readOnly={isReadOnly}
+                                placeholder='Max of 200 characters'
+                                disabled={dataLinkage.createdRepo !== 1}
+                                onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))}
+                            />
+                        </Reminder> :
+                        <Form.Control type='text'
+                            name='createdRepoSpecify'
+                            className='form-control'
+                            value={dataLinkage.createdRepoSpecify}
+                            readOnly={isReadOnly}
+                            placeholder='Max of 500 characters'
+                            disabled={dataLinkage.createdRepo !== 1}
+                            onChange={e => dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(e.target.value))}
+                        />}
+                </Col>
+            </Form.Group>
         </CollapsiblePanel>
 
         <div className='my-4' style={{ position: 'relative' }}>
