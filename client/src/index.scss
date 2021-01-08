@@ -1418,3 +1418,11 @@ tr.compare-row--hover, .body-header--hover {
 .bg-light-grey {
   background-color: #f1f1f1;
 }
+
+.table input.form-control.input-number[type="number"] {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  text-align: right;
+}
