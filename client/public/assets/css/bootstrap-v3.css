@@ -2488,6 +2488,8 @@ table th[class*="col-"] {
     border-bottom: 0;
   }
 }
+
+/*
 fieldset {
   min-width: 0;
   padding: 0;
@@ -2539,6 +2541,7 @@ input[type="checkbox"]:focus {
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
+ */
 output {
   display: block;
   padding-top: 7px;
@@ -2626,8 +2629,9 @@ input[type="search"] {
   .input-group-lg input[type="datetime-local"],
   .input-group-lg input[type="month"] {
     line-height: 46px;
-  } */
+  }*/
 }
+/*
 .form-group {
   margin-bottom: 15px;
 }

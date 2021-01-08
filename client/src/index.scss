@@ -408,6 +408,10 @@ table {
   margin: 5px auto 0 auto;  /*removed by Chris, put back in by Alex to fix sticky header issue, might need to come back out based on Chris's reasoning*/
 }
 
+.cedcd-table td, .cedcd-table th {
+  height: 36px;
+}
+
 th, td, .table > thead > tr > th {
   padding: 8px 10px 8px 10px;
   border: 1px #B7B5B0 solid;

@@ -20,7 +20,8 @@ async function login(request, response) {
         return response.status(301).redirect('/');
     }
 
-    if (query.refresh) {
+    if (query.refresh && session.user) {
+        session.user.refresh = query.refresh;
         return response.json(true);
     }
 

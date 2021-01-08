@@ -17,12 +17,13 @@ export default function SessionLogoutModal() {
 
     useEffect(() => {
         function onClick() {
-            if (userSession && remainingTime > remainingTimeThreshold)
+            if (userSession && remainingTime > remainingTimeThreshold) {
                 resetRemainingTime();
+            }
         }
         window.addEventListener('click', onClick);
         return () => window.removeEventListener('click', onClick);
-    })
+    }, [remainingTime])
 
     useEffect(() => {
         const intervalId = window.setInterval(() => {
@@ -37,13 +38,13 @@ export default function SessionLogoutModal() {
     }, [remainingTime]);
 
     async function resetRemainingTime() {
-        const response = await fetch(`/private/${userSession.loginType}?refresh=${new Date().getTime()}`);
         setRemainingTime(initialRemainingTime);
+        const response = await fetch(`/private/${userSession.loginType}?refresh=${new Date().getTime()}`);
     }
 
     async function logout() {
         const response = await fetch('/api/logout');
-        window.location.href = await response.json();
+        window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
     }
 
     return !userSession ? null : <Modal
