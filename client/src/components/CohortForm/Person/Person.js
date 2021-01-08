@@ -82,7 +82,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                 <Col sm={inputWidth}>
                     {errors[name] && displayStyle ? 
                         <Reminder message={errors[name]}>
-                            <Form.Control type="text" 
+                            <Form.Control type="text" className='text-capitalize'
                                 style={{ border: '1px solid red' }} 
                                 placeholder='Max of 100 characters' 
                                 maxLength="100"
@@ -97,7 +97,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     populateErrors(name, e.target.value, true, 'string')
                                 } />
                         </Reminder> : 
-                        <Form.Control type="text"
+                        <Form.Control type="text" className='text-capitalize'
                             placeholder='Max of 100 characters' 
                             maxLength="100"
                             name={name} 
@@ -120,7 +120,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                 <Col sm={inputWidth}>
                     {errors[position] && displayStyle ? 
                         <Reminder message={errors[position]}>
-                            <Form.Control type="text"
+                            <Form.Control type="text" className='text-capitalize'
                                 style={{ border: '1px solid red' }} 
                                 placeholder='Max of 100 characters' 
                                 maxLength="100" 
@@ -135,7 +135,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     populateErrors(position, e.target.value, true, 'string')
                                 } />
                         </Reminder> : 
-                        <Form.Control type="text"
+                        <Form.Control type="text" className='text-capitalize'
                             placeholder='Max of 100 characters' 
                             maxLength="100" 
                             name={position} 
@@ -157,7 +157,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                 </Form.Label>
                 <Col sm={inputWidth}>
                     <InputGroup>
-                        <Form.Control type="text"
+                        <Form.Control type="text" className='text-capitalize'
                             maxLength="10"
                             style={{ width: '25%' }} 
                             title='country code' 

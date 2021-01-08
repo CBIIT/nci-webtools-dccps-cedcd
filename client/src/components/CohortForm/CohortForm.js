@@ -481,11 +481,6 @@ const CohortForm = ({ ...props }) => {
                         <span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>
                     </div>)}
             </div>
-            {/*to be removed*/}
-            {/*<hr style={{ border: '0', clear: 'both', display: 'block', marginTop: '8px', marginBottom: '5px', backgroundColor: '#f2f2f2', height: '1px'}}/>
-            <div className='col-xs-12' style={{height: '40px'}} onClick={()=> setFileListShow(false)}>          
-                <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' />
-            </div> */}
         </div>
     }
 
@@ -709,7 +704,7 @@ const CohortForm = ({ ...props }) => {
                                         A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
                                     </Form.Label>
                                     <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
-                                        Is this the person to contact with questions about this form?
+                                        Is this the same person who completed this form?
                                     </Form.Label>
                                     <Col sm="6" className="align-self-center">
                                         <div key="radio">
@@ -1063,7 +1058,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     {/* </Col>
                                     <Col sm={{offset: "6", span: "6"}}> */}
-                                        <Form.Control type="text" 
+                                        <Form.Control type="text" className='text-capitalize'
                                             name='cancerSites' 
                                             value={cohort.eligible_disease_cancer_specify} 
                                             maxLength="100" 
@@ -1077,7 +1072,7 @@ const CohortForm = ({ ...props }) => {
                                         Please specify any eligibility criteria in addition to age and sex
                                     </Form.Label>
                                     <Col sm="12">
-                                        <Form.Control type="text"  
+                                        <Form.Control type="text"  className='text-capitalize'
                                             placeholder='Max of 100 characters'
                                             maxLength="100" 
                                             name='eligible_disease_other_specify' 
@@ -1177,7 +1172,7 @@ const CohortForm = ({ ...props }) => {
                                                             populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                         } />
                                                 </Reminder> : 
-                                                <Form.Control type="text" 
+                                                <Form.Control type="text" className='text-capitalize'
                                                     className='form-control' 
                                                     name='enrollment_year_end' 
                                                     placeholder='yyyy' 
@@ -1283,9 +1278,10 @@ const CohortForm = ({ ...props }) => {
 
                                                                 if (!isReadOnly) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                                    
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                                    !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
+                                                                    !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1303,7 +1299,7 @@ const CohortForm = ({ ...props }) => {
                                         <Col sm="2">
                                             {errors.enrollment_target && saved ? 
                                                 <Reminder message={errors.enrollment_target}>
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_target' 
                                                         value={cohort.enrollment_target} 
@@ -1315,8 +1311,7 @@ const CohortForm = ({ ...props }) => {
                                                         } 
                                                         disabled={cohort.enrollment_ongoing == 0} />
                                                 </Reminder> : 
-                                                <Form.Control type="text" 
-                                                    style={{ paddingLeft: '8px', paddingRight: '0' }} 
+                                                <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_target' 
                                                     value={cohort.enrollment_target} 
                                                     onChange={e =>
@@ -1349,7 +1344,7 @@ const CohortForm = ({ ...props }) => {
                                                         } 
                                                         disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                                 </Reminder> : 
-                                                <Form.Control type="text"
+                                                <Form.Control type="text" 
                                                     name='enrollment_year_complete' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_complete} 
@@ -1371,7 +1366,7 @@ const CohortForm = ({ ...props }) => {
                                             <InputGroup>
                                                 {errors.enrollment_age_min && saved ? 
                                                     <Reminder message={errors.enrollment_age_min}>
-                                                        <Form.Control type="text" 
+                                                        <Form.Control type="text" className='text-capitalize'
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='enrollment_age_min' 
                                                             value={cohort.enrollment_age_min} 
@@ -1382,7 +1377,7 @@ const CohortForm = ({ ...props }) => {
                                                                 populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) 
                                                             } />
                                                     </Reminder> : 
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         name='enrollment_age_min' 
                                                         value={cohort.enrollment_age_min} 
                                                         onChange={e => 
@@ -1398,7 +1393,7 @@ const CohortForm = ({ ...props }) => {
                                                 </InputGroup.Append>
                                                 {errors.enrollment_age_max && saved ? 
                                                     <Reminder message={errors.enrollment_age_max}>
-                                                        <Form.Control type="text" 
+                                                        <Form.Control type="text" className='text-capitalize'
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='enrollment_age_max' 
                                                             value={cohort.enrollment_age_max} 
@@ -1409,7 +1404,7 @@ const CohortForm = ({ ...props }) => {
                                                                 populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) 
                                                             } />
                                                     </Reminder> : 
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         name='enrollment_age_max' 
                                                         value={cohort.enrollment_age_max} 
                                                         onChange={e => 
@@ -1430,7 +1425,7 @@ const CohortForm = ({ ...props }) => {
                                         <Col sm="2">
                                             {errors.enrollment_age_median && saved ? 
                                                 <Reminder message={errors.enrollment_age_median}>
-                                                    <Form.Control type="text"
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_median' 
                                                         value={cohort.enrollment_age_median} 
@@ -1441,7 +1436,7 @@ const CohortForm = ({ ...props }) => {
                                                             populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                         } />
                                                 </Reminder> : 
-                                                <Form.Control type="text"
+                                                <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_age_median' 
                                                     value={cohort.enrollment_age_median} 
                                                     onChange={e => 
@@ -1461,7 +1456,7 @@ const CohortForm = ({ ...props }) => {
                                         <Col sm="2">
                                             {errors.enrollment_age_mean && saved ? 
                                                 <Reminder message={errors.enrollment_age_mean}>
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_mean' 
                                                         value={cohort.enrollment_age_mean} 
@@ -1472,7 +1467,7 @@ const CohortForm = ({ ...props }) => {
                                                             populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                         } />
                                                 </Reminder> : 
-                                                <Form.Control type="text"
+                                                <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_age_mean' 
                                                     value={cohort.enrollment_age_mean} 
                                                     onChange={e => 
@@ -1493,7 +1488,7 @@ const CohortForm = ({ ...props }) => {
                                             <InputGroup>
                                                 {errors.current_age_min && saved ? 
                                                     <Reminder message={errors.current_age_min}>
-                                                        <Form.Control type="text"
+                                                        <Form.Control type="text" className='text-capitalize'
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='current_age_min' 
                                                             value={cohort.current_age_min} 
@@ -1504,7 +1499,7 @@ const CohortForm = ({ ...props }) => {
                                                                 populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)
                                                             } />
                                                     </Reminder> : 
-                                                    <Form.Control type="text"
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         name='current_age_min' 
                                                         value={cohort.current_age_min} 
                                                         onChange={e => 
@@ -1520,7 +1515,7 @@ const CohortForm = ({ ...props }) => {
                                                 </InputGroup.Append>
                                                 {errors.current_age_max && saved ? 
                                                     <Reminder message={errors.current_age_max}>
-                                                        <Form.Control type="text" 
+                                                        <Form.Control type="text" className='text-capitalize'
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='current_age_max' 
                                                             value={cohort.current_age_max} 
@@ -1531,7 +1526,7 @@ const CohortForm = ({ ...props }) => {
                                                                 populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)
                                                             } />
                                                     </Reminder> : 
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         name='current_age_max' 
                                                         value={cohort.current_age_max} 
                                                         onChange={e => 
@@ -1552,7 +1547,7 @@ const CohortForm = ({ ...props }) => {
                                         <Col sm="2">
                                             {errors.current_age_median && saved ? 
                                                 <Reminder message={errors.current_age_median}>
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='current_age_median' 
                                                         value={cohort.current_age_median} 
@@ -1563,7 +1558,7 @@ const CohortForm = ({ ...props }) => {
                                                             populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                         } />
                                                 </Reminder> : 
-                                                <Form.Control type="text" 
+                                                <Form.Control type="text" className='text-capitalize'
                                                     name='current_age_median' 
                                                     value={cohort.current_age_median}
                                                     onChange={e => 
@@ -1583,7 +1578,7 @@ const CohortForm = ({ ...props }) => {
                                         <Col sm="2">
                                             {errors.current_age_mean && saved ? 
                                                 <Reminder message={errors.current_age_mean}>
-                                                    <Form.Control type="text" 
+                                                    <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='current_age_mean' 
                                                         value={cohort.current_age_mean} 
@@ -1594,7 +1589,7 @@ const CohortForm = ({ ...props }) => {
                                                             populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                         } />
                                                 </Reminder> : 
-                                                <Form.Control type="text"
+                                                <Form.Control type="text" className='text-capitalize'
                                                     name='current_age_mean' 
                                                     value={cohort.current_age_mean} 
                                                     onChange={e => 
@@ -1624,7 +1619,7 @@ const CohortForm = ({ ...props }) => {
                                     <Col sm="12">
                                         {errors.time_interval && saved ? 
                                             <Reminder message={errors.time_interval}>
-                                                <Form.Control type="text" 
+                                                <Form.Control type="text" className='text-capitalize'
                                                     style={{ color: 'red', border: '1px solid red' }} 
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200' c
@@ -1637,7 +1632,7 @@ const CohortForm = ({ ...props }) => {
                                                         populateErrors('time_interval', e.target.value, true, 'string') 
                                                     } />
                                             </Reminder> : 
-                                            <Form.Control type="text" 
+                                            <Form.Control type="text" className='text-capitalize'
                                                 placeholder='Max of 200 characters'
                                                 maxLength='200' 
                                                 name='time_interval' 
@@ -1780,7 +1775,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                         {saved && errors.data_collected_other_specify ?
                                             <Reminder message={errors.data_collected_other_specify}>
-                                                <Form.Control type="text"
+                                                <Form.Control type="text" className='text-capitalize'
                                                     style={{ color: 'red', border: '1px solid red' }} 
                                                     name='data_collected_other_specify'
                                                     value={cohort.data_collected_other_specify} 
@@ -1794,7 +1789,7 @@ const CohortForm = ({ ...props }) => {
                                                     }
                                                     disabled={!cohort.data_collected_other} />
                                             </Reminder> : 
-                                            <Form.Control type="text"
+                                            <Form.Control type="text" className='text-capitalize'
                                                 name='data_collected_other_specify' 
                                                 value={cohort.data_collected_other_specify} 
                                                 placeholder='Max of 200 characters'
@@ -1947,7 +1942,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                         {saved && errors.restrictions_other_specify ?
                                             <Reminder message={errors.restrictions_other_specify}>
-                                                <Form.Control type="text"  style={{ color: 'red', border: '1px solid red' }} 
+                                                <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
                                                     name='restrictions_other_specify' 
                                                     value={cohort.restrictions_other_specify} 
                                                     placeholder='Max of 200 characters' 
@@ -1960,7 +1955,7 @@ const CohortForm = ({ ...props }) => {
                                                     } 
                                                     disabled={!cohort.restrictOther} />
                                             </Reminder> : 
-                                            <Form.Control type="text"
+                                            <Form.Control type="text" className='text-capitalize'
                                                 name='data_collected_other_specify' 
                                                 value={cohort.restrictions_other_specify}
                                                 placeholder='Max of 200 characters' 
@@ -2083,7 +2078,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                         {saved && errors.strategy_other_specify ?
                                             <Reminder message={errors.strategy_other_specify}>
-                                                <Form.Control type="text" style={{ color: 'red', border: '1px solid red' }} 
+                                                <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
                                                     name='strategy_other_specify' 
                                                     value={cohort.strategy_other_specify} 
                                                     placeholder='Max of 200 characters' 
@@ -2096,7 +2091,7 @@ const CohortForm = ({ ...props }) => {
                                                     } 
                                                     disabled={!cohort.strategy_other} />
                                             </Reminder> : 
-                                            <Form.Control type="text"
+                                            <Form.Control type="text" className='text-capitalize'
                                                 name='strategy_other_specify' 
                                                 value={cohort.strategy_other_specify}
                                                 placeholder='Max of 200 characters' 
