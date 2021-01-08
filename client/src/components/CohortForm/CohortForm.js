@@ -333,9 +333,9 @@ const CohortForm = ({ ...props }) => {
     //will be removed from this file later
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
         var result = getValidationResult(value, requiredOrNot, valueType)
-        if(valueType === 'startyear' && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
+        if(valueType === 'startyear' && value && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
             result = 'start year after end year'
-        else if (valueType === 'endyear' && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
+        else if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
             result = 'end year is before start year'
 
         console.log(result)
@@ -476,9 +476,9 @@ const CohortForm = ({ ...props }) => {
             </div>
             <div>
                 {files.map(f =>
-                    <div className='col-xs-12' style={{ marginBottom: '3px', paddingLeft: '0' }}>
-                        <span className='col-xs-10'>{f.filename}</span>
-                        {!isReadOnly && <span className='col-xs-2' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span className='closer'>x</span></span>}
+                    <div className='row' style={{ marginBottom: '3px', paddingLeft: '10px'}}>
+                        <span className='col-10'>{f.filename}</span>
+                        <span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>
                     </div>)}
             </div>
             {/*to be removed*/}
@@ -910,10 +910,19 @@ const CohortForm = ({ ...props }) => {
                                                         //!isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') 
                                                         if(!isReadOnly) {
                                                             setPerson(e, '', '', '', '', 0, 'collaborator');
-                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                            if(e.target.checked)
+                                                            {
+                                                                dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                            }
+                                                            else{
+                                                                dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
+                                                            }
                                                     }     
                                                     }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -930,11 +939,20 @@ const CohortForm = ({ ...props }) => {
                                                     checked={cohort.sameAsSomeone === 1} 
                                                     onClick={e => {
                                                         if(!isReadOnly) {
-                                                            setPerson(e, '', '', '', '', 1, 'collaborator');
-                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                            setPerson(e, '', '', '', '', 1, 'collaborator')
+                                                            if(e.target.checked)
+                                                            {
+                                                                dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                            }
+                                                            else{
+                                                                dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
+                                                            }
                                                     }}
                                                     } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1036,7 +1054,7 @@ const CohortForm = ({ ...props }) => {
                                                     className="mr-2" 
                                                     checked={cohort.eligible_disease} 
                                                     onChange={() => 
-                                                        dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
                                                     }  />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Cancer survivors only, specify cancer site(s)
@@ -1065,7 +1083,7 @@ const CohortForm = ({ ...props }) => {
                                             name='eligible_disease_other_specify' 
                                             value={cohort.eligible_disease_other_specify} 
                                             onChange={e => 
-                                                dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
+                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
                                             } 
                                             readOnly={isReadOnly} />
                                     </Col>
@@ -1088,7 +1106,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_total' 
                                                         value={cohort.enrollment_total} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_total(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateErrors('enrollment_total', e.target.value, true, 'number')
@@ -1098,7 +1116,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_total' 
                                                     value={cohort.enrollment_total} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_total(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('enrollment_total', e.target.value, true, 'number') 
@@ -1120,7 +1138,7 @@ const CohortForm = ({ ...props }) => {
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_start} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
@@ -1131,7 +1149,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_start} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
@@ -1153,7 +1171,7 @@ const CohortForm = ({ ...props }) => {
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_end} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
@@ -1165,7 +1183,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_end} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
@@ -1192,11 +1210,13 @@ const CohortForm = ({ ...props }) => {
                                                                 className="mr-2"
                                                                 // value='0' 
                                                                 checked={cohort.enrollment_ongoing === 0} 
-                                                                onChange={e => {
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                onChange={() => {
+                                                                    if(!isReadOnly){
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                                 No
@@ -1238,11 +1258,13 @@ const CohortForm = ({ ...props }) => {
                                                                 className="mr-2"
                                                                 // value='1' 
                                                                 checked={cohort.enrollment_ongoing === 1} 
-                                                                onChange={e => {
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                                onChange={() => {
+                                                                    if(!isReadOnly){
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                                    }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                                 Yes
@@ -1286,7 +1308,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_target' 
                                                         value={cohort.enrollment_target} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_target(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateErrors('enrollment_target', e.target.value, true, 'number')
@@ -1298,7 +1320,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_target' 
                                                     value={cohort.enrollment_target} 
                                                     onChange={e =>
-                                                        dispatch(allactions.cohortActions.enrollment_target(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('enrollment_target', e.target.value, true, 'number')
@@ -1320,7 +1342,7 @@ const CohortForm = ({ ...props }) => {
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_complete} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -1332,7 +1354,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_complete} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                     }
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -1354,7 +1376,7 @@ const CohortForm = ({ ...props }) => {
                                                             name='enrollment_age_min' 
                                                             value={cohort.enrollment_age_min} 
                                                             onChange={e => 
-                                                                dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
+                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                             } 
                                                             onBlur={e => 
                                                                 populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) 
@@ -1364,7 +1386,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_age_min' 
                                                         value={cohort.enrollment_age_min} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) 
@@ -1381,7 +1403,7 @@ const CohortForm = ({ ...props }) => {
                                                             name='enrollment_age_max' 
                                                             value={cohort.enrollment_age_max} 
                                                             onChange={e => 
-                                                                dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
+                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                             } 
                                                             onBlur={e => 
                                                                 populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) 
@@ -1391,7 +1413,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_age_max' 
                                                         value={cohort.enrollment_age_max} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) 
@@ -1413,7 +1435,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_age_median' 
                                                         value={cohort.enrollment_age_median} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
@@ -1423,7 +1445,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_age_median' 
                                                     value={cohort.enrollment_age_median} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
@@ -1444,7 +1466,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_age_mean' 
                                                         value={cohort.enrollment_age_mean} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
@@ -1454,7 +1476,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_age_mean' 
                                                     value={cohort.enrollment_age_mean} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
@@ -1476,7 +1498,7 @@ const CohortForm = ({ ...props }) => {
                                                             name='current_age_min' 
                                                             value={cohort.current_age_min} 
                                                             onChange={e => 
-                                                                dispatch(allactions.cohortActions.current_age_min(e.target.value))
+                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                             } 
                                                             onBlur={e => 
                                                                 populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)
@@ -1486,7 +1508,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='current_age_min' 
                                                         value={cohort.current_age_min} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.current_age_min(e.target.value))
+                                                            !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)
@@ -1503,7 +1525,7 @@ const CohortForm = ({ ...props }) => {
                                                             name='current_age_max' 
                                                             value={cohort.current_age_max} 
                                                             onChange={e => 
-                                                                dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                             } 
                                                             onBlur={e => 
                                                                 populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)
@@ -1513,7 +1535,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='current_age_max' 
                                                         value={cohort.current_age_max} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)
@@ -1535,7 +1557,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='current_age_median' 
                                                         value={cohort.current_age_median} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.current_age_median(e.target.value))
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
@@ -1545,7 +1567,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='current_age_median' 
                                                     value={cohort.current_age_median}
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.current_age_median(e.target.value))
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
@@ -1566,7 +1588,7 @@ const CohortForm = ({ ...props }) => {
                                                         name='current_age_mean' 
                                                         value={cohort.current_age_mean} 
                                                         onChange={e => 
-                                                            dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
                                                         } 
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
@@ -1576,7 +1598,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='current_age_mean' 
                                                     value={cohort.current_age_mean} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
@@ -1609,7 +1631,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='time_interval' 
                                                     value={cohort.time_interval} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.time_interval(e.target.value))
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('time_interval', e.target.value, true, 'string') 
@@ -1621,7 +1643,7 @@ const CohortForm = ({ ...props }) => {
                                                 name='time_interval' 
                                                 value={cohort.time_interval} 
                                                 onChange={e => 
-                                                    dispatch(allactions.cohortActions.time_interval(e.target.value))
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
                                                 } 
                                                 onBlur={e => 
                                                     populateErrors('time_interval', e.target.value, true, 'string') 
@@ -1644,7 +1666,7 @@ const CohortForm = ({ ...props }) => {
                                                     name='most_recent_year' 
                                                     value={cohort.most_recent_year}
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                                     } 
                                                     placeholder='yyyy' 
                                                     onBlur={e => 
@@ -1655,7 +1677,7 @@ const CohortForm = ({ ...props }) => {
                                                 name='most_recent_year' 
                                                 value={cohort.most_recent_year} 
                                                 onChange={e => 
-                                                    dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                                 }
                                                 placeholder='yyyy' 
                                                 onBlur={e => 
@@ -1752,7 +1774,7 @@ const CohortForm = ({ ...props }) => {
                                                         !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true) 
                                                     } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other
+                                                    Other, please specify
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
@@ -1765,7 +1787,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='Max of 200 characters'
                                                     maxLength='200' 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                                     }
                                                     onBlur={() => 
                                                         populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
@@ -1778,7 +1800,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='Max of 200 characters'
                                                 maxLength='200' 
                                                 onChange={e => 
-                                                    dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                                 } 
                                                 onBlur={() => 
                                                     populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
@@ -1919,7 +1941,7 @@ const CohortForm = ({ ...props }) => {
                                                         !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true) 
                                                     } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other
+                                                    Other, please specify
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
@@ -1931,7 +1953,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200' 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                                     } 
                                                     onBlur={() => 
                                                         populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
@@ -1944,7 +1966,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
                                                 onChange={e => 
-                                                    dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
+                                                    !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                                 } 
                                                 onBlur={() => 
                                                     populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
@@ -2055,7 +2077,7 @@ const CohortForm = ({ ...props }) => {
                                                         !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
                                                     }/>
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other
+                                                    Other, please specify
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
@@ -2067,7 +2089,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200' 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                                     } 
                                                     onBlur={() => 
                                                         populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
@@ -2080,7 +2102,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
                                                 onChange={e => 
-                                                    dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
+                                                    !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                                 } 
                                                 onBlur={() => 
                                                     populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
@@ -2117,10 +2139,29 @@ const CohortForm = ({ ...props }) => {
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                         <td>
-                                                                            <span className='col-xs-10' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                                                <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1) }} multiple disabled={isReadOnly} />
-                                                                            </span>
-                                                                            <span className='col-xs-2 badge upperCloser' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
+                                                                        {
+                                                                            !isReadOnly && 
+                                                                            <div className="input-group">
+                                                                                <div className="custom-file">
+                                                                                    <input
+                                                                                    type="file"
+                                                                                    className="custom-file-input"
+                                                                                    name='cohortFile'
+                                                                                    id="inputGroupFile01"
+                                                                                    aria-describedby="inputGroupFileAddon01"
+                                                                                    multiple readOnly={isReadOnly}
+                                                                                    onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                                    <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                                                                    Choose Files
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                        <div>
+                                                                            {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                            {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
+                                                                        </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -2139,10 +2180,29 @@ const CohortForm = ({ ...props }) => {
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                         <td>
-                                                                            <span className='col-xs-10' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                                                <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1) }} multiple disabled={isReadOnly} />
-                                                                            </span>
-                                                                            <span className='col-xs-2 badge upperCloser' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
+                                                                        {
+                                                                            !isReadOnly && 
+                                                                            <div className="input-group">
+                                                                                <div className="custom-file">
+                                                                                    <input
+                                                                                    type="file"
+                                                                                    className="custom-file-input"
+                                                                                    name='cohortFile'
+                                                                                    id="inputGroupFile02"
+                                                                                    aria-describedby="inputGroupFileAddon02"
+                                                                                    multiple readOnly={isReadOnly}
+                                                                                    onChange={e => handleUpload(e.target.files, 1)} />
+                                                                                    <label className="custom-file-label" htmlFor="inputGroupFile02">
+                                                                                    Choose Files
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                        <div>
+                                                                            {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                            {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
+                                                                        </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -2161,10 +2221,29 @@ const CohortForm = ({ ...props }) => {
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                         <td>
-                                                                            <span className='col-xs-10' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                                                <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2) }} multiple disabled={isReadOnly} />
-                                                                            </span>
-                                                                            <span className='col-xs-2 badge upperCloser' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
+                                                                        {
+                                                                            !isReadOnly && 
+                                                                            <div className="input-group">
+                                                                                <div className="custom-file">
+                                                                                    <input
+                                                                                    type="file"
+                                                                                    className="custom-file-input"
+                                                                                    name='cohortFile'
+                                                                                    id="inputGroupFile03"
+                                                                                    aria-describedby="inputGroupFileAddon03"
+                                                                                    multiple readOnly={isReadOnly}
+                                                                                    onChange={e => handleUpload(e.target.files, 2)} />
+                                                                                    <label className="custom-file-label" htmlFor="inputGroupFile03">
+                                                                                    Choose Files
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                     }
+                                                                    <div>
+                                                                        {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                            <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
+                                                                    </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -2183,10 +2262,29 @@ const CohortForm = ({ ...props }) => {
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                         <td>
-                                                                            <span className='col-xs-10' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                                                <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3) }} multiple disabled={isReadOnly} />
-                                                                            </span>
-                                                                            <span className='col-xs-2 badge upperCloser' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
+                                                                        {
+                                                                            !isReadOnly && 
+                                                                            <div className="input-group">
+                                                                                <div className="custom-file">
+                                                                                    <input
+                                                                                    type="file"
+                                                                                    className="custom-file-input"
+                                                                                    name='cohortFile'
+                                                                                    id="inputGroupFile04"
+                                                                                    aria-describedby="inputGroupFileAddon04"
+                                                                                    multiple readOnly={isReadOnly}
+                                                                                    onChange={e => handleUpload(e.target.files, 3)} />
+                                                                                    <label className="custom-file-label" htmlFor="inputGroupFile04">
+                                                                                    Choose Files
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        }       
+                                                                        <div>
+                                                                            {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                            {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
+                                                                        </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -2205,10 +2303,29 @@ const CohortForm = ({ ...props }) => {
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                         <td >
-                                                                            <span className='col-xs-10' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                                                                <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4) }} multiple disabled={isReadOnly} />
-                                                                            </span>
-                                                                            <span className='col-xs-2 badge upperCloser' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
+                                                                        {
+                                                                            !isReadOnly && 
+                                                                            <div className="input-group">
+                                                                                <div className="custom-file">
+                                                                                    <input
+                                                                                    type="file"
+                                                                                    className="custom-file-input"
+                                                                                    name='cohortFile'
+                                                                                    id="inputGroupFile05"
+                                                                                    aria-describedby="inputGroupFileAddon05"
+                                                                                    multiple readOnly={isReadOnly}
+                                                                                    onChange={e => handleUpload(e.target.files, 4)} />
+                                                                                    <label className="custom-file-label" htmlFor="inputGroupFile05">
+                                                                                    Choose Files
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+                                                                        <div>
+                                                                            {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                            {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
+                                                                        </div>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -2233,23 +2350,27 @@ const CohortForm = ({ ...props }) => {
                                                             <td>
                                                                <input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile01"
-                                                                        aria-describedby="inputGroupFileAddon01"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 0)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                                                        Choose Files
-                                                                        </label>
+                                                                {
+                                                                    !isReadOnly && 
+                                                                    <div className="input-group">
+                                                                        <div className="custom-file">
+                                                                            <input
+                                                                            type="file"
+                                                                            className="custom-file-input"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile01"
+                                                                            aria-describedby="inputGroupFileAddon01"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                            <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                                                            Choose Files
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                }
                                                                 <div>
-                                                                    {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}></span>)</span>}</span>}
                                                                     {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>
@@ -2259,23 +2380,27 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Main cohort protocol</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)) }} readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile02"
-                                                                        aria-describedby="inputGroupFileAddon02"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 1)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile02">
-                                                                        Choose Files
-                                                                        </label>
+                                                                {
+                                                                    !isReadOnly && 
+                                                                    <div className="input-group">
+                                                                        <div className="custom-file">
+                                                                            <input
+                                                                            type="file"
+                                                                            className="custom-file-input"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile02"
+                                                                            aria-describedby="inputGroupFileAddon02"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 1)} />
+                                                                            <label className="custom-file-label" htmlFor="inputGroupFile02">
+                                                                            Choose Files
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                }
                                                                 <div>
-                                                                    {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}></span>)</span>}</span>}
                                                                     {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
                                                                 </div>
 
@@ -2286,24 +2411,28 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Data sharing policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile03"
-                                                                        aria-describedby="inputGroupFileAddon03"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 2)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile03">
-                                                                        Choose Files
-                                                                        </label>
+                                                            {
+                                                                    !isReadOnly && 
+                                                                    <div className="input-group">
+                                                                        <div className="custom-file">
+                                                                            <input
+                                                                            type="file"
+                                                                            className="custom-file-input"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile03"
+                                                                            aria-describedby="inputGroupFileAddon03"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 2)} />
+                                                                            <label className="custom-file-label" htmlFor="inputGroupFile03">
+                                                                            Choose Files
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                            }
                                                                 <div>
-                                                                    {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}
-                                                                    {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'mainFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
+                                                                    {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                    {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>
 
@@ -2312,23 +2441,27 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Biospecimen sharing policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile04"
-                                                                        aria-describedby="inputGroupFileAddon04"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 3)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile04">
-                                                                        Choose Files
-                                                                        </label>
+                                                            {
+                                                                    !isReadOnly && 
+                                                                    <div className="input-group">
+                                                                        <div className="custom-file">
+                                                                            <input
+                                                                            type="file"
+                                                                            className="custom-file-input"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile04"
+                                                                            aria-describedby="inputGroupFileAddon04"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 3)} />
+                                                                            <label className="custom-file-label" htmlFor="inputGroupFile04">
+                                                                            Choose Files
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                }       
                                                                 <div>
-                                                                    {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}></span>)</span>}</span>}
                                                                     {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
                                                                 </div>
 
@@ -2338,23 +2471,27 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Publication(authorship) policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile05"
-                                                                        aria-describedby="inputGroupFileAddon05"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 4)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile05">
-                                                                        Choose Files
-                                                                        </label>
+                                                            {
+                                                                    !isReadOnly && 
+                                                                    <div className="input-group">
+                                                                        <div className="custom-file">
+                                                                            <input
+                                                                            type="file"
+                                                                            className="custom-file-input"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile05"
+                                                                            aria-describedby="inputGroupFileAddon05"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 4)} />
+                                                                            <label className="custom-file-label" htmlFor="inputGroupFile05">
+                                                                            Choose Files
+                                                                            </label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
+                                                                }
                                                                 <div>
-                                                                    {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}></span>)</span>}</span>}
                                                                     {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>

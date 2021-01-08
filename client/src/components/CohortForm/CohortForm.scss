@@ -39,12 +39,14 @@
  }
 */
  .closer {
-     color: red;
      text-align: center;
  }
 
  .closer:hover, .upperCloser:hover{
+     color: red;
      cursor: pointer;
-     border-bottom: 1px solid red;
  }
  
+ .glyphicon{
+     font-size: 10px
+ }
