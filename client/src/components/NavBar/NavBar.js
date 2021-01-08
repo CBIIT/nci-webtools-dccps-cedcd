@@ -11,7 +11,7 @@ const NavBar = (props) => {
     // can not use normal 301 response, since session is not properly cleared
     // setLogin(false)
     const response = await fetch('/api/logout');
-    window.location.href = await response.json();
+    window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
   }
   const [showSubMenu, setSubMenuShow] = useState(true)
   const [miniDropdownContent, setContent] = useState('none')

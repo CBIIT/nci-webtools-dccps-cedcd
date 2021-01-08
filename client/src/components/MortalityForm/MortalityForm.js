@@ -64,6 +64,7 @@ const MortalityForm = ({ ...props }) => {
                     setEmails(result.data.emails)
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
+                        console.log(data)
 
                         batch(() => {
                             dispatch(allactions.mortalityActions.setHasLoaded(true))

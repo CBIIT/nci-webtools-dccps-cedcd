@@ -408,6 +408,10 @@ table {
   margin: 5px auto 0 auto;  /*removed by Chris, put back in by Alex to fix sticky header issue, might need to come back out based on Chris's reasoning*/
 }
 
+.cedcd-table td, .cedcd-table th {
+  height: 36px;
+}
+
 th, td, .table > thead > tr > th {
   padding: 8px 10px 8px 10px;
   border: 1px #B7B5B0 solid;
@@ -1406,3 +1410,19 @@ tr.compare-row--hover, .body-header--hover {
 }
 
 // BOOTSTRAP V4 OVERRIDES 
+
+.form-label {
+  font-weight: 600;
+}
+
+.bg-light-grey {
+  background-color: #f1f1f1;
+}
+
+.table input.form-control.input-number[type="number"] {
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  text-align: right;
+}

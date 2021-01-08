@@ -20,7 +20,8 @@ async function login(request, response) {
         return response.status(301).redirect('/');
     }
 
-    if (query.refresh) {
+    if (query.refresh && session.user) {
+        session.user.refresh = query.refresh;
         return response.json(true);
     }
 
@@ -68,7 +69,7 @@ async function login(request, response) {
             const cohortAcronyms = await mysql.query(
                 `SELECT DISTINCT cohort_acronym as acronym
                 FROM cohort_user_mapping 
-                WHERE cohort_user_id = ? AND active = 'Y'
+                WHERE user_id = ? AND active = 'Y'
                 ORDER BY acronym ASC`,
                 [userId]
             );
