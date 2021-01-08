@@ -1206,11 +1206,13 @@ const CohortForm = ({ ...props }) => {
                                                                 // value='0' 
                                                                 checked={cohort.enrollment_ongoing === 0} 
                                                                 onChange={() => {
-                                                                    if(!isReadOnly){
-                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    if (!isReadOnly) {
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                                        dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                        dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                     }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1233,6 +1235,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                                    dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>

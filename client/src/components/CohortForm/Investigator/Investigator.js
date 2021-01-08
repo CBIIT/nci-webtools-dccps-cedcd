@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 //import "react-datepicker/dist/react-datepicker.css";
 import './Investigator.css'
 
-const Investigator = ({id, name, institution, email, handleRemove, errors, disabled, displayStyle}) => {
+const Investigator = ({id, name, institution, email, handleRemove, errors, disabled=false, displayStyle}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
             case 'phone':
@@ -48,7 +48,8 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                     <Col sm="12" className="inspectorheader"></Col>
                 } */}
                 <Form.Group as={Row} className="mb-1">
-                    {idx !== '0' && 
+                    {console.log(idx)}
+                    {(idx !== '0' && !disabled) && 
                         <Col sm={{ order: 'last', span: 5 }} className="align-self-center">
                             <span className="inspectorClose float-right" style={{ color: 'blue' }} 
                                 onClick={() => handleRemove(idx)}>
