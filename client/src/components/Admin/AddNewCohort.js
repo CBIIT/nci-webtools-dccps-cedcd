@@ -155,12 +155,13 @@ class AddNewCohort extends Component {
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
-            if (state.cohortName === cohort.name) {
+          
+            if (state.cohortName.trim() === cohort.name.trim()) {
               state.name_error = 'cohort already exists'
               errors += 1;
             }
 
-            if (state.cohortAcronym === cohort.acronym) {
+            if (state.cohortAcronym.trim() === cohort.acronym.trim()) {
               state.acronym_error = 'acronym already exists'
               errors += 1;
             }
