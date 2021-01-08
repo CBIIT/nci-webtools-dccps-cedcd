@@ -3,9 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames'
 import Form from 'react-bootstrap/Form';
-import FormControl from 'react-bootstrap/FormControl';
-import FormCheck from 'react-bootstrap/FormCheck';
-
+import Table from 'react-bootstrap/Table';
 import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
@@ -342,28 +340,29 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     function CheckedInput({ value, name, type, label, className = '', disabled, onChange }) {
-        return <Form.Check
-                    
-                    type={type}
-                    name={name}
-                    checked={disabled ? false : +form[name] === +value}
-                    value={value}
-                    disabled={disabled}
-                    onChange={e => {
-                        if (isReadOnly) 
-                            return false;
-                        setFormValue(
-                            e.target.name,
-                            type === 'checkbox'
-                                ? (e.target.checked ? 1 : 0)
-                                : e.target.value
-                        );
-                        if (onChange)
-                            onChange(e);
-                    }}
-                    readOnly={isReadOnly} 
-                    label={label}
-                    id={`${name}_${value}`} />
+        return (
+            <Form.Check
+                type={type}
+                name={name}
+                checked={disabled ? false : +form[name] === +value}
+                value={value}
+                disabled={disabled}
+                onChange={e => {
+                    if (isReadOnly) 
+                        return false;
+                    setFormValue(
+                        e.target.name,
+                        type === 'checkbox'
+                            ? (e.target.checked ? 1 : 0)
+                            : e.target.value
+                    );
+                    if (onChange)
+                        onChange(e);
+                }}
+                readOnly={isReadOnly} 
+                label={label}
+                id={`${name}_${value}`} />
+        );
     }
 
     return lookup && <Form id="cancerInfoContainer" className="p-3 px-5">
@@ -377,8 +376,8 @@ const CancerInfoForm = ({ ...props }) => {
                 <Form.Label>D.1 Cancer Counts</Form.Label>
                 <div>Please enter the number of participants with these cancers by sex.</div>
             </div>
-            <div className="overflow-auto mb-4">
-                <table className='table table-condensed table-nowrap table-valign-middle'>
+            <div className="table-responsive mb-4">
+                <Table bordered condensed className="table-valign-middle">
                     <thead>
                         <tr>
                             <th className="text-center" rowSpan={2}>ICD-9</th>
@@ -409,13 +408,13 @@ const CancerInfoForm = ({ ...props }) => {
                             );
 
                             return <tr key={keyPrefix}>
-                                <td className={c.icd9 ? "bg-light" : "bg-grey"}>{c.icd9}</td>
-                                <td className={c.icd10 ? "bg-light" : "bg-grey"}>{c.icd10}</td>
-                                <td className="bg-light">{c.cancer}</td>
+                                <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
+                                <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
+                                <td className="text-nowrap bg-light-grey">{c.cancer}</td>
                                 {inputKeys.map((key, i) =>
                                     <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
                                         <Form.Control
-                                            className="border-0 p-0 bg-transparent text-right"
+                                            className="input-number"
                                             title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             type="number"
@@ -430,7 +429,7 @@ const CancerInfoForm = ({ ...props }) => {
                             </tr>
                         })}
                     </tbody>
-                </table>
+                </Table>
             </div>
         </CollapsiblePanel>
 
