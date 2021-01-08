@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames'
+import Form from 'react-bootstrap/Form';
+import FormControl from 'react-bootstrap/FormControl';
+import FormCheck from 'react-bootstrap/FormCheck';
+
 import allactions from '../../actions'
 import { loadCohort } from '../../reducers/cancerInfoReducer';
 import { parseISO, format } from 'date-fns';
@@ -10,6 +14,7 @@ import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import './CancerInfoForm.css'
 
 const {
     setCancerCount,
@@ -336,10 +341,9 @@ const CancerInfoForm = ({ ...props }) => {
         }
     }
 
-    function CheckedInput({ value, name, type, label, className, disabled, onChange }) {
-        return <div className={classNames(className || type, disabled && 'disabled')}>
-            <label>
-                <input
+    function CheckedInput({ value, name, type, label, className = '', disabled, onChange }) {
+        return <Form.Check
+                    
                     type={type}
                     name={name}
                     checked={disabled ? false : +form[name] === +value}
@@ -357,13 +361,12 @@ const CancerInfoForm = ({ ...props }) => {
                         if (onChange)
                             onChange(e);
                     }}
-                    readOnly={isReadOnly} />
-                {label}
-            </label>
-        </div>
+                    readOnly={isReadOnly} 
+                    label={label}
+                    id={`${name}_${value}`} />
     }
 
-    return lookup && <div id="cancerInfoContainer" className="p-3 px-5">
+    return lookup && <Form id="cancerInfoContainer" className="p-3 px-5">
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CollapsiblePanel
@@ -371,7 +374,7 @@ const CancerInfoForm = ({ ...props }) => {
             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
             panelTitle="Cancer Counts">
             <div className="my-3">
-                <label className="d-block">D.1 Cancer Counts</label>
+                <Form.Label>D.1 Cancer Counts</Form.Label>
                 <div>Please enter the number of participants with these cancers by sex.</div>
             </div>
             <div className="overflow-auto mb-4">
@@ -411,8 +414,8 @@ const CancerInfoForm = ({ ...props }) => {
                                 <td className="bg-light">{c.cancer}</td>
                                 {inputKeys.map((key, i) =>
                                     <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
-                                        <input
-                                            className="form-control border-0 p-0 bg-transparent text-right"
+                                        <Form.Control
+                                            className="border-0 p-0 bg-transparent text-right"
                                             title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             type="number"
@@ -435,28 +438,30 @@ const CancerInfoForm = ({ ...props }) => {
             condition={activePanel === 'panelB'}
             onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
             panelTitle="Cancer Information">
-            <form>
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label htmlFor="ci_confirmed_cancer_date">
                         D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
-                    </label>
-
-                    <Reminder message="Required Field" disabled={!errors.ci_confirmed_cancer_date} placement="right">
-                        <DatePicker
-                            id="ci_confirmed_cancer_date"
-                            className="form-control readonly"
-                            selected={form.ci_confirmed_cancer_date}
-                            readOnly={isReadOnly}
-                            onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
-                        />
-                    </Reminder>
+                    </Form.Label>
+                    
+                    <div className="w-50">
+                        <Reminder message="Required Field" disabled={!errors.ci_confirmed_cancer_date} placement="right">
+                            <DatePicker
+                                id="ci_confirmed_cancer_date"
+                                className="form-control"
+                                selected={form.ci_confirmed_cancer_date}
+                                readOnly={isReadOnly}
+                                onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
+                            />
+                        </Reminder>
+                    </div>
                     {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">Required Field.</span>} */}
-                </div>
+                </Form.Group>
 
-                <div className={"form-group"}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group>
+                    <Form.Label>
                         D.3 How were your cancer cases ascertained? <small>(Select all that apply)</small>
-                    </label>
+                    </Form.Label>
 
                     {[
                         { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
@@ -465,10 +470,11 @@ const CancerInfoForm = ({ ...props }) => {
                         { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
                     ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
 
-                    <div className={classNames("form-group", submitted && errors.ci_ascertained_other_specify && "has-error")}>
+                    <div className={classNames(submitted && errors.ci_ascertained_other_specify && "has-error")}>
                         <Reminder message="Required Field" disabled={!errors.ci_ascertained_other_specify}>
-                            <textarea
-                                className="form-control resize-vertical"
+                            <Form.Control 
+                                as="textarea"
+                                className="resize-vertical"
                                 aria-label="How were your cancer cases ascertained?"
                                 name="ci_ascertained_other_specify"
                                 value={form.ci_ascertained_other_specify || ''}
@@ -481,45 +487,45 @@ const CancerInfoForm = ({ ...props }) => {
                         </Reminder>
                         {/* {submitted && errors.ci_ascertained_other_specify && <span className="help-block">Required Field.</span>} */}
                     </div>
-                </div>
+                </Form.Group>
 
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.4 Did you collect information about cancer recurrence?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_cancer_recurrence', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_cancer_recurrence', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d4-${index}`} />)}
-                </div>
+                </Form.Group>
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.5 Do you have second/subsequent primary cancer diagnoses?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d5-${index}`} />)}
-                </div>
+                </Form.Group>
 
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.6 Do you have cancer treatment data?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (skip the next two questions)' },
                         { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
-                </div>
+                </Form.Group>
 
 
-                <div className={"form-group"}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group>
+                    <Form.Label>
                         D.6a Specify the treatment information you have <small>(Select all that apply)</small>:
-                    </label>
+                    </Form.Label>
 
                     {[
                         { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
@@ -530,10 +536,11 @@ const CancerInfoForm = ({ ...props }) => {
                         { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
                     ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
-                    <div className={classNames("mb-2", submitted && errors.ci_treatment_data_other_specify && "has-error")}>
+                    <div className={classNames(submitted && errors.ci_treatment_data_other_specify && "has-error")}>
                         <Reminder message="Required Field" disabled={!errors.ci_treatment_data_other_specify}>
-                            <textarea
-                                className="form-control resize-vertical"
+                            <Form.Control 
+                                as="textarea"
+                                className="resize-vertical"
                                 aria-label="Specify the treatment information you have"
                                 name="ci_treatment_data_other_specify"
                                 disabled={+form.ci_cancer_treatment_data === 0}
@@ -547,12 +554,12 @@ const CancerInfoForm = ({ ...props }) => {
                         </Reminder>
                         {/* {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">Required Field.</span>} */}
                     </div>
-                </div>
+                </Form.Group>
 
-                <div className={"form-group"}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group>
+                    <Form.Label>
                         D.6b Specify the data sources the treatment information is from <small>(Select all that apply)</small>:
-                    </label>
+                    </Form.Label>
 
                     {[
                         { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
@@ -562,10 +569,11 @@ const CancerInfoForm = ({ ...props }) => {
                         { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
                     ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
 
-                    <div className={classNames("mb-2", submitted && errors.ci_data_source_other_specify && "has-error")}>
+                    <div className={classNames(submitted && errors.ci_data_source_other_specify && "has-error")}>
                         <Reminder message="Required Field" disabled={!errors.ci_data_source_other_specify}>
-                            <textarea
-                                className="form-control resize-vertical"
+                            <Form.Control 
+                                as="textarea"
+                                className="resize-vertical"
                                 name="ci_data_source_other_specify"
                                 aria-label="Specify the data sources the treatment information is from"
                                 disabled={+form.ci_cancer_treatment_data === 0}
@@ -579,44 +587,44 @@ const CancerInfoForm = ({ ...props }) => {
                         </Reminder>
                         {/* {submitted && errors.ci_data_source_other_specify && <span className="help-block">Required Field.</span>} */}
                     </div>
-                </div>
+                </Form.Group>
 
-                <div className="form-group">
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group>
+                    <Form.Label>
                         D.6c Would it be possible to collect treatment information from medical records or other sources?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_collect_other_information', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_collect_other_information', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d6c-${index}`} />)}
-                </div>
+                </Form.Group>
 
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.7 Do you have cancer staging data?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_cancer_staging_data', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_cancer_staging_data', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d7-${index}`} />)}
-                </div>
+                </Form.Group>
 
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.8 Do you have tumor grade data?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_tumor_grade_data', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_tumor_grade_data', type: 'radio', label: 'Yes' },
                     ].map((props, index) => <CheckedInput {...props} key={`d8-${index}`} />)}
-                </div>
+                </Form.Group>
 
-                <div className={classNames("form-group", submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                    <Form.Label>
                         D.9 Do you have tumor genetic markers data?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
@@ -624,8 +632,9 @@ const CancerInfoForm = ({ ...props }) => {
 
                     <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
                         <Reminder message="Required Field" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
-                            <textarea
-                                className="form-control resize-vertical"
+                            <Form.Control 
+                                as="textarea"
+                                className="resize-vertical"
                                 name="ci_tumor_genetic_markers_data_describe"
                                 aria-label="Do you have tumor genetic markers data? Please describe:"
                                 length="40"
@@ -639,30 +648,29 @@ const CancerInfoForm = ({ ...props }) => {
                         </Reminder>
                         {/* {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">Required Field.</span>} */}
                     </div>
-                </div>
+                </Form.Group>
 
-                <div className={classNames("form-group", submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                    <Form.Label>
                         D.10 Were cancer cases histologically confirmed?
-                    </label>
+                    </Form.Label>
                     {[
                         { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'No' },
                         { value: 1, name: 'ci_histologically_confirmed', type: 'radio', label: 'Some' },
                         { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
                     ].map((props, index) => <CheckedInput {...props} key={`d10-${index}`} />)}
-                </div>
+                </Form.Group>
 
-                <div className={"form-group"}>
-                    <label htmlFor="ci_confirmed_cancer_date" className="d-block control-label">
+                <Form.Group>
+                    <Form.Label>
                         D.11 Do you have histological and/or molecular cancer subtyping? <small>(Select all that apply)</small>
-                    </label>
+                    </Form.Label>
 
                     {[
                         { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_histological', label: 'Histological' },
                         { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_molecular', label: 'Molecular' },
                     ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
-                </div>
-            </form>
+                </Form.Group>
         </ CollapsiblePanel>
 
         <CenterModal
@@ -697,7 +705,7 @@ const CancerInfoForm = ({ ...props }) => {
                 </span>            
             </>}
         </div>}
-    </div>
+    </Form>
 }
 
 export default CancerInfoForm
