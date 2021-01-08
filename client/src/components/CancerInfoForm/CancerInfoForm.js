@@ -377,7 +377,7 @@ const CancerInfoForm = ({ ...props }) => {
                 <div>Please enter the number of participants with these cancers by sex.</div>
             </div>
             <div className="table-responsive mb-4">
-                <Table striped bordered condensed>
+                <Table bordered condensed className="table-valign-middle">
                     <thead>
                         <tr>
                             <th className="text-center" rowSpan={2}>ICD-9</th>
