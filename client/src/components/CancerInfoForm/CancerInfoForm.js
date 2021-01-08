@@ -414,7 +414,7 @@ const CancerInfoForm = ({ ...props }) => {
                                 {inputKeys.map((key, i) =>
                                     <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
                                         <Form.Control
-                                            className="border-0 p-0 bg-transparent text-right"
+                                            className="p-0 border-0 shadow-none bg-transparent text-right"
                                             title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
                                             type="number"
