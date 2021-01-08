@@ -25,7 +25,7 @@ CREATE TABLE `user` (
   `email` varchar(250) NOT NULL,
   `salt` varchar(250) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),
    UNIQUE KEY `user_user_name_uindex` (`user_name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
@@ -39,16 +39,16 @@ CREATE TABLE `lu_cancer` (
   `icd10` varchar(20) NOT NULL,
   `cancer` varchar(50) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_person_category`;
+DROP TABLE IF EXISTS `lu_case_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_person_category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category` varchar(100) NOT NULL,
+CREATE TABLE `lu_case_type` (
+  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `case_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -66,8 +66,8 @@ DROP TABLE IF EXISTS `lu_data_category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `lu_data_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `category` varchar(500) NOT NULL,
-  `sub_category` varchar(500) DEFAULT NULL,
+  `category` varchar(250) NOT NULL,
+  `sub_category` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -86,6 +86,16 @@ DROP TABLE IF EXISTS `lu_gender`;
 CREATE TABLE `lu_gender` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gender` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+
+
+DROP TABLE IF EXISTS `lu_person_category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `lu_person_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -108,15 +118,6 @@ CREATE TABLE `lu_specimen` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-DROP TABLE IF EXISTS `lu_case_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `lu_case_type` (
-  `id` int(4) NOT NULL AUTO_INCREMENT,
-  `case_type` varchar(50) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
-
 DROP TABLE IF EXISTS `cohort`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -127,9 +128,10 @@ CREATE TABLE `cohort` (
   `status` varchar(50) NOT NULL,
   `publish_by` int(11) DEFAULT NULL,
   `create_by` int(11) DEFAULT NULL,
+  `cohort_last_update_date` timestamp DEFAULT NULL,
   `publish_time` timestamp DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `cohort_create_id` (`create_by`),
   KEY `cohort_publish_id` (`publish_by`),
@@ -155,7 +157,7 @@ CREATE TABLE `cohort_basic` (
   `request_procedures_none` int(1) DEFAULT NULL,
   `sameAsSomeone` int(1) DEFAULT NULL,
   `cohort_description` varchar(5000) DEFAULT NULL,
-  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-Both\n1-Female\n2-Male\n3-Unknown',
+  `eligible_gender_id` int(11) DEFAULT NULL COMMENT '0-All\n1-Female\n2-Male\n3-Unknown',
   `eligible_disease` int(1) DEFAULT NULL,
   -- hasCancerSite
   `eligible_disease_cancer_specify` varchar(100) DEFAULT NULL,
@@ -198,14 +200,14 @@ CREATE TABLE `cohort_basic` (
   `data_file_attached`  INT(1) DEFAULT NULL,
   `specimen_file_attached`  INT(1) DEFAULT NULL,
   `publication_file_attached`  INT(1) DEFAULT NULL,
-  `questionnaire_url` varchar(100) DEFAULT NULL,
-  `main_cohort_url` varchar(100) DEFAULT NULL,
-  `data_url` varchar(100) NULL,
-  `specimen_url` varchar(100) NULL,
-  `publication_url` varchar(100) NULL,
+  `questionnaire_url` varchar(2000) DEFAULT NULL,
+  `main_cohort_url` varchar(2000) DEFAULT NULL,
+  `data_url` varchar(2000) NULL,
+  `specimen_url` varchar(2000) NULL,
+  `publication_url` varchar(2000) NULL,
   `enrollment_most_recent_date` datetime DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` int(1) NOT NULL DEFAULT '0' COMMENT '0-''draft'' 1-''under review'' 2-''published''',
   PRIMARY KEY (`id`),
   KEY `cohort_gender_id_idx` (`cohort_id`, `eligible_gender_id`),
@@ -227,7 +229,7 @@ CREATE TABLE `attachment` (
   `website` varchar(200) DEFAULT NULL,
   `status` int(1) DEFAULT '1',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `attachment_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `attachment_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -244,7 +246,7 @@ CREATE TABLE `cancer_count` (
   `case_type_id` int(4),
   `cancer_counts` int(10) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cancer_count_pk` (`cohort_id`,`cancer_id`,`gender_id`,`case_type_id`),
   KEY `cancer_count_cancer_id_idx` (`cancer_id`),
@@ -300,7 +302,7 @@ CREATE TABLE `cancer_info` (
   `mdc_other_cancer_condition` int(1) DEFAULT NULL,
   `mdc_other_cancer_condition_specify` varchar(200) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cancer_info_cohort_id_uindex` (`cohort_id`),
   KEY `cancer_info_cohort_id_idx` (`cohort_id`),
@@ -320,7 +322,7 @@ CREATE TABLE `contact` (
   `topic` int(3) NOT NULL,
   `message` varchar(2000) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -341,12 +343,12 @@ CREATE TABLE `dlh` (
   `dlh_nih_other` int(1) DEFAULT NULL,
   `dlh_procedure_online` int(1) DEFAULT NULL,
   `dlh_procedure_website` int(1) DEFAULT NULL,
-  `dlh_procedure_url` varchar(300) DEFAULT NULL,
-  `dlh_procedure_attached` varchar(300) DEFAULT NULL,
+  `dlh_procedure_url` varchar(200) DEFAULT NULL,
+  `dlh_procedure_attached` varchar(200) DEFAULT NULL,
   `dlh_procedure_enclave` int(1) DEFAULT NULL,
-  `dlh_enclave_location` varchar(300) DEFAULT NULL,
+  `dlh_enclave_location` varchar(200) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `dlh_new_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `dlh_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -364,7 +366,7 @@ CREATE TABLE `enrollment_count` (
   `gender_id` int(11) NOT NULL,
   `enrollment_counts` int(10) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `enrollment_count_cohort_id_idx` (`cohort_id`),
   KEY `enrollment_count_race_id_idx` (`race_id`),
@@ -383,12 +385,12 @@ CREATE TABLE `major_content` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL COMMENT '1-Socio-economic Status (e.g., income)\n2-Education Level\n3-Marital Status\n4-Language/Country of Origin \n5-Employment Status \n6-Health Insurance Status\n7-Anthropometry (e.g., weight, height, waist circumference)\n8-Dietary Intake\n9-Dietary Supplement Use\n10-Complementary and Alternative Medicine\n11-Prescription Medication Use (not related to cancer treatment)\n12-Non-prescription Medication Use (not related to cancer treatment)\n13-Alcohol Consumption\n14-Cigarette Smoking\n15-Use of Tobacco Products Other than Cigarettes\n16-Physical Activity\n17-Sleep Habits\n18-Reproductive History\n19-Self-Reported Health\n20-Quality of Life \n21-Social Support\n22-Cognitive Function\n23-Depression\n24-Other Psychosocial Variables\n25-Fatigue\n26-Family History of Cancer\n27-Family History of Cancer with Pedigrees\n28-Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)\n29-Residential history Information (zip code, GIS) over time?\n30-Other Medical Conditions\n',
-  `baseline` int(1) NOT NULL,
-  `followup` int(1) NOT NULL,
+  `baseline` int(1) DEFAULT NULL,
+  `followup` int(1) DEFAULT NULL,
   `other_specify_baseline` varchar(200) DEFAULT NULL,
   `other_specify_followup` varchar(200) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `major_content_new_cohort_id_idx` (`cohort_id`),
   KEY `major_content_domain_id_idx_idx` (`category_id`),
@@ -416,7 +418,7 @@ CREATE TABLE `mortality` (
   `mort_death_code_used_other_specify` varchar(200) DEFAULT NULL,
   `mort_number_of_deaths` int(10) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `mortality_new_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `mortality_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -436,7 +438,7 @@ CREATE TABLE `person` (
   `country_code` varchar(10) NULL DEFAULT '+1',
   `email` varchar(100) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `person_cohort_id_idx` (`cohort_id`),
   KEY `person_category_id_idx` (`category_id`),
@@ -460,7 +462,7 @@ CREATE TABLE `specimen` (
   `bio_number_metabolites_measured` int(10) DEFAULT NULL,
   `bio_year_samples_sent` int(5) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `specimen_new_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `specimen_new_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -473,9 +475,9 @@ CREATE TABLE `specimen_collected_type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `cohort_id` int NOT NULL,
   `specimen_id` int NOT NULL,
-  `collected_yn` int NOT NULL,
+  `collected_yn` int DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `specimen_collected__cohort_id_idx` (`cohort_id`),
   KEY `specimen_collected_type_idx` (`specimen_id`),
@@ -493,7 +495,7 @@ CREATE TABLE `specimen_count` (
   `specimen_id` int(11) NOT NULL COMMENT '1-Serum and/or Plasma\n2-Buffy Coat and/or Lymphocytes\n3-Saliva and/or Buccal\n4-Urine\n5-Feces\n6-Tumor Tissue Fresh/Frozen\n7-Tumor Tissue FFPE',
   `specimens_counts` int(10) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `specimen_count_cohort_id_idx` (`cohort_id`),
   KEY `specimen_count_cancer_id_idx_idx` (`cancer_id`),
@@ -514,7 +516,7 @@ CREATE TABLE `technology` (
   `tech_use_of_cloud` int(1) DEFAULT NULL,
   `tech_use_of_cloud_describe` varchar(300) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `technology_cohort_id_idx` (`cohort_id`),
   CONSTRAINT `technology_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort_basic` (`cohort_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -526,15 +528,15 @@ DROP TABLE IF EXISTS `cohort_activity_log`;
 CREATE TABLE `cohort_activity_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
-  `cohort_user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `activity` varchar(50) NOT NULL,
   `notes` varchar(250),
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `cohort_logs_chhort_id` (`cohort_id`),
-  KEY `cohort_logs_user_id` (`cohort_user_id`),
+  KEY `cohort_logs_user_id` (`user_id`),
   CONSTRAINT `cohort_logs_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cohort_logs_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 DROP TABLE IF EXISTS `cohort_user_mapping`;
@@ -542,17 +544,17 @@ DROP TABLE IF EXISTS `cohort_user_mapping`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cohort_user_mapping` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `cohort_acronym` varchar(100) DEFAULT NULL,
-  `cohort_user_id` int NOT NULL,
-  `active` varchar(10) NOT NULL DEFAULT 'yes',
+  `cohort_acronym` varchar(100) NOT NULL,
+  `user_id` int NOT NULL,
+  `active` varchar(10) NOT NULL DEFAULT 'Y',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `cohort_user_user_id` (`cohort_user_id`),
-  KEY `cohort_user_mapping_cohort_acronym_fk` (`cohort_acronym`),
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`cohort_acronym`,`user_id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `cohort_user_user_id` (`user_id`),
   CONSTRAINT `cohort_user_mapping_cohort_acronym_fk` FOREIGN KEY (`cohort_acronym`) REFERENCES `cohort` (`acronym`),
-  CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`cohort_user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8
+  CONSTRAINT `cohort_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 
 DROP TABLE IF EXISTS `cohort_page_mapping`;
@@ -577,6 +579,19 @@ CREATE TABLE `cohort_edit_status` (
   KEY `cohort_edit_chhort_id` (`cohort_id`),
   CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
+
+CREATE TABLE IF NOT EXISTS  `mapping_old_file_Id_To_New` (
+  `cohort_id` int NOT NULL,
+  `old_file_id` int NOT NULL,
+  `new_file_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS `mapping_old_PI_Id_To_New` (
+  `cohort_id` int NOT NULL,
+  `old_PI_Id` int NOT NULL,
+  `new_PI_Id` int NOT NULL,
+  PRIMARY KEY (`new_PI_Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ======== end table definations ===============
 -- ==== insert pre-defined data ======
@@ -743,7 +758,7 @@ values (11,"Blood","bio_blood_baseline"),
 (41,"Metabolomic","bio_meta_fasting_sample"),
 (42,"Metabolomic","bio_meta_outcomes_in_cancer_study"),
 (43,"Metabolomic","bio_meta_outcomes_in_cvd_study"),
-(44,"Metabolomic","bio_member_of_metabolomics_studies")
+(44,"Metabolomic","bio_meta_outcomes_in_diabetes_study"),
 (45,"Metabolomic","bio_meta_outcomes_in_other_study"),
 (46,"Metabolomic","bio_member_of_metabolomics_studies");
 
@@ -777,19 +792,30 @@ insert into lu_person_category(id, category) values (4, "Person to contact if an
 /*
 Generate default users 
 */
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(1, 'Admin', 'System', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(2, 'Chen', 'Kailing', 'SystemAdmin', 'Y','kai-ling.chen@nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(3, 'Zhao', 'Joe', 'SystemAdmin', 'Y','joe.zhao@nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(4, 'Zhang', 'Chao', 'SystemAdmin', 'Y','chao.zhang3@nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(5, 'Elena', 'Joanne', 'CohortAdmin', 'Y','kai-ling.chen@nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(6, 'Rogers', 'Scott', 'CohortAdmin', 'Y','rogerssc@mail.nih.gov');
-insert into user(id, last_name,  first_name,  access_level, active_status, email) values
-(7, 'Pottinger', 'Camille', 'CohortAdmin', 'Y','camille.pottinger@nih.gov');
+insert into user(id, user_name,first_name,last_name, access_level,active_status,last_login, email, create_time,update_time) 
+values
+/*(id","user_name","first_name","last_name","access_level","active_status","last_login","email","create_time","update_time),*/
+(1,"admin","System","Admin","SystemAdmin","Y","2021-01-06 19:04:58","kai-ling.chen@nih.gov","2020-11-02 19:57:33",now()),
+(2,"chenkai","Kailing","Chen","SystemAdmin","Y","2021-01-06 18:34:10","kai-ling.chen@nih.gov","2020-11-02 19:57:33",now()),
+(3,"zhaox18","Joe","Zhao","SystemAdmin","Y","2021-01-06 14:29:34","zhaox18@nih.gov","2020-11-02 19:57:33",now()),
+(4,"zhangchao","Chao","Zhang","SystemAdmin","Y","2021-01-06 19:03:59","chao.zhang3@nih.gov","2020-11-02 19:57:33","2020-12-23 21:00:34"),
+(5,"elena.joanne@example.com","Joanne","Elena","CohortAdmin","Y","NULL","elena.joanne@example.com","2020-11-02 19:57:33",now()),
+(6,"rogerssc","Scott","Rogers","CohortAdmin","Y","NULL","rogerssc@mail.nih.gov","2020-11-02 19:57:33",now()),
+(7,"pottingerca","Camille","Pottinger","CohortAdmin","Y","NULL","camille.pottinger@nih.gov","2020-11-02 19:57:33",now()),
+(8,"parkbw","Brian","Park","SystemAdmin","Y","2021-01-06 19:37:57","brian.park@nih.gov","2020-11-09 22:19:37",now()),
+(9,"kai-ling.chen@nih.gov","Kailing","Chen","CohortAdmin","Y","2021-01-06 18:42:27","kai-ling.chen@nih.gov","2020-11-10 15:37:20","2020-11-10 15:37:20"),
+(10,"brian.park@nih.gov","Brian","Park","CohortAdmin","Y","2021-01-06 19:39:44","brian.park@nih.gov","2020-11-10 17:14:20",now()),
+(11,"chao.zhang3@nih.gov","Chao","Zhang","CohortAdmin","Y","2021-01-06 17:40:23","chao.zhang3@nih.gov","2020-11-10 17:15:03","2021-01-04 18:33:12"),
+(12,"zhaox18@nih.gov","Joe","Zhao","CohortAdmin","Y","2021-01-06 16:54:16","zhaox18@nih.gov","2020-11-10 17:15:03",now()),
+(13,"kevin.matarodriguez@nih.gov","Kevin","Mata Rodriguez","CohortAdmin","Y","NULL","kevin.matarodriguez@nih.gov","2020-11-16 17:01:03",now()),
+(14,"matarodriguezko","Kevin","Mata Rodriguez","SystemAdmin","Y","NULL","kevin.matarodriguez@nih.gov","2020-11-16 17:08:08",now()),
+(18,"chenb10","Ben","Chen","CohortAdmin","Y","NULL","ben.chen@nih.gov","2020-12-14 18:20:21","2021-01-04 13:18:36"),
+(19,"ben.chen@nih.gov","Ben","Chen","CohortAdmin","Y","2021-01-06 19:47:01","ben.chen@nih.gov","2020-12-14 18:20:21",now()),
+(20,"jiangk3","Kevin","Jiang","SystemAdmin","Y","2021-01-05 23:15:39","kevin.jiang2@nih.gov","2020-12-14 18:20:21",now()),
+(21,"kevin.jiang2@nih.gov","Kevin","Jiang","CohortAdmin","Y","2021-01-06 18:32:45","kevin.jiang2@nih.gov","2020-12-14 18:20:21",now()),
+(22,"chop2","Phyllip","Cho","SystemAdmin","Y","NULL","phyllip.cho@nih.gov","2020-12-14 18:21:41",now()),
+(23,"phyllip.cho@nih.gov","Phyllip","Cho","CohortAdmin","Y","NULL","phyllip.cho@nih.gov","2020-12-14 18:21:41",now()),
+(24,"uddins2","Shomir","Uddin","SystemAdmin","Y","NULL","shomir.uddin@nih.gov","2020-12-28 15:49:13",now()),
+(25,"shomir.uddin@nih.gov","Shomir","Uddin","CohortAdmin","Y","NULL","shomir.uddin@nih.gov","2020-12-28 16:20:33",now());
 
 -- ======== end table data ===============
