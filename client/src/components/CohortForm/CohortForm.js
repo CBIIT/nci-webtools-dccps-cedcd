@@ -115,7 +115,7 @@ const CohortForm = ({ ...props }) => {
                         if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
                         if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
                         if (currentCohort.enrollment_ongoing === 1) {
-                            if (currentCohort.enrollment_target >= 0) dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                            if (currentCohort.enrollment_target && currentCohort.enrollment_target >= 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true))}
                             if (currentCohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
                         }
                         if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
@@ -1241,8 +1241,8 @@ const CohortForm = ({ ...props }) => {
                                                                 onChange={e => {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                                 Yes
@@ -1258,11 +1258,12 @@ const CohortForm = ({ ...props }) => {
                                                             // value='1' 
                                                             checked={cohort.enrollment_ongoing === 1} 
                                                             onChange={e => {
+
                                                                 if (!isReadOnly) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
