@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from 'react-bootstrap';
 const CenterModal = (props) => {
   return (
-    <Modal show={props.show} >
+    <Modal show={props.show} backdrop="static">
       <Modal.Header>
         <Modal.Title>
           { props.title || 
