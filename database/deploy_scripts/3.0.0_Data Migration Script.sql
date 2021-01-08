@@ -1858,4 +1858,46 @@ values
  update cancer_info set ci_confirmed_cancer_date = MAKEDATE(ci_confirmed_cancer_year, 1) 
  where ci_confirmed_cancer_date is null and ci_confirmed_cancer_year is not null and cohort_id > 0;
 
+ -- attachment_type ( 1.  file ,  0 -url)
+-- category (0 questionnaires
+-- 1. protocol
+-- 2. data sharing policy
+-- 3 bio sharing policy
+-- 4. publiication policy )
+
+
+update attachment set category = 0 where filename like '%questionnaire%' and id > 0;
+update attachment set category = 0 where website like '%questionnaire%' and id > 0;
+
+ /* questionnaire category = 0 */
+update cohort_basic dest set questionnaire_url = 
+(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
+where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 0 and website is not null
+group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+
+/* main_cohort category = 1 */
+update cohort_basic dest set main_cohort_url = 
+(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
+where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 1 and website is not null
+group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+
+/* data sharing category = 2 */
+update cohort_basic dest set data_url = 
+(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
+where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 2  and website is not null
+group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+
+/* specimen-sharing category = 3 */
+update cohort_basic dest set specimen_url = 
+(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
+where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 3 and website is not null
+group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+
+/* publication category = 4 */
+update cohort_basic dest set publication_url = 
+(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
+where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 4 and website is not null
+group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+
+
 -- ====== End of Migration script =========
