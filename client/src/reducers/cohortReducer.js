@@ -82,7 +82,7 @@ actions[t.setCurrentMaxAge] = (state, action) => ({...state, current_age_max: /^
 actions[t.setCurrentMedianAge] = (state, action) => ({...state, current_age_median: /^\s*\d*\s*$/.test(action.medianAge) ? action.medianAge : state.current_age_median})
 actions[t.setCurrentMeanAge] = (state, action) => ({...state, current_age_mean: /^\s*\d*\s*$/.test(action.meanAge) ? action.meanAge : state.current_age_mean})
 actions[t.setQuestionnarieFrequency] = (state, action) => ({...state, time_interval: action.frequency})
-actions[t.setMostRecentYear] = (state, action) => ({...state, most_recent_year: /^\s*\d+\s*$/.test(action.year) ?action.year : state.most_recent_year})
+actions[t.setMostRecentYear] = (state, action) => ({...state, most_recent_year: /^\s*\d*\s*$/.test(action.year) ? action.year : state.most_recent_year})
 actions[t.setCollectedInPerson] = (state, action) => ({...state, data_collected_in_person: action.value})
 actions[t.setCollectedPhone] = (state, action) => ({...state, data_collected_phone: action.value})
 actions[t.setCollectedPaper] = (state, action) => ({...state, data_collected_paper: action.value})
