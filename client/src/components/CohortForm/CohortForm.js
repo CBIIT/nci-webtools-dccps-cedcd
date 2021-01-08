@@ -319,6 +319,8 @@ const CohortForm = ({ ...props }) => {
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
+            case 'startyear':
+            case 'endyear':
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
             case 'url':
@@ -331,7 +333,13 @@ const CohortForm = ({ ...props }) => {
     }
     //will be removed from this file later
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
-        const result = getValidationResult(value, requiredOrNot, valueType)
+        var result = getValidationResult(value, requiredOrNot, valueType)
+        if(valueType === 'startyear' && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
+            result = 'start year after end year'
+        else if (valueType === 'endyear' && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
+            result = 'end year is before start year'
+
+        console.log(result)
         if (result) {
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         } else {
@@ -394,24 +402,25 @@ const CohortForm = ({ ...props }) => {
                 }
                 
                 dispatch(allactions.cohortActions.collaboratorName(name))
-                if (name) dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                //if ([0,1].includes(cohort.sameAsSomeone) || name) dispatch(allactions.cohortErrorActions.collaboratorName(true))
                 dispatch(allactions.cohortActions.collaboratorPosition(position))
-                if (position) dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                //if ([0,1].includes(cohort.sameAsSomeone) ||position) dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
                 dispatch(allactions.cohortActions.collaboratorPhone(phone))
-                if (phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                //if ([0,1].includes(cohort.sameAsSomeone) || phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
                 dispatch(allactions.cohortActions.collaboratorEmail(email))
-                if (email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                //if ([0,1].includes(cohort.sameAsSomeone) || email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
             })
 
         } else if (personType === 'contacter') {
             dispatch(allactions.cohortActions.clarification_contact(checkedValue))
-            if (name) dispatch(allactions.cohortErrorActions.contacterName(true))
+            dispatch(allactions.cohortErrorActions.clarification_contact(true))
+            //if (cohort.clarification_contact == 1 || name) dispatch(allactions.cohortErrorActions.contacterName(true))
             dispatch(allactions.cohortActions.contacterName(name))
-            if (position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
+            //if (cohort.clarification_contact == 1 || position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
             dispatch(allactions.cohortActions.contacterPosition(position))
-            if (phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
+            //if (cohort.clarification_contact == 1 || phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
             dispatch(allactions.cohortActions.contacterPhone(phone))
-            if (email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
+            //if (cohort.clarification_contact == 1 || email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
             dispatch(allactions.cohortActions.contacterEmail(email))
         }
     }
@@ -717,10 +726,12 @@ const CohortForm = ({ ...props }) => {
                                                             checked={cohort.clarification_contact === 0} 
                                                             onClick={e => {
                                                                 //setPerson(e, '', '', '', '', 0, 'contacter')
-                                                                if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                                if(!isReadOnly) {
+                                                                    dispatch(allactions.cohortActions.clarification_contact(0))
                                                                     dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                     dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
                                                                     dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                     dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
                                                                 }
                                                             }} />
@@ -739,12 +750,14 @@ const CohortForm = ({ ...props }) => {
                                                         checked={cohort.clarification_contact === 0} 
                                                         onClick={e => {
                                                             //!isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
-                                                            if(!isReadOnly) {dispatch(allactions.cohortActions.clarification_contact(0));
+                                                            if(!isReadOnly) {
+                                                                dispatch(allactions.cohortActions.clarification_contact(0));
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
-                                                            }
+                                                            } 
                                                         }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         No
@@ -764,16 +777,16 @@ const CohortForm = ({ ...props }) => {
                                                             className="mr-2"
                                                             checked={cohort.clarification_contact === 1} 
                                                             onClick={e => {
-                                                                //setPerson(e, '', '', '', '', 1, 'contacter')
+                                                                //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
                                                                 if(!isReadOnly) {
                                                                     setPerson(e, '', '', '', '', 1, 'contacter');
-                                                                    dispatch(allactions.cohortActions.clarification_contact(1));
                                                                     dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                     dispatch(allactions.cohortErrorActions.contacterName(true))
                                                                     dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                     dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                                                            }}
-                                                            } />
+                                                            }} 
+                                                            }/>
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             Yes 
                                                         </Form.Check.Label>
@@ -792,10 +805,10 @@ const CohortForm = ({ ...props }) => {
                                                             //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
                                                             if(!isReadOnly) {
                                                                 setPerson(e, '', '', '', '', 1, 'contacter');
-                                                                dispatch(allactions.cohortActions.clarification_contact(1));
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterName(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterEmail(true))
                                                         }
                                                         }} />
@@ -893,9 +906,16 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2"
                                                     checked={cohort.sameAsSomeone === 0} 
-                                                    onClick={e => 
-                                                        !isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator')
-                                                    } />
+                                                    onClick={e => {
+                                                        //!isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') 
+                                                        if(!isReadOnly) {
+                                                            setPerson(e, '', '', '', '', 0, 'collaborator');
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                    }     
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Same as the person who completed the form(4a)
                                                 </Form.Check.Label>
@@ -908,8 +928,14 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox"
                                                     className="mr-2"
                                                     checked={cohort.sameAsSomeone === 1} 
-                                                    onClick={e => 
-                                                        !isReadOnly && setPerson(e, '', '', '', '', 1, 'collaborator')
+                                                    onClick={e => {
+                                                        if(!isReadOnly) {
+                                                            setPerson(e, '', '', '', '', 1, 'collaborator');
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                    }}
                                                     } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Same as the contact person for clarification of this form(4b)
@@ -1097,7 +1123,7 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateErrors('enrollment_year_start', e.target.value, true, 'year') 
+                                                            populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
                                                         } />
                                                 </Reminder> :
                                                 <Form.Control   
@@ -1108,7 +1134,7 @@ const CohortForm = ({ ...props }) => {
                                                         dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                     } 
                                                     onBlur={e => 
-                                                        populateErrors('enrollment_year_start', e.target.value, true, 'year')
+                                                        populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
                                                     } 
                                                     readOnly={isReadOnly} />
                                             }
@@ -1130,7 +1156,7 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateErrors('enrollment_year_end', e.target.value, true, 'year') 
+                                                            populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" 
@@ -1142,7 +1168,7 @@ const CohortForm = ({ ...props }) => {
                                                         dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                     } 
                                                     onBlur={e => 
-                                                        populateErrors('enrollment_year_end', e.target.value, true, 'year') 
+                                                        populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                     } 
                                                     readOnly={isReadOnly} />
                                             }
@@ -1643,6 +1669,13 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Group as={Row}>
                                     <Form.Label column sm="12">
                                         A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                        {errors.dataCollection && saved &&
+                                            <div>
+                                                <span style={{ color: 'red', marginLeft: '10px' }}>
+                                                    {errorMsg}
+                                                </span> 
+                                            </div>
+                                        }
                                     </Form.Label>
                                     <Col sm="12">
                                         <div key="checkbox">

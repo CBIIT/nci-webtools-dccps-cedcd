@@ -66,7 +66,7 @@ actions[t.setEligibleGender] = (state, action) => ({...state, eligible_gender_id
 actions[t.setHasCancerSite] = (state, action) => ({...state, eligible_disease: action.value})
 actions[t.setCancerSites] = (state, action) => ({...state, eligible_disease_cancer_specify: action.value})
 actions[t.setEligibilityCriteriaOther] = (state, action) => ({...state, eligible_disease_other_specify: action.value})
-actions[t.setEnrolledTotal] = (state, action) => ({...state, enrollment_total: action.total})
+actions[t.setEnrolledTotal] = (state, action) => ({...state, enrollment_total: /^\s*\d+\s*$/.test(action.total) ? action.total : state.enrollment_total})
 actions[t.setEnrollStartYear] = (state, action) => ({...state, enrollment_year_start: action.year})
 actions[t.setEnrollEndYear] = (state, action) => ({...state, enrollment_year_end: action.year})
 actions[t.setRequireNone] = (state) => ({...state, requireNone: !state.requireNone})
