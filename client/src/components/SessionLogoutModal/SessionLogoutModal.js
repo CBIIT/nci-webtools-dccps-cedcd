@@ -39,7 +39,8 @@ export default function SessionLogoutModal() {
 
     async function resetRemainingTime() {
         setRemainingTime(initialRemainingTime);
-        const response = await fetch(`/private/${userSession.loginType}?refresh=${new Date().getTime()}`);
+        // note: we do not want to await the response, as cors headers are not enabled on redirected auth routes
+        fetch(`/private/${userSession.loginType}?refresh=${new Date().getTime()}`);
     }
 
     async function logout() {
