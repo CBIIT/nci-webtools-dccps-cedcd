@@ -44,6 +44,7 @@
  }
 
  .closer:hover, .upperCloser:hover{
-     cursor: hand;
+     cursor: pointer;
+     border-bottom: 1px solid red;
  }
  

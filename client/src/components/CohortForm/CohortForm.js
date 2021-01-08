@@ -50,7 +50,6 @@ const CohortForm = ({ ...props }) => {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
-                    console.log(result)
                     let currentCohort = result.data.cohort,
                         investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
                         completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
@@ -451,6 +450,7 @@ const CohortForm = ({ ...props }) => {
                             case 3: dispatchName = 'specimenFileName'; break;
                             case 4: dispatchName = 'publicationFileName'; break;
                         }
+                        console.dir(result.data)
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
@@ -478,7 +478,7 @@ const CohortForm = ({ ...props }) => {
                 {files.map(f =>
                     <div className='col-xs-12' style={{ marginBottom: '3px', paddingLeft: '0' }}>
                         <span className='col-xs-10'>{f.filename}</span>
-                        {!isReadOnly && <span className='col-xs-2 closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x</span>}
+                        {!isReadOnly && <span className='col-xs-2' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span className='closer'>x</span></span>}
                     </div>)}
             </div>
             {/*to be removed*/}
@@ -2229,23 +2229,55 @@ const CohortForm = ({ ...props }) => {
                                                     <tbody>
                                                         <tr>
                                                             <td>Questionnaires</td>
-                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} readOnly={isReadOnly} /></td>
+                                                            <td>
+                                                               <input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <span className='col-sm-11' style={{ paddingLeft: '0' }}>
-                                                                    <input type='file' name='cohortFile' onChange={e => { handleUpload(e.target.files, 0) }} multiple disabled={isReadOnly} />
-                                                                </span>
-                                                                <span className={cohort.questionnaireFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{cohort.questionnaireFileName.length}</span>
+                                                                <div className="input-group">
+                                                                    <div className="custom-file">
+                                                                        <input
+                                                                        type="file"
+                                                                        className="custom-file-input"
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile01"
+                                                                        aria-describedby="inputGroupFileAddon01"
+                                                                        multiple readOnly={isReadOnly}
+                                                                        onChange={e => handleUpload(e.target.files, 0)} />
+                                                                        <label className="custom-file-label" htmlFor="inputGroupFile01">
+                                                                        Choose Files
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
+                                                                </div>
                                                             </td>
-
+                                                            
                                                         </tr>
                                                         <tr>
                                                             <td>Main cohort protocol</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)) }} readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <span className='col-sm-11' style={{ paddingLeft: '0' }}>
-                                                                    <input style={{ paddingRight: '0', marginRight: '0', borderRight: '0' }} type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 1) }} multiple disabled={isReadOnly} />
-                                                                </span>
-                                                                <span className={cohort.mainFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{cohort.mainFileName.length}</span>
+                                                                <div className="input-group">
+                                                                    <div className="custom-file">
+                                                                        <input
+                                                                        type="file"
+                                                                        className="custom-file-input"
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile02"
+                                                                        aria-describedby="inputGroupFileAddon02"
+                                                                        multiple readOnly={isReadOnly}
+                                                                        onChange={e => handleUpload(e.target.files, 1)} />
+                                                                        <label className="custom-file-label" htmlFor="inputGroupFile02">
+                                                                        Choose Files
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
+                                                                </div>
+
                                                             </td>
 
                                                         </tr>
@@ -2253,10 +2285,25 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Data sharing policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <span className='col-sm-11' style={{ paddingLeft: '0' }}>
-                                                                    <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 2) }} multiple disabled={isReadOnly} />
-                                                                </span>
-                                                                <span className={cohort.dataFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{cohort.dataFileName.length}</span>
+                                                                <div className="input-group">
+                                                                    <div className="custom-file">
+                                                                        <input
+                                                                        type="file"
+                                                                        className="custom-file-input"
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile03"
+                                                                        aria-describedby="inputGroupFileAddon03"
+                                                                        multiple readOnly={isReadOnly}
+                                                                        onChange={e => handleUpload(e.target.files, 2)} />
+                                                                        <label className="custom-file-label" htmlFor="inputGroupFile03">
+                                                                        Choose Files
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'mainFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
+                                                                </div>
                                                             </td>
 
                                                         </tr>
@@ -2264,20 +2311,51 @@ const CohortForm = ({ ...props }) => {
                                                             <td>Biospecimen sharing policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <span className='col-sm-11' style={{ paddingLeft: '0' }}>
-                                                                    <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 3) }} multiple disabled={isReadOnly} />
-                                                                </span>
-                                                                <span className={cohort.specimenFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length}</span>
+                                                                <div className="input-group">
+                                                                    <div className="custom-file">
+                                                                        <input
+                                                                        type="file"
+                                                                        className="custom-file-input"
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile04"
+                                                                        aria-describedby="inputGroupFileAddon04"
+                                                                        multiple readOnly={isReadOnly}
+                                                                        onChange={e => handleUpload(e.target.files, 3)} />
+                                                                        <label className="custom-file-label" htmlFor="inputGroupFile04">
+                                                                        Choose Files
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
+                                                                </div>
+
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>Publication(authorship) policy</td>
                                                             <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)) }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
-                                                                <span className='col-sm-11' style={{ paddingLeft: '0' }}>
-                                                                    <input type='file' name='cohortFile' formEncType='multiple/part' onChange={e => { handleUpload(e.target.files, 4) }} multiple disabled={isReadOnly} />
-                                                                </span>
-                                                                <span className={cohort.publicationFileName.length > 0 ? 'col-sm-1 badge upperCloser' : 'col-md-1 badge'} onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{cohort.publicationFileName.length}</span>
+                                                                <div className="input-group">
+                                                                    <div className="custom-file">
+                                                                        <input
+                                                                        type="file"
+                                                                        className="custom-file-input"
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile05"
+                                                                        aria-describedby="inputGroupFileAddon05"
+                                                                        multiple readOnly={isReadOnly}
+                                                                        onChange={e => handleUpload(e.target.files, 4)} />
+                                                                        <label className="custom-file-label" htmlFor="inputGroupFile05">
+                                                                        Choose Files
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div>
+                                                                    {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}(<span  className='closer' onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}
+                                                                    {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     </tbody>
