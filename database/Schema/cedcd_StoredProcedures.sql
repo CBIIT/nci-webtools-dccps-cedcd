@@ -1358,6 +1358,8 @@ BEGIN
 		END;
 		END IF;
 
+		update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
+
  commit;
 	
     SELECT flag AS rowsAffacted;
@@ -1697,6 +1699,9 @@ BEGIN
     update cohort_basic 
     set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NULL)
 	where cohort_id = new_id;
+
+	update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
+
     -- SET @rowcount = ROW_COUNT();
     SELECT flag AS rowsAffacted;
     
@@ -1916,6 +1921,9 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
         where 
         cohort_id = targetID and page_code = 'C';
     end;
+
+	update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
+
     end if;
     commit;
     
@@ -2241,6 +2249,7 @@ update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( 
 
   update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
         cohort_id = `cohortID` and page_code = 'G';
+	update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
   
   commit;
   select flag as rowsAffacted;
@@ -2530,6 +2539,9 @@ BEGIN
 		update mortality set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
 	end if;
+
+	update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
+	
     commit;
 	select flag as rowAffacted;
     
