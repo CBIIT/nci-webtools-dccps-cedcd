@@ -271,8 +271,8 @@ class ManageUser extends Component {
 					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "0", "paddingBottom": "0px" }}>
 						<div className="col-md-4 col-8" style={{ "paddingBottom": "0px" }}>
 							<div className="form-group has-feedback has-search" style={{ "paddingBottom": "0px", "marginBottom": "0" }}>
-								<span className="glyphicon glyphicon-search form-control-feedback"></span>
-								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email "
+								{/*<span className="glyphicon glyphicon-search form-control-feedback"></span> */}
+								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " style={{paddingLeft:'1rem'}}
 									onChange={(e) => this.handleuserNameSearchChange(e)} />
 							</div>
 						</div>
