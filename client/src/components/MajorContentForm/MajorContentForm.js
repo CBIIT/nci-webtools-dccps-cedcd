@@ -30,7 +30,7 @@ const MajorContentForm = ({ ...props }) => {
 
     const subtitles = [
             'hasLoded', 'C.1 Socio-economic Status', '', 'C.2 Education Level', '', 'C.3 Marital Status', '', 'C.4 Language/Country of Origin', '',
-            'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry(e.g., weight, height, waist circumference',
+            'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry(e.g., weight, height, waist circumference)',
             '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use(not related to cancer treatment', '', 'C.12 Non-prescription Medication Use(not related to cancer treatment', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
             // remove to keep it sync with the object, 'C.15 Use of Tobacco Products Other than Cigarettes', '',
             'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFolloUp', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarBaseLineSpecify', 'noncigarFollowUpSpecify',
@@ -359,39 +359,80 @@ const MajorContentForm = ({ ...props }) => {
 
     const getFirstContent = () => {
         return Object.keys(majorContent).slice(0, 71).map((key, idx)=> {
-            //console.log('Key: '+ key+', idx: '+idx)
             if(idx <= 28 || idx > 40) {//skip questions first
                 if(key.includes('BaseLine')){
-                    return <div id={idx+'Base'} >
-                        <div className='row'><span>{subtitles[idx]}</span></div>
-                        <div>{key}</div>
-                            <span>Collected At Base Line{' '}</span>
-                            <span>
-                                <input 
-                                    type='radio' name={key} checked={majorContent[key] === 0} 
-                                    onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
-                                        dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                                />{' '}No
-                            </span>
-                            <span><input type='radio' name={key} checked={majorContent[key] === 1}
-                                    onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
-                                    dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                             />{' '}Yes</span>
-                        </div> 
+                    return <Form.Group as={Row} sm='12' className='mb-0'>
+                    <Form.Group as={Row} className="mb-0 pl-4">
+                        <Form.Label column sm='12'>
+                            {subtitles[idx]}
+                        </Form.Label>
+                    </Form.Group>
+                    <Col className='mb-0 pl-0' sm='12'>
+                            <Col sm='3'>
+                                Collected at baseline
+                            </Col>
+                            <Col sm='2' className='align-self-center'>
+                                <div key='radio'>
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_no'}
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                         checked={majorContent[key] === 0}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                            No
+                                        </Form.Check.Label>
+                                </Form.Check>
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_yes'}
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                            Yes
+                                        </Form.Check.Label>
+                                </Form.Check>
+                                </div>
+                            </Col>
+                        </Col>
+                    </Form.Group>
                 }
                 else if(key.includes('FollowUp')){
-                    return <div id={key+'Follow'}  className='mb-1'>
-                        <div>{key}</div>
-                        <span>Collected During Follow-up{' '}</span>
-                        <span><input type='radio' name={key} checked={majorContent[key] === 0} 
-                                onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
-                                    dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                        />{' '}No</span>
-                        <span><input type='radio' name={key} checked={majorContent[key] === 1}
-                                onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
-                                    dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                         />{' '}Yes</span>
-                    </div> 
+                    return <Form.Group as={Row} sm='12' className='mb-0'>
+                        <Col className='mb-0 pl-0' sm='12'>
+                            <Col sm='3'>
+                                Collected During Follow-up
+                            </Col>
+                            <Col sm='6'>
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_no'}
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name={key} checked={majorContent[key] === 0}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}}
+                                        label='No' />
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_yes'}
+                                        custom 
+                                        inline
+                                        style={{ fontWeight: 'normal '}}
+                                        name={key} checked={majorContent[key] === 1}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}}
+                                        label='Yes' />
+                            </Col>
+                        </Col>
+                    </Form.Group>
                 }
             }else if (idx === 29){
                 return <div className='row' id='question15'>
@@ -473,9 +514,19 @@ const MajorContentForm = ({ ...props }) => {
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-        <div id="test">
-            {getFirstContent()}
-        </div>
+        <Form>
+            <CollapsiblePanel
+                            condition={activePanel === 'panelA'}
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                            panelTitle="Major Content Domains">
+                <Form.Group as={Row} className="mb-1">
+                    <Form.Label column sm="12">
+                        Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                    </Form.Label>
+                </Form.Group>
+                {getFirstContent()}
+            </CollapsiblePanel>
+        </Form>
        {/*  <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
 
             <div>
