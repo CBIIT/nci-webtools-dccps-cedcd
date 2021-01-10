@@ -371,11 +371,9 @@ const MajorContentForm = ({ ...props }) => {
                             <Col sm='3'>
                                 Collected at baseline
                             </Col>
-                            <Col sm='2' className='align-self-center'>
-                                <div key='radio'>
+                            <Col sm='6' className='align-self-center'>
                                 <Form.Check type="radio" xs='2'
-                                        id={key+'_no'}
-                                        custom 
+                                        id={key+'_no'} 
                                         inline
                                         style={{ fontWeight: 'normal '}}
                                         name={key}>
@@ -388,8 +386,7 @@ const MajorContentForm = ({ ...props }) => {
                                         </Form.Check.Label>
                                 </Form.Check>
                                 <Form.Check type="radio" xs='2'
-                                        id={key+'_yes'}
-                                        custom 
+                                        id={key+'_yes'} 
                                         inline
                                         style={{ fontWeight: 'normal '}}
                                         name={key}>
@@ -400,7 +397,6 @@ const MajorContentForm = ({ ...props }) => {
                                             Yes
                                         </Form.Check.Label>
                                 </Form.Check>
-                                </div>
                             </Col>
                         </Col>
                     </Form.Group>
@@ -411,25 +407,32 @@ const MajorContentForm = ({ ...props }) => {
                             <Col sm='3'>
                                 Collected During Follow-up
                             </Col>
-                            <Col sm='6'>
+                            <Col sm='6' className='align-self-center'>
                                 <Form.Check type="radio" xs='2'
-                                        id={key+'_no'}
-                                        custom 
+                                        id={key+'_no'} 
                                         inline
                                         style={{ fontWeight: 'normal '}}
-                                        name={key} checked={majorContent[key] === 0}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                         checked={majorContent[key] === 0}
                                         onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
-                                            dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                                        label='No' />
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                            No
+                                        </Form.Check.Label>
+                                </Form.Check>
                                 <Form.Check type="radio" xs='2'
-                                        id={key+'_yes'}
-                                        custom 
+                                        id={key+'_yes'} 
                                         inline
                                         style={{ fontWeight: 'normal '}}
-                                        name={key} checked={majorContent[key] === 1}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
                                         onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
-                                            dispatch(allactions.majorContentErrorActions[key](true)) }}}
-                                        label='Yes' />
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                            Yes
+                                        </Form.Check.Label>
+                                </Form.Check>
                             </Col>
                         </Col>
                     </Form.Group>
