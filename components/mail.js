@@ -11,6 +11,7 @@ const nodeMailer = require('nodemailer');
 
 var sendMail = function(from, to, subject, text, html, next){
 	const transporter = nodeMailer.createTransport(config.mail);
+	logger.debug(html)
 	let mailOptions = {
 	  from: from, // sender address
 	  to: to, // list of receivers

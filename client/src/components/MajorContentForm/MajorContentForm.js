@@ -374,7 +374,6 @@ const MajorContentForm = ({ ...props }) => {
                 </Form.Group>
                 <Col className='mb-0 pl-0' sm='12'>
                         <Col sm='4'>
-                            <span>{key}</span>
                             <span>Collected at baseline<span style={{ color: 'red' }}>*</span></span>
                         </Col>
                         <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
