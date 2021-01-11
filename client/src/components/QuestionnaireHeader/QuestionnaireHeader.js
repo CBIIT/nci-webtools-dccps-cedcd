@@ -80,7 +80,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
             }
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
-            <p>
+            <div >
                 Please review and complete all sections of this questionnaire. If your account is associated with more than one cohort, use the following link to <a href="/cohort/questionnaire" target="_self">select a different cohort</a> if needed.
                 Each section's completion status is reflected in the color of each section selector. 
                 Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
@@ -90,7 +90,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 {/* Please review all sections of this questionnaire. Each section's completion status is reflected in the color of each section selector. 
                 Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
                 All fields marked with an asterisk (*) are required. */}
-            </p>
+            </div>
         </div>
 
         <div className="container-fluid mb-4">
