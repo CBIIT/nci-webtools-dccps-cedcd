@@ -262,7 +262,7 @@ const InitialStates = {
         tobaccoFollowUp: null,
         ecigarBaseLine: null,
         ecigarFollowUp: null,
-        noncigarOtherBaseLine: null,
+        noncigarOtherBaseLine: 0,
         noncigarOtherFollowUp: null,
         noncigarBaseLineSpecify: '',
         noncigarFollowUpSpecify: '',
@@ -360,6 +360,7 @@ const InitialStates = {
         noncigarOtherFollowUp: true,
         noncigarBaseLineSpecify: true,
         noncigarFollowUpSpecify: true,
+
         physicalBaseLine: true,
         physicalFollowUp: true,
         sleepBaseLine: true,

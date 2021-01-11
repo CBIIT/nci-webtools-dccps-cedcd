@@ -639,46 +639,6 @@ const CohortForm = ({ ...props }) => {
                                     </Col>
                                 </Form.Group>
                                 
-                                {/* A.4 Date Form Completed */}
-                                {/* <Form.Group as={Row}>
-                                    <Form.Label column sm="5">
-                                        A.4 Date Form Completed<span style={{ color: 'red' }}>*</span>
-                                    </Form.Label>
-                                    <Col sm="3">
-                                        {errors.completionDate && saved ? 
-                                            <Reminder message={errors.completionDate}>
-                                                <DatePicker className='form-control errorDate' 
-                                                    style={{ display: 'block'}}
-                                                    placeholderText='MM/DD/YYYY' 
-                                                    selected={cohort.completionDate ? new Date(cohort.completionDate) : null} 
-                                                    onChange={date => {
-                                                        dispatch(allactions.cohortActions.completionDate(date)); 
-                                                        if (!date) { 
-                                                            dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg));
-                                                        } else {
-                                                            dispatch(allactions.cohortErrorActions.completionDate(true));
-                                                        }
-                                                    }} />
-                                            </Reminder> : 
-                                            <DatePicker className='form-control' 
-                                                style={{ display: 'block'}}
-                                                placeholderText='MM/DD/YYYY' 
-                                                selected={cohort.completionDate ? new Date(cohort.completionDate) : null} 
-                                                onChange={date => {
-                                                    dispatch(allactions.cohortActions.completionDate(date)); 
-                                                    if (!date) { 
-                                                        dispatch(allactions.cohortErrorActions.completionDate(false, errorMsg));
-                                                    } else {
-                                                        dispatch(allactions.cohortErrorActions.completionDate(true));
-                                                    }
-
-                                                }} 
-                                                readOnly={isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group> */}
-
-                                {/* A.4a Person Who Completed Form */}
                                 <Form.Group as={Row}>
                                     <Form.Label column sm="12">
                                         A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
@@ -1072,7 +1032,7 @@ const CohortForm = ({ ...props }) => {
                                         Please specify any eligibility criteria in addition to age and sex
                                     </Form.Label>
                                     <Col sm="12">
-                                        <Form.Control type="text"  className='text-capitalize'
+                                        <Form.Control type="text" 
                                             placeholder='Max of 100 characters'
                                             maxLength="100" 
                                             name='eligible_disease_other_specify' 
