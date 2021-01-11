@@ -5,7 +5,6 @@ import NavBar from '../NavBar/NavBar';
 import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
-import SessionLogoutModal from '../SessionLogoutModal/SessionLogoutModal'
 
 class App extends Component {
   constructor(props) {
@@ -103,7 +102,6 @@ class App extends Component {
     return (
       <div>
         <ScrollToTop />
-        <SessionLogoutModal />
         {this.state.showImage && <Header />}
         <div id="mainNavBar">
           <div id="mainNavBar-inner">

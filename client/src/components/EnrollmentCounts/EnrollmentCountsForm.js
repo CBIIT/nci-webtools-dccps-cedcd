@@ -202,7 +202,7 @@ const EnrollmentCountsForm = ({...props}) => {
                         </div>
                         */}
                         <div className="col-12 mb-4 table-responsive">
-                            <Table condensed className="table-valign-middle">
+                            <Table bordered condensed className="table-valign-middle">
                                 <thead>
                                     <tr>
                                         <th rowSpan='3' style={{fontSize: '1.5rem', paddingRight: '0', width: '15%'}}>Racial Categories</th>

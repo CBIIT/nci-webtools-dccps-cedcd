@@ -28,7 +28,7 @@ async function readTemplate(filePath, data) {
     );
 }
 
-router.post('/sendEmail', async function (req, res, next) {
+router.post('/sendUserEmail', async function (req, res, next) {
 
     try {
 		await mail.sendMail(

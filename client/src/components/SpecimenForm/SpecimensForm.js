@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import Form from 'react-bootstrap/Form'
+import Table from 'react-bootstrap/Table'
+import classNames from 'classnames';
 import allactions from '../../actions'
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
@@ -1224,48 +1227,51 @@ const SpecimenForm = ({ ...props }) => {
                 </p></div>
                 </div>
                 <div className="table-responsive">
-                    <table className='table table-condensed table-valign-middle' style={{maxWidth: '1084px'}}>
-                                    <thead>
-                                        <tr>
-                                            <th className='col-sm-1 center' >ICD-9</th>
-                                            <th className='col-sm-1 center' > ICD-10</th>
-                                           
-                                            <th className='col-sm-3 center' >Cancer Site/Type</th>
-                                            <th className='col-sm-1 center' >Serum and/or Plasma</th>
-                                            <th className='col-sm-1 center' >Buffy Coat and/or Lymphocytes</th>
-                                            <th className='col-sm-1 center' >Saliva and/or Buccal</th>
-                                            <th className='col-sm-1 center' >Urine</th>
-                                            <th className='col-sm-1 center' >Feces</th>
-                                            <th className='col-sm-1 center' >Tumor Tissue Fresh/Frozen</th>
-                                            <th className='col-sm-1 center' >Tumor Tissue FFPE</th>
-                                        </tr>
-                                  </thead> 
-                                    <tbody>
-                                        {lookup.cancer.map(c => {
-                                            const keyPrefix = `${cohortId}_${c.id}`;
-                                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
-                                                `${c.id}-${k.id}`);;
+                    <Table bordered condensed className="table-valign-middle">
+                        <thead>
+                            <tr>
+                                <th className='col-sm-1 text-center'>ICD-9</th>
+                                <th className='col-sm-1 text-center'>ICD-10</th>
+                                
+                                <th className='col-sm-3 text-center'>Cancer Site/Type</th>
+                                <th className='col-sm-1 text-center'>Serum and/or Plasma</th>
+                                <th className='col-sm-1 text-center'>Buffy Coat and/or Lymphocytes</th>
+                                <th className='col-sm-1 text-center'>Saliva and/or Buccal</th>
+                                <th className='col-sm-1 text-center'>Urine</th>
+                                <th className='col-sm-1 text-center'>Feces</th>
+                                <th className='col-sm-1 text-center'>Tumor Tissue Fresh/Frozen</th>
+                                <th className='col-sm-1 text-center'>Tumor Tissue FFPE</th>
+                            </tr>
+                        </thead> 
+                        <tbody>
+                            {lookup.cancer.map(c => {
+                                const keyPrefix = `${cohortId}_${c.id}`;
+                                const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                    `${c.id}-${k.id}`);;
 
 
-                                            return <tr key={keyPrefix} style={{height: '35px', padding: '0'}}>
-                                                <td className={c.icd9 ? "bg-light" : "bg-grey"}  style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 1px 0 3px'}}>{c.icd9}</td>
-                                                <td className={c.icd10 ? "bg-light" : "bg-grey"}  style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 2px 0 5px'}}>{c.icd10}</td>
-                                                <td className="bg-light" style={{whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', padding:'0 2px 0 5px '}}>{c.cancer}</td>
+                                return <tr key={keyPrefix}>
+                                    <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
+                                    <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
+                                    <td className="text-nowrap bg-light-grey">{c.cancer}</td>
 
-                                                {inputKeys.map((key, i) =>
-                                                    <td key={key}><input className="border-0 p-0 bg-transparent text-right"
-                                                        name={key} style={{width: '99%'}} value={specimen.counts[key] || 0} type="number"
-                                                        onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))}
-                                                        readOnly={isReadOnly} />
-                                                    </td>
-                                                )}
-                                            </tr>
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                    
-                        </CollapsiblePanel>
+                                    {inputKeys.map((key, i) =>
+                                        <td key={key} className="p-0">
+                                            <Form.Control 
+                                                className="input-number"
+                                                name={key} value={specimen.counts[key] || 0} 
+                                                type="number"
+                                                onChange={e => dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value))}
+                                                min="0"
+                                                readOnly={isReadOnly} />
+                                        </td>
+                                    )}
+                                </tr>
+                            })}
+                        </tbody>
+                    </Table>
+                </div>
+            </CollapsiblePanel>
             {/* End Part D */}
                      
             {/* END Specimen Information Collapsible Question Sections */}
