@@ -20,7 +20,7 @@ export default function SelectCohort() {
             : <div>
                 <h1 className="welcome pg-title">Select a Cohort</h1>
                 <p class="welcome">
-                    Your user account is associated with multiple cohorts. Please select the cohort you wish to update from the list below.
+                    Please select the cohort you wish to update from the list below.
                 </p>
 
                 <div className='col-md-12'>
