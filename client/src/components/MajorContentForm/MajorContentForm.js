@@ -566,18 +566,13 @@ const MajorContentForm = ({ ...props }) => {
                     }
                 <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
                     <Reminder message='Required Field' disabled={!(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved)}>
-                        <span>
-                            <span>{'cancerOther: '+majorContent.cancerOther }</span>
-                            <span>{'cancerOtherSpecify error: '+errors.cancerOtherSpecify}</span>
-                            <span>{'saved: '+saved}</span>
-                            <span>{'disabled: '+!(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved)}</span>
                         <input 
                             placeholder='Max of 200 characters' 
                             maxLength='200' name='cancerOtherSpecify' 
                             style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
                             value={majorContent.cancerOtherSpecify} 
                             onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)) }} 
-                            onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} /></span>
+                            onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
                     </Reminder>
                 </Col>
             </Form.Group>          

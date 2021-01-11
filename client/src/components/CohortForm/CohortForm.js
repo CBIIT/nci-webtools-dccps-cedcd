@@ -322,6 +322,8 @@ const CohortForm = ({ ...props }) => {
             case 'endyear':
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
+            case 'most_recent_year': 
+                return validator.yearValidator(value, requiredOrNot, false)
             case 'url':
                 return validator.urlValidator(value)
             case 'email':
@@ -338,8 +340,9 @@ const CohortForm = ({ ...props }) => {
         else if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
             result = 'end year is before start year'
 
-        console.log(result)
+        
         if (result) {
+            //console.log('field name: '+fieldName+' '+result)
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         } else {
             if (cohortErrorActions[fieldName])
@@ -387,7 +390,6 @@ const CohortForm = ({ ...props }) => {
         let position = e.target.checked ? p : ''
         let phone = e.target.checked ? tel : ''
         let email = e.target.checked ? eml : ''
-
 
         if (personType === 'collaborator') {
 
@@ -450,7 +452,6 @@ const CohortForm = ({ ...props }) => {
                             case 3: dispatchName = 'specimenFileName'; break;
                             case 4: dispatchName = 'publicationFileName'; break;
                         }
-                        console.dir(result.data)
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
@@ -478,7 +479,8 @@ const CohortForm = ({ ...props }) => {
                 {files.map(f =>
                     <div className='row' style={{ marginBottom: '3px', paddingLeft: '10px'}}>
                         <span className='col-10'>{f.filename}</span>
-                        <span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>
+                        {/*<span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>*/}
+                        <span className='text-center'>{!isReadOnly && <span className='col-2 closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x<span></span></span>}</span>
                     </div>)}
             </div>
         </div>
@@ -505,9 +507,7 @@ const CohortForm = ({ ...props }) => {
             .then(result => {
                 if (result && result.status == 200) {
                     batch(() => {
-                        console.dir('before deleting: ' + cohort[fileListName])
                         let resultList = cohort[fileListName].filter(r => r.fileId != fileId)
-                        console.dir('after deleting: ' + resultList)
                         if (result.data && result.data != cohortID) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data))
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data))
@@ -775,7 +775,8 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Person type="contacterCountry" 
+                                        <Person id='contacterInfo'
+                                            type="contacterCountry" 
                                             name="contacterName" 
                                             position="contacterPosition" 
                                             phone="contacterPhone" 
@@ -838,18 +839,17 @@ const CohortForm = ({ ...props }) => {
                                         A.6 If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?
                                     </Form.Label>
                                     <Col sm="6">
-                                        <Person id="collaborator"
-                                            type="collaboratorCountry" 
-                                            name="collaboratorName" 
-                                            //name="contacterName"
-                                            position="collaboratorPosition" 
-                                            phone="collaboratorPhone" 
-                                            email="collaboratorEmail" 
-                                            marginWidth="6"
-                                            inputWidth="6"
-                                            errors={errors} 
-                                            disabled={cohort.sameAsSomeone === 0 || cohort.sameAsSomeone === 1 || isReadOnly} 
-                                            displayStyle={saved} />
+                                            <Person id='collaboratorInfo'
+                                                type="collaboratorCountry" 
+                                                name="collaboratorName" 
+                                                position="collaboratorPosition" 
+                                                phone="collaboratorPhone" 
+                                                email="collaboratorEmail" 
+                                                marginWidth="6"
+                                                inputWidth="6"
+                                                errors={errors} 
+                                                disabled={cohort.sameAsSomeone === 0 || cohort.sameAsSomeone === 1 || isReadOnly} 
+                                            displayStyle={saved}/>
                                     </Col>
                                     <Col sm="6">
                                         <div key="checkbox">
@@ -1625,7 +1625,7 @@ const CohortForm = ({ ...props }) => {
                                                     } 
                                                     placeholder='yyyy' 
                                                     onBlur={e => 
-                                                        populateErrors('most_recent_year', e.target.value, true, 'year') 
+                                                        populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" 
@@ -1636,7 +1636,7 @@ const CohortForm = ({ ...props }) => {
                                                 }
                                                 placeholder='yyyy' 
                                                 onBlur={e => 
-                                                    populateErrors('most_recent_year', e.target.value, true, 'year') 
+                                                    populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                                 } 
                                                 readOnly={isReadOnly} />
                                         }
@@ -2114,7 +2114,7 @@ const CohortForm = ({ ...props }) => {
                                                                         }
                                                                         <div>
                                                                             {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
-                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                                <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                             {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
                                                                         </div>
                                                                         </td>
@@ -2155,7 +2155,7 @@ const CohortForm = ({ ...props }) => {
                                                                         }
                                                                         <div>
                                                                             {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                                <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                             {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
                                                                         </div>
                                                                         </td>
@@ -2196,7 +2196,7 @@ const CohortForm = ({ ...props }) => {
                                                                      }
                                                                     <div>
                                                                         {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                            <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                            <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                         {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
                                                                     </div>
                                                                         </td>
@@ -2237,7 +2237,7 @@ const CohortForm = ({ ...props }) => {
                                                                         }       
                                                                         <div>
                                                                             {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                                <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                             {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
                                                                         </div>
                                                                         </td>
@@ -2278,7 +2278,7 @@ const CohortForm = ({ ...props }) => {
                                                                         }
                                                                         <div>
                                                                             {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                                <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                                <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                             {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
                                                                         </div>
                                                                         </td>
@@ -2325,7 +2325,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 <div>
                                                                     {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
-                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                     {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>
@@ -2355,7 +2355,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 <div>
                                                                     {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                     {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
                                                                 </div>
 
@@ -2386,7 +2386,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                                 <div>
                                                                     {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                     {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>
@@ -2416,7 +2416,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }       
                                                                 <div>
                                                                     {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                     {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
                                                                 </div>
 
@@ -2446,7 +2446,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 <div>
                                                                     {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
-                                                                        <span class="glyphicon glyphicon-trash closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}></span>)</span>}</span>}
+                                                                        <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                     {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
                                                                 </div>
                                                             </td>
