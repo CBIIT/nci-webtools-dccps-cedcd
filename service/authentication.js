@@ -69,7 +69,7 @@ async function login(request, response) {
             const cohortAcronyms = await mysql.query(
                 `SELECT DISTINCT cohort_acronym as acronym
                 FROM cohort_user_mapping 
-                WHERE cohort_id = ? AND active = 'Y'
+                WHERE user_id = ? AND active = 'Y'
                 ORDER BY acronym ASC`,
                 [userId]
             );
