@@ -7,101 +7,101 @@ const setSpecimenCount = (cellId, v) => ({
 })
 
 const setSpecimenLoaded = (v) => ({ type: t.setSpecimenLoaded, value: v })
-const setBioBloodBaseline = (v) => ({ type: t.setBioBloodBaseline, value: v })
-const setBioBloodBaselineSerum = (v) => ({ type: t.setBioBloodBaselineSerum, value: v })
-const setBioBloodBaselinePlasma = (v) => ({ type: t.setBioBloodBaselinePlasma, value: v })
-const setBioBloodBaselineBuffyCoat = (v) => ({ type: t.setBioBloodBaselineBuffyCoat, value: v })
-const setBioBloodBaselineOtherDerivative = (v) => ({ type: t.setBioBloodBaselineOtherDerivative, value: v })
-const setBioBloodOtherTime = (v) => ({ type: t.setBioBloodOtherTime, value: v })
-const setBioBloodOtherTimeSerum = (v) => ({ type: t.setBioBloodOtherTimeSerum, value: v })
-const setBioBloodOtherTimePlasma = (v) => ({ type: t.setBioBloodOtherTimePlasma, value: v })
-const setBioBloodOtherTimeBuffyCoat = (v) => ({ type: t.setBioBloodOtherTimeBuffyCoat, value: v })
-const setBioBloodOtherTimeOtherDerivative = (v) => ({ type: t.setBioBloodOtherTimeOtherDerivative, value: v })
-const setBioBuccalSalivaBaseline = (v) => ({ type: t.setBioBuccalSalivaBaseline, value: v })
-const setBioBuccalSalivaOtherTime = (v) => ({ type: t.setBioBuccalSalivaOtherTime, value: v })
-const setBioTissueBaseline = (v) => ({ type: t.setBioTissueBaseline, value: v })
-const setBioTissueOtherTime = (v) => ({ type: t.setBioTissueOtherTime, value: v })
-const setBioUrineBaseline = (v) => ({ type: t.setBioUrineBaseline, value: v })
-const setBioUrineOtherTime = (v) => ({ type: t.setBioUrineOtherTime, value: v })
-const setBioFecesBaseline = (v) => ({ type: t.setBioFecesBaseline, value: v })
-const setBioFecesOtherTime = (v) => ({ type: t.setBioFecesOtherTime, value: v })
-const setBioOtherBaseline = (v) => ({ type: t.setBioOtherBaseline, value: v })
-const setBioOtherOtherTime = (v) => ({ type: t.setBioOtherOtherTime, value: v })
-const setBioRepeatedSampleSameIndividual = (v) => ({ type: t.setBioRepeatedSampleSameIndividual, value: v })
-const setBioTumorBlockInfo = (v) => ({ type: t.setBioTumorBlockInfo, value: v })
-const setBioGenotypingData = (v) => ({ type: t.setBioGenotypingData, value: v })
-const setBioSequencingDataExome = (v) => ({ type: t.setBioSequencingDataExome, value: v })
-const setBioSequencingDataWholeGenome = (v) => ({ type: t.setBioSequencingDataWholeGenome, value: v })
-const setBioEpigeneticOrMetabolicMarkers = (v) => ({ type: t.setBioEpigeneticOrMetabolicMarkers, value: v })
-const setBioOtherOmicsData = (v) => ({ type: t.setBioOtherOmicsData, value: v })
-const setBioTranscriptomicsData = (v) => ({ type: t.setBioTranscriptomicsData, value: v })
-const setBioMicrobiomeData = (v) => ({ type: t.setBioMicrobiomeData, value: v })
-const setBioMetabolomicData = (v) => ({ type: t.setBioMetabolomicData, value: v })
-const setBioMetaFastingSample = (v) => ({ type: t.setBioMetaFastingSample, value: v })
-const setBioMetaOutcomesInCancerStudy = (v) => ({ type: t.setBioMetaOutcomesInCancerStudy, value: v })
-const setBioMetaOutcomesInCvdStudy = (v) => ({ type: t.setBioMetaOutcomesInCvdStudy, value: v })
-const setBioMetaOutcomesInDiabetesStudy = (v) => ({ type: t.setBioMetaOutcomesInDiabetesStudy, value: v })
-const setBioMetaOutcomesInOtherStudy = (v) => ({ type: t.setBioMetaOutcomesInOtherStudy, value: v })
-const setBioMemberOfMetabolomicsStudies = (v) => ({ type: t.setBioMemberOfMetabolomicsStudies, value: v })
-const setBioOtherBaselineSpecify = (v) => ({ type: t.setBioOtherBaselineSpecify, value: v })
-const setBioOtherOtherTimeSpecify = (v) => ({ type: t.setBioOtherOtherTimeSpecify, value: v })
-const setBioMetaOutcomesOtherStudySpecify = (v) => ({ type: t.setBioMetaOutcomesOtherStudySpecify, value: v })
-const setBioMemberInStudy = (v) => ({ type: t.setBioMemberInStudy, value: v })
-const setBioLabsUsedForAnalysis = (v) => ({ type: t.setBioLabsUsedForAnalysis, value: v })
-const setBioAnalyticalPlatform = (v) => ({ type: t.setBioAnalyticalPlatform, value: v })
-const setBioSeparationPlatform = (v) => ({ type: t.setBioSeparationPlatform, value: v })
-const setBioNumberMetabolitesMeasured = (v) => ({ type: t.setBioNumberMetabolitesMeasured, value: v })
-const setBioYearSamplesSent = (v) => ({ type: t.setBioYearSamplesSent, value: v })
+const bioBloodBaseline = (v) => ({ type: t.bioBloodBaseline, value: v })
+const bioBloodBaselineSerum = (v) => ({ type: t.bioBloodBaselineSerum, value: v })
+const bioBloodBaselinePlasma = (v) => ({ type: t.bioBloodBaselinePlasma, value: v })
+const bioBloodBaselineBuffyCoat = (v) => ({ type: t.bioBloodBaselineBuffyCoat, value: v })
+const bioBloodBaselineOtherDerivative = (v) => ({ type: t.bioBloodBaselineOtherDerivative, value: v })
+const bioBloodOtherTime = (v) => ({ type: t.bioBloodOtherTime, value: v })
+const bioBloodOtherTimeSerum = (v) => ({ type: t.bioBloodOtherTimeSerum, value: v })
+const bioBloodOtherTimePlasma = (v) => ({ type: t.bioBloodOtherTimePlasma, value: v })
+const bioBloodOtherTimeBuffyCoat = (v) => ({ type: t.bioBloodOtherTimeBuffyCoat, value: v })
+const bioBloodOtherTimeOtherDerivative = (v) => ({ type: t.bioBloodOtherTimeOtherDerivative, value: v })
+const bioBuccalSalivaBaseline = (v) => ({ type: t.bioBuccalSalivaBaseline, value: v })
+const bioBuccalSalivaOtherTime = (v) => ({ type: t.bioBuccalSalivaOtherTime, value: v })
+const bioTissueBaseline = (v) => ({ type: t.bioTissueBaseline, value: v })
+const bioTissueOtherTime = (v) => ({ type: t.bioTissueOtherTime, value: v })
+const bioUrineBaseline = (v) => ({ type: t.bioUrineBaseline, value: v })
+const bioUrineOtherTime = (v) => ({ type: t.bioUrineOtherTime, value: v })
+const bioFecesBaseline = (v) => ({ type: t.bioFecesBaseline, value: v })
+const bioFecesOtherTime = (v) => ({ type: t.bioFecesOtherTime, value: v })
+const bioOtherBaseline = (v) => ({ type: t.bioOtherBaseline, value: v })
+const bioOtherOtherTime = (v) => ({ type: t.bioOtherOtherTime, value: v })
+const bioRepeatedSampleSameIndividual = (v) => ({ type: t.bioRepeatedSampleSameIndividual, value: v })
+const bioTumorBlockInfo = (v) => ({ type: t.bioTumorBlockInfo, value: v })
+const bioGenotypingData = (v) => ({ type: t.bioGenotypingData, value: v })
+const bioSequencingDataExome = (v) => ({ type: t.bioSequencingDataExome, value: v })
+const bioSequencingDataWholeGenome = (v) => ({ type: t.bioSequencingDataWholeGenome, value: v })
+const bioEpigeneticOrMetabolicMarkers = (v) => ({ type: t.bioEpigeneticOrMetabolicMarkers, value: v })
+const bioOtherOmicsData = (v) => ({ type: t.bioOtherOmicsData, value: v })
+const bioTranscriptomicsData = (v) => ({ type: t.bioTranscriptomicsData, value: v })
+const bioMicrobiomeData = (v) => ({ type: t.bioMicrobiomeData, value: v })
+const bioMetabolomicData = (v) => ({ type: t.bioMetabolomicData, value: v })
+const bioMetaFastingSample = (v) => ({ type: t.bioMetaFastingSample, value: v })
+const bioMetaOutcomesInCancerStudy = (v) => ({ type: t.bioMetaOutcomesInCancerStudy, value: v })
+const bioMetaOutcomesInCvdStudy = (v) => ({ type: t.bioMetaOutcomesInCvdStudy, value: v })
+const bioMetaOutcomesInDiabetesStudy = (v) => ({ type: t.bioMetaOutcomesInDiabetesStudy, value: v })
+const bioMetaOutcomesInOtherStudy = (v) => ({ type: t.bioMetaOutcomesInOtherStudy, value: v })
+const bioMemberOfMetabolomicsStudies = (v) => ({ type: t.bioMemberOfMetabolomicsStudies, value: v })
+const bioOtherBaselineSpecify = (v) => ({ type: t.bioOtherBaselineSpecify, value: v })
+const bioOtherOtherTimeSpecify = (v) => ({ type: t.bioOtherOtherTimeSpecify, value: v })
+const bioMetaOutcomesOtherStudySpecify = (v) => ({ type: t.bioMetaOutcomesOtherStudySpecify, value: v })
+const bioMemberInStudy = (v) => ({ type: t.bioMemberInStudy, value: v })
+const bioLabsUsedForAnalysis = (v) => ({ type: t.bioLabsUsedForAnalysis, value: v })
+const bioAnalyticalPlatform = (v) => ({ type: t.bioAnalyticalPlatform, value: v })
+const bioSeparationPlatform = (v) => ({ type: t.bioSeparationPlatform, value: v })
+const bioNumberMetabolitesMeasured = (v) => ({ type: t.bioNumberMetabolitesMeasured, value: v })
+const bioYearSamplesSent = (v) => ({ type: t.bioYearSamplesSent, value: v })
 const setSectionGStatus = (v) => ({ type: t.setSectionGStatus, value: v })
 
 
 export default {
     setSpecimenLoaded,
     setSpecimenCount,
-    setBioBloodBaseline,
-    setBioBloodBaselineSerum,
-    setBioBloodBaselinePlasma,
-    setBioBloodBaselineBuffyCoat,
-    setBioBloodBaselineOtherDerivative,
-    setBioBloodOtherTime,
-    setBioBloodOtherTimeSerum,
-    setBioBloodOtherTimePlasma,
-    setBioBloodOtherTimeBuffyCoat,
-    setBioBloodOtherTimeOtherDerivative,
-    setBioBuccalSalivaBaseline,
-    setBioBuccalSalivaOtherTime,
-    setBioTissueBaseline,
-    setBioTissueOtherTime,
-    setBioUrineBaseline,
-    setBioUrineOtherTime,
-    setBioFecesBaseline,
-    setBioFecesOtherTime,
-    setBioOtherBaseline,
-    setBioOtherOtherTime,
-    setBioRepeatedSampleSameIndividual,
-    setBioTumorBlockInfo,
-    setBioGenotypingData,
-    setBioSequencingDataExome,
-    setBioSequencingDataWholeGenome,
-    setBioEpigeneticOrMetabolicMarkers,
-    setBioOtherOmicsData,
-    setBioTranscriptomicsData,
-    setBioMicrobiomeData,
-    setBioMetabolomicData,
-    setBioMetaFastingSample,
-    setBioMetaOutcomesInCancerStudy,
-    setBioMetaOutcomesInCvdStudy,
-    setBioMetaOutcomesInDiabetesStudy,
-    setBioMetaOutcomesInOtherStudy,
-    setBioMemberOfMetabolomicsStudies,
-    setBioOtherBaselineSpecify,
-    setBioOtherOtherTimeSpecify,
-    setBioMetaOutcomesOtherStudySpecify,
-    setBioMemberInStudy,
-    setBioLabsUsedForAnalysis,
-    setBioAnalyticalPlatform,
-    setBioSeparationPlatform,
-    setBioNumberMetabolitesMeasured,
-    setBioYearSamplesSent,
+    bioBloodBaseline,
+    bioBloodBaselineSerum,
+    bioBloodBaselinePlasma,
+    bioBloodBaselineBuffyCoat,
+    bioBloodBaselineOtherDerivative,
+    bioBloodOtherTime,
+    bioBloodOtherTimeSerum,
+    bioBloodOtherTimePlasma,
+    bioBloodOtherTimeBuffyCoat,
+    bioBloodOtherTimeOtherDerivative,
+    bioBuccalSalivaBaseline,
+    bioBuccalSalivaOtherTime,
+    bioTissueBaseline,
+    bioTissueOtherTime,
+    bioUrineBaseline,
+    bioUrineOtherTime,
+    bioFecesBaseline,
+    bioFecesOtherTime,
+    bioOtherBaseline,
+    bioOtherOtherTime,
+    bioRepeatedSampleSameIndividual,
+    bioTumorBlockInfo,
+    bioGenotypingData,
+    bioSequencingDataExome,
+    bioSequencingDataWholeGenome,
+    bioEpigeneticOrMetabolicMarkers,
+    bioOtherOmicsData,
+    bioTranscriptomicsData,
+    bioMicrobiomeData,
+    bioMetabolomicData,
+    bioMetaFastingSample,
+    bioMetaOutcomesInCancerStudy,
+    bioMetaOutcomesInCvdStudy,
+    bioMetaOutcomesInDiabetesStudy,
+    bioMetaOutcomesInOtherStudy,
+    bioMemberOfMetabolomicsStudies,
+    bioOtherBaselineSpecify,
+    bioOtherOtherTimeSpecify,
+    bioMetaOutcomesOtherStudySpecify,
+    bioMemberInStudy,
+    bioLabsUsedForAnalysis,
+    bioAnalyticalPlatform,
+    bioSeparationPlatform,
+    bioNumberMetabolitesMeasured,
+    bioYearSamplesSent,
     setSectionGStatus
 }
