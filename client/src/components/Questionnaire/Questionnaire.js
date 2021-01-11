@@ -7,9 +7,11 @@ import { fetchCohort } from '../../reducers/cohort';
 
 const Questionnaire = ({ ...props }) => {
     const dispatch = useDispatch();
-    const cohortID = useSelector(state => state.cohortIDReducer);
+    const cohortID = useSelector(state => state.cohortIDReducer) || window.location.pathname.split('/').pop();
     const userSession = useContext(UserSessionContext);
-    const isAuthorized = userSession && (userSession.role === 'CohortAdmin' || userSession.role === 'SystemAdmin');
+    const isAuthorized = userSession 
+        && userSession.role === 'CohortAdmin' 
+        && userSession.cohorts.map(c => +c.id).includes(+cohortID);
 
     useEffect(() => { cohortID && dispatch(fetchCohort(cohortID)) }, [cohortID]);
 
