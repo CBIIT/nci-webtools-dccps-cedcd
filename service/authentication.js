@@ -117,7 +117,7 @@ async function login(request, response) {
             if (session.user.cohorts.length === 1) {
                 redirectUrl = `/cohort/questionnaire/${session.user.cohorts[0].id}`;
             } else if (session.user.cohorts.length > 1) {
-                redirectUrl = `/cohort/select`;
+                redirectUrl = `/cohort/questionnaire`;
             }
         }
 
