@@ -47,9 +47,9 @@ class MainContent extends Component {
         <Route exact path={match + '/biospecimen'} component={Biospecimen} />
         <Route exact path={match + '/about'} component={About} />
         <Route path={match + '/contact'} component={Contact} />
+        <Route exact path={match + '/cohort/questionnaire'} component={SelectCohort} />
         <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} />} />
         <Route exact path={match + '/cohort'} component={Information} />
-        <Route exact path={match + '/cohort/select'} component={SelectCohort} />
         <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />} />
      {/*}  <Route path={match + '/admin/viewcohort/:id/'} render={() => <ReviewCohort setAdmin={this.props.setAdmin} />} /> */}
         <Route exact path={match + '/admin/viewcohort/:id/'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} isReadOnly={true} />} />
