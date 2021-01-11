@@ -29,16 +29,18 @@ async function readTemplate(filePath, data) {
 }
 
 router.post('/sendEmail', async function (req, res, next) {
-	logger.debug(req.body)
+
     try {
-		await mail.sendMail({
-			from: 'CEDCDWebAdmin@mail.nih.gov', 
-			to: req.body.email, 
-			subject: req.body.topic,  
-			html: await readTemplate(__dirname + '/templates/email-owner-template.html', req.body.templateData),
-		});
+		await mail.sendMail(
+			config.mail.from, 
+			req.body.email, 
+			req.body.topic, 
+			'',
+			await readTemplate(__dirname + '/templates/email-owner-template.html', req.body.templateData),
+		);
         res.json({ status: 200, data: 'sent' });
     } catch (e) {
+		logger.debug(e)
         res.json({ status: 200, data: 'failed' });
     }
 })
