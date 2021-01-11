@@ -270,11 +270,17 @@ class ManageUser extends Component {
       		    </p><p></p>
 					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "0", "paddingBottom": "0px" }}>
 						<div className="col-md-4 col-8" style={{ "paddingBottom": "0px" }}>
-							<div className="form-group has-feedback has-search" style={{ "paddingBottom": "0px", "marginBottom": "0" }}>
-								{/*<span className="glyphicon glyphicon-search form-control-feedback"></span> */}
-								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " style={{paddingLeft:'1rem'}}
+
+							<div className="input-group">
+								<div className="input-group-prepend">
+									<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
+									</div>
+								</div>
+
+								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " style={{ paddingLeft: '1rem' }}
 									onChange={(e) => this.handleuserNameSearchChange(e)} />
 							</div>
+
 						</div>
 						<div className="col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
 							<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>

@@ -122,7 +122,7 @@ const MortalityForm = ({ ...props }) => {
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
         if (mortality.haveDeathCause === 1) {
 
-            if (mortality.icd9 === 0 && mortality.icd10 === 0 && mortality.notCoded === 0 && mortality.otherCode === 0)
+            if (!mortality.icd9 && !mortality.icd10 && !mortality.notCoded && !mortality.otherCode)
                 copy.coded = 'Select at least one option'
             else
                 copy.coded = ''
@@ -144,7 +144,12 @@ const MortalityForm = ({ ...props }) => {
             copy.coded = '';
             copy.otherCodeSpecify = '';
         }
-        copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
+
+        if (mortality.deathNumbers === 0 || mortality.deathNumbers === '0')
+            copy.deathNumbers = ''
+        else
+            copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
+
 
         setErrors(copy);
 

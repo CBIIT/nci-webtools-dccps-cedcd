@@ -5,17 +5,17 @@ import Unauthorized from '../Unauthorized/Unauthorized';
 import { UserSessionContext } from '../../index';
 import { fetchCohort } from '../../reducers/cohort';
 
-const Questionnaire = ({...props}) => {
+const Questionnaire = ({ ...props }) => {
     const dispatch = useDispatch();
     const cohortID = useSelector(state => state.cohortIDReducer);
     const userSession = useContext(UserSessionContext);
     const isAuthorized = userSession && (userSession.role === 'CohortAdmin' || userSession.role === 'SystemAdmin');
 
-    useEffect(() => {cohortID && dispatch(fetchCohort(cohortID))}, [cohortID]);
+    useEffect(() => { cohortID && dispatch(fetchCohort(cohortID)) }, [cohortID]);
 
     return isAuthorized && <div>
-        <QuestionnaireHeader activeSection={props.activeSection} handler={props.handler} />
-        {React.cloneElement(props.children, {sectionPicker: props.handler, userId: userSession ? userSession.id : ''})}
+        <QuestionnaireHeader activeSection={props.activeSection} handler={props.handler} isReadOnly={props.isReadOnly} />
+        {React.cloneElement(props.children, { sectionPicker: props.handler, userId: userSession ? userSession.id : '' })}
     </div> || <Unauthorized />;
 }
 

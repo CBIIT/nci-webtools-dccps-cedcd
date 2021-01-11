@@ -44,7 +44,7 @@ const CohortForm = ({ ...props }) => {
     const [currentFileListName, setCurrentFileListName] = useState('')
 
     useEffect(() => {
-        if (!cohort.hasLoaded) {
+        if (!cohort.hasLoaded || tempId != corhortID) {
             dispatch(allactions.cohortIDAction.setCohortId(tempId))
             fetch(`/api/questionnaire/cohort_basic_info/${tempId}`, {
                 method: 'POST'
