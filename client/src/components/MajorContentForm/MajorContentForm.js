@@ -25,10 +25,20 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
+    
     //const cohortId = +window.location.pathname.split('/').pop();
 
-
-
+    const subtitles = [
+            'hasLoded', 'C.1 Socio-economic Status', '', 'C.2 Education Level', '', 'C.3 Marital Status', '', 'C.4 Language/Country of Origin', '',
+            'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry(e.g., weight, height, waist circumference)',
+            '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use(not related to cancer treatment', '', 'C.12 Non-prescription Medication Use(not related to cancer treatment', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
+            // remove to keep it sync with the object, 'C.15 Use of Tobacco Products Other than Cigarettes', '',
+            'Cigars',  'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '', 'Cigars',  'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '',
+            'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self_Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function meassures(e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
+            //removed to snyc with majorContent index 'C.31 Other Medical Conditions', '',
+            'a. Diabetes', '', 'b. Stroke', '', 'c. COPD and/or Emphysema', '', 'd. Cardiovascular Disease', '', 'e. Osteoporosis', '', 'f. Mental Health', '',
+            'g. Cognitive Decline', ''
+            ]
     useEffect(() => {
         //let id = 118
         //window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', `/cohort/questionnaire/${id}`)
@@ -37,103 +47,107 @@ const MajorContentForm = ({ ...props }) => {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
+            
                     let content = result.data.counts
                     let cancerInfo = result.data.cancerInfo
-
+    
                     batch(() => {
-                        dispatch(allactions.majorContentActions.setSeStatusBaseLine(content[0].baseline))
-                        dispatch(allactions.majorContentActions.setSeStatusFollowUp(content[0].followup))
-                        dispatch(allactions.majorContentActions.setEducationBaseLine(content[1].baseline))
-                        dispatch(allactions.majorContentActions.setEducationFollowUp(content[1].followup))
-                        dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(content[2].baseline))
-                        dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(content[2].followup))
-                        dispatch(allactions.majorContentActions.setOriginBaseLine(content[3].baseline))
-                        dispatch(allactions.majorContentActions.setOriginFollowUp(content[3].followup))
-                        dispatch(allactions.majorContentActions.setEmpStatusBaseLine(content[4].baseline))
-                        dispatch(allactions.majorContentActions.setEmpStatusFollowUp(content[4].followup))
-                        dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(content[5].baseline))
-                        dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(content[5].followup))
-                        dispatch(allactions.majorContentActions.setAnthropometryBaseLine(content[6].baseline))
-                        dispatch(allactions.majorContentActions.setAnthropometryFollowUp(content[6].followup))
-                        dispatch(allactions.majorContentActions.setDietaryBaseLine(content[7].baseline))
-                        dispatch(allactions.majorContentActions.setDietaryFollowUp(content[7].followup))
-                        dispatch(allactions.majorContentActions.setSupplementBaseLine(content[8].baseline))
-                        dispatch(allactions.majorContentActions.setSupplementFollowUp(content[8].followup))
-                        dispatch(allactions.majorContentActions.setMedicineBaseLine(content[9].baseline))
-                        dispatch(allactions.majorContentActions.setMedicineFollowUp(content[9].followup))
-                        dispatch(allactions.majorContentActions.setPrescriptionBaseLine(content[10].baseline))
-                        dispatch(allactions.majorContentActions.setPrescriptionFollowUp(content[10].followup))
-                        dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(content[11].baseline))
-                        dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(content[11].followup))
-                        dispatch(allactions.majorContentActions.setAlcoholBaseLine(content[12].baseline))
-                        dispatch(allactions.majorContentActions.setAlcoholFollowUp(content[12].followup))
-                        dispatch(allactions.majorContentActions.setCigaretteBaseLine(content[13].baseline))
-                        dispatch(allactions.majorContentActions.setCigaretteFollowUp(content[13].followup))
-                        dispatch(allactions.majorContentActions.setCigarBaseLine(content[14].baseline))
-                        dispatch(allactions.majorContentActions.setCigarFollowUp(content[14].followup))
-                        dispatch(allactions.majorContentActions.setPipeBaseLine(content[15].baseline))
-                        dispatch(allactions.majorContentActions.setPipeFollowUp(content[15].followup))
-                        dispatch(allactions.majorContentActions.setTobaccoBaseLine(content[16].baseline))
-                        dispatch(allactions.majorContentActions.setTobaccoFollowUp(content[16].followup))
-                        dispatch(allactions.majorContentActions.setEcigarBaseLine(content[17].baseline))
-                        dispatch(allactions.majorContentActions.setEcigarFollowUp(content[17].followup))
-                        dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(content[18].baseline))
-                        dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(content[18].followup))
-                        dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(content[18].other_specify_baseline))
-                        dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(content[18].other_specify_followup))
-                        dispatch(allactions.majorContentActions.setPhysicalBaseLine(content[19].baseline))
-                        dispatch(allactions.majorContentActions.setPhysicalFollowUp(content[19].followup))
-                        dispatch(allactions.majorContentActions.setSleepBaseLine(content[20].baseline))
-                        dispatch(allactions.majorContentActions.setSleepFollowUp(content[20].followup))
-                        dispatch(allactions.majorContentActions.setReproduceBaseLine(content[21].baseline))
-                        dispatch(allactions.majorContentActions.setReproduceFollowUp(content[21].followup))
-                        dispatch(allactions.majorContentActions.setReportedHealthBaseLine(content[22].baseline))
-                        dispatch(allactions.majorContentActions.setReportedHealthFollowUp(content[22].followup))
-                        dispatch(allactions.majorContentActions.setLifeBaseLine(content[23].baseline))
-                        dispatch(allactions.majorContentActions.setLifeFollowUp(content[23].followup))
-                        dispatch(allactions.majorContentActions.setSocialSupportBaseLine(content[24].baseline))
-                        dispatch(allactions.majorContentActions.setSocialSupportFollowUp(content[24].followup))
-                        dispatch(allactions.majorContentActions.setCognitionBaseLine(content[25].baseline))
-                        dispatch(allactions.majorContentActions.setCognitionFollowUp(content[25].followup))
-                        dispatch(allactions.majorContentActions.setDepressionBaseLine(content[26].baseline))
-                        dispatch(allactions.majorContentActions.setDepressionFollowUp(content[26].followup))
-                        dispatch(allactions.majorContentActions.setPsychosocialBaseLine(content[27].baseline))
-                        dispatch(allactions.majorContentActions.setPsychosocialFollowUp(content[27].followup))
-                        dispatch(allactions.majorContentActions.setFatigueBaseLine(content[28].baseline))
-                        dispatch(allactions.majorContentActions.setFatigueFollowUp(content[28].followup))
-                        dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(content[29].baseline))
-                        dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(content[29].followup))
-                        dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(content[30].baseline))
-                        dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(content[30].followup))
+                        dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
+                        dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
+                        dispatch(allactions.majorContentActions.educationBaseLine(content[1].baseline))
+                        dispatch(allactions.majorContentActions.educationFollowUp(content[1].followup))
+                        dispatch(allactions.majorContentActions.maritalStatusBaseLine(content[2].baseline))
+                        dispatch(allactions.majorContentActions.maritalStatusFollowUp(content[2].followup))
+                        dispatch(allactions.majorContentActions.originBaseLine(content[3].baseline))
+                        dispatch(allactions.majorContentActions.originFollowUp(content[3].followup))
+                        dispatch(allactions.majorContentActions.empStatusBaseLine(content[4].baseline))
+                        dispatch(allactions.majorContentActions.empStatusFollowUp(content[4].followup))
+                        dispatch(allactions.majorContentActions.insuranceStatusBaseLine(content[5].baseline))
+                        dispatch(allactions.majorContentActions.insuranceStatusFollowUp(content[5].followup))
+                        dispatch(allactions.majorContentActions.anthropometryBaseLine(content[6].baseline))
+                        dispatch(allactions.majorContentActions.anthropometryFollowUp(content[6].followup))
+                        dispatch(allactions.majorContentActions.dietaryBaseLine(content[7].baseline))
+                        dispatch(allactions.majorContentActions.dietaryFollowUp(content[7].followup))
+                        dispatch(allactions.majorContentActions.supplementBaseLine(content[8].baseline))
+                        dispatch(allactions.majorContentActions.supplementFollowUp(content[8].followup))
+                        dispatch(allactions.majorContentActions.medicineBaseLine(content[9].baseline))
+                        dispatch(allactions.majorContentActions.medicineFollowUp(content[9].followup))
+                        dispatch(allactions.majorContentActions.prescriptionBaseLine(content[10].baseline))
+                        dispatch(allactions.majorContentActions.prescriptionFollowUp(content[10].followup))
+                        dispatch(allactions.majorContentActions.nonprescriptionBaseLine(content[11].baseline))
+                        dispatch(allactions.majorContentActions.nonprescriptionFollowUp(content[11].followup))
+                        dispatch(allactions.majorContentActions.alcoholBaseLine(content[12].baseline))
+                        dispatch(allactions.majorContentActions.alcoholFollowUp(content[12].followup))
+                        dispatch(allactions.majorContentActions.cigaretteBaseLine(content[13].baseline))
+                        dispatch(allactions.majorContentActions.cigaretteFollowUp(content[13].followup))
+                        dispatch(allactions.majorContentActions.cigarBaseLine(content[14].baseline))
+                        dispatch(allactions.majorContentActions.cigarFollowUp(content[14].followup))
+                        dispatch(allactions.majorContentActions.pipeBaseLine(content[15].baseline))
+                        dispatch(allactions.majorContentActions.pipeFollowUp(content[15].followup))
+                        dispatch(allactions.majorContentActions.tobaccoBaseLine(content[16].baseline))
+                        dispatch(allactions.majorContentActions.tobaccoFollowUp(content[16].followup))
+                        dispatch(allactions.majorContentActions.ecigarBaseLine(content[17].baseline))
+                        dispatch(allactions.majorContentActions.ecigarFollowUp(content[17].followup))
+                        dispatch(allactions.majorContentActions.noncigarOtherBaseLine(content[18].baseline))
+                        dispatch(allactions.majorContentActions.noncigarOtherFollowUp(content[18].followup))
+                        dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(content[18].other_specify_baseline))
+                        dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(content[18].other_specify_followup))
+                        dispatch(allactions.majorContentActions.physicalBaseLine(content[19].baseline))
+                        dispatch(allactions.majorContentActions.physicalFollowUp(content[19].followup))
 
-                        dispatch(allactions.majorContentActions.setExposureBaseLine(content[31].baseline))
-                        dispatch(allactions.majorContentActions.setExposureFollowUp(content[31].followup))
-                        dispatch(allactions.majorContentActions.setResidenceBaseLine(content[32].baseline))
-                        dispatch(allactions.majorContentActions.setResidenceFollowUp(content[32].followup))
-                        dispatch(allactions.majorContentActions.setDiabetesBaseLine(content[33].baseline))
-                        dispatch(allactions.majorContentActions.setDiabetesFollowUp(content[33].followup))
-                        dispatch(allactions.majorContentActions.setStrokeBaseLine(content[34].baseline))
-                        dispatch(allactions.majorContentActions.setStrokeFollowUp(content[34].followup))
-                        dispatch(allactions.majorContentActions.setCopdBaseLine(content[35].baseline))
-                        dispatch(allactions.majorContentActions.setCopdFollowUp(content[35].followup))
-                        dispatch(allactions.majorContentActions.setCardiovascularBaseLine(content[36].baseline))
-                        dispatch(allactions.majorContentActions.setCardiovascularFollowUp(content[36].followup))
-                        dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(content[37].baseline))
-                        dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(content[37].followup))
-                        dispatch(allactions.majorContentActions.setMentalBaseLine(content[38].baseline))
-                        dispatch(allactions.majorContentActions.setMentalFollowUp(content[38].followup))
-                        dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(content[39].baseline))
-                        dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(content[39].followup))
+                        dispatch(allactions.majorContentActions.sleepBaseLine(content[20].baseline))
+                        dispatch(allactions.majorContentActions.sleepFollowUp(content[20].followup))
+                        dispatch(allactions.majorContentActions.reproduceBaseLine(content[21].baseline))
+                        dispatch(allactions.majorContentActions.reproduceFollowUp(content[21].followup))
+                        dispatch(allactions.majorContentActions.reportedHealthBaseLine(content[22].baseline))
+                        dispatch(allactions.majorContentActions.reportedHealthFollowUp(content[22].followup))
+                        dispatch(allactions.majorContentActions.lifeBaseLine(content[23].baseline))
+                        dispatch(allactions.majorContentActions.lifeFollowUp(content[23].followup))
+                        dispatch(allactions.majorContentActions.socialSupportBaseLine(content[24].baseline))
+                        dispatch(allactions.majorContentActions.socialSupportFollowUp(content[24].followup))
+                        dispatch(allactions.majorContentActions.cognitionBaseLine(content[25].baseline))
+                        dispatch(allactions.majorContentActions.cognitionFollowUp(content[25].followup))
+                        dispatch(allactions.majorContentActions.depressionBaseLine(content[26].baseline))
+                        dispatch(allactions.majorContentActions.depressionFollowUp(content[26].followup))
+                        dispatch(allactions.majorContentActions.psychosocialBaseLine(content[27].baseline))
+                        dispatch(allactions.majorContentActions.psychosocialFollowUp(content[27].followup))
+                        dispatch(allactions.majorContentActions.fatigueBaseLine(content[28].baseline))
+                        dispatch(allactions.majorContentActions.fatigueFollowUp(content[28].followup))
+                        dispatch(allactions.majorContentActions.cancerHistoryBaseLine(content[29].baseline))
+                        dispatch(allactions.majorContentActions.cancerHistoryFollowUp(content[29].followup))
+                        dispatch(allactions.majorContentActions.cancerPedigreeBaseLine(content[30].baseline))
+                        dispatch(allactions.majorContentActions.cancerPedigreeFollowUp(content[30].followup))
+                        //dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[30].baseline))
+                        //dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[30].followup))
+
+                        dispatch(allactions.majorContentActions.exposureBaseLine(content[31].baseline))
+                        dispatch(allactions.majorContentActions.exposureFollowUp(content[31].followup))
+                        dispatch(allactions.majorContentActions.residenceBaseLine(content[32].baseline))
+                        dispatch(allactions.majorContentActions.residenceFollowUp(content[32].followup))
+                        dispatch(allactions.majorContentActions.diabetesBaseLine(content[33].baseline))
+                        dispatch(allactions.majorContentActions.diabetesFollowUp(content[33].followup))
+                        dispatch(allactions.majorContentActions.strokeBaseLine(content[34].baseline))
+                        dispatch(allactions.majorContentActions.strokeFollowUp(content[34].followup))
+                        dispatch(allactions.majorContentActions.copdBaseLine(content[35].baseline))
+                        dispatch(allactions.majorContentActions.copdFollowUp(content[35].followup))
+                        dispatch(allactions.majorContentActions.cardiovascularBaseLine(content[36].baseline))
+                        dispatch(allactions.majorContentActions.cardiovascularFollowUp(content[36].followup))
+                        dispatch(allactions.majorContentActions.osteoporosisBaseLine(content[37].baseline))
+                        dispatch(allactions.majorContentActions.osteoporosisFollowUp(content[37].followup))
+                        dispatch(allactions.majorContentActions.mentalBaseLine(content[38].baseline))
+                        dispatch(allactions.majorContentActions.mentalFollowUp(content[38].followup))
+                        dispatch(allactions.majorContentActions.cognitiveDeclineBaseLine(content[39].baseline))
+                        dispatch(allactions.majorContentActions.cognitiveDeclineFollowUp(content[39].followup))
                         if (content[40]) {
-                            dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(content[40].baseline))
-                            dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(content[40].followup))
+                            dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[40].baseline))
+                            dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[40].followup))
                         }
 
-                        dispatch(allactions.majorContentActions.setCancerToxicity(cancerInfo.cancerToxicity))
-                        dispatch(allactions.majorContentActions.setCancerLateEffects(cancerInfo.cancerLateEffects))
-                        dispatch(allactions.majorContentActions.setCancerSymptom(cancerInfo.cancerSymptom))
-                        dispatch(allactions.majorContentActions.setCancerOther(cancerInfo.cancerOther))
-                        dispatch(allactions.majorContentActions.setCancerOtherSpecify(cancerInfo.cancerOtherSpecify))
+                        dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
+                        dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
+                        dispatch(allactions.majorContentActions.cancerSymptom(cancerInfo.cancerSymptom))
+                        dispatch(allactions.majorContentActions.cancerOther(cancerInfo.cancerOther))
+                        dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify))
                         //dispatch(allactions.majorContentActions.setHasLoaded(true))
 
                         if ([0,1].includes(content[0].baseline)) {  dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }
@@ -246,16 +260,17 @@ const MajorContentForm = ({ ...props }) => {
     }, [])
 
 
-    const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) 
-/*
+    //const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) 
+
     const refreshErrors = () => {
         for(let k of Object.keys(errors)){
-            if(['cancerOther, cancerToxicity, cancerSymptom, cancerLateEffects, cancerOtherSpecify, cigarBaseLine, cigarFollowUp, pipeBaseLine, pipeFollowUp, tobaccoBaseLine, tobaccoFollowUp, ecigarBaseLine, ecigarFollowUp, noncigarOtherBaseLine, noncigarOtherFollowUp'].includes[k]) continue
-            else if(errors[k]) return true;
+            if(!['cancerOther', 'cancerToxicity', 'cancerSymptom', 'cancerLateEffects', 'cancerOtherSpecify', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'noncigarBaseLineSpecify', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarFollowUpSpecify'].includes(k) && errors[k]) {
+                return true
+            }
         }
         return false
     }
-*/
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -307,10 +322,9 @@ const MajorContentForm = ({ ...props }) => {
     const handleSave = () => {
         setSaved(true)
         let errorsRemain = refreshErrors()
-       /* errorsRemain |= (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp&&errors.tobaccoBaseLine&&errors.tobaccoFollowUp&&errors.ecigarBaseLine&&errors.ecigarFollowUp&&errors.noncigarOtherBaseLine&&errors.noncigarOtherFollowUp) || (errors.cancerToxicity&&errors.cancerLateEffects&&errors.cancerSymptom&&errors.cancerOther) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp&&errors.noncigarFollowUpSpecify) || (!errors.cancerOther && errors.cancerOtherSpecify)
-        */
-        console.log(errorsRemain)
-        //if(!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify)
+        //console.log('errorRemainsSoFar: '+errorsRemain)
+        if(!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        //console.dir(errors)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -325,6 +339,8 @@ const MajorContentForm = ({ ...props }) => {
     const handleSaveContinue = () => {
         setSaved(true)
         let errorsRemain = refreshErrors()
+        
+        if(!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -348,1529 +364,275 @@ const MajorContentForm = ({ ...props }) => {
         saveMajorContent(cohortId, true, true); setModalShow(false)
     }
 
+    const getQuestionEntry = (questionType, key, idx) => {
+        if(questionType === 'BaseLine')
+         return <Form.Group as={Row} sm='12' className='mb-0'>
+                <Form.Group as={Row} className="mb-0 pl-4">
+                    <Form.Label column sm='12'>
+                        {subtitles[idx]}
+                    </Form.Label>
+                </Form.Group>
+                <Col className='mb-0 pl-0' sm='12'>
+                        <Col sm='4'>
+                            <span>{key}</span>
+                            <span>Collected at baseline<span style={{ color: 'red' }}>*</span></span>
+                        </Col>
+                        <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
+                            <Col sm='3' className='align-self-center' style={{paddingLeft: '18px'}}>
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_no'} 
+                                        inline
+                                        style={{ fontWeight: 'normal'}}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                        checked={majorContent[key] === 0}
+                                        readOnly={isReadOnly}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label
+                                            style={errors[key]&&saved ? {fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}
+                                         >
+                                            No
+                                        </Form.Check.Label>
+                                </Form.Check>
+                                <Form.Check type="radio" xs='2'
+                                        id={key+'_yes'} 
+                                        inline
+                                        style={{ fontWeight: 'normal'}}
+                                        name={key}>
+                                        <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
+                                        readOnly={isReadOnly}
+                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
+                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        <Form.Check.Label style={errors[key]&&saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
+                                            Yes
+                                        </Form.Check.Label>
+                                </Form.Check>               
+                            </Col>
+                        </Reminder>
+                    </Col>
+                </Form.Group>
+                else
+                   return <Form.Group as={Row} sm='12' className='mb-0'>
+                   <Col className='mb-0 pl-0' sm='12'>
+                       <Col sm='4'>
+                           Collected During Follow-up<span style={{ color: 'red' }}>*</span>
+                       </Col>
+                           <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
+                               <Col sm='3' className='align-self-center' style={{paddingLeft: '18px'}}>
+                               <Form.Check type="radio" xs='2'
+                                       id={key+'_no'} 
+                                       inline
+                                       style={{ fontWeight: 'normal '}}
+                                       name={key}>
+                                       <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                       checked={majorContent[key] === 0}
+                                       onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
+                                           dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
+                                           No
+                                       </Form.Check.Label>
+                               </Form.Check>
+                               <Form.Check type="radio" xs='2'
+                                       id={key+'_yes'} 
+                                       inline
+                                       style={{ fontWeight: 'normal '}}
+                                       name={key}>
+                                       <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
+                                       onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
+                                           dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red'  } :{fontWeight: 'normal'}}>
+                                           Yes
+                                       </Form.Check.Label>
+                               </Form.Check>
+                           </Col>
+                       </Reminder> 
+                   </Col>
+               </Form.Group>
+    }
+
+    const getMultiSelectList = (questions = [], keys = []) => { 
+        return questions.map((item, idx) => <Col as={Row} sm='12' style={{paddingLeft: '30px'}}>
+            <Form.Check type='checkbox' style={{paddingLeft: '15px'}}
+                    className="pl-0"
+                    id={keys[idx]}
+                    name={keys[idx]}>
+                    <Form.Check.Input bsPrefix
+                        type="checkbox" 
+                        className="mr-2"
+                        readOnly={isReadOnly}
+                        checked = {majorContent[keys[idx]] === 1}
+                        onClick={(e) => { if(!isReadOnly) {
+                            dispatch(allactions.majorContentActions[keys[idx]](+e.target.checked));
+                            dispatch(allactions.majorContentErrorActions[keys[idx]](e.target.checked));
+                            if(keys[idx] === 'cancerOther')
+                                dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))
+                            else if(keys[idx] === 'noncigarOtherBaseLine')
+                                dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))
+                            else if (keys[idx] === 'noncigarOtherFollowUp')
+                                dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))
+                             }}}/>
+            </Form.Check> 
+            <Form.Check.Label as={Row} sm='12'>
+            <Col sm='12' column className='pl-0'>{item}</Col>
+        </Form.Check.Label>
+    </Col>)
+    }
+    const getFirstContent = () => {
+        return Object.keys(majorContent).slice(0, 71).map((key, idx)=> {
+            if(idx <= 28 || idx > 40) {//skip questions first
+                if(key.includes('BaseLine')){
+                    return getQuestionEntry('BaseLine', key, idx)
+                }
+                else if(key.includes('FollowUp')){
+                    return getQuestionEntry('FollowUp', key, idx)
+                }
+            }else if (idx === 29){
+                return <Form.Group as={Row} sm='12' className='mb-0' style={{marginTop: '10px'}} >                  
+                    <Form.Label as={Row} sm='12' className='pl-5' style={{marginBottom: '8px'}}>
+                        C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small style={{paddingRight: '0'}}>(Select all that apply)</small>
+                    </Form.Label>
+                <Col sm='12'> <span style={
+                    (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved && { color: 'red'} || {display: 'none'}
+                    }>Required Field</span></Col>
+                    {
+                        getMultiSelectList(
+                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
+                            ['cigarBaseLine', 'pipeBaseLine', 'tobaccoBaseLine', 'ecigarBaseLine', 'noncigarOtherBaseLine']
+                        )
+                    }
+                <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
+                    <Reminder message='Required Field' disabled={!(majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved)}>
+                        <input 
+                            placeholder='Max of 200 characters' 
+                            maxLength='200' name='noncigarBaseLineSpecify' 
+                            style={majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                            value={majorContent.noncigarBaseLineSpecify} 
+                            onChange={e => { dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(e.target.value)) }} 
+                            onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine || isReadOnly} />
+                    </Reminder>
+                </Col>
+                <Col sm='12'> <span style={
+                    (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved && { color: 'red'} || {display: 'none'}
+                    }>Required Field</span></Col>
+                {
+                    getMultiSelectList(
+                        ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
+                        ['cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
+                    )
+                }
+                <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
+                    <Reminder message='Required Field' disabled={!(majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved)}>
+                        <input 
+                            placeholder='Max of 200 characters' 
+                            maxLength='200' name='noncigarFollowUpSpecify' 
+                            style={majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                            value={majorContent.noncigarFollowUpSpecify} 
+                            onChange={e => { dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(e.target.value)) }} 
+                            onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp || isReadOnly} />
+                    </Reminder>
+                </Col>
+                </Form.Group>
+            }
+    })}
+
+    const getSecondContent = () => {
+        return Object.keys(majorContent).slice(71).map((key, idx)=>{
+            if(key.includes('BaseLine'))
+                return getQuestionEntry('BaseLine', key, idx+71)
+            else if (key.includes('FollowUp'))
+                return getQuestionEntry('FollowUp', key, idx+71)
+        })
+    }
+
+    const getThirdContent = () => {
+        return <Form.Group as={Row} sm='12' className='mb-0' style={{marginTop: '10px'}} >                  
+                    <Form.Label as={Row} sm='12' className='pl-5' style={{marginBottom: '8px'}}>
+                        C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small style={{paddingRight: '0'}}>(Select all that apply)</small>
+                    </Form.Label>    
+                <Col sm='12'> <span style={
+                    (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && { color: 'red'} || {display: 'none'}
+                    }>Required Field</span></Col>
+                    {
+                        getMultiSelectList(
+                            [
+                                'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
+                                'Late effects of treatment (e.g., cardiotoxicity, lymphedema)',
+                                'Symptom management (e.g., fatigue, pain, sexual dysfunction)',
+                                'Other' 
+                            ],
+                            ['cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
+                        )
+                    }
+                <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
+                    <Reminder message='Required Field' disabled={!(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved)}>
+                        <input 
+                            placeholder='Max of 200 characters' 
+                            maxLength='200' name='cancerOtherSpecify' 
+                            style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                            value={majorContent.cancerOtherSpecify} 
+                            onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)) }} 
+                            onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
+                    </Reminder>
+                </Col>
+            </Form.Group>          
+    }
+
     return <div className='col-md-12'>
         {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-        <div className='col-md-12' style={{ display: 'flex', flexDirection: 'column' }}>
-
-            <div>
-                <Form>
-                    <CollapsiblePanel
-                        condition={activePanel === 'panelA'}
-                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                        panelTitle="Major Content Domains">
-                       {/* <Form.Group as={Row} className="mb-1">
-                            <Form.Label column sm="12">
-                                Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
-                            </Form.Label>
-                        </Form.Group>
-                        
-
-                        <Form.Group as={Row} className="mb-1">
-                            <Form.Label column sm="4">
-                                C.1 Socio-economic Status
-                            </Form.Label>
-                            <Col sm="4" style={{color: 'red'}}>
-                                {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span>Required Field</span>}
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="mb-1">
-                            <Col sm='4' >
-                                Collected at baseline
-                            </Col>
-                            <Col sm='6'>
-                                <Form.Check type="radio" xs='2'
-                                        id='seStatusBaseLine_no'
-                                        custom 
-                                        inline
-                                        style={{ fontWeight: 'normal '}}
-                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0}
-                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
-                                        label='No' />
-                                <Form.Check type="radio" xs='2'
-                                        id='seStatusBaseLine_yes'
-                                        custom 
-                                        inline
-                                        style={{ fontWeight: 'normal '}}
-                                        name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1}
-                                        onClick={() => { console.log(isReadOnly); if(!isReadOnly) { dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}}
-                                        label='Yes' />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} className="mb-1">
-                            <Col sm='4'>
-                                Collected at other time
-                            </Col>
-                            <Col sm='6'>
-                                <Form.Check type="radio" 
-                                        id='seStatusFollowUp_no'
-                                        custom 
-                                        inline
-                                        style={{ fontWeight: 'normal '}}
-                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
-                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
-                                        label='No' />
-                                <Form.Check type="radio"
-                                        id='seStatusFollowUp_yes'
-                                        custom 
-                                        inline
-                                        style={{ fontWeight: 'normal '}}
-                                        name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
-                                        onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}}
-                                        label='Yes' />
-                            </Col>
-                        </Form.Group>
-*/}   
-                        <div >
-                            <span>Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort</span>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.1 Socio-economic Status<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.seStatusBaseLine && errors.seStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                           
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusBaseLine' checked={majorContent.seStatusBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='seStatusFollowUp' checked={majorContent.seStatusFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setSeStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.2 Education Level<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.educationBaseLine && errors.educationFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEducationBaseLine(0)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationBaseLine' checked={majorContent.educationBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEducationBaseLine(1)); dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationFollowUp' checked={majorContent.educationFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEducationFollowUp(0)); dispatch(allactions.majorContentErrorActions.educationFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='educationFollowUp' checked={majorContent.educationFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEducationFollowUp(1)); dispatch(allactions.majorContentErrorActions.educationFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.3 Marital Status<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusBaseLine' checked={majorContent.maritalStatusBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setMaritalStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='maritalStatusFollowUp' checked={majorContent.maritalStatusFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setMaritalStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.4 Language/Country origin<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.originBaseLine && errors.originFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originBaseLine' checked={majorContent.originBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setOriginBaseLine(0)); dispatch(allactions.majorContentErrorActions.originBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originBaseLine' checked={majorContent.originBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setOriginBaseLine(1)); dispatch(allactions.majorContentErrorActions.originBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originFollowUp' checked={majorContent.originFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setOriginFollowUp(0)); dispatch(allactions.majorContentErrorActions.originFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='originFollowUp' checked={majorContent.originFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setOriginFollowUp(1)); dispatch(allactions.majorContentErrorActions.originFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.5 Employment Status<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.empStatusBaseLine && errors.empStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusBaseLine' checked={majorContent.empStatusBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='empStatusFollowUp' checked={majorContent.empStatusFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setEmpStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.empStatusFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.6 Health Insurance Status<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(0)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusBaseLine' checked={majorContent.insuranceStatusBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setInsuranceStatusBaseLine(1)); dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(0)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='insuranceStatusFollowUp' checked={majorContent.insuranceStatusFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setInsuranceStatusFollowUp(1)); dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.7 Anthropometry(e.g. weight, height)<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.anthropometryBaseLine && errors.anthropometryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryBaseLine(0)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryBaseLine' checked={majorContent.anthropometryBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryBaseLine(1)); dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryFollowUp(0)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='anthropometryFollowUp' checked={majorContent.anthropometryFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setAnthropometryFollowUp(1)); dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.8 Dietary Intake<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.dietaryBaseLine && errors.dietaryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setDietaryBaseLine(0)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryBaseLine' checked={majorContent.dietaryBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setDietaryBaseLine(1)); dispatch(allactions.majorContentErrorActions.dietaryBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setDietaryFollowUp(0)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(true)) }} }/>{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='dietaryFollowUp' checked={majorContent.dietaryFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) {dispatch(allactions.majorContentActions.setDietaryFollowUp(1)); dispatch(allactions.majorContentErrorActions.dietaryFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.9 Dietary Supplement Use<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.supplementBaseLine && errors.supplementFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementBaseLine' checked={majorContent.supplementBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSupplementBaseLine(0)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(true)) }} }/>{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementBaseLine' checked={majorContent.supplementBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSupplementBaseLine(1)); dispatch(allactions.majorContentErrorActions.supplementBaseLine(true)) }} }/>{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementFollowUp' checked={majorContent.supplementFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSupplementFollowUp(0)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='supplementFollowUp' checked={majorContent.supplementFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSupplementFollowUp(1)); dispatch(allactions.majorContentErrorActions.supplementFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.10 Complementary and Alternative Medicine<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.medicineBaseLine && errors.medicineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineBaseLine' checked={majorContent.medicineBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMedicineBaseLine(0)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineBaseLine' checked={majorContent.medicineBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMedicineBaseLine(1)); dispatch(allactions.majorContentErrorActions.medicineBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineFollowUp' checked={majorContent.medicineFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMedicineFollowUp(0)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='medicineFollowUp' checked={majorContent.medicineFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMedicineFollowUp(1)); dispatch(allactions.majorContentErrorActions.medicineFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.11 Prescription Medication Use(not related to cancer treatment)<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.prescriptionBaseLine && errors.prescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(0)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionBaseLine' checked={majorContent.prescriptionBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPrescriptionBaseLine(1)); dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(0)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='prescriptionFollowUp' checked={majorContent.prescriptionFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPrescriptionFollowUp(1)); dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.12 Non-prescription Medication Use(not related to cancer treatment)<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(0)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionBaseLine' checked={majorContent.nonprescriptionBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNonprescriptionBaseLine(1)); dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(0)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(true)) }} }/>{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='nonprescriptionFollowUp' checked={majorContent.nonprescriptionFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNonprescriptionFollowUp(1)); dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.13 Alcohol Consumption<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.alcoholBaseLine && errors.alcoholFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setAlcoholBaseLine(0)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholBaseLine' checked={majorContent.alcoholBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setAlcoholBaseLine(1)); dispatch(allactions.majorContentErrorActions.alcoholBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setAlcoholFollowUp(0)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='alcoholFollowUp' checked={majorContent.alcoholFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setAlcoholFollowUp(1)); dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.14 Cigarette Smoking<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.cigaretteBaseLine && errors.cigaretteFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigaretteBaseLine(0)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteBaseLine' checked={majorContent.cigaretteBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigaretteBaseLine(1)); dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigaretteFollowUp(0)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cigaretteFollowUp' checked={majorContent.cigaretteFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigaretteFollowUp(1)); dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-6 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
-                                {(errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-md-9 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>If data was collected at baseline, please specify all tobacco products that apply</span>
-                                </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigarBaseLine' checked={majorContent.cigarBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarBaseLine(e.target.checked)) }}}/>{' '} Cigars
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='pipeBaseLine' checked={majorContent.pipeBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPipeBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeBaseLine(e.target.checked)) }}}/>{' '} Pipes
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoBaseLine' checked={majorContent.tobaccoBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(e.target.checked)) }}}/>{' '} Chewing Tobacco
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='ecigarBaseLine' checked={majorContent.ecigarBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setEcigarBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarBaseLine(e.target.checked)) }}}/>{' '} E-cigarettes
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='noncigarOtherBaseLine' checked={majorContent.noncigarOtherBaseLine === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNoncigarOtherBaseLine(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(!e.target.checked)) }}}/> {' '} Other
-                                </span>
-                                </div>
-                                <div>
-                                    <span className='col-sm-12'>
-                                        <span className='col-md-11 col-sm-10 col-xs-12' >
-                                            {majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='noncigarBaseLineSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarBaseLineSpecify' className='form-control' value={majorContent.noncigarBaseLineSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarBaseLineSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine||isReadOnly} />}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className='col-md-9 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>If data was collected during follow-up, please specify all tobacco products that apply</span>
-                                </div>
-                                <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='cigarFollowUp' checked={majorContent.cigarFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cigarFollowUp(e.target.checked)) }} }/>{' '} Cigars
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='pipeFollowUp' checked={majorContent.pipeFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPipeFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.pipeFollowUp(e.target.checked)) }} }/> {' '} Pipes </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='tobaccoFollowUp' checked={majorContent.tobaccoFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setTobaccoFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(e.target.checked)) }} }/>{' '} Chewing Tobacco
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='ecigarFollowUp' checked={majorContent.ecigarFollowUp} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setEcigarFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.ecigarFollowUp(e.target.checked)) }}}/>{' '} E-cigarettes
-                                </span>
-                                    <span className='col-xs-12'>
-                                        <input type='checkbox' name='noncigarOtherFollowUp' checked={majorContent.noncigarOtherFollowUp === 1} onClick={(e) => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setNoncigarOtherFollowUp(+e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(e.target.checked)); dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify((!e.target.checked) || majorContent.noncigarFollowUpSpecify)) }}} />  {' '} Other
-                                </span>
-                                </div>
-                                <div>
-                                    <span className='col-sm-12'>
-                                        <span className='col-md-11 col-sm-10 col-xs-12' >
-                                            {majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved ? <Reminder message={'please specify'}><input placeholder='Max of 200 characters' maxLength='200' name='noncigarFollowUpSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' name='noncigarFollowUpSpecify' className='form-control' value={majorContent.noncigarFollowUpSpecify} onChange={e => { dispatch(allactions.majorContentActions.setNoncigarFollowUpSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp||isReadOnly} />}
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.16 Physical activity<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.physicalBaseLine && errors.physicalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalBaseLine' checked={majorContent.physicalBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalBaseLine(0)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalBaseLine' checked={majorContent.physicalBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalBaseLine(1)); dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalFollowUp' checked={majorContent.physicalFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalFollowUp(0)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalFollowUp' checked={majorContent.physicalFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalFollowUp(1)); dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.17 Sleep habits<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.sleepBaseLine && errors.sleepFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepBaseLine' checked={majorContent.sleepBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSleepBaseLine(0)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepBaseLine' checked={majorContent.sleepBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSleepBaseLine(1)); dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepFollowUp' checked={majorContent.sleepFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSleepFollowUp(0)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='sleepFollowUp' checked={majorContent.sleepFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSleepFollowUp(1)); dispatch(allactions.majorContentErrorActions.sleepFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.18 Reproductive history<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.reproduceBaseLine && errors.reproduceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReproduceBaseLine(0)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceBaseLine' checked={majorContent.reproduceBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReproduceBaseLine(1)); dispatch(allactions.majorContentErrorActions.reproduceBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReproduceFollowUp(0)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reproduceFollowUp' checked={majorContent.reproduceFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReproduceFollowUp(1)); dispatch(allactions.majorContentErrorActions.reproduceFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.19 Self-reported health<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(0)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthBaseLine' checked={majorContent.reportedHealthBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReportedHealthBaseLine(1)); dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(0)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='reportedHealthFollowUp' checked={majorContent.reportedHealthFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setReportedHealthFollowUp(1)); dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.20 Quality of life<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.lifeBaseLine && errors.lifeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeBaseLine' checked={majorContent.lifeBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setLifeBaseLine(0)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeBaseLine' checked={majorContent.lifeBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setLifeBaseLine(1)); dispatch(allactions.majorContentErrorActions.lifeBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeFollowUp' checked={majorContent.lifeFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setLifeFollowUp(0)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='lifeFollowUp' checked={majorContent.lifeFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setLifeFollowUp(1)); dispatch(allactions.majorContentErrorActions.lifeFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.21 Social support<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.socialSupportBaseLine && errors.socialSupportFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(0)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportBaseLine' checked={majorContent.socialSupportBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSocialSupportBaseLine(1)); dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(0)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='socialSupportFollowUp' checked={majorContent.socialSupportFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setSocialSupportFollowUp(1)); dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.22 Cognitive function<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.cognitionBaseLine && errors.cognitionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitionBaseLine(0)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionBaseLine' checked={majorContent.cognitionBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitionBaseLine(1)); dispatch(allactions.majorContentErrorActions.cognitionBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitionFollowUp(0)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cognitionFollowUp' checked={majorContent.cognitionFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitionFollowUp(1)); dispatch(allactions.majorContentErrorActions.cognitionFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.23 Depression<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.depressionBaseLine && errors.depressionFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionBaseLine' checked={majorContent.depressionBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDepressionBaseLine(0)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionBaseLine' checked={majorContent.depressionBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDepressionBaseLine(1)); dispatch(allactions.majorContentErrorActions.depressionBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionFollowUp' checked={majorContent.depressionFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDepressionFollowUp(0)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='depressionFollowUp' checked={majorContent.depressionFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDepressionFollowUp(1)); dispatch(allactions.majorContentErrorActions.depressionFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0', paddingRight: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.24 Other psycosocial variables<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.psychosocialBaseLine && errors.psychosocialFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(0)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialBaseLine' checked={majorContent.psychosocialBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPsychosocialBaseLine(1)); dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(0)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='psychosocialFollowUp' checked={majorContent.psychosocialFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPsychosocialFollowUp(1)); dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.25 Fatigue<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.fatigueBaseLine && errors.fatigueFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setFatigueBaseLine(0)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueBaseLine' checked={majorContent.fatigueBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setFatigueBaseLine(1)); dispatch(allactions.majorContentErrorActions.fatigueBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setFatigueFollowUp(0)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='fatigueFollowUp' checked={majorContent.fatigueFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setFatigueFollowUp(1)); dispatch(allactions.majorContentErrorActions.fatigueFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-4 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.26 Family history of cancer<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(0)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryBaseLine' checked={majorContent.cancerHistoryBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerHistoryBaseLine(1)); dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(0)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerHistoryFollowUp' checked={majorContent.cancerHistoryFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerHistoryFollowUp(1)); dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-5 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.27 Family history of cancer with pedigrees<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(0)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeBaseLine' checked={majorContent.cancerPedigreeBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerPedigreeBaseLine(1)); dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeFollowUp' checked={majorContent.cancerPedigreeFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(0)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='cancerPedigreeFollowUp' checked={majorContent.cancerPedigreeFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerPedigreeFollowUp(1)); dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.28 Physical function measures (e.g. grip strength, gait speed, etc.)<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(0)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureBaseLine' checked={majorContent.physicalMeasureBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalMeasureBaseLine(1)); dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(0)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='physicalMeasureFollowUp' checked={majorContent.physicalMeasureFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setPhysicalMeasureFollowUp(1)); dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-12' style={{ paddingLeft: '0' }}><b className="d-block control-label">C.29 Environmental or occupational exposures(e.g. air contaminants/quality, occupational exposures and history, water source)<span style={{ color: 'red' }}>*</span></b>
-                                    {(errors.exposureBaseLine && errors.exposureFollowUp) && saved && <span className='col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </span>
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureBaseLine' checked={majorContent.exposureBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setExposureBaseLine(0)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureBaseLine' checked={majorContent.exposureBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setExposureBaseLine(1)); dispatch(allactions.majorContentErrorActions.exposureBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureFollowUp' checked={majorContent.exposureFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setExposureFollowUp(0)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='exposureFollowUp' checked={majorContent.exposureFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setExposureFollowUp(1)); dispatch(allactions.majorContentErrorActions.exposureFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-7 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.30 Residential history information(zip code, GIS) over time<span style={{ color: 'red' }}>*</span></label></span>
-                                {(errors.residenceBaseLine && errors.residenceFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-12'>
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceBaseLine' checked={majorContent.residenceBaseLine === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setResidenceBaseLine(0)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceBaseLine' checked={majorContent.residenceBaseLine === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setResidenceBaseLine(1)); dispatch(allactions.majorContentErrorActions.residenceBaseLine(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                    <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                    <div className='col-lg-6 col-xs-12'>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceFollowUp' checked={majorContent.residenceFollowUp === 0}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setResidenceFollowUp(0)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(true)) }}} />{" "}No</span>
-                                        </div>
-                                        <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name='residenceFollowUp' checked={majorContent.residenceFollowUp === 1}
-                                                onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setResidenceFollowUp(1)); dispatch(allactions.majorContentErrorActions.residenceFollowUp(true)) }}} />{' '}Yes</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </CollapsiblePanel>
-
-                    <CollapsiblePanel
-                        condition={activePanel === 'panelB'}
-                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                        panelTitle="Other Medical Conditions">
-
-                        {/*} <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{paddingLeft: '0'}}>
-                                <span className='col-xs-12' style={{paddingLeft: '0'}}><label className="d-block control-label">C.31 Other Medical Conditions</label></span>
-                            </div>
-                        </div> */}
-
-                        <div className="col-md-12"><label>C.31 How did you collect data for the other medical conditions?</label></div>
-
-                        <div className='col-md-12 col-xs-12'>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">a. Diabetes<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.diabetesBaseLine && errors.diabetesFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDiabetesBaseLine(0)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesBaseLine' checked={majorContent.diabetesBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDiabetesBaseLine(1)); dispatch(allactions.majorContentErrorActions.diabetesBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDiabetesFollowUp(0)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='diabetesFollowUp' checked={majorContent.diabetesFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setDiabetesFollowUp(1)); dispatch(allactions.majorContentErrorActions.diabetesFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">b. Stroke<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.strokeBaseLine && errors.strokeFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeBaseLine' checked={majorContent.strokeBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setStrokeBaseLine(0)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeBaseLine' checked={majorContent.strokeBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setStrokeBaseLine(1)); dispatch(allactions.majorContentErrorActions.strokeBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeFollowUp' checked={majorContent.strokeFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setStrokeFollowUp(0)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='strokeFollowUp' checked={majorContent.strokeFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setStrokeFollowUp(1)); dispatch(allactions.majorContentErrorActions.strokeFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">c. COPD and/or Emphysema<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.copdBaseLine && errors.copdFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdBaseLine' checked={majorContent.copdBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCopdBaseLine(0)); dispatch(allactions.majorContentErrorActions.copdBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdBaseLine' checked={majorContent.copdBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCopdBaseLine(1)); dispatch(allactions.majorContentErrorActions.copdBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdFollowUp' checked={majorContent.copdFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCopdFollowUp(0)); dispatch(allactions.majorContentErrorActions.copdFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='copdFollowUp' checked={majorContent.copdFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCopdFollowUp(1)); dispatch(allactions.majorContentErrorActions.copdFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">d. Cardiovascular Disease<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(0)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularBaseLine' checked={majorContent.cardiovascularBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCardiovascularBaseLine(1)); dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(0)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cardiovascularFollowUp' checked={majorContent.cardiovascularFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCardiovascularFollowUp(1)); dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">e. Osteoporosis<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(0)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisBaseLine' checked={majorContent.osteoporosisBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setOsteoporosisBaseLine(1)); dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(0)); dispatch(allactions.majorContentErrorActions.osteoporosisFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='osteoporosisFollowUp' checked={majorContent.osteoporosisFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setOsteoporosisFollowUp(1)); dispatch(allactions.majorContentErrorActions.osteoporosisFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">f. Mental Health<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.mentalBaseLine && errors.mentalFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalBaseLine' checked={majorContent.mentalBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMentalBaseLine(0)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalBaseLine' checked={majorContent.mentalBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMentalBaseLine(1)); dispatch(allactions.majorContentErrorActions.mentalBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalFollowUp' checked={majorContent.mentalFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMentalFollowUp(0)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='mentalFollowUp' checked={majorContent.mentalFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setMentalFollowUp(1)); dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                                <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                    <span className='col-md-4 col-sm-5 col-xs-12' style={{ paddingLeft: '0' }}><div className="d-block control-label">g. Cognitive Decline<span style={{ color: 'red' }}>*</span></div></span>
-                                    {(errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                                </div>
-                                <div className='col-12'>
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(0)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineBaseLine' checked={majorContent.cognitiveDeclineBaseLine === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitiveDeclineBaseLine(1)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                        <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                        <div className='col-lg-6 col-xs-12'>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 0}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(0)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }}} />{" "}No</span>
-                                            </div>
-                                            <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                                <span ><input type='radio' style={{ marign: 'auto' }} name='cognitiveDeclineFollowUp' checked={majorContent.cognitiveDeclineFollowUp === 1}
-                                                    onClick={() => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCognitiveDeclineFollowUp(1)); dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }}} />{' '}Yes</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </CollapsiblePanel>
-
-                    <CollapsiblePanel
+        
+        <Form>
+            <CollapsiblePanel
+                            condition={activePanel === 'panelA'}
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                            panelTitle="Major Content Domains">
+                <Form.Group as={Row} className="mb-1">
+                    <Form.Label column sm="12">
+                        Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                    </Form.Label>
+                </Form.Group>
+                {getFirstContent()}
+            </CollapsiblePanel>
+            <CollapsiblePanel
+                            condition={activePanel === 'panelB'}
+                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                            panelTitle="Other Medical Conditions">
+                {getSecondContent()}      
+            </CollapsiblePanel>
+            <CollapsiblePanel
                         condition={activePanel === 'panelC'}
                         onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
                         panelTitle="Cancer Related Conditions">
-                        <div className='specimenInfo my-3 col-md-12 col-xs-12'>
-                            <div className='col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-md-8 col-sm-4 col-xs-12' style={{ paddingLeft: '0' }}><label className="d-block control-label">C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small>(Select all that apply)</small></label></span>
-                                {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && <span className='col-md-3 col-sm-3 col-xs-12' style={{ color: 'red' }}>Required Filed</span>}
-                            </div>
-                            <div className='col-md-6 col-xs-12' style={{ paddingLeft: '0' }}>
-                                <span className='col-xs-12'>
-                                    <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
-                                        <input type='checkbox' checked={majorContent.cancerToxicity === 1} onChange={
-                                            e => {
-                                                if(!isReadOnly) {dispatch(allactions.majorContentActions.setCancerToxicity(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerToxicity(e.target.checked))
-                                            }}} />
-                                    </span>
-                                    <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)</span>
-                                </span>
-                                <span className='col-xs-12'>
-                                    <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
-                                        <input type='checkbox' checked={majorContent.cancerLateEffects === 1} onChange={
-                                            e => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerLateEffects(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerLateEffects(e.target.checked)) }
-                                        }}/>
-                                    </span>
-                                    <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Late effects of treatment (e.g., cardiotoxicity, lymphedema)</span>
-                                </span>
-                                <span className='col-xs-12'>
-                                    <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
-                                        <input type='checkbox' checked={majorContent.cancerSymptom === 1} onChange={
-                                            e => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerSymptom(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerSymptom(e.target.checked)) }
-                                        }}/>
-                                    </span><span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Symptom management (e.g., fatigue, pain, sexual dysfunction)</span>
-                                </span>
-                                <span className='col-xs-12'>
-                                    <span className='col-xs-1' style={{ paddingLeft: '0', width: '18px' }}>
-                                        <input type='checkbox' checked={majorContent.cancerOther === 1} onChange={
-                                            e => { if(!isReadOnly) { dispatch(allactions.majorContentActions.setCancerOther(+e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOther(e.target.checked)); dispatch(allactions.majorContentErrorActions.cancerOtherSpecify((!e.target.checked) || majorContent.cancerOtherSpecify)) }}}/>
-                                    </span>
-                                    <span className='col-xs-11' style={{ paddingLeft: '0' }}>{' '} Other</span>
-                                </span>
-                            </div>
-                            <div>
-                                <span className='col-sm-12'>
-                                    <span className='col-md-11 col-sm-10 col-xs-12' >
-                                        {majorContent.cancerOther && errors.cancerOtherSpecify && saved ? <Reminder message={'Required Field'}><input placeholder='Max of 200 characters' maxLength='200' name='cancerOtherSpecify' style={{ border: '1px solid red' }} className='form-control' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther} /></Reminder> : <input placeholder='Max of 200 characters' maxLength='200' className='form-control' name='cancerOtherSpecify' value={majorContent.cancerOtherSpecify} onChange={e => { dispatch(allactions.majorContentActions.setCancerOtherSpecify(e.target.value)) }} onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} readOnly={!majorContent.cancerOther || isReadOnly} />}
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
-                    </CollapsiblePanel>
-                </Form>
-                <div style={{ position: 'relative' }} className="my-4">
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('B')} />
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('D')} />
+                {getThirdContent()}
+            </CollapsiblePanel>
+        </Form> 
+        <div style={{ position: 'relative' }} className="my-4">
+            <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('B')} />
+                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('D')} />
+            </span>
+            {!isReadOnly ?
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
+                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)|| isReadOnly} />
+                    </span>
+                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
+                        <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
+                    </span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
                 </span>
-                {!isReadOnly ?
-                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                        <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)|| isReadOnly} />
-                        </span>
-                        <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                        </span>
-                        <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
-                    </span>
-                    :
-                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                            disabled />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                            disabled />
-                    </span>
-                }        
-                </div>
+                :
+                <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
+                        disabled />
+                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
+                        disabled />
+                </span>
+            }        
             </div>
         </div>
-    </div>
 }
 
 export default MajorContentForm
