@@ -49,7 +49,7 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
-        setAllCohortList(lookup.allcohortlist.map((item,idx)=> ({value:item.acronym, label : item.acronym})))
+        setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym })))
 
         const fetchUserData = async function () {
             const result = await fetch(`/api/managecohort/getUserProfile/${userId}`, {
@@ -71,7 +71,7 @@ const EditUser = ({ ...props }) => {
                     setUserName(data.user_name || '')
                     setUserRole(data.user_role)
                     setActiveStatus(data.active_status)
-                    if (data.cohort_list) setCohortList(data.cohort_list.split(',').map((item, idx)=> ({value: item, label: item })))
+                    if (data.cohort_list) setCohortList(data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item })))
                     setCurrentUser({ email: data.email, user_name: data.user_name })
                 }
             } else {
@@ -98,10 +98,10 @@ const EditUser = ({ ...props }) => {
     }, [])
 
     const handleMultiChange = (option) => {
-       setCohortList(option)
-      }
-    
-    const resetState = () =>{
+        setCohortList(option)
+    }
+
+    const resetState = () => {
         setUserName('')
         setUserEmail('')
         setFirstName('')
@@ -121,9 +121,9 @@ const EditUser = ({ ...props }) => {
             last_name: lastName,
             user_name: userName,
             user_role: userRole,
-            cohort_list: Object.values(cohortList).map((item,idx)=> item.label),
+            cohort_list: Object.values(cohortList).map((item, idx) => item.label),
             active_status: activeStatus
-        } 
+        }
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
@@ -137,7 +137,7 @@ const EditUser = ({ ...props }) => {
                 }).then(res => res.json());
                 if (result.status === 200) {
                     setSuccessMsg(true)
-                    if(isNew) resetState()
+                    if (isNew) resetState()
                 } else {
                     setFailureMsg(true)
                 }
@@ -158,10 +158,7 @@ const EditUser = ({ ...props }) => {
         copy.lastName_error = isNull(lastName) ? 'Missing required field' : ''
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
-      
-        if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
-            if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
-        }
+
         if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
@@ -199,7 +196,7 @@ const EditUser = ({ ...props }) => {
                             {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                         </div>
                         {nonExistUser ? <div className="col-md-12 col-6">
-                             <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
+                            <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
                             <div className="bttn-group col-md-4 col-xs-6">
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
                                     value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
@@ -213,27 +210,27 @@ const EditUser = ({ ...props }) => {
                                         {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
                                             <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                            id="user_userName" value={userName} maxLength = "100"
-                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
+                                                id="user_userName" value={userName} maxLength="100"
+                                                onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                         </span>
                                     </div>
                                     <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
                                         {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
-                                            placeholder='Valid email address' maxLength = "100"
+                                            placeholder='Valid email address' maxLength="100"
                                             onChange={(e) => {
                                                 setUserEmail(e.target.value);
                                                 if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
                                             }} />
                                         </span>
                                     </div>
-                                    
+
                                     <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
                                         <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                         {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
-                                            id="user_lastName" value={lastName} maxLength = "50"
+                                            id="user_lastName" value={lastName} maxLength="50"
                                             onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
                                         </span>
                                     </div>
@@ -241,7 +238,7 @@ const EditUser = ({ ...props }) => {
                                         <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
                                         {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
-                                            id="user_firstName" value={firstName} maxLength = "50"
+                                            id="user_firstName" value={firstName} maxLength="50"
                                             onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                         </span>
                                     </div>
@@ -250,13 +247,14 @@ const EditUser = ({ ...props }) => {
                                         {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
                                         <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
                                             <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
-                                                checked={userRole === 'Admin'} onChange={(e) => {setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
+                                                checked={userRole === 'Admin'} onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
                                         </div>
                                         <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
                                             <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
-                                                checked={userRole === 'Cohort Owner'} onChange={(e) => { setUserRole(e.target.value); setCohortList([]); 
-                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) 
-                                                 }} />{' '}Cohort Owner</span>
+                                                checked={userRole === 'Cohort Owner'} onChange={(e) => {
+                                                    setUserRole(e.target.value); setCohortList([]);
+                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' })
+                                                }} />{' '}Cohort Owner</span>
                                         </div>
                                     </div>
 
@@ -274,7 +272,7 @@ const EditUser = ({ ...props }) => {
                                             </div>
                                             :
                                             <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                               <div className="col-md-5 col-6" style={{ width: '90%' }}>
+                                                <div className="col-md-5 col-6" style={{ width: '90%' }}>
                                                     <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
                                                 </div>
                                             </div>
