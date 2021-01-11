@@ -50,7 +50,7 @@ const MajorContentForm = ({ ...props }) => {
             
                     let content = result.data.counts
                     let cancerInfo = result.data.cancerInfo
-                    console.log(content)
+    
                     batch(() => {
                         dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
                         dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
@@ -264,7 +264,9 @@ const MajorContentForm = ({ ...props }) => {
 
     const refreshErrors = () => {
         for(let k of Object.keys(errors)){
-            if(!['cancerOther, cancerToxicity, cancerSymptom, cancerLateEffects, cancerOtherSpecify, cigarBaseLine, cigarFollowUp, pipeBaseLine, pipeFollowUp, tobaccoBaseLine, tobaccoFollowUp, ecigarBaseLine, ecigarFollowUp, noncigarOtherBaseLine, noncigarOtherFollowUp'].includes[k] && errors[k]) return true
+            if(!['cancerOther', 'cancerToxicity', 'cancerSymptom', 'cancerLateEffects', 'cancerOtherSpecify', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'noncigarBaseLineSpecify', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarFollowUpSpecify'].includes(k) && errors[k]) {
+                return true
+            }
         }
         return false
     }
@@ -320,8 +322,9 @@ const MajorContentForm = ({ ...props }) => {
     const handleSave = () => {
         setSaved(true)
         let errorsRemain = refreshErrors()
+        //console.log('errorRemainsSoFar: '+errorsRemain)
         if(!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
-        console.dir(errors)
+        //console.dir(errors)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -336,6 +339,8 @@ const MajorContentForm = ({ ...props }) => {
     const handleSaveContinue = () => {
         setSaved(true)
         let errorsRemain = refreshErrors()
+        
+        if(!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
