@@ -20,14 +20,11 @@ const QuestionnaireHeader = ({ ...props }) => {
    /*const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
-<<<<<<< HEAD
 */
     const asTitleCase = str => String(str).split(' ').map(s => s[0].toLocaleUpperCase() + s.slice(1).toLocaleLowerCase()).join(' ')
-=======
 
     const isReadOnly = props.isReadOnly;
 
->>>>>>> cedcd-3.0.0-dev
     const asDateString = date => date instanceof Date
         ? date.toLocaleDateString()
         : null;
