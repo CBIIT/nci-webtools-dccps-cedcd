@@ -439,6 +439,17 @@ BEGIN
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_all_cohort
+-- -----------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `select_all_cohort` //
+
+CREATE PROCEDURE `select_all_cohort`()
+BEGIN
+	select id, name, acronym from cohort order by acronym;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_owner
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS select_cohort_owner //
@@ -2500,6 +2511,31 @@ values ( new_cohort_id,  3, 'init new cohort from published cohort new_cohort_id
 SET SQL_SAFE_UPDATES = 1;
 END //
 
+DROP PROCEDURE IF EXISTS `select_mortality` //
+
+CREATE PROCEDURE `select_mortality`(in targetID int) 
+BEGIN
+	SELECT 
+		cohort_id
+		,mort_year_mortality_followup
+		,mort_death_confirmed_by_ndi_linkage
+		,mort_death_confirmed_by_death_certificate
+		,mort_death_confirmed_by_other
+		,mort_death_confirmed_by_other_specify
+		,mort_have_date_of_death
+		,mort_have_cause_of_death
+		,mort_death_code_used_icd9
+		,mort_death_code_used_icd10
+		,mort_death_not_coded
+		,mort_death_code_used_other
+		,mort_death_code_used_other_specify
+		,mort_number_of_deaths
+		,create_time
+		,update_time
+	FROM mortality WHERE cohort_id = targetID;
+end//
+
+
 DROP PROCEDURE IF EXISTS `update_mortality` //
 
 CREATE  PROCEDURE `update_mortality`(in Old_targetID int, in info JSON)
@@ -2947,3 +2983,4 @@ END //
 
 
 DELIMITER ;
+

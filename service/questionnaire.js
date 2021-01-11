@@ -53,17 +53,18 @@ router.post('/upload/:id/:category', function (req, res, next) {
         params.push(req.params.id)
         params.push(req.params.category)
         params.push(JSON.stringify(uploadedFiles))
-        logger.debug(uploadedFiles)
-    
+        //logger.debug(uploadedFiles)
+
         mysql.callJsonProcedure(proc, params, function (result) {
             if(result && result[0] && result[0][0].rowsAffacted > 0){
                 const returnedData = {}
-                //logger.debug(result)
+                //logger.debug(result[2])
                 returnedData.new_ID = result[1][0].new_id
                 returnedData.files = result[2]
                 fs.access(`FileBank/CohortID_${returnedData.new_ID}`, (err) => {
                     if (err) {
                         fs.mkdirSync(`FileBank/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
+                            logger.debug(err.message)
                             if (err) res.json({ status: 500 })
                         });
                     }
@@ -75,6 +76,8 @@ router.post('/upload/:id/:category', function (req, res, next) {
             else
                 res.json({status: 500})
          }) 
+         
+        //res.json({status: 200})
 })
 
 router.post('/deleteFile', function (req, res) {

@@ -47,7 +47,7 @@ router.post('/sendEmail', async function (req, res, next) {
 router.post('/list', function (req, res) {
 	let body = req.body;
 	//let searchText = body.searchText || "";
-	let func = "select_cohort_list";
+	let func = "select_all_cohort";
 	let params = [];
 
 	mysql.callProcedure(func, params, function (results) {

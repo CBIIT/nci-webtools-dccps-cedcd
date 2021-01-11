@@ -337,10 +337,13 @@ class ManageCohort extends Component {
       		    </p><p></p>
 					<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '0' }}>
 						<div className="col-md-3 col-xs-6" >
-							<div className="form-group has-feedback has-search">
-						
-								<input type="text" className="form-control" style={{paddingLeft:'1rem'}}
-								 value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
+							<div className="input-group">
+								<div className="input-group-prepend">
+									<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
+									</div>
+								</div>
+								<input type="text" className="form-control" style={{ paddingLeft: '1rem' }}
+									value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 							</div>
 						</div>
 						<div className="col-md-2 col-xs-6">

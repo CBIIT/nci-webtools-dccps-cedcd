@@ -139,7 +139,7 @@ const DataLinkageForm = ({ ...props }) => {
         //F.3
         if (!(dataLinkage.haveDeposited in [0, 1])) { copy.haveDeposited = radioError } else { copy.haveDeposited = '' }
         if (dataLinkage.haveDeposited === 1) {
-            if (dataLinkage.dbGaP === 0 && dataLinkage.BioLINCC === 0 && dataLinkage.otherRepo === 0)
+            if (!dataLinkage.dbGaP && !dataLinkage.BioLINCC && !dataLinkage.otherRepo)
                 copy.deposit = 'Select at least one option'
             else
                 copy.deposit = ''
@@ -149,7 +149,7 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
-            if (dataLinkage.dataOnlinePolicy === 0 && dataLinkage.dataOnlineWebsite === 0) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
+            if (!dataLinkage.dataOnlinePolicy && !dataLinkage.dataOnlineWebsite ) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
                 if (dataLinkage.dataOnlineURL.length > 200)

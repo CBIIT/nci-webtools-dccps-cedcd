@@ -10,7 +10,7 @@ import Col from 'react-bootstrap/Col';
 //import "react-datepicker/dist/react-datepicker.css";
 import './Investigator.css'
 
-const Investigator = ({id, name, institution, email, handleRemove, errors, disabled, displayStyle}) => {
+const Investigator = ({id, name, institution, email, handleRemove, errors, disabled=false, displayStyle}) => {
     const getValidationResult = (value, requiredOrNot, type) => {
         switch(type){
             case 'phone':
@@ -48,7 +48,8 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                     <Col sm="12" className="inspectorheader"></Col>
                 } */}
                 <Form.Group as={Row} className="mb-1">
-                    {idx !== '0' && 
+                    {console.log(idx)}
+                    {(idx !== '0' && !disabled) && 
                         <Col sm={{ order: 'last', span: 5 }} className="align-self-center">
                             <span className="inspectorClose float-right" style={{ color: 'blue' }} 
                                 onClick={() => handleRemove(idx)}>
@@ -62,7 +63,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                     <Col sm="3">
                         {errors[name] && displayStyle ? 
                             <Reminder message={errors[name]}>
-                                <Form.Control type="text" 
+                                <Form.Control type="text" className='text-capitalize'
                                     style={{ border: '1px solid red' }} 
                                     placeholder="Max of 100 characters"
                                     maxLength="100" 
@@ -75,7 +76,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                         populateErrors(idx, 'investigatorName', e.target.value, true, 'string')
                                     } />
                             </Reminder> : 
-                            <Form.Control type="text" 
+                            <Form.Control type="text" className='text-capitalize'
                                 placeholder='Max of 100 characters' 
                                 maxLength='100' 
                                 name={name} 
@@ -97,7 +98,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                     <Col sm="3">
                         {errors[institution] && displayStyle ? 
                         <Reminder message={errors[institution]}>
-                            <Form.Control type="text" 
+                            <Form.Control type="text" className='text-capitalize'
                                 style={{ border: '1px solid red' }} 
                                 placeholder="Max of 100 characters" 
                                 maxLength='100' 
@@ -110,7 +111,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                     populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')
                                 } />
                         </Reminder> : 
-                        <Form.Control type="text" 
+                        <Form.Control type="text" className='text-capitalize'
                             placeholder="Max of 100 characters"
                             maxLength="100" 
                             name={institution} 

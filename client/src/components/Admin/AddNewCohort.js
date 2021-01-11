@@ -134,7 +134,6 @@ class AddNewCohort extends Component {
         state.name_error = ''
         state.acronym_error = ''
         state.notes_error = ''
-        console.log(cohortList)
 
         if (state.cohortName === null || !state.cohortName) {
           state.name_error = 'required field'
@@ -156,12 +155,13 @@ class AddNewCohort extends Component {
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
-            if (state.cohortName === cohort.cohort_name) {
+          
+            if (state.cohortName.trim() === cohort.name.trim()) {
               state.name_error = 'cohort already exists'
               errors += 1;
             }
 
-            if (state.cohortAcronym === cohort.cohort_acronym) {
+            if (state.cohortAcronym.trim() === cohort.acronym.trim()) {
               state.acronym_error = 'acronym already exists'
               errors += 1;
             }
@@ -301,7 +301,7 @@ class AddNewCohort extends Component {
               </div>
               <div id="contact-col-2" className="col-md-6 contact-col">
                 <h2>General Instructions</h2>
-                <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fileds information are required.</p>
+                <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fields are required.</p>
               </div>
             </div>
           </div>
