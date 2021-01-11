@@ -48,7 +48,6 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                     <Col sm="12" className="inspectorheader"></Col>
                 } */}
                 <Form.Group as={Row} className="mb-1">
-                    {console.log(idx)}
                     {(idx !== '0' && !disabled) && 
                         <Col sm={{ order: 'last', span: 5 }} className="align-self-center">
                             <span className="inspectorClose float-right" style={{ color: 'blue' }} 
