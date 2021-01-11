@@ -412,12 +412,12 @@ const SpecimenForm = ({ ...props }) => {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        setMessage('update was successful')
+                        setMessage('Your changes were saved.')
                         setSuccessMsg(true)
                         sendEmail()
                     }
                     else {
-                        setMessage('update failed')
+                        setMessage('Your changes could not be saved.')
                         setFailureMsg(true)
                     }
                 })
@@ -458,8 +458,8 @@ const SpecimenForm = ({ ...props }) => {
 
     return <div id='specimenInfoContainer' className="p-3 px-5">
 
-        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
            {/* START Specimen */}
             <CollapsiblePanel

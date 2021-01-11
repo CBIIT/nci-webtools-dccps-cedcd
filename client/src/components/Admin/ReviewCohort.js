@@ -90,12 +90,12 @@ export default function ReviewCohort(props) {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        setMessage('update was successful')
+                        setMessage('Your changes were saved.')
                         setSuccessMsg(true)
                         sendEmail()
                     }
                     else {
-                        setMessage('update failed')
+                        setMessage('Your changes could not be saved.')
                         setFailureMsg(true)
                     }
                 })
