@@ -69,7 +69,7 @@ async function login(request, response) {
             const cohortAcronyms = await mysql.query(
                 `SELECT DISTINCT cohort_acronym as acronym
                 FROM cohort_user_mapping 
-                WHERE user_id = ? AND active = 'Y'
+                WHERE cohort_user_id = ? AND active = 'Y'
                 ORDER BY acronym ASC`,
                 [userId]
             );
@@ -117,7 +117,7 @@ async function login(request, response) {
             if (session.user.cohorts.length === 1) {
                 redirectUrl = `/cohort/questionnaire/${session.user.cohorts[0].id}`;
             } else if (session.user.cohorts.length > 1) {
-                redirectUrl = `/cohort/select`;
+                redirectUrl = `/cohort/questionnaire`;
             }
         }
 

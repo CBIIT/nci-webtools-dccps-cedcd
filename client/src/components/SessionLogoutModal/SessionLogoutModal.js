@@ -16,16 +16,6 @@ export default function SessionLogoutModal() {
             .join(':');
 
     useEffect(() => {
-        function onClick() {
-            if (userSession && remainingTime > remainingTimeThreshold) {
-                resetRemainingTime();
-            }
-        }
-        window.addEventListener('click', onClick);
-        return () => window.removeEventListener('click', onClick);
-    }, [remainingTime])
-
-    useEffect(() => {
         const intervalId = window.setInterval(() => {
             if (userSession) {
                 let newRemainingTime = Math.max(0, remainingTime - 1000);

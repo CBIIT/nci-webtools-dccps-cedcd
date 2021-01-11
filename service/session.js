@@ -1,6 +1,6 @@
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
-const maxSessionAge = 1000 * 60 * 15; // 15 minutes
+const maxSessionAge = 1000 * 60 * 120; // 120 minutes
 
 module.exports = session({
     cookie: { maxAge: maxSessionAge },

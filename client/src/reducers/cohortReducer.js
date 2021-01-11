@@ -15,7 +15,18 @@ actions[t.setCompleterEmail] = (state, action) => ({...state, completerEmail: ac
 actions[t.setContacterRight] = (state, action) => ({...state, clarification_contact: action.isContacter})
 actions[t.setContacterName] = (state, action) => ({...state, contacterName: action.contacterName})
 actions[t.setContacterPosition] = (state, action) => ({...state, contacterPosition: action.contacterPosition})
-actions[t.setContacterPhone] = (state, action) => ({...state, contacterPhone: action.contacterPhone && /^[-()\s0-9]*$/.test(action.contacterPhone.trim()) ? action.contacterPhone : state.contacterPhone})
+actions[t.setContacterPhone] = (state, action) => {
+    let cloned = {...state}
+    if(action.contacterPhone){
+        if(/^\s*[-()\s0-9]*\s*$/.test(action.contacterPhone.trim()))
+            cloned.contacterPhone = action.contacterPhone
+        else
+            cloned.contacterPhone = state.contacterPhone
+    }
+    else
+        cloned.contacterPhone = ''
+    return cloned
+}
 actions[t.setContacterEmail] = (state, action) => ({...state, contacterEmail: action.contacterEmail})
 actions[t.setInvestigators] = (state, action) => ({...state, investigators: action.values})
 actions[t.setCountryCode] = (state, action) => {
@@ -57,7 +68,18 @@ actions[t.removeInvestigator] = (state, action) => ({...state, investigators: st
 actions[t.setSameAsSomeone] = (state, action) => ({...state, sameAsSomeone: action.value})
 actions[t.setCollaboratorName] = (state, action) => ({...state, collaboratorName: action.collaboratorName})
 actions[t.setCollaboratorPosition] = (state, action) => ({...state, collaboratorPosition: action.collaboratorPosition})
-actions[t.setCollaboratorPhone] = (state, action) => ({...state, collaboratorPhone: action.collaboratorPhone && /^[-()\s0-9]*$/.test(action.collaboratorPhone.trim()) ? action.collaboratorPhone : state.collaboratorPhone})
+actions[t.setCollaboratorPhone] = (state, action) => {
+    let cloned = {...state}
+    if(action.collaboratorPhone){
+        if(/^\s*[-()\s0-9]*\s*$/.test(action.collaboratorPhone.trim()))
+            cloned.collaboratorPhone = action.collaboratorPhone
+        else
+            cloned.collaboratorPhone = state.collaboratorPhone
+    }
+    else
+        cloned.collaboratorPhone = ''
+    return cloned
+}
 actions[t.setCollaboratorEmail] = (state, action) => ({...state, collaboratorEmail: action.collaboratorEmail})
 actions[t.setDescription] = (state, action) => ({...state, cohort_description: action.description})
 //actions[t.setHasAWebSite] = (state, action) => ({...state, hasAWebSite: action.hasUrl})
