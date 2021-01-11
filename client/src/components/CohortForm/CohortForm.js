@@ -480,7 +480,7 @@ const CohortForm = ({ ...props }) => {
                     <div className='row' style={{ marginBottom: '3px', paddingLeft: '10px'}}>
                         <span className='col-10'>{f.filename}</span>
                         {/*<span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>*/}
-                        <span className='text-center'>{!isReadOnly && <span className='col-2 closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x<span></span></span>}</span>
+                        <span className='text-center'>{!isReadOnly && <span className='closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x<span></span></span>}</span>
                     </div>)}
             </div>
         </div>
