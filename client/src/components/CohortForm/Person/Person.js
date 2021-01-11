@@ -157,7 +157,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                 </Form.Label>
                 <Col sm={inputWidth}>
                     <InputGroup>
-                        <Form.Control type="text" className='text-capitalize'
+                        <Form.Control type="text" 
                             maxLength="10"
                             style={{ width: '25%' }} 
                             title='country code' 
