@@ -19,9 +19,9 @@ const CenterModal = (props) => {
         { props.footer || 
             <div>
               <button 
-                className='btn btn-primary mr-1' 
+                className='btn btn-light mr-1' 
                 onClick={props.handleClose}>
-                  Close
+                  Cancel
               </button>
               <button 
                 className='btn btn-primary'  
