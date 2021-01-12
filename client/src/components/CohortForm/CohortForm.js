@@ -20,6 +20,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container'
+import Table from 'react-bootstrap/Table';
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -2408,25 +2409,34 @@ const CohortForm = ({ ...props }) => {
                                         </table>
                                         :
                                         <div className="table-responsive">
-                                            <table className='table table-stripe'>
+                                            <Table bordered condensed className="table-valign-middle">
                                                 <thead>
                                                     <tr>
-                                                        <th className='col-sm-3' style={{ textAlign: 'center' }}>Document</th>
-                                                        <th style={{ textAlign: 'center' }}>Website URL (preferred)</th>
-                                                        <th style={{ textAlign: 'center' }}>Attached (if url not applicable)</th>
+                                                        <th className="text-center">Document</th>
+                                                        <th className="text-center">Website URL (preferred)</th>
+                                                        <th className="text-center">Attached (if url not applicable)</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <td>Questionnaires</td>
+                                                        <td className="bg-light-grey">Questionnaires</td>
                                                         <td>
-                                                            <input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} 
-                                                            onChange={e => { 
-                                                                dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) 
-                                                                dispatch(setHasUnsavedChanges(true));
-                                                            }} 
-                                                            readOnly={isReadOnly} /></td>
-                                                        <td style={{ verticalAlign: 'middle' }}>
+                                                            <Form.Control 
+                                                                bsPrefix 
+                                                                type="text" 
+                                                                className='inputWriter' 
+                                                                placeholder='Max of 100 characters' 
+                                                                maxLength='100' 
+                                                                name='questionnaire_url' 
+                                                                id='questionnaire_url' 
+                                                                value={cohort.questionnaire_url} 
+                                                                onChange={e => { 
+                                                                    dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) 
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }} 
+                                                                readOnly={isReadOnly} />
+                                                        </td>
+                                                        <td>
                                                             {
                                                                 !isReadOnly && 
                                                                 <div className="input-group">
@@ -2451,17 +2461,26 @@ const CohortForm = ({ ...props }) => {
                                                                 {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
                                                             </div>
                                                         </td>
-                                                        
                                                     </tr>
                                                     <tr>
-                                                        <td>Main cohort protocol</td>
-                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} 
-                                                        onChange={e => { 
-                                                            dispatch(allactions.cohortActions.main_cohort_url(e.target.value));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                        }} 
-                                                        readOnly={isReadOnly} /></td>
-                                                        <td style={{ verticalAlign: 'middle' }}>
+                                                        <td className="bg-light-grey">Main cohort protocol</td>
+                                                        <td>
+                                                            <Form.Control
+                                                                bsPrefix
+                                                                type="text" 
+                                                                className='inputWriter' 
+                                                                placeholder='Max of 100 characters' 
+                                                                maxLength='100' 
+                                                                name='main_cohort_url' 
+                                                                id='main_cohort_url' 
+                                                                value={cohort.main_cohort_url} 
+                                                                onChange={e => { 
+                                                                    dispatch(allactions.cohortActions.main_cohort_url(e.target.value));
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }} 
+                                                                readOnly={isReadOnly} />
+                                                        </td>
+                                                        <td>
                                                             {
                                                                 !isReadOnly && 
                                                                 <div className="input-group">
@@ -2485,36 +2504,44 @@ const CohortForm = ({ ...props }) => {
                                                                     <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                 {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
                                                             </div>
-
                                                         </td>
-
                                                     </tr>
                                                     <tr>
-                                                        <td>Data sharing policy</td>
-                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} 
-                                                        onChange={e => { 
-                                                            dispatch(allactions.cohortActions.data_url(e.target.value));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                        }}
-                                                        disabled={isReadOnly} /></td>
-                                                        <td style={{ verticalAlign: 'middle' }}>
+                                                        <td className="bg-light-grey">Data sharing policy</td>
+                                                        <td>
+                                                            <Form.Control
+                                                                type="text"
+                                                                bsPrefix
+                                                                className='inputWriter' 
+                                                                placeholder='Max of 100 characters' 
+                                                                maxLength='100' 
+                                                                name='data_url' 
+                                                                id='data_url' 
+                                                                value={cohort.data_url} 
+                                                                onChange={e => { 
+                                                                    dispatch(allactions.cohortActions.data_url(e.target.value));
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }}
+                                                                disabled={isReadOnly} />
+                                                        </td>
+                                                        <td>
                                                         {
-                                                                !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile03"
-                                                                        aria-describedby="inputGroupFileAddon03"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 2)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile03">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
+                                                            !isReadOnly && 
+                                                            <div className="input-group">
+                                                                <div className="custom-file">
+                                                                    <input
+                                                                    type="file"
+                                                                    className="custom-file-input"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile03"
+                                                                    aria-describedby="inputGroupFileAddon03"
+                                                                    multiple readOnly={isReadOnly}
+                                                                    onChange={e => handleUpload(e.target.files, 2)} />
+                                                                    <label className="custom-file-label" htmlFor="inputGroupFile03">
+                                                                    Choose Files
+                                                                    </label>
                                                                 </div>
+                                                            </div>
                                                         }
                                                             <div>
                                                                 {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2525,14 +2552,19 @@ const CohortForm = ({ ...props }) => {
 
                                                     </tr>
                                                     <tr>
-                                                        <td>Biospecimen sharing policy</td>
-                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} 
-                                                        onChange={e => { 
-                                                            dispatch(allactions.cohortActions.specimen_url(e.target.value));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                        }} disabled={isReadOnly} /></td>
-                                                        <td style={{ verticalAlign: 'middle' }}>
-                                                        {
+                                                        <td className="bg-light-grey">Biospecimen sharing policy</td>
+                                                        <td>
+                                                            <Form.Control 
+                                                                bsPrefix 
+                                                                type="text" 
+                                                                className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} 
+                                                                onChange={e => { 
+                                                                    dispatch(allactions.cohortActions.specimen_url(e.target.value));
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }} disabled={isReadOnly} />
+                                                        </td>
+                                                        <td>
+                                                            {
                                                                 !isReadOnly && 
                                                                 <div className="input-group">
                                                                     <div className="custom-file">
@@ -2555,18 +2587,27 @@ const CohortForm = ({ ...props }) => {
                                                                     <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
                                                                 {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
                                                             </div>
-
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Publication(authorship) policy</td>
-                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' 
-                                                        onChange={e => { 
-                                                            dispatch(allactions.cohortActions.publication_url(e.target.value));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                        }} disabled={isReadOnly} /></td>
-                                                        <td style={{ verticalAlign: 'middle' }}>
-                                                        {
+                                                        <td className="bg-light-grey">Publication(authorship) policy</td>
+                                                        <td>
+                                                            <Form.Control 
+                                                                bsPrefix
+                                                                type="text"
+                                                                className='inputWriter' 
+                                                                placeholder='Max of 100 characters' 
+                                                                maxLength='100' 
+                                                                name='publication_url' 
+                                                                value={cohort.publication_url} 
+                                                                id='publication_url' 
+                                                                onChange={e => { 
+                                                                    dispatch(allactions.cohortActions.publication_url(e.target.value));
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }} disabled={isReadOnly} />
+                                                        </td>
+                                                        <td>
+                                                            {
                                                                 !isReadOnly && 
                                                                 <div className="input-group">
                                                                     <div className="custom-file">
@@ -2592,7 +2633,7 @@ const CohortForm = ({ ...props }) => {
                                                         </td>
                                                     </tr>
                                                 </tbody>
-                                            </table>
+                                            </Table>
                                         </div>
                                     }
                                 </Col>
