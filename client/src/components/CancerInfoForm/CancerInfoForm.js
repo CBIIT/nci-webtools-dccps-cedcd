@@ -309,7 +309,6 @@ const CancerInfoForm = ({ ...props }) => {
             });
 
             if (id != cohortId) {
-                await dispatch(updateUserSession());
                 dispatch(allactions.cohortIDAction.setCohortId(id));
                 window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, id));
             }

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import QuestionnaireHeader from '../QuestionnaireHeader/QuestionnaireHeader'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import { fetchCohort } from '../../reducers/cohort';
+import { updateUserSession } from '../../reducers/user';
 import SelectCohort from '../SelectCohort/SelectCohort';
 
 const Questionnaire = ({ ...props }) => {
@@ -12,7 +13,12 @@ const Questionnaire = ({ ...props }) => {
     const isAuthorized = userSession && (userSession.role === 'CohortAdmin' || userSession.role === 'SystemAdmin');
     const hasAccess = userSession && (userSession.role === 'SystemAdmin' || (userSession.cohorts || []).map(c => +c.id).includes(+cohortID));
 
-    useEffect(() => { cohortID && dispatch(fetchCohort(cohortID)) }, [cohortID]);
+    useEffect(() => { 
+        if (cohortID) {
+            dispatch(fetchCohort(cohortID)) 
+            dispatch(updateUserSession());
+        }
+    }, [cohortID]);
 
     if (!isAuthorized)
         return <Unauthorized />
