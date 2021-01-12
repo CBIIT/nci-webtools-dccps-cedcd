@@ -134,7 +134,6 @@ const EditUser = ({ ...props }) => {
 
             cohortList.map((cohort) => {
                 html += '<li>Cohort: ' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
-                console.log(html)
             })
         }
         else
