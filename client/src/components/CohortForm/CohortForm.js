@@ -112,7 +112,9 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
                         if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
                         if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
-                        if (currentCohort.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
+
+                        if (currentCohort.enrollment_year_end && currentCohort.enrollment_year_end >= currentCohort.enrollment_year_start && currentCohort.enrollment_year_end <= (new Date()).getFullYear() && errors.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
+
                         if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
                         if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
                         if (currentCohort.enrollment_ongoing === 1) {
@@ -435,7 +437,7 @@ const CohortForm = ({ ...props }) => {
             if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
                 result = 'end year is before start year'
                 else if (value >= cohort.enrollment_year_start){ 
-                    if(cohort.enrollment_year_start <= (new Date()).getFullYear())              
+                    if(cohort.enrollment_year && cohort.enrollment_year_start <= (new Date()).getFullYear())              
                         dispatch(allactions.cohortErrorActions.enrollment_year_start(true))
                     else
                         dispatch(allactions.cohortErrorActions.enrollment_year_start(false, 'expecting a year value in the past'))
@@ -1216,7 +1218,7 @@ const CohortForm = ({ ...props }) => {
                                     </Col>
                                     <Col sm="12" className="p-0" className="mb-1">
                                         <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Ended in year<span style={{ color: 'red' }}>*</span>
+                                            Ended in year
                                         </Form.Label>
                                         <Col sm="2">
                                             {errors.enrollment_year_end && saved ? 
@@ -1264,7 +1266,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                     } }
                                                     onBlur={e => 
-                                                        populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
+                                                        populateErrors('enrollment_year_end', e.target.value, cohort.enrollment_ongoing===0, 'endyear') 
                                                     } 
                                                     readOnly={isReadOnly} />
                                             }
@@ -1289,7 +1291,7 @@ const CohortForm = ({ ...props }) => {
                                                                 // value='0' 
                                                                 checked={cohort.enrollment_ongoing === 0} 
                                                                 onClick={() => {
-                                                                    if(!isReadOnly || cohort.enrollment_year_end || errors.enrollment_year_end){
+                                                                    if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
                                                                         dispatch(allactions.cohortActions.enrollment_ongoing(0));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_target(true));
@@ -1297,7 +1299,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                                No
+                                                                No <span>{cohort.enrollment_year_end}{' '}{errors.enrollment_year_end}</span>
                                                             </Form.Check.Label>
                                                         </Form.Check>
                                                     </Reminder> : 
@@ -1311,7 +1313,7 @@ const CohortForm = ({ ...props }) => {
                                                             // value='0' 
                                                             checked={cohort.enrollment_ongoing === 0} 
                                                             onClick={e => {
-                                                                if (!isReadOnly|| cohort.enrollment_year_end || errors.enrollment_year_end) {
+                                                                if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true))
@@ -1319,7 +1321,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            No
+                                                            No <span>{cohort.enrollment_year_end}{' '}{errors.enrollment_year_end}</span>
                                                         </Form.Check.Label>
                                                     </Form.Check>
                                                 }
@@ -1337,7 +1339,7 @@ const CohortForm = ({ ...props }) => {
                                                                 // value='1' 
                                                                 checked={cohort.enrollment_ongoing === 1} 
                                                                 onClick={() => {
-                                                                    if(!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)){
+                                                                    if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
                                                                         dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                         !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
@@ -1358,7 +1360,7 @@ const CohortForm = ({ ...props }) => {
                                                             // value='1' 
                                                             checked={cohort.enrollment_ongoing === 1} 
                                                             onClick={e => {
-                                                                if (!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)) {
+                                                                if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
