@@ -49,7 +49,6 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
-
         setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name })))
         const allCohorts = lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
 
@@ -131,10 +130,14 @@ const EditUser = ({ ...props }) => {
 
         let html = ''
 
-        cohortList.map((cohort) => {
-            html += '<li>Cohort:' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
-            console.log(html)
-        })
+        if (cohortList && cohortList.length > 0) {
+
+            cohortList.map((cohort) => {
+                html += '<li>Cohort: ' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
+            })
+        }
+        else
+            html += '<li>No cohorts associated with your account</li>'
 
         let reqBody = {
             templateData: {
@@ -174,7 +177,7 @@ const EditUser = ({ ...props }) => {
             last_name: lastName,
             user_name: userName,
             user_role: userRole,
-            cohort_list: Object.values(cohortList).map((item, idx) => item.label),
+            cohort_list: cohortList ? Object.values(cohortList).map((item, idx) => item.label) : [],
             active_status: activeStatus
         }
 
@@ -213,11 +216,14 @@ const EditUser = ({ ...props }) => {
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
 
+        if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
+            if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
+        }
         if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
 
-        setErrors(copy);
+        setErrors(copy);    
 
         return !Object.values(copy).some(x => (x !== undefined && x !== '' && x !== null));
     }
