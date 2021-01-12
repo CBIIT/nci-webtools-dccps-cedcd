@@ -299,8 +299,9 @@ const CancerInfoForm = ({ ...props }) => {
                 }
             }
 
+            await postJSON(`/api/questionnaire/update_cancer_count/${id}`, cancerCounts);
+
             await postJSON(`/api/questionnaire/cohort/${id}`, {
-                cancer_count: cancerCounts,
                 cohort_edit_status: [{
                     page_code: 'D',
                     status: hasErrors ? 'incomplete' : 'complete'
