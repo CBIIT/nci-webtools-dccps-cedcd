@@ -92,7 +92,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <Prompt
                 when={hasUnsavedChanges}
-                message={location => `Please confirm that all changes have been saved, and that you wish to navigate away from this page.`}
+                message={location => `You may have unsaved changes. Please confirm that you wish to navigate away from the current page.`}
             />
 
             <div >
