@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext} from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import allactions from '../../actions'
 import validator from '../../validators'
@@ -19,6 +19,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
+import { UserSessionContext } from '../../index';
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -29,7 +30,7 @@ const CohortForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
-
+    const context = useContext(UserSessionContext);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -192,6 +193,7 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }
@@ -1386,8 +1388,9 @@ const CohortForm = ({ ...props }) => {
                                                         onChange={e => 
                                                             !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
                                                         } 
-                                                        onBlur={e => 
+                                                        onBlur={e => {
                                                             populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                        }
                                                         } 
                                                         disabled={cohort.enrollment_ongoing == 0} />
                                                 </Reminder> : 
@@ -1397,8 +1400,9 @@ const CohortForm = ({ ...props }) => {
                                                     onChange={e =>
                                                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
                                                     } 
-                                                    onBlur={e => 
-                                                        populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    onBlur={e => {
+                                                            if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                        }
                                                     } 
                                                     readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                             }
@@ -2235,7 +2239,7 @@ const CohortForm = ({ ...props }) => {
                                                                         <div>
                                                                             {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                                 <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                            {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
+                                                                            {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                                         </div>
                                                                         </td>
                                                                     </tr>
