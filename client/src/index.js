@@ -9,7 +9,15 @@ import RoutedApp from './components/RoutedApp/RoutedApp';
 import './index.scss';
 
 (async function main() {
-	const store = configureStore({reducer});
+	const store = configureStore({
+		reducer,
+		middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			thunk: true,
+			serializableCheck: false,
+			immutableCheck: false,
+		}),
+	});
 	await store.dispatch(initializeLookup());
 	await store.dispatch(fetchUser());
 	ReactDOM.render(
