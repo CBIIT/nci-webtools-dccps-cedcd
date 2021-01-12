@@ -4,7 +4,7 @@ import {
     Link,
     Prompt,
     useHistory
-  } from "react-router-dom";
+} from "react-router-dom";
 import { parseISO } from 'date-fns';
 import { UserSessionContext } from '../../index';
 import './QuestionnaireHeader.css'
@@ -25,10 +25,10 @@ const QuestionnaireHeader = ({ ...props }) => {
     const publishDate = status != 'new' && publishTime ? parseISO(publishTime) : null;
     const updateDate = status != 'new' && updateTime ? parseISO(updateTime) : null;
 
-   /*const asTitleCase = str => String(str).split(/\W+/g).map(str =>
-        str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
-    );
-*/
+    /*const asTitleCase = str => String(str).split(/\W+/g).map(str =>
+         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
+     );
+ */
     const asTitleCase = str => String(str).split(' ').map(s => s[0].toLocaleUpperCase() + s.slice(1).toLocaleLowerCase()).join(' ')
 
     const isReadOnly = props.isReadOnly;
@@ -82,6 +82,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
     return <>
         <div className="mb-4">
+            <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
 
             {!isReadOnly ? null : <div>
                 <a className="back" href="/admin/managecohort" target="_self" onClick={goBackManageCohort}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to Manage Cohorts</span></a>
@@ -89,7 +90,6 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
 
             }
-            <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <Prompt
                 when={hasUnsavedChanges}
                 message={location => `You may have unsaved changes. Please confirm that you wish to navigate away from the current page.`}
@@ -99,13 +99,13 @@ const QuestionnaireHeader = ({ ...props }) => {
                 {userSession.role === 'SystemAdmin' && <>
                     Welcome to the Cohort Questionnaire! If this cohort is under Review (Cohort Status is "In Review"), you have to review each section in order by clicking on the Next button. After all sections have been reviewed, the Approve or Reject button will then be enabled on the last section. If you are just viewing the cohort data, you can go to any section to view by clicking on the Section Selector.
                 </>}
-                
+
                 {userSession.role === 'CohortAdmin' && <>
                     Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.  Click this link to <Link className="text-decoration-underline" to="/cohort/questionnaire">select a cohort</Link> if you want to switch to another cohort.
                 </>}
             </div>
         </div>
-        
+
         <div className="container-fluid mb-4">
             <div className="border row py-4">
                 <div className="col-md px-4">

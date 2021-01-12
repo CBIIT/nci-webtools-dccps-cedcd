@@ -224,7 +224,7 @@ const EditUser = ({ ...props }) => {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
 
-        setErrors(copy);
+        setErrors(copy);    
 
         return !Object.values(copy).some(x => (x !== undefined && x !== '' && x !== null));
     }

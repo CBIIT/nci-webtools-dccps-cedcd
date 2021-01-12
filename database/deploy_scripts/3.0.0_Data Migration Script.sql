@@ -1749,6 +1749,12 @@ select cohort_id
 from cedcd_old.cohort_specimens;
 
 /*
+Migrate data from table contact to contact
+*/
+
+insert into contact select * from cedcd_old.contact;
+
+/*
 Migrate data from table cohort_specimens to cohort_specimens_counts
 */
 CALL Migrate_specimens_counts();
@@ -1824,36 +1830,10 @@ call update_cohort_published_status();
 
 DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 
-insert into cohort_user_mapping (cohort_acronym, user_id, update_time)
-values
-("AHS",18, now()),
-("ARIC",4, now()),
-("ATBC",1, now()),
-("ATBC",3, now()),
-("ATBC",8, now()),
-("ATBC",10, now()),
-("ATBC",11, now()),
-("ATBC",12, now()),
-("ATBC",13, now()),
-("ATBC",18, now()),
-("ATBC",19, now()),
-("ATBC",24, now()),
-("ATBC",25, now()),
-("BCFR Cohort",18, now()),
-("CCSS",12, now()),
-("Colon CFR",14, now()),
-("Colon CFR",24, now()),
-("Colon CFR",25, now()),
-("COSM",1, now()),
-("COSM",18, now()),
-("CPS-II Nutrition",11, now()),
-("CPS-II Nutrition",12, now()),
-("PLCO",1, now()),
-("PLCO",9, now()),
-("PLCO",11, now()),
-("SMC",1, now()),
-("SMC",10, now()),
-("SMC",18, now());
+
+/*
+ update cancer info year info 
+*/
 
  update cancer_info set ci_confirmed_cancer_date = MAKEDATE(ci_confirmed_cancer_year, 1) 
  where ci_confirmed_cancer_date is null and ci_confirmed_cancer_year is not null and cohort_id > 0;
