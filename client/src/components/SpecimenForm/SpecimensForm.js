@@ -13,6 +13,7 @@ import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import * as fieldList from './specimenFieldList';
 
 
 const SpecimenForm = ({ ...props }) => {
@@ -104,29 +105,7 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
-    const fieldList = [
-        /* { part, title, [field_id, actionType, required, type ] } */
-        {
-            part: 'A', title: 'G.1 Socio-Blood', item: [{ field_id: 'bioBloodBaseline', required: true, type: 'radio' },
-            { field_id: '', error_id: '', required: 'Y', type: 'radio_button' }]
-        },
-        {
-            part: 'A', title: 'G.1 Socio-Blood', item: [{ field_id: 'bioBloodBaseline', action_type: '', required: 'Y', type: 'radio_button' },
-            { field_id: '', error_id: '', required: 'Y', type: 'radio_button' }]
-        },
-        {
-            part: 'A', title: 'G.1 Socio-Blood', item: [{ field_id: 'bioBloodBaseline', action_type: '', required: 'Y', type: 'radio_button' },
-            { field_id: '', error_id: '', required: 'Y', type: 'radio_button' }]
-        },
-        {
-            part: 'A', title: 'G.1 Socio-Blood', item: [{ field_id: 'bioBloodBaseline', action_type: '', required: 'Y', type: 'radio_button' },
-            { field_id: '', error_id: '', required: 'Y', type: 'radio_button' }]
-        },
-        {
-            part: 'A', title: 'G.1 Socio-Blood', item: [{ field_id: 'bioBloodBaseline', action_type: '', required: 'Y', type: 'radio_button' },
-            { field_id: '', error_id: '', required: 'Y', type: 'radio_button' }]
-        }];
-
+    console.log(fieldList)
 
     useEffect(() => {
         if (!specimen.specimenLoaded) {
@@ -442,12 +421,12 @@ const SpecimenForm = ({ ...props }) => {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        setMessage('update was successful')
+                        setMessage('Your changes were saved.')
                         setSuccessMsg(true)
                         sendEmail()
                     }
                     else {
-                        setMessage('update failed')
+                        setMessage('Your changes could not be saved.')
                         setFailureMsg(true)
                     }
                 })
@@ -486,108 +465,167 @@ const SpecimenForm = ({ ...props }) => {
             })
     }
 
-    const getQuestionEntry = (questionType, key, idx) => {
-        if (questionType === 'BaseLine')
-            return <Form.Group as={Row} sm='12' className='mb-0'>
-                <Form.Group as={Row} className="mb-0 pl-4">
+    const getQuestionEntry = (field) => {
+        let item = field.items
+        console.log(item)
+        if (item && item.length === 2)
+            return (
+                < Form.Group as={Row} sm='12' className='mb-0' >
+
                     <Form.Label column sm='12'>
-                        { /*  {subtitles[idx]} */}
+                        {field.title}
                     </Form.Label>
-                </Form.Group>
-                <Col className='mb-0 pl-0' sm='12'>
-                    <Col sm='4'>
-                        <span>{key}</span>
-                        <span>Collected at baseline<span style={{ color: 'red' }}>*</span></span>
+
+                    <Col className='mb-0 pl-0' sm='12'>
+                        <Col sm='4'>
+                            <span>Collected at baseline {item[0].required && <span style={{ color: 'red' }}>*</span>}</span>
+                        </Col>
+                        <Reminder message='Required Field' disabled={!(errors[item[0].field_id] && saved)}>
+                            <Col sm='3' className='align-self-center'>
+                                <Form.Check type="radio" xs='2'
+                                    id={item[0].field_id + '_no'}
+                                    inline
+                                    style={{ fontWeight: 'normal' }}
+                                    name={item[0].field_id}>
+                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                        checked={specimen[item[0].field_id] === 0}
+                                        readOnly={isReadOnly}
+                                        onClick={() => {
+                                            if (!isReadOnly) {
+                                                console.log(item[0].field_id)
+                                                dispatch(allactions.specimenActions[item[0].field_id](0));
+                                                dispatch(allactions.specimenErrorActions[item[0].field_id](true))
+                                            }
+                                        }} />
+                                    <Form.Check.Label
+                                        style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
+                                    >
+                                        No
+                                        </Form.Check.Label>
+                                </Form.Check>
+                                <Form.Check type="radio" xs='2'
+                                    id={item[0].field_id + '_yes'}
+                                    inline
+                                    style={{ fontWeight: 'normal' }}
+                                    name={item[0].field_id}>
+                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                                        readOnly={isReadOnly}
+                                        onClick={() => {
+                                            if (!isReadOnly) {
+                                                dispatch(allactions.specimenActions[item[0].field_id](1));
+                                                dispatch(allactions.specimenErrorActions[item[0].field_id](true))
+                                            }
+                                        }} />
+                                    <Form.Check.Label style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                        Yes
+                            </Form.Check.Label>
+                                </Form.Check>
+                            </Col>
+                        </Reminder>
                     </Col>
-                    <Reminder message='Required Field' disabled={!(errors[key] && saved)}>
-                        <Col sm='3' className='align-self-center' style={{ paddingLeft: '18px' }}>
+
+                    <Col className='mb-0 pl-0' sm='12'>
+                        <Col sm='4'>
+                            Collected at other time points  {item[0].required && <span style={{ color: 'red' }}>*</span>}
+                        </Col>
+                        <Reminder message='Required Field' disabled={!(errors[item[1].field_id] && saved)}>
+                            <Col sm='3' className='align-self-center' >
+                                <Form.Check type="radio" xs='2'
+                                    id={item[1].field_id + '_no'}
+                                    inline
+                                    style={{ fontWeight: 'normal ' }}
+                                    name={item[1].field_id}>
+                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                        checked={specimen[item[1].field_id] === 0}
+                                        onClick={() => {
+                                            if (!isReadOnly) {
+                                                dispatch(allactions.specimenActions[item[1].field_id](0));
+                                                dispatch(allactions.specimenErrorActions[item[1].field_id](true))
+                                            }
+                                        }} />
+                                    <Form.Check.Label style={errors[item[1].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                        No
+                                       </Form.Check.Label>
+                                </Form.Check>
+                                <Form.Check type="radio" xs='2'
+                                    id={item[1].field_idy + '_yes'}
+                                    inline
+                                    style={{ fontWeight: 'normal ' }}
+                                    name={item[1].field_id}>
+                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[1].field_id] === 1}
+                                        onClick={() => {
+                                            if (!isReadOnly) {
+                                                dispatch(allactions.specimenActions[item[1].field_id](1));
+                                                dispatch(allactions.specimenErrorActions[item[1].field_id](true))
+                                            }
+                                        }} />
+                                    <Form.Check.Label style={errors[item[1].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                        Yes
+                                       </Form.Check.Label>
+                                </Form.Check>
+                            </Col>
+                        </Reminder>
+                    </Col>
+                </Form.Group>
+            )
+        else
+            return (
+                < Form.Group as={Row} sm='12' className='mb-0' >
+                    <Form.Group as={Row} className="mb-0 pl-4">
+                        <Form.Label column sm='12'>
+                            <span> {field.title} </span> {item[0].required && <span style={{ color: 'red' }}>*</span>}
+                        </Form.Label>
+                    </Form.Group>
+                    <Col className='align-self-center' sm='12'>
+                        <Reminder message='Required Field' disabled={!(errors[item[0].field_id] && saved)}>
                             <Form.Check type="radio" xs='2'
-                                id={key + '_no'}
+                                id={item[0].field_id + '_no'}
                                 inline
                                 style={{ fontWeight: 'normal' }}
-                                name={key}>
+                                name={item[0].field_id}>
                                 <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                    checked={specimen[key] === 0}
+                                    checked={specimen[item[0].field_id] === 0}
                                     readOnly={isReadOnly}
                                     onClick={() => {
                                         if (!isReadOnly) {
-                                            dispatch(allactions.specimenActions[key](0));
-                                            dispatch(allactions.specimenErrorActions[key](true))
+                                            console.log(item[0].field_id)
+                                            dispatch(allactions.specimenActions[item[0].field_id](0));
+                                            dispatch(allactions.specimenErrorActions[item[0].field_id](true))
                                         }
                                     }} />
                                 <Form.Check.Label
-                                    style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
+                                    style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
                                 >
                                     No
-                                        </Form.Check.Label>
+                                </Form.Check.Label>
                             </Form.Check>
                             <Form.Check type="radio" xs='2'
-                                id={key + '_yes'}
+                                id={item[0].field_id + '_yes'}
                                 inline
                                 style={{ fontWeight: 'normal' }}
-                                name={key}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[key] === 1}
+                                name={item[0].field_id}>
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
                                     readOnly={isReadOnly}
                                     onClick={() => {
                                         if (!isReadOnly) {
-                                            dispatch(allactions.specimenActions[key](1));
-                                            dispatch(allactions.specimenErrorActions[key](true))
+                                            dispatch(allactions.specimenActions[item[0].field_id](1));
+                                            dispatch(allactions.specimenErrorActions[item[0].field_id](true))
                                         }
                                     }} />
-                                <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                <Form.Check.Label style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
                                     Yes
-                                        </Form.Check.Label>
+                            </Form.Check.Label>
                             </Form.Check>
-                        </Col>
-                    </Reminder>
-                </Col>
-            </Form.Group>
-        else
-            return <Form.Group as={Row} sm='12' className='mb-0'>
-                <Col className='mb-0 pl-0' sm='12'>
-                    <Col sm='4'>
-                        Collected During Follow-up<span style={{ color: 'red' }}>*</span>
+                        </Reminder>
                     </Col>
-                    <Reminder message='Required Field' disabled={!(errors[key] && saved)}>
-                        <Col sm='3' className='align-self-center' style={{ paddingLeft: '18px' }}>
-                            <Form.Check type="radio" xs='2'
-                                id={key + '_no'}
-                                inline
-                                style={{ fontWeight: 'normal ' }}
-                                name={key}>
-                                <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                    checked={specimen[key] === 0}
-                                    onClick={() => {
-                                        if (!isReadOnly) {
-                                            dispatch(allactions.specimenActions[key](0));
-                                            dispatch(allactions.specimenErrorActions[key](true))
-                                        }
-                                    }} />
-                                <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                    No
-                                       </Form.Check.Label>
-                            </Form.Check>
-                            <Form.Check type="radio" xs='2'
-                                id={key + '_yes'}
-                                inline
-                                style={{ fontWeight: 'normal ' }}
-                                name={key}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[key] === 1}
-                                    onClick={() => {
-                                        if (!isReadOnly) {
-                                            dispatch(allactions.specimenActions[key](1));
-                                            dispatch(allactions.specimenErrorActions[key](true))
-                                        }
-                                    }} />
-                                <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                    Yes
-                                       </Form.Check.Label>
-                            </Form.Check>
-                        </Col>
-                    </Reminder>
-                </Col>
-            </Form.Group>
+
+                </Form.Group>
+            )
+
     }
+
+
+
 
     const getMultiSelectList = (questions = [], keys = []) => {
         return questions.map((item, idx) => <Col as={Row} sm='12' style={{ paddingLeft: '30px' }}>
@@ -618,106 +656,184 @@ const SpecimenForm = ({ ...props }) => {
             </Form.Check.Label>
         </Col>)
     }
-    const getPartAContent = () => {
-        return Object.keys(specimen).slice(0, 71).map((key, idx) => {
-            if (idx <= 28 || idx > 40) {//skip questions first
-                if (key.includes('BaseLine')) {
-                    return getQuestionEntry('BaseLine', key, idx)
-                }
-                else if (key.includes('FollowUp')) {
-                    return getQuestionEntry('FollowUp', key, idx)
-                }
-            } else if (idx === 29) {
-                return <Form.Group as={Row} sm='12' className='mb-0' style={{ marginTop: '10px' }} >
-                    <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
-                        C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small style={{ paddingRight: '0' }}>(Select all that apply)</small>
+    const getPartContent = (partSelect = 'A') => {
+        console.log(fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => console.log(field)))
+        return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
+            if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
+
+                return getQuestionEntry(field)
+
+            } else if (field.title === 'G.6 Other(e.g. toenails)') {
+                return <Form.Group as={Row} sm='12' className='mb-0' >
+                    <Form.Label as={Row} sm='12' className='pl-5' >
+                        G.6 Other(e.g. toenails) (Select all that apply)
                     </Form.Label>
-                    <Col sm='12'> <span style={
-                        (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved && { color: 'red' } || { display: 'none' }
-                    }>Required Field</span></Col>
-                    {
-                        getMultiSelectList(
-                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
-                            ['cigarBaseLine', 'pipeBaseLine', 'tobaccoBaseLine', 'ecigarBaseLine', 'noncigarOtherBaseLine']
-                        )
-                    }
-                    <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
-                        <Reminder message='Required Field' disabled={!(specimen.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved)}>
-                            <input
-                                placeholder='Max of 200 characters'
-                                maxLength='200' name='noncigarBaseLineSpecify'
-                                style={specimen.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
-                                value={specimen.noncigarBaseLineSpecify}
-                                onChange={e => { dispatch(allactions.specimenActions.noncigarBaseLineSpecify(e.target.value)) }}
-                                onBlur={() => dispatch(allactions.specimenErrorActions.noncigarBaseLineSpecify(specimen.noncigarBaseLineSpecify))} disabled={!specimen.noncigarOtherBaseLine || isReadOnly} />
-                        </Reminder>
+
+                    <Col className='mb-0 pl-0' sm="12" >
+                        <Col sm='4'>
+                            Collected at baseline   <span style={{ color: 'red' }}>*</span>
+                        </Col>
+                        {saved && errors.bioOtherBaseline ?
+                            <Reminder>
+                                <Form.Check type='radio' name='bioOtherBaseline' inline style={{ color: 'red' }} >
+                                    <Form.Check.Input type='radio' className="mr-2" checked={specimen.bioOtherBaseline === 0}
+                                        onClick={() => {
+                                            if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherBaseline(0)); dispatch(allactions.specimenActions.bioOtherBaselineSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }
+                                        }}
+                                    />
+                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                        No
+                                </Form.Check.Label>
+                                </Form.Check>
+                            </Reminder> :
+                            <Form.Check type='radio' name='bioOtherBaseline' inline>
+                                <Form.Check.Input type="radio" className="mr-2"
+                                    checked={specimen.bioOtherBaseline === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherBaseline(0)); dispatch(allactions.specimenActions.bioOtherBaselineSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No
+                            </Form.Check.Label>
+                            </Form.Check>
+                        }
+                        {saved && errors.bioOtherBaseline ?
+                            <Reminder>
+                                <Form.Check type='radio' name='bioOtherBaseline' inline style={{ color: 'red' }} >
+                                    <Form.Check.Input type='radio' className="mr-2"
+                                        checked={specimen.bioOtherBaseline === 1}
+                                        onClick={() => { if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) } }} />
+                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                        Yes
+                                </Form.Check.Label>
+                                </Form.Check>
+                            </Reminder> :
+                            <Form.Check type='radio' name='bioOtherBaseline' inline>
+                                <Form.Check.Input type='radio' className="mr-2"
+                                    checked={specimen.bioOtherBaseline === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes
+                            </Form.Check.Label>
+                            </Form.Check>
+                        }
                     </Col>
-                    <Col sm='12'> <span style={
-                        (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved && { color: 'red' } || { display: 'none' }
-                    }>Required Field</span></Col>
-                    {
-                        getMultiSelectList(
-                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
-                            ['cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
-                        )
-                    }
-                    <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
-                        <Reminder message='Required Field' disabled={!(specimen.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved)}>
-                            <input
-                                placeholder='Max of 200 characters'
-                                maxLength='200' name='noncigarFollowUpSpecify'
-                                style={specimen.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
-                                value={specimen.noncigarFollowUpSpecify}
-                                onChange={e => { dispatch(allactions.specimenActions.noncigarFollowUpSpecify(e.target.value)) }}
-                                onBlur={() => dispatch(allactions.specimenErrorActions.noncigarFollowUpSpecify(specimen.noncigarFollowUpSpecify))} disabled={!specimen.noncigarOtherFollowUp || isReadOnly} />
-                        </Reminder>
+
+                    <Col sm="12" className="align-self-center">
+                        <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                        <Col sm="12">
+                            {saved && errors.bioOtherBaselineSpecify ?
+                                <Reminder message={errors.bioOtherBaselineSpecify} disabled={!errors.bioOtherBaselineSpecify} placement="right">
+                                    <Form.Control type='text'
+                                        style={{ border: '1px solid red' }}
+                                        name='bioOtherBaselineSpecify'
+                                        className='form-control'
+                                        value={specimen.bioOtherBaselineSpecify}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={specimen.bioOtherBaseline !== 1}
+                                        onChange={e => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value))}
+                                    />
+                                </Reminder> :
+                                <Form.Control type='text'
+                                    name='bioOtherBaselineSpecify'
+                                    className='form-control'
+                                    value={specimen.bioOtherBaselineSpecify}
+                                    readOnly={isReadOnly}
+                                    placeholder='Max of 200 characters'
+                                    disabled={specimen.bioOtherBaseline !== 1}
+                                    onChange={e => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value))}
+                                />}
+                        </Col>
+                    </Col>
+
+                    <Col sm="12" className="align-self-center"> <br></br></Col>
+
+                    {/* G6 OtherTime Specify */}
+
+                    <Col sm="12" className='mb-0 pl-0'>
+                        <Col sm='4'>
+                            Collected at other time points   <span style={{ color: 'red' }}>*</span>
+                        </Col>
+                        {saved && errors.bioOtherOtherTime ?
+                            <Reminder>
+                                <Form.Check type='radio' name='bioOtherOtherTime' inline style={{ color: 'red' }} >
+                                    <Form.Check.Input type='radio' className="mr-2" checked={specimen.bioOtherOtherTime === 0}
+                                        onClick={() => {
+                                            if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }
+                                        }}
+                                    />
+                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                        No
+                                    </Form.Check.Label>
+                                </Form.Check>
+                            </Reminder> :
+                            <Form.Check type='radio' name='bioOtherOtherTime' inline>
+                                <Form.Check.Input type="radio" className="mr-2"
+                                    checked={specimen.bioOtherOtherTime === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }
+                                    }}
+                                />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    No</Form.Check.Label>
+                            </Form.Check>
+                        }
+                        {saved && errors.bioOtherOtherTime ?
+                            <Reminder>
+                                <Form.Check type='radio' name='bioOtherOtherTime' inline style={{ color: 'red' }} >
+                                    <Form.Check.Input type='radio' className="mr-2"
+                                        checked={specimen.bioOtherOtherTime === 1}
+                                        onClick={() => { if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) } }} />
+                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                        Yes </Form.Check.Label>
+                                </Form.Check>
+                            </Reminder> :
+                            <Form.Check type='radio' name='bioOtherOtherTime' inline>
+                                <Form.Check.Input type='radio' className="mr-2"
+                                    checked={specimen.bioOtherOtherTime === 1}
+                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) } }} />
+                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                    Yes</Form.Check.Label>
+                            </Form.Check>
+                        }
+                    </Col>
+
+                    <Col sm="12" className="align-self-center">
+                        <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                        <Col sm="12">
+                            {saved && errors.bioOtherOtherTimeSpecify ?
+                                <Reminder message={errors.bioOtherOtherTimeSpecify} disabled={!errors.bioOtherOtherTimeSpecify} placement="right">
+                                    <Form.Control type='text'
+                                        style={{ border: '1px solid red' }}
+                                        name='bioOtherOtherTimeSpecify'
+                                        className='form-control'
+                                        value={specimen.bioOtherOtherTimeSpecify}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={specimen.bioOtherOtherTime !== 1}
+                                        onChange={e => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value))}
+                                    />
+                                </Reminder> :
+                                <Form.Control type='text'
+                                    name='bioOtherOtherTimeSpecify'
+                                    className='form-control'
+                                    value={specimen.bioOtherOtherTimeSpecify}
+                                    readOnly={isReadOnly}
+                                    placeholder='Max of 200 characters'
+                                    disabled={specimen.bioOtherOtherTime !== 1}
+                                    onChange={e => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value))}
+                                />}
+                        </Col>
                     </Col>
                 </Form.Group>
+
+
             }
         })
     }
 
-    const getSecondContent = () => {
-        return Object.keys(specimen).slice(71).map((key, idx) => {
-            if (key.includes('BaseLine'))
-                return getQuestionEntry('BaseLine', key, idx + 71)
-            else if (key.includes('FollowUp'))
-                return getQuestionEntry('FollowUp', key, idx + 71)
-        })
-    }
-
-    const getThirdContent = () => {
-        return <Form.Group as={Row} sm='12' className='mb-0' style={{ marginTop: '10px' }} >
-            <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
-                C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small style={{ paddingRight: '0' }}>(Select all that apply)</small>
-            </Form.Label>
-            <Col sm='12'> <span style={
-                (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && { color: 'red' } || { display: 'none' }
-            }>Required Field</span></Col>
-            {
-                getMultiSelectList(
-                    [
-                        'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
-                        'Late effects of treatment (e.g., cardiotoxicity, lymphedema)',
-                        'Symptom management (e.g., fatigue, pain, sexual dysfunction)',
-                        'Other'
-                    ],
-                    ['cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
-                )
-            }
-            <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
-                <Reminder message='Required Field' disabled={!(specimen.cancerOther === 1 && errors.cancerOtherSpecify && saved)}>
-                    <input
-                        placeholder='Max of 200 characters'
-                        maxLength='200' name='cancerOtherSpecify'
-                        style={(specimen.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
-                        value={specimen.cancerOtherSpecify}
-                        onChange={e => { dispatch(allactions.specimenActions.cancerOtherSpecify(e.target.value)) }}
-                        onBlur={() => dispatch(allactions.specimenErrorActions.cancerOtherSpecify(specimen.cancerOtherSpecify))} disabled={!specimen.cancerOther || isReadOnly} />
-                </Reminder>
-            </Col>
-        </Form.Group>
-    }
 
     return (
         <div id='specimenInfoContainer' className="p-3 px-5">
@@ -849,270 +965,8 @@ const SpecimenForm = ({ ...props }) => {
 
                         </div>
                     </Form.Group>
-
-
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.2 Buccal/Saliva  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-
-                        <div className='col-12'>
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(0)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaBaseline' checked={specimen.bioBuccalSalivaBaseline === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(1)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(0)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioBuccalSalivaOtherTime' checked={specimen.bioBuccalSalivaOtherTime === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(1)); dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {(errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) && saved && <div className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</div>}
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.3 Tissue (include tumor and/or normal){'  '}  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-
-                        <div className='col-12'>
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTissueBaseline(0)); dispatch(allactions.specimenErrorActions.bioTissueBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueBaseline' checked={specimen.bioTissueBaseline === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTissueBaseline(1)); dispatch(allactions.specimenErrorActions.bioTissueBaseline(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTissueOtherTime(0)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioTissueOtherTime' checked={specimen.bioTissueOtherTime === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTissueOtherTime(1)); dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {(errors.bioTissueBaseline && errors.bioTissueOtherTime) && saved && <div className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</div>}
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.4 Urine  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        {
-                            (errors.bioUrineBaseline && errors.bioUrineOtherTime) && saved
-                            && <div className='col-md-4 col-12' style={{ color: 'red' }}>
-                                Missing required field
-                                        </div>}
-
-
-
-                        <div className='col-12'>
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioUrineBaseline(0)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineBaseline' checked={specimen.bioUrineBaseline === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioUrineBaseline(1)); dispatch(allactions.specimenErrorActions.bioUrineBaseline(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioUrineOtherTime(0)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioUrineOtherTime' checked={specimen.bioUrineOtherTime === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioUrineOtherTime(1)); dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.5 Feces  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-
-                        <div className='col-12'>
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioFecesBaseline(0)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesBaseline' checked={specimen.bioFecesBaseline === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioFecesBaseline(1)); dispatch(allactions.specimenErrorActions.bioFecesBaseline(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='col-sm-8' style={{ paddingLeft: '0' }}>
-                                <div className='col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioFecesOtherTime(0)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioFecesOtherTime' checked={specimen.bioFecesOtherTime === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioFecesOtherTime(1)); dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {(errors.bioFecesBaseline && errors.bioFecesOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.6 Other(e.g. toenails)  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-
-                        <div className='col-12'>
-                            <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at baseline</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioOtherBaseline(0)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherBaseline' checked={specimen.bioOtherBaseline === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='col-sm-12 col-xs-12' style={{ paddingLeft: '0' }}>
-                                <small>If collected, please specify</small>
-                                <span className='col-12' style={{ paddingTop: '0.5rem' }}>
-                                    {specimen.bioOtherBaseline && errors.bioOtherBaselineSpecify && saved ? <Reminder message={'Missing required field'}>
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
-                                            placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
-                                            value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value))}
-                                            onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} readOnly={isReadOnly} />
-                                    </Reminder> :
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherBaseline !== 1}
-                                            placeholder='Max of 200 characters'
-                                            value={specimen.bioOtherBaselineSpecify} onChange={e => dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value))}
-                                            onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(specimen.bioOtherBaselineSpecify))} readOnly={isReadOnly} />
-                                    }
-                                </span>
-                            </div>
-                            <div className='col-sm-8 col-xs-12' style={{ paddingLeft: '0' }}>
-                                <div className=' col-lg-6 col-xs-12' style={{ paddingLeft: '0' }}>Collected at other time points</div>
-                                <div className='col-lg-6 col-xs-12'>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 0}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }} />{" "}No</span>
-                                    </div>
-                                    <div className='col-lg-3 col-xs-4' style={{ paddingLeft: '0' }}>
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name='bioOtherOtherTime' checked={specimen.bioOtherOtherTime === 1}
-                                            onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }} />{' '}Yes</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='col-sm-12 col-xs-12' style={{ paddingLeft: '0' }}>
-                                <small>If collected, please specify</small>
-                                <span className='col-12' style={{ paddingTop: '0.5rem' }}>
-                                    {specimen.bioOtherOtherTime && errors.bioOtherOtherTimeSpecify && saved ? <Reminder message={'Missing required field'}>
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherOtherTimeSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
-                                            placeholder='Max of 200 characters' style={{ border: '1px solid red' }}
-                                            value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value))}
-                                            onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} readOnly={isReadOnly} />
-                                    </Reminder> :
-                                        <textarea className="form-control resize-vertical" maxLength={200} name='bioOtherBaselineSpecify' disabled={+specimen.bioOtherOtherTime !== 1}
-                                            placeholder='Max of 200 characters'
-                                            value={specimen.bioOtherOtherTimeSpecify} onChange={e => dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value))}
-                                            onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(specimen.bioOtherOtherTimeSpecify))} readOnly={isReadOnly} />
-                                    }
-                                </span>
-                            </div>
-
-                        </div>
-                        {(errors.bioOtherBaseline && errors.bioOtherOtherTime) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.7 Did you collect repeated samples over multiple timepoints for the same individuals?
-                            <span style={{ color: 'red' }}>*</span></Form.Label>
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(0)); dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true)) }} />{" "}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioRepeatedSampleSameIndividual' checked={specimen.bioRepeatedSampleSameIndividual === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(1)); dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioRepeatedSampleSameIndividual) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </Form.Group>
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.8 If your cohort does not currently collect tumor blocks, do you have information on where the blocks are kept/stored?
-                            <span style={{ color: 'red' }}>*</span></Form.Label>
-
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTumorBlockInfo(0)); dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTumorBlockInfo' checked={specimen.bioTumorBlockInfo === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTumorBlockInfo(1)); dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioTumorBlockInfo) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </Form.Group>
-
+                    {getPartContent('A')}
                 </CollapsiblePanel>
-
-
                 {/* END Part A */}
 
                 {/* START Part B */}
@@ -1120,108 +974,7 @@ const SpecimenForm = ({ ...props }) => {
                     condition={activePanel === 'panelB'}
                     onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
                     panelTitle="Did you have ?">
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label"> G.9 Genotyping Data (SNP)<span style={{ color: 'red' }}>*</span></label>
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioGenotypingData(0)); dispatch(allactions.specimenErrorActions.bioGenotypingData(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span><input type='radio' style={{ marign: 'auto' }} name='bioGenotypingData' checked={specimen.bioGenotypingData === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioGenotypingData(1)); dispatch(allactions.specimenErrorActions.bioGenotypingData(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioGenotypingData) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label">
-                            G.10  Sequencing Data – Exome
-                            <span style={{ color: 'red' }}>*</span></label>
-
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioSequencingDataExome(0)); dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataExome' checked={specimen.bioSequencingDataExome === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioSequencingDataExome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioSequencingDataExome) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label">
-                            G.11  Sequencing Data – Whole Genome
-                          <span style={{ color: 'red' }}>*</span> </label>
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(0)); dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioSequencingDataWholeGenome' checked={specimen.bioSequencingDataWholeGenome === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(1)); dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioSequencingDataWholeGenome) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label">
-                            G.12  Epigenetic Data (methylation, miRNA, histone chip-on-chip data)
-                          <span style={{ color: 'red' }}>*</span></label>
-
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(0)); dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioEpigeneticOrMetabolicMarkers' checked={specimen.bioEpigeneticOrMetabolicMarkers === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(1)); dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioEpigeneticOrMetabolicMarkers) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label">
-                            G.13  Transcriptomics Data
-                          <span style={{ color: 'red' }}>*</span></label>
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTranscriptomicsData(0)); dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioTranscriptomicsData' checked={specimen.bioTranscriptomicsData === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioTranscriptomicsData(1)); dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioTranscriptomicsData) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-
-                    <div className='specimenInfo my-3 col-md-12 col-12'>
-                        <label className="d-block control-label">
-                            G.14 Microbiome Data (16S RNA, metagenomics)
-                          <span style={{ color: 'red' }}>*</span></label>
-
-                        <div className='col-md-12 col-12'>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 0}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioMicrobiomeData(0)); dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true)) }} />{' '}No</span>
-                            </div>
-                            <div className='col-md-2 col-6' style={{ paddingLeft: '0' }}>
-                                <span ><input type='radio' style={{ marign: 'auto' }} name='bioMicrobiomeData' checked={specimen.bioMicrobiomeData === 1}
-                                    onClick={() => { if (isReadOnly) return false; dispatch(allactions.specimenActions.bioMicrobiomeData(1)); dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true)) }} />{' '}Yes</span>
-                            </div>
-                            {(errors.bioMicrobiomeData) && saved && <span className='col-md-4 col-12' style={{ color: 'red' }}>Missing required field</span>}
-                        </div>
-                    </div>
-
+                    {getPartContent('B')}
                 </CollapsiblePanel>
                 {/* END Part B */}
 

@@ -178,8 +178,8 @@ const EditUser = ({ ...props }) => {
             !(userSession && userSession.role === 'SystemAdmin') &&
             <Unauthorized /> ||
             <div id='editUserContainer' className='col-md-12'>
-                {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-                {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+                {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+                {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
 
                 <CenterModal
                     show={modalShow}
