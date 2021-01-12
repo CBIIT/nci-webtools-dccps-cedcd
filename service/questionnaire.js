@@ -600,7 +600,7 @@ router.get('/lookup', async (request, response) => {
                 person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),
                 race: await mysql.query(`SELECT id, race FROM lu_race`),
                 specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
-                allcohortlist: await mysql.query(`select distinct acronym as id, acronym from cohort`),
+                allcohortlist: await mysql.query(`select distinct name,acronym as id, acronym from cohort`),
             }
         }
         response.json(lookup);
