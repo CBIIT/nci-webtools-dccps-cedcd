@@ -297,28 +297,28 @@ class ManageUser extends Component {
 
 						</div>
 					</div>
-					<div className="table-responsive">
-						<div className="table-inner col-md-12">
-							<div className="cedcd-table home">
-								<div>
-									<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
-										<thead>
-											<tr id="summaryHeader" className="col-header">
-												{this.renderTableHeader("name", "15%")}
-												{this.renderTableHeader("user_name", "15%")}
-												{this.renderTableHeader("email", "15%")}
-												{this.renderTableHeader("user_role", "13%")}
-												{this.renderTableHeader("cohort_list", "20%")}
-												{this.renderTableHeader("active_status", "5%")}
-												{this.renderTableHeader("last_login", "12%")}
-												{this.renderTableHeader("action", "5%")}
-											</tr>
-										</thead>
-										<tbody>
-											{content}
-										</tbody>
-									</table>
-								</div>
+					<div className="table-responsive col-md-12">
+
+						<div className="cedcd-table home">
+							<div>
+								<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
+									<thead>
+										<tr id="summaryHeader" className="col-header">
+											{this.renderTableHeader("name", "15%")}
+											{this.renderTableHeader("user_name", "15%")}
+											{this.renderTableHeader("email", "15%")}
+											{this.renderTableHeader("user_role", "13%")}
+											{this.renderTableHeader("cohort_list", "20%")}
+											{this.renderTableHeader("active_status", "5%")}
+											{this.renderTableHeader("last_login", "12%")}
+											{this.renderTableHeader("action", "5%")}
+										</tr>
+									</thead>
+									<tbody>
+										{content}
+									</tbody>
+								</table>
+
 							</div>
 						</div>
 					</div>
