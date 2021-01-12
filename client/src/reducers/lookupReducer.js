@@ -10,11 +10,6 @@ export default function lookupReducer(state = InitialStates.lookup, action = { t
     }
 }
 
-export async function getLookupTables() {
-    const response = await fetch('/api/questionnaire/lookup')
-    return await response.json();
-}
-
 export function initializeLookup() {
     return async function (dispatch) {
         const response = await fetch('/api/questionnaire/lookup')
