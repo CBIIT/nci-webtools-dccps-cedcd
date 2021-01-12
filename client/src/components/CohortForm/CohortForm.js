@@ -2475,21 +2475,15 @@ const CohortForm = ({ ...props }) => {
                                                         <td >
                                                             {
                                                                 !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile01"
-                                                                        aria-describedby="inputGroupFileAddon01"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
+                                                                <Form.File
+                                                                    custom
+                                                                    label="Choose Files"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile01"
+                                                                    aria-describedby="inputGroupFileAddon01"
+                                                                    multiple 
+                                                                    readOnly={isReadOnly}
+                                                                    onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
                                                             }
                                                             <div>
                                                                 {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
@@ -2518,21 +2512,14 @@ const CohortForm = ({ ...props }) => {
                                                         <td>
                                                             {
                                                                 !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile02"
-                                                                        aria-describedby="inputGroupFileAddon02"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 1)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile02">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
+                                                                <Form.File
+                                                                    custom
+                                                                    label="Choose Files"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile02"
+                                                                    aria-describedby="inputGroupFileAddon02"
+                                                                    multiple readOnly={isReadOnly}
+                                                                    onChange={e => handleUpload(e.target.files, 1)} />
                                                             }
                                                             <div>
                                                                 {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2562,21 +2549,14 @@ const CohortForm = ({ ...props }) => {
                                                         <td>
                                                             {
                                                                 !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile03"
-                                                                        aria-describedby="inputGroupFileAddon03"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 2)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile03">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
+                                                                <Form.File
+                                                                    custom
+                                                                    label="Choose Files"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile03"
+                                                                    aria-describedby="inputGroupFileAddon03"
+                                                                    multiple readOnly={isReadOnly}
+                                                                    onChange={e => handleUpload(e.target.files, 2)} />
                                                             }
                                                             <div>
                                                                 {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2605,21 +2585,14 @@ const CohortForm = ({ ...props }) => {
                                                         <td>
                                                             {
                                                                 !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile04"
-                                                                        aria-describedby="inputGroupFileAddon04"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 3)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile04">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
+                                                                <Form.File
+                                                                    custom
+                                                                    label="Choose Files"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile04"
+                                                                    aria-describedby="inputGroupFileAddon04"
+                                                                    multiple readOnly={isReadOnly}
+                                                                    onChange={e => handleUpload(e.target.files, 3)} />
                                                             }       
                                                             <div>
                                                                 {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2648,21 +2621,14 @@ const CohortForm = ({ ...props }) => {
                                                         <td>
                                                             {
                                                                 !isReadOnly && 
-                                                                <div className="input-group">
-                                                                    <div className="custom-file">
-                                                                        <input
-                                                                        type="file"
-                                                                        className="custom-file-input"
-                                                                        name='cohortFile'
-                                                                        id="inputGroupFile05"
-                                                                        aria-describedby="inputGroupFileAddon05"
-                                                                        multiple readOnly={isReadOnly}
-                                                                        onChange={e => handleUpload(e.target.files, 4)} />
-                                                                        <label className="custom-file-label" htmlFor="inputGroupFile05">
-                                                                        Choose Files
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
+                                                                <Form.File
+                                                                    custom
+                                                                    label="Choose Files"
+                                                                    name='cohortFile'
+                                                                    id="inputGroupFile05"
+                                                                    aria-describedby="inputGroupFileAddon05"
+                                                                    multiple readOnly={isReadOnly}
+                                                                    onChange={e => handleUpload(e.target.files, 4)} />
                                                             }
                                                             <div>
                                                                 {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
