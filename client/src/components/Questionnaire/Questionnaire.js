@@ -4,6 +4,7 @@ import QuestionnaireHeader from '../QuestionnaireHeader/QuestionnaireHeader'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import { fetchCohort } from '../../reducers/cohort';
 import { updateUserSession } from '../../reducers/user';
+import { initializeLookup } from '../../reducers/lookupReducer';
 import SelectCohort from '../SelectCohort/SelectCohort';
 
 const Questionnaire = ({ ...props }) => {
@@ -17,6 +18,7 @@ const Questionnaire = ({ ...props }) => {
         if (cohortID) {
             dispatch(fetchCohort(cohortID)) 
             dispatch(updateUserSession());
+            dispatch(initializeLookup());
         }
     }, [cohortID]);
 
