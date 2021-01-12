@@ -11,6 +11,7 @@ import CenterModal from '../controls/modal/modal'
 import FileModal from '../controls/modal/FileModal.js'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { updateUserSession } from '../../reducers/user';
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.scss'
 import cohortErrorActions from '../../actions/cohortErrorActions'
@@ -19,7 +20,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
-import { UserSessionContext } from '../../index';
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -30,7 +30,7 @@ const CohortForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
-    const context = useContext(UserSessionContext);
+    // const context = useContext(UserSessionContext);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -194,7 +194,7 @@ const CohortForm = ({ ...props }) => {
             }
         })
             .then(res => res.json())
-            .then(result => {
+            .then(async result => {
                 if (result.status === 200) {
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
@@ -202,7 +202,8 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
-                        context.cohorts.push({id: result.newCohortInfo.newCohortID})
+                        await dispatch(updateUserSession());
+                        // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }

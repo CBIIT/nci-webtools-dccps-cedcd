@@ -1,11 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
+import { useSelector } from 'react-redux';
 import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
-import { UserSessionContext } from '../../index';
 
 const NavBar = (props) => {
-  const userSession = useContext(UserSessionContext);
+  const userSession = useSelector(state => state.user);
   //const [loggedin, setLogin] = useState(false)
   const logout = async () => {
     // can not use normal 301 response, since session is not properly cleared

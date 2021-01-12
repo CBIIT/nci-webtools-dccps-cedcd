@@ -5,8 +5,8 @@ import Select from 'react-select';
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
-import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
+import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import './AddNewCohort.css';
 
 const EditUser = ({ ...props }) => {
@@ -234,10 +234,7 @@ const EditUser = ({ ...props }) => {
     }
 
 
-    return <UserSessionContext.Consumer>
-        {userSession => (
-            !(userSession && userSession.role === 'SystemAdmin') &&
-            <Unauthorized /> ||
+    return <RequireAuthorization role="SystemAdmin">
             <div id='editUserContainer' className='col-md-12'>
                 {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
                 {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
@@ -360,7 +357,7 @@ const EditUser = ({ ...props }) => {
                     </div>
                 </div>
             </div>
-        )}</UserSessionContext.Consumer>
+        </RequireAuthorization>
 }
 
 export default EditUser;

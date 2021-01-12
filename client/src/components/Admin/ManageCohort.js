@@ -4,8 +4,8 @@ import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
 import TableHeaderManageCohort from './TableHeaderManageCohort';
-import { UserSessionContext } from '../../index';
-import Unauthorized from '../Unauthorized/Unauthorized';
+import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
+
 import './ManageCohort.css';
 import { filter, size } from 'lodash';
 
@@ -327,10 +327,7 @@ class ManageCohort extends Component {
 			);
 		}
 
-		return <UserSessionContext.Consumer>
-			{userSession => (
-				!(userSession && userSession.role === 'SystemAdmin') &&
-				<Unauthorized /> ||
+		return <RequireAuthorization role="SystemAdmin">
 				<div>
 					<h1 className="welcome pg-title">Manage Cohorts</h1>
 					<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
@@ -419,7 +416,7 @@ class ManageCohort extends Component {
 						</div>
 					</div>
 				</div>
-			)}</UserSessionContext.Consumer>;
+			</RequireAuthorization>;
 	}
 }
 

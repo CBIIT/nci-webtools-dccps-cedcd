@@ -6,7 +6,6 @@ import {
     useHistory
 } from "react-router-dom";
 import { parseISO } from 'date-fns';
-import { UserSessionContext } from '../../index';
 import './QuestionnaireHeader.css'
 import allactions from '../../actions'
 
@@ -16,7 +15,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     const sectionStatus = useSelector(state => state.sectionReducer)
     const hasUnsavedChanges = useSelector(state => state.unsavedChangesReducer);
     const cohort = useSelector(state => state.cohortReducer);
-    const userSession = useContext(UserSessionContext);
+    const userSession = useSelector(state => state.user);
     const {
         status,
         publish_time: publishTime,
