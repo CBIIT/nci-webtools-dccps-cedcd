@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { UserSessionContext } from '../../index';
 import './Tab.css';
 
 export default function Tab(props) {
-  const userSession = useContext(UserSessionContext);
+  const userSession = useSelector(state => state.user);
   const cohortId = useSelector(state => state.cohortIDReducer);
   let name;
   let url;

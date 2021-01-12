@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import { UserSessionContext } from '../../index';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import './login-button.css'
 
 
 export default function Header({ props }) {
-    const userSession = useContext(UserSessionContext);
+    const userSession = useSelector(state => state.user);
     // console.dir('in header: ',userSession)
     const logout = async e => {
         e.preventDefault();
@@ -27,7 +27,7 @@ export default function Header({ props }) {
                 </a>
 
                 <div style={{ marginLeft: '10%', marginTop: '20px' }}>
-                    {userSession && <>
+                    {userSession && userSession.role && <>
                         <a
                             className="login-button"
                             href="#"
