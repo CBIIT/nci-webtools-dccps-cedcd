@@ -1,6 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useHistory } from "react-router-dom";
+import {
+    Link,
+    Prompt,
+    useHistory
+  } from "react-router-dom";
 import { parseISO } from 'date-fns';
 import { UserSessionContext } from '../../index';
 import './QuestionnaireHeader.css'
@@ -91,7 +95,11 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </>}
                 
                 {userSession.role === 'CohortAdmin' && <>
-                    Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.  Click this link to <a className="text-decoration-underline" href="/cohort/questionnaire">select a cohort</a> if you want to switch to another cohort.
+                    <Prompt
+                        when={true}
+                        message={location => `Please confirm that all changes have been saved, and that you wish to navigate away from this page.`}
+                    />
+                    Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.  Click this link to <Link className="text-decoration-underline" to="/cohort/questionnaire">select a cohort</Link> if you want to switch to another cohort.
                 </>}
             </div>
         </div>
