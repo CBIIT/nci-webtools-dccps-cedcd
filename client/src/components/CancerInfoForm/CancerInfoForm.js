@@ -220,7 +220,7 @@ const CancerInfoForm = ({ ...props }) => {
         } else {
             updateModal({
                 show: true,
-                header: <span>Confirmation Required</span>,
+                header: <span>Validation Errors</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress?</div>,
                 footer: <div>
                     <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
@@ -247,7 +247,7 @@ const CancerInfoForm = ({ ...props }) => {
         } else {
             updateModal({
                 show: true,
-                header: <span>Confirmation Required</span>,
+                header: <span>Validation Errors</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress and continue to the next section?</div>,
                 footer: <div>
                     <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
@@ -666,7 +666,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         <CenterModal
             show={modal.show}
-            title={modal.title || <span>Confirmation Required</span>}
+            title={modal.title || <span>Validation Errors</span>}
             body={modal.body || <div>There were validation errors. Do you still wish to save your current progress?</div>}
             footer={modal.footer || <div>
                 <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
