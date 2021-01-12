@@ -162,16 +162,12 @@ const EnrollmentCountsForm = ({...props}) => {
     }
 
     return (
-        <div id='enrollmentCountContainer' className='mx-4 px-4'>
+        <div id='enrollmentCountContainer' className="p-3 px-5">
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg}/>}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
 
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
             
-            <div style={{marginTop: '20px', marginBottom: '20px'}}>
-                Record actual, not planned, recruitment counts
-            </div>
-
             <CollapsiblePanelContainer>
                 <CollapsiblePanel
                     panelName='panelA'
@@ -180,8 +176,13 @@ const EnrollmentCountsForm = ({...props}) => {
                     onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}>
                     <form className="row" >
                         <div className="col-12">
-                            <span><label htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
+                            <span><label className="form-label" htmlFor='confirmDate'>B.1{' '}Racial Categories</label></span>
                         </div>
+                        
+                        <div className="col-12 my-1">
+                            Record actual, not planned, recruitment counts
+                        </div>  
+
                     {/*    <div className='d-md-none'>
                             <table className='miniCountsTable col-12'>
                                 <tbody>
@@ -355,7 +356,7 @@ const EnrollmentCountsForm = ({...props}) => {
                             <div className='row align-items-center'>
                                 <div className="col-md-6">
                                     <span>
-                                        <label>
+                                        <label className="form-label" >
                                             B.2{' '}Most recent date enrollment counts were confirmed<span style={{color: 'red'}}>*</span>
                                         </label>
                                     </span>
