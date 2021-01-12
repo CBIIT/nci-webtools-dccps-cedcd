@@ -146,6 +146,7 @@ const EditUser = ({ ...props }) => {
                 website: window.location.origin,
             },
             email: userEmail,
+            template: '/templates/email-owner-template.html',
             topic: 'Cohort(s) Assignment changes on your CEDCD User Account',
         };
         fetch('/api/cohort/sendUserEmail', {

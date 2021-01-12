@@ -83,11 +83,12 @@ class AddNewCohort extends Component {
     let reqBody = {
       templateData: {
         user: userName,
-        cohort: '<li>Cohort: ' + this.state.cohortName + ' (' + this.state.cohortAcronym + ')</li>',
+        cohort: '<li>' + this.state.cohortName + ' (' + this.state.cohortAcronym + ')</li>',
         website: window.location.origin,
       },
       email: userEmail,
-      topic: 'Cohort(s) Assignment changes on your CEDCD User Account',
+      template: '/templates/email-new-cohort-template.html',
+      topic: 'New cohort assigned to your CEDCD User Account',
     };
     fetch('/api/cohort/sendUserEmail', {
       method: "POST",
