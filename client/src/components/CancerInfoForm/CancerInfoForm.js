@@ -7,7 +7,6 @@ import Table from 'react-bootstrap/Table';
 import { postJSON } from '../../services/query';
 import allactions from '../../actions'
 import { fetchCohort } from '../../reducers/cohort';
-import { updateUserSession } from '../../reducers/user';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'

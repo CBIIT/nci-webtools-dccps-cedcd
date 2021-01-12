@@ -11,7 +11,6 @@ import CenterModal from '../controls/modal/modal'
 import FileModal from '../controls/modal/FileModal.js'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
-import { updateUserSession } from '../../reducers/user';
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.scss'
 import cohortErrorActions from '../../actions/cohortErrorActions'
@@ -195,7 +194,7 @@ const CohortForm = ({ ...props }) => {
             }
         })
             .then(res => res.json())
-            .then(async result => {
+            .then(result => {
                 if (result.status === 200) {
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
@@ -203,7 +202,6 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
-                        await dispatch(updateUserSession());
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
