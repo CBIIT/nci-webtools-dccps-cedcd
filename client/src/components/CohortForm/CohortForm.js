@@ -11,6 +11,7 @@ import CenterModal from '../controls/modal/modal'
 import FileModal from '../controls/modal/FileModal.js'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { updateUserSession } from '../../reducers/user';
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.scss'
 import cohortErrorActions from '../../actions/cohortErrorActions'
@@ -20,7 +21,6 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
-import { UserSessionContext } from '../../index';
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -31,7 +31,7 @@ const CohortForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
-    const context = useContext(UserSessionContext);
+    // const context = useContext(UserSessionContext);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -113,9 +113,15 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
                         if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
                         if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
-                        if (currentCohort.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
+
+                        if (currentCohort.enrollment_year_end && currentCohort.enrollment_year_end >= currentCohort.enrollment_year_start && currentCohort.enrollment_year_end <= (new Date()).getFullYear() && errors.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
+
                         if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
-                        if (currentCohort.enrollment_ongoing === 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)); dispatch(allactions.cohortErrorActions.enrollment_year_complete(true)) }
+                        if (currentCohort.enrollment_ongoing === 0) { 
+                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                            if(!currentCohort.enrollment_year_end) dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Filed'))
+                         }
                         if (currentCohort.enrollment_ongoing === 1) {
                             if (currentCohort.enrollment_target && currentCohort.enrollment_target >= 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true))}
                             if (currentCohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
@@ -129,7 +135,10 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.current_age_mean) { dispatch(allactions.cohortErrorActions.current_age_mean(true)) }
                         if (currentCohort.current_age_median) { dispatch(allactions.cohortErrorActions.current_age_median(true)) }
                         if (currentCohort.time_interval) { dispatch(allactions.cohortErrorActions.time_interval(true)) }
-                        if (currentCohort.most_recent_year) { dispatch(allactions.cohortErrorActions.most_recent_year(true)) }
+                        if (currentCohort.most_recent_year){
+                            if(currentCohort.most_recent_year <= (new Date()).getFullYear()) { dispatch(allactions.cohortErrorActions.most_recent_year(true)) }
+                            else dispatch(allactions.cohortErrorActions.most_recent_year(false, 'expecting year in the past'))
+                        }
                         if (currentCohort.strategy_other !== 1) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
                         if ([4, 2, 1].includes(currentCohort.eligible_gender_id)) { dispatch(allactions.cohortErrorActions.eligible_gender_id(true)) }
 
@@ -186,7 +195,7 @@ const CohortForm = ({ ...props }) => {
             }
         })
             .then(res => res.json())
-            .then(result => {
+            .then(async result => {
                 if (result.status === 200) {
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
@@ -194,7 +203,8 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
-                        context.cohorts.push({id: result.newCohortInfo.newCohortID})
+                        await dispatch(updateUserSession());
+                        // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }
@@ -372,8 +382,20 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Out of age range'));     
                 }
             }else{
-                if(fieldName.includes('median')) {dispatch(allactions.cohortErrorActions.current_age_min(true)); dispatch(allactions.cohortErrorActions.current_age_max(true)); dispatch(allactions.cohortErrorActions.current_age_median(true))}
-                else {dispatch(allactions.cohortErrorActions.current_age_min(true)); dispatch(allactions.cohortErrorActions.current_age_max(true)); dispatch(allactions.cohortErrorActions.current_age_mean(true))}
+                if(fieldName.includes('median')) {
+                    dispatch(allactions.cohortErrorActions.current_age_min(true)); 
+                    dispatch(allactions.cohortErrorActions.current_age_max(true)); 
+                    dispatch(allactions.cohortErrorActions.current_age_median(true))
+                    if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > cohort.current_age_max)
+                        dispatch(allactions.cohortErrorActions.current_age_mean(false, 'Out of age range'))
+                }
+                else {
+                    dispatch(allactions.cohortErrorActions.current_age_min(true)); 
+                    dispatch(allactions.cohortErrorActions.current_age_max(true)); 
+                    dispatch(allactions.cohortErrorActions.current_age_mean(true))
+                    if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > cohort.current_age_max)
+                        dispatch(allactions.cohortErrorActions.current_age_median(false, 'Out of age range'))
+                }
             }
         }
     }
@@ -436,7 +458,7 @@ const CohortForm = ({ ...props }) => {
             if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
                 result = 'end year is before start year'
                 else if (value >= cohort.enrollment_year_start){ 
-                    if(cohort.enrollment_year_start <= (new Date()).getFullYear())              
+                    if(cohort.enrollment_year_start && cohort.enrollment_year_start <= (new Date()).getFullYear())              
                         dispatch(allactions.cohortErrorActions.enrollment_year_start(true))
                     else
                         dispatch(allactions.cohortErrorActions.enrollment_year_start(false, 'expecting a year value in the past'))
@@ -651,207 +673,182 @@ const CohortForm = ({ ...props }) => {
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                     If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
                 </div>
-                    <Form>
-                        <CollapsiblePanelContainer>
+                <Form>
+                    <CollapsiblePanelContainer>
 
-                            {/* Cohort Information */}
-                            <CollapsiblePanel
-                                condition={activePanel === 'panelA'}
-                                onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                                panelTitle="Cohort Information">
+                        {/* Cohort Information */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelA'}
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                            panelTitle="Cohort Information">
 
-                                {/* A.1a Cohort Name */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="5">
-                                        A.1a Cohort Name
-                                    </Form.Label>
-                                    <Col sm="7">
-                                        <Form.Control type="text" value={cohort.cohort_name} readOnly/>
-                                    </Col>
-                                </Form.Group>
-    
-                                {/* A.1b Cohort Abbreviation */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="5">
-                                        A.1b Cohort Abbreviation
-                                    </Form.Label>
-                                    <Col sm="3">
-                                        <Form.Control type="text" value={cohort.cohort_acronym} readOnly />
-                                    </Col>
-                                </Form.Group>
-                    
-                                {/* A.2 Cohort Description */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.2 Cohort Description
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <p>
-                                            Please provide a short paragraph describing your cohort. This will be used as an overall 
-                                            narrative description of your cohort on the CEDCD website.  You may provide a link to a 
-                                            description on your cohort’s website.
-                                        </p>
-                                    </Col>
-                                    <Col sm="12">
-                                        <Form.Control as="textarea" rows={15} 
-                                            placeholder={"Max of 5000 characters"}
-                                            style={{ fontSize: '16px' }}
-                                            maxLength="5000" 
-                                            value={cohort.cohort_description} 
-                                            onChange={e => 
-                                                dispatch(allactions.cohortActions.cohort_description(e.target.value))
-                                            } 
-                                            readOnly={isReadOnly}/>
-                                    </Col>
-                                </Form.Group>
+                            {/* A.1a Cohort Name */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="5">
+                                    A.1a Cohort Name
+                                </Form.Label>
+                                <Col sm="7">
+                                    <Form.Control type="text" value={cohort.cohort_name} readOnly/>
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.3 Cohort Website */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.3 Does the cohort have a website? Please specify if applicable
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        {errors.cohort_web_site && saved ? 
-                                            <Reminder message={errors.cohort_web_site}>
-                                                <Form.Control type="text" style={{ color: 'red', border: '1px solid red' }} 
-                                                    placeholder='Max of 200 characters' 
-                                                    maxLength='200'
-                                                    value={cohort.cohort_web_site} 
-                                                    onChange={e => 
-                                                        dispatch(allactions.cohortActions.cohort_web_site(e.target.value))
-                                                    }
-                                                    onBlur={e => 
-                                                        populateErrors('cohort_web_site', e.target.value, false, 'string') 
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            </Reminder> : 
-                                            <Form.Control type="text"
+                            {/* A.1b Cohort Abbreviation */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="5">
+                                    A.1b Cohort Abbreviation
+                                </Form.Label>
+                                <Col sm="3">
+                                    <Form.Control type="text" value={cohort.cohort_acronym} readOnly />
+                                </Col>
+                            </Form.Group>
+                
+                            {/* A.2 Cohort Description */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.2 Cohort Description
+                                </Form.Label>
+                                <Col sm="12">
+                                    <p>
+                                        Please provide a short paragraph describing your cohort. This will be used as an overall 
+                                        narrative description of your cohort on the CEDCD website.  You may provide a link to a 
+                                        description on your cohort’s website.
+                                    </p>
+                                </Col>
+                                <Col sm="12">
+                                    <Form.Control as="textarea" rows={15} 
+                                        placeholder={"Max of 5000 characters"}
+                                        style={{ fontSize: '16px' }}
+                                        maxLength="5000" 
+                                        value={cohort.cohort_description} 
+                                        onChange={e => 
+                                            dispatch(allactions.cohortActions.cohort_description(e.target.value))
+                                        } 
+                                        readOnly={isReadOnly}/>
+                                </Col>
+                            </Form.Group>
+
+                            {/* A.3 Cohort Website */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.3 Does the cohort have a website? Please specify if applicable
+                                </Form.Label>
+                                <Col sm="12">
+                                    {errors.cohort_web_site && saved ? 
+                                        <Reminder message={errors.cohort_web_site}>
+                                            <Form.Control type="text" style={{ color: 'red', border: '1px solid red' }} 
                                                 placeholder='Max of 200 characters' 
-                                                maxLength='200' 
+                                                maxLength='200'
                                                 value={cohort.cohort_web_site} 
                                                 onChange={e => 
                                                     dispatch(allactions.cohortActions.cohort_web_site(e.target.value))
-                                                } 
+                                                }
                                                 onBlur={e => 
                                                     populateErrors('cohort_web_site', e.target.value, false, 'string') 
-                                                }
+                                                } 
                                                 readOnly={isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
-                                
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <Person id="completerInfo" 
-                                            type="completerCountry" 
-                                            name="completerName" 
-                                            position="completerPosition" 
-                                            phone="completerPhone" 
-                                            email="completerEmail" 
-                                            marginWidth="5"
-                                            inputWidth="3"
-                                            errors={errors} 
-                                            disabled={isReadOnly} 
-                                            displayStyle={saved} />
-                                    </Col>
-                                </Form.Group>
+                                        </Reminder> : 
+                                        <Form.Control type="text"
+                                            placeholder='Max of 200 characters' 
+                                            maxLength='200' 
+                                            value={cohort.cohort_web_site} 
+                                            onChange={e => 
+                                                dispatch(allactions.cohortActions.cohort_web_site(e.target.value))
+                                            } 
+                                            onBlur={e => 
+                                                populateErrors('cohort_web_site', e.target.value, false, 'string') 
+                                            }
+                                            readOnly={isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
+                            
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    <Person id="completerInfo" 
+                                        type="completerCountry" 
+                                        name="completerName" 
+                                        position="completerPosition" 
+                                        phone="completerPhone" 
+                                        email="completerEmail" 
+                                        marginWidth="5"
+                                        inputWidth="3"
+                                        errors={errors} 
+                                        disabled={isReadOnly} 
+                                        displayStyle={saved} />
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.4b Contact Person */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
-                                    </Form.Label>
-                                    <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
-                                        Is this the same person who completed this form?
-                                    </Form.Label>
-                                    <Col sm="6" className="align-self-center">
-                                        <div key="radio">
-                                            {errors.clarification_contact && saved ? 
-                                                <Reminder message={errors.clarification_contact}>
-                                                    <Form.Check type="radio"
-                                                        id="clarification-contact-radio-no"
-                                                        inline
-                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                        name='clarification_contact'>
-                                                        <Form.Check.Input bsPrefix  
-                                                            type="radio"
-                                                            className="mr-2"
-                                                            checked={cohort.clarification_contact === 0} 
-                                                            onClick={e => {
-                                                                //setPerson(e, '', '', '', '', 0, 'contacter')
-                                                                if(!isReadOnly) {
-                                                                    dispatch(allactions.cohortActions.clarification_contact(0))
-                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
-                                                                }
-                                                            }} />
-                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            No
-                                                        </Form.Check.Label>
-                                                    </Form.Check>                                              
-                                                </Reminder> :
+                            {/* A.4b Contact Person */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
+                                    Is this the same person who completed this form?
+                                </Form.Label>
+                                <Col sm="6" className="align-self-center">
+                                    <div key="radio">
+                                        {errors.clarification_contact && saved ? 
+                                            <Reminder message={errors.clarification_contact}>
                                                 <Form.Check type="radio"
                                                     id="clarification-contact-radio-no"
                                                     inline
+                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
                                                     name='clarification_contact'>
-                                                    <Form.Check.Input bsPrefix
+                                                    <Form.Check.Input bsPrefix  
                                                         type="radio"
                                                         className="mr-2"
                                                         checked={cohort.clarification_contact === 0} 
                                                         onClick={e => {
-                                                            //!isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
+                                                            //setPerson(e, '', '', '', '', 0, 'contacter')
                                                             if(!isReadOnly) {
-                                                                dispatch(allactions.cohortActions.clarification_contact(0));
+                                                                dispatch(allactions.cohortActions.clarification_contact(0))
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
                                                                 dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
-                                                            } 
+                                                            }
                                                         }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         No
                                                     </Form.Check.Label>
-                                                </Form.Check>
-                                            }
+                                                </Form.Check>                                              
+                                            </Reminder> :
+                                            <Form.Check type="radio"
+                                                id="clarification-contact-radio-no"
+                                                inline
+                                                name='clarification_contact'>
+                                                <Form.Check.Input bsPrefix
+                                                    type="radio"
+                                                    className="mr-2"
+                                                    checked={cohort.clarification_contact === 0} 
+                                                    onClick={e => {
+                                                        //!isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
+                                                        if(!isReadOnly) {
+                                                            dispatch(allactions.cohortActions.clarification_contact(0));
+                                                            dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.contacterPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                        } 
+                                                    }} />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    No
+                                                </Form.Check.Label>
+                                            </Form.Check>
+                                        }
 
-                                            {errors.clarification_contact && saved ? 
-                                                <Reminder message={errors.clarification_contact}>
-                                                    <Form.Check type="radio"
-                                                        id="clarification-contact-radio-yes"
-                                                        inline
-                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                        name="clarification_contact">
-                                                        <Form.Check.Input bsPrefix
-                                                            type="radio"
-                                                            className="mr-2"
-                                                            checked={cohort.clarification_contact === 1} 
-                                                            onClick={e => {
-                                                                //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
-                                                                if(!isReadOnly) {
-                                                                    setPerson(e, '', '', '', '', 1, 'contacter');
-                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterName(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                                                            }} 
-                                                            }/>
-                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            Yes 
-                                                        </Form.Check.Label>
-                                                    </Form.Check>
-                                                </Reminder> :
+                                        {errors.clarification_contact && saved ? 
+                                            <Reminder message={errors.clarification_contact}>
                                                 <Form.Check type="radio"
                                                     id="clarification-contact-radio-yes"
                                                     inline
-                                                    style={{ fontWeight: 'normal '}}
+                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
                                                     name="clarification_contact">
                                                     <Form.Check.Input bsPrefix
                                                         type="radio"
@@ -866,602 +863,617 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                                                        }
-                                                        }} />
+                                                        }} 
+                                                        }/>
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        Yes
+                                                        Yes 
                                                     </Form.Check.Label>
                                                 </Form.Check>
-                                            }
-                                        </div>
-                                    </Col>
-                                    <Col sm="12">
-                                        <Person id='contacterInfo'
-                                            type="contacterCountry" 
-                                            name="contacterName" 
-                                            position="contacterPosition" 
-                                            phone="contacterPhone" 
-                                            email="contacterEmail" 
-                                            marginWidth="5"
-                                            inputWidth="3"
-                                            errors={errors}
-                                            disabled={cohort.clarification_contact||isReadOnly} 
-                                            displayStyle={saved} 
-                                            leftPadding="0" />
-                                    </Col>
-                                </Form.Group>
-                            </CollapsiblePanel>
-                            
-                            {/* Principal Investigators */}
-                            <CollapsiblePanel
-                                condition={activePanel === 'panelB'}
-                                onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                                panelTitle="Principal Investigators">
-                                
-                                {/* A.5 Cohort Principal Investigator(s) */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.5 Cohort Principal Investigator(s)
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <button className="btn btn-primary btn-sm mb-1" 
-                                            onClick={e => { 
-                                                e.preventDefault(); 
-                                                dispatch(allactions.cohortActions.addInvestigator()); 
-                                                let idx = cohort.investigators.length; 
-                                                dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); 
-                                                dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); 
-                                                dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }
-                                            } 
-                                            disabled={isReadOnly}>
-                                            Add New Investigator
-                                        </button>
-                                    </Col>
-                                    {
-                                        cohort.investigators.map((item, idx) => 
-                                            <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
-                                                <Investigator key={idx} 
-                                                    id={'investigator_' + idx} 
-                                                    name={'investigator_name_' + idx} 
-                                                    institution={'investigator_inst_' + idx} 
-                                                    email={'investigator_email_' + idx} 
-                                                    handleRemove={removeInvestigator} 
-                                                    errors={errors} 
-                                                    disabled={isReadOnly} 
-                                                    displayStyle={saved} />
-                                            </Col>
-                                        )
-                                    }
-                                </Form.Group>
-
-                                {/* A.6 Investigator Contact */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.6 If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?
-                                    </Form.Label>
-                                    <Col sm="6">
-                                            <Person id='collaboratorInfo'
-                                                type="collaboratorCountry" 
-                                                name="collaboratorName" 
-                                                position="collaboratorPosition" 
-                                                phone="collaboratorPhone" 
-                                                email="collaboratorEmail" 
-                                                marginWidth="6"
-                                                inputWidth="6"
-                                                errors={errors} 
-                                                disabled={cohort.sameAsSomeone === 0 || cohort.sameAsSomeone === 1 || isReadOnly} 
-                                            displayStyle={saved}/>
-                                    </Col>
-                                    <Col sm="6">
-                                        <div key="checkbox">
-                                            <Form.Check type="checkbox"
-                                                className="pl-0"
-                                                id="default-completerName-check"
-                                                name='sameAsCompleted'>
+                                            </Reminder> :
+                                            <Form.Check type="radio"
+                                                id="clarification-contact-radio-yes"
+                                                inline
+                                                style={{ fontWeight: 'normal '}}
+                                                name="clarification_contact">
                                                 <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
+                                                    type="radio"
                                                     className="mr-2"
-                                                    checked={cohort.sameAsSomeone === 0} 
+                                                    checked={cohort.clarification_contact === 1} 
                                                     onClick={e => {
-                                                        //!isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') 
+                                                        //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
                                                         if(!isReadOnly) {
-                                                            setPerson(e, '', '', '', '', 0, 'collaborator');
-                                                            if(e.target.checked)
-                                                            {
-                                                                dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
-                                                            }
-                                                            else{
-                                                                dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
-                                                            }
-                                                    }     
+                                                            setPerson(e, '', '', '', '', 1, 'contacter');
+                                                            dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                    }
                                                     }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Same as the person who completed the form(4a)
+                                                    Yes
                                                 </Form.Check.Label>
                                             </Form.Check>
-                                            <Form.Check type="checkbox" 
+                                        }
+                                    </div>
+                                </Col>
+                                <Col sm="12">
+                                    <Person id='contacterInfo'
+                                        type="contacterCountry" 
+                                        name="contacterName" 
+                                        position="contacterPosition" 
+                                        phone="contacterPhone" 
+                                        email="contacterEmail" 
+                                        marginWidth="5"
+                                        inputWidth="3"
+                                        errors={errors}
+                                        disabled={cohort.clarification_contact||isReadOnly} 
+                                        displayStyle={saved} 
+                                        leftPadding="0" />
+                                </Col>
+                            </Form.Group>
+                        </CollapsiblePanel>
+                        
+                        {/* Principal Investigators */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelB'}
+                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                            panelTitle="Principal Investigators">
+                            
+                            {/* A.5 Cohort Principal Investigator(s) */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.5 Cohort Principal Investigator(s)
+                                </Form.Label>
+                                <Col sm="12">
+                                    <button className="btn btn-primary btn-sm mb-1" 
+                                        onClick={e => { 
+                                            e.preventDefault(); 
+                                            dispatch(allactions.cohortActions.addInvestigator()); 
+                                            let idx = cohort.investigators.length; 
+                                            dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); 
+                                            dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); 
+                                            dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }
+                                        } 
+                                        disabled={isReadOnly}>
+                                        Add New Investigator
+                                    </button>
+                                </Col>
+                                {
+                                    cohort.investigators.map((item, idx) => 
+                                        <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
+                                            <Investigator key={idx} 
+                                                id={'investigator_' + idx} 
+                                                name={'investigator_name_' + idx} 
+                                                institution={'investigator_inst_' + idx} 
+                                                email={'investigator_email_' + idx} 
+                                                handleRemove={removeInvestigator} 
+                                                errors={errors} 
+                                                disabled={isReadOnly} 
+                                                displayStyle={saved} />
+                                        </Col>
+                                    )
+                                }
+                            </Form.Group>
+
+                            {/* A.6 Investigator Contact */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.6 If an investigator is interested in collaborating with your cohort on a new project, whom should they contact?
+                                </Form.Label>
+                                <Col sm="6">
+                                        <Person id='collaboratorInfo'
+                                            type="collaboratorCountry" 
+                                            name="collaboratorName" 
+                                            position="collaboratorPosition" 
+                                            phone="collaboratorPhone" 
+                                            email="collaboratorEmail" 
+                                            marginWidth="6"
+                                            inputWidth="6"
+                                            errors={errors} 
+                                            disabled={cohort.sameAsSomeone === 0 || cohort.sameAsSomeone === 1 || isReadOnly} 
+                                        displayStyle={saved}/>
+                                </Col>
+                                <Col sm="6">
+                                    <div key="checkbox">
+                                        <Form.Check type="checkbox"
+                                            className="pl-0"
+                                            id="default-completerName-check"
+                                            name='sameAsCompleted'>
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2"
+                                                checked={cohort.sameAsSomeone === 0} 
+                                                onClick={e => {
+                                                    //!isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') 
+                                                    if(!isReadOnly) {
+                                                        setPerson(e, '', '', '', '', 0, 'collaborator');
+                                                        if(e.target.checked)
+                                                        {
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                        }
+                                                        else{
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
+                                                        }
+                                                }     
+                                                }} />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Same as the person who completed the form(4a)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-contacterName-check"
+                                            name="sameAsContacted">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox"
+                                                className="mr-2"
+                                                checked={cohort.sameAsSomeone === 1} 
+                                                onClick={e => {
+                                                    if(!isReadOnly) {
+                                                        setPerson(e, '', '', '', '', 1, 'collaborator')
+                                                        if(e.target.checked)
+                                                        {
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                                                        }
+                                                        else{
+                                                            dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
+                                                        }
+                                                }}
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Same as the contact person for clarification of this form(4b)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </div>
+                                </Col>
+
+                            </Form.Group>
+                        </CollapsiblePanel>
+
+                        {/* Eligibility & Enrollment */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelC'}
+                            onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                            panelTitle="Eligibility & Enrollment">
+
+                            {/* A.7 Eligibility Criteria */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.7 Eligibility Criteria
+                                    {errors.eligible_gender_id && saved && 
+                                        <div>
+                                            <span style={{ color: 'red', fontSize: '16px', paddingLeft: '0' }}>
+                                                {errorMsg}
+                                            </span> 
+                                        </div>
+                                    }
+                                </Form.Label>
+                                <Col sm="12" className="p-0 mb-3">
+                                    <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Eligible sex<span style={{color: 'red'}}>*</span>
+                                    </Form.Label>
+                                    <Col sm="6">
+                                        <div key="radio">
+                                            <Form.Check type="radio" 
                                                 className="pl-0"
-                                                id="default-contacterName-check"
-                                                name="sameAsContacted">
+                                                id="default-gender-all"
+                                                name="eligible_gender_id">
                                                 <Form.Check.Input bsPrefix
-                                                    type="checkbox"
-                                                    className="mr-2"
-                                                    checked={cohort.sameAsSomeone === 1} 
-                                                    onClick={e => {
-                                                        if(!isReadOnly) {
-                                                            setPerson(e, '', '', '', '', 1, 'collaborator')
-                                                            if(e.target.checked)
-                                                            {
-                                                                dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(true))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
-                                                            }
-                                                            else{
-                                                                dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
-                                                            }
-                                                    }}
+                                                    type="radio" 
+                                                    className="mr-2" 
+                                                    value='4' 
+                                                    checked={cohort.eligible_gender_id === 4} 
+                                                    onChange={() => 
+                                                        !isReadOnly && removeEligbleGenderError(4) 
                                                     } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Same as the contact person for clarification of this form(4b)
+                                                    All
                                                 </Form.Check.Label>
                                             </Form.Check>
-                                        </div>
-                                    </Col>
-
-                                </Form.Group>
-                            </CollapsiblePanel>
-
-                            {/* Eligibility & Enrollment */}
-                            <CollapsiblePanel
-                                condition={activePanel === 'panelC'}
-                                onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                                panelTitle="Eligibility & Enrollment">
-
-                                {/* A.7 Eligibility Criteria */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.7 Eligibility Criteria
-                                        {errors.eligible_gender_id && saved && 
-                                            <div>
-                                                <span style={{ color: 'red', fontSize: '16px', paddingLeft: '0' }}>
-                                                    {errorMsg}
-                                                </span> 
-                                            </div>
-                                        }
-                                    </Form.Label>
-                                    <Col sm="12" className="p-0 mb-3">
-                                        <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Eligible sex<span style={{color: 'red'}}>*</span>
-                                        </Form.Label>
-                                        <Col sm="6">
-                                            <div key="radio">
-                                                <Form.Check type="radio" 
-                                                    className="pl-0"
-                                                    id="default-gender-all"
-                                                    name="eligible_gender_id">
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio" 
-                                                        className="mr-2" 
-                                                        value='4' 
-                                                        checked={cohort.eligible_gender_id === 4} 
-                                                        onChange={() => 
-                                                            !isReadOnly && removeEligbleGenderError(4) 
-                                                        } />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        All
-                                                    </Form.Check.Label>
-                                                </Form.Check>
-                                                <Form.Check type="radio" 
-                                                    className="pl-0"
-                                                    id="default-gender-males"
-                                                    name="eligible_gender_id">
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio" 
-                                                        className="mr-2" 
-                                                        value="2" 
-                                                        checked={cohort.eligible_gender_id === 2} 
-                                                        onChange={() => 
-                                                            !isReadOnly && removeEligbleGenderError(2) 
-                                                        } />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        Males only
-                                                    </Form.Check.Label>
-                                                </Form.Check>
-                                                <Form.Check type="radio" 
-                                                    className="pl-0"
-                                                    id="default-gender-females"
-                                                    name="eligible_gender_id">
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio" 
-                                                        className="mr-2" 
-                                                        value="1"
-                                                        checked={cohort.eligible_gender_id === 1} 
-                                                        onChange={() => 
-                                                            !isReadOnly && removeEligbleGenderError(1) 
-                                                        } />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        Females only
-                                                    </Form.Check.Label>
-                                                </Form.Check>
-                                            </div>
-                                        </Col>
-                                    </Col>
-                                    <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
-                                        Baseline population consists of
-                                    </Form.Label>
-                                    <Col sm="6" className="align-self-center">
-                                        <div key="checkbox">
-                                            <Form.Check type="checkbox" 
+                                            <Form.Check type="radio" 
                                                 className="pl-0"
-                                                id="default-cancerSurvivors"
-                                                name="cancerSurvivors">
+                                                id="default-gender-males"
+                                                name="eligible_gender_id">
                                                 <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
+                                                    type="radio" 
                                                     className="mr-2" 
-                                                    checked={cohort.eligible_disease} 
+                                                    value="2" 
+                                                    checked={cohort.eligible_gender_id === 2} 
                                                     onChange={() => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
-                                                    }  />
+                                                        !isReadOnly && removeEligbleGenderError(2) 
+                                                    } />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Cancer survivors only, specify cancer site(s)
+                                                    Males only
+                                                </Form.Check.Label>
+                                            </Form.Check>
+                                            <Form.Check type="radio" 
+                                                className="pl-0"
+                                                id="default-gender-females"
+                                                name="eligible_gender_id">
+                                                <Form.Check.Input bsPrefix
+                                                    type="radio" 
+                                                    className="mr-2" 
+                                                    value="1"
+                                                    checked={cohort.eligible_gender_id === 1} 
+                                                    onChange={() => 
+                                                        !isReadOnly && removeEligbleGenderError(1) 
+                                                    } />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    Females only
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
-                                    {/* </Col>
-                                    <Col sm={{offset: "6", span: "6"}}> */}
-                                        <Form.Control type="text" className='text-capitalize'
-                                            name='cancerSites' 
-                                            value={cohort.eligible_disease_cancer_specify} 
-                                            maxLength="100" 
-                                            placeholder="Max of 100 characters" 
-                                            readOnly={!cohort.eligible_disease || isReadOnly} 
-                                            onChange={e => 
-                                                dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
-                                            } />
                                     </Col>
-                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
-                                        Please specify any eligibility criteria in addition to age and sex
+                                </Col>
+                                <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
+                                    Baseline population consists of
+                                </Form.Label>
+                                <Col sm="6" className="align-self-center">
+                                    <div key="checkbox">
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-cancerSurvivors"
+                                            name="cancerSurvivors">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.eligible_disease} 
+                                                onChange={() => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
+                                                }  />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Cancer survivors only, specify cancer site(s)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </div>
+                                {/* </Col>
+                                <Col sm={{offset: "6", span: "6"}}> */}
+                                    <Form.Control type="text" className='text-capitalize'
+                                        name='cancerSites' 
+                                        value={cohort.eligible_disease_cancer_specify} 
+                                        maxLength="100" 
+                                        placeholder="Max of 100 characters" 
+                                        readOnly={!cohort.eligible_disease || isReadOnly} 
+                                        onChange={e => 
+                                            dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
+                                        } />
+                                </Col>
+                                <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
+                                    Please specify any eligibility criteria in addition to age and sex
+                                </Form.Label>
+                                <Col sm="12">
+                                    <Form.Control type="text" 
+                                        placeholder='Max of 100 characters'
+                                        maxLength="100" 
+                                        name='eligible_disease_other_specify' 
+                                        value={cohort.eligible_disease_other_specify} 
+                                        onChange={e => 
+                                            !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
+                                        } 
+                                        readOnly={isReadOnly} />
+                                </Col>
+                            </Form.Group>
+                                
+                            {/* A.8 Enrollment Information */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.8 Enrollment Information
+                                </Form.Label>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
                                     </Form.Label>
-                                    <Col sm="12">
-                                        <Form.Control type="text" 
-                                            placeholder='Max of 100 characters'
-                                            maxLength="100" 
-                                            name='eligible_disease_other_specify' 
-                                            value={cohort.eligible_disease_other_specify} 
-                                            onChange={e => 
-                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
-                                            } 
-                                            readOnly={isReadOnly} />
-                                    </Col>
-                                </Form.Group>
-                                    
-                                {/* A.8 Enrollment Information */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.8 Enrollment Information
-                                    </Form.Label>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_total && saved ? 
-                                                <Reminder message={errors.enrollment_total}>
-                                                    <Form.Control type="text"  
-                                                        style={{ color: 'red', border: '1px solid red' }}
-                                                        name='enrollment_total' 
-                                                        value={cohort.enrollment_total} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateErrors('enrollment_total', e.target.value, true, 'number')
-                                                        } />
-                                                </Reminder> : 
-                                                <Form.Control type="text" 
+                                    <Col sm="2">
+                                        {errors.enrollment_total && saved ? 
+                                            <Reminder message={errors.enrollment_total}>
+                                                <Form.Control type="text"  
+                                                    style={{ color: 'red', border: '1px solid red' }}
                                                     name='enrollment_total' 
                                                     value={cohort.enrollment_total} 
                                                     onChange={e => 
                                                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
                                                     } 
                                                     onBlur={e => 
-                                                        populateErrors('enrollment_total', e.target.value, true, 'number') 
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
+                                                        populateErrors('enrollment_total', e.target.value, true, 'number')
+                                                    } />
+                                            </Reminder> : 
+                                            <Form.Control type="text" 
+                                                name='enrollment_total' 
+                                                value={cohort.enrollment_total} 
+                                                onChange={e => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateErrors('enrollment_total', e.target.value, true, 'number') 
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Started in year<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_year_start && saved ? 
-                                                <Reminder message={errors.enrollment_year_start}>
-                                                    <Form.Control type="text" 
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='enrollment_year_start' 
-                                                        placeholder='yyyy' 
-                                                        value={cohort.enrollment_year_start} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
-                                                        } />
-                                                </Reminder> :
-                                                <Form.Control   
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Started in year<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_year_start && saved ? 
+                                            <Reminder message={errors.enrollment_year_start}>
+                                                <Form.Control type="text" 
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='enrollment_year_start' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_start} 
                                                     onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                     } 
                                                     onBlur={e => 
-                                                        populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
+                                                        populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
+                                                    } />
+                                            </Reminder> :
+                                            <Form.Control   
+                                                name='enrollment_year_start' 
+                                                placeholder='yyyy' 
+                                                value={cohort.enrollment_year_start} 
+                                                onChange={e => 
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Ended in year<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_year_end && saved ? 
-                                                <Reminder message={errors.enrollment_year_end}>
-                                                    <input style={{ color: 'red', border: '1px solid red' }} 
-                                                        className='form-control' 
-                                                        name='enrollment_year_end' 
-                                                        placeholder='yyyy' 
-                                                        value={cohort.enrollment_year_end} 
-                                                        onChange={e => {
-                                                            if(!isReadOnly)
-                                                            {
-                                                                dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                                if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
-                                                                    batch( () => {        
-                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    })
-                                                                }
-                                                            }
-                                                        } }
-                                                        onBlur={e => 
-                                                            populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
-                                                        } />
-                                                </Reminder> : 
-                                                <Form.Control type="text" className='text-capitalize'
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Ended in year
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_year_end && saved ? 
+                                            <Reminder message={errors.enrollment_year_end}>
+                                                <input style={{ color: 'red', border: '1px solid red' }} 
                                                     className='form-control' 
                                                     name='enrollment_year_end' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_end} 
-                                                    onChange={e => { // if it is already ended turn off on going
+                                                    onChange={e => {
                                                         if(!isReadOnly)
-                                                            {
-                                                                dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                                if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
-                                                                    batch( () => {            
-                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    })
-                                                                }
+                                                        {
+                                                            dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                            if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
+                                                                batch( () => {        
+                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                })
                                                             }
+                                                        }
                                                     } }
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
+                                                    } />
+                                            </Reminder> : 
+                                            <Form.Control type="text" className='text-capitalize'
+                                                className='form-control' 
+                                                name='enrollment_year_end' 
+                                                placeholder='yyyy' 
+                                                value={cohort.enrollment_year_end} 
+                                                onChange={e => { // if it is already ended turn off on going
+                                                    if(!isReadOnly)
+                                                        {
+                                                            dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                            if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
+                                                                batch( () => {            
+                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                })
+                                                            }
+                                                        }
+                                                } }
+                                                onBlur={e => 
+                                                    populateErrors('enrollment_year_end', e.target.value, cohort.enrollment_ongoing===0, 'endyear') 
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>   
-                                        </Form.Label>
-                                        <Col sm="2" className="align-self-center">
-                                            <div key="radio">
-                                                {errors.enrollment_ongoing && saved ? 
-                                                    <Reminder message='Required Field'>
-                                                        <Form.Check type="radio"
-                                                            id="enrollment-ongoing-radio-no"
-                                                            inline
-                                                            style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                            name='enrollment_ongoing'>
-                                                            <Form.Check.Input bsPrefix  
-                                                                type="radio"
-                                                                className="mr-2"
-                                                                // value='0' 
-                                                                checked={cohort.enrollment_ongoing === 0} 
-                                                                onClick={() => {
-                                                                    if(!isReadOnly || cohort.enrollment_year_end || errors.enrollment_year_end){
-                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    }
-                                                                }} />
-                                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                                No
-                                                            </Form.Check.Label>
-                                                        </Form.Check>
-                                                    </Reminder> : 
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>   
+                                    </Form.Label>
+                                    <Col sm="2" className="align-self-center">
+                                        <div key="radio">
+                                            {errors.enrollment_ongoing && saved ? 
+                                                <Reminder message='Required Field'>
                                                     <Form.Check type="radio"
                                                         id="enrollment-ongoing-radio-no"
                                                         inline
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
                                                         name='enrollment_ongoing'>
-                                                        <Form.Check.Input bsPrefix
+                                                        <Form.Check.Input bsPrefix  
                                                             type="radio"
                                                             className="mr-2"
                                                             // value='0' 
                                                             checked={cohort.enrollment_ongoing === 0} 
-                                                            onClick={e => {
-                                                                if (!isReadOnly|| cohort.enrollment_year_end || errors.enrollment_year_end) {
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            onClick={() => {
+                                                                if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
+                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            No
+                                                            No 
                                                         </Form.Check.Label>
                                                     </Form.Check>
-                                                }
-
-                                                {errors.enrollment_ongoing && saved ? 
-                                                    <Reminder message='Required Field'>
-                                                        <Form.Check type="radio"
-                                                            id="enrollment-ongoing-radio-yes"
-                                                            inline
-                                                            style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                            name='enrollment_ongoing'>
-                                                            <Form.Check.Input bsPrefix  
-                                                                type="radio"
-                                                                className="mr-2"
-                                                                // value='1' 
-                                                                checked={cohort.enrollment_ongoing === 1} 
-                                                                onClick={() => {
-                                                                    if(!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)){
-                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                        !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                                        !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
-                                                                    }
-                                                                }} />
-                                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                                Yes
-                                                            </Form.Check.Label>
-                                                        </Form.Check>
-                                                    </Reminder> : 
+                                                </Reminder> : 
+                                                <Form.Check type="radio"
+                                                    id="enrollment-ongoing-radio-no"
+                                                    inline
+                                                    name='enrollment_ongoing'>
+                                                    <Form.Check.Input bsPrefix
+                                                        type="radio"
+                                                        className="mr-2"
+                                                        // value='0' 
+                                                        checked={cohort.enrollment_ongoing === 0} 
+                                                        onClick={e => {
+                                                            if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                                dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            }
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        No 
+                                                    </Form.Check.Label>
+                                                </Form.Check>
+                                            }
+                                            {errors.enrollment_ongoing && saved ? 
+                                                <Reminder message='Required Field'>
                                                     <Form.Check type="radio"
                                                         id="enrollment-ongoing-radio-yes"
                                                         inline
-                                                        name="enrollment_ongoing">
-                                                        <Form.Check.Input type='radio' 
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                        name='enrollment_ongoing'>
+                                                        <Form.Check.Input bsPrefix  
+                                                            type="radio"
                                                             className="mr-2"
                                                             // value='1' 
                                                             checked={cohort.enrollment_ongoing === 1} 
-                                                            onClick={e => {
-                                                                if (!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)) {
+                                                            onClick={() => {
+                                                                if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                    
+                                                                    errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
-                                                                    !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                                    !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                                    !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             Yes
                                                         </Form.Check.Label>
                                                     </Form.Check>
-                                                } 
-                                            </div>
-                                        </Col>
-                                    </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_target && saved ? 
-                                                <Reminder message={errors.enrollment_target}>
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='enrollment_target' 
-                                                        value={cohort.enrollment_target} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
-                                                        } 
-                                                        onBlur={e => {
-                                                            populateErrors('enrollment_target', e.target.value, true, 'number')
-                                                        }
-                                                        } 
-                                                        disabled={cohort.enrollment_ongoing == 0} />
                                                 </Reminder> : 
+                                                <Form.Check type="radio"
+                                                    id="enrollment-ongoing-radio-yes"
+                                                    inline
+                                                    name="enrollment_ongoing">
+                                                    <Form.Check.Input type='radio' 
+                                                        className="mr-2"
+                                                        checked={cohort.enrollment_ongoing === 1} 
+                                                        onClick={e => {
+                                                            if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
+                                                                dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                                errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
+                                                                !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                            }
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        Yes
+                                                    </Form.Check.Label>
+                                                </Form.Check>
+                                            } 
+                                        </div>
+                                    </Col>
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_target && saved ? 
+                                            <Reminder message={errors.enrollment_target}>
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='enrollment_target' 
                                                     value={cohort.enrollment_target} 
-                                                    onChange={e =>
+                                                    onChange={e => 
                                                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
                                                     } 
                                                     onBlur={e => {
-                                                            if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_target', e.target.value, true, 'number')
-                                                        }
+                                                        if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    }
                                                     } 
-                                                    readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
-                                            }
-                                        </Col>
+                                                    disabled={cohort.enrollment_ongoing == 0} />
+                                            </Reminder> : 
+                                            <Form.Control type="text" className='text-capitalize'
+                                                name='enrollment_target' 
+                                                value={cohort.enrollment_target} 
+                                                onChange={e =>
+                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
+                                                } 
+                                                onBlur={e => {
+                                                        if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    }
+                                                } 
+                                                readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_year_complete && saved ? 
-                                                <Reminder message={errors.enrollment_year_complete}>
-                                                    <Form.Control type="text" 
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='enrollment_year_complete' 
-                                                        placeholder='yyyy' 
-                                                        value={cohort.enrollment_year_complete} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateErrors('enrollment_year_complete', e.target.value, true, 'year')
-                                                        } 
-                                                        disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
-                                                </Reminder> : 
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_year_complete && saved ? 
+                                            <Reminder message={errors.enrollment_year_complete}>
                                                 <Form.Control type="text" 
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='enrollment_year_complete' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_complete} 
                                                     onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                        dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                     }
-                                                    onBlur={e => 
-                                                        populateErrors('enrollment_year_complete', e.target.value, true, 'year')
-                                                    } 
-                                                    readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
-                                            }
-                                        </Col>
+                                                    onBlur={e => {
+                                                        if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                                    } }
+                                                    disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
+                                            </Reminder> : 
+                                            <Form.Control type="text" 
+                                                name='enrollment_year_complete' 
+                                                placeholder='yyyy' 
+                                                value={cohort.enrollment_year_complete} 
+                                                onChange={e => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                }
+                                                onBlur={e => {
+                                                    if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                                } }
+                                                readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="4">
-                                            <InputGroup>
-                                                {errors.enrollment_age_min && saved ? 
-                                                    <Reminder message={errors.enrollment_age_min}>
-                                                        <Form.Control type="text" className='text-capitalize'
-                                                            style={{ color: 'red', border: '1px solid red' }} 
-                                                            name='enrollment_age_min' 
-                                                            value={cohort.enrollment_age_min} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
-                                                            } 
-                                                            onBlur={e => 
-                                                                populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
-                                                            } />
-                                                    </Reminder> : 
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="4">
+                                        <InputGroup>
+                                            {errors.enrollment_age_min && saved ? 
+                                                <Reminder message={errors.enrollment_age_min}>
                                                     <Form.Control type="text" className='text-capitalize'
+                                                        style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_min' 
                                                         value={cohort.enrollment_age_min} 
                                                         onChange={e => 
@@ -1469,26 +1481,26 @@ const CohortForm = ({ ...props }) => {
                                                         } 
                                                         onBlur={e => 
                                                             populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
-                                                        } 
-                                                        readOnly={isReadOnly} />
-                                                }
-                                                <InputGroup.Append>
-                                                    <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
-                                                </InputGroup.Append>
-                                                {errors.enrollment_age_max && saved ? 
-                                                    <Reminder message={errors.enrollment_age_max}>
-                                                        <Form.Control type="text" className='text-capitalize'
-                                                            style={{ color: 'red', border: '1px solid red' }} 
-                                                            name='enrollment_age_max' 
-                                                            value={cohort.enrollment_age_max} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
-                                                            } 
-                                                            onBlur={e => 
-                                                                populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
-                                                            } />
-                                                    </Reminder> : 
+                                                        } />
+                                                </Reminder> : 
+                                                <Form.Control type="text" className='text-capitalize'
+                                                    name='enrollment_age_min' 
+                                                    value={cohort.enrollment_age_min} 
+                                                    onChange={e => 
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
+                                                    } 
+                                                    onBlur={e => 
+                                                        populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
+                                                    } 
+                                                    readOnly={isReadOnly} />
+                                            }
+                                            <InputGroup.Append>
+                                                <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
+                                            </InputGroup.Append>
+                                            {errors.enrollment_age_max && saved ? 
+                                                <Reminder message={errors.enrollment_age_max}>
                                                     <Form.Control type="text" className='text-capitalize'
+                                                        style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_max' 
                                                         value={cohort.enrollment_age_max} 
                                                         onChange={e => 
@@ -1496,31 +1508,31 @@ const CohortForm = ({ ...props }) => {
                                                         } 
                                                         onBlur={e => 
                                                             populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
-                                                        }
-                                                        readOnly={isReadOnly} />
-                                                }
-                                            </InputGroup>
-                                        </Col>
-                                    </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Median age<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_age_median && saved ? 
-                                                <Reminder message={errors.enrollment_age_median}>
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='enrollment_age_median' 
-                                                        value={cohort.enrollment_age_median} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    name='enrollment_age_max' 
+                                                    value={cohort.enrollment_age_max} 
+                                                    onChange={e => 
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
+                                                    } 
+                                                    onBlur={e => 
+                                                        populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
+                                                    }
+                                                    readOnly={isReadOnly} />
+                                            }
+                                        </InputGroup>
+                                    </Col>
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Median age<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_age_median && saved ? 
+                                            <Reminder message={errors.enrollment_age_median}>
+                                                <Form.Control type="text" className='text-capitalize'
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='enrollment_age_median' 
                                                     value={cohort.enrollment_age_median} 
                                                     onChange={e => 
@@ -1528,30 +1540,30 @@ const CohortForm = ({ ...props }) => {
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
+                                                    } />
+                                            </Reminder> : 
+                                            <Form.Control type="text" className='text-capitalize'
+                                                name='enrollment_age_median' 
+                                                value={cohort.enrollment_age_median} 
+                                                onChange={e => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Mean age<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.enrollment_age_mean && saved ? 
-                                                <Reminder message={errors.enrollment_age_mean}>
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='enrollment_age_mean' 
-                                                        value={cohort.enrollment_age_mean} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                        } />
-                                                </Reminder> : 
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Mean age<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.enrollment_age_mean && saved ? 
+                                            <Reminder message={errors.enrollment_age_mean}>
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='enrollment_age_mean' 
                                                     value={cohort.enrollment_age_mean} 
                                                     onChange={e => 
@@ -1559,31 +1571,31 @@ const CohortForm = ({ ...props }) => {
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
+                                                    } />
+                                            </Reminder> : 
+                                            <Form.Control type="text" className='text-capitalize'
+                                                name='enrollment_age_mean' 
+                                                value={cohort.enrollment_age_mean} 
+                                                onChange={e => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
                                     </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="4">
-                                            <InputGroup>
-                                                {errors.current_age_min && saved ? 
-                                                    <Reminder message={errors.current_age_min}>
-                                                        <Form.Control type="text" className='text-capitalize'
-                                                            style={{ color: 'red', border: '1px solid red' }} 
-                                                            name='current_age_min' 
-                                                            value={cohort.current_age_min} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
-                                                            } 
-                                                            onBlur={e => 
-                                                                populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                                                            } />
-                                                    </Reminder> : 
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="4">
+                                        <InputGroup>
+                                            {errors.current_age_min && saved ? 
+                                                <Reminder message={errors.current_age_min}>
                                                     <Form.Control type="text" className='text-capitalize'
+                                                        style={{ color: 'red', border: '1px solid red' }} 
                                                         name='current_age_min' 
                                                         value={cohort.current_age_min} 
                                                         onChange={e => 
@@ -1591,134 +1603,132 @@ const CohortForm = ({ ...props }) => {
                                                         } 
                                                         onBlur={e => 
                                                             populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                                                        } 
-                                                        readOnly={isReadOnly} />
-                                                }
-                                                <InputGroup.Append>
-                                                    <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
-                                                </InputGroup.Append>
-                                                {errors.current_age_max && saved ? 
-                                                    <Reminder message={errors.current_age_max}>
-                                                        <Form.Control type="text" className='text-capitalize'
-                                                            style={{ color: 'red', border: '1px solid red' }} 
-                                                            name='current_age_max' 
-                                                            value={cohort.current_age_max} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                            } 
-                                                            onBlur={e => 
-                                                                populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
-                                                            } />
-                                                    </Reminder> : 
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        name='current_age_max' 
-                                                        value={cohort.current_age_max} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
-                                                        } 
-                                                        readOnly={isReadOnly} />
-                                                }
-                                            </InputGroup>
-                                        </Col>
-                                    </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Median age<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.current_age_median && saved ? 
-                                                <Reminder message={errors.current_age_median}>
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='current_age_median' 
-                                                        value={cohort.current_age_median} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    name='current_age_min' 
+                                                    value={cohort.current_age_min} 
+                                                    onChange={e => 
+                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
+                                                    } 
+                                                    onBlur={e => 
+                                                        populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+                                                    } 
+                                                    readOnly={isReadOnly} />
+                                            }
+                                            <InputGroup.Append>
+                                                <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
+                                            </InputGroup.Append>
+                                            {errors.current_age_max && saved ? 
+                                                <Reminder message={errors.current_age_max}>
+                                                    <Form.Control type="text" className='text-capitalize'
+                                                        style={{ color: 'red', border: '1px solid red' }} 
+                                                        name='current_age_max' 
+                                                        value={cohort.current_age_max} 
+                                                        onChange={e => 
+                                                            !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                        } 
+                                                        onBlur={e => 
+                                                            populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
+                                                        } />
+                                                </Reminder> : 
+                                                <Form.Control type="text" className='text-capitalize'
+                                                    name='current_age_max' 
+                                                    value={cohort.current_age_max} 
+                                                    onChange={e => 
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                    } 
+                                                    onBlur={e => 
+                                                        populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
+                                                    } 
+                                                    readOnly={isReadOnly} />
+                                            }
+                                        </InputGroup>
+                                    </Col>
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Median age<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.current_age_median && saved ? 
+                                            <Reminder message={errors.current_age_median}>
+                                                <Form.Control type="text" className='text-capitalize'
+                                                    style={{ color: 'red', border: '1px solid red' }} 
                                                     name='current_age_median' 
-                                                    value={cohort.current_age_median}
+                                                    value={cohort.current_age_median} 
                                                     onChange={e => 
                                                         !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
-                                    </Col>
-                                    <Col sm="12" className="p-0" className="mb-1">
-                                        <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                            Mean age<span style={{ color: 'red' }}>*</span>
-                                        </Form.Label>
-                                        <Col sm="2">
-                                            {errors.current_age_mean && saved ? 
-                                                <Reminder message={errors.current_age_mean}>
-                                                    <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
-                                                        name='current_age_mean' 
-                                                        value={cohort.current_age_mean} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                        } 
-                                                        onBlur={e => 
-                                                            populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                        } />
-                                                </Reminder> : 
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    name='current_age_mean' 
-                                                    value={cohort.current_age_mean} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                    } 
-                                                    onBlur={e => 
-                                                        populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                    } 
-                                                    readOnly={isReadOnly} />
-                                            }
-                                        </Col>
-                                    </Col>
-                                </Form.Group>
-                            </CollapsiblePanel>
-                            
-                            {/* Requirements & Strategies */}
-                            <CollapsiblePanel
-                                condition={activePanel === 'panelD'}
-                                onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
-                                panelTitle="Requirements & Strategies">
-
-                                {/* A.9 Specify the Frequency of Questionnaires */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.9{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{ color: 'red' }}>*</span>
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        {errors.time_interval && saved ? 
-                                            <Reminder message={errors.time_interval}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
-                                                    placeholder='Max of 200 characters' 
-                                                    maxLength='200' c
-                                                    name='time_interval' 
-                                                    value={cohort.time_interval} 
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
-                                                    } 
-                                                    onBlur={e => 
-                                                        populateErrors('time_interval', e.target.value, true, 'string') 
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
-                                                placeholder='Max of 200 characters'
-                                                maxLength='200' 
+                                                name='current_age_median' 
+                                                value={cohort.current_age_median}
+                                                onChange={e => 
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
+                                    </Col>
+                                </Col>
+                                <Col sm="12" className="p-0" className="mb-1">
+                                    <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                        Mean age<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="2">
+                                        {errors.current_age_mean && saved ? 
+                                            <Reminder message={errors.current_age_mean}>
+                                                <Form.Control type="text" className='text-capitalize'
+                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    name='current_age_mean' 
+                                                    value={cohort.current_age_mean} 
+                                                    onChange={e => 
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                    } 
+                                                    onBlur={e => 
+                                                        populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
+                                                    } />
+                                            </Reminder> : 
+                                            <Form.Control type="text" className='text-capitalize'
+                                                name='current_age_mean' 
+                                                value={cohort.current_age_mean} 
+                                                onChange={e => 
+                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                } 
+                                                onBlur={e => 
+                                                    populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
+                                                } 
+                                                readOnly={isReadOnly} />
+                                        }
+                                    </Col>
+                                </Col>
+                            </Form.Group>
+                        </CollapsiblePanel>
+                        
+                        {/* Requirements & Strategies */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelD'}
+                            onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
+                            panelTitle="Requirements & Strategies">
+
+                            {/* A.9 Specify the Frequency of Questionnaires */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.9{' '}Specify the frequency of questionnaires, e.g, annually, every 2 years etc.<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    {errors.time_interval && saved ? 
+                                        <Reminder message={errors.time_interval}>
+                                            <Form.Control type="text" className='text-capitalize'
+                                                style={{ color: 'red', border: '1px solid red' }} 
+                                                placeholder='Max of 200 characters' 
+                                                maxLength='200' c
                                                 name='time_interval' 
                                                 value={cohort.time_interval} 
                                                 onChange={e => 
@@ -1726,322 +1736,321 @@ const CohortForm = ({ ...props }) => {
                                                 } 
                                                 onBlur={e => 
                                                     populateErrors('time_interval', e.target.value, true, 'string') 
-                                                } 
-                                                readOnly={isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
+                                                } />
+                                        </Reminder> : 
+                                        <Form.Control type="text" className='text-capitalize'
+                                            placeholder='Max of 200 characters'
+                                            maxLength='200' 
+                                            name='time_interval' 
+                                            value={cohort.time_interval} 
+                                            onChange={e => 
+                                                !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
+                                            } 
+                                            onBlur={e => 
+                                                populateErrors('time_interval', e.target.value, true, 'string') 
+                                            } 
+                                            readOnly={isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.10 Most Recent Year Questionnaire Collected */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="6">
-                                        A.10 Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span>
-                                    </Form.Label>
-                                    <Col sm="2">
-                                        {errors.most_recent_year && saved ? 
-                                            <Reminder message={errors.most_recent_year}>
-                                                <Form.Control type="text" 
-                                                    style={{ color: 'red', border: '1px solid red' }} 
-                                                    name='most_recent_year' 
-                                                    value={cohort.most_recent_year}
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
-                                                    } 
-                                                    placeholder='yyyy' 
-                                                    onBlur={e => 
-                                                        populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
-                                                    } />
-                                            </Reminder> : 
+                            {/* A.10 Most Recent Year Questionnaire Collected */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="6">
+                                    A.10 Most recent year when questionnaire data were collected<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="2">
+                                    {errors.most_recent_year && saved ? 
+                                        <Reminder message={errors.most_recent_year}>
                                             <Form.Control type="text" 
+                                                style={{ color: 'red', border: '1px solid red' }} 
                                                 name='most_recent_year' 
-                                                value={cohort.most_recent_year} 
+                                                value={cohort.most_recent_year}
                                                 onChange={e => 
                                                     !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
-                                                }
+                                                } 
                                                 placeholder='yyyy' 
                                                 onBlur={e => 
                                                     populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
-                                                } 
-                                                readOnly={isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
+                                                } />
+                                        </Reminder> : 
+                                        <Form.Control type="text" 
+                                            name='most_recent_year' 
+                                            value={cohort.most_recent_year} 
+                                            onChange={e => 
+                                                !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                            }
+                                            placeholder='yyyy' 
+                                            onBlur={e => 
+                                                populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
+                                            } 
+                                            readOnly={isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.11 How was Info Collected */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
-                                        {errors.dataCollection && saved &&
-                                            <div>
-                                                <span style={{ color: 'red', marginLeft: '10px' }}>
-                                                    {errorMsg}
-                                                </span> 
-                                            </div>
-                                        }
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <div key="checkbox">
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-collected-in-person"
-                                                name="data_collected_in_person">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.data_collected_in_person == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    In person
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-collected-phone"
-                                                name="data_collected_phone">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.data_collected_phone == 1} 
-                                                    onClick={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Phone interview
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-collected-paper"
-                                                name="data_collected_paper">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.data_collected_paper == 1} 
-                                                    onClick={e =>
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Self-administered via paper
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-collected-web"
-                                                name="data_collected_web">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.data_collected_web == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Self-administered via web-based device
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-collected-other"
-                                                name="data_collected_other">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.data_collected_other == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true) 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other, please specify
-                                                </Form.Check.Label>
-                                            </Form.Check>
+                            {/* A.11 How was Info Collected */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    {errors.dataCollection && saved &&
+                                        <div>
+                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                                {errorMsg}
+                                            </span> 
                                         </div>
-                                        {saved && errors.data_collected_other_specify ?
-                                            <Reminder message={errors.data_collected_other_specify}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
-                                                    name='data_collected_other_specify'
-                                                    value={cohort.data_collected_other_specify} 
-                                                    placeholder='Max of 200 characters'
-                                                    maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
-                                                    }
-                                                    onBlur={() => 
-                                                        populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
-                                                    }
-                                                    disabled={!cohort.data_collected_other} />
-                                            </Reminder> : 
+                                    }
+                                </Form.Label>
+                                <Col sm="12">
+                                    <div key="checkbox">
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-collected-in-person"
+                                            name="data_collected_in_person">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.data_collected_in_person == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                In person
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-collected-phone"
+                                            name="data_collected_phone">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.data_collected_phone == 1} 
+                                                onClick={e => 
+                                                    !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Phone interview
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-collected-paper"
+                                            name="data_collected_paper">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.data_collected_paper == 1} 
+                                                onClick={e =>
+                                                    !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Self-administered via paper
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-collected-web"
+                                            name="data_collected_web">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.data_collected_web == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Self-administered via web-based device
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-collected-other"
+                                            name="data_collected_other">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.data_collected_other == 1}
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true) 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Other, please specify
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </div>
+                                    {saved && errors.data_collected_other_specify ?
+                                        <Reminder message={errors.data_collected_other_specify}>
                                             <Form.Control type="text" className='text-capitalize'
-                                                name='data_collected_other_specify' 
+                                                style={{ color: 'red', border: '1px solid red' }} 
+                                                name='data_collected_other_specify'
                                                 value={cohort.data_collected_other_specify} 
                                                 placeholder='Max of 200 characters'
                                                 maxLength='200' 
                                                 onChange={e => 
                                                     !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
-                                                } 
+                                                }
                                                 onBlur={() => 
                                                     populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                                 }
-                                                readOnly={!cohort.data_collected_other || isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
+                                                disabled={!cohort.data_collected_other} />
+                                        </Reminder> : 
+                                        <Form.Control type="text" className='text-capitalize'
+                                            name='data_collected_other_specify' 
+                                            value={cohort.data_collected_other_specify} 
+                                            placeholder='Max of 200 characters'
+                                            maxLength='200' 
+                                            onChange={e => 
+                                                !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
+                                            } 
+                                            onBlur={() => 
+                                                populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
+                                            }
+                                            readOnly={!cohort.data_collected_other || isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.12 Specific Requirements */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
-                                        {errors.requirements && saved &&
-                                            <div>
-                                                <span style={{ color: 'red', marginLeft: '10px' }}>
-                                                    {errorMsg}
-                                                </span> 
-                                            </div>
-                                        }
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <div key="checkbox">
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-require-none"
-                                                name="requireNone">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.requireNone == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    None
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-require-collab"
-                                                name="requireCollab">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.requireCollab == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Require collaboration with cohort investigators
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-require-irb"
-                                                name="requireIrb">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.requireIrb == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb')
-                                                    }/>
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Require IRB approvals
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-require-data"
-                                                name="requireData">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.requireData == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Require data use agreements and/or materrial transfer agreement
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-restrict-geno-info"
-                                                name="restrictGenoInfo">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.restrictGenoInfo == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Restrictions in the consent related to genetic information
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-restrict-other-db"
-                                                name="restrictOtherDb">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.restrictOtherDb == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Restrictions in the consent related to linking to other databases
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-restrict-commercial"
-                                                name="restrictCommercial">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.restrictCommercial == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Restrictions on commercial use
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-restrict-other"
-                                                name="restrictOther">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.restrictOther == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true) 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other, please specify
-                                                </Form.Check.Label>
-                                            </Form.Check>
+                            {/* A.12 Specific Requirements */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    {errors.requirements && saved &&
+                                        <div>
+                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                                {errorMsg}
+                                            </span> 
                                         </div>
-                                        {saved && errors.restrictions_other_specify ?
-                                            <Reminder message={errors.restrictions_other_specify}>
-                                                <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
-                                                    name='restrictions_other_specify' 
-                                                    value={cohort.restrictions_other_specify} 
-                                                    placeholder='Max of 200 characters' 
-                                                    maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
-                                                    } 
-                                                    onBlur={() => 
-                                                        populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
-                                                    } 
-                                                    disabled={!cohort.restrictOther} />
-                                            </Reminder> : 
-                                            <Form.Control type="text" className='text-capitalize'
-                                                name='data_collected_other_specify' 
-                                                value={cohort.restrictions_other_specify}
+                                    }
+                                </Form.Label>
+                                <Col sm="12">
+                                    <div key="checkbox">
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-require-none"
+                                            name="requireNone">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.requireNone == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                None
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-require-collab"
+                                            name="requireCollab">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.requireCollab == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Require collaboration with cohort investigators
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-require-irb"
+                                            name="requireIrb">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.requireIrb == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb')
+                                                }/>
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Require IRB approvals
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-require-data"
+                                            name="requireData">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.requireData == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Require data use agreements and/or materrial transfer agreement
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-restrict-geno-info"
+                                            name="restrictGenoInfo">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.restrictGenoInfo == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Restrictions in the consent related to genetic information
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-restrict-other-db"
+                                            name="restrictOtherDb">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.restrictOtherDb == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Restrictions in the consent related to linking to other databases
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-restrict-commercial"
+                                            name="restrictCommercial">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.restrictCommercial == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Restrictions on commercial use
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-restrict-other"
+                                            name="restrictOther">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.restrictOther == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true) 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Other, please specify
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </div>
+                                    {saved && errors.restrictions_other_specify ?
+                                        <Reminder message={errors.restrictions_other_specify}>
+                                            <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
+                                                name='restrictions_other_specify' 
+                                                value={cohort.restrictions_other_specify} 
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
                                                 onChange={e => 
@@ -2049,135 +2058,135 @@ const CohortForm = ({ ...props }) => {
                                                 } 
                                                 onBlur={() => 
                                                     populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
-                                                }
-                                                readOnly={!cohort.restrictOther || isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
+                                                } 
+                                                disabled={!cohort.restrictOther} />
+                                        </Reminder> : 
+                                        <Form.Control type="text" className='text-capitalize'
+                                            name='data_collected_other_specify' 
+                                            value={cohort.restrictions_other_specify}
+                                            placeholder='Max of 200 characters' 
+                                            maxLength='200' 
+                                            onChange={e => 
+                                                !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
+                                            } 
+                                            onBlur={() => 
+                                                populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
+                                            }
+                                            readOnly={!cohort.restrictOther || isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
 
-                                {/* A.13 Strategies Used */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
-                                        {errors.strategy && saved && 
-                                            <div>
-                                                <span style={{ color: 'red', marginLeft: '10px' }}>
-                                                    {errorMsg}
-                                                </span>
-                                            </div>
-                                        }
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <div key="checkbox">
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-routine"
-                                                name="strategy_routine">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_routine == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine') 
-                                                    }/>
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Nothing beyond mailing questionnaires or other routine contacts
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-mailing"
-                                                name="strategy_mailing">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_mailing == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Send newsletters or other general mailings (e.g., birthday cards)
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-aggregate-study"
-                                                name="strategy_aggregate_study">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_aggregate_study == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Return aggregate study results (e.g., recent findings)
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-individual-study"
-                                                name="strategy_individual_study">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_individual_study == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Individual study results (e.g., nutrient values)
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-invitation"
-                                                name="strategy_invitation">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_invitation == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation') 
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Invite participation on research committees
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="checkbox" 
-                                                className="pl-0"
-                                                id="default-strategy-other"
-                                                name="strategy_other">
-                                                <Form.Check.Input bsPrefix
-                                                    type="checkbox" 
-                                                    className="mr-2" 
-                                                    checked={cohort.strategy_other == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
-                                                    }/>
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Other, please specify
-                                                </Form.Check.Label>
-                                            </Form.Check>
+                            {/* A.13 Strategies Used */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    {errors.strategy && saved && 
+                                        <div>
+                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                                {errorMsg}
+                                            </span>
                                         </div>
-                                        {saved && errors.strategy_other_specify ?
-                                            <Reminder message={errors.strategy_other_specify}>
-                                                <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
-                                                    name='strategy_other_specify' 
-                                                    value={cohort.strategy_other_specify} 
-                                                    placeholder='Max of 200 characters' 
-                                                    maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
-                                                    } 
-                                                    onBlur={() => 
-                                                        populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
-                                                    } 
-                                                    disabled={!cohort.strategy_other} />
-                                            </Reminder> : 
-                                            <Form.Control type="text" className='text-capitalize'
+                                    }
+                                </Form.Label>
+                                <Col sm="12">
+                                    <div key="checkbox">
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-routine"
+                                            name="strategy_routine">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_routine == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine') 
+                                                }/>
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Nothing beyond mailing questionnaires or other routine contacts
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-mailing"
+                                            name="strategy_mailing">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_mailing == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Send newsletters or other general mailings (e.g., birthday cards)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-aggregate-study"
+                                            name="strategy_aggregate_study">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_aggregate_study == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Return aggregate study results (e.g., recent findings)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-individual-study"
+                                            name="strategy_individual_study">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_individual_study == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Individual study results (e.g., nutrient values)
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-invitation"
+                                            name="strategy_invitation">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_invitation == 1}
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Invite participation on research committees
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-other"
+                                            name="strategy_other">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_other == 1}
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
+                                                }/>
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Other, please specify
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </div>
+                                    {saved && errors.strategy_other_specify ?
+                                        <Reminder message={errors.strategy_other_specify}>
+                                            <Form.Control type="text" className='text-capitalize' style={{ color: 'red', border: '1px solid red' }} 
                                                 name='strategy_other_specify' 
-                                                value={cohort.strategy_other_specify}
+                                                value={cohort.strategy_other_specify} 
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
                                                 onChange={e => 
@@ -2186,48 +2195,57 @@ const CohortForm = ({ ...props }) => {
                                                 onBlur={() => 
                                                     populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                                 } 
-                                                readOnly={!cohort.strategy_other || isReadOnly} />
-                                        }
-                                    </Col>
-                                </Form.Group>
-                             </CollapsiblePanel>
+                                                disabled={!cohort.strategy_other} />
+                                        </Reminder> : 
+                                        <Form.Control type="text" className='text-capitalize'
+                                            name='strategy_other_specify' 
+                                            value={cohort.strategy_other_specify}
+                                            placeholder='Max of 200 characters' 
+                                            maxLength='200' 
+                                            onChange={e => 
+                                                !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
+                                            } 
+                                            onBlur={() => 
+                                                populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
+                                            } 
+                                            readOnly={!cohort.strategy_other || isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
+                        </CollapsiblePanel>
+                        
+                        {/* Documents */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelE'}
+                            onClick={() => setActivePanel(activePanel === 'panelE' ? '' : 'panelE')}
+                            panelTitle="Documents">
                             
-                            {/* Documents */}
-                            <CollapsiblePanel
-                                condition={activePanel === 'panelE'}
-                                onClick={() => setActivePanel(activePanel === 'panelE' ? '' : 'panelE')}
-                                panelTitle="Documents">
-                                
-                                {/* A.14 Required Documents */}
-                                <Form.Group as={Row}>
-                                    <Form.Label column sm="12">
-                                        A.14 Required Documents
-                                    </Form.Label>   
-                                    <Col sm="12">
-                                        <p>
-                                            As indicated on the CEDCD Approval Form, we are requesting the following 
-                                            items for inclusion on the CEDCD website. If you provided approval to post 
-                                            this information, please attach the documents and return them with this form. 
-                                            If they are already available on a publicly accessible website, please just 
-                                            provide the website address.
-                                        </p>
-                                    </Col>                                 
-                                    <Col sm="12">
-                                        {window.innerWidth <= 800 ?
-                                            <table>
+                            {/* A.14 Required Documents */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    A.14 Required Documents
+                                </Form.Label>   
+                                <Col sm="12">
+                                    <p>
+                                        As indicated on the CEDCD Approval Form, we are requesting the following 
+                                        items for inclusion on the CEDCD website. If you provided approval to post 
+                                        this information, please attach the documents and return them with this form. 
+                                        If they are already available on a publicly accessible website, please just 
+                                        provide the website address.
+                                    </p>
+                                </Col>                                 
+                                <Col sm="12">
+                                    {window.innerWidth <= 800 ?
+                                        <table>
                                             <tbody>
                                                 <tr>
-                                                    <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Questionnaire</th>
+                                                    <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Questionnarie</th>
                                                     <td style={{ padding: '0' }}>
                                                         <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                             <tbody>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} 
-                                                                        onChange={e => {
-                                                                            dispatch(allactions.cohortActions.questionnaire_url(e.target.value));
-                                                                            dispatch(setHasUnsavedChanges(true))
-                                                                        }} /></td>
+                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} onChange={e => dispatch(allactions.cohortActions.questionnaire_url(e.target.value))} /></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2253,7 +2271,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <div>
                                                                         {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.questionnaireFileName.length > 1 && <a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}and {cohort.questionnaireFileName.length-1} more</a>}
+                                                                        {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2268,11 +2286,7 @@ const CohortForm = ({ ...props }) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly} value={cohort.main_cohort_url} 
-                                                                        onChange={e => {
-                                                                            dispatch(allactions.cohortActions.main_cohort_url(e.target.value));
-                                                                            dispatch(setHasUnsavedChanges(true));
-                                                                        }} /></td>
+                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly} value={cohort.main_cohort_url} onChange={e => dispatch(allactions.cohortActions.main_cohort_url(e.target.value))} /></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2298,7 +2312,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <div>
                                                                         {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.mainFileName.length > 1 && <a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}and {cohort.mainFileName.length-1} more</a>}
+                                                                        {cohort.mainFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}{cohort.mainFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2313,11 +2327,7 @@ const CohortForm = ({ ...props }) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly} value={cohort.data_url} 
-                                                                    onChange={e => {
-                                                                        dispatch(allactions.cohortActions.data_url(e.target.value));
-                                                                        dispatch(setHasUnsavedChanges(true));
-                                                                    }} /></td>
+                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly} value={cohort.data_url} onChange={e => dispatch(allactions.cohortActions.data_url(e.target.value))} /></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2343,7 +2353,7 @@ const CohortForm = ({ ...props }) => {
                                                                 <div>
                                                                     {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                         <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                    {cohort.dataFileName.length > 1 && <a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}and {cohort.dataFileName.length-1} more</a>}
+                                                                    {cohort.dataFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
                                                                 </div>
                                                                     </td>
                                                                 </tr>
@@ -2358,11 +2368,7 @@ const CohortForm = ({ ...props }) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly} value={cohort.specimen_url} 
-                                                                    onChange={e => {
-                                                                        dispatch(allactions.cohortActions.specimen_url(e.target.value));
-                                                                        dispatch(setHasUnsavedChanges(true));
-                                                                    }} /></td>
+                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly} value={cohort.specimen_url} onChange={e => dispatch(allactions.cohortActions.specimen_url(e.target.value))} /></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2388,7 +2394,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <div>
                                                                         {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.specimenFileName.length > 1 && <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}and {cohort.specimenFileName.length-1} more</a>}
+                                                                        {cohort.specimenFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}{cohort.specimenFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2403,11 +2409,7 @@ const CohortForm = ({ ...props }) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' 
-                                                                    onChange={e => {
-                                                                        dispatch(allactions.cohortActions.publication_url(e.target.value))
-                                                                        dispatch(setHasUnsavedChanges(true));
-                                                                    }} disabled={isReadOnly} /></td>
+                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => dispatch(allactions.cohortActions.publication_url(e.target.value))} disabled={isReadOnly} /></td>
                                                                 </tr>
                                                                 <tr>
                                                                     <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2433,7 +2435,7 @@ const CohortForm = ({ ...props }) => {
                                                                     <div>
                                                                         {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.publicationFileName.length > 1 && <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}and {cohort.publicationFileName.length-1} more</a>}
+                                                                        {cohort.publicationFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}{cohort.publicationFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
