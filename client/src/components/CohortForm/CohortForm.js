@@ -2238,34 +2238,40 @@ const CohortForm = ({ ...props }) => {
                                         <Table bordered condensed className="table-valign-middle">
                                             <tbody>
                                                 <tr>
-                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Questionnarie</th>
+                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Questionnaire</th>
                                                     <td className="p-0">
                                                         <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} onChange={e => dispatch(allactions.cohortActions.questionnaire_url(e.target.value))} /></td>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
+                                                                    <td>
+                                                                        <Form.Control type="text" 
+                                                                            bsPrefix 
+                                                                            className='inputWriter' 
+                                                                            placeholder='Max of 100 characters' 
+                                                                            maxLength='100' 
+                                                                            name='questionnaire_url' 
+                                                                            id='questionnaire_url' 
+                                                                            readOnly={isReadOnly} 
+                                                                            value={cohort.questionnaire_url} 
+                                                                            onChange={e => 
+                                                                                dispatch(allactions.cohortActions.questionnaire_url(e.target.value))
+                                                                            } />
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                     <td>
                                                                     {
                                                                         !isReadOnly && 
-                                                                        <div className="input-group">
-                                                                            <div className="custom-file">
-                                                                                <input
-                                                                                type="file"
-                                                                                className="custom-file-input"
-                                                                                name='cohortFile'
-                                                                                id="inputGroupFile01"
-                                                                                aria-describedby="inputGroupFileAddon01"
-                                                                                multiple readOnly={isReadOnly}
-                                                                                onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
-                                                                                <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                                                                Choose Files
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
+                                                                        <Form.File
+                                                                            custom
+                                                                            label="Choose Files"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile01"
+                                                                            aria-describedby="inputGroupFileAddon01"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
                                                                     }
                                                                     <div>
                                                                         {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
@@ -2279,34 +2285,40 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Main cohort protocol</th>
+                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Main cohort protocol</th>
                                                     <td className="p-0">
                                                         <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly} value={cohort.main_cohort_url} onChange={e => dispatch(allactions.cohortActions.main_cohort_url(e.target.value))} /></td>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
+                                                                    <td>
+                                                                        <Form.Control type="text" 
+                                                                            bsPrefix 
+                                                                            className='inputWriter' 
+                                                                            placeholder='Max of 100 characters' 
+                                                                            maxLength='100' 
+                                                                            name='main_cohort_url' 
+                                                                            id='main_cohort_url' 
+                                                                            disabled={isReadOnly} 
+                                                                            value={cohort.main_cohort_url} 
+                                                                            onChange={e => 
+                                                                                dispatch(allactions.cohortActions.main_cohort_url(e.target.value))
+                                                                            } />
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                     <td>
                                                                     {
                                                                         !isReadOnly && 
-                                                                        <div className="input-group">
-                                                                            <div className="custom-file">
-                                                                                <input
-                                                                                type="file"
-                                                                                className="custom-file-input"
-                                                                                name='cohortFile'
-                                                                                id="inputGroupFile02"
-                                                                                aria-describedby="inputGroupFileAddon02"
-                                                                                multiple readOnly={isReadOnly}
-                                                                                onChange={e => handleUpload(e.target.files, 1)} />
-                                                                                <label className="custom-file-label" htmlFor="inputGroupFile02">
-                                                                                Choose Files
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
+                                                                        <Form.File
+                                                                            custom
+                                                                            label="Choose Files"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile02"
+                                                                            aria-describedby="inputGroupFileAddon02"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 1)} />
                                                                     }
                                                                     <div>
                                                                         {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2320,34 +2332,40 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Data sharing policy</th>
+                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Data sharing policy</th>
                                                     <td className="p-0">
                                                         <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly} value={cohort.data_url} onChange={e => dispatch(allactions.cohortActions.data_url(e.target.value))} /></td>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
+                                                                    <td>
+                                                                        <Form.Control type="text" 
+                                                                            bsPrefix  
+                                                                            className='inputWriter' 
+                                                                            placeholder='Max of 100 characters' 
+                                                                            maxLength='100' 
+                                                                            name='data_url' 
+                                                                            id='data_url' 
+                                                                            disabled={isReadOnly} 
+                                                                            value={cohort.data_url} 
+                                                                            onChange={e => 
+                                                                                dispatch(allactions.cohortActions.data_url(e.target.value))
+                                                                            } />
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                     <td>
                                                                     {
                                                                         !isReadOnly && 
-                                                                        <div className="input-group">
-                                                                            <div className="custom-file">
-                                                                                <input
-                                                                                type="file"
-                                                                                className="custom-file-input"
-                                                                                name='cohortFile'
-                                                                                id="inputGroupFile03"
-                                                                                aria-describedby="inputGroupFileAddon03"
-                                                                                multiple readOnly={isReadOnly}
-                                                                                onChange={e => handleUpload(e.target.files, 2)} />
-                                                                                <label className="custom-file-label" htmlFor="inputGroupFile03">
-                                                                                Choose Files
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
+                                                                        <Form.File
+                                                                            custom
+                                                                            label="Choose Files"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile03"
+                                                                            aria-describedby="inputGroupFileAddon03"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 2)} />
                                                                     }
                                                                 <div>
                                                                     {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2361,34 +2379,40 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Biospecimen sharing policy</th>
+                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Biospecimen sharing policy</th>
                                                     <td className="p-0">
                                                         <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly} value={cohort.specimen_url} onChange={e => dispatch(allactions.cohortActions.specimen_url(e.target.value))} /></td>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
+                                                                    <td>
+                                                                        <Form.Control type="text" 
+                                                                            bsPrefix 
+                                                                            className='inputWriter' 
+                                                                            placeholder='Max of 100 characters' 
+                                                                            maxLength='100' 
+                                                                            name='specimen_url' 
+                                                                            id='specimen_url' 
+                                                                            disabled={isReadOnly} 
+                                                                            value={cohort.specimen_url} 
+                                                                            onChange={e => 
+                                                                                dispatch(allactions.cohortActions.specimen_url(e.target.value))
+                                                                            } />
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                     <td>
                                                                     {
                                                                         !isReadOnly && 
-                                                                        <div className="input-group">
-                                                                            <div className="custom-file">
-                                                                                <input
-                                                                                type="file"
-                                                                                className="custom-file-input"
-                                                                                name='cohortFile'
-                                                                                id="inputGroupFile04"
-                                                                                aria-describedby="inputGroupFileAddon04"
-                                                                                multiple readOnly={isReadOnly}
-                                                                                onChange={e => handleUpload(e.target.files, 3)} />
-                                                                                <label className="custom-file-label" htmlFor="inputGroupFile04">
-                                                                                Choose Files
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
+                                                                        <Form.File
+                                                                            custom
+                                                                            label="Choose Files"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile04"
+                                                                            aria-describedby="inputGroupFileAddon04"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 3)} />
                                                                     }       
                                                                     <div>
                                                                         {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
@@ -2402,34 +2426,40 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Publication (authorship) policy</th>
+                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Publication (authorship) policy</th>
                                                     <td className="p-0">
                                                         <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
                                                             <tbody>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                    <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => dispatch(allactions.cohortActions.publication_url(e.target.value))} disabled={isReadOnly} /></td>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
+                                                                    <td>
+                                                                        <Form.Control type="text" 
+                                                                            bsPrefix 
+                                                                            className='inputWriter' 
+                                                                            placeholder='Max of 100 characters' 
+                                                                            maxLength='100' 
+                                                                            name='publication_url' 
+                                                                            value={cohort.publication_url} 
+                                                                            id='publication_url' 
+                                                                            onChange={e => 
+                                                                                dispatch(allactions.cohortActions.publication_url(e.target.value))
+                                                                            } 
+                                                                            disabled={isReadOnly} />
+                                                                    </td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
+                                                                    <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
                                                                     <td >
                                                                     {
                                                                         !isReadOnly && 
-                                                                        <div className="input-group">
-                                                                            <div className="custom-file">
-                                                                                <input
-                                                                                type="file"
-                                                                                className="custom-file-input"
-                                                                                name='cohortFile'
-                                                                                id="inputGroupFile05"
-                                                                                aria-describedby="inputGroupFileAddon05"
-                                                                                multiple readOnly={isReadOnly}
-                                                                                onChange={e => handleUpload(e.target.files, 4)} />
-                                                                                <label className="custom-file-label" htmlFor="inputGroupFile05">
-                                                                                Choose Files
-                                                                                </label>
-                                                                            </div>
-                                                                        </div>
+                                                                        <Form.File
+                                                                            custom
+                                                                            label="Choose Files"
+                                                                            name='cohortFile'
+                                                                            id="inputGroupFile05"
+                                                                            aria-describedby="inputGroupFileAddon05"
+                                                                            multiple readOnly={isReadOnly}
+                                                                            onChange={e => handleUpload(e.target.files, 4)} />
                                                                     }
                                                                     <div>
                                                                         {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
