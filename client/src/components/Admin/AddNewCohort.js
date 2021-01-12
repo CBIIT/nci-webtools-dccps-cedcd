@@ -1,8 +1,6 @@
-import { red } from '@material-ui/core/colors';
 import React, { Component, useEffect } from 'react';
 import Select from 'react-select';
-import { UserSessionContext } from '../../index';
-import Unauthorized from '../Unauthorized/Unauthorized';
+import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import './AddNewCohort.css';
 
 class AddNewCohort extends Component {
@@ -249,10 +247,7 @@ class AddNewCohort extends Component {
 
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
-    return <UserSessionContext.Consumer>
-      {userSession => (
-        !(userSession && userSession.role === 'SystemAdmin') &&
-        <Unauthorized /> ||
+    return <RequireAuthorization role="SystemAdmin">
         <div className='col-md-12'>
           <div id="myModal" className={success_back} onClick={this.handleModalClick}>
             <div className={submit_cls} style={{ textAlign: "center", "border-radius": "10px" }}>
@@ -306,7 +301,7 @@ class AddNewCohort extends Component {
             </div>
           </div>
         </div>
-      )}</UserSessionContext.Consumer>;
+      </RequireAuthorization>;
   }
 }
 

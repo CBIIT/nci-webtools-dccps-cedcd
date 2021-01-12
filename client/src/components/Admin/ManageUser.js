@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeaderManageUser from './TableHeaderManageUser';
-import { UserSessionContext } from '../../index';
-import Unauthorized from '../Unauthorized/Unauthorized';
+import RequireAuthorization from '../RequireAuthorization/RequireAuthorization'
 import './ManageCohort.css';
 
 class ManageUser extends Component {
@@ -260,10 +259,7 @@ class ManageUser extends Component {
 			);
 		}
 
-		return <UserSessionContext.Consumer>
-			{userSession => (
-				!(userSession && userSession.role === 'SystemAdmin') &&
-				<Unauthorized /> ||
+		return <RequireAuthorization role="SystemAdmin">
 				<div className="col-md-12 col-12">
 					<h1 className="welcome pg-title">Manage Users</h1>
 					<p className="welcome">The list below contains all users registered on the CEDCD website.
@@ -348,7 +344,7 @@ class ManageUser extends Component {
 						</div>
 					</div>
 				</div>
-			)}</UserSessionContext.Consumer>;
+			</RequireAuthorization>;
 	}
 }
 

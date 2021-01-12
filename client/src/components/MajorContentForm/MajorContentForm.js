@@ -508,9 +508,13 @@ const MajorContentForm = ({ ...props }) => {
                     <Form.Label as={Row} sm='12' className='pl-5' style={{marginBottom: '8px'}}>
                         C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small style={{paddingRight: '0'}}>(Select all that apply)</small>
                     </Form.Label>
+                    <Col sm='12'>
+                        <span>If data was collected at baseline, please specify all tobacco products that apply</span>
+                    </Col>
                 <Col sm='12'> <span style={
                     (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved && { color: 'red'} || {display: 'none'}
                     }>Required Field</span></Col>
+        
                     {
                         getMultiSelectList(
                             ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
@@ -528,15 +532,19 @@ const MajorContentForm = ({ ...props }) => {
                             onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine || isReadOnly} />
                     </Reminder>
                 </Col>
+                <Col sm='12'>
+                    <span>If data was collected during follow-up, please specify all tobacco products that apply</span>
+                </Col>
                 <Col sm='12'> <span style={
                     (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved && { color: 'red'} || {display: 'none'}
                     }>Required Field</span></Col>
-                {
-                    getMultiSelectList(
-                        ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
-                        ['cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
-                    )
-                }
+                   
+                    {
+                        getMultiSelectList(
+                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
+                            ['cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
+                        )
+                    }
                 <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
                     <Reminder message='Required Field' disabled={!(majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved)}>
                         <input 
@@ -594,7 +602,7 @@ const MajorContentForm = ({ ...props }) => {
             </Form.Group>          
     }
 
-    return <div className='col-md-12'>
+    return <div className="p-3 px-5">
         {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
@@ -606,7 +614,7 @@ const MajorContentForm = ({ ...props }) => {
                             panelTitle="Major Content Domains">
                 <Form.Group as={Row} className="mb-1">
                     <Form.Label column sm="12">
-                        Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                        Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
                     </Form.Label>
                 </Form.Group>
                 {getFirstContent()}
@@ -637,7 +645,7 @@ const MajorContentForm = ({ ...props }) => {
                     <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
                         <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
                     </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'||isReadOnly} /></span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A !== 'complete' || section.B !== 'complete' || section.C !== 'complete' || section.D !== 'complete' || section.E !== 'complete' || section.F !== 'complete' || section.G !== 'complete'}/></span>
                 </span>
                 :
                 <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>

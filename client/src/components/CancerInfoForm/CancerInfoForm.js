@@ -4,14 +4,15 @@ import DatePicker from 'react-datepicker';
 import classNames from 'classnames'
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
+import { postJSON } from '../../services/query';
 import allactions from '../../actions'
-import { loadCohort } from '../../reducers/cancerInfoReducer';
+import { fetchCohort } from '../../reducers/cohort';
+import { updateUserSession } from '../../reducers/user';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
-import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css'
 
@@ -23,8 +24,9 @@ const {
 
 const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
+    const cohort = useSelector(state => state.cohort)
     const lookup = useSelector(state => state.lookupReducer)
-    const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+    const { counts, form } = useSelector(state => state.cancerInfoReducer);
     const isReadOnly = props.isReadOnly;
 
     const section = useSelector(state => state.sectionReducer)
@@ -51,12 +53,6 @@ const CancerInfoForm = ({ ...props }) => {
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident'),
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent'),
     }
-
-    useEffect(() => {
-        // load existing cohort if needed
-        if (!cohort || +cohort.id !== +cohortId)
-            dispatch(loadCohort(cohortId));
-    }, []);
 
     useEffect(() => {
         // once cohort is loaded, populate form
@@ -228,7 +224,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save</button>
                 </div>
             })
@@ -255,7 +251,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress and continue to the next section?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save and Continue</button>
                 </div>
             });
@@ -281,52 +277,43 @@ const CancerInfoForm = ({ ...props }) => {
                 info.ci_confirmed_cancer_year = null;
             }
 
-            await fetch(`/api/questionnaire/update_cancer_info/${id}`, {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify([info])
-            }).then(r => r.json())
-                .then(result => {
-                    if (result && result.data) {
-                        const { duplicated_cohort_id: newCohortId, status } = result.data;
-                        // console.log("new id: "+newCohortId)
-                        // console.log("new stats: "+status)
-                        if (status && status != cohortStatus){
-                            dispatch(({type: 'SET_COHORT_STATUS', value: status})) 
-                            dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
-                        } else{
-                        if (newCohortId && +newCohortId !== id){
-                                id = newCohortId;
-                                dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
-                                window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
-                            }
-                        }
-                        //dispatch({ type: 'SET_COHORT_STATUS', value: status })
+            const cancerCounts = Object.entries(counts).map(([key, value]) => {
+                let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
+                let cancer_counts = value;
+                return { cohort_id, cancer_id, gender_id, case_type_id, cancer_counts }
+            })
+
+            const result = await postJSON(`/api/questionnaire/update_cancer_info/${id}`, [info]);
+            if (result && result.data) {
+                const { duplicated_cohort_id: newCohortId, status } = result.data;
+                // console.log("new id: "+newCohortId)
+                // console.log("new stats: "+status)
+                if (status && status != cohortStatus) {
+                    dispatch(({ type: 'SET_COHORT_STATUS', value: status }))
+                    dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
+                } else {
+                    
+                    if (newCohortId && +newCohortId !== id) {
+                        id = newCohortId;
                     }
-                });
+                }
+            }
 
-            await fetch(`/api/questionnaire/update_cancer_count/${id}`, {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify(Object.entries(counts).map(([key, value]) => {
-                    let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
-                    let cancer_counts = value;
-                    return { cohort_id, cancer_id, gender_id, case_type_id, cancer_counts }
-                }))
-            }).then(r => r.json());
+            await postJSON(`/api/questionnaire/update_cancer_count/${id}`, cancerCounts);
 
-            await fetch(`/api/questionnaire/cohort/${id}`, {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({
-                    cohort_edit_status: [{
-                        page_code: 'D',
-                        status: hasErrors ? 'incomplete' : 'complete'
-                    }]
-                })
-            }).then(r => r.json());
+            await postJSON(`/api/questionnaire/cohort/${id}`, {
+                cohort_edit_status: [{
+                    page_code: 'D',
+                    status: hasErrors ? 'incomplete' : 'complete'
+                }]
+            });
 
-            dispatch(loadCohort(id));
+            if (id != cohortId) {
+                dispatch(allactions.cohortIDAction.setCohortId(id));
+                window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, id));
+            }
+
+            dispatch(fetchCohort(id));
             dispatch(setHasUnsavedChanges(false));
             setSuccessMsg(true);
 
@@ -350,7 +337,7 @@ const CancerInfoForm = ({ ...props }) => {
                 value={value}
                 disabled={disabled}
                 onChange={e => {
-                    if (isReadOnly) 
+                    if (isReadOnly)
                         return false;
                     setFormValue(
                         e.target.name,
@@ -362,7 +349,7 @@ const CancerInfoForm = ({ ...props }) => {
                     if (onChange)
                         onChange(e);
                 }}
-                readOnly={isReadOnly} 
+                readOnly={isReadOnly}
                 label={label}
                 id={`${name}_${value}`} />
         );
@@ -444,238 +431,238 @@ const CancerInfoForm = ({ ...props }) => {
             onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
             panelTitle="Cancer Information">
 
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label htmlFor="ci_confirmed_cancer_date">
-                        D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
-                    </Form.Label>
-                    
-                    <div className="w-50">
-                        <Reminder message="Required Field" disabled={!errors.ci_confirmed_cancer_date} placement="right">
-                            <DatePicker
-                                id="ci_confirmed_cancer_date"
-                                className="form-control"
-                                selected={form.ci_confirmed_cancer_date}
-                                readOnly={isReadOnly}
-                                onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
-                            />
-                        </Reminder>
-                    </div>
-                    {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">Required Field.</span>} */}
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>
-                        D.3 How were your cancer cases ascertained? <small>(Select all that apply)</small>
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label htmlFor="ci_confirmed_cancer_date">
+                    D.2 Please enter the most recent date when confirmed cancer cases were ascertained: *
                     </Form.Label>
 
-                    {[
-                        { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
-                        { type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry' },
-                        { type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review' },
-                        { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
+                <div className="w-50">
+                    <Reminder message="Required Field" disabled={!errors.ci_confirmed_cancer_date} placement="right">
+                        <DatePicker
+                            id="ci_confirmed_cancer_date"
+                            className="form-control"
+                            selected={form.ci_confirmed_cancer_date}
+                            readOnly={isReadOnly}
+                            onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
+                        />
+                    </Reminder>
+                </div>
+                {/* {submitted && errors.ci_confirmed_cancer_date && <span className="help-block">Required Field.</span>} */}
+            </Form.Group>
 
-                    <div className={classNames(submitted && errors.ci_ascertained_other_specify && "has-error")}>
-                        <Reminder message="Required Field" disabled={!errors.ci_ascertained_other_specify}>
-                            <Form.Control 
-                                as="textarea"
-                                className="resize-vertical"
-                                aria-label="How were your cancer cases ascertained?"
-                                name="ci_ascertained_other_specify"
-                                value={form.ci_ascertained_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 300 Characters"
-                                maxLength={300}
-                                readOnly={isReadOnly}
-                                disabled={+form.ci_ascertained_other !== 1}
-                            />
-                        </Reminder>
-                        {/* {submitted && errors.ci_ascertained_other_specify && <span className="help-block">Required Field.</span>} */}
-                    </div>
-                </Form.Group>
+            <Form.Group>
+                <Form.Label>
+                    D.3 How were your cancer cases ascertained? <small>(Select all that apply)</small>
+                </Form.Label>
+
+                {[
+                    { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
+                    { type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry' },
+                    { type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review' },
+                    { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
+                ].map((props, index) => <CheckedInput {...props} key={`d3-${index}`} />)}
+
+                <div className={classNames(submitted && errors.ci_ascertained_other_specify && "has-error")}>
+                    <Reminder message="Required Field" disabled={!errors.ci_ascertained_other_specify}>
+                        <Form.Control
+                            as="textarea"
+                            className="resize-vertical"
+                            aria-label="How were your cancer cases ascertained?"
+                            name="ci_ascertained_other_specify"
+                            value={form.ci_ascertained_other_specify || ''}
+                            onChange={e => setFormValue(e.target.name, e.target.value)}
+                            placeholder="Max of 300 Characters"
+                            maxLength={300}
+                            readOnly={isReadOnly}
+                            disabled={+form.ci_ascertained_other !== 1}
+                        />
+                    </Reminder>
+                    {/* {submitted && errors.ci_ascertained_other_specify && <span className="help-block">Required Field.</span>} */}
+                </div>
+            </Form.Group>
 
 
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.4 Did you collect information about cancer recurrence?
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.4 Did you collect information about cancer recurrence?
                     </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_cancer_recurrence', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_cancer_recurrence', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d4-${index}`} />)}
-                </Form.Group>
+                {[
+                    { value: 0, name: 'ci_cancer_recurrence', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_cancer_recurrence', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d4-${index}`} />)}
+            </Form.Group>
 
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.5 Do you have second/subsequent primary cancer diagnoses?
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.5 Do you have second/subsequent primary cancer diagnoses?
                     </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d5-${index}`} />)}
-                </Form.Group>
+                {[
+                    { value: 0, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_second_primary_diagnosis', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d5-${index}`} />)}
+            </Form.Group>
 
 
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.6 Do you have cancer treatment data?
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.6 Do you have cancer treatment data?
                     </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (skip the next two questions)' },
-                        { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
-                </Form.Group>
+                {[
+                    { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (skip the next two questions)' },
+                    { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d6-${index}`} />)}
+            </Form.Group>
 
 
-                <Form.Group>
-                    <Form.Label>
-                        D.6a Specify the treatment information you have <small>(Select all that apply)</small>:
-                    </Form.Label>
-
-                    {[
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy' },
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy' },
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant' },
-                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
-                    ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
-
-                    <div className={classNames(submitted && errors.ci_treatment_data_other_specify && "has-error")}>
-                        <Reminder message="Required Field" disabled={!errors.ci_treatment_data_other_specify}>
-                            <Form.Control 
-                                as="textarea"
-                                className="resize-vertical"
-                                aria-label="Specify the treatment information you have"
-                                name="ci_treatment_data_other_specify"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_treatment_data_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                readOnly={isReadOnly}
-                                disabled={+form.ci_treatment_data_other !== 1}
-                            />
-                        </Reminder>
-                        {/* {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">Required Field.</span>} */}
-                    </div>
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>
-                        D.6b Specify the data sources the treatment information is from <small>(Select all that apply)</small>:
+            <Form.Group>
+                <Form.Label>
+                    D.6a Specify the treatment information you have <small>(Select all that apply)</small>:
                     </Form.Label>
 
-                    {[
-                        { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
-                        { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
-                        { type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction' },
-                        { type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire' },
-                        { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
-                    ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
+                {[
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy' },
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy' },
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant' },
+                    { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
+                ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6a-${index}`} />)}
 
-                    <div className={classNames(submitted && errors.ci_data_source_other_specify && "has-error")}>
-                        <Reminder message="Required Field" disabled={!errors.ci_data_source_other_specify}>
-                            <Form.Control 
-                                as="textarea"
-                                className="resize-vertical"
-                                name="ci_data_source_other_specify"
-                                aria-label="Specify the data sources the treatment information is from"
-                                disabled={+form.ci_cancer_treatment_data === 0}
-                                value={form.ci_data_source_other_specify || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                readOnly={isReadOnly}
-                                disabled={+form.ci_data_source_other !== 1}
-                            />
-                        </Reminder>
-                        {/* {submitted && errors.ci_data_source_other_specify && <span className="help-block">Required Field.</span>} */}
-                    </div>
-                </Form.Group>
+                <div className={classNames(submitted && errors.ci_treatment_data_other_specify && "has-error")}>
+                    <Reminder message="Required Field" disabled={!errors.ci_treatment_data_other_specify}>
+                        <Form.Control
+                            as="textarea"
+                            className="resize-vertical"
+                            aria-label="Specify the treatment information you have"
+                            name="ci_treatment_data_other_specify"
+                            disabled={+form.ci_cancer_treatment_data === 0}
+                            value={form.ci_treatment_data_other_specify || ''}
+                            onChange={e => setFormValue(e.target.name, e.target.value)}
+                            placeholder="Max of 200 Characters"
+                            maxLength={200}
+                            readOnly={isReadOnly}
+                            disabled={+form.ci_treatment_data_other !== 1}
+                        />
+                    </Reminder>
+                    {/* {submitted && errors.ci_treatment_data_other_specify && <span className="help-block">Required Field.</span>} */}
+                </div>
+            </Form.Group>
 
-                <Form.Group>
-                    <Form.Label>
-                        D.6c Would it be possible to collect treatment information from medical records or other sources?
-                    </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_collect_other_information', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_collect_other_information', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d6c-${index}`} />)}
-                </Form.Group>
-
-
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.7 Do you have cancer staging data?
-                    </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_cancer_staging_data', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_cancer_staging_data', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d7-${index}`} />)}
-                </Form.Group>
-
-
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.8 Do you have tumor grade data?
-                    </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_tumor_grade_data', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_tumor_grade_data', type: 'radio', label: 'Yes' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d8-${index}`} />)}
-                </Form.Group>
-
-                <Form.Group className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                    <Form.Label>
-                        D.9 Do you have tumor genetic markers data?
-                    </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
-
-                    <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                        <Reminder message="Required Field" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
-                            <Form.Control 
-                                as="textarea"
-                                className="resize-vertical"
-                                name="ci_tumor_genetic_markers_data_describe"
-                                aria-label="Do you have tumor genetic markers data? Please describe:"
-                                length="40"
-                                value={form.ci_tumor_genetic_markers_data_describe || ''}
-                                onChange={e => setFormValue(e.target.name, e.target.value)}
-                                placeholder="Max of 200 Characters"
-                                maxLength={200}
-                                readOnly={isReadOnly}
-                                disabled={+form.ci_tumor_genetic_markers_data !== 1}
-                            />
-                        </Reminder>
-                        {/* {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">Required Field.</span>} */}
-                    </div>
-                </Form.Group>
-
-                <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                    <Form.Label>
-                        D.10 Were cancer cases histologically confirmed?
-                    </Form.Label>
-                    {[
-                        { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'No' },
-                        { value: 1, name: 'ci_histologically_confirmed', type: 'radio', label: 'Some' },
-                        { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d10-${index}`} />)}
-                </Form.Group>
-
-                <Form.Group>
-                    <Form.Label>
-                        D.11 Do you have histological and/or molecular cancer subtyping? <small>(Select all that apply)</small>
+            <Form.Group>
+                <Form.Label>
+                    D.6b Specify the data sources the treatment information is from <small>(Select all that apply)</small>:
                     </Form.Label>
 
-                    {[
-                        { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_histological', label: 'Histological' },
-                        { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_molecular', label: 'Molecular' },
-                    ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
-                </Form.Group>
+                {[
+                    { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
+                    { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
+                    { type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction' },
+                    { type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire' },
+                    { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
+                ].map((props, index) => <CheckedInput {...props} disabled={+form.ci_cancer_treatment_data === 0} key={`d6b-${index}`} />)}
+
+                <div className={classNames(submitted && errors.ci_data_source_other_specify && "has-error")}>
+                    <Reminder message="Required Field" disabled={!errors.ci_data_source_other_specify}>
+                        <Form.Control
+                            as="textarea"
+                            className="resize-vertical"
+                            name="ci_data_source_other_specify"
+                            aria-label="Specify the data sources the treatment information is from"
+                            disabled={+form.ci_cancer_treatment_data === 0}
+                            value={form.ci_data_source_other_specify || ''}
+                            onChange={e => setFormValue(e.target.name, e.target.value)}
+                            placeholder="Max of 200 Characters"
+                            maxLength={200}
+                            readOnly={isReadOnly}
+                            disabled={+form.ci_data_source_other !== 1}
+                        />
+                    </Reminder>
+                    {/* {submitted && errors.ci_data_source_other_specify && <span className="help-block">Required Field.</span>} */}
+                </div>
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>
+                    D.6c Would it be possible to collect treatment information from medical records or other sources?
+                    </Form.Label>
+                {[
+                    { value: 0, name: 'ci_collect_other_information', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_collect_other_information', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d6c-${index}`} />)}
+            </Form.Group>
+
+
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.7 Do you have cancer staging data?
+                    </Form.Label>
+                {[
+                    { value: 0, name: 'ci_cancer_staging_data', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_cancer_staging_data', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d7-${index}`} />)}
+            </Form.Group>
+
+
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.8 Do you have tumor grade data?
+                    </Form.Label>
+                {[
+                    { value: 0, name: 'ci_tumor_grade_data', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_tumor_grade_data', type: 'radio', label: 'Yes' },
+                ].map((props, index) => <CheckedInput {...props} key={`d8-${index}`} />)}
+            </Form.Group>
+
+            <Form.Group className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                <Form.Label>
+                    D.9 Do you have tumor genetic markers data?
+                    </Form.Label>
+                {[
+                    { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
+                ].map((props, index) => <CheckedInput {...props} key={`d9-${index}`} />)}
+
+                <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                    <Reminder message="Required Field" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
+                        <Form.Control
+                            as="textarea"
+                            className="resize-vertical"
+                            name="ci_tumor_genetic_markers_data_describe"
+                            aria-label="Do you have tumor genetic markers data? Please describe:"
+                            length="40"
+                            value={form.ci_tumor_genetic_markers_data_describe || ''}
+                            onChange={e => setFormValue(e.target.name, e.target.value)}
+                            placeholder="Max of 200 Characters"
+                            maxLength={200}
+                            readOnly={isReadOnly}
+                            disabled={+form.ci_tumor_genetic_markers_data !== 1}
+                        />
+                    </Reminder>
+                    {/* {submitted && errors.ci_tumor_genetic_markers_data_describe && <span className="help-block">Required Field.</span>} */}
+                </div>
+            </Form.Group>
+
+            <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
+                <Form.Label>
+                    D.10 Were cancer cases histologically confirmed?
+                    </Form.Label>
+                {[
+                    { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'No' },
+                    { value: 1, name: 'ci_histologically_confirmed', type: 'radio', label: 'Some' },
+                    { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
+                ].map((props, index) => <CheckedInput {...props} key={`d10-${index}`} />)}
+            </Form.Group>
+
+            <Form.Group>
+                <Form.Label>
+                    D.11 Do you have histological and/or molecular cancer subtyping? <small>(Select all that apply)</small>
+                </Form.Label>
+
+                {[
+                    { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_histological', label: 'Histological' },
+                    { type: 'checkbox', value: 1, name: 'ci_cancer_subtype_molecular', label: 'Molecular' },
+                ].map((props, index) => <CheckedInput {...props} key={`d11-${index}`} />)}
+            </Form.Group>
         </ CollapsiblePanel>
 
         <CenterModal
@@ -683,7 +670,7 @@ const CancerInfoForm = ({ ...props }) => {
             title={modal.title || <span>Confirmation Required</span>}
             body={modal.body || <div>There were validation errors. Do you still wish to save your current progress?</div>}
             footer={modal.footer || <div>
-                <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                 <button className="btn btn-primary mx-2" onClick={e => updateModal({ show: false })}>Save</button>
             </div>}
         />
@@ -701,14 +688,14 @@ const CancerInfoForm = ({ ...props }) => {
                     <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
                         <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
                     </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
+                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A !== 'complete' || section.B !== 'complete' || section.C !== 'complete' || section.D !== 'complete' || section.E !== 'complete' || section.F !== 'complete' || section.G !== 'complete'} /></span>
                 </span>
             </> : <>
-                <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Approve' disabled />
-                    <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{float: 'right'}} value='Reject' disabled />
-                </span>            
-            </>}
+                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve' disabled />
+                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject' disabled />
+                    </span>
+                </>}
         </div>}
     </Form>
 }
