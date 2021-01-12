@@ -697,12 +697,12 @@ const InitialStates = {
 
     sectionStatus: {
         'A': 'complete',
-        'B': 'complete  ',
+        'B': 'complete',
         'C': 'complete',
         'D': 'complete',
         'E': 'complete',
         'F': 'complete',
-        'G': 'incomplete'
+        'G': 'complete'
     },
     lookup: {},
     cohortId: 0
