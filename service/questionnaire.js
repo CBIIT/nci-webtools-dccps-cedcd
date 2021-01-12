@@ -480,12 +480,12 @@ router.get('/cohort/:id(\\d+)', async (request, response) => {
 });
 
 router.post('/cohort(/:id(\\d+))?', async (request, response) => {
-    const { app, params, body } = request;
+    const { app, params, body, session } = request;
     const { mysql } = app.locals;
     let id = params ? params.id : undefined; // can be undefined (for new cohorts)
 
     try {
-        response.json(await saveCohort(mysql, body, id));
+        response.json(await saveCohort(mysql, body, id, session.user));
     } catch (e) {
         logger.error(e);
         response.status(500).json({ message: 'Could not update cohort' });
