@@ -91,7 +91,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </>}
                 
                 {userSession.role === 'CohortAdmin' && <>
-                    Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.                    
+                    Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.  Click this link to <a className="text-decoration-underline" href="/cohort/questionnaire">select a cohort</a> if you want to switch to another cohort.
                 </>}
             </div>
         </div>
