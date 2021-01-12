@@ -214,13 +214,7 @@ const CohortForm = ({ ...props }) => {
     }
     const handleSave = () => {
         setSaved(true)
-        /*
-                if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
-                if (!(cohort.mainFileName || cohort.main_cohort_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.main(false, true)) }
-                if (!(cohort.specimenFileName || cohort.specimen_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.specimen(false, true)) }
-                if (!(cohort.dataFileName || cohort.data_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.data(false, true)) }
-                if (!(cohort.publicationFileName || cohort.publication_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.publication(false, true)) }
-        */
+
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
@@ -265,60 +259,140 @@ const CohortForm = ({ ...props }) => {
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
 
     const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)
-        
-        if (result) {
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
-        } else {
+        if(checkFourAges('enrollment_age_min', value))
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
+        else{
             dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+
+            if(errors.enrollment_age_max && cohort.enrollment_age_max >= Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
+                dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+            else if (cohort.enrollment_age_max < Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
+                dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(cohort.enrollment_age_max, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
+            if(errors.enrollment_age_median && cohort.enrollment_age_median >= value && cohort.enrollment_age_median <= cohort.enrollment_age_max)
+                dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
+            else if(cohort.enrollment_age_median < value || cohort.enrollment_age_median > cohort.enrollment_age_max)
+                dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
+            if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= value && cohort.enrollment_age_mean <= cohort.enrollment_age_max )
+                dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
+            else if(cohort.enrollment_age_mean < value || cohort.enrollment_age_mean > cohort.enrollment_age_max)
+                dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
+            
         }
     }
 
     const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
-        } else {
+        if(checkFourAges('enrollment_age_max', value))
+            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
+        else{
             dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+
+            if(errors.enrollment_age_min && cohort.enrollment_age_min <= Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
+                dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+            else if (cohort.enrollment_age_min > Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
+                dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(cohort.enrollment_age_min, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
+            if(errors.enrollment_age_median && cohort.enrollment_age_median >= cohort.enrollment_age_min && cohort.enrollment_age_median <= value)
+                dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
+            else if(cohort.enrollment_age_median < cohort.enrollment_age_min || cohort.enrollment_age_median > value)
+                dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
+            if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= cohort.enrollment_age_min && cohort.enrollment_age_mean <= value)
+                dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
+            else if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > value)
+                dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
+            
         }
     }
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)
-        console.log('valid result: '+result)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.current_age_min(false, result))
-        } else {
+        if(checkFourAges('current_age_min', value))
+            dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
+        else{
             dispatch(allactions.cohortErrorActions.current_age_min(true))
+
+            if(errors.current_age_max && cohort.current_age_max >= Math.max(cohort.current_age_median, cohort.current_age_mean, value))
+                dispatch(allactions.cohortErrorActions.current_age_max(true))
+            else if (cohort.current_age_max < Math.max(cohort.current_age_median, cohort.current_age_mean, value))
+                dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(cohort.current_age_max, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
+            if(errors.current_age_median && cohort.current_age_median >= value && cohort.current_age_median <= cohort.current_age_max)
+                dispatch(allactions.cohortErrorActions.current_age_median(true))
+            else if(cohort.current_age_median < value || cohort.current_age_median > cohort.current_age_max)
+                dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
+            if(errors.current_age_mean && cohort.current_age_mean >= value && cohort.current_age_mean <= cohort.current_age_max )
+                dispatch(allactions.cohortErrorActions.current_age_mean(true))
+            else if(cohort.current_age_mean < value || cohort.current_age_mean > cohort.current_age_max)
+                dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
+            
         }
     }
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.current_age_max(false, result))
-        } else {
+        if(checkFourAges('current_age_max', value))
+            dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
+        else{
             dispatch(allactions.cohortErrorActions.current_age_max(true))
+
+            if(errors.current_age_min && cohort.current_age_min <= Math.min(cohort.current_age_median, cohort.current_age_mean, value))
+                dispatch(allactions.cohortErrorActions.current_age_min(true))
+            else if (cohort.current_age_min > Math.min(cohort.current_age_median, cohort.current_age_mean, value))
+                dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(cohort.current_age_min, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
+            if(errors.current_age_median && cohort.current_age_median >= cohort.current_age_min && cohort.current_age_median <= value)
+                dispatch(allactions.cohortErrorActions.current_age_median(true))
+            else if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > value)
+                dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
+            if(errors.current_age_mean && cohort.current_age_mean >= cohort.current_age_min && cohort.current_age_mean <= value)
+                dispatch(allactions.cohortErrorActions.current_age_mean(true))
+            else if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > value)
+                dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
+            
         }
     }
 
+
+
     const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-        const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
-        if(!result) {
-           if(fieldName.includes('enrollment')){ 
-               if(errors.enrollment_age_min) populateBaseLineMinAgeError(cohort.enrollment_age_min, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) }
-               else if(errors.enrollment_age_max) populateBaseLineMaxAgeError(cohort.enrollment_age_max, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
-            else{
-                if(errors.current_age_min) populateCurrentMinAgeError(cohort.current_age_min, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                else if(errors.current_age_max) populateCurrentMaxAgeError(cohort.current_age_max, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
-            }          
-        }
-    
-        if (result) {
-            dispatch(allactions.cohortErrorActions[fieldName](false, result))
-        } else {
+        if(checkFourAges(fieldName, value)){ //if there is an error dispatch it
+            dispatch(allactions.cohortErrorActions[fieldName](false, getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)))
+        }else{ //if there is no error
             dispatch(allactions.cohortErrorActions[fieldName](true))
+            if(fieldName.includes('enrollment')){
+                if(fieldName.includes('median')) {
+                    dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
+                    dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+                    dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+                    if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > cohort.enrollment_age_max)
+                        dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, 'Out of age range'))
+                }
+                else {
+                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
+                    dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+                    dispatch(allactions.cohortErrorActions.enrollment_age_max(true));
+                    if(cohort.enrollment_age_median < cohort.enrollment_age_min && cohort.enrollment_age_median > cohort.enrollment_age_max) 
+                        dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Out of age range'));     
+                }
+            }else{
+                if(fieldName.includes('median')) {dispatch(allactions.cohortErrorActions.current_age_min(true)); dispatch(allactions.cohortErrorActions.current_age_max(true)); dispatch(allactions.cohortErrorActions.current_age_median(true))}
+                else {dispatch(allactions.cohortErrorActions.current_age_min(true)); dispatch(allactions.cohortErrorActions.current_age_max(true)); dispatch(allactions.cohortErrorActions.current_age_mean(true))}
+            }
         }
+    }
+
+    const checkFourAges = (currentKey, currentValue)=>{
+        let checkWithError = false //assume no error at first
+        if(currentKey.includes('enrollment')){
+            if(currentKey.includes('min')) //enrollment_age_min
+                checkWithError |= currentValue > Math.min(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
+            else if(currentKey.includes('max'))
+                checkWithError |= currentValue < Math.max(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
+            else if(currentKey.includes('median') || currentKey.includes('mean'))
+                checkWithError |= currentValue < cohort.enrollment_age_min || currentValue > cohort.enrollment_age_max
+        }else{
+            if(currentKey.includes('min')) //current_age_min
+                checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+            else if(currentKey.includes('max'))
+                checkWithError |= currentValue < Math.max(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+            else if(currentKey.includes('median') || currentKey.includes('mean'))
+                checkWithError |= currentValue < cohort.current_age_min || currentValue > cohort.current_age_max
+        }
+        return checkWithError
     }
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
@@ -329,10 +403,10 @@ const CohortForm = ({ ...props }) => {
                 return validator.dateValidator(value, requiredOrNot)
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
-            case 'startyear':
-            case 'endyear':
             case 'year':
                 return validator.yearValidator(value, requiredOrNot)
+            case 'startyear':
+            case 'endyear':
             case 'most_recent_year': 
                 return validator.yearValidator(value, requiredOrNot, false)
             case 'url':
@@ -346,14 +420,28 @@ const CohortForm = ({ ...props }) => {
     //will be removed from this file later
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
         var result = getValidationResult(value, requiredOrNot, valueType)
-        if(valueType === 'startyear' && value && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
-            result = 'start year after end year'
-        else if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
-            result = 'end year is before start year'
-
+        if(!result){
+            if(valueType === 'startyear' && value && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
+                result = 'start year after end year'
+            else if (value <= cohort.enrollment_year_end){ 
+                if(cohort.enrollment_year_end <= (new Date()).getFullYear())              
+                    dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                else
+                    dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'expecting a year value in the past'))
+                
+            }
+            if (valueType === 'endyear' && value && cohort.enrollment_year_start > 0 && value < cohort.enrollment_year_start)
+                result = 'end year is before start year'
+                else if (value >= cohort.enrollment_year_start){ 
+                    if(cohort.enrollment_year_start <= (new Date()).getFullYear())              
+                        dispatch(allactions.cohortErrorActions.enrollment_year_start(true))
+                    else
+                        dispatch(allactions.cohortErrorActions.enrollment_year_start(false, 'expecting a year value in the past'))
+                    
+                }
+        }
         
         if (result) {
-            //console.log('field name: '+fieldName+' '+result)
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         } else {
             if (cohortErrorActions[fieldName])
@@ -1136,9 +1224,20 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_year_end' 
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_end} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            if(!isReadOnly)
+                                                            {
+                                                                dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                                if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
+                                                                    batch( () => {        
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    })
+                                                                }
+                                                            }
+                                                        } }
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                         } />
@@ -1148,9 +1247,20 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_year_end' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_end} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                    } 
+                                                    onChange={e => { // if it is already ended turn off on going
+                                                        if(!isReadOnly)
+                                                            {
+                                                                dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                                if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
+                                                                    batch( () => {            
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    })
+                                                                }
+                                                            }
+                                                    } }
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                     } 
@@ -1176,8 +1286,8 @@ const CohortForm = ({ ...props }) => {
                                                                 className="mr-2"
                                                                 // value='0' 
                                                                 checked={cohort.enrollment_ongoing === 0} 
-                                                                onChange={() => {
-                                                                    if(!isReadOnly){
+                                                                onClick={() => {
+                                                                    if(!isReadOnly || cohort.enrollment_year_end || errors.enrollment_year_end){
                                                                         dispatch(allactions.cohortActions.enrollment_ongoing(0));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_target(true));
@@ -1198,8 +1308,8 @@ const CohortForm = ({ ...props }) => {
                                                             className="mr-2"
                                                             // value='0' 
                                                             checked={cohort.enrollment_ongoing === 0} 
-                                                            onChange={e => {
-                                                                if (!isReadOnly) {
+                                                            onClick={e => {
+                                                                if (!isReadOnly|| cohort.enrollment_year_end || errors.enrollment_year_end) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true))
@@ -1224,12 +1334,12 @@ const CohortForm = ({ ...props }) => {
                                                                 className="mr-2"
                                                                 // value='1' 
                                                                 checked={cohort.enrollment_ongoing === 1} 
-                                                                onChange={() => {
-                                                                    if(!isReadOnly){
+                                                                onClick={() => {
+                                                                    if(!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)){
                                                                         dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                                        !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                                        !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
                                                                     }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1245,9 +1355,8 @@ const CohortForm = ({ ...props }) => {
                                                             className="mr-2"
                                                             // value='1' 
                                                             checked={cohort.enrollment_ongoing === 1} 
-                                                            onChange={e => {
-
-                                                                if (!isReadOnly) {
+                                                            onClick={e => {
+                                                                if (!(isReadOnly|| !cohort.enrollment_year_end || !errors.enrollment_year_end)) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))

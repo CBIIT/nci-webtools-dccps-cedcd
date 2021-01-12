@@ -589,7 +589,7 @@ const MajorContentForm = ({ ...props }) => {
                             panelTitle="Major Content Domains">
                 <Form.Group as={Row} className="mb-1">
                     <Form.Label column sm="12">
-                        Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                        Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
                     </Form.Label>
                 </Form.Group>
                 {getFirstContent()}
