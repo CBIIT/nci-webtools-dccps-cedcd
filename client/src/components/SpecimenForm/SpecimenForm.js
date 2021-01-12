@@ -37,6 +37,65 @@ const SpecimenForm = ({ ...props }) => {
     const [userEmails, setEmails] = useState('')
     //const cohortId = window.location.pathname.split('/').pop();
 
+    const sendEmail = (template,topic) => {
+
+        fetch('/api/questionnaire/select_owners_from_id', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+
+                if (result && result.status === 200) {
+                    result.data.map((owner) => {
+
+                        let reqBody = {
+                            templateData: {
+                                user: owner.first_name + ' ' + owner.last_name,
+                                cohortName: owner.name,
+                                cohortAcronym: owner.acronym,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: owner.email,
+                            template: template,
+                            topic: topic + owner.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
+    const handleApprove = () => {
+
+        resetCohortStatus(cohortId, 'published')
+    }
+
+    const handleReject = () => {
+        resetCohortStatus(cohortId, 'returned')
+    }
+
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
             case 'date':
@@ -101,6 +160,9 @@ const SpecimenForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+
+                        if (nextStatus === 'published')
+                            sendEmail('/templates/email-publish-template.html','CEDCD Cohort Review Approved - ')
                     }
                 })
         }
@@ -408,14 +470,6 @@ const SpecimenForm = ({ ...props }) => {
         setModalShow(false)
     }
 
-    const handleApprove = () => {
-        resetReviewCohortStatus(cohortId, 'published')
-    }
-
-    const handleReject = () => {
-        resetReviewCohortStatus(cohortId, 'returned')
-    }
-
     const resetReviewCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -433,38 +487,6 @@ const SpecimenForm = ({ ...props }) => {
                     }
                 })
         }
-    }
-
-    const sendEmail = () => {
-        let reqBody = {
-            // firstname:'joe',
-            //  lastname:'zhao',
-            // organization:'NIH',
-            //  phone:'',
-            email: userEmails,
-            topic: 'test',
-            message: 'this is test on sending email'
-        };
-        fetch('/api/questionnaire/sendEmail', {
-            method: "POST",
-            body: JSON.stringify(reqBody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-                if (result && result.status === 200) {
-                    setMessage('email was sent')
-                    let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-                else {
-                    setMessage('email failed to be sent')
-                    let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-            })
     }
 
     const getQuestionEntry = (field) => {
