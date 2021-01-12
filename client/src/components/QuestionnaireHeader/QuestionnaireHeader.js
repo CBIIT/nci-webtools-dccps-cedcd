@@ -14,6 +14,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const sectionStatus = useSelector(state => state.sectionReducer)
+    const hasUnsavedChanges = useSelector(state => state.unsavedChangesReducer);
     const cohort = useSelector(state => state.cohortReducer);
     const userSession = useContext(UserSessionContext);
     const {
@@ -90,7 +91,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             }
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <Prompt
-                when={true}
+                when={hasUnsavedChanges}
                 message={location => `Please confirm that all changes have been saved, and that you wish to navigate away from this page.`}
             />
 

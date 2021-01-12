@@ -12,6 +12,7 @@ import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css'
 
 const {
@@ -88,7 +89,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         // process form data
         const formValues = getUpdatedFormValues({ ...cancerInfo[0] });
-        console.log({ formValues })
+        // console.log({ formValues })
 
         dispatch(mergeCancerCounts(counts));
         dispatch(mergeCancerInfoFormValues(formValues));
@@ -326,6 +327,7 @@ const CancerInfoForm = ({ ...props }) => {
             }).then(r => r.json());
 
             dispatch(loadCohort(id));
+            dispatch(setHasUnsavedChanges(false));
             setSuccessMsg(true);
 
         } catch (e) {
@@ -356,6 +358,7 @@ const CancerInfoForm = ({ ...props }) => {
                             ? (e.target.checked ? 1 : 0)
                             : e.target.value
                     );
+                    dispatch(setHasUnsavedChanges(true));
                     if (onChange)
                         onChange(e);
                 }}
@@ -421,7 +424,10 @@ const CancerInfoForm = ({ ...props }) => {
                                             min="0"
                                             name={key}
                                             value={counts[key] || 0}
-                                            onChange={ev => setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0))}
+                                            onChange={ev => {
+                                                setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }}
                                             readOnly={isReadOnly}
                                         />
                                     </td>

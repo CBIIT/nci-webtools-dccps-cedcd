@@ -10,6 +10,7 @@ import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 
 import 'react-datepicker/dist/react-datepicker.css'
 import './EnrollmentCounts.css'
@@ -31,6 +32,7 @@ const EnrollmentCountsForm = ({...props}) => {
     //const cohortId = +window.location.pathname.split('/').pop();
     //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
+        dispatch(setHasUnsavedChanges(true));
         amount = String(Math.max(+amount, 0));
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
@@ -94,6 +96,7 @@ const EnrollmentCountsForm = ({...props}) => {
             .then(res => res.json())
             .then(result => {
                 if(result.status === 200){
+                    dispatch(setHasUnsavedChanges(false));
                     if(Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('B', 'complete'))
                     else{
@@ -392,6 +395,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                     null
                                                 } 
                                                 onChange={date => {
+                                                    dispatch(setHasUnsavedChanges(true));
                                                     dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
                                                      if (!date) { 
                                                             dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
