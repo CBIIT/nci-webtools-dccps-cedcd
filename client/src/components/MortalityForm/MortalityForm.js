@@ -11,6 +11,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
 
@@ -169,6 +170,7 @@ const MortalityForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
+                    dispatch(setHasUnsavedChanges(false));
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
@@ -313,7 +315,7 @@ const MortalityForm = ({ ...props }) => {
                                 name='mortalityYear'
                                 value={mortality.mortalityYear}
                                 readOnly={isReadOnly}
-                                onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy'
+                                onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
                             />
                         </Reminder> :
                         <Form.Control
@@ -321,7 +323,7 @@ const MortalityForm = ({ ...props }) => {
                             name='mortalityYear'
                             value={mortality.mortalityYear}
                             readOnly={isReadOnly}
-                            onChange={e => dispatch(allactions.mortalityActions.setMortalityYear(e.target.value))} placeholder='yyyy'
+                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
                         />
                     }
                 </Col>
@@ -338,7 +340,10 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.deathIndex === 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -351,7 +356,10 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.deathCertificate === 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -364,7 +372,11 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.otherDeath === 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); dispatch(allactions.mortalityActions.setOtherDeathSpecify('')) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); 
+                                    dispatch(allactions.mortalityActions.setOtherDeathSpecify(''));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -382,7 +394,11 @@ const MortalityForm = ({ ...props }) => {
                                 value={mortality.otherDeathSpecify}
                                 readOnly={isReadOnly}
                                 placeholder='Max of 200 characters'
-                                onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1}
+                                onChange={e => {
+                                    dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }} 
+                                disabled={mortality.otherDeath !== 1}
                             />
                         </Reminder> :
                         <Form.Control type='text'
@@ -391,7 +407,11 @@ const MortalityForm = ({ ...props }) => {
                             value={mortality.otherDeathSpecify}
                             readOnly={isReadOnly}
                             placeholder='Max of 200 characters'
-                            onChange={e => dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))} disabled={mortality.otherDeath !== 1}
+                            onChange={e => {
+                                dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))
+                                dispatch(setHasUnsavedChanges(true));
+                            }}
+                            disabled={mortality.otherDeath !== 1}
                         />
                     }
                 </Col>
@@ -411,7 +431,10 @@ const MortalityForm = ({ ...props }) => {
                                     type="radio"
                                     className="mr-2"
                                     checked={mortality.haveDeathDate === 0}
-                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}
+                                    onClick={() => { if (!isReadOnly) { 
+                                        dispatch(allactions.mortalityActions.setHaveDeathDate(0));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    } }}
                                 />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     No
@@ -426,7 +449,10 @@ const MortalityForm = ({ ...props }) => {
                                 type="radio"
                                 className="mr-2"
                                 checked={mortality.haveDeathDate === 0}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(0)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setHaveDeathDate(0));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 No
@@ -443,7 +469,10 @@ const MortalityForm = ({ ...props }) => {
                                     type='radio'
                                     className="mr-2"
                                     checked={mortality.haveDeathDate === 1}
-                                    onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
+                                    onClick={() => { if (!isReadOnly) { 
+                                        dispatch(allactions.mortalityActions.setHaveDeathDate(1));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    } }} />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     Yes
                                 </Form.Check.Label>
@@ -456,7 +485,10 @@ const MortalityForm = ({ ...props }) => {
                                 type='radio'
                                 className="mr-2"
                                 checked={mortality.haveDeathDate === 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setHaveDeathDate(1)) } }} />
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setHaveDeathDate(1));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }} />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 Yes
                             </Form.Check.Label>
@@ -487,6 +519,7 @@ const MortalityForm = ({ ...props }) => {
                                             dispatch(allactions.mortalityActions.setIcd10(0));
                                             dispatch(allactions.mortalityActions.setOtherCode(0));
                                             dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                                            dispatch(setHasUnsavedChanges(true));
                                         }
                                     }}
                                 />
@@ -510,6 +543,7 @@ const MortalityForm = ({ ...props }) => {
                                         dispatch(allactions.mortalityActions.setIcd10(0));
                                         dispatch(allactions.mortalityActions.setOtherCode(0));
                                         dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                                        dispatch(setHasUnsavedChanges(true));
                                     }
                                 }}
                             />
@@ -532,6 +566,7 @@ const MortalityForm = ({ ...props }) => {
                                     onClick={() => {
                                         if (!isReadOnly) {
                                             dispatch(allactions.mortalityActions.setHaveDeathCause(1));
+                                            dispatch(setHasUnsavedChanges(true));
                                         }
                                     }}
                                 />
@@ -551,6 +586,7 @@ const MortalityForm = ({ ...props }) => {
                                 onClick={() => {
                                     if (!isReadOnly) {
                                         dispatch(allactions.mortalityActions.setHaveDeathCause(1));
+                                        dispatch(setHasUnsavedChanges(true));
                                     }
                                 }}
                             />
@@ -581,7 +617,10 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.icd9 === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 ICD-9
@@ -594,7 +633,10 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.icd10 === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 ICD-10
@@ -607,7 +649,10 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.notCoded === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2)) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 Not Coded
@@ -620,7 +665,11 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.otherCode === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); dispatch(allactions.mortalityActions.setOtherCodeSpecify('')) } }}
+                                onClick={() => { if (!isReadOnly) { 
+                                    dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); 
+                                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(''));
+                                    dispatch(setHasUnsavedChanges(true));
+                                } }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 Other Code
@@ -637,7 +686,11 @@ const MortalityForm = ({ ...props }) => {
                                 value={mortality.otherCodeSpecify}
                                 readOnly={isReadOnly}
                                 placeholder='Max of 200 characters'
-                                onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} disabled={mortality.otherCode !== 1}
+                                onChange={e => {
+                                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))
+                                    dispatch(setHasUnsavedChanges(true));
+                                }}
+                                disabled={mortality.otherCode !== 1}
                             />
                         </Reminder> :
                         <Form.Control type='text'
@@ -646,7 +699,11 @@ const MortalityForm = ({ ...props }) => {
                             value={mortality.otherCodeSpecify}
                             readOnly={isReadOnly}
                             placeholder='Max of 200 characters'
-                            onChange={e => dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))} disabled={mortality.otherCode !== 1}
+                            onChange={e => {
+                                dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))
+                                dispatch(setHasUnsavedChanges(true));
+                            }} 
+                            disabled={mortality.otherCode !== 1}
                         />
                     }
                 </Col>
@@ -665,7 +722,11 @@ const MortalityForm = ({ ...props }) => {
                                 name='deathNumbers'
                                 value={mortality.deathNumbers}
                                 readOnly={isReadOnly}
-                                onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} placeholder='yyyy'
+                                onChange={e => {
+                                    dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }}
+                                placeholder='yyyy'
                             />
                         </Reminder> :
                         <Form.Control
@@ -673,7 +734,11 @@ const MortalityForm = ({ ...props }) => {
                             name='deathNumbers'
                             value={mortality.deathNumbers}
                             readOnly={isReadOnly}
-                            onChange={e => dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value))} placeholder='yyyy'
+                            onChange={e => {
+                                dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value));
+                                dispatch(setHasUnsavedChanges(true));
+                            }} 
+                            placeholder='yyyy'
                         />
                     }
                 </Col>

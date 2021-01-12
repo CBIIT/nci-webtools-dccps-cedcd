@@ -6,27 +6,27 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import Message from '../Message/Message'
 import MortalityForm from '../MortalityForm/MortalityForm'
-import SpecimenForm from '../SpecimenForm/SpecimensForm'
+import SpecimenForm from '../SpecimenForm/SpecimenForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 //import { defaultProps } from 'react-select/src/Select'
-const content = (currentSection, readOnlyOrNot=false) => {
+const content = (currentSection, readOnlyOrNot = false) => {
     switch (currentSection) {
         case 'A':
             return <CohortForm isReadOnly={readOnlyOrNot} />
         case 'B':
-            return <EnrollmentCountsForm isReadOnly={readOnlyOrNot}/>
+            return <EnrollmentCountsForm isReadOnly={readOnlyOrNot} />
         case 'C':
-            return <MajorContentForm isReadOnly={readOnlyOrNot}/>
+            return <MajorContentForm isReadOnly={readOnlyOrNot} />
         case 'D':
-            return <CancerInfoForm isReadOnly={readOnlyOrNot}/>
+            return <CancerInfoForm isReadOnly={readOnlyOrNot} />
         case 'E':
-            return <MortalityForm isReadOnly={readOnlyOrNot}/>
+            return <MortalityForm isReadOnly={readOnlyOrNot} />
         case 'F':
-            return <DataLinkageForm isReadOnly={readOnlyOrNot}/>
+            return <DataLinkageForm isReadOnly={readOnlyOrNot} />
         case 'G':
-            return <SpecimenForm isReadOnly={readOnlyOrNot}/>
+            return <SpecimenForm isReadOnly={readOnlyOrNot} />
         default:
-            return <Message isReadOnly={readOnlyOrNot}/>
+            return <Message isReadOnly={readOnlyOrNot} />
     }
 }
 
@@ -36,8 +36,8 @@ const QuestionnaireLoader = (props) => {
         props.isReadOnly ? props.setAdmin(1) : props.setAdmin(2)
     }, [])
     return <Questionnaire activeSection={current} handler={(section) => setCurrent(section)} isReadOnly={props.isReadOnly} >
-     {content(current, props.isReadOnly)}
-     </Questionnaire>
+        {content(current, props.isReadOnly)}
+    </Questionnaire>
 }
 
 export default QuestionnaireLoader

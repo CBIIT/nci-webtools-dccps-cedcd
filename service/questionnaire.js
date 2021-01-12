@@ -7,6 +7,7 @@ var fs = require('fs');
 var ejs = require('ejs');
 var config = require('../config');
 var mail = require('../components/mail');
+const { getCohort, saveCohort } = require('./models/cohort');
 
 router.use((request, response, next) => {
     const { session } = request;
@@ -466,52 +467,12 @@ router.post('/update_specimen/:id', function (req, res) {
 
 });
 
-const getTablesWithColumn = async (mysql, column, schema) => {
-    const tables = await mysql.query(
-        `select distinct c.table_name as name
-        from information_schema.COLUMNS c
-            left join information_schema.tables t on (
-                t.TABLE_NAME = c.TABLE_NAME and
-                t.TABLE_SCHEMA = c.TABLE_SCHEMA
-            )
-        where 
-            c.COLUMN_NAME = ? and 
-            t.TABLE_TYPE != 'VIEW' and 
-            t.TABLE_SCHEMA = ?`,
-        [column, schema]
-    );
-    return tables.map(t => t.name);
-};
-
 router.get('/cohort/:id(\\d+)', async (request, response) => {
-    const { app, session, params } = request;
+    const { app, params } = request;
     const { mysql } = app.locals;
     const { id } = params;
     try {
-
-        const [cohort] = await mysql.query(`SELECT * FROM cohort WHERE id = ?`, id);
-
-        if (!cohort)
-            throw new Error(`Invalid cohort: ${id}`);
-
-        // only allow SystemAdmins to administer user mapping roles
-        const restrictedTables = /SystemAdmin/.test(session.user.role)
-            ? []
-            : ['cohort_user_mapping'];
-
-        // look for tables with references to cohort(cohort_id)
-        const tables = (await getTablesWithColumn(mysql, 'cohort_id', 'cedcd')).filter(t =>
-            !restrictedTables.includes(t)
-        );
-
-        for (let table of tables) {
-            cohort[table] = await mysql.query(
-                `SELECT * FROM ?? WHERE cohort_id = ?`,
-                [table, id]
-            );
-        }
-
-        response.json(cohort);
+        response.json(await getCohort(mysql, id));
     } catch (e) {
         logger.error(e);
         response.status(500).json({ message: 'Could not fetch cohort' });
@@ -519,65 +480,12 @@ router.get('/cohort/:id(\\d+)', async (request, response) => {
 });
 
 router.post('/cohort(/:id(\\d+))?', async (request, response) => {
-    const { app, session, params, body } = request;
+    const { app, params, body } = request;
     const { mysql } = app.locals;
     let id = params ? params.id : undefined; // can be undefined (for new cohorts)
 
-    // todo: only allow the CohortAdmin for this specific cohort to post to this route
-    const authenticated = true;
-
-    if (!authenticated)
-        throw new Error('Unauthorized');
-
     try {
-        // only allow SystemAdmins to administer user mapping roles
-        // todo: store table-specific acl rules in the database
-        const restrictedTables = /SystemAdmin/.test(session.user.role)
-            ? []
-            : ['cohort_user_mapping'];
-
-        // look for tables with references to cohort(cohort_id)
-        const tables = (await getTablesWithColumn(mysql, 'cohort_id', 'cedcd')).filter(t =>
-            !restrictedTables.includes(t)
-        );
-
-        const results = await mysql.upsert({
-            table: 'cohort',
-            record: {
-                ...body,
-                id: id || undefined,
-                create_time: undefined,
-                update_time: new Date(),
-                publish_by: session.user ? session.user.id : undefined,
-            }
-        });
-
-        // if inserting a new cohort, preserve the insertId
-        if (id === undefined && results.insertId)
-            id = results.insertId;
-
-        // if a related table is provided, replace all records for the specified cohort
-        for (const table of tables) {
-            let records = body[table] || [];
-            if (!Array.isArray(records))
-                records = [records];
-
-            // upsert records, if provided
-            for (const record of records) {
-                await mysql.upsert({
-                    table,
-                    record: {
-                        ...record,
-                        id: undefined,
-                        cohort_id: id,
-                        create_time: undefined,
-                        update_time: new Date()
-                    }
-                });
-            }
-        }
-
-        response.json({ id });
+        response.json(await saveCohort(mysql, body, id));
     } catch (e) {
         logger.error(e);
         response.status(500).json({ message: 'Could not update cohort' });
@@ -600,7 +508,7 @@ router.get('/lookup', async (request, response) => {
                 person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),
                 race: await mysql.query(`SELECT id, race FROM lu_race`),
                 specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
-                allcohortlist: await mysql.query(`select distinct acronym as id, acronym from cohort`),
+                allcohortlist: await mysql.query(`select distinct name,acronym as id, acronym from cohort`),
             }
         }
         response.json(lookup);

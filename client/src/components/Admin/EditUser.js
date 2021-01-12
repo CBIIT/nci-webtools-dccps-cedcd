@@ -49,7 +49,9 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
-        setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym })))
+
+        setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name })))
+        const allCohorts = lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
 
         const fetchUserData = async function () {
             const result = await fetch(`/api/managecohort/getUserProfile/${userId}`, {
@@ -64,6 +66,7 @@ const EditUser = ({ ...props }) => {
                 setExistingList(result.data.emailList)
                 let resultStatus = result.data.result[0].total
 
+
                 if (+resultStatus === 1) {
                     setUserEmail(data.email)
                     setFirstName(data.first_name)
@@ -71,7 +74,19 @@ const EditUser = ({ ...props }) => {
                     setUserName(data.user_name || '')
                     setUserRole(data.user_role)
                     setActiveStatus(data.active_status)
-                    if (data.cohort_list) setCohortList(data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item })))
+                    if (data.cohort_list) {
+
+                        const list = data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item }))
+                        const toAdd = []
+
+                        list.map((cohort) => {
+
+                            const object = allCohorts.find(item => item.value === cohort.value)
+                            toAdd.push(object)
+                        })
+
+                        setCohortList(toAdd)
+                    }
                     setCurrentUser({ email: data.email, user_name: data.user_name })
                 }
             } else {
@@ -112,6 +127,44 @@ const EditUser = ({ ...props }) => {
         setCohortList([])
     }
 
+    const sendEmail = () => {
+
+        let html = ''
+
+        cohortList.map((cohort) => {
+            html += '<li>Cohort:' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
+            console.log(html)
+        })
+
+        let reqBody = {
+            templateData: {
+                user: firstName + ' ' + lastName,
+                cohort: html.trim(),
+                website: window.location.origin,
+            },
+            email: userEmail,
+            topic: 'Cohort(s) Assignment changes on your CEDCD User Account',
+        };
+        fetch('/api/cohort/sendUserEmail', {
+            method: "POST",
+            body: JSON.stringify(reqBody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                    //clearTimeout(timedMessage)
+                }
+                else {
+                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                    //clearTimeout(timedMessage)
+                }
+            })
+    }
+
 
     const handleSave = () => {
 
@@ -137,6 +190,7 @@ const EditUser = ({ ...props }) => {
                 }).then(res => res.json());
                 if (result.status === 200) {
                     setSuccessMsg(true)
+                    sendEmail()
                     if (isNew) resetState()
                 } else {
                     setFailureMsg(true)
@@ -296,10 +350,8 @@ const EditUser = ({ ...props }) => {
                                 </div>
                             </div>
                         }
-
                     </div>
                 </div>
-
             </div>
         )}</UserSessionContext.Consumer>
 }

@@ -1,18 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './components/App/App';
 import { unregister } from './registerServiceWorker';
-import { createBrowserHistory } from 'history';
 import { Provider } from 'react-redux';
 import { createStore, compose, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import { getLookupTables } from './reducers/lookupReducer';
+import RoutedApp from './components/RoutedApp/RoutedApp';
 import './index.scss';
 
 
-const history = createBrowserHistory();
 export const UserSessionContext = React.createContext(null);
 const store = createStore(rootReducer, compose(
 	applyMiddleware(thunk),
@@ -20,6 +17,7 @@ const store = createStore(rootReducer, compose(
 		? window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true })
 		: e => e
 ));
+
 
 (async function main() {
 	const response = await fetch('/api/user-session');
@@ -33,9 +31,7 @@ const store = createStore(rootReducer, compose(
 	ReactDOM.render(
 		<UserSessionContext.Provider value={userSession}>
 			<Provider store={store}>
-				<BrowserRouter history={history}>
-					<App />
-				</BrowserRouter>
+				<RoutedApp />
 			</Provider>
 		</UserSessionContext.Provider>,
 		document.getElementById('root')

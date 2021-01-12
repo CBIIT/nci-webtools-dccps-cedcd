@@ -11,6 +11,7 @@ import CenterModal from '../controls/modal/modal'
 import FileModal from '../controls/modal/FileModal.js'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import "react-datepicker/dist/react-datepicker.css";
 import './CohortForm.scss'
 import cohortErrorActions from '../../actions/cohortErrorActions'
@@ -186,6 +187,7 @@ const CohortForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
+                    dispatch(setHasUnsavedChanges(false));
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
@@ -440,6 +442,7 @@ const CohortForm = ({ ...props }) => {
 
 
     const handleUpload = (fileData, category) => {
+        dispatch(setHasUnsavedChanges(true));
         if (fileData) {
             let fileList = []
             const formData = new FormData();
@@ -608,9 +611,10 @@ const CohortForm = ({ ...props }) => {
                                             style={{ fontSize: '16px' }}
                                             maxLength="5000" 
                                             value={cohort.cohort_description} 
-                                            onChange={e => 
-                                                dispatch(allactions.cohortActions.cohort_description(e.target.value))
-                                            } 
+                                            onChange={e => {
+                                                dispatch(allactions.cohortActions.cohort_description(e.target.value));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }}
                                             readOnly={isReadOnly}/>
                                     </Col>
                                 </Form.Group>
@@ -627,9 +631,10 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200'
                                                     value={cohort.cohort_web_site} 
-                                                    onChange={e => 
-                                                        dispatch(allactions.cohortActions.cohort_web_site(e.target.value))
-                                                    }
+                                                    onChange={e => {
+                                                        dispatch(allactions.cohortActions.cohort_web_site(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('cohort_web_site', e.target.value, false, 'string') 
                                                     } 
@@ -698,7 +703,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
                                                                     dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
                                                                     dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'));
+                                                                    dispatch(setHasUnsavedChanges(true));
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -722,7 +728,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
                                                                 dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'));
+                                                                dispatch(setHasUnsavedChanges(true));
                                                             } 
                                                         }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -746,13 +753,14 @@ const CohortForm = ({ ...props }) => {
                                                                 //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
                                                                 if(!isReadOnly) {
                                                                     setPerson(e, '', '', '', '', 1, 'contacter');
-                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterName(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                                                            }} 
-                                                            }/>
+                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true));
+                                                                    dispatch(allactions.cohortErrorActions.contacterName(true));
+                                                                    dispatch(allactions.cohortErrorActions.contacterPosition(true));
+                                                                    dispatch(allactions.cohortErrorActions.contacterPhone(true));
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(true));
+                                                                    dispatch(setHasUnsavedChanges(true));
+                                                                }
+                                                            }}/>
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             Yes 
                                                         </Form.Check.Label>
@@ -776,7 +784,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.contacterPosition(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterPhone(true))
                                                                 dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                                                        }
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }
                                                         }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         Yes
@@ -821,8 +830,9 @@ const CohortForm = ({ ...props }) => {
                                                 let idx = cohort.investigators.length; 
                                                 dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); 
                                                 dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); 
-                                                dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }
-                                            } 
+                                                dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) 
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }} 
                                             disabled={isReadOnly}>
                                             Add New Investigator
                                         </button>
@@ -876,6 +886,7 @@ const CohortForm = ({ ...props }) => {
                                                         //!isReadOnly && setPerson(e, '', '', '', '', 0, 'collaborator') 
                                                         if(!isReadOnly) {
                                                             setPerson(e, '', '', '', '', 0, 'collaborator');
+                                                            dispatch(setHasUnsavedChanges(true));
                                                             if(e.target.checked)
                                                             {
                                                                 dispatch(allactions.cohortErrorActions.collaboratorName(true))
@@ -906,6 +917,7 @@ const CohortForm = ({ ...props }) => {
                                                     onClick={e => {
                                                         if(!isReadOnly) {
                                                             setPerson(e, '', '', '', '', 1, 'collaborator')
+                                                            dispatch(setHasUnsavedChanges(true));
                                                             if(e.target.checked)
                                                             {
                                                                 dispatch(allactions.cohortErrorActions.collaboratorName(true))
@@ -964,9 +976,10 @@ const CohortForm = ({ ...props }) => {
                                                         className="mr-2" 
                                                         value='4' 
                                                         checked={cohort.eligible_gender_id === 4} 
-                                                        onChange={() => 
+                                                        onChange={() => {
+                                                            dispatch(setHasUnsavedChanges(true));
                                                             !isReadOnly && removeEligbleGenderError(4) 
-                                                        } />
+                                                        }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         All
                                                     </Form.Check.Label>
@@ -980,9 +993,10 @@ const CohortForm = ({ ...props }) => {
                                                         className="mr-2" 
                                                         value="2" 
                                                         checked={cohort.eligible_gender_id === 2} 
-                                                        onChange={() => 
-                                                            !isReadOnly && removeEligbleGenderError(2) 
-                                                        } />
+                                                        onChange={() => {
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            !isReadOnly && removeEligbleGenderError(2);
+                                                        }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         Males only
                                                     </Form.Check.Label>
@@ -996,9 +1010,10 @@ const CohortForm = ({ ...props }) => {
                                                         className="mr-2" 
                                                         value="1"
                                                         checked={cohort.eligible_gender_id === 1} 
-                                                        onChange={() => 
+                                                        onChange={() => {
+                                                            dispatch(setHasUnsavedChanges(true));
                                                             !isReadOnly && removeEligbleGenderError(1) 
-                                                        } />
+                                                        }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         Females only
                                                     </Form.Check.Label>
@@ -1019,9 +1034,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.eligible_disease} 
-                                                    onChange={() => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
-                                                    }  />
+                                                    onChange={() => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}  />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Cancer survivors only, specify cancer site(s)
                                                 </Form.Check.Label>
@@ -1035,9 +1051,10 @@ const CohortForm = ({ ...props }) => {
                                             maxLength="100" 
                                             placeholder="Max of 100 characters" 
                                             readOnly={!cohort.eligible_disease || isReadOnly} 
-                                            onChange={e => 
-                                                dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
-                                            } />
+                                            onChange={e => {
+                                                dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }} />
                                     </Col>
                                     <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Please specify any eligibility criteria in addition to age and sex
@@ -1048,9 +1065,10 @@ const CohortForm = ({ ...props }) => {
                                             maxLength="100" 
                                             name='eligible_disease_other_specify' 
                                             value={cohort.eligible_disease_other_specify} 
-                                            onChange={e => 
-                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
-                                            } 
+                                            onChange={e => {
+                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }} 
                                             readOnly={isReadOnly} />
                                     </Col>
                                 </Form.Group>
@@ -1071,9 +1089,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }}
                                                         name='enrollment_total' 
                                                         value={cohort.enrollment_total} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateErrors('enrollment_total', e.target.value, true, 'number')
                                                         } />
@@ -1081,9 +1100,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" 
                                                     name='enrollment_total' 
                                                     value={cohort.enrollment_total} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_total(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('enrollment_total', e.target.value, true, 'number') 
                                                     } 
@@ -1103,9 +1123,10 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_year_start' 
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_start} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
                                                         } />
@@ -1114,9 +1135,10 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_year_start' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_start} 
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
                                                     } 
@@ -1136,9 +1158,10 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_year_end' 
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_end} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                         } />
@@ -1148,9 +1171,10 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_year_end' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_end} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_end', e.target.value, true, 'endyear') 
                                                     } 
@@ -1182,6 +1206,7 @@ const CohortForm = ({ ...props }) => {
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                         dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                        dispatch(setHasUnsavedChanges(true));
                                                                     }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1204,6 +1229,7 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                                    dispatch(setHasUnsavedChanges(true));
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1230,6 +1256,7 @@ const CohortForm = ({ ...props }) => {
                                                                         dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                         dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
                                                                         dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                                        dispatch(setHasUnsavedChanges(true));
                                                                     }
                                                                 }} />
                                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1253,6 +1280,7 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                     !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
                                                                     !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                                    dispatch(setHasUnsavedChanges(true));
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1274,9 +1302,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_target' 
                                                         value={cohort.enrollment_target} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateErrors('enrollment_target', e.target.value, true, 'number')
                                                         } 
@@ -1285,9 +1314,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_target' 
                                                     value={cohort.enrollment_target} 
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_target(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('enrollment_target', e.target.value, true, 'number')
                                                     } 
@@ -1307,9 +1337,10 @@ const CohortForm = ({ ...props }) => {
                                                         name='enrollment_year_complete' 
                                                         placeholder='yyyy' 
                                                         value={cohort.enrollment_year_complete} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                                         } 
@@ -1319,9 +1350,10 @@ const CohortForm = ({ ...props }) => {
                                                     name='enrollment_year_complete' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_complete} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
-                                                    }
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                                     } 
@@ -1341,9 +1373,10 @@ const CohortForm = ({ ...props }) => {
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='enrollment_age_min' 
                                                             value={cohort.enrollment_age_min} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
-                                                            } 
+                                                            onChange={e => {
+                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
                                                             onBlur={e => 
                                                                 populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                             } />
@@ -1351,9 +1384,10 @@ const CohortForm = ({ ...props }) => {
                                                     <Form.Control type="text" className='text-capitalize'
                                                         name='enrollment_age_min' 
                                                         value={cohort.enrollment_age_min} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                         } 
@@ -1368,9 +1402,10 @@ const CohortForm = ({ ...props }) => {
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='enrollment_age_max' 
                                                             value={cohort.enrollment_age_max} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
-                                                            } 
+                                                            onChange={e => {
+                                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
                                                             onBlur={e => 
                                                                 populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                             } />
@@ -1378,9 +1413,10 @@ const CohortForm = ({ ...props }) => {
                                                     <Form.Control type="text" className='text-capitalize'
                                                         name='enrollment_age_max' 
                                                         value={cohort.enrollment_age_max} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                         }
@@ -1400,9 +1436,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_median' 
                                                         value={cohort.enrollment_age_median} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                         } />
@@ -1410,9 +1447,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_age_median' 
                                                     value={cohort.enrollment_age_median} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                     } 
@@ -1431,9 +1469,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_mean' 
                                                         value={cohort.enrollment_age_mean} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                         } />
@@ -1441,9 +1480,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" className='text-capitalize'
                                                     name='enrollment_age_mean' 
                                                     value={cohort.enrollment_age_mean} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
                                                     } 
@@ -1463,9 +1503,10 @@ const CohortForm = ({ ...props }) => {
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='current_age_min' 
                                                             value={cohort.current_age_min} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
-                                                            } 
+                                                            onChange={e => {
+                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
                                                             onBlur={e => 
                                                                 populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
                                                             } />
@@ -1473,9 +1514,10 @@ const CohortForm = ({ ...props }) => {
                                                     <Form.Control type="text" className='text-capitalize'
                                                         name='current_age_min' 
                                                         value={cohort.current_age_min} 
-                                                        onChange={e => 
-                                                            !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
                                                         } 
@@ -1490,9 +1532,10 @@ const CohortForm = ({ ...props }) => {
                                                             style={{ color: 'red', border: '1px solid red' }} 
                                                             name='current_age_max' 
                                                             value={cohort.current_age_max} 
-                                                            onChange={e => 
-                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                            } 
+                                                            onChange={e => {
+                                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
                                                             onBlur={e => 
                                                                 populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
                                                             } />
@@ -1500,9 +1543,10 @@ const CohortForm = ({ ...props }) => {
                                                     <Form.Control type="text" className='text-capitalize'
                                                         name='current_age_max' 
                                                         value={cohort.current_age_max} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
                                                         } 
@@ -1522,9 +1566,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='current_age_median' 
                                                         value={cohort.current_age_median} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                         } />
@@ -1532,9 +1577,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" className='text-capitalize'
                                                     name='current_age_median' 
                                                     value={cohort.current_age_median}
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.current_age_median(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                     } 
@@ -1553,9 +1599,10 @@ const CohortForm = ({ ...props }) => {
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='current_age_mean' 
                                                         value={cohort.current_age_mean} 
-                                                        onChange={e => 
-                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                        } 
+                                                        onChange={e => {
+                                                            !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }} 
                                                         onBlur={e => 
                                                             populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                         } />
@@ -1563,9 +1610,10 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" className='text-capitalize'
                                                     name='current_age_mean' 
                                                     value={cohort.current_age_mean} 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
                                                     } 
@@ -1596,9 +1644,10 @@ const CohortForm = ({ ...props }) => {
                                                     maxLength='200' c
                                                     name='time_interval' 
                                                     value={cohort.time_interval} 
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={e => 
                                                         populateErrors('time_interval', e.target.value, true, 'string') 
                                                     } />
@@ -1608,9 +1657,10 @@ const CohortForm = ({ ...props }) => {
                                                 maxLength='200' 
                                                 name='time_interval' 
                                                 value={cohort.time_interval} 
-                                                onChange={e => 
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value))
-                                                } 
+                                                onChange={e => {
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.time_interval(e.target.value));
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                }}
                                                 onBlur={e => 
                                                     populateErrors('time_interval', e.target.value, true, 'string') 
                                                 } 
@@ -1631,9 +1681,10 @@ const CohortForm = ({ ...props }) => {
                                                     style={{ color: 'red', border: '1px solid red' }} 
                                                     name='most_recent_year' 
                                                     value={cohort.most_recent_year}
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     placeholder='yyyy' 
                                                     onBlur={e => 
                                                         populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
@@ -1642,9 +1693,10 @@ const CohortForm = ({ ...props }) => {
                                             <Form.Control type="text" 
                                                 name='most_recent_year' 
                                                 value={cohort.most_recent_year} 
-                                                onChange={e => 
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
-                                                }
+                                                onChange={e => {
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value));
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                }}
                                                 placeholder='yyyy' 
                                                 onBlur={e => 
                                                     populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
@@ -1676,9 +1728,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.data_collected_in_person == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_in_person');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     In person
                                                 </Form.Check.Label>
@@ -1691,9 +1744,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.data_collected_phone == 1} 
-                                                    onClick={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone') 
-                                                    } />
+                                                    onClick={e => {
+                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_paper', 'data_collected_web', 'data_collected_other'], 'data_collected_phone');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Phone interview
                                                 </Form.Check.Label>
@@ -1706,9 +1760,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.data_collected_paper == 1} 
-                                                    onClick={e =>
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper') 
-                                                    } />
+                                                    onClick={e => {
+                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_web', 'data_collected_other'], 'data_collected_paper');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Self-administered via paper
                                                 </Form.Check.Label>
@@ -1721,9 +1776,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.data_collected_web == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_other'], 'data_collected_web');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Self-administered via web-based device
                                                 </Form.Check.Label>
@@ -1736,9 +1792,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.data_collected_other == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true) 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'dataCollection', ['data_collected_in_person', 'data_collected_phone', 'data_collected_paper', 'data_collected_web'], 'data_collected_other', 'data_collected_other_specify', true) ;
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Other, please specify
                                                 </Form.Check.Label>
@@ -1752,9 +1809,10 @@ const CohortForm = ({ ...props }) => {
                                                     value={cohort.data_collected_other_specify} 
                                                     placeholder='Max of 200 characters'
                                                     maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
-                                                    }
+                                                    onChange={e => {
+                                                        !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}
                                                     onBlur={() => 
                                                         populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                                     }
@@ -1765,9 +1823,10 @@ const CohortForm = ({ ...props }) => {
                                                 value={cohort.data_collected_other_specify} 
                                                 placeholder='Max of 200 characters'
                                                 maxLength='200' 
-                                                onChange={e => 
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
-                                                } 
+                                                onChange={e => {
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value));
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                }}
                                                 onBlur={() => 
                                                     populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                                 }
@@ -1798,9 +1857,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.requireNone == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireNone');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     None
                                                 </Form.Check.Label>
@@ -1813,9 +1873,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.requireCollab == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireNone', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireCollab');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Require collaboration with cohort investigators
                                                 </Form.Check.Label>
@@ -1828,9 +1889,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.requireIrb == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb')
-                                                    }/>
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireNone', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireIrb');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Require IRB approvals
                                                 </Form.Check.Label>
@@ -1843,9 +1905,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.requireData == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Require data use agreements and/or materrial transfer agreement
                                                 </Form.Check.Label>
@@ -1858,9 +1921,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.restrictGenoInfo == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'requireNone', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'restrictGenoInfo');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Restrictions in the consent related to genetic information
                                                 </Form.Check.Label>
@@ -1873,9 +1937,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.restrictOtherDb == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'requireNone', 'restrictCommercial', 'restrictOther'], 'restrictOtherDb');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Restrictions in the consent related to linking to other databases
                                                 </Form.Check.Label>
@@ -1888,9 +1953,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.restrictCommercial == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'requireNone', 'restrictOther'], 'restrictCommercial');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Restrictions on commercial use
                                                 </Form.Check.Label>
@@ -1903,9 +1969,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.restrictOther == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true) 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'requireNone'], 'restrictOther', 'restrictions_other_specify', true);
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Other, please specify
                                                 </Form.Check.Label>
@@ -1918,9 +1985,10 @@ const CohortForm = ({ ...props }) => {
                                                     value={cohort.restrictions_other_specify} 
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} 
                                                     onBlur={() => 
                                                         populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                                     } 
@@ -1931,9 +1999,10 @@ const CohortForm = ({ ...props }) => {
                                                 value={cohort.restrictions_other_specify}
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
-                                                onChange={e => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
-                                                } 
+                                                onChange={e => {
+                                                    !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value));
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                }}
                                                 onBlur={() => 
                                                     populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                                 }
@@ -1964,9 +2033,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_routine == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine') 
-                                                    }/>
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }}/>
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Nothing beyond mailing questionnaires or other routine contacts
                                                 </Form.Check.Label>
@@ -1979,9 +2049,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_mailing == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Send newsletters or other general mailings (e.g., birthday cards)
                                                 </Form.Check.Label>
@@ -1994,9 +2065,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_aggregate_study == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Return aggregate study results (e.g., recent findings)
                                                 </Form.Check.Label>
@@ -2009,9 +2081,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_individual_study == 1} 
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Individual study results (e.g., nutrient values)
                                                 </Form.Check.Label>
@@ -2024,9 +2097,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_invitation == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation') 
-                                                    } />
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation');
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Invite participation on research committees
                                                 </Form.Check.Label>
@@ -2039,9 +2113,10 @@ const CohortForm = ({ ...props }) => {
                                                     type="checkbox" 
                                                     className="mr-2" 
                                                     checked={cohort.strategy_other == 1}
-                                                    onChange={e => 
-                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
-                                                    }/>
+                                                    onChange={e => {
+                                                        !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true);
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Other, please specify
                                                 </Form.Check.Label>
@@ -2054,9 +2129,10 @@ const CohortForm = ({ ...props }) => {
                                                     value={cohort.strategy_other_specify} 
                                                     placeholder='Max of 200 characters' 
                                                     maxLength='200' 
-                                                    onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
-                                                    } 
+                                                    onChange={e => {
+                                                        !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }} 
                                                     onBlur={() => 
                                                         populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                                     } 
@@ -2067,9 +2143,10 @@ const CohortForm = ({ ...props }) => {
                                                 value={cohort.strategy_other_specify}
                                                 placeholder='Max of 200 characters' 
                                                 maxLength='200' 
-                                                onChange={e => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
-                                                } 
+                                                onChange={e => {
+                                                    !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value));
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                }}
                                                 onBlur={() => 
                                                     populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                                 } 
@@ -2094,13 +2171,17 @@ const CohortForm = ({ ...props }) => {
                                             <table>
                                                 <tbody>
                                                     <tr>
-                                                        <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Questionnarie</th>
+                                                        <th style={{ paddingTop: '0', paddingBottom: '0', backgroundColor: '#01857b', color: 'white' }}>Questionnaire</th>
                                                         <td style={{ padding: '0' }}>
                                                             <table style={{ width: '100%', height: '100%', marginBottom: '0' }} className='table '>
                                                                 <tbody>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} onChange={e => dispatch(allactions.cohortActions.questionnaire_url(e.target.value))} /></td>
+                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' readOnly={isReadOnly} value={cohort.questionnaire_url} 
+                                                                            onChange={e => {
+                                                                                dispatch(allactions.cohortActions.questionnaire_url(e.target.value));
+                                                                                dispatch(setHasUnsavedChanges(true))
+                                                                            }} /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2141,7 +2222,11 @@ const CohortForm = ({ ...props }) => {
                                                                 <tbody>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly} value={cohort.main_cohort_url} onChange={e => dispatch(allactions.cohortActions.main_cohort_url(e.target.value))} /></td>
+                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' disabled={isReadOnly} value={cohort.main_cohort_url} 
+                                                                            onChange={e => {
+                                                                                dispatch(allactions.cohortActions.main_cohort_url(e.target.value));
+                                                                                dispatch(setHasUnsavedChanges(true));
+                                                                            }} /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2182,7 +2267,11 @@ const CohortForm = ({ ...props }) => {
                                                                 <tbody>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly} value={cohort.data_url} onChange={e => dispatch(allactions.cohortActions.data_url(e.target.value))} /></td>
+                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' disabled={isReadOnly} value={cohort.data_url} 
+                                                                        onChange={e => {
+                                                                            dispatch(allactions.cohortActions.data_url(e.target.value));
+                                                                            dispatch(setHasUnsavedChanges(true));
+                                                                        }} /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2223,7 +2312,11 @@ const CohortForm = ({ ...props }) => {
                                                                 <tbody>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly} value={cohort.specimen_url} onChange={e => dispatch(allactions.cohortActions.specimen_url(e.target.value))} /></td>
+                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' disabled={isReadOnly} value={cohort.specimen_url} 
+                                                                        onChange={e => {
+                                                                            dispatch(allactions.cohortActions.specimen_url(e.target.value));
+                                                                            dispatch(setHasUnsavedChanges(true));
+                                                                        }} /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2264,7 +2357,11 @@ const CohortForm = ({ ...props }) => {
                                                                 <tbody>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
-                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => dispatch(allactions.cohortActions.publication_url(e.target.value))} disabled={isReadOnly} /></td>
+                                                                        <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' 
+                                                                        onChange={e => {
+                                                                            dispatch(allactions.cohortActions.publication_url(e.target.value))
+                                                                            dispatch(setHasUnsavedChanges(true));
+                                                                        }} disabled={isReadOnly} /></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <th style={{ backgroundColor: '#01857b', color: 'white' }}>Attached</th>
@@ -2314,7 +2411,12 @@ const CohortForm = ({ ...props }) => {
                                                         <tr>
                                                             <td>Questionnaires</td>
                                                             <td>
-                                                               <input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} onChange={e => { dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) }} readOnly={isReadOnly} /></td>
+                                                               <input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='questionnaire_url' id='questionnaire_url' value={cohort.questionnaire_url} 
+                                                                onChange={e => { 
+                                                                   dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) 
+                                                                   dispatch(setHasUnsavedChanges(true));
+                                                                }} 
+                                                                readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
                                                                 {
                                                                     !isReadOnly && 
@@ -2344,7 +2446,12 @@ const CohortForm = ({ ...props }) => {
                                                         </tr>
                                                         <tr>
                                                             <td>Main cohort protocol</td>
-                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} onChange={e => { dispatch(allactions.cohortActions.main_cohort_url(e.target.value)) }} readOnly={isReadOnly} /></td>
+                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='main_cohort_url' id='main_cohort_url' value={cohort.main_cohort_url} 
+                                                            onChange={e => { 
+                                                                dispatch(allactions.cohortActions.main_cohort_url(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }} 
+                                                            readOnly={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
                                                                 {
                                                                     !isReadOnly && 
@@ -2375,7 +2482,12 @@ const CohortForm = ({ ...props }) => {
                                                         </tr>
                                                         <tr>
                                                             <td>Data sharing policy</td>
-                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} onChange={e => { dispatch(allactions.cohortActions.data_url(e.target.value)) }} disabled={isReadOnly} /></td>
+                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='data_url' id='data_url' value={cohort.data_url} 
+                                                            onChange={e => { 
+                                                                dispatch(allactions.cohortActions.data_url(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
+                                                            disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
                                                             {
                                                                     !isReadOnly && 
@@ -2405,7 +2517,11 @@ const CohortForm = ({ ...props }) => {
                                                         </tr>
                                                         <tr>
                                                             <td>Biospecimen sharing policy</td>
-                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} onChange={e => { dispatch(allactions.cohortActions.specimen_url(e.target.value)) }} disabled={isReadOnly} /></td>
+                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='specimen_url' id='specimen_url' value={cohort.specimen_url} 
+                                                            onChange={e => { 
+                                                                dispatch(allactions.cohortActions.specimen_url(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
                                                             {
                                                                     !isReadOnly && 
@@ -2435,7 +2551,11 @@ const CohortForm = ({ ...props }) => {
                                                         </tr>
                                                         <tr>
                                                             <td>Publication(authorship) policy</td>
-                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' onChange={e => { dispatch(allactions.cohortActions.publication_url(e.target.value)) }} disabled={isReadOnly} /></td>
+                                                            <td><input className='inputWriter' placeholder='Max of 100 characters' maxLength='100' name='publication_url' value={cohort.publication_url} id='publication_url' 
+                                                            onChange={e => { 
+                                                                dispatch(allactions.cohortActions.publication_url(e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }} disabled={isReadOnly} /></td>
                                                             <td style={{ verticalAlign: 'middle' }}>
                                                             {
                                                                     !isReadOnly && 
