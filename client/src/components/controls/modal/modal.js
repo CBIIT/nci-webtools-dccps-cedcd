@@ -6,7 +6,7 @@ const CenterModal = (props) => {
       <Modal.Header>
         <Modal.Title>
           { props.title || 
-            <span>Confirmation Required</span>
+            <span>Validation Errors</span>
           }
         </Modal.Title>
       </Modal.Header>

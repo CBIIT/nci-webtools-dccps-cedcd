@@ -8,7 +8,7 @@ import Modal from '../controls/modal/modal';
 export default function RoutedApp() {
 	const [modal, setModal] = useState({
 		show: false,
-		title: <span>Confirm Navigation</span>,
+		title: <span>Leaving Page</span>,
 		body: <div className="py-4">You may have unsaved changes. Please confirm that you wish to navigate away from the current page.</div>,
 		footer: <div>
 			<Button variant="light">Cancel</Button>
