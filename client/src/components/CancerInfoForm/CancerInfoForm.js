@@ -7,6 +7,7 @@ import Table from 'react-bootstrap/Table';
 import { postJSON } from '../../services/query';
 import allactions from '../../actions'
 import { fetchCohort } from '../../reducers/cohort';
+import { updateUserSession } from '../../reducers/user';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'
@@ -291,10 +292,9 @@ const CancerInfoForm = ({ ...props }) => {
                     dispatch(({ type: 'SET_COHORT_STATUS', value: status }))
                     dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
                 } else {
+                    
                     if (newCohortId && +newCohortId !== id) {
                         id = newCohortId;
-                        dispatch(allactions.cohortIDAction.setCohortId(newCohortId))
-                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                     }
                 }
             }
@@ -307,6 +307,12 @@ const CancerInfoForm = ({ ...props }) => {
                     status: hasErrors ? 'incomplete' : 'complete'
                 }]
             });
+
+            if (id != cohortId) {
+                await dispatch(updateUserSession());
+                dispatch(allactions.cohortIDAction.setCohortId(id));
+                window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, id));
+            }
 
             dispatch(fetchCohort(id));
             dispatch(setHasUnsavedChanges(false));
