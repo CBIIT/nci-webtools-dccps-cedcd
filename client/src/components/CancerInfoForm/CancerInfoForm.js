@@ -7,7 +7,6 @@ import Table from 'react-bootstrap/Table';
 import { postJSON } from '../../services/query';
 import allactions from '../../actions'
 import { fetchCohort } from '../../reducers/cohort';
-import { updateUserSession } from '../../reducers/user';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'
@@ -221,7 +220,7 @@ const CancerInfoForm = ({ ...props }) => {
         } else {
             updateModal({
                 show: true,
-                header: <span>Confirmation Required</span>,
+                header: <span>Validation Errors</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress?</div>,
                 footer: <div>
                     <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
@@ -248,7 +247,7 @@ const CancerInfoForm = ({ ...props }) => {
         } else {
             updateModal({
                 show: true,
-                header: <span>Confirmation Required</span>,
+                header: <span>Validation Errors</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress and continue to the next section?</div>,
                 footer: <div>
                     <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
@@ -667,7 +666,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         <CenterModal
             show={modal.show}
-            title={modal.title || <span>Confirmation Required</span>}
+            title={modal.title || <span>Validation Errors</span>}
             body={modal.body || <div>There were validation errors. Do you still wish to save your current progress?</div>}
             footer={modal.footer || <div>
                 <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
