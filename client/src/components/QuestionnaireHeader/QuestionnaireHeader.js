@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from "react-router-dom";
 import { parseISO } from 'date-fns';
+import { UserSessionContext } from '../../index';
 import './QuestionnaireHeader.css'
 import allactions from '../../actions'
 
@@ -10,6 +11,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     const dispatch = useDispatch();
     const sectionStatus = useSelector(state => state.sectionReducer)
     const cohort = useSelector(state => state.cohortReducer);
+    const userSession = useContext(UserSessionContext);
     const {
         status,
         publish_time: publishTime,
@@ -17,6 +19,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     } = useSelector(state => state.cohort);
     const publishDate = status != 'new' && publishTime ? parseISO(publishTime) : null;
     const updateDate = status != 'new' && updateTime ? parseISO(updateTime) : null;
+
    /*const asTitleCase = str => String(str).split(/\W+/g).map(str =>
         str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
     );
@@ -83,19 +86,16 @@ const QuestionnaireHeader = ({ ...props }) => {
             }
             <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
             <div >
-                {!isReadOnly ? <>
-                    Please review and complete all sections of this questionnaire. If your account is associated with more than one cohort, use the following link to <a href="/cohort/questionnaire" target="_self">select a different cohort</a> if needed.
-                    Each section's completion status is reflected in the color of each section selector. 
-                    Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
-                    All fields marked with an asterisk (*) are required.
-                </> : <>
-                    Please review all sections of this questionnaire. Each section's completion status is reflected in the color of each section selector. 
-                    Orange indicates that the section is missing required information, green indicates that the section is complete, and grey indicates that no data has been entered for that section. 
-                    All fields marked with an asterisk (*) are required.
+                {userSession.role === 'SystemAdmin' && <>
+                    Welcome to the Cohort Questionnaire! If this cohort is under Review (Cohort Status is "In Review"), you have to review each section in order by clicking on the Next button. After all sections have been reviewed, the Approve or Reject button will then be enabled on the last section. If you are just viewing the cohort data, you can go to any section to view by clicking on the Section Selector.
+                </>}
+                
+                {userSession.role === 'CohortAdmin' && <>
+                    Welcome back to your Cohort Questionnaire! If this is a new cohort, please make sure all the sections are completed before it can be submitted for review. Once submitted, this questionnaire will be locked for internal review therefore can’t be updated. You will receive an email when the review is finished to let you know if it is approved or rejected. The questionnaire will be open again for additional changes if needed.                    
                 </>}
             </div>
         </div>
-
+        
         <div className="container-fluid mb-4">
             <div className="border row py-4">
                 <div className="col-md px-4">
