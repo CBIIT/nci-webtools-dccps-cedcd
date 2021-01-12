@@ -12,6 +12,7 @@ import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css'
 
 const {
@@ -88,7 +89,7 @@ const CancerInfoForm = ({ ...props }) => {
 
         // process form data
         const formValues = getUpdatedFormValues({ ...cancerInfo[0] });
-        console.log({ formValues })
+        // console.log({ formValues })
 
         dispatch(mergeCancerCounts(counts));
         dispatch(mergeCancerInfoFormValues(formValues));
@@ -227,7 +228,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save</button>
                 </div>
             })
@@ -254,7 +255,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress and continue to the next section?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save and Continue</button>
                 </div>
             });
@@ -326,6 +327,7 @@ const CancerInfoForm = ({ ...props }) => {
             }).then(r => r.json());
 
             dispatch(loadCohort(id));
+            dispatch(setHasUnsavedChanges(false));
             setSuccessMsg(true);
 
         } catch (e) {
@@ -356,6 +358,7 @@ const CancerInfoForm = ({ ...props }) => {
                             ? (e.target.checked ? 1 : 0)
                             : e.target.value
                     );
+                    dispatch(setHasUnsavedChanges(true));
                     if (onChange)
                         onChange(e);
                 }}
@@ -366,8 +369,8 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     return lookup && <Form id="cancerInfoContainer" className="p-3 px-5">
-        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CollapsiblePanel
             condition={activePanel === 'panelA'}
             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
@@ -421,7 +424,10 @@ const CancerInfoForm = ({ ...props }) => {
                                             min="0"
                                             name={key}
                                             value={counts[key] || 0}
-                                            onChange={ev => setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0))}
+                                            onChange={ev => {
+                                                setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }}
                                             readOnly={isReadOnly}
                                         />
                                     </td>
@@ -677,7 +683,7 @@ const CancerInfoForm = ({ ...props }) => {
             title={modal.title || <span>Confirmation Required</span>}
             body={modal.body || <div>There were validation errors. Do you still wish to save your current progress?</div>}
             footer={modal.footer || <div>
-                <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                 <button className="btn btn-primary mx-2" onClick={e => updateModal({ show: false })}>Save</button>
             </div>}
         />

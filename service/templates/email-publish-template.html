@@ -10,11 +10,12 @@
 
 <body>
     Dear {user}, <br>
-    <p>You are recieving this email because the cohort assignments on your user account on the CEDCD website have been changed. You can now login to the <a href="{website}">CEDCD website</a> to update your cohort data.
+    <p>You are recieving this email because the following Cohort has been reviewed and published on the CEDCD website. You can now go to the <a href="{website}">CEDCD website</a> to review your published Cohort data.
     </p>
-    <p>Your account is currently assigned to the following cohort(s)</p>
     <ul style="list-style-type:none;">
-        {cohort}
+        <li href="{cohortName}">{cohortName}</li>
+        <li href="{cohortAcronym}">{cohortAcronym}</li>
+        <li href="{publishData}">{publishDate}</li>
     </ul>
 
     <p>If you should have any questions, please contact us by email at <a href='mailto:CEDCDWebAdmin@mail.nih.gov'>CEDCDWebAdmin@mail.nih.gov</a> </p>

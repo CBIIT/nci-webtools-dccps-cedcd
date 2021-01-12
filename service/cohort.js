@@ -36,7 +36,7 @@ router.post('/sendUserEmail', async function (req, res, next) {
 			req.body.email, 
 			req.body.topic, 
 			'',
-			await readTemplate(__dirname + '/templates/email-owner-template.html', req.body.templateData),
+			await readTemplate(__dirname + req.body.template, req.body.templateData),
 		);
         res.json({ status: 200, data: 'sent' });
     } catch (e) {

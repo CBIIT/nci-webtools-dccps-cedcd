@@ -312,7 +312,7 @@ class ManageCohort extends Component {
 						<td>{item.create_by}</td>
 						<td>{item.update_time}</td>
 						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{item.status.toLowerCase() != 'new' ? view : null}</Link>
+							<Link to={review_url} onClick={this.saveHistory}>{view}</Link>
 						</td>
 					</tr>
 				);
@@ -351,16 +351,16 @@ class ManageCohort extends Component {
 								<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 							</div>
 						</div>
-						<div className="col-md-3 col-xs-12" style={{ "paddingLeft": "0" }}>
+						<div className="col-md-2 col-xs-12" style={{ "paddingLeft": "0" }}>
 							<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
 								<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
-									<i className="fas fa-times" ></i> Clear All </a>
+									<i className="fas fa-times" ></i> Clear </a>
 
 								<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 							</div>
 
 						</div>
-						<div className="col-md-4 col-xs-12">
+						<div className="col-md-5 col-xs-12">
 							<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
 								<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 									<PageSummary pageInfo={this.state.pageInfo} mid="true" />

@@ -6,6 +6,7 @@ import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
+import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -294,6 +295,7 @@ const MajorContentForm = ({ ...props }) => {
         }).then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
+                    dispatch(setHasUnsavedChanges(false));
                     if (!errorsRemain)
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'complete'))
                     else {
@@ -386,8 +388,13 @@ const MajorContentForm = ({ ...props }) => {
                                         <Form.Check.Input bsPrefix type="radio" className='mr-2'
                                         checked={majorContent[key] === 0}
                                         readOnly={isReadOnly}
-                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
-                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        onClick={() => {
+                                            if(!isReadOnly) { 
+                                                dispatch(allactions.majorContentActions[key](0));
+                                                dispatch(allactions.majorContentErrorActions[key](true));
+                                                dispatch(setHasUnsavedChanges(true));
+                                            }
+                                        }} />
                                         <Form.Check.Label
                                             style={errors[key]&&saved ? {fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}
                                          >
@@ -401,8 +408,11 @@ const MajorContentForm = ({ ...props }) => {
                                         name={key}>
                                         <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
                                         readOnly={isReadOnly}
-                                        onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
-                                            dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                        onClick={() => {if(!isReadOnly) { 
+                                            dispatch(allactions.majorContentActions[key](1));
+                                            dispatch(allactions.majorContentErrorActions[key](true));
+                                            dispatch(setHasUnsavedChanges(true));
+                                        }}} />
                                         <Form.Check.Label style={errors[key]&&saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
                                             Yes
                                         </Form.Check.Label>
@@ -426,8 +436,11 @@ const MajorContentForm = ({ ...props }) => {
                                        name={key}>
                                        <Form.Check.Input bsPrefix type="radio" className='mr-2'
                                        checked={majorContent[key] === 0}
-                                       onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](0));
-                                           dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                       onClick={() => {if(!isReadOnly) { 
+                                           dispatch(allactions.majorContentActions[key](0));
+                                           dispatch(allactions.majorContentErrorActions[key](true));
+                                           dispatch(setHasUnsavedChanges(true));
+                                        }}} />
                                        <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
                                            No
                                        </Form.Check.Label>
@@ -438,8 +451,11 @@ const MajorContentForm = ({ ...props }) => {
                                        style={{ fontWeight: 'normal '}}
                                        name={key}>
                                        <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
-                                       onClick={() => {if(!isReadOnly) { dispatch(allactions.majorContentActions[key](1));
-                                           dispatch(allactions.majorContentErrorActions[key](true)) }}} />
+                                       onClick={() => {if(!isReadOnly) { 
+                                           dispatch(allactions.majorContentActions[key](1));
+                                           dispatch(allactions.majorContentErrorActions[key](true));
+                                           dispatch(setHasUnsavedChanges(true));
+                                        }}} />
                                        <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red'  } :{fontWeight: 'normal'}}>
                                            Yes
                                        </Form.Check.Label>
@@ -462,6 +478,7 @@ const MajorContentForm = ({ ...props }) => {
                         readOnly={isReadOnly}
                         checked = {majorContent[keys[idx]] === 1}
                         onClick={(e) => { if(!isReadOnly) {
+                            dispatch(setHasUnsavedChanges(true));
                             dispatch(allactions.majorContentActions[keys[idx]](+e.target.checked));
                             dispatch(allactions.majorContentErrorActions[keys[idx]](e.target.checked));
                             if(keys[idx] === 'cancerOther')
@@ -507,7 +524,7 @@ const MajorContentForm = ({ ...props }) => {
                             maxLength='200' name='noncigarBaseLineSpecify' 
                             style={majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
                             value={majorContent.noncigarBaseLineSpecify} 
-                            onChange={e => { dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(e.target.value)) }} 
+                            onChange={e => { dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
                             onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine || isReadOnly} />
                     </Reminder>
                 </Col>
@@ -527,7 +544,7 @@ const MajorContentForm = ({ ...props }) => {
                             maxLength='200' name='noncigarFollowUpSpecify' 
                             style={majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
                             value={majorContent.noncigarFollowUpSpecify} 
-                            onChange={e => { dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(e.target.value)) }} 
+                            onChange={e => { dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
                             onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp || isReadOnly} />
                     </Reminder>
                 </Col>
@@ -570,16 +587,16 @@ const MajorContentForm = ({ ...props }) => {
                             maxLength='200' name='cancerOtherSpecify' 
                             style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
                             value={majorContent.cancerOtherSpecify} 
-                            onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)) }} 
+                            onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
                             onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
                     </Reminder>
                 </Col>
             </Form.Group>          
     }
 
-    return <div className='col-md-12'>
-        {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-        {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+    return <div className="p-3 px-5">
+        {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+        {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
         
         <Form>

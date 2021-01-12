@@ -7,7 +7,7 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import MortalityForm from '../MortalityForm/MortalityForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
-import SpecimenForm from '../SpecimenForm/SpecimensForm'
+import SpecimenForm from '../SpecimenForm/SpecimenForm'
 import Message from '../Message/Message'
 import Messenger from '../Snackbar/Snackbar'
 import ReviewQuestionnaire from './ReviewQuestionnaire'
@@ -90,12 +90,12 @@ export default function ReviewCohort(props) {
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
-                        setMessage('update was successful')
+                        setMessage('Your changes were saved.')
                         setSuccessMsg(true)
                         sendEmail()
                     }
                     else {
-                        setMessage('update failed')
+                        setMessage('Your changes could not be saved.')
                         setFailureMsg(true)
                     }
                 })

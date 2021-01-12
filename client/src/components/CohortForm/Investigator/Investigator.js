@@ -6,6 +6,7 @@ import Reminder from '../../Tooltip/Tooltip'
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { setHasUnsavedChanges } from '../../../reducers/unsavedChangesReducer';
 
 //import "react-datepicker/dist/react-datepicker.css";
 import './Investigator.css'
@@ -68,9 +69,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                     maxLength="100" 
                                     name={name} 
                                     value={cohort.investigators[idx].name} 
-                                    onChange={e => 
-                                        dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))
-                                    } 
+                                    onChange={e => {
+                                        dispatch(allactions.cohortActions.investigatorName(idx, e.target.value));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }} 
                                     onBlur={e => 
                                         populateErrors(idx, 'investigatorName', e.target.value, true, 'string')
                                     } />
@@ -80,9 +82,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                 maxLength='100' 
                                 name={name} 
                                 value={cohort.investigators[idx].name} 
-                                onChange={e => 
-                                    dispatch(allactions.cohortActions.investigatorName(idx, e.target.value))
-                                } 
+                                onChange={e => {
+                                    dispatch(allactions.cohortActions.investigatorName(idx, e.target.value));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }} 
                                 onBlur={e => 
                                     populateErrors(idx, 'investigatorName', e.target.value, true, 'string')
                                 }
@@ -103,9 +106,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                 maxLength='100' 
                                 name={institution} 
                                 value={cohort.investigators[idx].institution} 
-                                onChange={e => 
-                                    dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))
-                                } 
+                                onChange={e => {
+                                    dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }} 
                                 onBlur={e => 
                                     populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')
                                 } />
@@ -115,9 +119,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                             maxLength="100" 
                             name={institution} 
                             value={cohort.investigators[idx].institution} 
-                            onChange={e => 
-                                dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value))
-                            } 
+                            onChange={e => {
+                                dispatch(allactions.cohortActions.investigatorInstitution(idx, e.target.value));
+                                dispatch(setHasUnsavedChanges(true));
+                            }}
                             onBlur={e => 
                                 populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')}
                             readOnly={disabled} />
@@ -138,9 +143,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                     type='email' 
                                     name={email} 
                                     value={cohort.investigators[idx].email} 
-                                    onChange={e => 
-                                        dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))
-                                    } 
+                                    onChange={e => {
+                                        dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }} 
                                     onBlur={e => 
                                         populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')
                                     } />
@@ -150,9 +156,10 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                 maxLength="100"  
                                 name={email} 
                                 value={cohort.investigators[idx].email} 
-                                onChange={e => 
-                                    dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value))
-                                } 
+                                onChange={e => {
+                                    dispatch(allactions.cohortActions.investigatorEmail(idx, e.target.value));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }} 
                                 onBlur={e=> 
                                     populateErrors(idx, 'investigatorEmail', e.target.value, true, 'email')
                                 } 
