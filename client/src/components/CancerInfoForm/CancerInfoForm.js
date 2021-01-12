@@ -228,7 +228,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save</button>
                 </div>
             })
@@ -255,7 +255,7 @@ const CancerInfoForm = ({ ...props }) => {
                 header: <span>Confirmation Required</span>,
                 body: <div>There were validation errors. Do you still wish to save your current progress and continue to the next section?</div>,
                 footer: <div>
-                    <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                     <button className="btn btn-primary mx-2" onClick={onConfirm}>Save and Continue</button>
                 </div>
             });
@@ -683,7 +683,7 @@ const CancerInfoForm = ({ ...props }) => {
             title={modal.title || <span>Confirmation Required</span>}
             body={modal.body || <div>There were validation errors. Do you still wish to save your current progress?</div>}
             footer={modal.footer || <div>
-                <button className="btn btn-secondary mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
+                <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
                 <button className="btn btn-primary mx-2" onClick={e => updateModal({ show: false })}>Save</button>
             </div>}
         />

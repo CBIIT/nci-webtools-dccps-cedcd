@@ -594,7 +594,7 @@ const MajorContentForm = ({ ...props }) => {
             </Form.Group>          
     }
 
-    return <div className='col-md-12'>
+    return <div className="p-3 px-5">
         {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
