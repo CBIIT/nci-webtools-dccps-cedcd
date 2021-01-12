@@ -10,8 +10,8 @@ const Questionnaire = ({ ...props }) => {
     const dispatch = useDispatch();
     const cohortID = useSelector(state => state.cohortIDReducer) || window.location.pathname.split('/').pop();
     const userSession = useContext(UserSessionContext);
-    const isAuthorized = userSession && userSession.role === 'CohortAdmin';
-    const hasAccess = userSession && userSession.cohorts.map(c => +c.id).includes(+cohortID);
+    const isAuthorized = userSession && (userSession.role === 'CohortAdmin' || userSession.role === 'SystemAdmin');
+    const hasAccess = userSession && (userSession.role === 'SystemAdmin' || userSession.cohorts.map(c => +c.id).includes(+cohortID));
 
     useEffect(() => { cohortID && dispatch(fetchCohort(cohortID)) }, [cohortID]);
 

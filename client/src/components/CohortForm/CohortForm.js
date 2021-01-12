@@ -213,7 +213,6 @@ const CohortForm = ({ ...props }) => {
             })
     }
     const handleSave = () => {
-        console.dir(errors)
         setSaved(true)
         /*
                 if (!(cohort.questionnaireFileName || cohort.questionnaire_url)) { if(!isReadOnly) { dispatch(allactions.cohortErrorActions.questionnaire(false, true)) }
@@ -261,12 +260,13 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
-    const getMinAgeValidationResult = (value, requiredOrNot, maxAge) => validator.minAgeValidator(value, requiredOrNot, maxAge)
-    const getMaxAgeValidationResult = (value, requiredOrNot, minAge) => validator.maxAgeValidator(value, requiredOrNot, minAge)
+    const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
+    const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
 
-    const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
+    const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
+        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)
+        
         if (result) {
             dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
         } else {
@@ -274,8 +274,8 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
-    const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
+    const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
+        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)
         if (result) {
             dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
         } else {
@@ -283,8 +283,9 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
-    const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
+    const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
+        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)
+        console.log('valid result: '+result)
         if (result) {
             dispatch(allactions.cohortErrorActions.current_age_min(false, result))
         } else {
@@ -292,8 +293,8 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
-    const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
+    const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
+        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)
         if (result) {
             dispatch(allactions.cohortErrorActions.current_age_max(false, result))
         } else {
@@ -303,6 +304,16 @@ const CohortForm = ({ ...props }) => {
 
     const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
         const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
+        if(!result) {
+           if(fieldName.includes('enrollment')){ 
+               if(errors.enrollment_age_min) populateBaseLineMinAgeError(cohort.enrollment_age_min, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) }
+               else if(errors.enrollment_age_max) populateBaseLineMaxAgeError(cohort.enrollment_age_max, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
+            else{
+                if(errors.current_age_min) populateCurrentMinAgeError(cohort.current_age_min, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+                else if(errors.current_age_max) populateCurrentMaxAgeError(cohort.current_age_max, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
+            }          
+        }
+    
         if (result) {
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         } else {
@@ -541,8 +552,8 @@ const CohortForm = ({ ...props }) => {
 
     return (
         <div id='cohortContainer' className='container-fluid'>
-            {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-            {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+            {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+            {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
             <FileModal show={fileModal} handleClose={() => setFileModal(false)}  body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{height: '40px'}} onClick={()=> setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>}/> 
             <div className='col-md-12'>
@@ -1334,7 +1345,7 @@ const CohortForm = ({ ...props }) => {
                                                                 !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                             } 
                                                             onBlur={e => 
-                                                                populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) 
+                                                                populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                             } />
                                                     </Reminder> : 
                                                     <Form.Control type="text" className='text-capitalize'
@@ -1344,7 +1355,7 @@ const CohortForm = ({ ...props }) => {
                                                             !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max) 
+                                                            populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                         } 
                                                         readOnly={isReadOnly} />
                                                 }
@@ -1361,7 +1372,7 @@ const CohortForm = ({ ...props }) => {
                                                                 !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                             } 
                                                             onBlur={e => 
-                                                                populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) 
+                                                                populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                             } />
                                                     </Reminder> : 
                                                     <Form.Control type="text" className='text-capitalize'
@@ -1371,7 +1382,7 @@ const CohortForm = ({ ...props }) => {
                                                             !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min) 
+                                                            populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean) 
                                                         }
                                                         readOnly={isReadOnly} />
                                                 }
@@ -1456,7 +1467,7 @@ const CohortForm = ({ ...props }) => {
                                                                 !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                             } 
                                                             onBlur={e => 
-                                                                populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)
+                                                                populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
                                                             } />
                                                     </Reminder> : 
                                                     <Form.Control type="text" className='text-capitalize'
@@ -1466,7 +1477,7 @@ const CohortForm = ({ ...props }) => {
                                                             !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max)
+                                                            populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
                                                         } 
                                                         readOnly={isReadOnly} />
                                                 }
@@ -1483,7 +1494,7 @@ const CohortForm = ({ ...props }) => {
                                                                 !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                             } 
                                                             onBlur={e => 
-                                                                populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)
+                                                                populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
                                                             } />
                                                     </Reminder> : 
                                                     <Form.Control type="text" className='text-capitalize'
@@ -1493,7 +1504,7 @@ const CohortForm = ({ ...props }) => {
                                                             !isReadOnly &&  dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                         } 
                                                         onBlur={e => 
-                                                            populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min)
+                                                            populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
                                                         } 
                                                         readOnly={isReadOnly} />
                                                 }
