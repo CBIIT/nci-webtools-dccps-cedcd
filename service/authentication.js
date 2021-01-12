@@ -133,6 +133,7 @@ async function login(request, response) {
 }
 
 async function updateSession(request, response) {
+    const { mysql } = request.app.locals;
     const user = request.session.user;
     const userId = user.id;
 
@@ -154,8 +155,9 @@ async function updateSession(request, response) {
         cohorts.push(...editableCohorts);
     }
 
-    session.user.cohorts = cohorts;
-    response.json(request.session.user || null);
+    user.cohorts = cohorts;
+    request.session.user = {...user};
+    response.json(user || null);
 }
 
 // note: both federated NIH Auth use siteminder under the hood to authenticate users
