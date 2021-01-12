@@ -594,7 +594,7 @@ const MajorContentForm = ({ ...props }) => {
             </Form.Group>          
     }
 
-    return <div className='col-md-12'>
+    return <div className="p-3 px-5">
         {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
         {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
         <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
@@ -606,7 +606,7 @@ const MajorContentForm = ({ ...props }) => {
                             panelTitle="Major Content Domains">
                 <Form.Group as={Row} className="mb-1">
                     <Form.Label column sm="12">
-                        Please specify whether you collected data within these major content domains. Baseline refers to deta collected at or near enrollment into the cohort
+                        Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
                     </Form.Label>
                 </Form.Group>
                 {getFirstContent()}

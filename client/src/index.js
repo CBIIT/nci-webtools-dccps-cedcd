@@ -1,44 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { unregister } from './registerServiceWorker';
+import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { createStore, compose, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
-import rootReducer from './reducers';
-import { getLookupTables } from './reducers/lookupReducer';
+import reducer from './reducers';
+import { initializeLookup } from './reducers/lookupReducer';
+import { fetchUser } from './reducers/user';
 import RoutedApp from './components/RoutedApp/RoutedApp';
 import './index.scss';
 
-
-export const UserSessionContext = React.createContext(null);
-const store = createStore(rootReducer, compose(
-	applyMiddleware(thunk),
-	window.__REDUX_DEVTOOLS_EXTENSION__
-		? window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true })
-		: e => e
-));
-
-
 (async function main() {
-	const response = await fetch('/api/user-session');
-	const userSession = await response.json();
-	const lookupTables = await getLookupTables();
-	store.dispatch({
-		type: 'SET_LOOKUP',
-		value: lookupTables,
+	const store = configureStore({
+		reducer,
+		middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			thunk: true,
+			serializableCheck: false,
+			immutableCheck: false,
+		}),
 	});
-
+	await store.dispatch(initializeLookup());
+	await store.dispatch(fetchUser());
 	ReactDOM.render(
-		<UserSessionContext.Provider value={userSession}>
-			<Provider store={store}>
-				<RoutedApp />
-			</Provider>
-		</UserSessionContext.Provider>,
+		<Provider store={store}>
+			<RoutedApp />
+		</Provider>,
 		document.getElementById('root')
 	);
-
-	unregister();
 })();
-
-
-

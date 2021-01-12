@@ -4,6 +4,7 @@ module.exports = {
     login,
     logout,
     getUserSession,
+    updateSession,
 }
 
 async function login(request, response) {
@@ -129,6 +130,34 @@ async function login(request, response) {
             response.status(301).redirect('/unauthorized');
         });
     }
+}
+
+async function updateSession(request, response) {
+    const { mysql } = request.app.locals;
+    const user = request.session.user;
+    const userId = user.id;
+
+    const cohortAcronyms = await mysql.query(
+        `SELECT DISTINCT cohort_acronym as acronym
+        FROM cohort_user_mapping 
+        WHERE user_id = ? AND active = 'Y'
+        ORDER BY acronym ASC`,
+        [userId]
+    );
+
+    let cohorts = [];
+
+    for (const {acronym} of cohortAcronyms) {
+        const [editableCohorts] = await mysql.query(
+            `call select_editable_cohort_by_acronym(?)`,
+            [acronym]
+        );
+        cohorts.push(...editableCohorts);
+    }
+
+    user.cohorts = cohorts;
+    request.session.user = {...user};
+    response.json(user || null);
 }
 
 // note: both federated NIH Auth use siteminder under the hood to authenticate users

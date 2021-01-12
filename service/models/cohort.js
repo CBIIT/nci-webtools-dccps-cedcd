@@ -41,7 +41,7 @@ async function getCohort(mysql, id) {
     return cohort;
 }
 
-async function saveCohort(mysql, body, id) {
+async function saveCohort(mysql, body, id, user) {
     const restrictedTables = ['cohort_user_mapping'];
 
     // look for tables with references to cohort(cohort_id)
@@ -56,7 +56,7 @@ async function saveCohort(mysql, body, id) {
             id: id || undefined,
             create_time: undefined,
             update_time: new Date(),
-            publish_by: session.user ? session.user.id : undefined,
+            publish_by: user ? user.id : undefined,
         }
     });
 

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import cohort from './cohort';
+import user from './user';
 import cohortReducer from './cohortReducer'
 import enrollmentCountsReducer from './enrollmentCountsReducer'
 import sectionReducer from './sectionReducer'
@@ -17,6 +18,25 @@ import cohortIDReducer from './cohortIDReducer'
 import cohortStatusReducer from './cohortStatusReducer'
 import unsavedChangesReducer from './unsavedChangesReducer';
 
-const rootReducer = combineReducers({ cohort, cohortReducer, enrollmentCountsReducer, majorContentReducer, cancerInfoReducer, mortalityReducer, dataLinkageReducer, cohortErrorReducer, enrollmentCountErrorReducer, majorContentErrorReducer, sectionReducer, specimenReducer, specimenInfoErrorReducer, lookupReducer, cohortIDReducer, cohortStatusReducer, unsavedChangesReducer });
+const rootReducer = combineReducers({ 
+    cohort, 
+    user,
+    cohortReducer, 
+    enrollmentCountsReducer, 
+    majorContentReducer, 
+    cancerInfoReducer, 
+    mortalityReducer, 
+    dataLinkageReducer, 
+    cohortErrorReducer, 
+    enrollmentCountErrorReducer, 
+    majorContentErrorReducer, 
+    sectionReducer, 
+    specimenReducer, 
+    specimenInfoErrorReducer, 
+    lookupReducer, 
+    cohortIDReducer, 
+    cohortStatusReducer, 
+    unsavedChangesReducer, 
+});
 
 export default rootReducer

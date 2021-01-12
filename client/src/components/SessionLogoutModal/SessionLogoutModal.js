@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Modal from '../controls/modal/modal';
-import { UserSessionContext } from '../../index';
 
 export default function SessionLogoutModal() {
-    const userSession = useContext(UserSessionContext);
+    const userSession = useSelector(state => state.userSession);
     const initialRemainingTime = 1000 * 60 * 15;
     const remainingTimeThreshold = 1000 * 60 * 5;
     const [remainingTime, setRemainingTime] = useState(initialRemainingTime);

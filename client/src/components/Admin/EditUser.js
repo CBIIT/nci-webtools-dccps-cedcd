@@ -5,8 +5,8 @@ import Select from 'react-select';
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
-import { UserSessionContext } from '../../index';
 import Unauthorized from '../Unauthorized/Unauthorized';
+import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import './AddNewCohort.css';
 
 const EditUser = ({ ...props }) => {
@@ -49,7 +49,6 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
-
         setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name })))
         const allCohorts = lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
 
@@ -131,10 +130,14 @@ const EditUser = ({ ...props }) => {
 
         let html = ''
 
-        cohortList.map((cohort) => {
-            html += '<li>Cohort:' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
-            console.log(html)
-        })
+        if (cohortList && cohortList.length > 0) {
+
+            cohortList.map((cohort) => {
+                html += '<li>Cohort: ' + cohort.name + ' (' + cohort.value + ')</li>\n\t'
+            })
+        }
+        else
+            html += '<li>No cohorts associated with your account</li>'
 
         let reqBody = {
             templateData: {
@@ -143,6 +146,7 @@ const EditUser = ({ ...props }) => {
                 website: window.location.origin,
             },
             email: userEmail,
+            template: '/templates/email-owner-template.html',
             topic: 'Cohort(s) Assignment changes on your CEDCD User Account',
         };
         fetch('/api/cohort/sendUserEmail', {
@@ -174,7 +178,7 @@ const EditUser = ({ ...props }) => {
             last_name: lastName,
             user_name: userName,
             user_role: userRole,
-            cohort_list: Object.values(cohortList).map((item, idx) => item.label),
+            cohort_list: cohortList ? Object.values(cohortList).map((item, idx) => item.label) : [],
             active_status: activeStatus
         }
 
@@ -213,11 +217,14 @@ const EditUser = ({ ...props }) => {
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
 
+        if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
+            if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
+        }
         if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
 
-        setErrors(copy);
+        setErrors(copy);    
 
         return !Object.values(copy).some(x => (x !== undefined && x !== '' && x !== null));
     }
@@ -227,10 +234,7 @@ const EditUser = ({ ...props }) => {
     }
 
 
-    return <UserSessionContext.Consumer>
-        {userSession => (
-            !(userSession && userSession.role === 'SystemAdmin') &&
-            <Unauthorized /> ||
+    return <RequireAuthorization role="SystemAdmin">
             <div id='editUserContainer' className='col-md-12'>
                 {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
                 {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
@@ -353,7 +357,7 @@ const EditUser = ({ ...props }) => {
                     </div>
                 </div>
             </div>
-        )}</UserSessionContext.Consumer>
+        </RequireAuthorization>
 }
 
 export default EditUser;
