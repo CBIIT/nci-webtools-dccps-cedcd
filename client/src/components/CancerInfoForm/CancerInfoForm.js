@@ -5,13 +5,12 @@ import classNames from 'classnames'
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
 import allactions from '../../actions'
-import { loadCohort } from '../../reducers/cancerInfoReducer';
+import { fetchCohort } from '../../reducers/cohort';
 import { parseISO, format } from 'date-fns';
 import CenterModal from '../controls/modal/modal';
 import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
-import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css'
 
@@ -23,8 +22,9 @@ const {
 
 const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
+    const cohort = useSelector(state => state.cohort)
     const lookup = useSelector(state => state.lookupReducer)
-    const { counts, form, cohort } = useSelector(state => state.cancerInfoReducer);
+    const { counts, form } = useSelector(state => state.cancerInfoReducer);
     const isReadOnly = props.isReadOnly;
 
     const section = useSelector(state => state.sectionReducer)
@@ -51,12 +51,6 @@ const CancerInfoForm = ({ ...props }) => {
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident'),
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent'),
     }
-
-    useEffect(() => {
-        // load existing cohort if needed
-        if (!cohort || +cohort.id !== +cohortId)
-            dispatch(loadCohort(cohortId));
-    }, []);
 
     useEffect(() => {
         // once cohort is loaded, populate form
@@ -326,7 +320,7 @@ const CancerInfoForm = ({ ...props }) => {
                 })
             }).then(r => r.json());
 
-            dispatch(loadCohort(id));
+            dispatch(fetchCohort(id));
             dispatch(setHasUnsavedChanges(false));
             setSuccessMsg(true);
 
