@@ -8,6 +8,7 @@ var ejs = require('ejs');
 var config = require('../config');
 var mail = require('../components/mail');
 const { getCohort, saveCohort } = require('./models/cohort');
+const { ifError } = require('assert');
 
 router.use((request, response, next) => {
     const { session } = request;
@@ -26,6 +27,22 @@ router.post('/sendEmail', async function (req, res, next) {
     } catch (e) {
         res.json({ status: 200, data: 'failed' });
     }
+})
+
+router.post('/select_owners_from_id', async function (req, res){ 
+
+    let params = [req.body.id];
+    let proc = 'select_owners_from_id'
+
+    mysql.callProcedure(proc, params, function (result) {
+        logger.debug(result)
+        logger.debug(result[0][0])
+
+        if(result && result[0][0])
+            res.json({ status: 200, data: result[0]})
+        else  
+            res.json({ status: 400 })
+    })
 })
 
 router.post('/get_updated_cohortID', function (req, res) {

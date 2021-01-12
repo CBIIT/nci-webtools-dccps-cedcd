@@ -10,12 +10,15 @@
 
 <body>
     Dear {user}, <br>
-    <p>You are recieving this email because the following cohort has been reviewed and published on the CEDCD website. You can now go to the <a href="{website}">CEDCD website</a> to review your published cohort data.
+    <p>You are recieving this email because there are comments about your submitted cohort data. You can now go to the <a href="{website}">CEDCD website</a> to update your cohort data and resubmit.
     </p>
     <ul style="list-style-type:none;">
         <li href="{cohortName}">Cohort Name: {cohortName}</li>
         <li href="{cohortAcronym}">Cohort Acronym: {cohortAcronym}</li>
-        <li href="{publishData}">Publish Date: {publishDate}</li>
+    </ul>
+    <p>Review Comments:</p>
+    <ul style="list-style-type:none;">
+        {reviewComments}
     </ul>
 
     <p>If you should have any questions, please contact us by email at <a href='mailto:CEDCDWebAdmin@mail.nih.gov'>CEDCDWebAdmin@mail.nih.gov</a> </p>
