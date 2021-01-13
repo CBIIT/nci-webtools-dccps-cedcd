@@ -869,6 +869,7 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortActions.clarification_contact(0))
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                 !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
                                                                 if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
                                                                 if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
                                                                 else if(emailCheckResult) 
@@ -1034,9 +1035,10 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
                                                         }
                                                         else{
+                                                            let phoneCheckResult = getValidationResult(cohort.collaboratorPhone, false, 'phone')
                                                             dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            if(cohort.collaboratorPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
                                                         }
                                                 }     
@@ -1064,9 +1066,10 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
                                                         }
                                                         else{
+                                                            let phoneCheckResult = getValidationResult(cohort.collaboratorPhone, false, 'phone')
                                                             dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            if(cohort.collaboratorPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
                                                         }
                                                 }}
