@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from 'react-router-dom';
 import allactions from '../../actions'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
@@ -7,6 +8,7 @@ import Reminder from '../Tooltip/Tooltip'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
+import classNames from 'classnames';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -26,6 +28,7 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
+    const history = useHistory();
     
     //const cohortId = +window.location.pathname.split('/').pop();
 
@@ -304,6 +307,7 @@ const MajorContentForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                         if(result.data.status && result.data.status != cohortStatus){
                             dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))
                             dispatch(fetchCohort(result.data.duplicated_cohort_id))
@@ -367,117 +371,66 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getQuestionEntry = (questionType, key, idx) => {
-        if(questionType === 'BaseLine')
-         return <Form.Group as={Row} sm='12' className='mb-0'>
-                <Form.Group as={Row} className="mb-0 pl-4">
-                    <Form.Label column sm='12'>
+        const showQuestionLabel = questionType === 'BaseLine';
+        const title = {
+            BaseLine: 'Collected at Baseline',
+            FollowUp: 'Collected at Follow-Up',
+        }[questionType];
+
+        const options = [
+            {label: 'No', value: 0},
+            {label: 'Yes', value: 1},
+        ];
+
+        return (
+            <Row>
+                {showQuestionLabel && <Col sm="12">
+                    <Form.Label className="mt-3">
                         {subtitles[idx]}
                     </Form.Label>
-                </Form.Group>
-                <Col className='mb-0 pl-0' sm='12'>
-                        <Col sm='4'>
-                            <span>Collected at baseline<span style={{ color: 'red' }}>*</span></span>
-                        </Col>
-                        <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
-                            <Col sm='3' className='align-self-center' style={{paddingLeft: '18px'}}>
-                                <Form.Check type="radio" xs='2'
-                                        id={key+'_no'} 
-                                        inline
-                                        style={{ fontWeight: 'normal'}}
-                                        name={key}>
-                                        <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={majorContent[key] === 0}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if(!isReadOnly) { 
-                                                dispatch(allactions.majorContentActions[key](0));
-                                                dispatch(allactions.majorContentErrorActions[key](true));
-                                                dispatch(setHasUnsavedChanges(true));
-                                            }
-                                        }} />
-                                        <Form.Check.Label
-                                            style={errors[key]&&saved ? {fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}
-                                         >
-                                            No
-                                        </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                        id={key+'_yes'} 
-                                        inline
-                                        style={{ fontWeight: 'normal'}}
-                                        name={key}>
-                                        <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {if(!isReadOnly) { 
-                                            dispatch(allactions.majorContentActions[key](1));
-                                            dispatch(allactions.majorContentErrorActions[key](true));
-                                            dispatch(setHasUnsavedChanges(true));
-                                        }}} />
-                                        <Form.Check.Label style={errors[key]&&saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
-                                            Yes
-                                        </Form.Check.Label>
-                                </Form.Check>               
-                            </Col>
-                        </Reminder>
-                    </Col>
-                </Form.Group>
-                else
-                   return <Form.Group as={Row} sm='12' className='mb-0'>
-                   <Col className='mb-0 pl-0' sm='12'>
-                       <Col sm='4'>
-                           Collected During Follow-up<span style={{ color: 'red' }}>*</span>
-                       </Col>
-                           <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
-                               <Col sm='3' className='align-self-center' style={{paddingLeft: '18px'}}>
-                               <Form.Check type="radio" xs='2'
-                                       id={key+'_no'} 
-                                       inline
-                                       style={{ fontWeight: 'normal '}}
-                                       name={key}>
-                                       <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                       checked={majorContent[key] === 0}
-                                       onClick={() => {if(!isReadOnly) { 
-                                           dispatch(allactions.majorContentActions[key](0));
-                                           dispatch(allactions.majorContentErrorActions[key](true));
-                                           dispatch(setHasUnsavedChanges(true));
-                                        }}} />
-                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
-                                           No
-                                       </Form.Check.Label>
-                               </Form.Check>
-                               <Form.Check type="radio" xs='2'
-                                       id={key+'_yes'} 
-                                       inline
-                                       style={{ fontWeight: 'normal '}}
-                                       name={key}>
-                                       <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
-                                       onClick={() => {if(!isReadOnly) { 
-                                           dispatch(allactions.majorContentActions[key](1));
-                                           dispatch(allactions.majorContentErrorActions[key](true));
-                                           dispatch(setHasUnsavedChanges(true));
-                                        }}} />
-                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red'  } :{fontWeight: 'normal'}}>
-                                           Yes
-                                       </Form.Check.Label>
-                               </Form.Check>
-                           </Col>
-                       </Reminder> 
-                   </Col>
-               </Form.Group>
+                </Col>}
+                <Col sm="4">
+                    <label className="required-label">{title}</label>
+                </Col>
+                <Col sm="8">
+                    {options.map(({label, value}, i) => 
+                        <Form.Check
+                            id={`${key}_${value}`}
+                            inline
+                            type="radio"
+                            name={key}
+                            checked={majorContent[key] === value}
+                            readOnly={isReadOnly}
+                            label={label}
+                            onChange={e => {
+                                if(!isReadOnly) { 
+                                    dispatch(allactions.majorContentActions[key](value));
+                                    dispatch(allactions.majorContentErrorActions[key](true));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }
+                            }}
+                    
+                        />
+                    )}
+                    {errors[key] && saved && <span className="text-danger ml-3">Required Field</span>}
+                </Col>
+            </Row>
+        );
     }
 
     const getMultiSelectList = (questions = [], keys = []) => { 
-        return questions.map((item, idx) => <Col as={Row} sm='12' style={{paddingLeft: '30px'}}>
-            <Form.Check type='checkbox' style={{paddingLeft: '15px'}}
-                    className="pl-0"
+        return <div className="ml-4">
+            {questions.map((item, idx) => 
+                <Form.Check 
+                    type="checkbox" 
+                    className="ml-4"
                     id={keys[idx]}
-                    name={keys[idx]}>
-                    <Form.Check.Input bsPrefix
-                        type="checkbox" 
-                        className="mr-2"
-                        readOnly={isReadOnly}
-                        checked = {majorContent[keys[idx]] === 1}
-                        onClick={(e) => { if(!isReadOnly) {
+                    name={keys[idx]}
+                    readOnly={isReadOnly}
+                    checked={majorContent[keys[idx]] === 1}
+                    label={item}
+                    onChange={(e) => { 
+                        if(!isReadOnly) {
                             dispatch(setHasUnsavedChanges(true));
                             dispatch(allactions.majorContentActions[keys[idx]](+e.target.checked));
                             dispatch(allactions.majorContentErrorActions[keys[idx]](e.target.checked));
@@ -487,13 +440,12 @@ const MajorContentForm = ({ ...props }) => {
                                 dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))
                             else if (keys[idx] === 'noncigarOtherFollowUp')
                                 dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))
-                             }}}/>
-            </Form.Check> 
-            <Form.Check.Label as={Row} sm='12'>
-            <Col sm='12' column className='pl-0'>{item}</Col>
-        </Form.Check.Label>
-    </Col>)
+                        }
+                    }} 
+                />
+        )}</div>;
     }
+
     const getFirstContent = () => {
         return Object.keys(majorContent).slice(0, 71).map((key, idx)=> {
             if(idx <= 28 || idx > 40) {//skip questions first
@@ -510,10 +462,9 @@ const MajorContentForm = ({ ...props }) => {
                     </Form.Label>
                     <Col sm='12'>
                         <span>If data was collected at baseline, please specify all tobacco products that apply</span>
+                        {(errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved && 
+                            <span className="text-danger ml-3">Required Field</span>}
                     </Col>
-                <Col sm='12'> <span style={
-                    (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved && { color: 'red'} || {display: 'none'}
-                    }>Required Field</span></Col>
         
                     {
                         getMultiSelectList(
@@ -534,11 +485,9 @@ const MajorContentForm = ({ ...props }) => {
                 </Col>
                 <Col sm='12'>
                     <span>If data was collected during follow-up, please specify all tobacco products that apply</span>
+                    {(errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved && 
+                            <span className="text-danger ml-3">Required Field</span>}
                 </Col>
-                <Col sm='12'> <span style={
-                    (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved && { color: 'red'} || {display: 'none'}
-                    }>Required Field</span></Col>
-                   
                     {
                         getMultiSelectList(
                             ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
@@ -570,14 +519,14 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getThirdContent = () => {
-        return <Form.Group as={Row} sm='12' className='mb-0' style={{marginTop: '10px'}} >                  
-                    <Form.Label as={Row} sm='12' className='pl-5' style={{marginBottom: '8px'}}>
+        return <Form.Group className='mb-0' style={{marginTop: '10px'}} >                  
+                    <Form.Label style={{marginBottom: '8px'}}>
                         C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small style={{paddingRight: '0'}}>(Select all that apply)</small>
+
+                        {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && 
+                            <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                     </Form.Label>    
-                <Col sm='12'> <span style={
-                    (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && { color: 'red'} || {display: 'none'}
-                    }>Required Field</span></Col>
-                    {
+                    <div style={{marginLeft: '-3rem'}}>{
                         getMultiSelectList(
                             [
                                 'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
@@ -587,18 +536,19 @@ const MajorContentForm = ({ ...props }) => {
                             ],
                             ['cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
                         )
-                    }
-                <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
+                    }</div>
+                
                     <Reminder message='Required Field' disabled={!(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved)}>
                         <input 
                             placeholder='Max of 200 characters' 
                             maxLength='200' name='cancerOtherSpecify' 
-                            style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                            style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} 
+                            className='form-control text-capitalize'
                             value={majorContent.cancerOtherSpecify} 
                             onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
                             onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
                     </Reminder>
-                </Col>
+               
             </Form.Group>          
     }
 

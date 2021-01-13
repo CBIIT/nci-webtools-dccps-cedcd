@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext} from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from 'react-router-dom';
 import allactions from '../../actions'
 import validator from '../../validators'
 import Person from './Person/Person'
@@ -49,6 +50,7 @@ const CohortForm = ({ ...props }) => {
     const [fileListTile, setFileListTitle] = useState('')
     const [currentFileList, setCurrentFileList] = useState([])
     const [currentFileListName, setCurrentFileListName] = useState('')
+    const history = useHistory();
 
     useEffect(() => {
         if (!cohort.hasLoaded || tempId != cohortID) {
@@ -210,7 +212,8 @@ const CohortForm = ({ ...props }) => {
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
-                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }
                     if (result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
 
@@ -763,7 +766,6 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                 A.3 Does the cohort have a website? Please specify if applicable
                                 </Form.Label>
-                            </Form.Group>
                                 <Col sm="12">
                                     {errors.cohort_web_site && saved ? 
                                         <Reminder message={errors.cohort_web_site}>
@@ -792,6 +794,8 @@ const CohortForm = ({ ...props }) => {
                                             readOnly={isReadOnly} />
                                     }
                                 </Col>
+                                </Form.Group>
+
                                 <Form.Group as={Row}>
                                     <Form.Label column sm="12">
                                         A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
@@ -817,7 +821,7 @@ const CohortForm = ({ ...props }) => {
                                         A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
                                     </Form.Label>
                                     <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
-                                        Is this the same person who completed this form?
+                                        <span className="required-label">Is this the same person who completed this form?</span>
                                     </Form.Label>
                                     <Col sm="6" className="align-self-center">
                                         <div key="radio">
@@ -880,9 +884,9 @@ const CohortForm = ({ ...props }) => {
                                                         No
                                                     </Form.Check.Label>
                                                 </Form.Check>                                              
-                                        }
+                                            }
 
-                                        {errors.clarification_contact && saved ? 
+                                            {errors.clarification_contact && saved ? 
                                             <Reminder message={errors.clarification_contact}>
                                                 <Form.Check type="radio"
                                                     id="clarification-contact-radio-yes"
@@ -932,9 +936,8 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
-                                            </Form.Check>
-                                        }
-                                    </div>
+                                            </Form.Check>}
+                                        </div>
                                     </Col>
                                     <Col sm="12">
                                     <Person id='contacterInfo'
@@ -1094,17 +1097,20 @@ const CohortForm = ({ ...props }) => {
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
                                     A.7 Eligibility Criteria
-                                    {errors.eligible_gender_id && saved && 
+                                    {/* {errors.eligible_gender_id && saved && 
                                         <div>
                                             <span style={{ color: 'red', fontSize: '16px', paddingLeft: '0' }}>
                                                 {errorMsg}
                                             </span> 
                                         </div>
-                                    }
+                                    } */}
                                 </Form.Label>
                                 <Col sm="12" className="p-0 mb-3">
                                     <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
                                         Eligible sex<span style={{color: 'red'}}>*</span>
+                                        {errors.eligible_gender_id && saved && <span className="text-danger ml-3">
+                                            {errorMsg}
+                                        </span>}
                                     </Form.Label>
                                     <Col sm="6">
                                         <div key="radio">
@@ -1366,103 +1372,51 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                         Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>   
                                     </Form.Label>
-                                    <Col sm="2" className="align-self-center">
+                                    <Col sm="4" className="align-self-center mt-2">
                                         <div key="radio">
-                                            {errors.enrollment_ongoing && saved ? 
-                                                <Reminder message='Required Field'>
-                                                    <Form.Check type="radio"
-                                                        id="enrollment-ongoing-radio-no"
-                                                        inline
-                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                        name='enrollment_ongoing'>
-                                                        <Form.Check.Input bsPrefix  
-                                                            type="radio"
-                                                            className="mr-2"
-                                                            // value='0' 
-                                                            checked={cohort.enrollment_ongoing === 0} 
-                                                            onClick={() => {
-                                                                if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                }
-                                                            }} />
-                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            No 
-                                                        </Form.Check.Label>
-                                                    </Form.Check>
-                                                </Reminder> : 
-                                                <Form.Check type="radio"
-                                                    id="enrollment-ongoing-radio-no"
-                                                    inline
-                                                    name='enrollment_ongoing'>
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio"
-                                                        className="mr-2"
-                                                        // value='0' 
-                                                        checked={cohort.enrollment_ongoing === 0} 
-                                                        onClick={e => {
-                                                            if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                                dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                                            }
-                                                        }} />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        No 
-                                                    </Form.Check.Label>
-                                                </Form.Check>
-                                            }
-                                            {errors.enrollment_ongoing && saved ? 
-                                                <Reminder message='Required Field'>
-                                                    <Form.Check type="radio"
-                                                        id="enrollment-ongoing-radio-yes"
-                                                        inline
-                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                        name='enrollment_ongoing'>
-                                                        <Form.Check.Input bsPrefix  
-                                                            type="radio"
-                                                            className="mr-2"
-                                                            // value='1' 
-                                                            checked={cohort.enrollment_ongoing === 1} 
-                                                            onClick={() => {
-                                                                if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                    errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                    !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                                    !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
-                                                                }
-                                                            }} />
-                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                            Yes
-                                                        </Form.Check.Label>
-                                                    </Form.Check>
-                                                </Reminder> : 
-                                                <Form.Check type="radio"
-                                                    id="enrollment-ongoing-radio-yes"
-                                                    inline
-                                                    name="enrollment_ongoing">
-                                                    <Form.Check.Input type='radio' 
-                                                        className="mr-2"
-                                                        checked={cohort.enrollment_ongoing === 1} 
-                                                        onClick={e => {
-                                                            if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                                dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
-                                                                !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
-                                                            }
-                                                        }} />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        Yes
-                                                    </Form.Check.Label>
-                                                </Form.Check>
-                                            } 
+                                            <Form.Check type="radio"
+                                                id="enrollment-ongoing-radio-no"
+                                                inline
+                                                name='enrollment_ongoing'>
+                                                <Form.Check.Input bsPrefix
+                                                    type="radio"
+                                                    className="mr-2"
+                                                    // value='0' 
+                                                    checked={cohort.enrollment_ongoing === 0} 
+                                                    onClick={e => {
+                                                        if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                            dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                        }
+                                                    }} />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    No 
+                                                </Form.Check.Label>
+                                            </Form.Check>
+                                            <Form.Check type="radio"
+                                                id="enrollment-ongoing-radio-yes"
+                                                inline
+                                                name="enrollment_ongoing">
+                                                <Form.Check.Input type='radio' 
+                                                    className="mr-2"
+                                                    checked={cohort.enrollment_ongoing === 1} 
+                                                    onClick={e => {
+                                                        if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
+                                                            dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                            errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                            !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
+                                                            !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                        }
+                                                    }} />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    Yes
+                                                </Form.Check.Label>
+                                            </Form.Check>
+                                            {errors.enrollment_ongoing && saved && <span className="text-danger ml-3">Required Field</span>}
                                         </div>
                                     </Col>
                                 </Col>
@@ -1864,11 +1818,9 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                     A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
                                     {errors.dataCollection && saved &&
-                                        <div>
-                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                            <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                                 {errorMsg}
                                             </span> 
-                                        </div>
                                     }
                                 </Form.Label>
                                 <Col sm="12">
@@ -1986,11 +1938,9 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                     A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
                                     {errors.requirements && saved &&
-                                        <div>
-                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                            <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                                 {errorMsg}
                                             </span> 
-                                        </div>
                                     }
                                 </Form.Label>
                                 <Col sm="12">
@@ -2152,11 +2102,9 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                     A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
                                     {errors.strategy && saved && 
-                                        <div>
-                                            <span style={{ color: 'red', marginLeft: '10px' }}>
+                                            <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                                 {errorMsg}
                                             </span>
-                                        </div>
                                     }
                                 </Form.Label>
                                 <Col sm="12">
@@ -2835,7 +2783,7 @@ const CohortForm = ({ ...props }) => {
                         </CollapsiblePanel>
                         
                     </CollapsiblePanelContainer>
-                    </Form> 
+                </Form> 
                 
 
                 <div style={{ position: 'relative' }} className="my-4">

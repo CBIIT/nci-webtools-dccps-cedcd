@@ -43,6 +43,7 @@ async function getCohort(mysql, id) {
 
 async function saveCohort(mysql, body, id, user) {
     const restrictedTables = ['cohort_user_mapping'];
+    const userIdTables = ['cohort_activity_log'];
 
     // look for tables with references to cohort(cohort_id)
     const tables = (await getTablesWithColumn(mysql, 'cohort_id', 'cedcd')).filter(t =>
@@ -72,15 +73,21 @@ async function saveCohort(mysql, body, id, user) {
 
         // upsert records, if provided
         for (const record of records) {
+            let params = {
+                ...record,
+                id: undefined,
+                cohort_id: id,
+                create_time: undefined,
+                update_time: new Date()
+            };
+
+            if (userIdTables.includes(table)) {
+                params.user_id = user ? user.id : undefined;
+            }
+
             await mysql.upsert({
                 table,
-                record: {
-                    ...record,
-                    id: undefined,
-                    cohort_id: id,
-                    create_time: undefined,
-                    update_time: new Date()
-                }
+                record: params
             });
         }
     }
