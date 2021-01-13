@@ -40,55 +40,106 @@ const SpecimenForm = ({ ...props }) => {
     const [userEmails, setEmails] = useState('')
     //const cohortId = window.location.pathname.split('/').pop();
 
-    const sendEmail = (template, topic) => {
+    const sendEmail = (template, topic, status) => {
 
-        fetch('/api/questionnaire/select_owners_from_id', {
-            method: "POST",
-            body: JSON.stringify({ id: cohortId }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-
-                if (result && result.status === 200) {
-                    result.data.map((owner) => {
-                        console.log(window.location.origin)
-                        let reqBody = {
-                            templateData: {
-                                user: owner.first_name + ' ' + owner.last_name,
-                                cohortName: owner.name,
-                                cohortAcronym: owner.acronym,
-                                website: window.location.origin,
-                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
-                            },
-                            email: owner.email,
-                            template: template,
-                            topic: topic + owner.acronym
-                        }
-
-                        fetch('/api/cohort/sendUserEmail', {
-                            method: "POST",
-                            body: JSON.stringify(reqBody),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(res => res.json())
-                            .then(result => {
-                                if (result && result.status === 200) {
-                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                                else {
-                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                            })
-                    })
+        if (status === 'published' || status === 'returned') {
+            fetch('/api/questionnaire/select_owners_from_id', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
+                .then(res => res.json())
+                .then(result => {
+
+                    if (result && result.status === 200) {
+                        result.data.map((owner) => {
+                            console.log(window.location.origin)
+                            let reqBody = {
+                                templateData: {
+                                    user: owner.first_name + ' ' + owner.last_name,
+                                    cohortName: owner.name,
+                                    cohortAcronym: owner.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: owner.email,
+                                template: template,
+                                topic: topic + owner.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
+
+        else if (status === 'submitted') {
+            fetch('/api/questionnaire/select_admin_info', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result && result.status === 200) {
+
+                        result.data.map((admin) => {
+                            let reqBody = {
+                                templateData: {
+                                    user: admin.first_name + ' ' + admin.last_name,
+                                    cohortName: admin.name,
+                                    cohortAcronym: admin.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: admin.email,
+                                template: template,
+                                topic: topic + admin.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
     }
 
     const handleApprove = () => {
@@ -166,7 +217,10 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
 
                         if (nextStatus === 'published')
-                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ')
+                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', nextStatus)
+
+                        else if (nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
                     }
                 })
         }
@@ -497,7 +551,6 @@ const SpecimenForm = ({ ...props }) => {
 
     const getQuestionEntry = (field) => {
         let item = field.items
-        console.log(item)
         if (item && item.length === 2)
             return (
                 < Form.Group as={Row} sm='12' >
@@ -657,7 +710,6 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const getPartContent = (partSelect = 'A') => {
-
         return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
             if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
 
@@ -717,7 +769,11 @@ const SpecimenForm = ({ ...props }) => {
                                 placeholder='Max of 200 characters'
                                 maxLength={200}
                                 disabled={specimen.bioOtherBaseline !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value)) }}
+                                onChange={e => {
+                                    dispatch(setHasUnsavedChanges(true));
+                                    dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value));
+                                    dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value))
+                                }}
                             />
                         </Reminder>
 
@@ -736,7 +792,12 @@ const SpecimenForm = ({ ...props }) => {
                                 <Form.Check.Input type="radio" className="mr-2"
                                     checked={specimen.bioOtherOtherTime === 0}
                                     onClick={() => {
-                                        if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTime(0));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(''));
+                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                        }
                                     }}
                                 />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -746,7 +807,13 @@ const SpecimenForm = ({ ...props }) => {
                             <Form.Check type='radio' name='bioOtherOtherTime' inline>
                                 <Form.Check.Input type='radio' className="mr-2"
                                     checked={specimen.bioOtherOtherTime === 1}
-                                    onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) } }} />
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTime(1));
+                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                        }
+                                    }} />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     Yes</Form.Check.Label>
                             </Form.Check>
@@ -757,7 +824,7 @@ const SpecimenForm = ({ ...props }) => {
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
 
-                        <Reminder message={"Required FIeld"} disabled={!(saved && specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                        <Reminder message={"Required FIeld"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
                                 className='form-control'
@@ -766,7 +833,11 @@ const SpecimenForm = ({ ...props }) => {
                                 placeholder='Max of 200 characters'
                                 maxLength={200}
                                 disabled={specimen.bioOtherOtherTime !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value)) }}
+                                onChange={e => {
+                                    dispatch(setHasUnsavedChanges(true));
+                                    dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value));
+                                    dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value))
+                                }}
                             />
                         </Reminder>
 
