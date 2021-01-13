@@ -477,7 +477,7 @@ const MajorContentForm = ({ ...props }) => {
             {questions.map((item, idx) => 
                 <Form.Check 
                     type="checkbox" 
-                    className="ml-4 pl-0"
+                    className={keys[idx].includes('cancer') ? "ml-4" : "ml-4 pl-0"}
                     id={keys[idx]}
                     name={keys[idx]}
                     readOnly={isReadOnly}

@@ -366,7 +366,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
         if(checkFourAges('enrollment_age_max', value)){
-            if(minAge && medianAge && meanAge)
+            if(!value || minAge && medianAge && meanAge)
                 dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
         }
         else if(minAge && medianAge && meanAge){
@@ -390,8 +390,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
         if(checkFourAges('current_age_min', value)){
-            if(maxAge && medianAge && meanAge){
-                console.log('dispatching: '+ getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge))
+            if(!value || maxAge && medianAge && meanAge){
                 dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
 
             }
@@ -417,7 +416,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
         if(checkFourAges('current_age_max', value)){
-            if(minAge && medianAge && meanAge)
+            if(!value || minAge && medianAge && meanAge)
                 dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
         }
         else if(minAge && medianAge && meanAge){
@@ -482,6 +481,7 @@ const CohortForm = ({ ...props }) => {
 
     const checkFourAges = (currentKey, currentValue)=>{
         let checkWithError = false //assume no error at first
+        if(!currentValue) return true
         if(currentKey.includes('enrollment')){
             if(currentKey.includes('min')) //enrollment_age_min
                 checkWithError |= currentValue > Math.min(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
