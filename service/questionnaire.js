@@ -30,7 +30,7 @@ router.post('/sendEmail', async function (req, res, next) {
     }
 })
 
-router.post('/select_owners_from_id', async function (req, res){ 
+router.post('/select_owners_from_id', async function (req, res) {
 
     let params = [req.body.id];
     let proc = 'select_owners_from_id'
@@ -39,9 +39,9 @@ router.post('/select_owners_from_id', async function (req, res){
         logger.debug(result)
         logger.debug(result[0][0])
 
-        if(result && result[0][0])
-            res.json({ status: 200, data: result[0]})
-        else  
+        if (result && result[0][0])
+            res.json({ status: 200, data: result[0] })
+        else
             res.json({ status: 400 })
     })
 })
@@ -52,50 +52,64 @@ router.post('/get_updated_cohortID', function (req, res) {
         if (result && result[0])
             res.json({ status: 200, data: result[0][0].new_id })
         else
-            res.json({ status: 500 })
+            res.json({ status: 400 })
     })
 
+})
+
+router.post('/select_admin_info', async function (req, res) {
+    let params = [req.body.id];
+    let proc = 'select_admin_info'
+
+    mysql.callProcedure(proc, params, function (result) {
+        logger.debug(result)
+
+        if (result && result[0][0])
+            res.json({ status: 200, data: result[0] })
+        else
+            res.json({ status: 400 })
+    })
 })
 
 router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
     //logger.debug('uplaod to here: '+config.file_path)
-    let uploadedFiles = {filenames: []} 
-    if(cohortFiles.length > 1)
+    let uploadedFiles = { filenames: [] }
+    if (cohortFiles.length > 1)
         //Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
         cohortFiles.forEach(f => uploadedFiles.filenames.push(f.name))
     else
         uploadedFiles.filenames.push(cohortFiles.name)
     let proc = 'add_file_attachment'
-        let params = []
-        params.push(req.params.id)
-        params.push(req.params.category)
-        params.push(JSON.stringify(uploadedFiles))
-        //logger.debug(uploadedFiles)
+    let params = []
+    params.push(req.params.id)
+    params.push(req.params.category)
+    params.push(JSON.stringify(uploadedFiles))
+    //logger.debug(uploadedFiles)
 
-        mysql.callJsonProcedure(proc, params, function (result) {
-            if(result && result[0] && result[0][0].rowsAffacted > 0){
-                const returnedData = {}
-                //logger.debug(result[2])
-                returnedData.new_ID = result[1][0].new_id
-                returnedData.files = result[2]
-                fs.access(`${config.file_path}/CohortID_${returnedData.new_ID}`, (err) => {
-                    if (err) {
-                        fs.mkdirSync(`${config.file_path}/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
-                            logger.debug(err.message)
-                            if (err) res.json({ status: 500 })
-                        });
-                    }
-                    if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => {f.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${f.name}`)})  
-                    else cohortFiles.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${cohortFiles.name}`) 
-                }) 
-                res.json({ status: 200, data: returnedData})
-            }        
-            else
-                res.json({status: 500})
-         }) 
-         
-        //res.json({status: 200})
+    mysql.callJsonProcedure(proc, params, function (result) {
+        if (result && result[0] && result[0][0].rowsAffacted > 0) {
+            const returnedData = {}
+            //logger.debug(result[2])
+            returnedData.new_ID = result[1][0].new_id
+            returnedData.files = result[2]
+            fs.access(`${config.file_path}/CohortID_${returnedData.new_ID}`, (err) => {
+                if (err) {
+                    fs.mkdirSync(`${config.file_path}/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
+                        logger.debug(err.message)
+                        if (err) res.json({ status: 500 })
+                    });
+                }
+                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${f.name}`) })
+                else cohortFiles.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${cohortFiles.name}`)
+            })
+            res.json({ status: 200, data: returnedData })
+        }
+        else
+            res.json({ status: 500 })
+    })
+
+    //res.json({status: 200})
 })
 
 router.post('/deleteFile', function (req, res) {
@@ -104,9 +118,10 @@ router.post('/deleteFile', function (req, res) {
     let cohort_ID = req.body.cohortId
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
-            if (Array.isArray(result[1])){
-                fs.unlink(`${config.file_path}/CohortID_${cohort_ID}/${currentFile}`, (err => { 
-                    if (err) console.log(err);}))
+            if (Array.isArray(result[1])) {
+                fs.unlink(`${config.file_path}/CohortID_${cohort_ID}/${currentFile}`, (err => {
+                    if (err) console.log(err);
+                }))
                 res.json({ status: 200, data: result[1][0].new_id })
             }
             else
@@ -120,8 +135,8 @@ router.post('/deleteFile', function (req, res) {
 router.post('/update_cohort_basic/:id', function (req, res) {
     logger.debug(req.body)
     req.body.cohort_description = req.body.cohort_description ? req.body.cohort_description.replace(/\n/g, '\\n') : req.body.cohort_description
-    let body = {...req.body}
-    if(body.clarification_contact === 1) {
+    let body = { ...req.body }
+    if (body.clarification_contact === 1) {
         body.contacterName = body.completerName
         body.contacterPosition = body.completerPosition
         body.contacterCountry = body.completerCountry
@@ -129,20 +144,20 @@ router.post('/update_cohort_basic/:id', function (req, res) {
         body.contacterEmail = body.completerEmail
     }
 
-    if(body.sameAsSomeone === 0){
+    if (body.sameAsSomeone === 0) {
         body.collaboratorName = body.completerName
         body.collaboratorPosition = body.completerPosition
         body.collaboratorCountry = body.completerCountry
         body.collaboratorPhone = body.completerPhone
         body.collaboratorEmail = body.completerEmail
-    }else if(body.sameAsSomeone === 1){
+    } else if (body.sameAsSomeone === 1) {
         body.collaboratorName = body.contacterName
         body.collaboratorPosition = body.contacterPosition
         body.collaboratorCountry = body.contacterCountry
         body.collaboratorPhone = body.contacterPhone
         body.collaboratorEmail = body.contacterEmail
     }
-    
+
     let updatedBody = JSON.stringify(body)
     let proc = 'update_cohort_basic'
     let params = []
@@ -230,14 +245,14 @@ router.post('/upsert_enrollment_counts/:id', function (req, res) {
 
     mysql.callJsonProcedure(proc, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
-            
-            if (Array.isArray(result[1])) { 
+
+            if (Array.isArray(result[1])) {
                 const updatedCounts = {}
                 updatedCounts.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedCounts.status = result[2][0].status
                 res.json({ status: 200, message: 'update successful', data: updatedCounts })
             }
-             else
+            else
                 res.json({ status: 200, message: 'update successful' })
         }
         else
@@ -444,7 +459,7 @@ router.post('/update_cancer_info/:id', async function (req, res) {
     const { id } = params;
     try {
         const [result] = await mysql.query('CALL update_cancer_info(?, ?)', [id, JSON.stringify(body)]);
-        
+
         if (result && result[0] && result[0].success === 1) {
             if (result[0].duplicated_cohort_id) {
                 res.json({ status: 200, message: 'update successful', data: { duplicated_cohort_id: result[0].duplicated_cohort_id, status: result[0].status } })
@@ -471,7 +486,7 @@ router.post('/update_specimen/:id', function (req, res) {
 
     mysql.callJsonProcedure(func, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0)
-            if(Array.isArray(result[1])){
+            if (Array.isArray(result[1])) {
                 const updatedSpecimen = {}
                 updatedSpecimen.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedSpecimen.status = result[2][0].status
@@ -553,7 +568,7 @@ router.post('/get_specimen/:id', function (req, res) {
 
             if (result[3].length > 0) {
                 for (let e of result[3])
-                    if(e.email) temp.push(e.email)
+                    if (e.email) temp.push(e.email)
                 specimenData.emails = temp.join(',')
             }
 
@@ -601,17 +616,17 @@ router.post('/reject/:id', async function (req, res) {
     );
 
     mail.sendMail(
-        config.mail.from, 
-        contact.email, 
+        config.mail.from,
+        contact.email,
         `Review Comments for Cohort Questionnaire - ${cohort.name}`,
-        '', 
+        '',
         String(fs.readFileSync(path.resolve(__dirname, 'templates/email-reject-template')))
             .replace(/\{user\}/g, `${contact.name}`)
             .replace(/\{website\}/g, hostname)
             .replace(/\{cohortName\}/g, cohort.name)
             .replace(/\{cohortAcronym\}/g, cohort.acronym)
             .replace(/\{reviewComments\}/g, notes)
-        );
+    );
 
     response.json(true);
 })
