@@ -1115,13 +1115,13 @@ const CohortForm = ({ ...props }) => {
                                     } */}
                                 </Form.Label>
                                 <Col sm="12" className="p-0 mb-3">
-                                    <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
+                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Eligible sex<span style={{color: 'red'}}>*</span>
                                         {errors.eligible_gender_id && saved && <span className="text-danger ml-3">
                                             {errorMsg}
                                         </span>}
                                     </Form.Label>
-                                    <Col sm="6">
+                                    <Col sm="12">
                                         <div key="radio">
                                             <Form.Check type="radio" 
                                                 className="pl-0"
@@ -1172,9 +1172,33 @@ const CohortForm = ({ ...props }) => {
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
-                                    {/* </Col>
-                                    <Col sm={{offset: "6", span: "6"}}> */}
-                                        <Form.Control type="text"
+                                    </Col>
+                                </Col> 
+                                <Col sm="12" className="p-0 mb-3">
+                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
+                                        Baseline population consists of
+                                    </Form.Label>
+                                    <Col sm="12">
+                                        <div key="checkbox">
+                                            <Form.Check type="checkbox" 
+                                                className="pl-0"
+                                                id="default-cancerSurvivors"
+                                                name="cancerSurvivors">
+                                                <Form.Check.Input bsPrefix
+                                                    type="checkbox" 
+                                                    className="mr-2" 
+                                                    checked={cohort.eligible_disease} 
+                                                    onChange={() => 
+                                                        !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
+                                                    }  />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    Cancer survivors only, specify cancer site(s)
+                                                </Form.Check.Label>
+                                            </Form.Check>
+                                        </div>
+                                    </Col>
+                                    <Col sm="12">
+                                        <Form.Control type="text" className='text-capitalize'
                                             name='cancerSites' 
                                             value={cohort.eligible_disease_cancer_specify} 
                                             maxLength="100" 
@@ -1184,53 +1208,22 @@ const CohortForm = ({ ...props }) => {
                                                 dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
                                             } />
                                     </Col>
-                                </Col> 
-                                <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Baseline population consists of
-                                </Form.Label>
-                                <Col sm="6" className="align-self-center">
-                                    <div key="checkbox">
-                                        <Form.Check type="checkbox" 
-                                            className="pl-0"
-                                            id="default-cancerSurvivors"
-                                            name="cancerSurvivors">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox" 
-                                                className="mr-2" 
-                                                checked={cohort.eligible_disease} 
-                                                onChange={() => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
-                                                }  />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Cancer survivors only, specify cancer site(s)
-                                            </Form.Check.Label>
-                                        </Form.Check>
-                                    </div>
-                                {/* </Col>
-                                <Col sm={{offset: "6", span: "6"}}> */}
-                                    <Form.Control type="text" className='text-capitalize'
-                                        name='cancerSites' 
-                                        value={cohort.eligible_disease_cancer_specify} 
-                                        maxLength="100" 
-                                        placeholder="Max of 100 characters" 
-                                        readOnly={!cohort.eligible_disease || isReadOnly} 
-                                        onChange={e => 
-                                            dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
-                                        } />
                                 </Col>
-                                <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
-                                    Please specify any eligibility criteria in addition to age and sex
-                                </Form.Label>
-                                <Col sm="12">
-                                    <Form.Control type="text" 
-                                        placeholder='Max of 100 characters'
-                                        maxLength="100" 
-                                        name='eligible_disease_other_specify' 
-                                        value={cohort.eligible_disease_other_specify} 
-                                        onChange={e => 
-                                            !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
-                                        } 
-                                        readOnly={isReadOnly} />
+                                <Col sm="12" className="p-0">
+                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
+                                        Please specify any eligibility criteria in addition to age and sex
+                                    </Form.Label>
+                                    <Col sm="12">
+                                        <Form.Control type="text" 
+                                            placeholder='Max of 100 characters'
+                                            maxLength="100" 
+                                            name='eligible_disease_other_specify' 
+                                            value={cohort.eligible_disease_other_specify} 
+                                            onChange={e => 
+                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
+                                            } 
+                                            readOnly={isReadOnly} />
+                                    </Col>
                                 </Col>
                             </Form.Group>
                                 
