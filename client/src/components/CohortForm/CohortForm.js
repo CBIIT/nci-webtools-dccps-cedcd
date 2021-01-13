@@ -2492,7 +2492,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!QfileLoading && cohort.questionnaireFileName.length === 0 && (
                                                                                             <span>
-                                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2590,7 +2590,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {!MfileLoading && cohort.mainFileName.length === 0 && (
                                                                                         <span>
-                                                                                            { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                         </span>
                                                                                     )
                                                                                 }
@@ -2688,7 +2688,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!DfileLoading && cohort.dataFileName.length === 0 && (
                                                                                             <span>
-                                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2786,7 +2786,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!SfileLoading && cohort.specimenFileName.length === 0 && (
                                                                                             <span>
-                                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2884,7 +2884,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }       
                                                                                 {!PfileLoading && cohort.publicationFileName.length === 0 && (
                                                                                         <span>
-                                                                                            { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                         </span>
                                                                                     )
                                                                                 }
@@ -2962,7 +2962,7 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td >
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
@@ -2989,7 +2989,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!QfileLoading && cohort.questionnaireFileName.length === 0 && (
                                                                             <span>
-                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3051,7 +3051,7 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
@@ -3077,7 +3077,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {!MfileLoading && cohort.mainFileName.length === 0 && (
                                                                         <span>
-                                                                            { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                         </span>
                                                                     )
                                                                 }
@@ -3138,7 +3138,7 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
@@ -3164,7 +3164,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!DfileLoading && cohort.dataFileName.length === 0 && (
                                                                             <span>
-                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3225,7 +3225,7 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
@@ -3251,7 +3251,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!SfileLoading && cohort.specimenFileName.length === 0 && (
                                                                             <span>
-                                                                                { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3310,7 +3310,7 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
@@ -3336,7 +3336,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }       
                                                                 {!PfileLoading && cohort.publicationFileName.length === 0 && (
                                                                         <span>
-                                                                            { isReadOnly ? 'No file(s)' : 'No file chosen' }
+                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                         </span>
                                                                     )
                                                                 }
