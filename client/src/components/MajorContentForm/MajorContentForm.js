@@ -6,13 +6,14 @@ import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
 import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
-import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import classNames from 'classnames';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 
 const MajorContentForm = ({ ...props }) => {
     const majorContent = useSelector(state => state.majorContentReducer)
@@ -606,51 +607,56 @@ const MajorContentForm = ({ ...props }) => {
             </Form.Group>          
     }
 
-    return <div className="p-3 px-5">
-        {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
-        {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
-        <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-        
-        <Form>
-            <CollapsiblePanel
-                            condition={activePanel === 'panelA'}
-                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                            panelTitle="Major Content Domains">
-                <Form.Group as={Row} className="mb-1">
-                    <Form.Label column sm="12">
-                        Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
-                    </Form.Label>
-                </Form.Group>
-                {getFirstContent()}
-            </CollapsiblePanel>
-            <CollapsiblePanel
-                            condition={activePanel === 'panelB'}
-                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                            panelTitle="Other Medical Conditions">
-                <Form.Label as={Row} sm='12' className='pl-4' >
-                    C.31 Do you have information on the following medical conditions?
-                </Form.Label>
-                {getSecondContent()}      
-            </CollapsiblePanel>
-            <CollapsiblePanel
-                        condition={activePanel === 'panelC'}
-                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                        panelTitle="Cancer Related Conditions">
-                {getThirdContent()}
-            </CollapsiblePanel>
-        </Form> 
+    return (
+        <Container fluid>
+            {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+            {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
+            <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
+            <Col md="12">
+                <Form>
+                    <CollapsiblePanelContainer>
+                        <CollapsiblePanel
+                                        condition={activePanel === 'panelA'}
+                                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                                        panelTitle="Major Content Domains">
+                            <Form.Group as={Row} className="mb-1">
+                                <Form.Label column sm="12">
+                                    Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
+                                </Form.Label>
+                            </Form.Group>
+                            {getFirstContent()}
+                        </CollapsiblePanel>
+                        <CollapsiblePanel
+                                        condition={activePanel === 'panelB'}
+                                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                                        panelTitle="Other Medical Conditions">
+                            <Form.Label as={Row} sm='12' className='pl-4' >
+                                C.31 Do you have information on the following medical conditions?
+                            </Form.Label>
+                            {getSecondContent()}      
+                        </CollapsiblePanel>
+                        <CollapsiblePanel
+                                    condition={activePanel === 'panelC'}
+                                    onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                                    panelTitle="Cancer Related Conditions">
+                            {getThirdContent()}
+                        </CollapsiblePanel>
+                    </CollapsiblePanelContainer>
+                </Form> 
 
-        <QuestionnaireFooter
-            isAdmin={isReadOnly}
-            handlePrevious={_ => props.sectionPicker('B')}
-            handleNext={_ => props.sectionPicker('D')}
-            handleSave={handleSave}
-            handleSaveContinue={handleSaveContinue}
-            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
-            handleApprove={false}
-            handleReject={false} />
-
-        </div>
+                <QuestionnaireFooter
+                    isAdmin={isReadOnly}
+                    handlePrevious={_ => props.sectionPicker('B')}
+                    handleNext={_ => props.sectionPicker('D')}
+                    handleSave={handleSave}
+                    handleSaveContinue={handleSaveContinue}
+                    handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+                    handleApprove={false}
+                    handleReject={false} />
+                    
+            </Col>
+        </Container>
+    )
 }
 
 export default MajorContentForm
