@@ -2721,7 +2721,7 @@ const CohortForm = ({ ...props }) => {
                         </CollapsiblePanel>
                         
                     </CollapsiblePanelContainer>
-                    </Form> 
+                </Form> 
                 
 
                 <div style={{ position: 'relative' }} className="my-4">
