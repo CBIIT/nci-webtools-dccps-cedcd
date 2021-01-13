@@ -172,7 +172,7 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
-    console.log(fieldList)
+    //console.log(fieldList)
 
     useEffect(() => {
         if (!specimen.specimenLoaded) {
@@ -190,7 +190,8 @@ const SpecimenForm = ({ ...props }) => {
                                 if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
                             }
                             for (let k of Object.keys(specimenInfo)) {
-                                if ([0, 1].includes(specimenInfo[k].collected_yn)) {
+                               // if ([0, 1].includes(specimenInfo[k].collected_yn)) {
+                                    console.log(k)
                                     switch (specimenInfo[k].sub_category) {
                                         case 'bio_blood_baseline': // specimen_id 11
                                             dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
@@ -361,7 +362,7 @@ const SpecimenForm = ({ ...props }) => {
                                             break
 
                                     }
-                                } else if (specimenInfo[k].sub_category === 'bio_metabolomic_data') {
+                                //} else if (specimenInfo[k].sub_category === 'bio_metabolomic_data') {
                                     dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
                                     dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
                                     dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
@@ -375,7 +376,7 @@ const SpecimenForm = ({ ...props }) => {
                                     dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
                                     dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
 
-                                }
+                                //}
                             }
                             // details part
                             dispatch(allactions.specimenActions.bioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
@@ -656,7 +657,7 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const getPartContent = (partSelect = 'A') => {
-        console.log(fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => console.log(field)))
+        console.dir(errors)
         return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
             if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
 
