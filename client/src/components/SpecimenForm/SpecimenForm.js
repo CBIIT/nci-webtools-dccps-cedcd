@@ -51,12 +51,13 @@ const SpecimenForm = ({ ...props }) => {
 
                 if (result && result.status === 200) {
                     result.data.map((owner) => {
-
+                        console.log(window.location.origin)
                         let reqBody = {
                             templateData: {
                                 user: owner.first_name + ' ' + owner.last_name,
                                 cohortName: owner.name,
                                 cohortAcronym: owner.acronym,
+                                website: window.location.origin,
                                 publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
                             },
                             email: owner.email,
