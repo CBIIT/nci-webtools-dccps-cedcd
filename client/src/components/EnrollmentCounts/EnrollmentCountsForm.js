@@ -80,6 +80,56 @@ const EnrollmentCountsForm = ({...props}) => {
         }
     }, [])
 
+    const sendEmail = (template, topic) => {
+
+        fetch('/api/questionnaire/select_admin_info', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortID }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+
+                    result.data.map((admin) => {
+                        let reqBody = {
+                            templateData: {
+                                user: admin.first_name + ' ' + admin.last_name,
+                                cohortName: admin.name,
+                                cohortAcronym: admin.acronym,
+                                website: window.location.origin,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: admin.email,
+                            template: template,
+                            topic: topic + admin.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -88,6 +138,9 @@ const EnrollmentCountsForm = ({...props}) => {
               .then(result => {
                   if (result && result.status === 200){
                     dispatch(({type: 'SET_COHORT_STATUS', value: nextStatus}))
+
+                    if(nextStatus === 'submitted')
+                        sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                   }
               })
         }

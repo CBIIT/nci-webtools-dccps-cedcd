@@ -269,6 +269,56 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
+    const sendEmail = (template, topic) => {
+
+        fetch('/api/questionnaire/select_admin_info', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortID }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+
+                    result.data.map((admin) => {
+                        let reqBody = {
+                            templateData: {
+                                user: admin.first_name + ' ' + admin.last_name,
+                                cohortName: admin.name,
+                                cohortAcronym: admin.acronym,
+                                website: window.location.origin,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: admin.email,
+                            template: template,
+                            topic: topic + admin.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -277,6 +327,10 @@ const CohortForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+                        
+                        if(nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
+
                     }
                 })
         }
@@ -631,26 +685,59 @@ const CohortForm = ({ ...props }) => {
     }
     // model definition
     const file_list = (title='', fileListName, files=[], deleteFileFromList=f=>f) => {
-    //    const file_list = (title='', fileListName, files=[]) => {
-        return <div className='col-xs-12' style={{border: '1px solid lightgrey', marginTop: '10px', padding: '0'}}>
-            <div style={{position: 'relative', height: '40px', backgroundColor: '#01857b', color: 'white', margin: '0 0 10px 0'}}>
-                <span className='col-xs-10'><h4><b>{title}</b></h4></span>
-                {/*<span className='col-xs-2 upperCloser' style={{textAlign: 'center'}} onClick={()=> setFileModal(false)}><h4>X</h4></span>*/}
-                <input type="button" style={{position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em'}} value='x' onClick={()=> setFileModal(false)} />
-            </div> 
-            <div style={{height: '30px', width: '96%', margin: 'auto', backgroundColor: '#f2f2f2', boxShadow: '0 1px #ccc'}}>
-                <span className='col-md-10 col-xs-9 specialSpan' style={{fontSize: '1.5rem'}}><h5>File Name</h5></span>
-                <span className='col-md-2 col-xs-3 specialSpan'><h5>Remove</h5></span>
-            </div>
-            <div>
-                {files.map(f =>
-                    <div className='row' style={{ marginBottom: '3px', paddingLeft: '10px'}}>
-                        <span className='col-10'>{f.filename}</span>
-                        {/*<span className='text-center'>{!isReadOnly && <span className='col-2 glyphicon glyphicon-trash closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}><span></span></span>}</span>*/}
-                        <span className='text-center'>{!isReadOnly && <span className='closer' onClick={() => deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)}>x<span></span></span>}</span>
-                    </div>)}
-            </div>
-        </div>
+        return (
+            <Col md="12" className="p-0 m-0">
+                {/* Header */}
+                <div style={{
+                    height: '40px', 
+                    backgroundColor: '#01857b', 
+                    color: 'white', 
+                }}>
+                    <Col sm="10">
+                        <h4><b>{title}</b></h4>
+                    </Col>
+                    <input type="button" style={{position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em'}} value='x' onClick={()=> setFileModal(false)} />
+                </div> 
+                {/* Table */}
+                <Col md="12" className="mb-3 px-0">
+                    {/* Table header */}
+                    <div className="bg-light-grey" style={{
+                        height: '30px',
+                        borderBottom: '1px solid #dee2e6'
+                    }}>
+                        <Col md="10" style={{fontSize: '1.5rem'}}>
+                            <h5>File Name</h5>
+                        </Col>
+                        <Col md="2" style={{fontSize: '1.5rem'}}>
+                            <h5>Remove</h5>
+                        </Col>
+                    </div>
+                    {/* File list rows */}
+                    <div className="mb-3">
+                        {files.map(f =>
+                            <div className="my-1">
+                                <Col md="10">
+                                    {f.filename}
+                                </Col>
+                                <Col md="2" className="text-center">
+                                    <span>
+                                        {!isReadOnly && 
+                                            <span className='closer' 
+                                                onClick={() => 
+                                                    deleteFileFromList(fileListName, f.filename, f.fileId, cohortID)
+                                                }>
+                                                x
+                                            </span>
+                                        }
+                                    </span>
+                                </Col>
+                            </div>
+                        )}
+                    </div>
+                </Col>
+                
+            </Col>
+        )
     }
 
     const showFileList = (title, fileListName, targetList) => {
@@ -710,8 +797,28 @@ const CohortForm = ({ ...props }) => {
         <Container fluid>
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
-            <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-            <FileModal show={fileModal} handleClose={() => setFileModal(false)}  body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} footer={<div className='col-xs-12' style={{height: '40px'}} onClick={()=> setFileModal(false)}> <input type='button' className='col-sm-offset-10 col-sm-2 col-xs-12 btn btn-primary' value='Close' /></div>}/> 
+            <CenterModal show={modalShow} 
+                handleClose={() => 
+                    setModalShow(false)
+                } 
+                handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} 
+            />
+            
+            <FileModal show={fileModal} 
+                handleClose={() => 
+                    setFileModal(false)
+                }  
+                body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} 
+                footer={
+                    <input 
+                        type='button' 
+                        onClick={()=> 
+                            setFileModal(false)
+                        }
+                        className='btn btn-primary' 
+                        value='Close' />                    
+                }/> 
+
             <Col md="12">
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                     If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts

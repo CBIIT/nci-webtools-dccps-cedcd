@@ -245,7 +245,7 @@ const SpecimenForm = ({ ...props }) => {
                             }
                             for (let k of Object.keys(specimenInfo)) {
                                 // if ([0, 1].includes(specimenInfo[k].collected_yn)) {
-                                console.log(k)
+
                                 switch (specimenInfo[k].sub_category) {
                                     case 'bio_blood_baseline': // specimen_id 11
                                         dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
@@ -461,8 +461,6 @@ const SpecimenForm = ({ ...props }) => {
                 .catch((error) => {
                     console.log(error)
                 })
-
-            console.log(specimen)
         } // end if
     }, [])
 
@@ -1158,7 +1156,7 @@ const SpecimenForm = ({ ...props }) => {
                                         readOnly={isReadOnly}
                                         onClick={() => {
                                             if (!isReadOnly) {
-                                                //dispatch(setHasUnsavedChanges(true));
+                                                dispatch(setHasUnsavedChanges(true));
                                                 dispatch(allactions.specimenActions.bioMetabolomicData(1));
                                                 dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
                                             }
