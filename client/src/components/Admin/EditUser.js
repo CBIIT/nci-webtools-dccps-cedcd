@@ -34,7 +34,7 @@ const EditUser = ({ ...props }) => {
 
     const userId = window.location.pathname.split('/').pop();
 
-    const lookup = useSelector(state => state.lookupReducer)
+    // const lookup = useSelector(state => state.lookupReducer)
 
     const isNull = v => ['', "", undefined, null].includes(v)
 
@@ -49,8 +49,8 @@ const EditUser = ({ ...props }) => {
     })
 
     useEffect(() => {
-        setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name })))
-        const allCohorts = lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
+        //  setAllCohortList(lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name })))
+        // const allCohorts = lookup.allcohortlist.map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
 
         const fetchUserData = async function () {
             const result = await fetch(`/api/managecohort/getUserProfile/${userId}`, {
@@ -64,6 +64,10 @@ const EditUser = ({ ...props }) => {
                 const data = result.data.info[0]
                 setExistingList(result.data.emailList)
                 let resultStatus = result.data.result[0].total
+
+                const allCohorts = (result.data.cohortList).map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
+
+                setAllCohortList(allCohorts)
 
 
                 if (+resultStatus === 1) {
@@ -101,6 +105,9 @@ const EditUser = ({ ...props }) => {
                 }
             }).then(res => res.json());
             setExistingList(result.data.emailList)
+            setAllCohortList(result.data.cohortList).map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
+
+
         };
 
         if (!isNew) {
@@ -224,7 +231,7 @@ const EditUser = ({ ...props }) => {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
 
-        setErrors(copy);    
+        setErrors(copy);
 
         return !Object.values(copy).some(x => (x !== undefined && x !== '' && x !== null));
     }
@@ -235,129 +242,129 @@ const EditUser = ({ ...props }) => {
 
 
     return <RequireAuthorization role="SystemAdmin">
-            <div id='editUserContainer' className='col-md-12'>
-                {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
-                {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
+        <div id='editUserContainer' className='col-md-12'>
+            {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+            {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
 
-                <CenterModal
-                    show={modalShow}
-                    title={<span>Validation Errors</span>}
-                    body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
-                    footer={<div>
-                        <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
-                    </div>}
-                />
+            <CenterModal
+                show={modalShow}
+                title={<span>Validation Errors</span>}
+                body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
+                footer={<div>
+                    <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
+                </div>}
+            />
 
-                <div id="editUserForm" className="row pop-form col-md-12">
-                    <div id="edituser-main" className="col">
-                        <div id="edituser-header" className="col-md-12">
-                            {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
-                        </div>
-                        {nonExistUser ? <div className="col-md-12 col-6">
-                            <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
+            <div id="editUserForm" className="row pop-form col-md-12">
+                <div id="edituser-main" className="col">
+                    <div id="edituser-header" className="col-md-12">
+                        {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
+                    </div>
+                    {nonExistUser ? <div className="col-md-12 col-6">
+                        <div className="col-md-12 col-6"> <h4> Non existing user id</h4> </div>
+                        <div className="bttn-group col-md-4 col-xs-6">
+                            <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
+                                value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
+                        </div></div>
+                        :
+                        <div id="edituser-col-1" className="col-md-12 col-12">
+                            <form >
+                                <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
+                                <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
+                                    <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
+                                    {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
+                                        <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
+                                            id="user_userName" value={userName} maxLength="100"
+                                            onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
+                                    </span>
+                                </div>
+                                <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
+                                    <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
+                                    {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
+                                        placeholder='Valid email address' maxLength="100"
+                                        onChange={(e) => {
+                                            setUserEmail(e.target.value);
+                                            if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
+                                        }} />
+                                    </span>
+                                </div>
+
+                                <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
+                                    <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
+                                    {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
+                                        id="user_lastName" value={lastName} maxLength="50"
+                                        onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
+                                    </span>
+                                </div>
+                                <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
+                                    <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
+                                    {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
+                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
+                                        id="user_firstName" value={firstName} maxLength="50"
+                                        onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
+                                    </span>
+                                </div>
+                                <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12" >
+                                    <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
+                                    {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
+                                    <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
+                                        <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
+                                            checked={userRole === 'Admin'} onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
+                                    </div>
+                                    <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
+                                        <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
+                                            checked={userRole === 'Cohort Owner'} onChange={(e) => {
+                                                setUserRole(e.target.value); setCohortList([]);
+                                                if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' })
+                                            }} />{' '}Cohort Owner</span>
+                                    </div>
+                                </div>
+
+                                <div className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+
+                                    <div className="col-md-12 col-12" > <label >Cohort </label>
+                                    </div>
+
+                                    {userRole === 'Admin' ?
+                                        <div className="col-md-6 col-6" >
+                                            <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
+                                                <input className="form-control" type="text" value="All" readOnly />
+                                            </span>
+
+                                        </div>
+                                        :
+                                        <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
+                                            <div className="col-md-5 col-6" style={{ width: '90%' }}>
+                                                <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div className=" my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
+                                    <div className=" col-md-4 col-6">
+                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
+                                            onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
+                                        </span>
+                                    </div>
+                                </div>
+                            </form>
+
                             <div className="bttn-group col-md-4 col-xs-6">
+                                <input type='button' className='col-md-2 col-xs-6 btn btn-primary'
+                                    value="Save" onClick={handleSave} style={{ paddingLeft: '40', paddingRight: '20' }} />
+
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
                                     value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
-                            </div></div>
-                            :
-                            <div id="edituser-col-1" className="col-md-12 col-12">
-                                <form >
-                                    <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                                    <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
-                                        {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
-                                            <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
-                                                id="user_userName" value={userName} maxLength="100"
-                                                onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
-                                        </span>
-                                    </div>
-                                    <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
-                                        {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
-                                            placeholder='Valid email address' maxLength="100"
-                                            onChange={(e) => {
-                                                setUserEmail(e.target.value);
-                                                if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
-                                            }} />
-                                        </span>
-                                    </div>
-
-                                    <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
-                                        {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
-                                            id="user_lastName" value={lastName} maxLength="50"
-                                            onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
-                                        </span>
-                                    </div>
-                                    <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
-                                        <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
-                                        {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
-                                            id="user_firstName" value={firstName} maxLength="50"
-                                            onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
-                                        </span>
-                                    </div>
-                                    <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12" >
-                                        <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
-                                        {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
-                                        <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
-                                                checked={userRole === 'Admin'} onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
-                                        </div>
-                                        <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
-                                            <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
-                                                checked={userRole === 'Cohort Owner'} onChange={(e) => {
-                                                    setUserRole(e.target.value); setCohortList([]);
-                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' })
-                                                }} />{' '}Cohort Owner</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
-
-                                        <div className="col-md-12 col-12" > <label >Cohort </label>
-                                        </div>
-
-                                        {userRole === 'Admin' ?
-                                            <div className="col-md-6 col-6" >
-                                                <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
-                                                    <input className="form-control" type="text" value="All" readOnly />
-                                                </span>
-
-                                            </div>
-                                            :
-                                            <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                                <div className="col-md-5 col-6" style={{ width: '90%' }}>
-                                                    <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
-                                                </div>
-                                            </div>
-                                        }
-                                    </div>
-                                    <div className=" my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
-                                        <div className=" col-md-4 col-6">
-                                            <span className="col-md-4 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
-                                                onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
-                                        </span>
-                                        </div>
-                                    </div>
-                                </form>
-
-                                <div className="bttn-group col-md-4 col-xs-6">
-                                    <input type='button' className='col-md-2 col-xs-6 btn btn-primary'
-                                        value="Save" onClick={handleSave} style={{ paddingLeft: '40', paddingRight: '20' }} />
-
-                                    <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
-                                        value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
-                                </div>
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
             </div>
-        </RequireAuthorization>
+        </div>
+    </RequireAuthorization>
 }
 
 export default EditUser;

@@ -6,12 +6,12 @@ var config = require('../config');
 var logger = require('../components/logger');
 
 router.use((request, response, next) => {
-    const { session } = request;
-    if (!session.user || !/SystemAdmin/.test(session.user.role)) {
-        response.status(400).json('Unauthorized').end();
-    } else {
-        next();
-    }
+	const { session } = request;
+	if (!session.user || !/SystemAdmin/.test(session.user.role)) {
+		response.status(400).json('Unauthorized').end();
+	} else {
+		next();
+	}
 });
 
 router.post('/admincohortlist', function (req, res) {
@@ -128,7 +128,7 @@ router.post('/getUserProfile/:id', function (req, res) {
 		userProfile.info = result[0]
 		userProfile.result = result[1]
 		userProfile.emailList = result[2]
-
+		userProfile.cohortList = result[3]
 
 		if (userProfile && userProfile.info)
 			res.json({ status: 200, data: userProfile })

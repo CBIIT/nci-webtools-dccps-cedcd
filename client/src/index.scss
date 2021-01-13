@@ -1436,3 +1436,34 @@ tr.compare-row--hover, .body-header--hover {
   background-color: transparent;
   text-align: right;
 }
+
+// input form-control placeholder color
+.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c6c6c6;
+  opacity: 1; /* Firefox */
+}
+
+.form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #c6c6c6;
+}
+
+.form-control::-ms-input-placeholder { /* Microsoft Edge */
+  color: #c6c6c6;
+}
+
+.inputWriter::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #c6c6c6;
+  opacity: 1; /* Firefox */
+}
+
+.inputWriter:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #c6c6c6;
+}
+
+.inputWriter::-ms-input-placeholder { /* Microsoft Edge */
+  color: #c6c6c6;
+}
+
+input[type='file'] {
+  color: transparent;
+}
