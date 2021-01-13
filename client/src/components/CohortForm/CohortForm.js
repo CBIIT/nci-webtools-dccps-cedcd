@@ -30,7 +30,13 @@ const CohortForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
-    // const context = useContext(UserSessionContext);
+
+    const [QfileLoading, setQfileLoading] = useState(false)
+    const [MfileLoading, setMfileLoading] = useState(false)
+    const [DfileLoading, setDfileLoading] = useState(false)
+    const [SfileLoading, setSfileLoading] = useState(false)
+    const [PfileLoading, setPfileLoading] = useState(false)
+
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -580,11 +586,26 @@ const CohortForm = ({ ...props }) => {
                     if (result.status === 200) {
                         let dispatchName = ''
                         switch (category) {
-                            case 0: dispatchName = 'questionnaireFileName'; break;
-                            case 1: dispatchName = 'mainFileName'; break;
-                            case 2: dispatchName = 'dataFileName'; break;
-                            case 3: dispatchName = 'specimenFileName'; break;
-                            case 4: dispatchName = 'publicationFileName'; break;
+                            case 0: 
+                                dispatchName = 'questionnaireFileName';
+                                setQfileLoading(false)
+                                break;
+                            case 1: 
+                                dispatchName = 'mainFileName'; 
+                                setMfileLoading(false)
+                                break;
+                            case 2: 
+                                dispatchName = 'dataFileName'; 
+                                setDfileLoading(false)
+                                break;
+                            case 3: 
+                                dispatchName = 'specimenFileName';
+                                setSfileLoading(false) 
+                                break;
+                            case 4: 
+                                dispatchName = 'publicationFileName'; 
+                                setPfileLoading(false)
+                                break;
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
@@ -2315,12 +2336,19 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile01"
                                                                             aria-describedby="inputGroupFileAddon01"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setQfileLoading(true)
+                                                                                    handleUpload(e.target.files, 0)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                                        {QfileLoading && <span>Loading files...</span>
+                                                                         || 
+                                                                         cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
+                                                                        {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2362,12 +2390,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile02"
                                                                             aria-describedby="inputGroupFileAddon02"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 1)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setMfileLoading(true)
+                                                                                    handleUpload(e.target.files, 1)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {MfileLoading && <span>Loading files...</span> || cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.mainFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}{cohort.mainFileName.length-1} more</a></span>}
+                                                                        {cohort.mainFileName.length > 1 && !MfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}{cohort.mainFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2409,12 +2442,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile03"
                                                                             aria-describedby="inputGroupFileAddon03"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 2)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setDfileLoading(true)
+                                                                                    handleUpload(e.target.files, 2)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                 <div>
-                                                                    {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                    {DfileLoading && <span>Loading files...</span> || cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                         <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                    {cohort.dataFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
+                                                                    {cohort.dataFileName.length > 1 && !DfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
                                                                 </div>
                                                                     </td>
                                                                 </tr>
@@ -2456,12 +2494,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile04"
                                                                             aria-describedby="inputGroupFileAddon04"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 3)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setSfileLoading(true)
+                                                                                    handleUpload(e.target.files, 3)
+                                                                                }
+                                                                            }} />
                                                                     }       
                                                                     <div>
-                                                                        {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {SfileLoading && <span>Loading files...</span> || cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.specimenFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}{cohort.specimenFileName.length-1} more</a></span>}
+                                                                        {cohort.specimenFileName.length > 1 && !SfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}{cohort.specimenFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2503,12 +2546,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile05"
                                                                             aria-describedby="inputGroupFileAddon05"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 4)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {    
+                                                                                    setPfileLoading(true)
+                                                                                    handleUpload(e.target.files, 4)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {PfileLoading && <span>Loading files...</span> || cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.publicationFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}{cohort.publicationFileName.length-1} more</a></span>}
+                                                                        {cohort.publicationFileName.length > 1 && !PfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}{cohort.publicationFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2557,12 +2605,17 @@ const CohortForm = ({ ...props }) => {
                                                                 aria-describedby="inputGroupFileAddon01"
                                                                 multiple 
                                                                 readOnly={isReadOnly}
-                                                                onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setQfileLoading(true)
+                                                                        handleUpload(e.target.files, 0)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                            {QfileLoading && <span>Loading...</span> || cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
+                                                            {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
                                                     
@@ -2593,12 +2646,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile02"
                                                                 aria-describedby="inputGroupFileAddon02"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 1)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setMfileLoading(true)   
+                                                                        handleUpload(e.target.files, 1)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                        {MfileLoading && <span>Loading...</span> || cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.mainFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '} {cohort.mainFileName.length-1} more</a></span>}
+                                                            {cohort.mainFileName.length > 1 && !MfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '} {cohort.mainFileName.length-1} more</a></span>}
                                                         </div>
 
                                                     </td>
@@ -2630,12 +2688,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile03"
                                                                 aria-describedby="inputGroupFileAddon03"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 2)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setDfileLoading(true)    
+                                                                        handleUpload(e.target.files, 2)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {DfileLoading && <span>Loading...</span> || cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.dataFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
+                                                            {cohort.dataFileName.length > 1 && !DfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
 
@@ -2666,12 +2729,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile04"
                                                                 aria-describedby="inputGroupFileAddon04"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 3)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setSfileLoading(true)    
+                                                                        handleUpload(e.target.files, 3)
+                                                                    }
+                                                                }} />
                                                         }       
                                                         <div>
-                                                            {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {SfileLoading && <span>Loading...</span> || cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.specimenFileName.length > 1 && <span>{' '}and <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length-1} more</a></span>}
+                                                            {cohort.specimenFileName.length > 1 && !SfileLoading && <span>{' '}and <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length-1} more</a></span>}
                                                         </div>
 
                                                     </td>
@@ -2702,12 +2770,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile05"
                                                                 aria-describedby="inputGroupFileAddon05"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 4)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {                                                                        
+                                                                        setPfileLoading(true)                                                                       
+                                                                        handleUpload(e.target.files, 4)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {PfileLoading && <span>Loading...</span> || cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.publicationFileName.length > 1 && <span>{' '}and  <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '} {cohort.publicationFileName.length-1} more</a></span>}
+                                                            {cohort.publicationFileName.length > 1 && !PfileLoading && <span>{' '}and  <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '} {cohort.publicationFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
                                                 </tr>
