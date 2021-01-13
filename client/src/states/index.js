@@ -5,7 +5,7 @@ const InitialStates = {
         sectionAStatus: '',
         cohort_name: '',
         cohort_acronym: '',
-        completionDate: null,
+        //completionDate: null,
         completerName: '',
         completerPosition: '',
         completerPhone: '',
