@@ -269,6 +269,56 @@ const CohortForm = ({ ...props }) => {
         }
     }
 
+    const sendEmail = (template, topic) => {
+
+        fetch('/api/questionnaire/select_admin_info', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortID }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+
+                    result.data.map((admin) => {
+                        let reqBody = {
+                            templateData: {
+                                user: admin.first_name + ' ' + admin.last_name,
+                                cohortName: admin.name,
+                                cohortAcronym: admin.acronym,
+                                website: window.location.origin,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: admin.email,
+                            template: template,
+                            topic: topic + admin.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -277,6 +327,10 @@ const CohortForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+                        
+                        if(nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
+
                     }
                 })
         }
@@ -312,7 +366,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
         if(checkFourAges('enrollment_age_max', value)){
-            if(minAge && medianAge && meanAge)
+            if(!value || minAge && medianAge && meanAge)
                 dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
         }
         else if(minAge && medianAge && meanAge){
@@ -336,8 +390,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
         if(checkFourAges('current_age_min', value)){
-            if(maxAge && medianAge && meanAge){
-                console.log('dispatching: '+ getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge))
+            if(!value || maxAge && medianAge && meanAge){
                 dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
 
             }
@@ -363,7 +416,7 @@ const CohortForm = ({ ...props }) => {
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
         if(checkFourAges('current_age_max', value)){
-            if(minAge && medianAge && meanAge)
+            if(!value || minAge && medianAge && meanAge)
                 dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
         }
         else if(minAge && medianAge && meanAge){
@@ -428,6 +481,7 @@ const CohortForm = ({ ...props }) => {
 
     const checkFourAges = (currentKey, currentValue)=>{
         let checkWithError = false //assume no error at first
+        if(!currentValue) return true
         if(currentKey.includes('enrollment')){
             if(currentKey.includes('min')) //enrollment_age_min
                 checkWithError |= currentValue > Math.min(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
