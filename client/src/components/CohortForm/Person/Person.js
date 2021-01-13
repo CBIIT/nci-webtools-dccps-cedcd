@@ -96,9 +96,9 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(allactions.cohortActions[name](e.target.value));
                                     dispatch(setHasUnsavedChanges(true));
                                 }}
-                                onBlur={e => 
-                                    populateErrors(name, e.target.value, true, 'string')
-                                } />
+                                onBlur={e => {
+                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(name, e.target.value, true, 'string')
+                                }} />
                         </Reminder> : 
                         <Form.Control type="text" className='text-capitalize'
                             placeholder='Max of 100 characters' 
@@ -110,9 +110,9 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(allactions.cohortActions[name](e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
-                            onBlur={e => 
-                                populateErrors(name, e.target.value, true, 'string')
-                            }
+                            onBlur={e => {
+                                if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(name, e.target.value, true, 'string')
+                            }}
                             readOnly={disabled} />
                     }  
                 </Col>
@@ -136,9 +136,9 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(allactions.cohortActions[position](e.target.value));
                                     dispatch(setHasUnsavedChanges(true));
                                 }}
-                                onBlur={e => 
-                                    populateErrors(position, e.target.value, true, 'string')
-                                } />
+                                onBlur={e => {
+                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(position, e.target.value, true, 'string')
+                                }} />
                         </Reminder> : 
                         <Form.Control type="text" className='text-capitalize'
                             placeholder='Max of 100 characters' 
@@ -150,9 +150,9 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(allactions.cohortActions[position](e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
-                            onBlur={e => 
-                                populateErrors(position, e.target.value, true, 'string')
-                            }  
+                            onBlur={e => {
+                                if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(position, e.target.value, true, 'string')
+                            } } 
                             readOnly={disabled} />
                     }
                 </Col>
@@ -241,9 +241,9 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(allactions.cohortActions[email](e.target.value));
                                     dispatch(setHasUnsavedChanges(true));
                                 }} 
-                                onBlur={e => 
-                                    populateErrors(email, e.target.value, true, 'email')
-                                } />
+                                onBlur={e => {
+                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(email, e.target.value, true, 'email')
+                                }} />
                         </Reminder> :
                         <Form.Control type="email" 
                             placeholder="Max of 100 characters" 
@@ -255,8 +255,10 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(allactions.cohortActions[email](e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
-                            onBlur={e => 
-                                populateErrors(email, e.target.value, true, 'email')}
+                            onBlur={e => {
+                                if(![0,1].includes(cohort.sameAsSomeone))
+                                    populateErrors(email, e.target.value, true, 'email')}
+                            }
                             readOnly={disabled} />
                     }
                 </Col>

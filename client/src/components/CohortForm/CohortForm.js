@@ -241,7 +241,7 @@ const CohortForm = ({ ...props }) => {
     }
     const handleSave = () => {
         setSaved(true)
-        console.dir(errors)
+        //console.dir(errors)
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
@@ -495,8 +495,9 @@ const CohortForm = ({ ...props }) => {
         if (result) {
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         } else {
-            if (cohortErrorActions[fieldName])
-                dispatch(allactions.cohortErrorActions[fieldName](true, result))
+            if (cohortErrorActions[fieldName]){
+                dispatch(allactions.cohortErrorActions[fieldName](true))
+            }
         }
     }
 
@@ -1182,21 +1183,7 @@ const CohortForm = ({ ...props }) => {
                                                 dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
                                             } />
                                     </Col>
-                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
-                                        Please specify any eligibility criteria in addition to age and sex
-                                    </Form.Label>
-                                    <Col sm="12">
-                                        <Form.Control type="text" className='text-capitalize'
-                                            placeholder='Max of 100 characters'
-                                            maxLength="100" 
-                                            name='eligible_disease_other_specify' 
-                                            value={cohort.eligible_disease_other_specify} 
-                                            onChange={e => 
-                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
-                                            } 
-                                            readOnly={isReadOnly} />
-                                    </Col>
-                                </Col>
+                                </Col> 
                                 <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
                                     Baseline population consists of
                                 </Form.Label>
@@ -1379,51 +1366,103 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                         Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>   
                                     </Form.Label>
-                                    <Col sm="4" className="align-self-center mt-2">
+                                    <Col sm="2" className="align-self-center">
                                         <div key="radio">
-                                            <Form.Check type="radio"
-                                                id="enrollment-ongoing-radio-no"
-                                                inline
-                                                name='enrollment_ongoing'>
-                                                <Form.Check.Input bsPrefix
-                                                    type="radio"
-                                                    className="mr-2"
-                                                    // value='0' 
-                                                    checked={cohort.enrollment_ongoing === 0} 
-                                                    onClick={e => {
-                                                        if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                            dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                                        }
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    No 
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            <Form.Check type="radio"
-                                                id="enrollment-ongoing-radio-yes"
-                                                inline
-                                                name="enrollment_ongoing">
-                                                <Form.Check.Input type='radio' 
-                                                    className="mr-2"
-                                                    checked={cohort.enrollment_ongoing === 1} 
-                                                    onClick={e => {
-                                                        if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                            dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                            errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                            !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
-                                                            !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
-                                                        }
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Yes
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                            {errors.enrollment_ongoing && saved && <span className="text-danger ml-3">Required Field</span>}
+                                            {errors.enrollment_ongoing && saved ? 
+                                                <Reminder message='Required Field'>
+                                                    <Form.Check type="radio"
+                                                        id="enrollment-ongoing-radio-no"
+                                                        inline
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                        name='enrollment_ongoing'>
+                                                        <Form.Check.Input bsPrefix  
+                                                            type="radio"
+                                                            className="mr-2"
+                                                            // value='0' 
+                                                            checked={cohort.enrollment_ongoing === 0} 
+                                                            onClick={() => {
+                                                                if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
+                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                }
+                                                            }} />
+                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                            No 
+                                                        </Form.Check.Label>
+                                                    </Form.Check>
+                                                </Reminder> : 
+                                                <Form.Check type="radio"
+                                                    id="enrollment-ongoing-radio-no"
+                                                    inline
+                                                    name='enrollment_ongoing'>
+                                                    <Form.Check.Input bsPrefix
+                                                        type="radio"
+                                                        className="mr-2"
+                                                        // value='0' 
+                                                        checked={cohort.enrollment_ongoing === 0} 
+                                                        onClick={e => {
+                                                            if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                                dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            }
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        No 
+                                                    </Form.Check.Label>
+                                                </Form.Check>
+                                            }
+                                            {errors.enrollment_ongoing && saved ? 
+                                                <Reminder message='Required Field'>
+                                                    <Form.Check type="radio"
+                                                        id="enrollment-ongoing-radio-yes"
+                                                        inline
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                        name='enrollment_ongoing'>
+                                                        <Form.Check.Input bsPrefix  
+                                                            type="radio"
+                                                            className="mr-2"
+                                                            // value='1' 
+                                                            checked={cohort.enrollment_ongoing === 1} 
+                                                            onClick={() => {
+                                                                if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
+                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                                    errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                    !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                                    !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                                }
+                                                            }} />
+                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                            Yes
+                                                        </Form.Check.Label>
+                                                    </Form.Check>
+                                                </Reminder> : 
+                                                <Form.Check type="radio"
+                                                    id="enrollment-ongoing-radio-yes"
+                                                    inline
+                                                    name="enrollment_ongoing">
+                                                    <Form.Check.Input type='radio' 
+                                                        className="mr-2"
+                                                        checked={cohort.enrollment_ongoing === 1} 
+                                                        onClick={e => {
+                                                            if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
+                                                                dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                                errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                                !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false ,'Required Field'))
+                                                                !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
+                                                            }
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        Yes
+                                                    </Form.Check.Label>
+                                                </Form.Check>
+                                            } 
                                         </div>
                                     </Col>
                                 </Col>
@@ -1477,7 +1516,7 @@ const CohortForm = ({ ...props }) => {
                                                         dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                     }
                                                     onBlur={e => {
-                                                        if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                                        !isReadOnly && populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                                     } }
                                                     disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                             </Reminder> : 
@@ -1489,7 +1528,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                 }
                                                 onBlur={e => {
-                                                    if(!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                                    if(!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                                 } }
                                                 readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                         }
