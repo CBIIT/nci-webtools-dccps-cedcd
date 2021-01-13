@@ -511,7 +511,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
+        let errorsRemain = refreshErrors() && true
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -586,7 +586,7 @@ const SpecimenForm = ({ ...props }) => {
                                 inline
                                 style={{ fontWeight: 'normal' }}
                                 name={item[0].field_id}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[0].field_id] === 1}
                                     readOnly={isReadOnly}
                                     onClick={() => {
                                         if (!isReadOnly) {
@@ -633,7 +633,7 @@ const SpecimenForm = ({ ...props }) => {
                                 inline
                                 style={{ fontWeight: 'normal ' }}
                                 name={item[1].field_id}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[1].field_id] === 1}
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[1].field_id] === 1}
                                     onClick={() => {
                                         if (!isReadOnly) {
                                             dispatch(setHasUnsavedChanges(true));
@@ -688,7 +688,7 @@ const SpecimenForm = ({ ...props }) => {
                             inline
                             style={{ fontWeight: 'normal' }}
                             name={item[0].field_id}>
-                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[0].field_id] === 1}
                                 readOnly={isReadOnly}
                                 onClick={() => {
                                     if (!isReadOnly) {
@@ -746,7 +746,7 @@ const SpecimenForm = ({ ...props }) => {
 
                             <Form.Check type='radio' name='bioOtherBaseline' inline>
                                 <Form.Check.Input type='radio' className="mr-2"
-                                    checked={specimen.bioOtherBaseline === 1}
+                                    checked={+specimen.bioOtherBaseline === 1}
                                     onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) } }} />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     Yes
@@ -758,9 +758,9 @@ const SpecimenForm = ({ ...props }) => {
 
 
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
-                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
+                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
 
-                        <Reminder message={"Required Field"} disabled={!(saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherBaselineSpecify'
                                 className='form-control'
@@ -906,6 +906,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineSerum === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -922,6 +923,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselinePlasma === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -938,6 +940,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineBuffyCoat === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -954,6 +957,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineOtherDerivative === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -977,7 +981,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <Col sm='3' className='align-self-center' >
                                     <Form.Check type='radio' xs='2' name='bioBloodOtherTime' inline style={{ fontWeight: 'normal' }} id="bioBloodOtherTime_no" >
                                         <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
+                                            checked={+specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
                                             onClick={() => {
                                                 if (!isReadOnly) {
                                                     dispatch(setHasUnsavedChanges(true));
@@ -992,7 +996,7 @@ const SpecimenForm = ({ ...props }) => {
 
                                     <Form.Check type='radio' xs='2' name='bioBloodOtherTime' style={{ fontWeight: 'normal' }} inline id='bioBloodOtherTime_yes' >
                                         <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
+                                            checked={+specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
                                             onClick={() => {
                                                 if (!isReadOnly) {
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1014,7 +1018,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeSerum === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeSerum === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1030,7 +1035,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimePlasma === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimePlasma === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1046,7 +1052,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeBuffyCoat === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1062,7 +1069,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeOtherDerivative === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1127,11 +1135,11 @@ const SpecimenForm = ({ ...props }) => {
                                     style={{ fontWeight: 'normal' }}
                                     name="bioMetabolomicData">
                                     <Form.Check.Input bsPrefix type='radio' className='mr-2'
-                                        checked={specimen.bioMetabolomicData === 1}
+                                        checked={+specimen.bioMetabolomicData === 1}
                                         readOnly={isReadOnly}
                                         onClick={() => {
                                             if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
+                                                //dispatch(setHasUnsavedChanges(true));
                                                 dispatch(allactions.specimenActions.bioMetabolomicData(1));
                                                 dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
                                             }
