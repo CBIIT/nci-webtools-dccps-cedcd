@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS`cohort` (
   `create_by` int(11) DEFAULT NULL,
   `cohort_last_update_date` timestamp DEFAULT NULL,
   `publish_time` timestamp DEFAULT NULL,
+  `document_ver` varchar(45) NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
