@@ -97,7 +97,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(setHasUnsavedChanges(true));
                                 }}
                                 onBlur={e => {
-                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(name, e.target.value, true, 'string')
+                                    !disabled && populateErrors(name, e.target.value, true, 'string')
                                 }} />
                         </Reminder> : 
                         <Form.Control type="text" className='text-capitalize'
@@ -111,7 +111,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
                             onBlur={e => {
-                                if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(name, e.target.value, true, 'string')
+                                !disabled &&  populateErrors(name, e.target.value, true, 'string')
                             }}
                             readOnly={disabled} />
                     }  
@@ -137,7 +137,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(setHasUnsavedChanges(true));
                                 }}
                                 onBlur={e => {
-                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(position, e.target.value, true, 'string')
+                                    !disabled &&  populateErrors(position, e.target.value, true, 'string')
                                 }} />
                         </Reminder> : 
                         <Form.Control type="text" className='text-capitalize'
@@ -151,7 +151,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
                             onBlur={e => {
-                                if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(position, e.target.value, true, 'string')
+                                !disabled &&  populateErrors(position, e.target.value, true, 'string')
                             } } 
                             readOnly={disabled} />
                     }
@@ -242,7 +242,8 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                     dispatch(setHasUnsavedChanges(true));
                                 }} 
                                 onBlur={e => {
-                                    if(![0,1].includes(cohort.sameAsSomeone)) populateErrors(email, e.target.value, true, 'email')
+                                    !disabled && 
+                                        populateErrors(email, e.target.value, true, 'email')                                    
                                 }} />
                         </Reminder> :
                         <Form.Control type="email" 
@@ -256,7 +257,7 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
                                 dispatch(setHasUnsavedChanges(true));
                             }} 
                             onBlur={e => {
-                                if(![0,1].includes(cohort.sameAsSomeone))
+                                !disabled && 
                                     populateErrors(email, e.target.value, true, 'email')}
                             }
                             readOnly={disabled} />
