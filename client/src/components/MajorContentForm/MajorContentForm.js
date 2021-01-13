@@ -375,7 +375,7 @@ const MajorContentForm = ({ ...props }) => {
         }[questionType];
 
         const options = [
-            {label: 'No', value: 9},
+            {label: 'No', value: 0},
             {label: 'Yes', value: 1},
         ];
 
