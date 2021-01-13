@@ -370,6 +370,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 positionFixed: true // fix overflow hidden
                                             }}
                                             placeholderText='MM/DD/YYYY' 
+                                            maxDate={new Date()}
                                             selected={enrollmentCount.mostRecentDate ? 
                                                 new Date(enrollmentCount.mostRecentDate) : 
                                                 null
