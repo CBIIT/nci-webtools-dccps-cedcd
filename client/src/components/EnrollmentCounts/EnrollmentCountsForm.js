@@ -204,7 +204,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 <tr>
                                                     <th colSpan='3' style={{textAlign: 'center'}}>Not Hispanic or Latino</th>
                                                     <th colSpan='3' style={{textAlign: 'center'}}>Hispanic or Latino</th>
-                                                    <th colSpan='3' style={{textAlign: 'center'}}>Unknown/Unreported Ethnicity</th>
+                                                    <th colSpan='3' style={{textAlign: 'center'}}>Unknown/Not Reported Ethnicity</th>
                                                 </tr>
                                                 <tr>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
@@ -304,7 +304,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 </tr>
 
                                                 <tr>
-                                                    <td className="bg-light-grey">Unknown / Unreported</td>
+                                                    <td className="bg-light-grey">Unknown / Not Reported</td>
                                                     <td className="p-0"><Form.Control type='number' className='input-number' name='711'  value={enrollmentCount['711'] || 0} onChange={(e) => updateCells('711', e.target.value)} readOnly={isReadOnly}/></td>
                                                     <td className="p-0"><Form.Control type='number' className='input-number' name='712'  value={enrollmentCount['712'] || 0} onChange={(e) => updateCells('712', e.target.value)} readOnly={isReadOnly}/></td>
                                                     <td className="p-0"><Form.Control type='number' className='input-number' name='713'  value={enrollmentCount['713'] || 0} onChange={(e) => updateCells('713', e.target.value)} readOnly={isReadOnly}/></td>
