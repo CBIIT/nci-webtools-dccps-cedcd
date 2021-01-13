@@ -1106,7 +1106,7 @@ const SpecimenForm = ({ ...props }) => {
                                         readOnly={isReadOnly}
                                         onClick={() => {
                                             if (!isReadOnly) {
-                                                //dispatch(setHasUnsavedChanges(true));
+                                                dispatch(setHasUnsavedChanges(true));
                                                 dispatch(allactions.specimenActions.bioMetabolomicData(1));
                                                 dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
                                             }
