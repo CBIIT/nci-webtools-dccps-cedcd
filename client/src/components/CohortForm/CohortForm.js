@@ -2592,28 +2592,88 @@ const CohortForm = ({ ...props }) => {
                                                             readOnly={isReadOnly} />
                                                     </td>
                                                     <td >
-                                                        {
-                                                            !isReadOnly && 
-                                                            <Form.File
-                                                                custom
-                                                                label="Choose Files"
-                                                                name='cohortFile'
-                                                                id="inputGroupFile01"
-                                                                aria-describedby="inputGroupFileAddon01"
-                                                                multiple 
-                                                                readOnly={isReadOnly}
-                                                                onChange={e =>{ 
-                                                                    if(!isReadOnly) {
-                                                                        setQfileLoading(true)
-                                                                        handleUpload(e.target.files, 0)
-                                                                    }
-                                                                }} />
-                                                        }
-                                                        <div>
-                                                            {QfileLoading && <span>Loading...</span> || cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
-                                                                <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
-                                                        </div>
+                                                        <Row>
+                                                            <Col sm="2">
+                                                                {
+                                                                    !isReadOnly && 
+                                                                    <Form.Control
+                                                                        type="file"
+                                                                        // label="No file chosen"
+                                                                        // title=""
+                                                                        name='cohortFile'
+                                                                        id="inputGroupFile01"
+                                                                        aria-describedby="inputGroupFileAddon01"
+                                                                        multiple 
+                                                                        readOnly={isReadOnly}
+                                                                        onChange={e =>{ 
+                                                                            if(!isReadOnly) {
+                                                                                setQfileLoading(true)
+                                                                                handleUpload(e.target.files, 0)
+                                                                            }
+                                                                        }} />
+                                                                }
+                                                            </Col>
+                                                            <Col sm="10" className="">
+                                                                    <span className="" style={{
+                                                                        display: QfileLoading ? 'block' : 'none'
+                                                                    }}>
+                                                                        Loading...
+                                                                    </span> 
+                                                                    <span className="" style={{
+                                                                        display: cohort.questionnaireFileName.length === 0 ? 'block' : 'none'
+                                                                    }}>
+                                                                        No file chosen
+                                                                    </span>
+                                                                    <span className="" style={{
+                                                                        display: cohort.questionnaireFileName.length > 0 ? 'block' : 'none'
+                                                                    }}>
+                                                                        {cohort.questionnaireFileName.length > 0 && cohort.questionnaireFileName[0].filename}{' '} 
+                                                                        {!isReadOnly && cohort.questionnaireFileName.length > 0 &&
+                                                                            <span>
+                                                                                (
+                                                                                    <span class="closer" 
+                                                                                        onClick={() => 
+                                                                                            deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)
+                                                                                        }>
+                                                                                        x
+                                                                                    </span>
+                                                                                )
+                                                                            </span>
+                                                                        }
+                                                                        {cohort.questionnaireFileName.length > 1 && !QfileLoading && 
+                                                                            <span>
+                                                                                {' '}and
+                                                                                <a href='#' 
+                                                                                    onClick={() => 
+                                                                                    showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>
+                                                                                    {' '}{cohort.questionnaireFileName.length-1} more
+                                                                                </a>
+                                                                            </span>
+                                                                        }
+                                                                    </span>
+                                                                {/* {QfileLoading && 
+                                                                    <span>Loading...</span> || 
+                                                                    cohort.questionnaireFileName.length > 0 && 
+                                                                    <span style={{
+                                                                        display: cohort.questionnaireFileName.length > 0 ? 'block' : 'none'
+                                                                    }}>
+                                                                        {cohort.questionnaireFileName[0].filename}{' '} 
+                                                                        {!isReadOnly && 
+                                                                            <span>(
+                                                                                <span class="closer" 
+                                                                                    onClick={() => 
+                                                                                        deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)
+                                                                                    }>
+                                                                                    x
+                                                                                </span>)
+                                                                            </span>
+                                                                        }
+                                                                    </span>
+                                                                } */}
+                                                                {/* {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>} */}
+                                                            </Col>
+                                                        </Row>
+                                                        
                                                     </td>
                                                     
                                                 </tr>
