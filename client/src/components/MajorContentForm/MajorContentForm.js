@@ -573,6 +573,9 @@ const MajorContentForm = ({ ...props }) => {
                             condition={activePanel === 'panelB'}
                             onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
                             panelTitle="Other Medical Conditions">
+                <Form.Label as={Row} sm='12' className='pl-4' >
+                    C.31 Other Medical Conditions
+                </Form.Label>
                 {getSecondContent()}      
             </CollapsiblePanel>
             <CollapsiblePanel
