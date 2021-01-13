@@ -834,7 +834,7 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Check type="radio"
                                                     id="clarification-contact-radio-no"
                                                     inline
-                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                    style={{ fontWeight: 'normal '}}
                                                     name='clarification_contact'>
                                                     <Form.Check.Input bsPrefix  
                                                         type="radio"
@@ -848,7 +848,6 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortActions.clarification_contact(0))
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
                                                                 !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
-                                                                !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
                                                                 if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
                                                                 if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
                                                                 else if(emailCheckResult) 
