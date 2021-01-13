@@ -1050,6 +1050,8 @@ BEGIN
     begin
 	  if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
 	  end if;
 	  SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
 	end;
@@ -1420,6 +1422,9 @@ BEGIN
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
+		
 	end if;
 	SELECT `status` from cohort where id = new_id;
     
@@ -1760,6 +1765,8 @@ BEGIN
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
 	end if;
 	SELECT `status` from cohort where id = new_id;
 	
@@ -2308,6 +2315,8 @@ update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( 
   SELECT cohortID as duplicated_cohort_id;
   if exists (select * from cohort where id = cohortID and status = 'new') then
 	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
+	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (cohortID, 1, concat('cohort status updated from new to draft. ', cohortID), null);
   end if;
   SELECT `status` from cohort where id = cohortID;
   end ;
@@ -2635,6 +2644,7 @@ BEGIN
 	SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
 	end if;
 	SELECT `status` from cohort where id = targetID;
     end;
@@ -2751,6 +2761,9 @@ BEGIN
     SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
+		
 	end if;
 	SELECT `status` from cohort where id = targetID;
     
@@ -2790,12 +2803,17 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+    DECLARE new_id INT DEFAULT 0;
 
 	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
-	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,now());
+	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'v8',now());
+    set new_id = last_insert_id();
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+        
+	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+    values (new_id, JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))), 'create new cohort', null);
 
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
 
