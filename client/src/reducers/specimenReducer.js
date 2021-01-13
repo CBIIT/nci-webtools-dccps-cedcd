@@ -13,10 +13,10 @@ actions[t.setSpecimenCount] = (state, action) => {
 actions[t.setSpecimenLoaded] = (state, action) => ({ ...state, specimenLoaded: action.value })
 actions[t.setBioBloodBaseline] = (state, action) => ({
     ...state, bioBloodBaseline: action.value,
-    bioBloodBaselineSerum: action.value ? state.bioBloodBaselineSerum || '' : '',
-    bioBloodBaselinePlasma: action.value ? state.bioBloodBaselinePlasma || '' : '',
-    bioBloodBaselineBuffyCoat: action.value ? state.bioBloodBaselineBuffyCoat || '' : '',
-    bioBloodBaselineOtherDerivative: action.value ? state.bioBloodBaselineOtherDerivative || '' : ''
+    bioBloodBaselineSerum: action.value ? state.bioBloodBaselineSerum || 0 : 0,
+    bioBloodBaselinePlasma: action.value ? state.bioBloodBaselinePlasma || 0 : 0,
+    bioBloodBaselineBuffyCoat: action.value ? state.bioBloodBaselineBuffyCoat || 0 : 0,
+    bioBloodBaselineOtherDerivative: action.value ? state.bioBloodBaselineOtherDerivative || 0 : 0
 })
 actions[t.setBioBloodBaselineSerum] = (state, action) => ({ ...state, bioBloodBaselineSerum: action.value })
 actions[t.setBioBloodBaselinePlasma] = (state, action) => ({ ...state, bioBloodBaselinePlasma: action.value })
@@ -24,10 +24,10 @@ actions[t.setBioBloodBaselineBuffyCoat] = (state, action) => ({ ...state, bioBlo
 actions[t.setBioBloodBaselineOtherDerivative] = (state, action) => ({ ...state, bioBloodBaselineOtherDerivative: action.value })
 actions[t.setBioBloodOtherTime] = (state, action) => ({
     ...state, bioBloodOtherTime: action.value,
-    bioBloodOtherTimeSerum: action.value ? state.bioBloodOtherTimeSerum || '' : '',
-    bioBloodOtherTimePlasma: action.value ? state.bioBloodOtherTimePlasma || '' : '',
-    bioBloodOtherTimeBuffyCoat: action.value ? state.bioBloodOtherTimeBuffyCoat || '' : '',
-    bioBloodOtherTimeOtherDerivative: action.value ? state.bioBloodOtherTimeOtherDerivative || '' : ''
+    bioBloodOtherTimeSerum: action.value ? state.bioBloodOtherTimeSerum || 0 : 0,
+    bioBloodOtherTimePlasma: action.value ? state.bioBloodOtherTimePlasma || 0 : 0,
+    bioBloodOtherTimeBuffyCoat: action.value ? state.bioBloodOtherTimeBuffyCoat || 0 : 0,
+    bioBloodOtherTimeOtherDerivative: action.value ? state.bioBloodOtherTimeOtherDerivative || 0 : 0
 })
 actions[t.setBioBloodOtherTimeSerum] = (state, action) => ({ ...state, bioBloodOtherTimeSerum: action.value })
 actions[t.setBioBloodOtherTimePlasma] = (state, action) => ({ ...state, bioBloodOtherTimePlasma: action.value })
@@ -60,10 +60,10 @@ actions[t.setBioTranscriptomicsData] = (state, action) => ({ ...state, bioTransc
 actions[t.setBioMicrobiomeData] = (state, action) => ({ ...state, bioMicrobiomeData: action.value })
 actions[t.setBioMetabolomicData] = (state, action) => ({
     ...state, bioMetabolomicData: action.value,
-    bioMetaOutcomesInCancerStudy: action.value ? state.bioMetaOutcomesInCancerStudy || '' : '',
-    bioMetaOutcomesInCvdStudy: action.value ? state.bioMetaOutcomesInCvdStudy || '' : '',
-    bioMetaOutcomesInDiabetesStudy: action.value ? state.bioMetaOutcomesInDiabetesStudy || '' : '',
-    bioMetaOutcomesInOtherStudy: action.value ? state.bioMetaOutcomesInOtherStudy || '' : '',
+    bioMetaOutcomesInCancerStudy: action.value ? state.bioMetaOutcomesInCancerStudy || 0 : 0,
+    bioMetaOutcomesInCvdStudy: action.value ? state.bioMetaOutcomesInCvdStudy || 0 : 0,
+    bioMetaOutcomesInDiabetesStudy: action.value ? state.bioMetaOutcomesInDiabetesStudy || 0 : 0,
+    bioMetaOutcomesInOtherStudy: action.value ? state.bioMetaOutcomesInOtherStudy || 0 : 0,
     bioMetaOutcomesOtherStudySpecify: action.value ? state.bioMetaOutcomesOtherStudySpecify || '' : '',
     bioMemberInStudy: action.value ? state.bioMemberInStudy || '' : '',
     bioLabsUsedForAnalysis: action.value ? state.bioLabsUsedForAnalysis || '' : '',
