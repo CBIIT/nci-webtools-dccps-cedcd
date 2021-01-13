@@ -5,7 +5,7 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
     switch(action.type){
         case t.updateEnrollmentCount:
             let shallow = {...state}
-            if(/^\d*$/.test(action.value.trim()))
+            //if(/^\d*$/.test(action.value.trim()))
                 shallow[action.cell] = action.value
             return shallow
         case t.updateTotals:
@@ -23,7 +23,6 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
                 hasLoaded: action.value
             }
         case t.setSectionBStatus:
-            console.log('updating sectionB status')
             return {
                 ...state,
                 sectionBStatus: action.value

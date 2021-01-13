@@ -55,7 +55,7 @@ const MajorContentForm = ({ ...props }) => {
             
                     let content = result.data.counts
                     let cancerInfo = result.data.cancerInfo
-    
+                    
                     batch(() => {
                         dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
                         dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
@@ -575,7 +575,7 @@ const MajorContentForm = ({ ...props }) => {
                             onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
                             panelTitle="Other Medical Conditions">
                 <Form.Label as={Row} sm='12' className='pl-4' >
-                    C.31 Other Medical Conditions
+                    C.31 Do you have information on the following medical conditions?
                 </Form.Label>
                 {getSecondContent()}      
             </CollapsiblePanel>
