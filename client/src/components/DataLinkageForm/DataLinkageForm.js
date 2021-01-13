@@ -88,6 +88,56 @@ const DataLinkageForm = ({ ...props }) => {
         }
     }, [])
 
+    const sendEmail = (template, topic) => {
+
+        fetch('/api/questionnaire/select_admin_info', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result && result.status === 200) {
+
+                    result.data.map((admin) => {
+                        let reqBody = {
+                            templateData: {
+                                user: admin.first_name + ' ' + admin.last_name,
+                                cohortName: admin.name,
+                                cohortAcronym: admin.acronym,
+                                website: window.location.origin,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: admin.email,
+                            template: template,
+                            topic: topic + admin.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -96,6 +146,9 @@ const DataLinkageForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+
+                        if(nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
                 })
         }
@@ -271,60 +324,7 @@ const DataLinkageForm = ({ ...props }) => {
         setModalShow(false)
     }
 
-    const handleApprove = () => {
-        resetReviewCohortStatus(cohortId, 'published')
-    }
 
-    const handleReject = () => {
-        resetReviewCohortStatus(cohortId, 'returned')
-    }
-
-    const resetReviewCohortStatus = (cohortID, nextStatus) => {
-        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
-                method: "POST"
-            }).then(res => res.json())
-                .then(result => {
-                    if (result && result.status === 200) {
-                        setMessage('Your changes were saved.')
-                        setSuccessMsg(true)
-                        sendEmail()
-                    }
-                    else {
-                        setMessage('Your changes could not be saved.')
-                        setFailureMsg(true)
-                    }
-                })
-        }
-    }
-
-    const sendEmail = () => {
-        let reqBody = {
-            email: userEmails,
-            topic: 'test',
-            message: 'this is test on sending email'
-        };
-        fetch('/api/questionnaire/sendEmail', {
-            method: "POST",
-            body: JSON.stringify(reqBody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-                if (result && result.status === 200) {
-                    setMessage('email was sent')
-                    let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-                else {
-                    setMessage('email failed to be sent')
-                    let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-            })
-    }
 
 
     return <div className="p-3 px-5">
