@@ -742,7 +742,6 @@ const CohortForm = ({ ...props }) => {
                                 <Form.Label column sm="12">
                                 A.3 Does the cohort have a website? Please specify if applicable
                                 </Form.Label>
-                            </Form.Group>
                                 <Col sm="12">
                                     {errors.cohort_web_site && saved ? 
                                         <Reminder message={errors.cohort_web_site}>
@@ -771,6 +770,8 @@ const CohortForm = ({ ...props }) => {
                                             readOnly={isReadOnly} />
                                     }
                                 </Col>
+                                </Form.Group>
+
                                 <Form.Group as={Row}>
                                     <Form.Label column sm="12">
                                         A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
