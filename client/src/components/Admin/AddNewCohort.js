@@ -1,6 +1,7 @@
 import React, { Component, useEffect } from 'react';
 import Select from 'react-select';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
+import Messenger from '../Snackbar/Snackbar'
 import './AddNewCohort.css';
 
 class AddNewCohort extends Component {
@@ -20,7 +21,9 @@ class AddNewCohort extends Component {
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
-      isFetching: false
+      isFetching: false,
+      successMsg: false,
+      failureMsg: false
     };
 
     this.handleMultiChange = this.handleMultiChange.bind(this);
@@ -108,6 +111,17 @@ class AddNewCohort extends Component {
       })
   }
 
+  setSuccessMsg = () => {
+    this.setState({
+      successMsg: false
+    })
+  }
+
+  setFailureMsg = () => {
+    this.setState({
+      failureMsg: false
+    })
+  }
 
 
   handleSubmit = async (event) => {
@@ -153,7 +167,7 @@ class AddNewCohort extends Component {
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
-          
+
             if (state.cohortName.trim() === cohort.name.trim()) {
               state.name_error = 'cohort already exists'
               errors += 1;
@@ -200,31 +214,42 @@ class AddNewCohort extends Component {
             }
           })
             .then(res => res.json())
+            .then(result => {
 
-          state.submitted = true;
-          this.setState(state);
-          setTimeout(() => {
-            this.setState({
-              submitted: !this.state.submitted,
-              background_gray: true,
-              cohortName_required: false,
-              cohortAcronym_required: false,
-              org_required: false,
-              message_required: false,
-              cohortName: "",
-              cohortAcronym: "",
-              cohortOwners: [],
-              notes: ""
-            });
-          }, 1500);
+              if (result.status === 200) {
+                state.submitted = true;
+                state.successMsg = true;
+                this.setState(state);
 
-          if (state.cohortOwners != null) {
 
-            state.cohortOwners.map((owner) => {
+                if (state.cohortOwners != null) {
+                  state.cohortOwners.map((owner) => {
+                    this.sendEmail(owner.name, owner.email)
+                  })
+                }
+              }
+              else{
+                state.submitted = true;
+                state.failureMsg = true;
+                this.setState(state);
+              }
+              setTimeout(() => {
+                this.setState({
+                  submitted: !this.state.submitted,
+                  background_gray: true,
+                  cohortName_required: false,
+                  cohortAcronym_required: false,
+                  org_required: false,
+                  message_required: false,
+                  cohortName: "",
+                  cohortAcronym: "",
+                  cohortOwners: [],
+                  notes: ""
+                });
+              }, 1500);
 
-              this.sendEmail(owner.name, owner.email)
             })
-          }
+
         }
       });
 
@@ -248,60 +273,62 @@ class AddNewCohort extends Component {
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
     return <RequireAuthorization role="SystemAdmin">
-        <div className='col-md-12'>
-          <div id="myModal" className={success_back} onClick={this.handleModalClick}>
-            <div className={submit_cls} style={{ textAlign: "center", "border-radius": "10px" }}>
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-              </div>
-              <div class="modal-body">
-                <h3>Message sent successfully!</h3>
-              </div>
+      {this.state.successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={this.setSuccessMsg} />}
+      {this.state.failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={this.setFailureMsg} />}
+      <div className='col-md-12'>
+        <div id="myModal" className={success_back} onClick={this.handleModalClick}>
+          <div className={submit_cls} style={{ textAlign: "center", "border-radius": "10px" }}>
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-          </div>
-          <div id="newCohortForm" className="row pop-form">
-            <div id="contact-main" className="col">
-              <div id="contactt-header" className="col-md-12">
-                <h1 className="pg-title">Add New Cohort</h1>
-              </div>
-              <div id="contact-col-1" className="col-md-6 contact-col">
-                <form onSubmit={this.handleSubmit}>
-                  <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                  <div id="ctl11_div_cohortName">
-                    <label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name <span className="required">*</span></label>
-                    {this.state.name_error !== '' && <label style={{ color: 'red' }}>{this.state.name_error}</label>}
-                    <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
-                  </div>
-                  <div id="ctl11_div_cohortAcronym">
-                    <label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym <span className="required">*</span></label>
-                    {this.state.acronym_error !== '' && <label style={{ color: 'red' }}>{this.state.acronym_error}</label>}
-                    <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
-                  </div>
-                  <div id="ctl11_div_organization" className={org_cls}>
-                    <label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s) </label>
-                    <div style={{ width: '90%' }}>
-                      <Select name='owners' isMulti='true' value={this.state.cohortOwners} options={this.state.ownerOptions} onChange={this.handleMultiChange} />
-                    </div>
-                  </div>
-                  <div id="ctl11_div_message">
-                    <label className="oneLineLabel" htmlFor="cu_message">Notes </label>
-                    {this.state.notes_error !== '' && <label style={{ color: 'red', paddingLeft: '5px' }}>{this.state.notes_error}</label>}
-                    <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
-                  </div>
-                  <div className="bttn-group">
-                    <input type="submit" className="bttn_submit" value="Submit" />
-                    <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleCancel}>Cancel</a>
-                  </div>
-                </form>
-              </div>
-              <div id="contact-col-2" className="col-md-6 contact-col">
-                <h2>General Instructions</h2>
-                <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fields are required.</p>
-              </div>
+            <div class="modal-body">
+              <h3>Message sent successfully!</h3>
             </div>
           </div>
         </div>
-      </RequireAuthorization>;
+        <div id="newCohortForm" className="row pop-form">
+          <div id="contact-main" className="col">
+            <div id="contactt-header" className="col-md-12">
+              <h1 className="pg-title">Add New Cohort</h1>
+            </div>
+            <div id="contact-col-1" className="col-md-6 contact-col">
+              <form onSubmit={this.handleSubmit}>
+                <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
+                <div id="ctl11_div_cohortName">
+                  <label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name <span className="required">*</span></label>
+                  {this.state.name_error !== '' && <label style={{ color: 'red' }}>{this.state.name_error}</label>}
+                  <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
+                </div>
+                <div id="ctl11_div_cohortAcronym">
+                  <label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym <span className="required">*</span></label>
+                  {this.state.acronym_error !== '' && <label style={{ color: 'red' }}>{this.state.acronym_error}</label>}
+                  <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
+                </div>
+                <div id="ctl11_div_organization" className={org_cls}>
+                  <label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s) </label>
+                  <div style={{ width: '90%' }}>
+                    <Select name='owners' isMulti='true' value={this.state.cohortOwners} options={this.state.ownerOptions} onChange={this.handleMultiChange} />
+                  </div>
+                </div>
+                <div id="ctl11_div_message">
+                  <label className="oneLineLabel" htmlFor="cu_message">Notes </label>
+                  {this.state.notes_error !== '' && <label style={{ color: 'red', paddingLeft: '5px' }}>{this.state.notes_error}</label>}
+                  <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
+                </div>
+                <div className="bttn-group">
+                  <input type="submit" className="bttn_submit" value="Submit" />
+                  <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleCancel}>Cancel</a>
+                </div>
+              </form>
+            </div>
+            <div id="contact-col-2" className="col-md-6 contact-col">
+              <h2>General Instructions</h2>
+              <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fields are required.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </RequireAuthorization>;
   }
 }
 
