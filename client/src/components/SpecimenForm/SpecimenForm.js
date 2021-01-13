@@ -92,7 +92,6 @@ const SpecimenForm = ({ ...props }) => {
         (+specimen.bioMetabolomicData === 1 && +specimen.bioNumberMetabolitesMeasured === 0) || /* G15h */
         (+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent)
 
-
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -340,8 +339,6 @@ const SpecimenForm = ({ ...props }) => {
                 .catch((error) => {
                     console.log(error)
                 })
-
-            console.log(specimen)
         } // end if
     }, [])
 
@@ -389,7 +386,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
+        let errorsRemain = refreshErrors() && true
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -689,16 +686,16 @@ const SpecimenForm = ({ ...props }) => {
 
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm='12' className='align-self-center' >
-                        <Reminder message='Required Field' disabled={!(specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved)} >
+                        <Reminder message='Required Field' disabled={!(+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved)} >
                             <Form.Control as="textarea"
                                 className="resize-vertical"
-                                style={specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved && { border: '1px solid red' } || {}}
+                                style={+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved && { border: '1px solid red' } || {}}
                                 name='bioOtherBaselineSpecify'
                                 value={specimen.bioOtherBaselineSpecify}
                                 maxLength={200}
                                 readOnly={isReadOnly}
                                 placeholder='Max of 200 characters'
-                                disabled={specimen.bioOtherBaseline !== 1}
+                                disabled={+specimen.bioOtherBaseline !== 1}
                                 onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value)) }}
                                 onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))}
                             /> </Reminder>
@@ -754,16 +751,16 @@ const SpecimenForm = ({ ...props }) => {
                     </Col>
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm='12' className='align-self-center' >
-                        <Reminder message='Required Field' disabled={!(specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved)} >
+                        <Reminder message='Required Field' disabled={!(+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved)} >
                             <Form.Control as="textarea"
                                 className="resize-vertical"
-                                style={specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved && { border: '1px solid red' } || {}}
+                                style={+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved && { border: '1px solid red' } || {}}
                                 name='bioOtherOtherTimeSpecify'
                                 value={specimen.bioOtherOtherTimeSpecify}
                                 maxLength={200}
                                 readOnly={isReadOnly}
                                 placeholder='Max of 200 characters'
-                                disabled={specimen.bioOtherOtherTime !== 1}
+                                disabled={+specimen.bioOtherOtherTime !== 1}
                                 onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value)) }}
                                 onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))}
                             /> </Reminder>
@@ -850,7 +847,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodBaselineSerum === 1}
+                                                checked={+specimen.bioBloodBaselineSerum === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -866,7 +863,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodBaselinePlasma === 1}
+                                                checked={+specimen.bioBloodBaselinePlasma === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -882,7 +879,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodBaselineBuffyCoat === 1}
+                                                checked={+specimen.bioBloodBaselineBuffyCoat === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -898,7 +895,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodBaselineOtherDerivative === 1}
+                                                checked={+specimen.bioBloodBaselineOtherDerivative === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1224,7 +1221,7 @@ const SpecimenForm = ({ ...props }) => {
                             <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} >
                                 <Form.Control as="textarea"
                                     className="resize-vertical"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
+                                    style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
                                     name='bioMetaOutcomesOtherStudySpecify'
                                     className='form-control'
                                     value={specimen.bioMetaOutcomesOtherStudySpecify}
@@ -1408,7 +1405,7 @@ const SpecimenForm = ({ ...props }) => {
                         <Col sm="2">
                             <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
                                 <Form.Control type="text"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
+                                    style={+specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
                                     name='bioNumberMetabolitesMeasured'
                                     value={specimen.bioNumberMetabolitesMeasured}
                                     maxLength={15}
@@ -1431,7 +1428,7 @@ const SpecimenForm = ({ ...props }) => {
                             G.15i {'  '} What year were samples analyzed?  <span style={{ color: 'red' }}>*</span>
                         </Form.Label>
                         <Col sm='2'  >
-                            {errors.bioYearSamplesSent && specimen.bioMetabolomicData === 1 && saved ?
+                            {errors.bioYearSamplesSent && +specimen.bioMetabolomicData === 1 && saved ?
                                 <Reminder message={errors.bioYearSamplesSent}>
                                     <Form.Control type="text"
                                         style={{ color: 'red', border: '1px solid red' }}
