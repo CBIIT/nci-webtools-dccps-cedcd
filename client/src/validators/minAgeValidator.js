@@ -1,5 +1,4 @@
 const minAgeValidator = (value, isRequired, maxAge, median, mean) => {
-    console.log(value+' and '+ median)
     if(isRequired && value === '')
         return 'Required Field'
     else if(!/^\s*[0-9][0-9]?\s*$/.test(value))

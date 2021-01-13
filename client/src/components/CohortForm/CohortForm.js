@@ -225,7 +225,7 @@ const CohortForm = ({ ...props }) => {
     }
     const handleSave = () => {
         setSaved(true)
-
+        console.dir(errors)
         if (Object.entries(errors).length === 0) {
             cohort.sectionAStatus = 'complete'
             dispatch(allactions.cohortActions.setSectionAStatus('complete'))
@@ -270,9 +270,11 @@ const CohortForm = ({ ...props }) => {
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
 
     const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-        if(checkFourAges('enrollment_age_min', value))
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-        else{
+        if(checkFourAges('enrollment_age_min', value)){
+            if(maxAge && medianAge && meanAge)
+                dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
+        }
+        else if(maxAge && medianAge && meanAge){
             dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
 
             if(errors.enrollment_age_max && cohort.enrollment_age_max >= Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
@@ -292,9 +294,11 @@ const CohortForm = ({ ...props }) => {
     }
 
     const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-        if(checkFourAges('enrollment_age_max', value))
-            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-        else{
+        if(checkFourAges('enrollment_age_max', value)){
+            if(minAge && medianAge && meanAge)
+                dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
+        }
+        else if(minAge && medianAge && meanAge){
             dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
 
             if(errors.enrollment_age_min && cohort.enrollment_age_min <= Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
@@ -314,9 +318,14 @@ const CohortForm = ({ ...props }) => {
     }
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-        if(checkFourAges('current_age_min', value))
-            dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-        else{
+        if(checkFourAges('current_age_min', value)){
+            if(maxAge && medianAge && meanAge){
+                console.log('dispatching: '+ getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge))
+                dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
+
+            }
+        }
+        else if(maxAge && medianAge && meanAge){
             dispatch(allactions.cohortErrorActions.current_age_min(true))
 
             if(errors.current_age_max && cohort.current_age_max >= Math.max(cohort.current_age_median, cohort.current_age_mean, value))
@@ -336,9 +345,11 @@ const CohortForm = ({ ...props }) => {
     }
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-        if(checkFourAges('current_age_max', value))
-            dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-        else{
+        if(checkFourAges('current_age_max', value)){
+            if(minAge && medianAge && meanAge)
+                dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
+        }
+        else if(minAge && medianAge && meanAge){
             dispatch(allactions.cohortErrorActions.current_age_max(true))
 
             if(errors.current_age_min && cohort.current_age_min <= Math.min(cohort.current_age_median, cohort.current_age_mean, value))
@@ -415,6 +426,7 @@ const CohortForm = ({ ...props }) => {
             else if(currentKey.includes('median') || currentKey.includes('mean'))
                 checkWithError |= currentValue < cohort.current_age_min || currentValue > cohort.current_age_max
         }
+
         return checkWithError
     }
     //general validation, will be removed from this file later
@@ -728,8 +740,9 @@ const CohortForm = ({ ...props }) => {
                             {/* A.3 Cohort Website */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.3 Does the cohort have a website? Please specify if applicable
+                                A.3 Does the cohort have a website? Please specify if applicable
                                 </Form.Label>
+                            </Form.Group>
                                 <Col sm="12">
                                     {errors.cohort_web_site && saved ? 
                                         <Reminder message={errors.cohort_web_site}>
@@ -758,43 +771,70 @@ const CohortForm = ({ ...props }) => {
                                             readOnly={isReadOnly} />
                                     }
                                 </Col>
-                            </Form.Group>
-                            
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="12">
-                                    <Person id="completerInfo" 
-                                        type="completerCountry" 
-                                        name="completerName" 
-                                        position="completerPosition" 
-                                        phone="completerPhone" 
-                                        email="completerEmail" 
-                                        marginWidth="5"
-                                        inputWidth="3"
-                                        errors={errors} 
-                                        disabled={isReadOnly} 
-                                        displayStyle={saved} />
-                                </Col>
-                            </Form.Group>
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="12">
+                                        A.4a Person who completed the form<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Col sm="12">
+                                        <Person id="completerInfo" 
+                                            type="completerCountry" 
+                                            name="completerName" 
+                                            position="completerPosition" 
+                                            phone="completerPhone" 
+                                            email="completerEmail" 
+                                            marginWidth="5"
+                                            inputWidth="3"
+                                            errors={errors} 
+                                            disabled={isReadOnly} 
+                                            displayStyle={saved} />
+                                    </Col>
+                                </Form.Group>
 
-                            {/* A.4b Contact Person */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
-                                    Is this the same person who completed this form?
-                                </Form.Label>
-                                <Col sm="6" className="align-self-center">
-                                    <div key="radio">
-                                        {errors.clarification_contact && saved ? 
-                                            <Reminder message={errors.clarification_contact}>
+                                {/* A.4b Contact Person */}
+                                <Form.Group as={Row}>
+                                    <Form.Label column sm="12">
+                                        A.4b Contact Person for Clarification of this form<span style={{ color: 'red' }}>*</span>
+                                    </Form.Label>
+                                    <Form.Label column sm="5" style={{ fontWeight: 'normal' }}>
+                                        Is this the same person who completed this form?
+                                    </Form.Label>
+                                    <Col sm="6" className="align-self-center">
+                                        <div key="radio">
+                                            {errors.clarification_contact && saved ? 
+                                                <Reminder message={errors.clarification_contact}>
+                                                    <Form.Check type="radio"
+                                                        id="clarification-contact-radio-no"
+                                                        inline
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                        name='clarification_contact'>
+                                                        <Form.Check.Input bsPrefix  
+                                                            type="radio"
+                                                            className="mr-2"
+                                                            checked={cohort.clarification_contact === 0} 
+                                                            onClick={e => {
+                                                                //setPerson(e, '', '', '', '', 0, 'contacter')
+                                                                if(!isReadOnly) {
+                                                                    let emailCheckResult = getValidationResult(cohort.contacterEmail, true, 'email')
+                                                                    let phoneCheckResult = getValidationResult(cohort.contacterPhone, false, 'phone')
+                                                                    dispatch(allactions.cohortActions.clarification_contact(0))
+                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                    !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                    !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                    if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
+                                                                    if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                    else if(emailCheckResult) 
+                                                                        dispatch(allactions.cohortErrorActions.contacterEmail(false, emailCheckResult))
+                                                                }
+                                                            }} />
+                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                            No
+                                                        </Form.Check.Label>
+                                                    </Form.Check>                                              
+                                                </Reminder> :
                                                 <Form.Check type="radio"
                                                     id="clarification-contact-radio-no"
                                                     inline
-                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                    style={{ fontWeight: 'normal '}}
                                                     name='clarification_contact'>
                                                     <Form.Check.Input bsPrefix  
                                                         type="radio"
@@ -803,42 +843,21 @@ const CohortForm = ({ ...props }) => {
                                                         onClick={e => {
                                                             //setPerson(e, '', '', '', '', 0, 'contacter')
                                                             if(!isReadOnly) {
+                                                                let emailCheckResult = getValidationResult(cohort.contacterEmail, true, 'email')
+                                                                let phoneCheckResult = getValidationResult(cohort.contacterPhone, false, 'phone')
                                                                 dispatch(allactions.cohortActions.clarification_contact(0))
                                                                 dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                                dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
-                                                                dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                                dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
+                                                                if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                else if(emailCheckResult) 
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, emailCheckResult))
                                                             }
                                                         }} />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         No
                                                     </Form.Check.Label>
                                                 </Form.Check>                                              
-                                            </Reminder> :
-                                            <Form.Check type="radio"
-                                                id="clarification-contact-radio-no"
-                                                inline
-                                                name='clarification_contact'>
-                                                <Form.Check.Input bsPrefix
-                                                    type="radio"
-                                                    className="mr-2"
-                                                    checked={cohort.clarification_contact === 0} 
-                                                    onClick={e => {
-                                                        //!isReadOnly && setPerson(e, '', '', '', '', 0, 'contacter')
-                                                        if(!isReadOnly) {
-                                                            dispatch(allactions.cohortActions.clarification_contact(0));
-                                                            dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                            dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.contacterPhone(true))
-                                                            dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
-                                                        } 
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    No
-                                                </Form.Check.Label>
-                                            </Form.Check>
                                         }
 
                                         {errors.clarification_contact && saved ? 
@@ -894,8 +913,8 @@ const CohortForm = ({ ...props }) => {
                                             </Form.Check>
                                         }
                                     </div>
-                                </Col>
-                                <Col sm="12">
+                                    </Col>
+                                    <Col sm="12">
                                     <Person id='contacterInfo'
                                         type="contacterCountry" 
                                         name="contacterName" 
@@ -909,7 +928,7 @@ const CohortForm = ({ ...props }) => {
                                         displayStyle={saved} 
                                         leftPadding="0" />
                                 </Col>
-                            </Form.Group>
+                                </Form.Group>
                         </CollapsiblePanel>
                         
                         {/* Principal Investigators */}
@@ -1114,6 +1133,31 @@ const CohortForm = ({ ...props }) => {
                                                 </Form.Check.Label>
                                             </Form.Check>
                                         </div>
+                                    {/* </Col>
+                                    <Col sm={{offset: "6", span: "6"}}> */}
+                                        <Form.Control type="text"
+                                            name='cancerSites' 
+                                            value={cohort.eligible_disease_cancer_specify} 
+                                            maxLength="100" 
+                                            placeholder="Max of 100 characters" 
+                                            readOnly={!cohort.eligible_disease || isReadOnly} 
+                                            onChange={e => 
+                                                dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
+                                            } />
+                                    </Col>
+                                    <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
+                                        Please specify any eligibility criteria in addition to age and sex
+                                    </Form.Label>
+                                    <Col sm="12">
+                                        <Form.Control type="text" className='text-capitalize'
+                                            placeholder='Max of 100 characters'
+                                            maxLength="100" 
+                                            name='eligible_disease_other_specify' 
+                                            value={cohort.eligible_disease_other_specify} 
+                                            onChange={e => 
+                                                !isReadOnly && dispatch(allactions.cohortActions.eligible_disease_other_specify(e.target.value))
+                                            } 
+                                            readOnly={isReadOnly} />
                                     </Col>
                                 </Col>
                                 <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
@@ -2672,10 +2716,12 @@ const CohortForm = ({ ...props }) => {
                                     </div>
                                 </Col>
                             </Form.Group>
-
+                        
                         </CollapsiblePanel>
+                        
                     </CollapsiblePanelContainer>
-                </Form>
+                    </Form> 
+                
 
                 <div style={{ position: 'relative' }} className="my-4">
                     <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
