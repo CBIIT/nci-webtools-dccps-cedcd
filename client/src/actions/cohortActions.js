@@ -309,7 +309,11 @@ const strategy_aggregate_study = (v) => ({type: t.setStrategyAggregateStudy, val
 
 const strategy_individual_study = (v) => ({type: t.setStrategyIndividualStudy, value: v})
 
+const strategy_committees = (v) => ({type: t.setStrategyCommittees, value: v})
+
 const strategy_invitation = (v) => ({type: t.setStrategyInvitation, value: v})
+
+const strategy_participant_input = (v) => ({type: t.setStrategyParticipant, value: v})
 
 const strategy_other = (v) => ({type: t.setStrategyOther, value: v})
 
@@ -424,7 +428,9 @@ export default {
     strategy_mailing, 
     strategy_aggregate_study,
     strategy_individual_study,
-    strategy_invitation, 
+    strategy_committees,
+    strategy_invitation,
+    strategy_participant_input, 
     strategy_other,
     strategy_other_specify,
     questionnaire_file_attached,

@@ -49,7 +49,6 @@ router.post('/select_owners_from_id', async function (req, res){
 router.post('/get_updated_cohortID', function (req, res) {
     let proc = 'select_unpublished_cohort_id'
     mysql.callProcedure(proc, [req.body.oldID, req.body.newID], function (result) {
-        logger.debug(result)
         if (result && result[0])
             res.json({ status: 200, data: result[0][0].new_id })
         else
@@ -60,7 +59,7 @@ router.post('/get_updated_cohortID', function (req, res) {
 
 router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
-
+    //logger.debug('uplaod to here: '+config.file_path)
     let uploadedFiles = {filenames: []} 
     if(cohortFiles.length > 1)
         //Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
@@ -80,15 +79,15 @@ router.post('/upload/:id/:category', function (req, res, next) {
                 //logger.debug(result[2])
                 returnedData.new_ID = result[1][0].new_id
                 returnedData.files = result[2]
-                fs.access(`FileBank/CohortID_${returnedData.new_ID}`, (err) => {
+                fs.access(`${config.file_path}/CohortID_${returnedData.new_ID}`, (err) => {
                     if (err) {
-                        fs.mkdirSync(`FileBank/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
+                        fs.mkdirSync(`${config.file_path}/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
                             logger.debug(err.message)
                             if (err) res.json({ status: 500 })
                         });
                     }
-                    if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => {f.mv(`FileBank/CohortID_${returnedData.new_ID}/${f.name}`)})  
-                    else cohortFiles.mv(`FileBank/CohortID_${returnedData.new_ID}/${cohortFiles.name}`) 
+                    if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => {f.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${f.name}`)})  
+                    else cohortFiles.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${cohortFiles.name}`) 
                 }) 
                 res.json({ status: 200, data: returnedData})
             }        
@@ -106,7 +105,7 @@ router.post('/deleteFile', function (req, res) {
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             if (Array.isArray(result[1])){
-                fs.unlink(`FileBank/CohortID_${cohort_ID}/${currentFile}`, (err => { 
+                fs.unlink(`${config.file_path}/CohortID_${cohort_ID}/${currentFile}`, (err => { 
                     if (err) console.log(err);}))
                 res.json({ status: 200, data: result[1][0].new_id })
             }

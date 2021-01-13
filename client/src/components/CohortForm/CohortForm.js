@@ -31,7 +31,13 @@ const CohortForm = ({ ...props }) => {
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
-    // const context = useContext(UserSessionContext);
+
+    const [QfileLoading, setQfileLoading] = useState(false)
+    const [MfileLoading, setMfileLoading] = useState(false)
+    const [DfileLoading, setDfileLoading] = useState(false)
+    const [SfileLoading, setSfileLoading] = useState(false)
+    const [PfileLoading, setPfileLoading] = useState(false)
+
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -151,7 +157,7 @@ const CohortForm = ({ ...props }) => {
 
                         if(currentCohort.restrictions_other_specify || !currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
 
-                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
+                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study ||currentCohort.strategy_committees || currentCohort.strategy_invitation || currentCohort.strategy_participant_input || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
 
                         if(currentCohort.strategy_other_specify || !currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
 
@@ -583,11 +589,26 @@ const CohortForm = ({ ...props }) => {
                     if (result.status === 200) {
                         let dispatchName = ''
                         switch (category) {
-                            case 0: dispatchName = 'questionnaireFileName'; break;
-                            case 1: dispatchName = 'mainFileName'; break;
-                            case 2: dispatchName = 'dataFileName'; break;
-                            case 3: dispatchName = 'specimenFileName'; break;
-                            case 4: dispatchName = 'publicationFileName'; break;
+                            case 0: 
+                                dispatchName = 'questionnaireFileName';
+                                setQfileLoading(false)
+                                break;
+                            case 1: 
+                                dispatchName = 'mainFileName'; 
+                                setMfileLoading(false)
+                                break;
+                            case 2: 
+                                dispatchName = 'dataFileName'; 
+                                setDfileLoading(false)
+                                break;
+                            case 3: 
+                                dispatchName = 'specimenFileName';
+                                setSfileLoading(false) 
+                                break;
+                            case 4: 
+                                dispatchName = 'publicationFileName'; 
+                                setPfileLoading(false)
+                                break;
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
@@ -804,35 +825,94 @@ const CohortForm = ({ ...props }) => {
                                     </Form.Label>
                                     <Col sm="6" className="align-self-center">
                                         <div key="radio">
-                                            <Form.Check type="radio"
-                                                id="clarification-contact-radio-no"
-                                                inline
-                                                style={{ fontWeight: 'normal '}}
-                                                name='clarification_contact'>
-                                                <Form.Check.Input bsPrefix  
-                                                    type="radio"
-                                                    className="mr-2"
-                                                    checked={cohort.clarification_contact === 0} 
-                                                    onClick={e => {
-                                                        //setPerson(e, '', '', '', '', 0, 'contacter')
-                                                        if(!isReadOnly) {
-                                                            let emailCheckResult = getValidationResult(cohort.contacterEmail, true, 'email')
-                                                            let phoneCheckResult = getValidationResult(cohort.contacterPhone, false, 'phone')
-                                                            dispatch(allactions.cohortActions.clarification_contact(0))
-                                                            dispatch(allactions.cohortErrorActions.clarification_contact(true))
-                                                            !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
-                                                            !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
-                                                            if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
-                                                            if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
-                                                            else if(emailCheckResult) 
-                                                                dispatch(allactions.cohortErrorActions.contacterEmail(false, emailCheckResult))
-                                                        }
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    No
-                                                </Form.Check.Label>
-                                            </Form.Check>                                              
-                                        
+                                            {errors.clarification_contact && saved ? 
+                                                <Reminder message={errors.clarification_contact}>
+                                                    <Form.Check type="radio"
+                                                        id="clarification-contact-radio-no"
+                                                        inline
+                                                        style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                        name='clarification_contact'>
+                                                        <Form.Check.Input bsPrefix  
+                                                            type="radio"
+                                                            className="mr-2"
+                                                            checked={cohort.clarification_contact === 0} 
+                                                            onClick={e => {
+                                                                //setPerson(e, '', '', '', '', 0, 'contacter')
+                                                                if(!isReadOnly) {
+                                                                    let emailCheckResult = getValidationResult(cohort.contacterEmail, true, 'email')
+                                                                    let phoneCheckResult = getValidationResult(cohort.contacterPhone, false, 'phone')
+                                                                    dispatch(allactions.cohortActions.clarification_contact(0))
+                                                                    dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                    !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                    !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                    if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
+                                                                    if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                    else if(emailCheckResult) 
+                                                                        dispatch(allactions.cohortErrorActions.contacterEmail(false, emailCheckResult))
+                                                                }
+                                                            }} />
+                                                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                            No
+                                                        </Form.Check.Label>
+                                                    </Form.Check>                                              
+                                                </Reminder> :
+                                                <Form.Check type="radio"
+                                                    id="clarification-contact-radio-no"
+                                                    inline
+                                                    style={{ fontWeight: 'normal '}}
+                                                    name='clarification_contact'>
+                                                    <Form.Check.Input bsPrefix  
+                                                        type="radio"
+                                                        className="mr-2"
+                                                        checked={cohort.clarification_contact === 0} 
+                                                        onClick={e => {
+                                                            //setPerson(e, '', '', '', '', 0, 'contacter')
+                                                            if(!isReadOnly) {
+                                                                let emailCheckResult = getValidationResult(cohort.contacterEmail, true, 'email')
+                                                                let phoneCheckResult = getValidationResult(cohort.contacterPhone, false, 'phone')
+                                                                dispatch(allactions.cohortActions.clarification_contact(0))
+                                                                dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                !cohort.contacterName && dispatch(allactions.cohortErrorActions.contacterName(false, 'Required Field'))
+                                                                !cohort.contacterPosition && dispatch(allactions.cohortErrorActions.contacterPosition(false, 'Required Field'))
+                                                                if(cohort.contacterPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.contacterPhone(false, phoneCheckResult))
+                                                                if(!cohort.contacterEmail) dispatch(allactions.cohortErrorActions.contacterEmail(false, 'Required Field'))
+                                                                else if(emailCheckResult) 
+                                                                    dispatch(allactions.cohortErrorActions.contacterEmail(false, emailCheckResult))
+                                                            }
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        No
+                                                    </Form.Check.Label>
+                                                </Form.Check>                                              
+                                            }
+
+                                            {errors.clarification_contact && saved ? 
+                                            <Reminder message={errors.clarification_contact}>
+                                                <Form.Check type="radio"
+                                                    id="clarification-contact-radio-yes"
+                                                    inline
+                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
+                                                    name="clarification_contact">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="radio"
+                                                        className="mr-2"
+                                                        checked={cohort.clarification_contact === 1} 
+                                                        onClick={e => {
+                                                            //!isReadOnly && setPerson(e, '', '', '', '', 1, 'contacter')
+                                                            if(!isReadOnly) {
+                                                                setPerson(e, '', '', '', '', 1, 'contacter');
+                                                                dispatch(allactions.cohortErrorActions.clarification_contact(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterName(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterPosition(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterPhone(true))
+                                                                dispatch(allactions.cohortErrorActions.contacterEmail(true))
+                                                        }} 
+                                                        }/>
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                        Yes 
+                                                    </Form.Check.Label>
+                                                </Form.Check>
+                                            </Reminder> :
                                             <Form.Check type="radio"
                                                 id="clarification-contact-radio-yes"
                                                 inline
@@ -856,9 +936,8 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
-                                            </Form.Check>
-                                            {errors.clarification_contact && saved && <span className="ml-3 text-danger">{errors.clarification_contact}</span>}
-                                    </div>
+                                            </Form.Check>}
+                                        </div>
                                     </Col>
                                     <Col sm="12">
                                     <Person id='contacterInfo'
@@ -959,9 +1038,10 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
                                                         }
                                                         else{
+                                                            let phoneCheckResult = getValidationResult(cohort.collaboratorPhone, false, 'phone')
                                                             dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            if(cohort.collaboratorPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
                                                         }
                                                 }     
@@ -989,9 +1069,10 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
                                                         }
                                                         else{
+                                                            let phoneCheckResult = getValidationResult(cohort.collaboratorPhone, false, 'phone')
                                                             dispatch(allactions.cohortErrorActions.collaboratorName(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorPosition(false, 'Required Field'))
-                                                            dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
+                                                            if(cohort.collaboratorPhone && phoneCheckResult) dispatch(allactions.cohortErrorActions.collaboratorPhone(false, 'Required Field'))
                                                             dispatch(allactions.cohortErrorActions.collaboratorEmail(false, 'Required Filed'))
                                                         }
                                                 }}
@@ -1249,6 +1330,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -1272,6 +1355,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -2033,10 +2118,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_routine == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_routine') 
                                                 }/>
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Nothing beyond mailing questionnaires or other routine contacts
+                                                None
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2048,10 +2133,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_mailing == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_routine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_mailing') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Send newsletters or other general mailings (e.g., birthday cards)
+                                                Send newsletters or other information or personal mailings unrelated to data collection (e.g., birthday cards)
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2063,10 +2148,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_aggregate_study == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_routine', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_aggregate_study') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Return aggregate study results (e.g., recent findings)
+                                                Share study findings with participants  
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2078,12 +2163,29 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_individual_study == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_individual_study') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Individual study results (e.g., nutrient values)
+                                                Provide individual results to participants (e.g. genetic variants, blood pressure)
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-committees"
+                                            name="strategy_committees">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_committees == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 'strategy_individual_study', 'strategy_invitation','strategy_participant_input', 'strategy_other'], 'strategy_committees') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Include participants on advisory committees
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                         <Form.Check type="checkbox" 
                                             className="pl-0"
                                             id="default-strategy-invitation"
@@ -2093,12 +2195,30 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_invitation == 1}
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_routine', 'strategy_participant_input', 'strategy_other'], 'strategy_invitation') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Invite participation on research committees
+                                                Invite participants to attend meetings/workshops
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-participant"
+                                            name="strategy_participant">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_participant_input == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 
+                                                    'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_other'], 'strategy_participant_input') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Incorporate participant input on research process
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                         <Form.Check type="checkbox" 
                                             className="pl-0"
                                             id="default-strategy-other"
@@ -2108,10 +2228,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_other == 1}
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_routine'], 'strategy_other', 'strategy_other_specify', true) 
                                                 }/>
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Other, please specify
+                                                Other participant-centered or outreach activities, please specify
                                             </Form.Check.Label>
                                         </Form.Check>
                                     </div>
@@ -2206,12 +2326,19 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile01"
                                                                             aria-describedby="inputGroupFileAddon01"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setQfileLoading(true)
+                                                                                    handleUpload(e.target.files, 0)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                                        {QfileLoading && <span>Loading files...</span>
+                                                                         || 
+                                                                         cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
+                                                                        {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2253,12 +2380,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile02"
                                                                             aria-describedby="inputGroupFileAddon02"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 1)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setMfileLoading(true)
+                                                                                    handleUpload(e.target.files, 1)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {MfileLoading && <span>Loading files...</span> || cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.mainFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}{cohort.mainFileName.length-1} more</a></span>}
+                                                                        {cohort.mainFileName.length > 1 && !MfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '}{cohort.mainFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2300,12 +2432,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile03"
                                                                             aria-describedby="inputGroupFileAddon03"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 2)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setDfileLoading(true)
+                                                                                    handleUpload(e.target.files, 2)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                 <div>
-                                                                    {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                    {DfileLoading && <span>Loading files...</span> || cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                         <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                    {cohort.dataFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
+                                                                    {cohort.dataFileName.length > 1 && !DfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
                                                                 </div>
                                                                     </td>
                                                                 </tr>
@@ -2347,12 +2484,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile04"
                                                                             aria-describedby="inputGroupFileAddon04"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 3)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {
+                                                                                    setSfileLoading(true)
+                                                                                    handleUpload(e.target.files, 3)
+                                                                                }
+                                                                            }} />
                                                                     }       
                                                                     <div>
-                                                                        {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {SfileLoading && <span>Loading files...</span> || cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.specimenFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}{cohort.specimenFileName.length-1} more</a></span>}
+                                                                        {cohort.specimenFileName.length > 1 && !SfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{' '}{cohort.specimenFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2394,12 +2536,17 @@ const CohortForm = ({ ...props }) => {
                                                                             id="inputGroupFile05"
                                                                             aria-describedby="inputGroupFileAddon05"
                                                                             multiple readOnly={isReadOnly}
-                                                                            onChange={e => handleUpload(e.target.files, 4)} />
+                                                                            onChange={e =>{ 
+                                                                                if(!isReadOnly) {    
+                                                                                    setPfileLoading(true)
+                                                                                    handleUpload(e.target.files, 4)
+                                                                                }
+                                                                            }} />
                                                                     }
                                                                     <div>
-                                                                        {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                                        {PfileLoading && <span>Loading files...</span> || cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                             <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                                        {cohort.publicationFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}{cohort.publicationFileName.length-1} more</a></span>}
+                                                                        {cohort.publicationFileName.length > 1 && !PfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '}{cohort.publicationFileName.length-1} more</a></span>}
                                                                     </div>
                                                                     </td>
                                                                 </tr>
@@ -2448,12 +2595,17 @@ const CohortForm = ({ ...props }) => {
                                                                 aria-describedby="inputGroupFileAddon01"
                                                                 multiple 
                                                                 readOnly={isReadOnly}
-                                                                onChange={e => !isReadOnly && handleUpload(e.target.files, 0)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setQfileLoading(true)
+                                                                        handleUpload(e.target.files, 0)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
+                                                            {QfileLoading && <span>Loading...</span> || cohort.questionnaireFileName.length > 0 && <span>{cohort.questionnaireFileName[0].filename}{' '} {!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.questionnaireFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
+                                                            {cohort.questionnaireFileName.length > 1 && !QfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)}>{' '}{cohort.questionnaireFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
                                                     
@@ -2484,12 +2636,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile02"
                                                                 aria-describedby="inputGroupFileAddon02"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 1)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setMfileLoading(true)   
+                                                                        handleUpload(e.target.files, 1)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                        {MfileLoading && <span>Loading...</span> || cohort.mainFileName.length > 0 && <span>{cohort.mainFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.mainFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '} {cohort.mainFileName.length-1} more</a></span>}
+                                                            {cohort.mainFileName.length > 1 && !MfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)}>{' '} {cohort.mainFileName.length-1} more</a></span>}
                                                         </div>
 
                                                     </td>
@@ -2521,12 +2678,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile03"
                                                                 aria-describedby="inputGroupFileAddon03"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 2)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setDfileLoading(true)    
+                                                                        handleUpload(e.target.files, 2)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {DfileLoading && <span>Loading...</span> || cohort.dataFileName.length > 0 && <span>{cohort.dataFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.dataFileName.length > 1 && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
+                                                            {cohort.dataFileName.length > 1 && !DfileLoading && <span>{' '}and<a href='#' onClick={() => showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)}>{' '}{cohort.dataFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
 
@@ -2557,12 +2719,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile04"
                                                                 aria-describedby="inputGroupFileAddon04"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 3)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {
+                                                                        setSfileLoading(true)    
+                                                                        handleUpload(e.target.files, 3)
+                                                                    }
+                                                                }} />
                                                         }       
                                                         <div>
-                                                            {cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {SfileLoading && <span>Loading...</span> || cohort.specimenFileName.length > 0 && <span>{cohort.specimenFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.specimenFileName.length > 1 && <span>{' '}and <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length-1} more</a></span>}
+                                                            {cohort.specimenFileName.length > 1 && !SfileLoading && <span>{' '}and <a href='#' onClick={() => showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)}>{cohort.specimenFileName.length-1} more</a></span>}
                                                         </div>
 
                                                     </td>
@@ -2593,12 +2760,17 @@ const CohortForm = ({ ...props }) => {
                                                                 id="inputGroupFile05"
                                                                 aria-describedby="inputGroupFileAddon05"
                                                                 multiple readOnly={isReadOnly}
-                                                                onChange={e => handleUpload(e.target.files, 4)} />
+                                                                onChange={e =>{ 
+                                                                    if(!isReadOnly) {                                                                        
+                                                                        setPfileLoading(true)                                                                       
+                                                                        handleUpload(e.target.files, 4)
+                                                                    }
+                                                                }} />
                                                         }
                                                         <div>
-                                                            {cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
+                                                            {PfileLoading && <span>Loading...</span> || cohort.publicationFileName.length > 0 && <span>{cohort.publicationFileName[0].filename}{' '}{!isReadOnly && <span>(
                                                                 <span class="closer" onClick={() => deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)}>x</span>)</span>}</span>}
-                                                            {cohort.publicationFileName.length > 1 && <span>{' '}and  <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '} {cohort.publicationFileName.length-1} more</a></span>}
+                                                            {cohort.publicationFileName.length > 1 && !PfileLoading && <span>{' '}and  <a href='#' onClick={() => showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)}>{' '} {cohort.publicationFileName.length-1} more</a></span>}
                                                         </div>
                                                     </td>
                                                 </tr>

@@ -1233,7 +1233,9 @@ BEGIN
 		strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
 		strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
 		strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study'))),
+        strategy_committees = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_committees')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_committees'))),
 		strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation'))),
+        strategy_participant_input = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input'))),
 		strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
 		strategy_other_specify = IF(strategy_other = 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify'))), ''),
 		questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
@@ -1407,7 +1409,6 @@ BEGIN
 			END IF; 
 		END;
 		END IF;
-		update cohort set cohort_last_update_date = now(), update_time = now() where id = new_id;
 
  commit;
 	
@@ -1537,7 +1538,9 @@ BEGIN
         ,strategy_mailing 
         ,strategy_aggregate_study 
         ,strategy_individual_study 
+        ,strategy_committees
         ,strategy_invitation 
+        ,strategy_participant_input
         ,strategy_other 
         ,strategy_other_specify
         ,questionnaire_url

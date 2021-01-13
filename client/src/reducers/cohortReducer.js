@@ -120,12 +120,17 @@ actions[t.setRestrictOtherDb] = (state, action) => ({...state, restrictOtherDb: 
 actions[t.setRestrictCommercial] = (state, action) => ({...state, restrictCommercial:  action.value, requireNone:  action.value ?  0 : state.requireNone})
 actions[t.setRestrictOther] = (state, action) => ({...state, restrictOther:  action.value, requireNone:  action.value ?  0 : state.requireNone})
 actions[t.setRestrictOtherSpecify] = (state, action) => ({...state, restrictions_other_specify: action.details})
-actions[t.setStrategyRoutine] = (state, action) => ({...state, strategy_routine: action.value})
-actions[t.setStrategyMailing] = (state, action) => ({...state, strategy_mailing: action.value})
-actions[t.setStrategyAggregateStudy] = (state, action) => ({...state, strategy_aggregate_study: action.value})
-actions[t.setStrategyIndividualStudy] = (state, action) => ({...state, strategy_individual_study: action.value})
-actions[t.setStrategyInvitation] = (state, action) => ({...state, strategy_invitation: action.value})
-actions[t.setStrategyOther] = (state, action) => ({...state, strategy_other: action.value})
+
+actions[t.setStrategyRoutine] = (state, action) => ({...state, strategy_routine: action.value, strategy_mailing: action.value == 1 ? 0 : state.strategy_mailing, strategy_aggregate_study: action.value == 1 ? 0 : state.strategy_aggregate_study, strategy_individual_study: action.value == 1 ? 0 : state.strategy_individual_study, strategy_committees: action.value == 1 ? 0 : state.strategy_committees, strategy_invitation: action.value == 1 ? 0 : state.strategy_invitation, strategy_participant_input: action.value == 1 ? 0 : state.strategy_participant_input, strategy_other: action.value == 1 ? 0 : state.strategy_other, strategy_other_specify: action.value === 1 ? '' : state.strategy_other_specify})
+
+actions[t.setStrategyMailing] = (state, action) => ({...state, strategy_mailing: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyAggregateStudy] = (state, action) => ({...state, strategy_aggregate_study: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyIndividualStudy] = (state, action) => ({...state, strategy_individual_study: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyCommittees] = (state, action) => ({...state, strategy_committees: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyInvitation] = (state, action) => ({...state, strategy_invitation: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyParticipant] = (state, action) => ({...state, strategy_participant_input: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+actions[t.setStrategyOther] = (state, action) => ({...state, strategy_other: action.value, strategy_routine: action.value ?  0 : state.strategy_routine})
+
 actions[t.setStrategyOtherSepcify] = (state, action) => ({...state, strategy_other_specify: action.details})
 actions[t.setQuestionnaireFile] = (state, action) => ({...state, questionnaireFile: action.value})
 actions[t.setMainCohortFile] = (state, action) => ({...state, mainCohortFile: action.value})

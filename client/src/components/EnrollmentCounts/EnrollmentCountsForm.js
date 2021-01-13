@@ -212,13 +212,13 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 <tr>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
-                                                    <th style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
+                                                    <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Unknown/Not Reported</th>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
-                                                    <th  style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
+                                                    <th  style={{fontSize: '1.4rem', textAlign: 'center'}}>Unknown/Not Reported</th>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Female</th>
                                                     <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Male</th>
-                                                    <th style={{fontSize: '1.4rem', paddingRight: '0'}}>Unknown</th>
+                                                    <th style={{fontSize: '1.4rem', textAlign: 'center'}}>Unknown/Not Reported</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -370,6 +370,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 positionFixed: true // fix overflow hidden
                                             }}
                                             placeholderText='MM/DD/YYYY' 
+                                            maxDate={new Date()}
                                             selected={enrollmentCount.mostRecentDate ? 
                                                 new Date(enrollmentCount.mostRecentDate) : 
                                                 null
