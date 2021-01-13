@@ -7,6 +7,7 @@ import allactions from '../../actions';
 //import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar';
 import CenterModal from '../controls/modal/modal';
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
@@ -392,30 +393,16 @@ const EnrollmentCountsForm = ({...props}) => {
                     </CollapsiblePanelContainer>
                 </Form>
 
-                <div  style={{ position: 'relative' }} className="my-4">
-                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('A')} />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('C')} />
-                    </span>
-                    {!isReadOnly ?
-                        <span className='col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                            <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                                <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)|| isReadOnly} />
-                            </span>
-                            <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                                <input type='button' className='col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)||isReadOnly} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                            </span>
-                            <span className='col-xs-4' onClick={() => resetCohortStatus(cohortID, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A !== 'complete' || section.B !== 'complete' || section.C !== 'complete' || section.D !== 'complete' || section.E !== 'complete' || section.F !== 'complete' || section.G !== 'complete'} /></span>
-                        </span>
-                        :
-                        <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                            <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                                disabled />
-                            <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                                disabled />
-                        </span>
-                    }        
-                </div>  
+                <QuestionnaireFooter
+                    isAdmin={isReadOnly}
+                    handlePrevious={_ => props.sectionPicker('A')}
+                    handleNext={_ => props.sectionPicker('C')}
+                    handleSave={handleSave}
+                    handleSaveContinue={handleSaveContinue}
+                    handleSubmitForReview={_ => resetCohortStatus(cohortID, 'submitted')}
+                    handleApprove={false}
+                    handleReject={false} />
+                    
             </Col>
         </Container>
     )
