@@ -526,6 +526,7 @@ router.get('/lookup', async (request, response) => {
                 race: await mysql.query(`SELECT id, race FROM lu_race`),
                 specimen: await mysql.query(`SELECT id, specimen, sub_category FROM lu_specimen`),
                 allcohortlist: await mysql.query(`select distinct name,acronym as id, acronym from cohort`),
+                admin: await mysql.query(`select first_name,last_name,email from user where access_level='SystemAdmin'`)
             }
         }
         response.json(lookup);
