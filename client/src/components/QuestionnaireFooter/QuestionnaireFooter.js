@@ -60,7 +60,7 @@ export default function QuestionnaireFooter({
             <Button 
                 className="col-lg-2 col-md-4" 
                 variant="primary" 
-                disabled={saveDisabled}
+                disabled={saveDisabled || !handleSave}
                 onClick={handleSave || noop}>
                 Save
             </Button>
@@ -68,7 +68,7 @@ export default function QuestionnaireFooter({
             <Button 
                 className="col-lg-2 col-md-4" 
                 variant="primary" 
-                disabled={saveDisabled}
+                disabled={saveDisabled || !handleSaveContinue}
                 onClick={handleSaveContinue || noop}>
                 Save &amp; Continue
             </Button>
