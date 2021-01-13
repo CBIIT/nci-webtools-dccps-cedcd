@@ -14,6 +14,7 @@ import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-pan
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 
 const MortalityForm = ({ ...props }) => {
     const isReadOnly = props.isReadOnly || false
@@ -304,20 +305,10 @@ const MortalityForm = ({ ...props }) => {
             onClick={_ => toggleActivePanel('A')}
             panelTitle="Mortality">
 
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className={saved && errors.mortalityYear && `has-error`}>
                 <Form.Label column sm="12">E.1 Most recent year of mortality follow up<span style={{ color: 'red' }}>*</span></Form.Label>
                 <Col sm="2">
-                    {saved && errors.mortalityYear ?
-                        <Reminder message={errors.mortalityYear} disabled={!errors.mortalityYear} placement="right">
-                            <Form.Control
-                                style={{ border: '1px solid red' }}
-                                type="text"
-                                name='mortalityYear'
-                                value={mortality.mortalityYear}
-                                readOnly={isReadOnly}
-                                onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
-                            />
-                        </Reminder> :
+                    <Reminder message={errors.mortalityYear} disabled={!(saved && errors.mortalityYear)} placement="right">
                         <Form.Control
                             type="text"
                             name='mortalityYear'
@@ -325,10 +316,9 @@ const MortalityForm = ({ ...props }) => {
                             readOnly={isReadOnly}
                             onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
                         />
-                    }
+                    </Reminder>
                 </Col>
             </Form.Group>
-
 
             <Form.Group as={Row}>
                 <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)</Form.Label>
@@ -385,22 +375,7 @@ const MortalityForm = ({ ...props }) => {
                         </Form.Check>
                     </div>
 
-                    {saved && errors.otherDeathSpecify ?
-                        <Reminder message={errors.otherDeathSpecify} disabled={!errors.otherDeathSpecify} placement="right">
-                            <Form.Control type='text'
-                                style={{ border: '1px solid red' }}
-                                name='otherDeathSpecify'
-                                className='form-control'
-                                value={mortality.otherDeathSpecify}
-                                readOnly={isReadOnly}
-                                placeholder='Max of 200 characters'
-                                onChange={e => {
-                                    dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value));
-                                    dispatch(setHasUnsavedChanges(true));
-                                }} 
-                                disabled={mortality.otherDeath !== 1}
-                            />
-                        </Reminder> :
+                    <Reminder message={errors.otherDeathSpecify} disabled={!(saved && errors.otherDeathSpecify)} placement="right">
                         <Form.Control type='text'
                             name='otherDeathSpecify'
                             className='form-control'
@@ -408,206 +383,116 @@ const MortalityForm = ({ ...props }) => {
                             readOnly={isReadOnly}
                             placeholder='Max of 200 characters'
                             onChange={e => {
-                                dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value))
+                                dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
-                            }}
+                            }} 
                             disabled={mortality.otherDeath !== 1}
                         />
-                    }
+                    </Reminder>
                 </Col>
             </Form.Group>
 
             <Form.Group as={Row}>
-                <Form.Label column sm="12">E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    E.3 Do you have date of death for most subjects<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.haveDeathDate && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
+                </Form.Label>
                 <Col sm="6" className="align-self-center">
-                    {saved && errors.haveDeathDate ?
-                        <Reminder>
-                            <Form.Check type='radio'
-                                name='haveDeathDate'
-                                inline
-                                style={{ color: 'red' }} >
-                                <Form.Check.Input
-                                    type='radio'
-                                    type="radio"
-                                    className="mr-2"
-                                    checked={mortality.haveDeathDate === 0}
-                                    onClick={() => { if (!isReadOnly) { 
-                                        dispatch(allactions.mortalityActions.setHaveDeathDate(0));
-                                        dispatch(setHasUnsavedChanges(true));
-                                    } }}
-                                />
-                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                    No
-                                </Form.Check.Label>
-                            </Form.Check>
-                        </Reminder> :
-                        <Form.Check type='radio'
-                            name='haveDeathDate'
-                            inline>
-                            <Form.Check.Input
-                                type='radio'
-                                type="radio"
-                                className="mr-2"
-                                checked={mortality.haveDeathDate === 0}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setHaveDeathDate(0));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
-                            />
-                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                No
-                            </Form.Check.Label>
-                        </Form.Check>
-                    }
-                    {saved && errors.haveDeathDate ?
-                        <Reminder>
-                            <Form.Check type='radio'
-                                name='haveDeathDate'
-                                inline
-                                style={{ color: 'red' }} >
-                                <Form.Check.Input
-                                    type='radio'
-                                    className="mr-2"
-                                    checked={mortality.haveDeathDate === 1}
-                                    onClick={() => { if (!isReadOnly) { 
-                                        dispatch(allactions.mortalityActions.setHaveDeathDate(1));
-                                        dispatch(setHasUnsavedChanges(true));
-                                    } }} />
-                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                    Yes
-                                </Form.Check.Label>
-                            </Form.Check>
-                        </Reminder> :
-                        <Form.Check type='radio'
-                            name='haveDeathDate'
-                            inline>
-                            <Form.Check.Input
-                                type='radio'
-                                className="mr-2"
-                                checked={mortality.haveDeathDate === 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setHaveDeathDate(1));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }} />
-                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                Yes
-                            </Form.Check.Label>
-                        </Form.Check>
-                    }
+                    <Form.Check type='radio'
+                        name='haveDeathDate'
+                        inline>
+                        <Form.Check.Input
+                            type='radio'
+                            type="radio"
+                            className="mr-2"
+                            checked={mortality.haveDeathDate === 0}
+                            onClick={() => { if (!isReadOnly) { 
+                                dispatch(allactions.mortalityActions.setHaveDeathDate(0));
+                                dispatch(setHasUnsavedChanges(true));
+                            } }}
+                        />
+                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                            No
+                        </Form.Check.Label>
+                    </Form.Check>
+
+                    <Form.Check type='radio'
+                        name='haveDeathDate'
+                        inline>
+                        <Form.Check.Input
+                            type='radio'
+                            className="mr-2"
+                            checked={mortality.haveDeathDate === 1}
+                            onClick={() => { if (!isReadOnly) { 
+                                dispatch(allactions.mortalityActions.setHaveDeathDate(1));
+                                dispatch(setHasUnsavedChanges(true));
+                            } }} />
+                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                            Yes
+                        </Form.Check.Label>
+                    </Form.Check>
+                    
                 </Col>
             </Form.Group>
 
             <Form as={Row}>
 
-                <Form.Label column sm="12">E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    E.4 Do you have cause of death for most subjects<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.haveDeathCause && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
+                </Form.Label>
                 <Col sm="6" className="align-self-center">
-                    {saved && errors.haveDeathCause ?
-                        <Reminder>
-                            <Form.Check type='radio'
-                                name='haveDeathCause'
-                                inline
-                                style={{ color: 'red' }} >
-                                <Form.Check.Input
-                                    type='radio'
-                                    type="radio"
-                                    className="mr-2"
-                                    checked={mortality.haveDeathCause === 0}
-                                    onClick={() => {
-                                        if (!isReadOnly) {
-                                            dispatch(allactions.mortalityActions.setHaveDeathCause(0));
-                                            dispatch(allactions.mortalityActions.setIcd9(0));
-                                            dispatch(allactions.mortalityActions.setIcd10(0));
-                                            dispatch(allactions.mortalityActions.setOtherCode(0));
-                                            dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
-                                            dispatch(setHasUnsavedChanges(true));
-                                        }
-                                    }}
-                                />
-                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                    No
-                            </Form.Check.Label>
-                            </Form.Check>
-                        </Reminder> :
-                        <Form.Check type='radio'
-                            name='haveDeathCause'
-                            inline>
-                            <Form.Check.Input
-                                type='radio'
-                                type="radio"
-                                className="mr-2"
-                                checked={mortality.haveDeathCause === 0}
-                                onClick={() => {
-                                    if (!isReadOnly) {
-                                        dispatch(allactions.mortalityActions.setHaveDeathCause(0));
-                                        dispatch(allactions.mortalityActions.setIcd9(0));
-                                        dispatch(allactions.mortalityActions.setIcd10(0));
-                                        dispatch(allactions.mortalityActions.setOtherCode(0));
-                                        dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
-                                        dispatch(setHasUnsavedChanges(true));
-                                    }
-                                }}
-                            />
-                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                No
+                    <Form.Check type='radio'
+                        name='haveDeathCause'
+                        inline>
+                        <Form.Check.Input
+                            type='radio'
+                            type="radio"
+                            className="mr-2"
+                            checked={mortality.haveDeathCause === 0}
+                            onClick={() => {
+                                if (!isReadOnly) {
+                                    dispatch(allactions.mortalityActions.setHaveDeathCause(0));
+                                    dispatch(allactions.mortalityActions.setIcd9(0));
+                                    dispatch(allactions.mortalityActions.setIcd10(0));
+                                    dispatch(allactions.mortalityActions.setOtherCode(0));
+                                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(''))
+                                    dispatch(setHasUnsavedChanges(true));
+                                }
+                            }}
+                        />
+                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                            No
+                    </Form.Check.Label>
+                    </Form.Check>
+                
+                    <Form.Check type='radio'
+                        name='haveDeathCause'
+                        inline>
+                        <Form.Check.Input
+                            type='radio'
+                            type="radio"
+                            className="mr-2"
+                            checked={mortality.haveDeathCause === 1}
+                            onClick={() => {
+                                if (!isReadOnly) {
+                                    dispatch(allactions.mortalityActions.setHaveDeathCause(1));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }
+                            }}
+                        />
+                        <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                            Yes
                         </Form.Check.Label>
-                        </Form.Check>
-                    }
-                    {saved && errors.haveDeathCause ?
-                        <Reminder>
-                            <Form.Check type='radio'
-                                name='haveDeathCause'
-                                inline
-                                style={{ color: 'red' }} >
-                                <Form.Check.Input
-                                    type='radio'
-                                    type="radio"
-                                    className="mr-2"
-                                    checked={mortality.haveDeathCause === 1}
-                                    onClick={() => {
-                                        if (!isReadOnly) {
-                                            dispatch(allactions.mortalityActions.setHaveDeathCause(1));
-                                            dispatch(setHasUnsavedChanges(true));
-                                        }
-                                    }}
-                                />
-                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                    Yes
-                                </Form.Check.Label>
-                            </Form.Check>
-                        </Reminder> :
-                        <Form.Check type='radio'
-                            name='haveDeathCause'
-                            inline>
-                            <Form.Check.Input
-                                type='radio'
-                                type="radio"
-                                className="mr-2"
-                                checked={mortality.haveDeathCause === 1}
-                                onClick={() => {
-                                    if (!isReadOnly) {
-                                        dispatch(allactions.mortalityActions.setHaveDeathCause(1));
-                                        dispatch(setHasUnsavedChanges(true));
-                                    }
-                                }}
-                            />
-                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                Yes
-                            </Form.Check.Label>
-                        </Form.Check>
-                    }
+                    </Form.Check>
+                  
                 </Col>
             </Form>
 
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className={saved && errors.otherCodeSpecify && 'has-error'}>
                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                     If yes, what type of death code was used? (Select all that apply)
-                    {errors.coded && saved &&
-                        <div>
-                            <Form.Label style={{ color: 'red' }}>
-                                {errors.coded}
-                            </Form.Label>
-                        </div>
-                    }
+                    {saved && errors.coded && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                 </Form.Label>
                 <Col sm="12">
                     <div key="checkbox">
@@ -676,24 +561,9 @@ const MortalityForm = ({ ...props }) => {
                             </Form.Check.Label>
                         </Form.Check>
                     </div>
-
-                    {saved && errors.otherCodeSpecify ?
-                        <Reminder message={errors.otherCodeSpecify} disabled={!errors.otherCodeSpecify} placement="right">
-                            <Form.Control type='text'
-                                style={{ border: '1px solid red' }}
-                                name='otherCodeSpecify'
-                                className='form-control'
-                                value={mortality.otherCodeSpecify}
-                                readOnly={isReadOnly}
-                                placeholder='Max of 200 characters'
-                                onChange={e => {
-                                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))
-                                    dispatch(setHasUnsavedChanges(true));
-                                }}
-                                disabled={mortality.otherCode !== 1}
-                            />
-                        </Reminder> :
+                    <Reminder message={errors.otherCodeSpecify} disabled={!(saved && errors.otherCodeSpecify)} placement="right">
                         <Form.Control type='text'
+                            style={{ border: '1px solid red' }}
                             name='otherCodeSpecify'
                             className='form-control'
                             value={mortality.otherCodeSpecify}
@@ -702,33 +572,19 @@ const MortalityForm = ({ ...props }) => {
                             onChange={e => {
                                 dispatch(allactions.mortalityActions.setOtherCodeSpecify(e.target.value))
                                 dispatch(setHasUnsavedChanges(true));
-                            }} 
+                            }}
                             disabled={mortality.otherCode !== 1}
                         />
-                    }
+                    </Reminder>
                 </Col>
             </Form.Group>
 
 
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className={saved && errors.deathNumbers && 'has-error'}>
                 <Form.Label column sm="12">E.5 What is the number of deaths in your cohort as of most recent mortality follow-up?<span style={{ color: 'red' }}>*</span></Form.Label>
 
                 <Col sm="2">
-                    {saved && errors.deathNumbers ?
-                        <Reminder message={errors.deathNumbers} disabled={!errors.deathNumbers} placement="right">
-                            <Form.Control
-                                style={{ border: '1px solid red' }}
-                                type="text"
-                                name='deathNumbers'
-                                value={mortality.deathNumbers}
-                                readOnly={isReadOnly}
-                                onChange={e => {
-                                    dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value));
-                                    dispatch(setHasUnsavedChanges(true));
-                                }}
-                                placeholder='yyyy'
-                            />
-                        </Reminder> :
+                    <Reminder message={errors.deathNumbers} disabled={!(saved && errors.deathNumbers)} placement="right">
                         <Form.Control
                             type="text"
                             name='deathNumbers'
@@ -737,42 +593,23 @@ const MortalityForm = ({ ...props }) => {
                             onChange={e => {
                                 dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
-                            }} 
+                            }}
                             placeholder='yyyy'
                         />
-                    }
+                    </Reminder>
                 </Col>
             </Form.Group>
         </CollapsiblePanel>
 
-
-        <div className='my-4' style={{ position: 'relative' }}>
-            <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('D')} />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('F')} />
-            </span>
-            {!isReadOnly ? <>
-                <span className='zero-padding col-md-6 col-xs-12 ' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
-                    </span>
-                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                    </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A !== 'complete' || section.B !== 'complete' || section.C !== 'complete' || section.D !== 'complete' || section.E !== 'complete' || section.F !== 'complete' || section.G !== 'complete'} /></span>
-                </span>
-            </> :
-                <>
-                    <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                            onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)} />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                            onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)} />
-
-                    </span>
-                </>}
-        </div>
-
+        <QuestionnaireFooter
+            isAdmin={isReadOnly}
+            handlePrevious={_ => props.sectionPicker('D')}
+            handleNext={_ => props.sectionPicker('F')}
+            handleSave={handleSave}
+            handleSaveContinue={handleSaveContinue}
+            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+            handleApprove={handleApprove}
+            handleReject={handleReject} />
 
     </div >
 }
