@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-import "./fileModal.css"
+import "./fileModal.scss"
+
 const FileModal = (props) => {
   return (
     <Modal id='fileModel' show={props.show} animation={false}>
