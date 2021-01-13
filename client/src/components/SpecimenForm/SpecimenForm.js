@@ -155,6 +155,7 @@ const SpecimenForm = ({ ...props }) => {
         (+specimen.bioMetabolomicData === 1 && +specimen.bioNumberMetabolitesMeasured === 0) || /* G15h */
         (+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent)
 
+
     const resetCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -405,6 +406,8 @@ const SpecimenForm = ({ ...props }) => {
                 .catch((error) => {
                     console.log(error)
                 })
+
+            console.log(specimen)
         } // end if
     }, [])
 
@@ -453,7 +456,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors() && true
+        let errorsRemain = refreshErrors()
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -493,18 +496,16 @@ const SpecimenForm = ({ ...props }) => {
 
     const getQuestionEntry = (field) => {
         let item = field.items
+        console.log(item)
         if (item && item.length === 2)
             return (
-                < Form.Group as={Row} sm='12'  >
-
+                < Form.Group as={Row} sm='12' >
                     <Form.Label column sm='12'>
                         {field.title}
                     </Form.Label>
-
                     <Col className='mb-0 pl-0' sm='12'>
                         <Col sm='4'>
                             <span>Collected at baseline {item[0].required && <span style={{ color: 'red' }}>*</span>}</span>
-
                         </Col>
                         <Col sm='8' className='align-self-center'>
                             <Form.Check type="radio" xs='2'
@@ -552,7 +553,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <Col className='mb-0 pl-0' sm='12'>
                         <Col sm='4'>
-                            Collected at other time points  {item[1].required && <span style={{ color: 'red' }}>*</span>}
+                            Collected at other time points  {item[0].required && <span style={{ color: 'red' }}>*</span>}
                         </Col>
                         <Col sm='8' className='align-self-center' >
                             <Form.Check type="radio" xs='2'
@@ -599,7 +600,7 @@ const SpecimenForm = ({ ...props }) => {
             )
         else
             return (
-                < Form.Group as={Row} sm='12'  >
+                < Form.Group as={Row} sm='12' >
                     <Form.Group as={Row} className="mb-0 pl-4">
                         <Form.Label column sm='12'>
                             <span> {field.title} </span> {item[0].required && <span style={{ color: 'red' }}>*</span>}
@@ -637,6 +638,7 @@ const SpecimenForm = ({ ...props }) => {
                                 readOnly={isReadOnly}
                                 onClick={() => {
                                     if (!isReadOnly) {
+
                                         dispatch(setHasUnsavedChanges(true));
                                         dispatch(allactions.specimenActions[item[0].field_id](1));
                                         dispatch(allactions.specimenErrorActions[item[0].field_id](true))
@@ -653,16 +655,15 @@ const SpecimenForm = ({ ...props }) => {
 
     }
 
-
     const getPartContent = (partSelect = 'A') => {
         console.log(fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => console.log(field)))
         return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
-            if (field && field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
+            if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
 
                 return getQuestionEntry(field)
 
             } else if (field.title === 'G.6 Other(e.g. toenails)') {
-                return <Form.Group as={Row} sm='12' >
+                return <Form.Group as={Row} sm='12'  >
                     <Form.Label as={Row} sm='12' className='pl-5' >
                         G.6 Other(e.g. toenails) (Select all that apply)
                     </Form.Label>
@@ -671,128 +672,97 @@ const SpecimenForm = ({ ...props }) => {
                         <Col sm='4'>
                             Collected at baseline   <span style={{ color: 'red' }}>*</span>
                         </Col>
-                        <Reminder message='Required Field' disabled={!(errors.bioOtherBaseline && saved)}>
-                            <Col sm='3' className='align-self-center' >
-                                <Form.Check type='radio' xs='2' name='bioOtherBaseline' inline style={{ fontWeight: 'normal' }} id="bioOtherBaseline_no" >
-                                    <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                        checked={specimen.bioOtherBaseline === 0} readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioOtherBaseline(0));
-                                                dispatch(allactions.specimenActions.bioOtherBaselineSpecify(''));
-                                                dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
-                                            }
-                                        }}
-                                    />
-                                    <Form.Check.Label style={errors.bioOtherBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                        : { fontWeight: 'normal' }}
-                                    >
-                                        No
-                                </Form.Check.Label>
-                                </Form.Check>
+                        <Form.Check type='radio' name='bioOtherBaseline' inline>
+                            <Form.Check.Input type="radio" className="mr-2"
+                                checked={specimen.bioOtherBaseline === 0}
+                                onClick={() => {
+                                    if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaseline(0)); dispatch(allactions.specimenActions.bioOtherBaselineSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No
+                            </Form.Check.Label>
+                        </Form.Check>
 
-                                <Form.Check type='radio' xs='2' name='bioOtherBaseline' style={{ fontWeight: 'normal' }} inline id='bioOtherBaseline_yes' >
-                                    <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                        checked={specimen.bioOtherBaseline === 1} readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioOtherBaseline(1));
-                                                dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors.bioOtherBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                        : { fontWeight: 'normal' }}>
-                                        Yes
-                                </Form.Check.Label>
-                                </Form.Check>
-                            </Col>
-                        </Reminder>
+                        <Form.Check type='radio' name='bioOtherBaseline' inline>
+                            <Form.Check.Input type='radio' className="mr-2"
+                                checked={specimen.bioOtherBaseline === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
+                        {errors.bioOtherBaseline && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                     </Col>
 
-                    <Form.Label column sm="12">If yes, please specify:</Form.Label>
-                    <Col sm='12' className='align-self-center' >
-                        <Reminder message='Required Field' disabled={!(+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved)} >
-                            <Form.Control as="textarea"
-                                className="resize-vertical"
-                                style={+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && saved && { border: '1px solid red' } || {}}
-                                name='bioOtherBaselineSpecify'
-                                value={specimen.bioOtherBaselineSpecify}
-                                maxLength={200}
-                                readOnly={isReadOnly}
-                                placeholder='Max of 200 characters'
-                                disabled={+specimen.bioOtherBaseline !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value)) }}
-                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))}
-                            /> </Reminder>
+                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
+                        <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                        <Col sm="12">
+                            <Reminder message={"Required Field"} disabled={!(saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
+                                <Form.Control type='text'
+                                    name='bioOtherBaselineSpecify'
+                                    className='form-control'
+                                    value={specimen.bioOtherBaselineSpecify}
+                                    readOnly={isReadOnly}
+                                    placeholder='Max of 200 characters'
+                                    maxLength={200}
+                                    disabled={specimen.bioOtherBaseline !== 1}
+                                    onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value)) }}
+                                />
+                            </Reminder>
+                        </Col>
                     </Col>
 
                     <Col sm="12" className="align-self-center"> <br></br></Col>
 
                     {/* G6 OtherTime Specify */}
 
-                    <Col className='mb-0 pl-0' sm="12" >
+                    <Col sm="12" className='mb-0 pl-0'>
                         <Col sm='4'>
                             Collected at other time points   <span style={{ color: 'red' }}>*</span>
                         </Col>
-                        <Reminder message='Required Field' disabled={!(errors.bioOtherOtherTime && saved)}>
-                            <Col sm='3' className='align-self-center' >
 
-                                <Form.Check type='radio' xs='2' name='bioOtherOtherTime' inline style={{ fontWeight: 'normal' }} id="bioOtherOtherTime_no" >
-                                    <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                        checked={specimen.bioOtherOtherTime === 0} readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioOtherOtherTime(0));
-                                                dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(''));
-                                                dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
-                                            }
-                                        }}
-                                    />
-                                    <Form.Check.Label style={errors.bioOtherOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                        : { fontWeight: 'normal' }}
-                                    >
-                                        No
-                                </Form.Check.Label>
-                                </Form.Check>
+                        <Form.Check type='radio' name='bioOtherOtherTime' inline>
+                            <Form.Check.Input type="radio" className="mr-2"
+                                checked={specimen.bioOtherOtherTime === 0}
+                                onClick={() => {
+                                    if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }
+                                }}
+                            />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                No</Form.Check.Label>
+                        </Form.Check>
 
-                                <Form.Check type='radio' xs='2' name='bioOtherOtherTime' style={{ fontWeight: 'normal' }} inline id='bioOtherOtherTime_yes' >
-                                    <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                        checked={specimen.bioOtherOtherTime === 1} readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioOtherOtherTime(1));
-                                                dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors.bioOtherOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                        : { fontWeight: 'normal' }}>
-                                        Yes
-                                </Form.Check.Label>
-                                </Form.Check>
-                            </Col>
-                        </Reminder>
+                        <Form.Check type='radio' name='bioOtherOtherTime' inline>
+                            <Form.Check.Input type='radio' className="mr-2"
+                                checked={specimen.bioOtherOtherTime === 1}
+                                onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) } }} />
+                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                Yes</Form.Check.Label>
+                        </Form.Check>
+                        {errors.bioOtherOtherTime && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                     </Col>
-                    <Form.Label column sm="12">If yes, please specify:</Form.Label>
-                    <Col sm='12' className='align-self-center' >
-                        <Reminder message='Required Field' disabled={!(+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved)} >
-                            <Form.Control as="textarea"
-                                className="resize-vertical"
-                                style={+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify && saved && { border: '1px solid red' } || {}}
-                                name='bioOtherOtherTimeSpecify'
-                                value={specimen.bioOtherOtherTimeSpecify}
-                                maxLength={200}
-                                readOnly={isReadOnly}
-                                placeholder='Max of 200 characters'
-                                disabled={+specimen.bioOtherOtherTime !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value)) }}
-                                onBlur={() => dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))}
-                            /> </Reminder>
+
+                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
+                        <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                        <Col sm="12">
+                            <Reminder message={"Required FIeld"} disabled={!(saved && specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                                <Form.Control type='text'
+                                    name='bioOtherOtherTimeSpecify'
+                                    className='form-control'
+                                    value={specimen.bioOtherOtherTimeSpecify}
+                                    readOnly={isReadOnly}
+                                    placeholder='Max of 200 characters'
+                                    maxLength={200}
+                                    disabled={specimen.bioOtherOtherTime !== 1}
+                                    onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value)) }}
+                                />
+                            </Reminder>
+                        </Col>
                     </Col>
                 </Form.Group>
+
+
             }
         })
     }
@@ -816,14 +786,13 @@ const SpecimenForm = ({ ...props }) => {
                     <div>
                         Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.
                             </div>
+
                     <Form.Group as={Row}>
                         <Form.Label column sm="12">
                             G.1 Blood  <span style={{ color: 'red' }}>*</span>
-                            {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved
-                                && <span className='col-md-4 col-12' style={{ color: 'red' }}>
-                                    Missing required field</span>}
-                        </Form.Label>
+                            {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
 
+                        </Form.Label>
                         <Col className='mb-0 pl-0' sm="12" >
                             <Col sm='4'>
                                 Collected at baseline   <span style={{ color: 'red' }}>*</span>
@@ -1053,8 +1022,7 @@ const SpecimenForm = ({ ...props }) => {
                 <CollapsiblePanel
                     condition={activePanel === 'panelB'}
                     onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                    panelTitle="Do you have ?">
-                    {/* G.9-G.14 */}
+                    panelTitle="Did you have ?">
                     {getPartContent('B')}
                 </CollapsiblePanel>
                 {/* END Part B */}
@@ -1555,34 +1523,16 @@ const SpecimenForm = ({ ...props }) => {
             </Form>
 
             {/* END Specimen Information Collapsible Question Sections */}
-            <div style={{ position: 'relative' }} className="my-4">
-                {/*<div style={{ position: 'relative', marginTop: '20px', marginBottom: '20px' }}>*/}
-                <span className='col-md-6 col-12' style={{ position: 'relative', float: 'left', paddingLeft: '0', paddingRight: '0' }}>
-                    <input type='button' className='col-md-3 col-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('F')} />
-                    <input type='button' className='col-md-3 col-6 btn btn-primary' value='Next' disabled />
-                </span>
-                {!isReadOnly ?
-                    <span className='col-md-6 col-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right', paddingLeft: '0', paddingRight: '0' }}>
-                        <span onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-md-4 col-4 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
-                        </span>
-                        <span style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-md-4 col-4 btn btn-primary' value='Save & Continue' disabled style={{ marginBottom: '5px' }} />
-                        </span>
-                        <span onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}>
-                            <input type='button' className='col-md-4  col-4 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
-                    </span>
-                    :
-                    <span className='col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                            onClick={handleApprove} disabled={!['submitted', 'in review'].includes(cohortStatus)} />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                            onClick={handleReject} disabled={!['submitted', 'in review'].includes(cohortStatus)} />
-
-                    </span>
-                }
-            </div>
-        </div >
+            <QuestionnaireFooter
+                isAdmin={isReadOnly}
+                handlePrevious={_ => props.sectionPicker('f')}
+                handleNext={false}
+                handleSave={handleSave}
+                handleSaveContinue={false}
+                handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+                handleApprove={handleApprove}
+                handleReject={handleReject} />
+        </div>
 
     )
 }
