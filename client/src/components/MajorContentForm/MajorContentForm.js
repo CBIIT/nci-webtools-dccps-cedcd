@@ -416,17 +416,18 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getMultiSelectList = (questions = [], keys = []) => { 
-        return questions.map((item, idx) => <Col as={Row} sm='12' style={{paddingLeft: '30px'}}>
-            <Form.Check type='checkbox' style={{paddingLeft: '15px'}}
-                    className="pl-0"
+        return <div className="ml-4">
+            {questions.map((item, idx) => 
+                <Form.Check 
+                    type="checkbox" 
+                    className="ml-4"
                     id={keys[idx]}
-                    name={keys[idx]}>
-                    <Form.Check.Input bsPrefix
-                        type="checkbox" 
-                        className="mr-2"
-                        readOnly={isReadOnly}
-                        checked = {majorContent[keys[idx]] === 1}
-                        onClick={(e) => { if(!isReadOnly) {
+                    name={keys[idx]}
+                    readOnly={isReadOnly}
+                    checked={majorContent[keys[idx]] === 1}
+                    label={item}
+                    onChange={(e) => { 
+                        if(!isReadOnly) {
                             dispatch(setHasUnsavedChanges(true));
                             dispatch(allactions.majorContentActions[keys[idx]](+e.target.checked));
                             dispatch(allactions.majorContentErrorActions[keys[idx]](e.target.checked));
@@ -436,13 +437,12 @@ const MajorContentForm = ({ ...props }) => {
                                 dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))
                             else if (keys[idx] === 'noncigarOtherFollowUp')
                                 dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))
-                             }}}/>
-            </Form.Check> 
-            <Form.Check.Label as={Row} sm='12'>
-            <Col sm='12' column className='pl-0'>{item}</Col>
-        </Form.Check.Label>
-    </Col>)
+                        }
+                    }} 
+                />
+        )}</div>;
     }
+
     const getFirstContent = () => {
         return Object.keys(majorContent).slice(0, 71).map((key, idx)=> {
             if(idx <= 28 || idx > 40) {//skip questions first
@@ -516,14 +516,14 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getThirdContent = () => {
-        return <Form.Group as={Row} sm='12' className='mb-0' style={{marginTop: '10px'}} >                  
-                    <Form.Label as={Row} sm='12' className='pl-5' style={{marginBottom: '8px'}}>
+        return <Form.Group className='mb-0' style={{marginTop: '10px'}} >                  
+                    <Form.Label style={{marginBottom: '8px'}}>
                         C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small style={{paddingRight: '0'}}>(Select all that apply)</small>
 
                         {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved && 
                             <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                     </Form.Label>    
-                    {
+                    <div style={{marginLeft: '-3rem'}}>{
                         getMultiSelectList(
                             [
                                 'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
@@ -533,18 +533,19 @@ const MajorContentForm = ({ ...props }) => {
                             ],
                             ['cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
                         )
-                    }
-                <Col sm='12' column className='pl-4' style={{marginBottom: '8px'}}>
+                    }</div>
+                
                     <Reminder message='Required Field' disabled={!(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved)}>
                         <input 
                             placeholder='Max of 200 characters' 
                             maxLength='200' name='cancerOtherSpecify' 
-                            style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                            style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}} 
+                            className='form-control text-capitalize'
                             value={majorContent.cancerOtherSpecify} 
                             onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
                             onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
                     </Reminder>
-                </Col>
+               
             </Form.Group>          
     }
 
