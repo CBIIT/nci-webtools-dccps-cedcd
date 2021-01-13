@@ -640,9 +640,7 @@ const MortalityForm = ({ ...props }) => {
             handleNext={_ => props.sectionPicker('F')}
             handleSave={handleSave}
             handleSaveContinue={handleSaveContinue}
-            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
-            handleApprove={handleApprove}
-            handleReject={handleReject} />
+            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')} />
 
     </div >
 }

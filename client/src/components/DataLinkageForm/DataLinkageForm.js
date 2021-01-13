@@ -1023,9 +1023,7 @@ const DataLinkageForm = ({ ...props }) => {
             handleNext={_ => props.sectionPicker('G')}
             handleSave={handleSave}
             handleSaveContinue={handleSaveContinue}
-            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
-            handleApprove={handleApprove}
-            handleReject={handleReject} />
+            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')} />
 
     </div >
 }
