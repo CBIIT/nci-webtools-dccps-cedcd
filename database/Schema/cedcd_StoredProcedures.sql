@@ -2823,7 +2823,7 @@ BEGIN
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
         
 	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-    values (new_id, JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))), 'create new cohort', null);
+    values (new_id, IFNULL(JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))),1), 'create new cohort', null);
 
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
 
@@ -2902,8 +2902,9 @@ BEGIN
 	set @query1 = concat("select distinct email, user_name from user order by email "); 
 	PREPARE stmt1 FROM @query1;
 	EXECUTE stmt1;
-    select found_rows() as total;
 	DEALLOCATE PREPARE stmt1;
+
+	 select distinct name ,acronym from cohort;
 END //
 
 
