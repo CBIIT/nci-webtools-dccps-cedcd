@@ -370,8 +370,8 @@ const MajorContentForm = ({ ...props }) => {
     const getQuestionEntry = (questionType, key, idx) => {
         const showQuestionLabel = questionType === 'BaseLine';
         const title = {
-            BaseLine: 'Collected at baseline',
-            FollowUp: 'Collected at followup',
+            BaseLine: 'Collected at Baseline',
+            FollowUp: 'Collected at Follow-Up',
         }[questionType];
 
         const options = [
@@ -413,96 +413,6 @@ const MajorContentForm = ({ ...props }) => {
                 </Col>
             </Row>
         );
-
-        if(questionType === 'BaseLine')
-         return <Form.Group as={Row} className='mb-0'>
-                    <Form.Label column sm='12'>
-                        {subtitles[idx]}
-                    </Form.Label>
-                    <Col sm='4'>
-                        <span>Collected at baseline<span style={{ color: 'red' }}>*</span></span>
-                    </Col>
-                    <Col sm='8' className='align-self-center' style={{paddingLeft: '18px'}}>
-                        <Form.Check type="radio" 
-                            inline
-                            id={key+'_no'} 
-                            inline
-                            style={{ fontWeight: 'normal'}}
-                            name={key}
-                            checked={majorContent[key] === 0}
-                            readOnly={isReadOnly}
-                            label="No"
-                            onChange={() => {
-                                if(!isReadOnly) { 
-                                    dispatch(allactions.majorContentActions[key](0));
-                                    dispatch(allactions.majorContentErrorActions[key](true));
-                                    dispatch(setHasUnsavedChanges(true));
-                                }
-                            }} />
-
-                        <Form.Check type="radio" 
-                            inline
-                            id={key+'_yes'} 
-                            inline
-                            style={{ fontWeight: 'normal'}}
-                            name={key}
-                            checked={majorContent[key] === 1}
-                            readOnly={isReadOnly}
-                            label="Yes"
-                            onChange={() => {
-                                if(!isReadOnly) { 
-                                    dispatch(allactions.majorContentActions[key](1));
-                                    dispatch(allactions.majorContentErrorActions[key](true));
-                                    dispatch(setHasUnsavedChanges(true));
-                                }
-                            }} />
-
-                        {errors[key] && saved && <span className="text-danger ml-2">Required Field</span>} 
-                    </Col>
-                </Form.Group>
-                else
-                   return <Form.Group as={Row} sm='12' className='mb-0'>
-                   <Col className='mb-0 pl-0' sm='12'>
-                       <Col sm='4'>
-                           Collected during follow-up<span style={{ color: 'red' }}>*</span>
-                       </Col>
-                           <Reminder message='Required Field' disabled={!(errors[key]&&saved)}>
-                               <Col sm='3' className='align-self-center' style={{paddingLeft: '18px'}}>
-                               <Form.Check type="radio" xs='2'
-                                       id={key+'_no'} 
-                                       inline
-                                       style={{ fontWeight: 'normal '}}
-                                       name={key}>
-                                       <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                       checked={majorContent[key] === 0}
-                                       onClick={() => {if(!isReadOnly) { 
-                                           dispatch(allactions.majorContentActions[key](0));
-                                           dispatch(allactions.majorContentErrorActions[key](true));
-                                           dispatch(setHasUnsavedChanges(true));
-                                        }}} />
-                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : {fontWeight: 'normal'}}>
-                                           No
-                                       </Form.Check.Label>
-                               </Form.Check>
-                               <Form.Check type="radio" xs='2'
-                                       id={key+'_yes'} 
-                                       inline
-                                       style={{ fontWeight: 'normal '}}
-                                       name={key}>
-                                       <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={majorContent[key] === 1}
-                                       onClick={() => {if(!isReadOnly) { 
-                                           dispatch(allactions.majorContentActions[key](1));
-                                           dispatch(allactions.majorContentErrorActions[key](true));
-                                           dispatch(setHasUnsavedChanges(true));
-                                        }}} />
-                                       <Form.Check.Label style={errors[key] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red'  } :{fontWeight: 'normal'}}>
-                                           Yes
-                                       </Form.Check.Label>
-                               </Form.Check>
-                           </Col>
-                       </Reminder> 
-                   </Col>
-               </Form.Group>
     }
 
     const getMultiSelectList = (questions = [], keys = []) => { 
