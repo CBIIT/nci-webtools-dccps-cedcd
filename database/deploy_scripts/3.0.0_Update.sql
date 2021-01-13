@@ -6,14 +6,7 @@
 *
 */
 
-user cedcd;
-
-ALTER TABLE `cedcd`.`cohort` 
-ADD COLUMN `document_ver` VARCHAR(45) NULL AFTER `publish_time`;
-
-update cohort set document_ver = 'v4' where id > 0 and document_ver is null and status ='published';
-update cohort set document_ver = 'v8' where id > 0 and document_ver is null and status !='published';
-
+use cedcd;
 
 
 DELIMITER //
@@ -73,6 +66,40 @@ begin
     "ben.chen@nih.gov");
           
     end if;
+
+     # add cohort_basic  column
+    if (
+        select count(*) = 0
+        from information_schema.COLUMNS
+        where
+            TABLE_SCHEMA = database() and
+            TABLE_NAME = 'cohort_basic' and
+            COLUMN_NAME in ( 'strategy_committees', 'strategy_participant_input')
+    ) then
+        alter table cohort_basic
+        add strategy_committees int null after strategy_individual_study;
+
+        alter table cohort_basic
+        add strategy_participant_input int null after strategy_invitation;
+    end if;
+
+     # add cohort document_ver  column
+    if (
+        select count(*) = 0
+        from information_schema.COLUMNS
+        where
+            TABLE_SCHEMA = database() and
+            TABLE_NAME = 'cohort' and
+            COLUMN_NAME ='document_ver'
+    ) then
+        ALTER TABLE `cedcd`.`cohort` 
+        ADD COLUMN `document_ver` VARCHAR(45) NULL AFTER `publish_time`;
+
+        update cohort set document_ver = 'v4' where id > 0 and document_ver is null and status ='published';
+        update cohort set document_ver = 'v8' where id > 0 and document_ver is null and status !='published';
+    
+    end if;
+
 
     commit;
 end //
