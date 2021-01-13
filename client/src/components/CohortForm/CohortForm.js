@@ -155,7 +155,7 @@ const CohortForm = ({ ...props }) => {
 
                         if(currentCohort.restrictions_other_specify || !currentCohort.restrictOther) {dispatch(allactions.cohortErrorActions.restrictions_other_specify(true))}
 
-                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_invitation || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
+                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study ||currentCohort.strategy_committees || currentCohort.strategy_invitation || currentCohort.strategy_participant_input || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
 
                         if(currentCohort.strategy_other_specify || !currentCohort.strategy_other) {dispatch(allactions.cohortErrorActions.strategy_other_specify(true))}
 
@@ -1324,6 +1324,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -1347,6 +1349,8 @@ const CohortForm = ({ ...props }) => {
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -2166,10 +2170,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_routine == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_routine') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_routine') 
                                                 }/>
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Nothing beyond mailing questionnaires or other routine contacts
+                                                None
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2181,10 +2185,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_mailing == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategyRoutine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_mailing') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_routine', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_mailing') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Send newsletters or other general mailings (e.g., birthday cards)
+                                                Send newsletters or other information or personal mailings unrelated to data collection (e.g., birthday cards)
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2196,10 +2200,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_aggregate_study == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategyRoutine', 'strategy_individual_study', 'strategy_invitation', 'strategy_other'], 'strategy_aggregate_study') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_routine', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_aggregate_study') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Return aggregate study results (e.g., recent findings)
+                                                Share study findings with participants  
                                             </Form.Check.Label>
                                         </Form.Check>
                                         <Form.Check type="checkbox" 
@@ -2211,12 +2215,29 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_individual_study == 1} 
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategyRoutine', 'strategy_invitation', 'strategy_other'], 'strategy_individual_study') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'], 'strategy_individual_study') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Individual study results (e.g., nutrient values)
+                                                Provide individual results to participants (e.g. genetic variants, blood pressure)
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-committees"
+                                            name="strategy_committees">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_committees == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 'strategy_individual_study', 'strategy_invitation','strategy_participant_input', 'strategy_other'], 'strategy_committees') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Include participants on advisory committees
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                         <Form.Check type="checkbox" 
                                             className="pl-0"
                                             id="default-strategy-invitation"
@@ -2226,12 +2247,30 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_invitation == 1}
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_routine', 'strategy_other'], 'strategy_invitation') 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_routine', 'strategy_participant_input', 'strategy_other'], 'strategy_invitation') 
                                                 } />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Invite participation on research committees
+                                                Invite participants to attend meetings/workshops
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type="checkbox" 
+                                            className="pl-0"
+                                            id="default-strategy-participant"
+                                            name="strategy_participant">
+                                            <Form.Check.Input bsPrefix
+                                                type="checkbox" 
+                                                className="mr-2" 
+                                                checked={cohort.strategy_participant_input == 1} 
+                                                onChange={e => 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_routine', 
+                                                    'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_other'], 'strategy_participant_input') 
+                                                } />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Incorporate participant input on research process
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                         <Form.Check type="checkbox" 
                                             className="pl-0"
                                             id="default-strategy-other"
@@ -2241,10 +2280,10 @@ const CohortForm = ({ ...props }) => {
                                                 className="mr-2" 
                                                 checked={cohort.strategy_other == 1}
                                                 onChange={e => 
-                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_invitation', 'strategyRoutine'], 'strategy_other', 'strategy_other_specify', true) 
+                                                    !isReadOnly && updateErrors(e, 'strategy', ['strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_routine'], 'strategy_other', 'strategy_other_specify', true) 
                                                 }/>
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Other, please specify
+                                                Other participant-centered or outreach activities, please specify
                                             </Form.Check.Label>
                                         </Form.Check>
                                     </div>
