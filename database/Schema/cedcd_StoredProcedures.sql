@@ -463,6 +463,16 @@ BEGIN
 	select distinct first_name,last_name,email,acronym,name from user x,cohort_user_mapping y,cohort z where cohort_acronym=var1 and access_level='CohortAdmin' and x.id=y.user_id and cohort_acronym=acronym;
 END //
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_owners_from_id
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_admin_info` //
+
+CREATE PROCEDURE `select_admin_info`(in targetID int)
+BEGIN
+	select distinct first_name, last_name, email, name, acronym from user x, cohort y where access_level='SystemAdmin' and y.id=targetID;
+END //
+-- -----------------------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_owner
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS select_cohort_owner //
@@ -2815,7 +2825,7 @@ BEGIN
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
         
 	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-    values (new_id, IFNULL(JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))),1), 'create new cohort', null);
+    values (new_id, IFNULL(JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))),1), 'create new cohort', JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes')));
 
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
 

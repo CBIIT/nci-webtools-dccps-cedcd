@@ -201,7 +201,7 @@ const CohortForm = ({ ...props }) => {
         }
     }, [])
 
-    const saveCohort = (id = cohortID) => {
+    const saveCohort = (id = cohortID, goNext = proceed || false) => {
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
             body: JSON.stringify(cohort),
@@ -229,8 +229,8 @@ const CohortForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
-
-                    if (!proceed) {
+                    console.log(proceed)
+                    if (!goNext) {
                         setSuccessMsg(true)
                     }
                     else

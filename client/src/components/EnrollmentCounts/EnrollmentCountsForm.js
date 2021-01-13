@@ -40,7 +40,7 @@ const EnrollmentCountsForm = ({...props}) => {
     //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
         dispatch(setHasUnsavedChanges(true));
-        amount = String(Math.max(+amount, 0));
+        //amount = String(Math.max(+amount, 0));
         let [firstid, ...rest] = cellid
         let rowtotalid = firstid+'41'
         let coltotalid = 8+rest.join('')
@@ -51,7 +51,8 @@ const EnrollmentCountsForm = ({...props}) => {
         let currentAmountString = amount
         let currentAmount = parseInt(amount) || 0
         let delta = currentAmount + originalCellAmount
-        dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(cellid, currentAmountString))
+       // dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(cellid, currentAmountString))
+       dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(cellid, amount))
         dispatch(allactions.enrollmentCountActions.updateTotals(rowtotalid, originalRowTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals(coltotalid, originalColTotal+delta))
         dispatch(allactions.enrollmentCountActions.updateTotals('841', originalGrantTotal+delta))
@@ -120,6 +121,7 @@ const EnrollmentCountsForm = ({...props}) => {
                             dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
                         }                   
                     }
+                    console.log(proceed)
                     if(!proceed)
                         setSuccessMsg(true) 
                     else
