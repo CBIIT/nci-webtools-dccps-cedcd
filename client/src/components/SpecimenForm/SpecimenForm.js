@@ -1611,7 +1611,7 @@ const SpecimenForm = ({ ...props }) => {
 
                 <QuestionnaireFooter
                     isAdmin={isReadOnly}
-                    handlePrevious={_ => props.sectionPicker('f')}
+                    handlePrevious={_ => props.sectionPicker('F')}
                     handleNext={false}
                     handleSave={handleSave}
                     handleSaveContinue={false}
