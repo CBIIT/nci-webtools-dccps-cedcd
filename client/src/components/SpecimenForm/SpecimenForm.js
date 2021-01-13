@@ -40,55 +40,106 @@ const SpecimenForm = ({ ...props }) => {
     const [userEmails, setEmails] = useState('')
     //const cohortId = window.location.pathname.split('/').pop();
 
-    const sendEmail = (template, topic) => {
+    const sendEmail = (template, topic, status) => {
 
-        fetch('/api/questionnaire/select_owners_from_id', {
-            method: "POST",
-            body: JSON.stringify({ id: cohortId }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-
-                if (result && result.status === 200) {
-                    result.data.map((owner) => {
-                        console.log(window.location.origin)
-                        let reqBody = {
-                            templateData: {
-                                user: owner.first_name + ' ' + owner.last_name,
-                                cohortName: owner.name,
-                                cohortAcronym: owner.acronym,
-                                website: window.location.origin,
-                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
-                            },
-                            email: owner.email,
-                            template: template,
-                            topic: topic + owner.acronym
-                        }
-
-                        fetch('/api/cohort/sendUserEmail', {
-                            method: "POST",
-                            body: JSON.stringify(reqBody),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(res => res.json())
-                            .then(result => {
-                                if (result && result.status === 200) {
-                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                                else {
-                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                            })
-                    })
+        if (status === 'published' || status === 'returned') {
+            fetch('/api/questionnaire/select_owners_from_id', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
+                .then(res => res.json())
+                .then(result => {
+
+                    if (result && result.status === 200) {
+                        result.data.map((owner) => {
+                            console.log(window.location.origin)
+                            let reqBody = {
+                                templateData: {
+                                    user: owner.first_name + ' ' + owner.last_name,
+                                    cohortName: owner.name,
+                                    cohortAcronym: owner.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: owner.email,
+                                template: template,
+                                topic: topic + owner.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
+
+        else if (status === 'submitted') {
+            fetch('/api/questionnaire/select_admin_info', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result && result.status === 200) {
+
+                        result.data.map((admin) => {
+                            let reqBody = {
+                                templateData: {
+                                    user: admin.first_name + ' ' + admin.last_name,
+                                    cohortName: admin.name,
+                                    cohortAcronym: admin.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: admin.email,
+                                template: template,
+                                topic: topic + admin.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
     }
 
     const handleApprove = () => {
@@ -166,7 +217,10 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
 
                         if (nextStatus === 'published')
-                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ')
+                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', nextStatus)
+
+                        else if (nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
                     }
                 })
         }
@@ -497,7 +551,6 @@ const SpecimenForm = ({ ...props }) => {
 
     const getQuestionEntry = (field) => {
         let item = field.items
-        console.log(item)
         if (item && item.length === 2)
             return (
                 < Form.Group as={Row} sm='12' >
@@ -657,7 +710,6 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const getPartContent = (partSelect = 'A') => {
-
         return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
             if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
 
