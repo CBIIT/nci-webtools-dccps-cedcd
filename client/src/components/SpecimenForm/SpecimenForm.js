@@ -40,55 +40,106 @@ const SpecimenForm = ({ ...props }) => {
     const [userEmails, setEmails] = useState('')
     //const cohortId = window.location.pathname.split('/').pop();
 
-    const sendEmail = (template, topic) => {
+    const sendEmail = (template, topic, status) => {
 
-        fetch('/api/questionnaire/select_owners_from_id', {
-            method: "POST",
-            body: JSON.stringify({ id: cohortId }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-
-                if (result && result.status === 200) {
-                    result.data.map((owner) => {
-                        console.log(window.location.origin)
-                        let reqBody = {
-                            templateData: {
-                                user: owner.first_name + ' ' + owner.last_name,
-                                cohortName: owner.name,
-                                cohortAcronym: owner.acronym,
-                                website: window.location.origin,
-                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
-                            },
-                            email: owner.email,
-                            template: template,
-                            topic: topic + owner.acronym
-                        }
-
-                        fetch('/api/cohort/sendUserEmail', {
-                            method: "POST",
-                            body: JSON.stringify(reqBody),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
-                            .then(res => res.json())
-                            .then(result => {
-                                if (result && result.status === 200) {
-                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                                else {
-                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                                    //clearTimeout(timedMessage)
-                                }
-                            })
-                    })
+        if (status === 'published' || status === 'returned') {
+            fetch('/api/questionnaire/select_owners_from_id', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             })
+                .then(res => res.json())
+                .then(result => {
+
+                    if (result && result.status === 200) {
+                        result.data.map((owner) => {
+                            console.log(window.location.origin)
+                            let reqBody = {
+                                templateData: {
+                                    user: owner.first_name + ' ' + owner.last_name,
+                                    cohortName: owner.name,
+                                    cohortAcronym: owner.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: owner.email,
+                                template: template,
+                                topic: topic + owner.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
+
+        else if (status === 'submitted') {
+            fetch('/api/questionnaire/select_admin_info', {
+                method: "POST",
+                body: JSON.stringify({ id: cohortId }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result && result.status === 200) {
+
+                        result.data.map((admin) => {
+                            let reqBody = {
+                                templateData: {
+                                    user: admin.first_name + ' ' + admin.last_name,
+                                    cohortName: admin.name,
+                                    cohortAcronym: admin.acronym,
+                                    website: window.location.origin,
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                },
+                                email: admin.email,
+                                template: template,
+                                topic: topic + admin.acronym
+                            }
+
+                            fetch('/api/cohort/sendUserEmail', {
+                                method: "POST",
+                                body: JSON.stringify(reqBody),
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result && result.status === 200) {
+                                        //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                    else {
+                                        //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                        //clearTimeout(timedMessage)
+                                    }
+                                })
+                        })
+                    }
+                })
+        }
     }
 
     const handleApprove = () => {
@@ -166,7 +217,10 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
 
                         if (nextStatus === 'published')
-                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ')
+                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', nextStatus)
+
+                        else if (nextStatus === 'submitted')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
                     }
                 })
         }
@@ -190,191 +244,191 @@ const SpecimenForm = ({ ...props }) => {
                                 if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
                             }
                             for (let k of Object.keys(specimenInfo)) {
-                               // if ([0, 1].includes(specimenInfo[k].collected_yn)) {
-                                    console.log(k)
-                                    switch (specimenInfo[k].sub_category) {
-                                        case 'bio_blood_baseline': // specimen_id 11
-                                            dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
-                                            break
-                                        case 'bio_blood_baseline_serum': // specimen_id 12
-                                            dispatch(allactions.specimenActions.bioBloodBaselineSerum(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true))
-                                            break
-                                        case 'bio_blood_baseline_plasma': // specimen_id 13
-                                            dispatch(allactions.specimenActions.bioBloodBaselinePlasma(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(true))
-                                            break
-                                        case 'bio_blood_baseline_buffy_coat': // specimen_id 14
-                                            dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(true))
-                                            break
-                                        case 'bio_blood_baseline_other_derivative': // specimen_id 15
-                                            dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(true))
-                                            break
-                                        case 'bio_blood_other_time': // specimen_id 16
-                                            dispatch(allactions.specimenActions.bioBloodOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
-                                            break
-                                        case 'bio_blood_other_time_serum': // specimen_id 17
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(true))
-                                            break
-                                        case 'bio_blood_other_time_plasma': // specimen_id 18
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(true))
-                                            break
-                                        case 'bio_blood_other_time_buffy_coat': // specimen_id 19
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(true))
-                                            break
-                                        case 'bio_blood_other_time_other_derivative': // specimen_id 20
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(true))
-                                            break
-                                        case 'bio_buccal_saliva_baseline': // specimen_id 21
-                                            dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true))
-                                            break
-                                        case 'bio_buccal_saliva_other_time': // specimen_id 22
-                                            dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true))
-                                            break
-                                        case 'bio_tissue_baseline': // specimen_id 23
-                                            dispatch(allactions.specimenActions.bioTissueBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTissueBaseline(true))
-                                            break
-                                        case 'bio_tissue_other_time': // specimen_id 24
-                                            dispatch(allactions.specimenActions.bioTissueOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true))
-                                            break
-                                        case 'bio_urine_baseline': // specimen_id 25
-                                            dispatch(allactions.specimenActions.bioUrineBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioUrineBaseline(true))
-                                            break
-                                        case 'bio_urine_other_time': // specimen_id 26
-                                            dispatch(allactions.specimenActions.bioUrineOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true))
-                                            break
-                                        case 'bio_feces_baseline': // specimen_id 27
-                                            dispatch(allactions.specimenActions.bioFecesBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioFecesBaseline(true))
-                                            break
-                                        case 'bio_feces_other_time': // specimen_id 28
-                                            dispatch(allactions.specimenActions.bioFecesOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true))
-                                            break
-                                        case 'bio_other_baseline': // specimen_id 29
-                                            dispatch(allactions.specimenActions.bioOtherBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
-                                            break
-                                        case 'bio_other_other_time': // specimen_id 30
-                                            dispatch(allactions.specimenActions.bioOtherOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
-                                            break
-                                        case 'bio_repeated_sample_same_individual': // specimen_id 31
-                                            dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true))
-                                            break
-                                        case 'bio_tumor_block_info': // specimen_id 32
-                                            dispatch(allactions.specimenActions.bioTumorBlockInfo(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true))
-                                            break
-                                        case 'bio_genotyping_data': // specimen_id 33
-                                            dispatch(allactions.specimenActions.bioGenotypingData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioGenotypingData(true))
-                                            break
-                                        case 'bio_sequencing_data_exome': // specimen_id 34
-                                            dispatch(allactions.specimenActions.bioSequencingDataExome(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true))
-                                            break
-                                        case 'bio_sequencing_data_whole_genome': // specimen_id 35
-                                            dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true))
-                                            break
-                                        case 'bio_epigenetic_or_metabolic_markers': // specimen_id 36
-                                            dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true))
-                                            break
-                                        case 'bio_other_omics_data': // specimen_id 37
-                                            dispatch(allactions.specimenActions.bioOtherOmicsData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherOmicsData(true))
-                                            break
-                                        case 'bio_transcriptomics_data': // specimen_id 38
-                                            dispatch(allactions.specimenActions.bioTranscriptomicsData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true))
-                                            break
-                                        case 'bio_microbiome_data': // specimen_id 39
-                                            dispatch(allactions.specimenActions.bioMicrobiomeData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true))
-                                            break
-                                        case 'bio_metabolomic_data': // specimen_id 40
-                                            dispatch(allactions.specimenActions.bioMetabolomicData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
-                                            if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                                dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                                dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                                                dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                                                dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                                                dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
-                                                dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                                            }
-                                            break
-                                        case 'bio_meta_fasting_sample': // specimen_id 41
-                                            dispatch(allactions.specimenActions.bioMetaFastingSample(specimenInfo[k].collected_yn))
+                                // if ([0, 1].includes(specimenInfo[k].collected_yn)) {
+                                console.log(k)
+                                switch (specimenInfo[k].sub_category) {
+                                    case 'bio_blood_baseline': // specimen_id 11
+                                        dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
+                                        break
+                                    case 'bio_blood_baseline_serum': // specimen_id 12
+                                        dispatch(allactions.specimenActions.bioBloodBaselineSerum(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true))
+                                        break
+                                    case 'bio_blood_baseline_plasma': // specimen_id 13
+                                        dispatch(allactions.specimenActions.bioBloodBaselinePlasma(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(true))
+                                        break
+                                    case 'bio_blood_baseline_buffy_coat': // specimen_id 14
+                                        dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(true))
+                                        break
+                                    case 'bio_blood_baseline_other_derivative': // specimen_id 15
+                                        dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(true))
+                                        break
+                                    case 'bio_blood_other_time': // specimen_id 16
+                                        dispatch(allactions.specimenActions.bioBloodOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
+                                        break
+                                    case 'bio_blood_other_time_serum': // specimen_id 17
+                                        dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(true))
+                                        break
+                                    case 'bio_blood_other_time_plasma': // specimen_id 18
+                                        dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(true))
+                                        break
+                                    case 'bio_blood_other_time_buffy_coat': // specimen_id 19
+                                        dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(true))
+                                        break
+                                    case 'bio_blood_other_time_other_derivative': // specimen_id 20
+                                        dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(true))
+                                        break
+                                    case 'bio_buccal_saliva_baseline': // specimen_id 21
+                                        dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true))
+                                        break
+                                    case 'bio_buccal_saliva_other_time': // specimen_id 22
+                                        dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true))
+                                        break
+                                    case 'bio_tissue_baseline': // specimen_id 23
+                                        dispatch(allactions.specimenActions.bioTissueBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioTissueBaseline(true))
+                                        break
+                                    case 'bio_tissue_other_time': // specimen_id 24
+                                        dispatch(allactions.specimenActions.bioTissueOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true))
+                                        break
+                                    case 'bio_urine_baseline': // specimen_id 25
+                                        dispatch(allactions.specimenActions.bioUrineBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioUrineBaseline(true))
+                                        break
+                                    case 'bio_urine_other_time': // specimen_id 26
+                                        dispatch(allactions.specimenActions.bioUrineOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true))
+                                        break
+                                    case 'bio_feces_baseline': // specimen_id 27
+                                        dispatch(allactions.specimenActions.bioFecesBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioFecesBaseline(true))
+                                        break
+                                    case 'bio_feces_other_time': // specimen_id 28
+                                        dispatch(allactions.specimenActions.bioFecesOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true))
+                                        break
+                                    case 'bio_other_baseline': // specimen_id 29
+                                        dispatch(allactions.specimenActions.bioOtherBaseline(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
+                                        break
+                                    case 'bio_other_other_time': // specimen_id 30
+                                        dispatch(allactions.specimenActions.bioOtherOtherTime(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                        break
+                                    case 'bio_repeated_sample_same_individual': // specimen_id 31
+                                        dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true))
+                                        break
+                                    case 'bio_tumor_block_info': // specimen_id 32
+                                        dispatch(allactions.specimenActions.bioTumorBlockInfo(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true))
+                                        break
+                                    case 'bio_genotyping_data': // specimen_id 33
+                                        dispatch(allactions.specimenActions.bioGenotypingData(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioGenotypingData(true))
+                                        break
+                                    case 'bio_sequencing_data_exome': // specimen_id 34
+                                        dispatch(allactions.specimenActions.bioSequencingDataExome(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true))
+                                        break
+                                    case 'bio_sequencing_data_whole_genome': // specimen_id 35
+                                        dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true))
+                                        break
+                                    case 'bio_epigenetic_or_metabolic_markers': // specimen_id 36
+                                        dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true))
+                                        break
+                                    case 'bio_other_omics_data': // specimen_id 37
+                                        dispatch(allactions.specimenActions.bioOtherOmicsData(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioOtherOmicsData(true))
+                                        break
+                                    case 'bio_transcriptomics_data': // specimen_id 38
+                                        dispatch(allactions.specimenActions.bioTranscriptomicsData(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true))
+                                        break
+                                    case 'bio_microbiome_data': // specimen_id 39
+                                        dispatch(allactions.specimenActions.bioMicrobiomeData(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true))
+                                        break
+                                    case 'bio_metabolomic_data': // specimen_id 40
+                                        dispatch(allactions.specimenActions.bioMetabolomicData(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+                                        if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
                                             dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_cancer_study': // specimen_id 42
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(specimenInfo[k].collected_yn))
-
-                                            if (specimenInfo[k].collected_yn) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
-                                            }
-                                            break
-                                        case 'bio_meta_outcomes_in_cvd_study': // specimen_id 43
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(specimenInfo[k].collected_yn))
-                                            if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_diabetes_study': // specimen_id 44
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(specimenInfo[k].collected_yn))
-                                            if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_other_study': // specimen_id 45
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(specimenInfo[k].collected_yn))
-                                            if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                            } else {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                            }
-                                            break
-                                        case 'bio_member_of_metabolomics_studies': // specimen_id 46
-                                            dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(specimenInfo[k].collected_yn))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
                                             dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                            break
-                                        default:
-                                            break
+                                            dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                            dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                            dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                                            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                                            dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                                        }
+                                        break
+                                    case 'bio_meta_fasting_sample': // specimen_id 41
+                                        dispatch(allactions.specimenActions.bioMetaFastingSample(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                        break
+                                    case 'bio_meta_outcomes_in_cancer_study': // specimen_id 42
+                                        dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(specimenInfo[k].collected_yn))
 
-                                    }
+                                        if (specimenInfo[k].collected_yn) {
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
+                                        }
+                                        break
+                                    case 'bio_meta_outcomes_in_cvd_study': // specimen_id 43
+                                        dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(specimenInfo[k].collected_yn))
+                                        if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
+                                        break
+                                    case 'bio_meta_outcomes_in_diabetes_study': // specimen_id 44
+                                        dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(specimenInfo[k].collected_yn))
+                                        if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                        break
+                                    case 'bio_meta_outcomes_in_other_study': // specimen_id 45
+                                        dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(specimenInfo[k].collected_yn))
+                                        if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                        } else {
+                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                        }
+                                        break
+                                    case 'bio_member_of_metabolomics_studies': // specimen_id 46
+                                        dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(specimenInfo[k].collected_yn))
+                                        dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                        break
+                                    default:
+                                        break
+
+                                }
                                 //} else if (specimenInfo[k].sub_category === 'bio_metabolomic_data') {
-                                    dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
-                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
-                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
-                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                    dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                    dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                                    dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                                    dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                                    dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
-                                    dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                                dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                                dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
 
                                 //}
                             }
@@ -457,7 +511,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
+        let errorsRemain = refreshErrors() && true
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -497,7 +551,6 @@ const SpecimenForm = ({ ...props }) => {
 
     const getQuestionEntry = (field) => {
         let item = field.items
-        console.log(item)
         if (item && item.length === 2)
             return (
                 < Form.Group as={Row} sm='12' >
@@ -533,7 +586,7 @@ const SpecimenForm = ({ ...props }) => {
                                 inline
                                 style={{ fontWeight: 'normal' }}
                                 name={item[0].field_id}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[0].field_id] === 1}
                                     readOnly={isReadOnly}
                                     onClick={() => {
                                         if (!isReadOnly) {
@@ -580,7 +633,7 @@ const SpecimenForm = ({ ...props }) => {
                                 inline
                                 style={{ fontWeight: 'normal ' }}
                                 name={item[1].field_id}>
-                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[1].field_id] === 1}
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[1].field_id] === 1}
                                     onClick={() => {
                                         if (!isReadOnly) {
                                             dispatch(setHasUnsavedChanges(true));
@@ -635,7 +688,7 @@ const SpecimenForm = ({ ...props }) => {
                             inline
                             style={{ fontWeight: 'normal' }}
                             name={item[0].field_id}>
-                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={+specimen[item[0].field_id] === 1}
                                 readOnly={isReadOnly}
                                 onClick={() => {
                                     if (!isReadOnly) {
@@ -657,7 +710,6 @@ const SpecimenForm = ({ ...props }) => {
     }
 
     const getPartContent = (partSelect = 'A') => {
-        console.dir(errors)
         return fieldList.specimenFieldList.filter(field => field.part === partSelect).map(field => {
             if (field.title !== 'G.6 Other(e.g. toenails)') {//skip questions first
 
@@ -694,7 +746,7 @@ const SpecimenForm = ({ ...props }) => {
 
                             <Form.Check type='radio' name='bioOtherBaseline' inline>
                                 <Form.Check.Input type='radio' className="mr-2"
-                                    checked={specimen.bioOtherBaseline === 1}
+                                    checked={+specimen.bioOtherBaseline === 1}
                                     onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherBaseline(1)); dispatch(allactions.specimenErrorActions.bioOtherBaseline(true)) } }} />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     Yes
@@ -706,9 +758,9 @@ const SpecimenForm = ({ ...props }) => {
 
 
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
-                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
+                    <Col sm="12" className={classNames("form-group", "align-self-center", saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
 
-                        <Reminder message={"Required Field"} disabled={!(saved && specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherBaselineSpecify'
                                 className='form-control'
@@ -717,7 +769,11 @@ const SpecimenForm = ({ ...props }) => {
                                 placeholder='Max of 200 characters'
                                 maxLength={200}
                                 disabled={specimen.bioOtherBaseline !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value)) }}
+                                onChange={e => {
+                                    dispatch(setHasUnsavedChanges(true));
+                                    dispatch(allactions.specimenActions.bioOtherBaselineSpecify(e.target.value));
+                                    dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(e.target.value))
+                                }}
                             />
                         </Reminder>
 
@@ -736,7 +792,12 @@ const SpecimenForm = ({ ...props }) => {
                                 <Form.Check.Input type="radio" className="mr-2"
                                     checked={specimen.bioOtherOtherTime === 0}
                                     onClick={() => {
-                                        if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(0)); dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify('')); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) }
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTime(0));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(''));
+                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                        }
                                     }}
                                 />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -746,7 +807,13 @@ const SpecimenForm = ({ ...props }) => {
                             <Form.Check type='radio' name='bioOtherOtherTime' inline>
                                 <Form.Check.Input type='radio' className="mr-2"
                                     checked={specimen.bioOtherOtherTime === 1}
-                                    onClick={() => { if (!isReadOnly) { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenActions.bioOtherOtherTime(1)); dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true)) } }} />
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioOtherOtherTime(1));
+                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                        }
+                                    }} />
                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                     Yes</Form.Check.Label>
                             </Form.Check>
@@ -757,7 +824,7 @@ const SpecimenForm = ({ ...props }) => {
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
 
-                        <Reminder message={"Required FIeld"} disabled={!(saved && specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                        <Reminder message={"Required FIeld"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
                                 className='form-control'
@@ -766,7 +833,11 @@ const SpecimenForm = ({ ...props }) => {
                                 placeholder='Max of 200 characters'
                                 maxLength={200}
                                 disabled={specimen.bioOtherOtherTime !== 1}
-                                onChange={e => { dispatch(setHasUnsavedChanges(true)); dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value)) }}
+                                onChange={e => {
+                                    dispatch(setHasUnsavedChanges(true));
+                                    dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(e.target.value));
+                                    dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(e.target.value))
+                                }}
                             />
                         </Reminder>
 
@@ -854,6 +925,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineSerum === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -870,6 +942,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselinePlasma === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -886,6 +959,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineBuffyCoat === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -902,6 +976,7 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
+                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
                                                 checked={+specimen.bioBloodBaselineOtherDerivative === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
@@ -925,7 +1000,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <Col sm='3' className='align-self-center' >
                                     <Form.Check type='radio' xs='2' name='bioBloodOtherTime' inline style={{ fontWeight: 'normal' }} id="bioBloodOtherTime_no" >
                                         <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
+                                            checked={+specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
                                             onClick={() => {
                                                 if (!isReadOnly) {
                                                     dispatch(setHasUnsavedChanges(true));
@@ -940,7 +1015,7 @@ const SpecimenForm = ({ ...props }) => {
 
                                     <Form.Check type='radio' xs='2' name='bioBloodOtherTime' style={{ fontWeight: 'normal' }} inline id='bioBloodOtherTime_yes' >
                                         <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
+                                            checked={+specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
                                             onClick={() => {
                                                 if (!isReadOnly) {
                                                     dispatch(setHasUnsavedChanges(true));
@@ -962,7 +1037,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeSerum === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeSerum === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -978,7 +1054,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimePlasma === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimePlasma === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -994,7 +1071,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeBuffyCoat === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeBuffyCoat === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1010,7 +1088,8 @@ const SpecimenForm = ({ ...props }) => {
                                             <Form.Check.Input bsPrefix
                                                 type="checkbox"
                                                 className="mr-2"
-                                                checked={specimen.bioBloodOtherTimeOtherDerivative === 1}
+                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                checked={+specimen.bioBloodOtherTimeOtherDerivative === 1}
                                                 onChange={(e) => {
                                                     if (isReadOnly) return false;
                                                     dispatch(setHasUnsavedChanges(true));
@@ -1075,7 +1154,7 @@ const SpecimenForm = ({ ...props }) => {
                                     style={{ fontWeight: 'normal' }}
                                     name="bioMetabolomicData">
                                     <Form.Check.Input bsPrefix type='radio' className='mr-2'
-                                        checked={specimen.bioMetabolomicData === 1}
+                                        checked={+specimen.bioMetabolomicData === 1}
                                         readOnly={isReadOnly}
                                         onClick={() => {
                                             if (!isReadOnly) {

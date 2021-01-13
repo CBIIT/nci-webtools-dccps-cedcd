@@ -51,6 +51,6 @@ actions[t.bioYearSamplesSent] = (state, action) => { let cloned = { ...state }; 
 
 
 const getResult = feedState => feedAction => (actions[feedAction.type] && actions[feedAction.type](feedState, feedAction)) || feedState
-const specimenInfoErrorReducer = (state = InitialStates.specimen.error, action = {}) => getResult(state)(action)
+const specimenInfoErrorReducer = (state = InitialStates.specimenError, action = {}) => getResult(state)(action)
 
 export default specimenInfoErrorReducer
