@@ -43,6 +43,7 @@ const MortalityForm = ({ ...props }) => {
 
     const [errors, setErrors] = useState({
         mortalityYear: '',
+        deathConfirm: '',
         deathIndex: '',
         deathCertificate: '',
         otherDeath: '',
@@ -109,18 +110,26 @@ const MortalityForm = ({ ...props }) => {
         let copy = { ...errors }
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
-        if (mortality.otherDeath === 1) {
-            if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
-                copy.otherDeathSpecify = 'Please specify'
-            else {
-                if (mortality.otherDeathSpecify.length > 200)
-                    copy.otherDeathSpecify = 'Cannot exceed 200 characters'
-                else
-                    copy.otherDeathSpecify = ''
-            }
+
+        if (!mortality.deathIndex && !mortality.deathCertificate && !mortality.otherDeath) {
+            copy.deathConfirm = 'Required Field'
         }
-        else
-            copy.otherDeathSpecify = '';
+        else {
+            copy.deathConfirm = '';
+
+            if (mortality.otherDeath === 1) {
+                if (mortality.otherDeathSpecify === null || !mortality.otherDeathSpecify)
+                    copy.otherDeathSpecify = 'Please specify'
+                else {
+                    if (mortality.otherDeathSpecify.length > 200)
+                        copy.otherDeathSpecify = 'Cannot exceed 200 characters'
+                    else
+                        copy.otherDeathSpecify = ''
+                }
+            }
+            else
+                copy.otherDeathSpecify = '';
+        }
 
         if (!(mortality.haveDeathDate in [0, 1])) { copy.haveDeathDate = radioError } else { copy.haveDeathDate = '' }
         if (!(mortality.haveDeathCause in [0, 1])) { copy.haveDeathCause = radioError } else { copy.haveDeathCause = '' }
@@ -326,8 +335,9 @@ const MortalityForm = ({ ...props }) => {
             </Form.Group>
 
             <Form.Group as={Row} className={saved && errors.otherDeathSpecify && 'has-error'}>
-                <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)</Form.Label>
-
+                <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)<span style={{ color: 'red' }}>*</span>
+                {saved && errors.deathConfirm && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
+                </Form.Label>
                 <Col sm="12">
                     <div key="checkbox">
                         <Form.Check className="pl-0" name='deathIndex'>
@@ -335,10 +345,12 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.deathIndex === 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setDeathIndex((mortality.deathIndex + 1) % 2));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -351,10 +363,12 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.deathCertificate === 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setDeathCertificate((mortality.deathCertificate + 1) % 2));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -367,11 +381,13 @@ const MortalityForm = ({ ...props }) => {
                                 type='checkbox'
                                 className="mr-2"
                                 checked={mortality.otherDeath === 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2)); 
-                                    dispatch(allactions.mortalityActions.setOtherDeathSpecify(''));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setOtherDeath((mortality.otherDeath + 1) % 2));
+                                        dispatch(allactions.mortalityActions.setOtherDeathSpecify(''));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
 
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -390,7 +406,7 @@ const MortalityForm = ({ ...props }) => {
                             onChange={e => {
                                 dispatch(allactions.mortalityActions.setOtherDeathSpecify(e.target.value));
                                 dispatch(setHasUnsavedChanges(true));
-                            }} 
+                            }}
                             disabled={mortality.otherDeath !== 1}
                         />
                     </Reminder>
@@ -411,10 +427,12 @@ const MortalityForm = ({ ...props }) => {
                             type="radio"
                             className="mr-2"
                             checked={mortality.haveDeathDate === 0}
-                            onClick={() => { if (!isReadOnly) { 
-                                dispatch(allactions.mortalityActions.setHaveDeathDate(0));
-                                dispatch(setHasUnsavedChanges(true));
-                            } }}
+                            onClick={() => {
+                                if (!isReadOnly) {
+                                    dispatch(allactions.mortalityActions.setHaveDeathDate(0));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }
+                            }}
                         />
                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                             No
@@ -428,15 +446,17 @@ const MortalityForm = ({ ...props }) => {
                             type='radio'
                             className="mr-2"
                             checked={mortality.haveDeathDate === 1}
-                            onClick={() => { if (!isReadOnly) { 
-                                dispatch(allactions.mortalityActions.setHaveDeathDate(1));
-                                dispatch(setHasUnsavedChanges(true));
-                            } }} />
+                            onClick={() => {
+                                if (!isReadOnly) {
+                                    dispatch(allactions.mortalityActions.setHaveDeathDate(1));
+                                    dispatch(setHasUnsavedChanges(true));
+                                }
+                            }} />
                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                             Yes
                         </Form.Check.Label>
                     </Form.Check>
-                    
+
                 </Col>
             </Form.Group>
 
@@ -470,7 +490,7 @@ const MortalityForm = ({ ...props }) => {
                             No
                     </Form.Check.Label>
                     </Form.Check>
-                
+
                     <Form.Check type='radio'
                         name='haveDeathCause'
                         inline>
@@ -490,7 +510,7 @@ const MortalityForm = ({ ...props }) => {
                             Yes
                         </Form.Check.Label>
                     </Form.Check>
-                  
+
                 </Col>
             </Form>
 
@@ -507,10 +527,12 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.icd9 === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setIcd9((mortality.icd9 + 1) % 2));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 ICD-9
@@ -523,10 +545,12 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.icd10 === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setIcd10((mortality.icd10 + 1) % 2));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 ICD-10
@@ -539,10 +563,12 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.notCoded === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setNotCoded((mortality.notCoded + 1) % 2));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 Not Coded
@@ -555,11 +581,13 @@ const MortalityForm = ({ ...props }) => {
                                 className="mr-2"
                                 checked={mortality.otherCode === 1}
                                 disabled={mortality.haveDeathCause !== 1}
-                                onClick={() => { if (!isReadOnly) { 
-                                    dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2)); 
-                                    dispatch(allactions.mortalityActions.setOtherCodeSpecify(''));
-                                    dispatch(setHasUnsavedChanges(true));
-                                } }}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(allactions.mortalityActions.setOtherCode((mortality.otherCode + 1) % 2));
+                                        dispatch(allactions.mortalityActions.setOtherCodeSpecify(''));
+                                        dispatch(setHasUnsavedChanges(true));
+                                    }
+                                }}
                             />
                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                 Other Code
