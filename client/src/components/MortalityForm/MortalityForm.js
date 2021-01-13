@@ -312,6 +312,8 @@ const MortalityForm = ({ ...props }) => {
                         <Form.Control
                             type="text"
                             name='mortalityYear'
+                            type="number"
+                            min="1900"
                             value={mortality.mortalityYear}
                             readOnly={isReadOnly}
                             onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
@@ -320,7 +322,7 @@ const MortalityForm = ({ ...props }) => {
                 </Col>
             </Form.Group>
 
-            <Form.Group as={Row}>
+            <Form.Group as={Row} className={saved && errors.otherDeathSpecify && 'has-error'}>
                 <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)</Form.Label>
 
                 <Col sm="12">
@@ -563,7 +565,6 @@ const MortalityForm = ({ ...props }) => {
                     </div>
                     <Reminder message={errors.otherCodeSpecify} disabled={!(saved && errors.otherCodeSpecify)} placement="right">
                         <Form.Control type='text'
-                            style={{ border: '1px solid red' }}
                             name='otherCodeSpecify'
                             className='form-control'
                             value={mortality.otherCodeSpecify}
@@ -586,7 +587,8 @@ const MortalityForm = ({ ...props }) => {
                 <Col sm="2">
                     <Reminder message={errors.deathNumbers} disabled={!(saved && errors.deathNumbers)} placement="right">
                         <Form.Control
-                            type="text"
+                            type="number"
+                            min="0"
                             name='deathNumbers'
                             value={mortality.deathNumbers}
                             readOnly={isReadOnly}
