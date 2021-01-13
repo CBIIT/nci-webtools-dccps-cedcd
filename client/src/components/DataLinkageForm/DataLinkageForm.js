@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import classNames from 'classnames';
 import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
@@ -7,14 +8,13 @@ import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
 import Reminder from '../Tooltip/Tooltip'
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
 import { CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
-import './DataLinkageForm.css';
 
 const DataLinkageForm = ({ ...props }) => {
 
@@ -37,6 +37,7 @@ const DataLinkageForm = ({ ...props }) => {
     })
     const [userEmails, setEmails] = useState('')
     const [message, setMessage] = useState('')
+    const history = useHistory();
 
     const isReadOnly = props.isReadOnly;
 
@@ -206,7 +207,8 @@ const DataLinkageForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
@@ -336,7 +338,10 @@ const DataLinkageForm = ({ ...props }) => {
             panelTitle="Data Linkage & Harmonization">
 
             <Form as={Row}>
-                <Form.Label column sm="12">F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    F.1 Have you linked your cohort data to any other existing databases (e.g., Center for Medicare and Medicaid Services, State or Surveillance, Epidemiology and End Results (SEER) Cancer Registries)?<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.haveDataLink && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                </Form.Label>
 
                 <Col sm="12" className="align-self-center">
                     {saved && errors.haveDataLink ?
@@ -454,7 +459,10 @@ const DataLinkageForm = ({ ...props }) => {
 
 
             <Form as={Row}>
-                <Form.Label column sm="12">F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12"
+                    >F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.haveHarmonization && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                </Form.Label>
 
                 <Col sm="12" className="align-self-center">
                     {saved && errors.haveHarmonization ?
@@ -571,7 +579,10 @@ const DataLinkageForm = ({ ...props }) => {
             </Form.Group>
 
             <Form as={Row}>
-                <Form.Label column sm="12">F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    F.3 Have you deposited data in an NIH sponsored data repository?<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.haveDeposited && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                </Form.Label>
                 <Col sm="12" className="align-self-center">
                     {saved && errors.haveDeposited ?
                         <Reminder>
@@ -663,13 +674,7 @@ const DataLinkageForm = ({ ...props }) => {
             <Form.Group as={Row}>
                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                     If yes, please select which repositories (Select all that apply):
-                    {errors.deposit && saved &&
-                        <div>
-                            <Form.Label style={{ color: 'red' }}>
-                                {errors.deposit}
-                            </Form.Label>
-                        </div>
-                    }
+                    {saved && errors.deposit && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                 </Form.Label>
                 <Col sm="12">
                     <div key="checkbox">
@@ -725,7 +730,10 @@ const DataLinkageForm = ({ ...props }) => {
             </Form.Group>
 
             <Form as={Row}>
-                <Form.Label column sm="12">F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    F.4 Is your procedure for requesting data displayed online?<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.dataOnline && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                </Form.Label>
 
                 <Col sm="12" className="align-self-center">
                     {saved && errors.dataOnline ?
@@ -818,13 +826,7 @@ const DataLinkageForm = ({ ...props }) => {
             <Form.Group as={Row}>
                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                     If yes, please select which repositories (Select all that apply):
-                    {errors.dataOnlineSelected && saved &&
-                        <div>
-                            <Form.Label style={{ color: 'red' }}>
-                                {errors.dataOnlineSelected}
-                            </Form.Label>
-                        </div>
-                    }
+                    {saved && errors.dataOnlineSelected && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                 </Form.Label>
                 <Col sm="12">
                     <div key="checkbox">
@@ -895,7 +897,10 @@ const DataLinkageForm = ({ ...props }) => {
             </Form.Group>
 
             <Form as={Row}>
-                <Form.Label column sm="12">F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span></Form.Label>
+                <Form.Label column sm="12">
+                    F.5 Have you created your own data enclave or a public-facing data repository?<span style={{ color: 'red' }}>*</span>
+                    {saved && errors.createdRepo && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                </Form.Label>
 
                 <Col sm="12" className="align-self-center">
                     {saved && errors.createdRepo ?
@@ -1012,31 +1017,16 @@ const DataLinkageForm = ({ ...props }) => {
             </Form.Group>
         </CollapsiblePanel>
 
-        <div className='my-4' style={{ position: 'relative' }}>
-            <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', float: 'left' }}>
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Previous' onClick={() => props.sectionPicker('E')} />
-                <input type='button' className='col-md-3 col-xs-6 btn btn-primary' value='Next' onClick={() => props.sectionPicker('G')} />
-            </span>
-            {!isReadOnly ? <>
-                <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', float: window.innerWidth <= 1000 ? 'left' : 'right' }}>
-                    <span className='col-xs-4' onClick={handleSave} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='col-xs-12 btn btn-primary' value='Save' disabled={['submitted', 'in review'].includes(cohortStatus)} />
-                    </span>
-                    <span className='col-xs-4' onClick={handleSaveContinue} style={{ margin: '0', padding: '0' }}>
-                        <input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Save & Continue' disabled={['submitted', 'in review'].includes(cohortStatus)} style={{ marginRight: '5px', marginBottom: '5px' }} />
-                    </span>
-                    <span className='col-xs-4' onClick={() => resetCohortStatus(cohortId, 'submitted')} style={{ margin: '0', padding: '0' }}><input type='button' className='zero-padding col-xs-12 btn btn-primary' value='Submit For Review' disabled={['published', 'submitted', 'in review'].includes(cohortStatus) || section.A === 'incomplete' || section.B === 'incomplete' || section.C === 'incomplete' || section.D === 'incomplete' || section.E === 'incomplete' || section.F === 'incomplete' || section.G === 'incomplete'} /></span>
-                </span>
-            </> : <>
-                    <span className='zero-padding col-md-6 col-xs-12' style={{ position: 'relative', paddingLeft: '0', paddingRight: '0' }}>
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Approve'
-                            onClick={handleApprove} disabled={!['submitted', 'in review'].includes(props.status)} />
-                        <input type='button' className='col-md-3 col-xs-6 btn btn-primary' style={{ float: 'right' }} value='Reject'
-                            onClick={handleReject} disabled={!['submitted', 'in review'].includes(props.status)} />
+        <QuestionnaireFooter
+            isAdmin={isReadOnly}
+            handlePrevious={_ => props.sectionPicker('E')}
+            handleNext={_ => props.sectionPicker('G')}
+            handleSave={handleSave}
+            handleSaveContinue={handleSaveContinue}
+            handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+            handleApprove={handleApprove}
+            handleReject={handleReject} />
 
-                    </span>
-                </>}
-        </div>
     </div >
 }
 

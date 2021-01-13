@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
-const CenterModal = (props) => {
+const ValidationModal = (props) => {
   return (
     <Modal show={props.show} backdrop="static">
       <Modal.Header>
         <Modal.Title>
           { props.title || 
-            <span>Confirmation Required</span>
+            <span>Validation Errors</span>
           }
         </Modal.Title>
       </Modal.Header>
@@ -35,4 +35,4 @@ const CenterModal = (props) => {
   )
 }
 
-export default CenterModal
+export default ValidationModal

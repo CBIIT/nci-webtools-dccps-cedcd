@@ -12,11 +12,11 @@ import './index.scss';
 	const store = configureStore({
 		reducer,
 		middleware: (getDefaultMiddleware) =>
-		getDefaultMiddleware({
-			thunk: true,
-			serializableCheck: false,
-			immutableCheck: false,
-		}),
+			getDefaultMiddleware({
+				thunk: true,
+				serializableCheck: false,
+				immutableCheck: false,
+			}),
 	});
 	await store.dispatch(initializeLookup());
 	await store.dispatch(fetchUser());

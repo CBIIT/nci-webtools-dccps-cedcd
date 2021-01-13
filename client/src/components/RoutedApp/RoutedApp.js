@@ -8,10 +8,10 @@ import Modal from '../controls/modal/modal';
 export default function RoutedApp() {
 	const [modal, setModal] = useState({
 		show: false,
-		title: <span>Confirmation Required</span>,
+		title: <span>Leaving Page</span>,
 		body: <div className="py-4">You may have unsaved changes. Please confirm that you wish to navigate away from the current page.</div>,
 		footer: <div>
-			<Button variant="primary" outline>Cancel</Button>
+			<Button variant="light">Cancel</Button>
 			<Button variant="primary">Confirm</Button>
 		</div>
 	});
@@ -25,7 +25,7 @@ export default function RoutedApp() {
 				body: message,
 				footer: <div>
 					<Button 
-						variant="primary"
+						variant="light"
 						onClick={e => {
 							callback(false);
 							mergeModal({show: false});

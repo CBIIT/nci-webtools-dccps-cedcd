@@ -450,6 +450,19 @@ BEGIN
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_owners_from_id
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_owners_from_id` //
+
+CREATE PROCEDURE `select_owners_from_id`(in targetID int)
+BEGIN
+
+	declare var1 text;
+	select acronym from cohort where id=targetID into var1;
+
+	select distinct first_name,last_name,email,acronym,name from user x,cohort_user_mapping y,cohort z where cohort_acronym=var1 and access_level='CohortAdmin' and x.id=y.user_id and cohort_acronym=acronym;
+END //
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_owner
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS select_cohort_owner //
@@ -719,10 +732,12 @@ BEGIN
 		and cm.acronym = ?
 		order by
 			status = 'draft' desc,
+			status = 'rejected' desc,
 			status = 'in review' desc,
 			status = 'submitted' desc,
 			status = 'new' desc,
-			status = 'published' desc
+			status = 'published' desc,
+			status = 'archived' desc,
 		limit 1;
 	";
     set @user_id = user_id;
@@ -730,6 +745,31 @@ BEGIN
 	EXECUTE stmt using @user_id;
 	DEALLOCATE PREPARE stmt;
 END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_contact_for_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_contact_for_cohort` //
+CREATE PROCEDURE `select_contact_for_cohort`(in cohort_id int)
+BEGIN
+    set @query = "
+		select * from person
+		where
+			cohort_id = ?
+			and email is not null
+			and email != ''
+		order by
+			category_id = 2 desc,
+			category_id = 1  desc
+		limit 1;
+	";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
 
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1193,7 +1233,9 @@ BEGIN
 		strategy_mailing = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_mailing'))),
 		strategy_aggregate_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_aggregate_study'))),
 		strategy_individual_study = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_individual_study'))),
+        strategy_committees = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_committees')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_committees'))),
 		strategy_invitation = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_invitation'))),
+        strategy_participant_input = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input'))),
 		strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
 		strategy_other_specify = IF(strategy_other = 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify'))), ''),
 		questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
@@ -1367,7 +1409,6 @@ BEGIN
 			END IF; 
 		END;
 		END IF;
-		update cohort set cohort_last_update_date = now(), update_time = now() where id = new_id;
 
  commit;
 	
@@ -1497,7 +1538,9 @@ BEGIN
         ,strategy_mailing 
         ,strategy_aggregate_study 
         ,strategy_individual_study 
+        ,strategy_committees
         ,strategy_invitation 
+        ,strategy_participant_input
         ,strategy_other 
         ,strategy_other_specify
         ,questionnaire_url
@@ -2737,6 +2780,7 @@ begin
     commit;
     select flag as rowAffacted;
  end //
+
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: insert_new_cohort

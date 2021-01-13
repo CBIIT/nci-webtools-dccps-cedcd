@@ -1415,6 +1415,12 @@ tr.compare-row--hover, .body-header--hover {
   font-weight: 600;
 }
 
+.required-label:after {
+  content: '*';
+  color: red;
+  margin-left: 0.25rem;
+}
+
 .bg-light-grey {
   background-color: #f1f1f1;
 }

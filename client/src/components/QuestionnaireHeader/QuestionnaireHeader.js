@@ -5,16 +5,18 @@ import {
     Prompt,
     useHistory
 } from "react-router-dom";
+import classNames from 'classnames';
 import { parseISO } from 'date-fns';
 import './QuestionnaireHeader.css'
 import allactions from '../../actions'
+import Modal from '../controls/modal/modal';
 
 const QuestionnaireHeader = ({ ...props }) => {
     const history = useHistory();
     const dispatch = useDispatch();
     const sectionStatus = useSelector(state => state.sectionReducer)
     const hasUnsavedChanges = useSelector(state => state.unsavedChangesReducer);
-    const cohort = useSelector(state => state.cohortReducer);
+    const cohort = useSelector(state => state.cohort);
     const userSession = useSelector(state => state.user);
     const {
         status,
@@ -23,6 +25,16 @@ const QuestionnaireHeader = ({ ...props }) => {
     } = useSelector(state => state.cohort);
     const publishDate = status != 'new' && publishTime ? parseISO(publishTime) : null;
     const updateDate = status != 'new' && updateTime ? parseISO(updateTime) : null;
+    const latestReview = (cohort.cohort_activity_log || [])
+        .sort((a, b) => new Date(b.create_time).getTime() - new Date(a.create_time).getTime())
+        .filter(entry => /reject/i.test(entry.activity));
+    const latestReviewComment = (latestReview && latestReview[0]) 
+        ? latestReview[0].notes
+        : null;
+
+    const [reviewModal, setReviewModal] = useState({
+        show: false,
+    });
 
     /*const asTitleCase = str => String(str).split(/\W+/g).map(str =>
          str[0].toLocaleUpperCase() + str.slice(1).toLocaleLowerCase()
@@ -81,7 +93,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
     return <>
         <div className="mb-4">
-            <h1 className='pg-title'>{cohort.cohort_acronym} Questionnaire</h1>
+            <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
 
             {!isReadOnly ? null : <div>
                 <a className="back" href="/admin/managecohort" target="_self" onClick={goBackManageCohort}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to Manage Cohorts</span></a>
@@ -109,7 +121,28 @@ const QuestionnaireHeader = ({ ...props }) => {
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
-                    {asTitleCase(status) || 'N/A'}
+                    <span className={classNames(
+                        status === 'published' && 'text-success',
+                        status === 'rejected' && 'text-danger',
+                    )}>
+                        {asTitleCase(status) || 'N/A'}
+                    </span>
+                    {status === 'rejected' && <button 
+                        className="btn btn-link text-decoration-underline"
+                        onClick={_ => setReviewModal({show: true})}>
+                        Review Comments
+                    </button>}
+                    <Modal
+                        show={reviewModal.show}
+                        title={<span>Reviewing Comments</span>}
+                        body={<span>{latestReviewComment || 'N/A'}</span>}
+                        footer={<div>
+                            <button 
+                                className="btn btn-primary" 
+                                onClick={_ => setReviewModal({show: false})}>
+                                Acknowledge
+                            </button>
+                        </div>} />
                 </div>
                 <div className="col-md px-4">
                     <strong>Last Updated Date: </strong>

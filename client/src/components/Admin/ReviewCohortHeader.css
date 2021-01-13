@@ -1,6 +1,0 @@
-div.ringsContainer {
-    flex: 1;
-}
-div.ringsContainter:hover .outerRing{
-    border-color: 'yellow';
-}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -12,6 +13,7 @@ import Messenger from '../Snackbar/Snackbar'
 import Reminder from '../Tooltip/Tooltip'
 import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
 import { fetchCohort } from '../../reducers/cohort';
 import * as fieldList from './specimenFieldList';
 
@@ -27,6 +29,7 @@ const SpecimenForm = ({ ...props }) => {
     const lookup = useSelector(state => state.lookupReducer)
     const specimen = useSelector(state => state.specimenReducer)
     const section = useSelector(state => state.sectionReducer)
+    const history = useHistory();
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [failureMsg, setFailureMsg] = useState(false)
@@ -36,6 +39,66 @@ const SpecimenForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
     //const cohortId = window.location.pathname.split('/').pop();
+
+    const sendEmail = (template, topic) => {
+
+        fetch('/api/questionnaire/select_owners_from_id', {
+            method: "POST",
+            body: JSON.stringify({ id: cohortId }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(res => res.json())
+            .then(result => {
+
+                if (result && result.status === 200) {
+                    result.data.map((owner) => {
+                        console.log(window.location.origin)
+                        let reqBody = {
+                            templateData: {
+                                user: owner.first_name + ' ' + owner.last_name,
+                                cohortName: owner.name,
+                                cohortAcronym: owner.acronym,
+                                website: window.location.origin,
+                                publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                            },
+                            email: owner.email,
+                            template: template,
+                            topic: topic + owner.acronym
+                        }
+
+                        fetch('/api/cohort/sendUserEmail', {
+                            method: "POST",
+                            body: JSON.stringify(reqBody),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(res => res.json())
+                            .then(result => {
+                                if (result && result.status === 200) {
+                                    //let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                                else {
+                                    //let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
+                                    //clearTimeout(timedMessage)
+                                }
+                            })
+                    })
+                }
+            })
+    }
+
+    const handleApprove = () => {
+
+        resetCohortStatus(cohortId, 'published')
+    }
+
+    const handleReject = () => {
+        resetCohortStatus(cohortId, 'returned')
+    }
 
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -100,6 +163,9 @@ const SpecimenForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
+
+                        if (nextStatus === 'published')
+                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ')
                     }
                 })
         }
@@ -366,7 +432,8 @@ const SpecimenForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
@@ -405,14 +472,6 @@ const SpecimenForm = ({ ...props }) => {
         setModalShow(false)
     }
 
-    const handleApprove = () => {
-        resetReviewCohortStatus(cohortId, 'published')
-    }
-
-    const handleReject = () => {
-        resetReviewCohortStatus(cohortId, 'returned')
-    }
-
     const resetReviewCohortStatus = (cohortID, nextStatus) => {
         if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
@@ -432,38 +491,6 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
-    const sendEmail = () => {
-        let reqBody = {
-            // firstname:'joe',
-            //  lastname:'zhao',
-            // organization:'NIH',
-            //  phone:'',
-            email: userEmails,
-            topic: 'test',
-            message: 'this is test on sending email'
-        };
-        fetch('/api/questionnaire/sendEmail', {
-            method: "POST",
-            body: JSON.stringify(reqBody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => res.json())
-            .then(result => {
-                if (result && result.status === 200) {
-                    setMessage('email was sent')
-                    let timedMessage = setTimeout(() => { setSuccessMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-                else {
-                    setMessage('email failed to be sent')
-                    let timedMessage = setTimeout(() => { setFailureMsg(true) }, 4000)
-                    clearTimeout(timedMessage)
-                }
-            })
-    }
-
     const getQuestionEntry = (field) => {
         let item = field.items
         if (item && item.length === 2)
@@ -477,108 +504,9 @@ const SpecimenForm = ({ ...props }) => {
                     <Col className='mb-0 pl-0' sm='12'>
                         <Col sm='4'>
                             <span>Collected at baseline {item[0].required && <span style={{ color: 'red' }}>*</span>}</span>
-                        </Col>
-                        <Reminder message='Required Field' disabled={!(errors[item[0].field_id] && saved)}>
-                            <Col sm='3' className='align-self-center'>
-                                <Form.Check type="radio" xs='2'
-                                    id={item[0].field_id + '_no'}
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name={item[0].field_id}>
-                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={specimen[item[0].field_id] === 0}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions[item[0].field_id](0));
-                                                dispatch(allactions.specimenErrorActions[item[0].field_id](true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label
-                                        style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
-                                    >
-                                        No
-                                        </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                    id={item[0].field_id + '_yes'}
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name={item[0].field_id}>
-                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions[item[0].field_id](1));
-                                                dispatch(allactions.specimenErrorActions[item[0].field_id](true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        Yes
-                            </Form.Check.Label>
-                                </Form.Check>
-                            </Col>
-                        </Reminder>
-                    </Col>
 
-                    <Col className='mb-0 pl-0' sm='12'>
-                        <Col sm='4'>
-                            Collected at other time points  {item[1].required && <span style={{ color: 'red' }}>*</span>}
                         </Col>
-                        <Reminder message='Required Field' disabled={!(errors[item[1].field_id] && saved)}>
-                            <Col sm='3' className='align-self-center' >
-                                <Form.Check type="radio" xs='2'
-                                    id={item[1].field_id + '_no'}
-                                    inline
-                                    style={{ fontWeight: 'normal ' }}
-                                    name={item[1].field_id}>
-                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={specimen[item[1].field_id] === 0}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions[item[1].field_id](0));
-                                                dispatch(allactions.specimenErrorActions[item[1].field_id](true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors[item[1].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        No
-                                       </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                    id={item[1].field_idy + '_yes'}
-                                    inline
-                                    style={{ fontWeight: 'normal ' }}
-                                    name={item[1].field_id}>
-                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[1].field_id] === 1}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions[item[1].field_id](1));
-                                                dispatch(allactions.specimenErrorActions[item[1].field_id](true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors[item[1].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        Yes
-                                       </Form.Check.Label>
-                                </Form.Check>
-                            </Col>
-                        </Reminder>
-                    </Col>
-                </Form.Group>
-            )
-        else
-            return (
-                < Form.Group as={Row} sm='12'  >
-                    <Form.Group as={Row} className="mb-0 pl-4">
-                        <Form.Label column sm='12'>
-                            <span> {field.title} </span> {item[0].required && <span style={{ color: 'red' }}>*</span>}
-                        </Form.Label>
-                    </Form.Group>
-                    <Col className='align-self-center' sm='12'>
-                        <Reminder message='Required Field' disabled={!(errors[item[0].field_id] && saved)}>
+                        <Col sm='8' className='align-self-center'>
                             <Form.Check type="radio" xs='2'
                                 id={item[0].field_id + '_no'}
                                 inline
@@ -594,11 +522,9 @@ const SpecimenForm = ({ ...props }) => {
                                             dispatch(allactions.specimenErrorActions[item[0].field_id](true))
                                         }
                                     }} />
-                                <Form.Check.Label
-                                    style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
-                                >
+                                <Form.Check.Label>
                                     No
-                                </Form.Check.Label>
+                                        </Form.Check.Label>
                             </Form.Check>
                             <Form.Check type="radio" xs='2'
                                 id={item[0].field_id + '_yes'}
@@ -614,11 +540,112 @@ const SpecimenForm = ({ ...props }) => {
                                             dispatch(allactions.specimenErrorActions[item[0].field_id](true))
                                         }
                                     }} />
-                                <Form.Check.Label style={errors[item[0].field_id] && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                <Form.Check.Label >
                                     Yes
-                            </Form.Check.Label>
+                                    </Form.Check.Label>
                             </Form.Check>
-                        </Reminder>
+
+                            {(errors[item[0].field_id] && saved) && <span className="ml-3 text-danger">Required Field</span>}
+
+                        </Col>
+                    </Col>
+
+                    <Col className='mb-0 pl-0' sm='12'>
+                        <Col sm='4'>
+                            Collected at other time points  {item[1].required && <span style={{ color: 'red' }}>*</span>}
+                        </Col>
+                        <Col sm='8' className='align-self-center' >
+                            <Form.Check type="radio" xs='2'
+                                id={item[1].field_id + '_no'}
+                                inline
+                                style={{ fontWeight: 'normal ' }}
+                                name={item[1].field_id}>
+                                <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                    checked={specimen[item[1].field_id] === 0}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions[item[1].field_id](0));
+                                            dispatch(allactions.specimenErrorActions[item[1].field_id](true))
+                                        }
+                                    }} />
+                                <Form.Check.Label>
+                                    No
+                                       </Form.Check.Label>
+                            </Form.Check>
+                            <Form.Check type="radio" xs='2'
+                                id={item[1].field_idy + '_yes'}
+                                inline
+                                style={{ fontWeight: 'normal ' }}
+                                name={item[1].field_id}>
+                                <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[1].field_id] === 1}
+                                    onClick={() => {
+                                        if (!isReadOnly) {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions[item[1].field_id](1));
+                                            dispatch(allactions.specimenErrorActions[item[1].field_id](true))
+                                        }
+                                    }} />
+                                <Form.Check.Label >
+                                    Yes
+                                    </Form.Check.Label>
+                            </Form.Check>
+
+                            {(errors[item[1].field_id] && saved) && <span className="ml-3 text-danger">Required Field</span>}
+
+                        </Col>
+                    </Col>
+                </Form.Group>
+            )
+        else
+            return (
+                < Form.Group as={Row} sm='12'  >
+                    <Form.Group as={Row} className="mb-0 pl-4">
+                        <Form.Label column sm='12'>
+                            <span> {field.title} </span> {item[0].required && <span style={{ color: 'red' }}>*</span>}
+
+                            {(errors[item[0].field_id] && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
+
+                        </Form.Label>
+                    </Form.Group>
+                    <Col className='align-self-center' sm='12'>
+                        <Form.Check type="radio" xs='2'
+                            id={item[0].field_id + '_no'}
+                            inline
+                            style={{ fontWeight: 'normal' }}
+                            name={item[0].field_id}>
+                            <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                checked={specimen[item[0].field_id] === 0}
+                                readOnly={isReadOnly}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(setHasUnsavedChanges(true));
+                                        dispatch(allactions.specimenActions[item[0].field_id](0));
+                                        dispatch(allactions.specimenErrorActions[item[0].field_id](true))
+                                    }
+                                }} />
+                            <Form.Check.Label>
+                                No
+                                </Form.Check.Label>
+                        </Form.Check>
+                        <Form.Check type="radio" xs='2'
+                            id={item[0].field_id + '_yes'}
+                            inline
+                            style={{ fontWeight: 'normal' }}
+                            name={item[0].field_id}>
+                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen[item[0].field_id] === 1}
+                                readOnly={isReadOnly}
+                                onClick={() => {
+                                    if (!isReadOnly) {
+                                        dispatch(setHasUnsavedChanges(true));
+                                        dispatch(allactions.specimenActions[item[0].field_id](1));
+                                        dispatch(allactions.specimenErrorActions[item[0].field_id](true))
+                                    }
+                                }} />
+                            <Form.Check.Label>
+                                Yes
+                            </Form.Check.Label>
+                        </Form.Check>
                     </Col>
 
                 </Form.Group>
