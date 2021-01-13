@@ -11,7 +11,6 @@ import Information from '../Information/Information';
 import Contact from '../Contact/Contact';
 import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
 import ManageCohort from '../Admin/ManageCohort'
-import ReviewCohort from '../Admin/ReviewCohort'
 import NewCohort from '../Admin/AddNewCohort'
 import SelectCohort from '../SelectCohort/SelectCohort';
 import ManageUser from '../Admin/ManageUser'

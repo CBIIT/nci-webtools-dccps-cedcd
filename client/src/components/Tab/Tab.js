@@ -51,7 +51,7 @@ export default function Tab(props) {
       url = '/home';
     
     name="Questionnaire"
-    target = "_self"
+    // target = "_self"
   }
   else{
     name="Home";
