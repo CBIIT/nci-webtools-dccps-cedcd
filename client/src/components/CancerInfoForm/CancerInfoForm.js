@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import DatePicker from 'react-datepicker';
 import classNames from 'classnames'
 import Form from 'react-bootstrap/Form';
@@ -45,6 +46,7 @@ const CancerInfoForm = ({ ...props }) => {
         setErrors(getValidationErrors(formValues));
         dispatch(mergeCancerInfoFormValues(formValues));
     };
+    const history = useHistory();
 
     const lookupMap = {
         female: lookup && lookup.gender.find(e => e.gender === 'Female'),
@@ -308,7 +310,8 @@ const CancerInfoForm = ({ ...props }) => {
 
             if (id != cohortId) {
                 dispatch(allactions.cohortIDAction.setCohortId(id));
-                window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, id));
+                history.push(window.location.pathname.replace(/\d+$/, id));
+                // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, id));
             }
 
             dispatch(fetchCohort(id));

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import classNames from 'classnames';
 import allactions from '../../actions'
 import dataLinkageActions from '../../actions/dataLinkageActions'
@@ -36,6 +37,7 @@ const DataLinkageForm = ({ ...props }) => {
     })
     const [userEmails, setEmails] = useState('')
     const [message, setMessage] = useState('')
+    const history = useHistory();
 
     const isReadOnly = props.isReadOnly;
 
@@ -205,7 +207,8 @@ const DataLinkageForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))

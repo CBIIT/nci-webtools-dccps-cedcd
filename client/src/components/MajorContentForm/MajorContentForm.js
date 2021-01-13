@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from 'react-router-dom';
 import allactions from '../../actions'
 import Messenger from '../Snackbar/Snackbar'
 import CenterModal from '../controls/modal/modal'
@@ -27,6 +28,7 @@ const MajorContentForm = ({ ...props }) => {
     const [modalShow, setModalShow] = useState(false)
     const [hasErrors, setHasErrors] = useState(false)
     const [proceed, setProceed] = useState(false)
+    const history = useHistory();
     
     //const cohortId = +window.location.pathname.split('/').pop();
 
@@ -305,6 +307,7 @@ const MajorContentForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                         if(result.data.status && result.data.status != cohortStatus){
                             dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status}))
                             dispatch(fetchCohort(result.data.duplicated_cohort_id))

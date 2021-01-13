@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext} from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from 'react-router-dom';
 import allactions from '../../actions'
 import validator from '../../validators'
 import Person from './Person/Person'
@@ -43,6 +44,7 @@ const CohortForm = ({ ...props }) => {
     const [fileListTile, setFileListTitle] = useState('')
     const [currentFileList, setCurrentFileList] = useState([])
     const [currentFileListName, setCurrentFileListName] = useState('')
+    const history = useHistory();
 
     useEffect(() => {
         if (!cohort.hasLoaded || tempId != cohortID) {
@@ -204,7 +206,8 @@ const CohortForm = ({ ...props }) => {
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
-                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     }
                     if (result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
 

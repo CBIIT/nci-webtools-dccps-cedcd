@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Reminder from '../Tooltip/Tooltip';
 import { useSelector, useDispatch, batch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import allactions from '../../actions';
 //import validator from '../../validators'
@@ -33,6 +34,7 @@ const EnrollmentCountsForm = ({...props}) => {
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
     const [activePanel, setActivePanel] = useState('panelA');
+    const history = useHistory();
     //const cohortId = +window.location.pathname.split('/').pop();
     //const [errors, setErrors] = useState({mostRecentDate: 'please provide a value'})
     function updateCells(cellid, amount){
@@ -109,7 +111,8 @@ const EnrollmentCountsForm = ({...props}) => {
                     if(result.data){
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID){
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
                         if (result.data.status && result.data.status != cohortStatus){
                             dispatch(({type: 'SET_COHORT_STATUS', value: result.data.status})) 

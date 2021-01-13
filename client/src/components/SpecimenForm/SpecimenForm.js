@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
+import { useHistory } from "react-router-dom";
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -28,6 +29,7 @@ const SpecimenForm = ({ ...props }) => {
     const lookup = useSelector(state => state.lookupReducer)
     const specimen = useSelector(state => state.specimenReducer)
     const section = useSelector(state => state.sectionReducer)
+    const history = useHistory();
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [failureMsg, setFailureMsg] = useState(false)
@@ -433,7 +435,8 @@ const SpecimenForm = ({ ...props }) => {
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
