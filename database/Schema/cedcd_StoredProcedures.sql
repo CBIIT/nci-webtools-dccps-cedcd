@@ -1050,6 +1050,8 @@ BEGIN
     begin
 	  if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
 	  end if;
 	  SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
 	end;
@@ -1420,6 +1422,9 @@ BEGIN
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
+		
 	end if;
 	SELECT `status` from cohort where id = new_id;
     
@@ -1760,6 +1765,8 @@ BEGIN
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
 	end if;
 	SELECT `status` from cohort where id = new_id;
 	
@@ -2308,6 +2315,8 @@ update specimen_collected_type set collected_yn = if(JSON_UNQUOTE(JSON_EXTRACT( 
   SELECT cohortID as duplicated_cohort_id;
   if exists (select * from cohort where id = cohortID and status = 'new') then
 	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
+	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (cohortID, 1, concat('cohort status updated from new to draft. ', cohortID), null);
   end if;
   SELECT `status` from cohort where id = cohortID;
   end ;
@@ -2362,10 +2371,12 @@ BEGIN
         if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
             select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         else -- if copy not exists, create a new one
-           insert cohort (name, acronym, status, publish_by, create_time, update_time) select name, acronym, 'draft', null, now(), now() from cohort
+           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time) select name, acronym, 'draft', null,'v8', now(), now() from cohort
            where id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
+
+		   insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, 1, concat('create new cohort from pubished cohort id ', targetID), null);
  
         end if;
     end if;
@@ -2536,15 +2547,23 @@ insert into technology (cohort_id,tech_use_of_mobile, tech_use_of_mobile_describ
 select new_cohort_id, old.tech_use_of_mobile, old.tech_use_of_mobile_describe, old.tech_use_of_cloud, old.tech_use_of_cloud_describe, now() as col1, now() as col2
 from technology as old where old.cohort_id =old_cohort_id;
 
+
 -- insert update supporting tables ,for published cohort, 
+
+SELECT document_ver INTO @cohort_ver FROM cohort where id = old_cohort_id;
+
+if @cohort_ver = 'v8' then set @new_status = 'complete' ;
+else set @new_status = 'incomplete' ;
+END IF;
+
 insert into cohort_edit_status (cohort_id, page_code, status)
-values ( new_cohort_id, 'A', 'complete'),
-( new_cohort_id, 'B', 'complete'),
-( new_cohort_id, 'C', 'complete'),
-( new_cohort_id, 'D', 'complete'),
-( new_cohort_id, 'E', 'complete'),
-( new_cohort_id, 'F', 'complete'),
-( new_cohort_id, 'G', 'complete');
+values ( new_cohort_id, 'A', @new_status),
+( new_cohort_id, 'B', @new_status ),
+( new_cohort_id, 'C', @new_status ),
+( new_cohort_id, 'D', @new_status ),
+( new_cohort_id, 'E', @new_status ),
+( new_cohort_id, 'F', @new_status ),
+( new_cohort_id, 'G', @new_status );
 
 /* update log table 
 insert into cohort_activity_log (cohort_id, user_id, activity, notes, create_time)
@@ -2625,6 +2644,7 @@ BEGIN
 	SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
 	end if;
 	SELECT `status` from cohort where id = targetID;
     end;
@@ -2741,6 +2761,9 @@ BEGIN
     SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+		values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
+		
 	end if;
 	SELECT `status` from cohort where id = targetID;
     
@@ -2780,12 +2803,17 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+    DECLARE new_id INT DEFAULT 0;
 
 	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
-	insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,now());
+	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'v8',now());
+    set new_id = last_insert_id();
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+        
+	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+    values (new_id, JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))), 'create new cohort', null);
 
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
 
@@ -2829,7 +2857,7 @@ BEGIN
         group by user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
        (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-        from user u where u.id > 1 ", @status_query , @orderBy, @paging);
+        from user u where u.id > 0 ", @status_query , @orderBy, @paging);
 
 	
     PREPARE stmt FROM @query;

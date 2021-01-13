@@ -116,6 +116,7 @@ const CohortForm = ({ ...props }) => {
 
                         if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
                         if ([0, 1].includes(currentCohort.clarification_contact)) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
+
                         if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
                         if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
                         if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
@@ -166,20 +167,26 @@ const CohortForm = ({ ...props }) => {
                         if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
                         if (completer && completer.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
 
-
-                        if (currentCohort.clarification_contact === 1 && completer) {
-                            if (completer.completerName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                            if (completer.completerPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                            if (completer.completerEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
-                        } else if (contacter) {
-                            if (contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                            if (contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                            if (contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
+                        if (currentCohort.clarification_contact === 1){
+                            dispatch(allactions.cohortErrorActions.contacterName(true)) 
+                            dispatch(allactions.cohortErrorActions.contacterPosition(true)) 
+                            dispatch(allactions.cohortErrorActions.contacterEmail(true)) 
+                        }else{
+                            if (contacter && contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
+                            if (contacter && contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
+                            if (contacter && contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
                         }
 
-                        if (contacter && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
-                        if (contacter && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
-                        if (contacter && collaborator.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
+
+                        if([0, 1].includes(currentCohort.sameAsSomeone)){
+                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
+                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
+                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
+                        }else{
+                            if (collaborator && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
+                            if (collaborator && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
+                            if (collaborator && collaborator.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
+                        }
 
                         for (let i = 0; i < investigators.length; i++) {
                             if (investigators[i].name) { dispatch(allactions.cohortErrorActions.investigatorName(i, true)) }

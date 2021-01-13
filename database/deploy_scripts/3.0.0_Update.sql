@@ -6,7 +6,8 @@
 *
 */
 
-user cedcd;
+use cedcd;
+
 
 DELIMITER //
 
@@ -42,7 +43,9 @@ begin
     ("chop2","Phyllip","Cho","SystemAdmin","Y","NULL","phyllip.cho@nih.gov","2020-12-14 18:21:41",now()),
     ("phyllip.cho@nih.gov","Phyllip","Cho","CohortAdmin","Y","NULL","phyllip.cho@nih.gov","2020-12-14 18:21:41",now()),
     ("uddins2","Shomir","Uddin","SystemAdmin","Y","NULL","shomir.uddin@nih.gov","2020-12-28 15:49:13",now()),
-    ("shomir.uddin@nih.gov","Shomir","Uddin","CohortAdmin","Y","NULL","shomir.uddin@nih.gov","2020-12-28 16:20:33",now());
+    ("shomir.uddin@nih.gov","Shomir","Uddin","CohortAdmin","Y","NULL","shomir.uddin@nih.gov","2020-12-28 16:20:33",now()),
+    ("diego.juarez@nih.gov","Diego","Juarez","CohortAdmin","Y","NULL","diego.juarez@nih.gov","2020-12-28 16:20:33",now()),
+    ("juarezds","Diego","Juarez","SystemAdmin","Y","NULL","diego.juarez@nih.gov","2020-12-28 16:20:33",now());
 
     insert into cohort_user_mapping (cohort_acronym, user_id, update_time)
     select "ATBC", user.id, now() from user where user.user_name in ( 
@@ -52,7 +55,8 @@ begin
     "zhaox18@nih.gov",
     "kevin.matarodriguez@nih.gov",
     "ben.chen@nih.gov",
-    "shomir.uddin@nih.gov");
+    "shomir.uddin@nih.gov",
+    "diego.juarez@nih.gov");
 
     insert into cohort_user_mapping (cohort_acronym, user_id, update_time)
     select "PLCO", user.id, now() from user where user.user_name in ( 
@@ -62,6 +66,40 @@ begin
     "ben.chen@nih.gov");
           
     end if;
+
+     # add cohort_basic  column
+    if (
+        select count(*) = 0
+        from information_schema.COLUMNS
+        where
+            TABLE_SCHEMA = database() and
+            TABLE_NAME = 'cohort_basic' and
+            COLUMN_NAME in ( 'strategy_committees', 'strategy_participant_input')
+    ) then
+        alter table cohort_basic
+        add strategy_committees int null after strategy_individual_study;
+
+        alter table cohort_basic
+        add strategy_participant_input int null after strategy_invitation;
+    end if;
+
+     # add cohort document_ver  column
+    if (
+        select count(*) = 0
+        from information_schema.COLUMNS
+        where
+            TABLE_SCHEMA = database() and
+            TABLE_NAME = 'cohort' and
+            COLUMN_NAME ='document_ver'
+    ) then
+        ALTER TABLE `cedcd`.`cohort` 
+        ADD COLUMN `document_ver` VARCHAR(45) NULL AFTER `publish_time`;
+
+        update cohort set document_ver = 'v4' where id > 0 and document_ver is null and status ='published';
+        update cohort set document_ver = 'v8' where id > 0 and document_ver is null and status !='published';
+    
+    end if;
+
 
     commit;
 end //
