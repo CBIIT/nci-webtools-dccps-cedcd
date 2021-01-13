@@ -732,10 +732,12 @@ BEGIN
 		and cm.acronym = ?
 		order by
 			status = 'draft' desc,
+			status = 'rejected' desc,
 			status = 'in review' desc,
 			status = 'submitted' desc,
 			status = 'new' desc,
-			status = 'published' desc
+			status = 'published' desc,
+			status = 'archived' desc,
 		limit 1;
 	";
     set @user_id = user_id;
@@ -743,6 +745,31 @@ BEGIN
 	EXECUTE stmt using @user_id;
 	DEALLOCATE PREPARE stmt;
 END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_contact_for_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_contact_for_cohort` //
+CREATE PROCEDURE `select_contact_for_cohort`(in cohort_id int)
+BEGIN
+    set @query = "
+		select * from person
+		where
+			cohort_id = ?
+			and email is not null
+			and email != ''
+		order by
+			category_id = 2 desc,
+			category_id = 1  desc
+		limit 1;
+	";
+    set @cohort_id = cohort_id;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
+END //
+
+
 
 
 -- -----------------------------------------------------------------------------------------------------------

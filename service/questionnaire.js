@@ -9,6 +9,7 @@ var config = require('../config');
 var mail = require('../components/mail');
 const { getCohort, saveCohort } = require('./models/cohort');
 const { ifError } = require('assert');
+const { send } = require('process');
 
 router.use((request, response, next) => {
     const { session } = request;
@@ -576,5 +577,42 @@ router.post('/reset_cohort_status/:id/:status', function (req, res) {
     })
 })
 
+
+router.post('/reject/:id', async function (req, res) {
+    const { app, params, body, session } = request;
+    const { mysql } = app.locals;
+    const id = params ? params.id : undefined; // can be undefined (for new cohorts)
+
+    const { notes, hostname } = body;
+    const updates = {
+        status: 'rejected',
+        cohort_activity_log: [{
+            user_id: req.session.user.id,
+            activity: 'rejected',
+            notes,
+        }]
+    }
+
+    await saveCohort(mysql, updates, id, session.user);
+    const [contact] = await mysql.query(
+        `call select_contact_for_cohort(?);`,
+        cohortId
+    );
+
+    mail.sendMail(
+        config.mail.from, 
+        contact.email, 
+        `Review Comments for Cohort Questionnaire - ${cohort.name}`,
+        '', 
+        String(fs.readFileSync(path.resolve(__dirname, 'templates/email-reject-template')))
+            .replace(/\{user\}/g, `${contact.name}`)
+            .replace(/\{website\}/g, hostname)
+            .replace(/\{cohortName\}/g, cohort.name)
+            .replace(/\{cohortAcronym\}/g, cohort.acronym)
+            .replace(/\{reviewComments\}/g, notes)
+        );
+
+    response.json(true);
+})
 
 module.exports = router

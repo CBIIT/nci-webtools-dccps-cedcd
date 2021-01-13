@@ -5,7 +5,14 @@ var cache = require('../components/cache');
 var config = require('../config');
 var logger = require('../components/logger');
 
-const { join } = require('lodash');
+router.use((request, response, next) => {
+    const { session } = request;
+    if (!session.user || !/SystemAdmin/.test(session.user.role)) {
+        response.status(400).json('Unauthorized').end();
+    } else {
+        next();
+    }
+});
 
 router.post('/admincohortlist', function (req, res) {
 	let body = req.body;
@@ -149,5 +156,6 @@ router.post('/updateUserProfile/:id', function (req, res) {
 	})
 
 });
+
 
 module.exports = router;
