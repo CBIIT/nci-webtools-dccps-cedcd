@@ -490,8 +490,14 @@ const CohortForm = ({ ...props }) => {
             else if(currentKey.includes('median') || currentKey.includes('mean'))
                 checkWithError |= currentValue < cohort.enrollment_age_min || currentValue > cohort.enrollment_age_max
         }else{
-            if(currentKey.includes('min')) //current_age_min
-                checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+            if(currentKey.includes('min')){//current_age_min
+                if(cohort.current_age_max && cohort.current_age_median && cohort.current_age_mean)
+                    checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+                else if (cohort.current_age_max && cohort.current_age_median) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median)
+                else if(cohort.current_age_median && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_mean, cohort.current_age_median)
+                else if (cohort.current_age_max && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_mean)
+                else if (cohort.current_age_max) checkWithError |= currentValue > cohort.current_age_max
+            }
             else if(currentKey.includes('max'))
                 checkWithError |= currentValue < Math.max(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
             else if(currentKey.includes('median') || currentKey.includes('mean'))
