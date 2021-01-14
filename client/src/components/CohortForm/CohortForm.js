@@ -456,7 +456,7 @@ const CohortForm = ({ ...props }) => {
             else if(cohort.current_age_mean < value || cohort.current_age_mean > cohort.current_age_max)
                 dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
             
-        } */
+        } 
     }
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
@@ -1722,7 +1722,7 @@ const CohortForm = ({ ...props }) => {
                                                 <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
                                             </InputGroup.Append>
                                             {errors.enrollment_age_max && saved ? 
-                                                <Reminder message={errors.enrollment_age_max}>
+                                                <Reminder message={errors.enrollment_age_max} >
                                                     <Form.Control type="text" className='text-capitalize'
                                                         style={{ color: 'red', border: '1px solid red' }} 
                                                         name='enrollment_age_max' 
