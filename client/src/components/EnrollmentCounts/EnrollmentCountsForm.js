@@ -432,10 +432,7 @@ const EnrollmentCountsForm = ({...props}) => {
                                                             dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
                                                         } else { 
                                                             console.log(date.getFullYear().toString())
-                                                            if(!/^\d\d\d\d$/.test(date.getFullYear().toString())){  
-                                                                //dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Invalid date'))
-                                                            }
-                                                            else{
+                                                            if(/^\d\d\d\d$/.test(date.getFullYear().toString())){  
                                                                 dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
                                                                 dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
                                                             }
