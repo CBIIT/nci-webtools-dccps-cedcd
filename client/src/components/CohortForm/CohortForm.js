@@ -339,7 +339,51 @@ const CohortForm = ({ ...props }) => {
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
+    const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
+        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
+        if (result) {
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
+        } else {
+            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+        }
+    }
 
+    const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
+        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
+        if (result) {
+            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
+        } else {
+            dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+        }
+    }
+
+    const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
+        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
+        if (result) {
+            dispatch(allactions.cohortErrorActions.current_age_min(false, result))
+        } else {
+            dispatch(allactions.cohortErrorActions.current_age_min(true))
+        }
+    }
+
+    const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
+        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
+        if (result) {
+            dispatch(allactions.cohortErrorActions.current_age_max(false, result))
+        } else {
+            dispatch(allactions.cohortErrorActions.current_age_max(true))
+        }
+    }
+
+    const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
+        const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
+        if (result) {
+            dispatch(allactions.cohortErrorActions[fieldName](false, result))
+        } else {
+            dispatch(allactions.cohortErrorActions[fieldName](true))
+        }
+    }
+/*
     const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
         if(checkFourAges('enrollment_age_min', value)){
             if(maxAge && medianAge && meanAge)
@@ -389,7 +433,8 @@ const CohortForm = ({ ...props }) => {
     }
 
     const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-        if(checkFourAges('current_age_min', value)){
+        let result  = 
+       if(checkFourAges('current_age_min', value)){
             if(!value || maxAge && medianAge && meanAge){
                 dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
 
@@ -411,7 +456,7 @@ const CohortForm = ({ ...props }) => {
             else if(cohort.current_age_mean < value || cohort.current_age_mean > cohort.current_age_max)
                 dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
             
-        }
+        } */
     }
 
     const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
@@ -506,6 +551,8 @@ const CohortForm = ({ ...props }) => {
 
         return checkWithError
     }
+
+    */
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
