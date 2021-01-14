@@ -420,10 +420,5 @@ class ManageCohort extends Component {
 	}
 }
 
-const mapStateToProps = function ({ user }) {
-	return {
-		user: user.id
-	}
-}
 
-export default connect(mapStateToProps)(ManageCohort);
+export default ManageCohort;
