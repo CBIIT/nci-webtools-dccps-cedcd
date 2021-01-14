@@ -3004,9 +3004,9 @@ const CohortForm = ({ ...props }) => {
                                         <Table bordered condensed className="table-valign-middle">
                                             <thead>
                                                 <tr>
-                                                    <th className="text-center">Document</th>
-                                                    <th className="text-center">Website URL (preferred)</th>
-                                                    <th className="text-center">Attached (if url not applicable)</th>
+                                                    <th className="text-center w-25">Document</th>
+                                                    <th className="text-center w-25">Website URL (preferred)</th>
+                                                    <th className="text-center w-50">Attached (if url not applicable)</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
