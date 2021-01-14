@@ -22,6 +22,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -1137,18 +1138,20 @@ const CohortForm = ({ ...props }) => {
                                     A.5 Cohort Principal Investigator(s)
                                 </Form.Label>
                                 <Col sm="12">
-                                    <button className="btn btn-primary btn-sm mb-1" 
+                                    <Button 
+                                        variant="primary" 
+                                        className="col-lg-2 col-md-6" 
+                                        disabled={isReadOnly}
                                         onClick={e => { 
                                             e.preventDefault(); 
                                             dispatch(allactions.cohortActions.addInvestigator()); 
                                             let idx = cohort.investigators.length; 
                                             dispatch(allactions.cohortErrorActions.investigatorName(idx, false, errorMsg)); 
                                             dispatch(allactions.cohortErrorActions.investigatorInstitution(idx, false, errorMsg)); 
-                                            dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) }
-                                        } 
-                                        disabled={isReadOnly}>
+                                            dispatch(allactions.cohortErrorActions.investigatorEmail(idx, false, errorMsg)) 
+                                        }}>
                                         Add New Investigator
-                                    </button>
+                                    </Button>
                                 </Col>
                                 {
                                     cohort.investigators.map((item, idx) => 
@@ -2587,9 +2590,10 @@ const CohortForm = ({ ...props }) => {
                                                                                                 </span>
                                                                                                 <span>
                                                                                                     <a href='#' 
-                                                                                                        onClick={() => 
-                                                                                                            showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)
-                                                                                                        }>
+                                                                                                        onClick={e => {
+                                                                                                            e.preventDefault();
+                                                                                                            showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName);
+                                                                                                        }}>
                                                                                                         {cohort.questionnaireFileName.length - 1} more
                                                                                                     </a>
                                                                                                 </span>
@@ -2685,9 +2689,10 @@ const CohortForm = ({ ...props }) => {
                                                                                             </span>
                                                                                             <span>
                                                                                                 <a href='#' 
-                                                                                                    onClick={() => 
+                                                                                                    onClick={e => {
+                                                                                                        e.preventDefault();
                                                                                                         showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)
-                                                                                                    }>
+                                                                                                    }}>
                                                                                                     {cohort.mainFileName.length-1} more
                                                                                                 </a>
                                                                                             </span>
@@ -2783,9 +2788,10 @@ const CohortForm = ({ ...props }) => {
                                                                                                 </span>
                                                                                                 <span>
                                                                                                     <a href='#' 
-                                                                                                        onClick={() => 
+                                                                                                        onClick={e => {
+                                                                                                            e.preventDefault();
                                                                                                             showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)
-                                                                                                        }>
+                                                                                                        }}>
                                                                                                         {cohort.dataFileName.length - 1} more
                                                                                                     </a>
                                                                                                 </span>
@@ -2881,9 +2887,10 @@ const CohortForm = ({ ...props }) => {
                                                                                                 </span>
                                                                                                 <span>
                                                                                                     <a href='#' 
-                                                                                                        onClick={() => 
+                                                                                                        onClick={e => {
+                                                                                                            e.preventDefault();
                                                                                                             showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)
-                                                                                                        }>
+                                                                                                        }}>
                                                                                                         {cohort.specimenFileName.length - 1} more
                                                                                                     </a>
                                                                                                 </span>
@@ -2979,9 +2986,10 @@ const CohortForm = ({ ...props }) => {
                                                                                             </span>
                                                                                             <span>
                                                                                                 <a href='#' 
-                                                                                                    onClick={() => 
+                                                                                                    onClick={e => {
+                                                                                                        e.preventDefault();
                                                                                                         showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)
-                                                                                                    }>
+                                                                                                    }}>
                                                                                                     {cohort.publicationFileName.length - 1} more
                                                                                                 </a>
                                                                                             </span>
@@ -3084,9 +3092,10 @@ const CohortForm = ({ ...props }) => {
                                                                                 </span>
                                                                                 <span>
                                                                                     <a href='#' 
-                                                                                        onClick={() => 
+                                                                                        onClick={e => {
+                                                                                            e.preventDefault();
                                                                                             showFileList('Questionnaire Documents', 'questionnaireFileName', cohort.questionnaireFileName)
-                                                                                        }>
+                                                                                        }}>
                                                                                         {cohort.questionnaireFileName.length - 1} more
                                                                                     </a>
                                                                                 </span>
@@ -3172,9 +3181,10 @@ const CohortForm = ({ ...props }) => {
                                                                             </span>
                                                                             <span>
                                                                                 <a href='#' 
-                                                                                    onClick={() => 
+                                                                                    onClick={e => {
+                                                                                        e.preventDefault();
                                                                                         showFileList('Main Cohort Documents', 'mainFileName', cohort.mainFileName)
-                                                                                    }>
+                                                                                    }}>
                                                                                     {cohort.mainFileName.length-1} more
                                                                                 </a>
                                                                             </span>
@@ -3259,9 +3269,10 @@ const CohortForm = ({ ...props }) => {
                                                                                 </span>
                                                                                 <span>
                                                                                     <a href='#' 
-                                                                                        onClick={() => 
+                                                                                        onClick={e => {
+                                                                                            e.preventDefault();
                                                                                             showFileList('Data Sharing Documents', 'dataFileName', cohort.dataFileName)
-                                                                                        }>
+                                                                                        }}>
                                                                                         {cohort.dataFileName.length - 1} more
                                                                                     </a>
                                                                                 </span>
@@ -3346,9 +3357,10 @@ const CohortForm = ({ ...props }) => {
                                                                                 </span>
                                                                                 <span>
                                                                                     <a href='#' 
-                                                                                        onClick={() => 
+                                                                                        onClick={e => {
+                                                                                            e.preventDefault();
                                                                                             showFileList('Biospecimen Sharing Documents', 'specimenFileName', cohort.specimenFileName)
-                                                                                        }>
+                                                                                        }}>
                                                                                         {cohort.specimenFileName.length - 1} more
                                                                                     </a>
                                                                                 </span>
@@ -3431,9 +3443,10 @@ const CohortForm = ({ ...props }) => {
                                                                             </span>
                                                                             <span>
                                                                                 <a href='#' 
-                                                                                    onClick={() => 
+                                                                                    onClick={e => {
+                                                                                        e.preventDefault();
                                                                                         showFileList('Publication Policy Documents', 'publicationFileName', cohort.publicationFileName)
-                                                                                    }>
+                                                                                    }}>
                                                                                     {cohort.publicationFileName.length - 1} more
                                                                                 </a>
                                                                             </span>
