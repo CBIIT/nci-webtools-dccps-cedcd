@@ -593,41 +593,62 @@ router.post('/reset_cohort_status/:id/:status', function (req, res) {
     })
 })
 
-
-router.post('/reject/:id', async function (req, res) {
+router.post('/approve/:id', async function (request, response) {
     const { app, params, body, session } = request;
     const { mysql } = app.locals;
     const id = params ? params.id : undefined; // can be undefined (for new cohorts)
+    const userId = session.user.id;
 
-    const { notes, hostname } = body;
+    if (!/SystemAdmin/.test(session.user.role)) {
+        return response.status(400).json('Unauthorized').end();
+    }
+
+    const {acronym} = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
+    await mysql.query(
+        `update cohort
+            set status = 'archived'
+            where 
+                acronym = ? and 
+                status = 'published'`,
+        acronym
+    );
+
+    const updates = {
+        status: 'published',
+        publish_by: userId,
+        publish_time: new Date(),
+        cohort_activity_log: [{
+            user_id: userId,
+            activity: 'published',
+        }]
+    }
+
+    await saveCohort(mysql, updates, id, session.user);
+    response.json(true);
+})
+
+router.post('/reject/:id', async function (request, response) {
+    const { app, params, body, session } = request;
+    const { mysql } = app.locals;
+    const id = params ? params.id : undefined; // can be undefined (for new cohorts)
+    const userId = session.user.id;
+
+    if (!/SystemAdmin/.test(session.user.role)) {
+        return response.status(400).json('Unauthorized').end();
+    }
+
+    const { notes } = body;
     const updates = {
         status: 'rejected',
+        publish_by: userId,
         cohort_activity_log: [{
-            user_id: req.session.user.id,
+            user_id: userId,
             activity: 'rejected',
             notes,
         }]
     }
 
     await saveCohort(mysql, updates, id, session.user);
-    const [contact] = await mysql.query(
-        `call select_contact_for_cohort(?);`,
-        cohortId
-    );
-
-    mail.sendMail(
-        config.mail.from,
-        contact.email,
-        `Review Comments for Cohort Questionnaire - ${cohort.name}`,
-        '',
-        String(fs.readFileSync(path.resolve(__dirname, 'templates/email-reject-template')))
-            .replace(/\{user\}/g, `${contact.name}`)
-            .replace(/\{website\}/g, hostname)
-            .replace(/\{cohortName\}/g, cohort.name)
-            .replace(/\{cohortAcronym\}/g, cohort.acronym)
-            .replace(/\{reviewComments\}/g, notes)
-    );
-
     response.json(true);
 })
 
