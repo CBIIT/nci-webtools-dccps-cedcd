@@ -18,6 +18,7 @@ import { fetchCohort } from '../../reducers/cohort';
 import { postJSON } from '../../services/query';
 import * as fieldList from './specimenFieldList';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
+import { reject } from 'lodash';
 
 const SpecimenForm = ({ ...props }) => {
 
@@ -66,7 +67,8 @@ const SpecimenForm = ({ ...props }) => {
                                     cohortName: owner.name,
                                     cohortAcronym: owner.acronym,
                                     website: window.location.origin,
-                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC'
+                                    publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC',
+                                    reviewComments: status === 'returned' ? rejectionModal.notes : ''
                                 },
                                 email: owner.email,
                                 template: template,
@@ -163,7 +165,8 @@ const SpecimenForm = ({ ...props }) => {
                     ? `The cohort has been published.`
                     : `The cohort could not be published due to an internal error.`
             })
-            dispatch(fetchCohort(cohortId));            
+            dispatch(fetchCohort(cohortId));
+            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', 'published')        
         }
     }
 
@@ -185,8 +188,10 @@ const SpecimenForm = ({ ...props }) => {
                     ? `The current questionnaire has been rejected for publication and an email containing your comments has been sent to the cohort owner.`
                     : `The current questionnaire could not be rejected for publication due to an internal error.`
             });
+
             updateRejectionModal({show: false})
             dispatch(fetchCohort(cohortId));
+            sendEmail('/templates/email-reject-template.html', 'CEDCD Cohort Review Rejected - ', 'returned')     
         }
     }
 
@@ -255,10 +260,7 @@ const SpecimenForm = ({ ...props }) => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
 
-                        if (nextStatus === 'published')
-                            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', nextStatus)
-
-                        else if (nextStatus === 'submitted')
+                        if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
                     }
                 })

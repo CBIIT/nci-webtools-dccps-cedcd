@@ -2795,9 +2795,16 @@ begin
 	END;
 	
     START TRANSACTION;
-	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
-    begin
-		update cohort set `status` = cohort_status where id = targetID;
+	 begin
+        if( lower(cohort_status) = "published") then 
+		update cohort set `status` = cohort_status, publish_by = 1, 
+        cohort_last_update_date = now(), update_time = now()
+        where id = targetID;
+        else
+        update cohort set `status` = cohort_status , cohort_last_update_date = now(), update_time = now() where id = targetID;
+        end if;
+        insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+        values (targetID, 1, concat('cohort status updated to ',cohort_status ), null);
 	end;
 	end if;
     commit;
@@ -2858,7 +2865,7 @@ BEGIN
     set @query = concat("select sql_calc_found_rows id, concat(u.last_name,', ', u.first_name) as name, user_name, u.email,
        ( case when access_level like '%SystemAdmin' then 'Admin' else 'Cohort Owner' end) as user_role,
 	   ( case when access_level like '%SystemAdmin' then 'All' 
-	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ', ') as cohort_list 
         from (select * from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and user_id = u.id order by cohort_acronym ) as a
         group by user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
