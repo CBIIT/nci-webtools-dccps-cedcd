@@ -10,7 +10,7 @@ const ValidationModal = (props) => {
           }
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center py-5">
+      <Modal.Body className="text-center p-3">
         { props.body || 
           <span>There were validation errors. Do you still wish to save your current progress?</span>
         }
