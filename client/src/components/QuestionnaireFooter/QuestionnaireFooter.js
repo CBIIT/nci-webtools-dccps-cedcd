@@ -16,10 +16,15 @@ export default function QuestionnaireFooter({
     const section = useSelector(state => state.sectionReducer);
     const cohortStatus = useSelector(state => state.cohortStatusReducer);
     const saveDisabled = ['submitted', 'in review'].includes(cohortStatus);
+    const sectionsIncomplete = [section.A, section.B, section.C, section.D, section.E, section.F, section.G].some(status => status !== 'complete');
     const submitForReviewDisabled = (
         ['published', 'submitted', 'in review'].includes(cohortStatus) ||
-        [section.A, section.B, section.C, section.D, section.E, section.F, section.G].some(status => status !== 'complete')
+        sectionsIncomplete
     );
+    const approveOrRejectDisabled = (
+        !['submitted', 'in review'].includes(cohortStatus) ||
+        sectionsIncomplete
+    )
     const noop = e => {};
 
     return <Row className="mx-0 my-3">
@@ -45,14 +50,14 @@ export default function QuestionnaireFooter({
             <Button 
                 variant="primary" 
                 className="col-lg-2 col-md-6" 
-                disabled={!handleApprove}
+                disabled={approveOrRejectDisabled || !handleApprove}
                 onClick={handleApprove || noop}>
                 Approve
             </Button>
             <Button 
                 variant="primary" 
                 className="col-lg-2 col-md-6" 
-                disabled={!handleReject}
+                disabled={approveOrRejectDisabled || !handleReject}
                 onClick={handleReject || noop}>
                 Reject
             </Button>
@@ -76,7 +81,7 @@ export default function QuestionnaireFooter({
             <Button 
                 className="col-lg-2 col-md-4" 
                 variant="primary" 
-                disabled={submitForReviewDisabled}
+                disabled={submitForReviewDisabled || !handleSubmitForReview}
                 onClick={handleSubmitForReview || noop}>
                 Submit For Review
             </Button>
