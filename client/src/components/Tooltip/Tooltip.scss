@@ -1,3 +1,14 @@
+.tooltip-disabled {
+    .arrow {
+        display: none !important;
+    }
+    
+    .tooltip-inner {
+        display: none !important;
+    }
+}
+
+
 .tooltip-danger {
     .arrow::before {
         border-top-color: red !important;
