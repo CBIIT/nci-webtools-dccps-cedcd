@@ -733,7 +733,6 @@ DROP PROCEDURE IF EXISTS `select_cohort_for_user` //
 CREATE PROCEDURE `select_cohort_for_user`(in user_id int)
 BEGIN
 	
-
     set @query = "
 		select c.*
 		from cohort c
@@ -793,9 +792,9 @@ BEGIN
 		from cohort c
 		where acronym = ?
 		order by
+			status = 'rejected' desc,
 			status = 'draft' desc,
 			status = 'in review' desc,
-			status = 'rejectd' desc,
 			status = 'submitted' desc,
 			status = 'new' desc,
 			status = 'published' desc
