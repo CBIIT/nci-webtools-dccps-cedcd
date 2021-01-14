@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
@@ -272,6 +273,28 @@ class ManageCohort extends Component {
 		this.filterData(pageInfo.page, orderBy);
 	}
 
+	resetCohortStatus = (cohortID, currStatus) => {
+		if (['submitted'].includes(currStatus.toLowerCase())) {
+			let nextStatus = 'in review'
+			fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+				method: "POST"
+			}).then(res => res.json())
+				.then(result => {
+					if (result && result.status === 200) {
+						return true
+					}
+				})
+		}
+	}
+
+
+	saveHistory = (e, id, status) => {
+		e.preventDefault();
+		let review_url = `/admin/viewcohort/${id}`;
+		if (['submitted'].includes(status.toLowerCase())) (this.resetCohortStatus(id, status))
+
+		window.location.assign(window.location.origin + review_url);
+	}
 
 	renderTableHeader(title, width) {
 		return (
@@ -283,41 +306,18 @@ class ManageCohort extends Component {
 		const list = this.state.list;
 		let content = list.map((item, index) => {
 			let id = item.id;
-			//let view_url = '/cohort?id=' + id;
-			let review_url = `/admin/viewcohort/${id}`;
-			let view = "View";
-			let review = "Review";
-			let addNewCohortUrl = `/admin/newcohort`
-
-			let select_id = "select_" + id;
-			if (item.status.toLowerCase() === 'submitted' || item.status.toLowerCase() === 'in review') {
-				return (
-					<tr key={id}>
-						<td>{item.name}</td>
-						<td>{item.acronym}</td>
-						<td className="text-capitalize">{item.status}</td>
-						<td>{item.create_by}</td>
-						<td>{item.update_time}</td>
-						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{review}</Link>
-						</td>
-					</tr>
-				);
-			} else {
-				return (
-					<tr key={id}>
-						<td>{item.name}</td>
-						<td>{item.acronym}</td>
-						<td className="text-capitalize">{item.status}</td>
-						<td>{item.create_by}</td>
-						<td>{item.update_time}</td>
-						<td>
-							<Link to={review_url} onClick={this.saveHistory}>{view}</Link>
-						</td>
-					</tr>
-				);
-
-			}
+			return (
+				<tr key={id}>
+					<td>{item.name}</td>
+					<td>{item.acronym}</td>
+					<td className="text-capitalize">{item.status}</td>
+					<td>{item.create_by}</td>
+					<td>{item.update_time}</td>
+					<td>
+						<Link onClick={(e) => { this.saveHistory(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
+					</td>
+				</tr>
+			);
 		});
 		if (content.length === 0) {
 			content = (
@@ -327,11 +327,12 @@ class ManageCohort extends Component {
 			);
 		}
 
-		return <RequireAuthorization role="SystemAdmin">
+		return <RequireAuthorization role="SystemAdmin" >
 			<div>
 				<h1 className="welcome pg-title">Manage Cohorts</h1>
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
-      		    </p><p></p>
+		
+				</p><p></p>
 				<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '0' }}>
 					<div className="col-md-3 col-xs-6" >
 						<div className="input-group">
@@ -420,4 +421,10 @@ class ManageCohort extends Component {
 	}
 }
 
-export default ManageCohort;
+const mapStateToProps = function({user}) {
+	return {
+	  user: user.id
+  }
+}
+
+export default connect(mapStateToProps)(ManageCohort);
