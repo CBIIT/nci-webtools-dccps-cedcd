@@ -332,8 +332,8 @@ class ManageCohort extends Component {
 				<h1 className="welcome pg-title">Manage Cohorts</h1>
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
       		    </p><p></p>
-				<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '0' }}>
-					<div className="col-md-3 col-xs-6" >
+				<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '-15px' }}>
+					<div className="col-md-3 col-xs-6 p-0" >
 						<div className="input-group">
 							<div className="input-group-prepend">
 								<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>

@@ -45,7 +45,7 @@ class TableHeaderManageUser extends Component {
       cls = "";
     }
     return (
-      <th className="sortable" width={this.props.width} scope="col">
+      <th className="sortable text-nowrap" width={this.props.width} scope="col">
         <a href="javascript:void(0);" onClick={this.props.onClick} style={{ textDecoration: "none" }}>{name}
           {cls}
         </a>
