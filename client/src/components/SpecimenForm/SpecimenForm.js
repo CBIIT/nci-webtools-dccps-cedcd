@@ -15,6 +15,7 @@ import CenterModal from '../controls/modal/modal'
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
 import { fetchCohort } from '../../reducers/cohort';
+import { postJSON } from '../../services/query';
 import * as fieldList from './specimenFieldList';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 
@@ -32,7 +33,11 @@ const SpecimenForm = ({ ...props }) => {
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [failureMsg, setFailureMsg] = useState(false)
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState({ show: false, type: null, content: null })
+    const updateMessage = state => setMessage({...message, ...state});
+    const [rejectionModal, setRejectionModal] = useState({show: false, notes: ''});
+    const updateRejectionModal = state => setRejectionModal({...rejectionModal, ...state});
+    const [updateStatusDisabled, setUpdateStatusDisabled] = useState(false);
     const [modalShow, setModalShow] = useState(false)
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
@@ -141,13 +146,47 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
-    const handleApprove = () => {
+    const handleApprove = async () => {
+        let success;
 
-        resetCohortStatus(cohortId, 'published')
+        try {
+            success = await postJSON(`/api/questionnaire/approve/${cohortId}`);
+        } catch (e) {
+            console.log(e);
+            success = false;
+        } finally {
+            setUpdateStatusDisabled(true);
+            updateMessage({
+                show: true,
+                type: success ? 'success' : 'warning',
+                content: success 
+                    ? `The cohort has been published.`
+                    : `The cohort could not be published due to an internal error.`
+            })
+            dispatch(fetchCohort(cohortId));            
+        }
     }
 
-    const handleReject = () => {
-        resetCohortStatus(cohortId, 'returned')
+    async function handleReject() {
+        let success;
+
+        try {
+            success = await postJSON(`/api/questionnaire/reject/${cohortId}`, {notes: rejectionModal.notes});
+        } catch (e) {
+            console.log(e);
+            success = false;
+        } finally {
+            // success && sendEmail('/templates/email-reject-template.html', 'CEDCD Cohort Rejected - ', 'rejected')
+            setUpdateStatusDisabled(true);
+            updateMessage({
+                show: true,
+                type: success ? 'success' : 'warning',
+                content: success 
+                    ? `The current questionnaire has been rejected for publication and an email containing your comments has been sent to the cohort owner.`
+                    : `The current questionnaire could not be rejected for publication due to an internal error.`
+            });
+            dispatch(fetchCohort(cohortId));
+        }
     }
 
     const getValidationResult = (value, requiredOrNot, type) => {
@@ -841,7 +880,27 @@ const SpecimenForm = ({ ...props }) => {
         <Container fluid>
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
-            <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
+            {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({show: false})} />}
+            <CenterModal 
+                show={rejectionModal.show} 
+                title={<span>Reject Questionnaire Responses</span>}
+                body={<Form.Group className="text-left px-3">
+                    <Form.Label>
+                        Feedback for Cohort Owner
+                    </Form.Label>
+                    <Form.Control as="textarea" 
+                        value={rejectionModal.notes}
+                        onChange={ev => updateRejectionModal({ notes: ev.target.value})}
+                        placeholder="Max of 250 Characters"
+                        maxLength={250}
+                    />
+                </Form.Group>} 
+                footer={<>
+                    <button className="btn btn-light mr-1" onClick={_ => updateRejectionModal({show: false})}>Cancel</button>
+                    <button className="btn btn-primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</button>
+                </>} />
+            
+            {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}
             <Col md="12">
                 <Form>
                     <CollapsiblePanelContainer>
@@ -1585,8 +1644,8 @@ const SpecimenForm = ({ ...props }) => {
                     handleSave={handleSave}
                     handleSaveContinue={false}
                     handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
-                    handleApprove={handleApprove}
-                    handleReject={handleReject} />
+                    handleApprove={updateStatusDisabled ? null : handleApprove}
+                    handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({show: true})} />
 
             </Col>
         </Container>
