@@ -2796,9 +2796,16 @@ begin
 	END;
 	
     START TRANSACTION;
-	if exists (select * from lu_cohort_status where lower(cohortstatus) = cohort_status) then
-    begin
-		update cohort set `status` = cohort_status where id = targetID;
+	 begin
+        if( lower(cohort_status) = "published") then 
+		update cohort set `status` = cohort_status, publish_by = 1, 
+        cohort_last_update_date = now(), update_time = now()
+        where id = targetID;
+        else
+        update cohort set `status` = cohort_status , cohort_last_update_date = now(), update_time = now() where id = targetID;
+        end if;
+        insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
+        values (targetID, 1, concat('cohort status updated to ',cohort_status ), null);
 	end;
 	end if;
     commit;
