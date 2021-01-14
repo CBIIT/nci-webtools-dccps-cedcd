@@ -2875,8 +2875,10 @@ BEGIN
 	
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
-    select found_rows() as total;
+    
 	DEALLOCATE PREPARE stmt;
+
+	 select distinct name, acronym from cohort order by acronym;
 	
 END //
 
