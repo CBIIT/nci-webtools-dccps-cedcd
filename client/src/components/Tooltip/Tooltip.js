@@ -17,7 +17,7 @@ export default function Reminder(props) {
                     {props.message}
                 </Tooltip>
             }>
-            <span style={{padding:'0', margin: '0'}}>{props.children}</span>
+            <span className='p-0 m-0'>{props.children}</span>
         </OverlayTrigger>
 }
 
