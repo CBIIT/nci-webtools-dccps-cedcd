@@ -555,13 +555,13 @@ CREATE TABLE IF NOT EXISTS`cohort_edit_status` (
   CONSTRAINT `cohort_edit_chhort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
-CREATE TABLE IF NOT EXISTSIF NOT EXISTS  `mapping_old_file_Id_To_New` (
+CREATE TABLE IF NOT EXISTS  `mapping_old_file_Id_To_New` (
   `cohort_id` int NOT NULL,
   `old_file_id` int NOT NULL,
   `new_file_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTSIF NOT EXISTS `mapping_old_PI_Id_To_New` (
+CREATE TABLE IF  NOT EXISTS `mapping_old_PI_Id_To_New` (
   `cohort_id` int NOT NULL,
   `old_PI_Id` int NOT NULL,
   `new_PI_Id` int NOT NULL,
