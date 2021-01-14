@@ -1400,7 +1400,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_total && saved ? 
                                             <Reminder message={errors.enrollment_total}>
                                                 <Form.Control type="text"  
-                                                    style={{ color: 'red', border: '1px solid red' }}
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                     name='enrollment_total' 
                                                     value={cohort.enrollment_total} 
                                                     onChange={e => 
@@ -1411,6 +1411,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" 
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_total' 
                                                 value={cohort.enrollment_total} 
                                                 onChange={e => 
@@ -1431,7 +1432,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_year_start && saved ? 
                                             <Reminder message={errors.enrollment_year_start}>
                                                 <Form.Control type="text" 
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_year_start' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_start} 
@@ -1443,6 +1444,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> :
                                             <Form.Control   
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_year_start' 
                                                 placeholder='yyyy' 
                                                 value={cohort.enrollment_year_start} 
@@ -1463,7 +1465,7 @@ const CohortForm = ({ ...props }) => {
                                     <Col sm="2">
                                         {errors.enrollment_year_end && saved ? 
                                             <Reminder message={errors.enrollment_year_end}>
-                                                <input style={{ color: 'red', border: '1px solid red' }} 
+                                                <input style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     className='form-control' 
                                                     name='enrollment_year_end' 
                                                     placeholder='yyyy' 
@@ -1489,6 +1491,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 className='form-control' 
                                                 name='enrollment_year_end' 
                                                 placeholder='yyyy' 
@@ -1628,7 +1631,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_target && saved ? 
                                             <Reminder message={errors.enrollment_target}>
                                                 <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_target' 
                                                     value={cohort.enrollment_target} 
                                                     onChange={e => 
@@ -1641,6 +1644,7 @@ const CohortForm = ({ ...props }) => {
                                                     disabled={cohort.enrollment_ongoing == 0} />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_target' 
                                                 value={cohort.enrollment_target} 
                                                 onChange={e =>
@@ -1662,7 +1666,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_year_complete && saved ? 
                                             <Reminder message={errors.enrollment_year_complete}>
                                                 <Form.Control type="text" 
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_year_complete' 
                                                     placeholder='yyyy' 
                                                     value={cohort.enrollment_year_complete} 
@@ -1675,6 +1679,7 @@ const CohortForm = ({ ...props }) => {
                                                     disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                             </Reminder> : 
                                             <Form.Control type="text" 
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_year_complete' 
                                                 placeholder='yyyy' 
                                                 value={cohort.enrollment_year_complete} 
@@ -1697,7 +1702,7 @@ const CohortForm = ({ ...props }) => {
                                             {errors.enrollment_age_min && saved ? 
                                                 <Reminder message={errors.enrollment_age_min}>
                                                     <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
+                                                        style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                         name='enrollment_age_min' 
                                                         value={cohort.enrollment_age_min} 
                                                         onChange={e => 
@@ -1708,6 +1713,7 @@ const CohortForm = ({ ...props }) => {
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ minWidth: '100px', maxWidth: '100px' }}
                                                     name='enrollment_age_min' 
                                                     value={cohort.enrollment_age_min} 
                                                     onChange={e => 
@@ -1724,7 +1730,7 @@ const CohortForm = ({ ...props }) => {
                                             {errors.enrollment_age_max && saved ? 
                                                 <Reminder message={errors.enrollment_age_max} >
                                                     <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
+                                                        style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                         name='enrollment_age_max' 
                                                         value={cohort.enrollment_age_max} 
                                                         onChange={e => 
@@ -1735,6 +1741,7 @@ const CohortForm = ({ ...props }) => {
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ minWidth: '100px', maxWidth: '100px' }}
                                                     name='enrollment_age_max' 
                                                     value={cohort.enrollment_age_max} 
                                                     onChange={e => 
@@ -1756,7 +1763,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_age_median && saved ? 
                                             <Reminder message={errors.enrollment_age_median}>
                                                 <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_age_median' 
                                                     value={cohort.enrollment_age_median} 
                                                     onChange={e => 
@@ -1767,6 +1774,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_median' 
                                                 value={cohort.enrollment_age_median} 
                                                 onChange={e => 
@@ -1787,7 +1795,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.enrollment_age_mean && saved ? 
                                             <Reminder message={errors.enrollment_age_mean}>
                                                 <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_age_mean' 
                                                     value={cohort.enrollment_age_mean} 
                                                     onChange={e => 
@@ -1798,6 +1806,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_mean' 
                                                 value={cohort.enrollment_age_mean} 
                                                 onChange={e => 
@@ -1819,7 +1828,7 @@ const CohortForm = ({ ...props }) => {
                                             {errors.current_age_min && saved ? 
                                                 <Reminder message={errors.current_age_min}>
                                                     <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
+                                                        style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                         name='current_age_min' 
                                                         value={cohort.current_age_min} 
                                                         onChange={e => 
@@ -1830,6 +1839,7 @@ const CohortForm = ({ ...props }) => {
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ minWidth: '100px', maxWidth: '100px' }}
                                                     name='current_age_min' 
                                                     value={cohort.current_age_min} 
                                                     onChange={e => 
@@ -1846,7 +1856,7 @@ const CohortForm = ({ ...props }) => {
                                             {errors.current_age_max && saved ? 
                                                 <Reminder message={errors.current_age_max}>
                                                     <Form.Control type="text" className='text-capitalize'
-                                                        style={{ color: 'red', border: '1px solid red' }} 
+                                                        style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                         name='current_age_max' 
                                                         value={cohort.current_age_max} 
                                                         onChange={e => 
@@ -1857,6 +1867,7 @@ const CohortForm = ({ ...props }) => {
                                                         } />
                                                 </Reminder> : 
                                                 <Form.Control type="text" className='text-capitalize'
+                                                    style={{ minWidth: '100px', maxWidth: '100px' }}
                                                     name='current_age_max' 
                                                     value={cohort.current_age_max} 
                                                     onChange={e => 
@@ -1878,7 +1889,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.current_age_median && saved ? 
                                             <Reminder message={errors.current_age_median}>
                                                 <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='current_age_median' 
                                                     value={cohort.current_age_median} 
                                                     onChange={e => 
@@ -1889,6 +1900,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='current_age_median' 
                                                 value={cohort.current_age_median}
                                                 onChange={e => 
@@ -1909,7 +1921,7 @@ const CohortForm = ({ ...props }) => {
                                         {errors.current_age_mean && saved ? 
                                             <Reminder message={errors.current_age_mean}>
                                                 <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red' }} 
+                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='current_age_mean' 
                                                     value={cohort.current_age_mean} 
                                                     onChange={e => 
@@ -1920,6 +1932,7 @@ const CohortForm = ({ ...props }) => {
                                                     } />
                                             </Reminder> : 
                                             <Form.Control type="text" className='text-capitalize'
+                                                style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='current_age_mean' 
                                                 value={cohort.current_age_mean} 
                                                 onChange={e => 
