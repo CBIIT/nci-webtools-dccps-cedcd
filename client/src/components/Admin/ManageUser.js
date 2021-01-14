@@ -264,8 +264,8 @@ class ManageUser extends Component {
 					<h1 className="welcome pg-title">Manage Users</h1>
 					<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
-					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "0", "paddingBottom": "0px" }}>
-						<div className="col-md-4 col-8" style={{ "paddingBottom": "0px" }}>
+					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
+						<div className="col-md-4 col-8 pl-0" style={{ "paddingBottom": "0px" }}>
 
 							<div className="input-group">
 								<div className="input-group-prepend">

@@ -142,7 +142,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                             <button 
                                 className="btn btn-primary" 
                                 onClick={_ => setReviewModal({show: false})}>
-                                Acknowledge
+                                Close
                             </button>
                         </div>} />
                 </div>

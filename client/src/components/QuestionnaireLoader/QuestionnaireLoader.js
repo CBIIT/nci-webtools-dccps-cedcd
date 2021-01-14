@@ -9,7 +9,8 @@ import MortalityForm from '../MortalityForm/MortalityForm'
 import SpecimenForm from '../SpecimenForm/SpecimenForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 //import { defaultProps } from 'react-select/src/Select'
-const content = (currentSection, readOnlyOrNot = false) => {
+
+const Content = ({currentSection, readOnlyOrNot = false}) => {
     switch (currentSection) {
         case 'A':
             return <CohortForm isReadOnly={readOnlyOrNot} />
@@ -36,7 +37,7 @@ const QuestionnaireLoader = (props) => {
         props.isReadOnly ? props.setAdmin(1) : props.setAdmin(2)
     }, [])
     return <Questionnaire activeSection={current} handler={(section) => setCurrent(section)} isReadOnly={props.isReadOnly} >
-        {content(current, props.isReadOnly)}
+        <Content currentSection={current}  readOnlyOrNot={props.isReadOnly} />
     </Questionnaire>
 }
 

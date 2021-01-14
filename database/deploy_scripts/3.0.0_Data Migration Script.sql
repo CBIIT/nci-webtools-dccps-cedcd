@@ -1444,7 +1444,7 @@ DELIMITER ;
 Generate data for major table cohort from old cedcd schema
 */
 insert into cohort (id, name, acronym, create_by, status, cohort_last_update_date, publish_time,document_ver,create_time, update_time)
-select cohort_id, cohort_name, cohort_acronym, 1, 'published',update_time, update_time, 'v4', create_time,update_time
+select cohort_id, cohort_name, cohort_acronym, 1, 'published',update_time, update_time, '4.0', create_time,update_time
 from cedcd_old.cohort_basic;
 
 /*
