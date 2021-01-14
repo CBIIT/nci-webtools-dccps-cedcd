@@ -1486,7 +1486,6 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15h {'  '}How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {/* ERROR CAUSING REMINDER BECAUSE OF INDENT BELOW ??? */}
                                     <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
                                         <Form.Control type="text"
                                             style={+specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
@@ -1502,10 +1501,7 @@ const SpecimenForm = ({ ...props }) => {
                                                 if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
                                             }}
                                             onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
-                                        /> 
-                                    </Reminder>
-                                    {/* ERROR CAUSING REMINDER BECAUSE OF INDENT ABOVE ??? */}
-                                    {/* When  G.15 = Yes but form below is empty*/}
+                                        /> </Reminder>
                                 </Col>
                             </Form.Group>
 
