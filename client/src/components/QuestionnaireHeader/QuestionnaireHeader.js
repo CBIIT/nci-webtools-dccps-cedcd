@@ -91,68 +91,7 @@ const QuestionnaireHeader = ({ ...props }) => {
         { label: 'Data Linkage & Harmonization', value: 'F' },
         { label: 'Specimen', value: 'G' },
     ];
-/* 
-    const NavPoint = ({s={label: '', value: ''}}) => {
-        let func = {
-            A: v => setARing(v),
-            B: v => setBRing(v),
-            C: v => setCRing(v),
-            D: v => setDRing(v),
-            E: v => setERing(v),
-            F: v => setFRing(v),
-            G: v => setGRing(v)
-        }[s.value]
-        
-        let currentSection = {
-            A: ARing,
-            B: BRing,
-            C: CRing,
-            D: DRing,
-            E: ERing,
-            F: FRing,
-            G: GRing
-        }[s.value]
 
-
-       
-        let defaultStyle = {flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid ' + pickColor(sectionStatus[s.value]) }
-
-        let currentStyle = (v) => {return {flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: `2px solid ${`${currentSection}`}`}}
-
-        return  <div id={`section${s.value}`} style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler(s.value)}>
-        <div style={{ display: 'flex' }}>
-            {
-                ['B', 'C', 'D', 'E', 'F','G'].includes(s.value) ? 
-                    <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
-                    :
-                    <div style={{ flex: '1' }}></div>
-            }
-            {['in review'].includes(status) ? <div>
-                    <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
-                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
-                    </div>
-                </div>
-                :
-                <div onMouseEnter={() => func('blue')} onMouseMove={() => func('blue')} onMouseOut={() => func('')}>
-                    <div style={currentSection !== '' ? currentStyle(currentSection) : defaultStyle}>
-                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus[s.value]), margin: 'auto' }}></div>
-                    </div>
-                </div>
-            }
-            {
-                ['A', 'B', 'C', 'D', 'E', 'F'].includes(s.value) ? 
-                    <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
-                    :
-                    <div style={{ flex: '1' }}></div>
-            }   
-        </div>
-        <div style={{ marginTop: '5px' }}><span style={props.activeSection === s.value ? activeStyle : {}}>{s.label}</span></div>
-    </div>
-    }
-
-    const getLargeNavbar = ()=> sections.map( s => <NavPoint s={s} />)
-
-*/
 
     return <>
         <div className="mb-4">
