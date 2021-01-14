@@ -2901,7 +2901,7 @@ BEGIN
 	EXECUTE stmt1;
 	DEALLOCATE PREPARE stmt1;
 
-	 select distinct name ,acronym from cohort;
+	 select distinct name ,acronym from cohort order by acronym;;
 END //
 
 
