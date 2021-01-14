@@ -69,7 +69,9 @@ actions[t.setBioMetabolomicData] = (state, action) => ({
     bioLabsUsedForAnalysis: action.value ? state.bioLabsUsedForAnalysis || '' : '',
     bioAnalyticalPlatform: action.value ? state.bioAnalyticalPlatform || '' : '',
     bioSeparationPlatform: action.value ? state.bioSeparationPlatform || '' : '',
-    bioNumberMetabolitesMeasured: action.value ? state.bioNumberMetabolitesMeasured || '' : ''
+    bioNumberMetabolitesMeasured: action.value ? state.bioNumberMetabolitesMeasured || '' : '',
+    bioYearSamplesSent: action.value ? state.bioYearSamplesSent || '' : ''
+
 })
 actions[t.setBioMetaFastingSample] = (state, action) => ({ ...state, bioMetaFastingSample: action.value })
 actions[t.setBioMetaOutcomesInCancerStudy] = (state, action) => ({ ...state, bioMetaOutcomesInCancerStudy: action.value })
