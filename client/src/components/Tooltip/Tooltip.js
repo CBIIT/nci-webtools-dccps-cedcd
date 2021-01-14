@@ -10,14 +10,14 @@ export default function Reminder(props) {
         : <OverlayTrigger
             trigger={props.trigger}
             overlay={
-                <Tooltip 
+                <Tooltip
                     className="tooltip-danger"
-                    id="tooltip"   
+                    id="tooltip"
                     placement={props.placement || 'top'}>
                     {props.message}
                 </Tooltip>
             }>
-            {props.children}
+            <span>{props.children}</span>
         </OverlayTrigger>
 }
 
