@@ -1434,7 +1434,7 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" 
                                                     style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_year_start' 
-                                                    placeholder='yyyy' 
+                                                    placeholder='YYYY' 
                                                     value={cohort.enrollment_year_start} 
                                                     onChange={e => 
                                                         !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
@@ -1446,7 +1446,7 @@ const CohortForm = ({ ...props }) => {
                                             <Form.Control   
                                                 style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_year_start' 
-                                                placeholder='yyyy' 
+                                                placeholder='YYYY' 
                                                 value={cohort.enrollment_year_start} 
                                                 onChange={e => 
                                                     !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
@@ -1468,7 +1468,7 @@ const CohortForm = ({ ...props }) => {
                                                 <input style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     className='form-control' 
                                                     name='enrollment_year_end' 
-                                                    placeholder='yyyy' 
+                                                    placeholder='YYYY' 
                                                     value={cohort.enrollment_year_end} 
                                                     onChange={e => {
                                                         if(!isReadOnly)
@@ -1494,7 +1494,7 @@ const CohortForm = ({ ...props }) => {
                                                 style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 className='form-control' 
                                                 name='enrollment_year_end' 
-                                                placeholder='yyyy' 
+                                                placeholder='YYYY' 
                                                 value={cohort.enrollment_year_end} 
                                                 onChange={e => { // if it is already ended turn off on going
                                                     if(!isReadOnly)
@@ -1668,7 +1668,7 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Control type="text" 
                                                     style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }} 
                                                     name='enrollment_year_complete' 
-                                                    placeholder='yyyy' 
+                                                    placeholder='YYYY' 
                                                     value={cohort.enrollment_year_complete} 
                                                     onChange={e => 
                                                         dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
@@ -1681,7 +1681,7 @@ const CohortForm = ({ ...props }) => {
                                             <Form.Control type="text" 
                                                 style={{ minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_year_complete' 
-                                                placeholder='yyyy' 
+                                                placeholder='YYYY' 
                                                 value={cohort.enrollment_year_complete} 
                                                 onChange={e => 
                                                     !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
@@ -2006,7 +2006,7 @@ const CohortForm = ({ ...props }) => {
                                                 onChange={e => 
                                                     !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                                 } 
-                                                placeholder='yyyy' 
+                                                placeholder='YYYY' 
                                                 onBlur={e => 
                                                     populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                                 } />
@@ -2017,7 +2017,7 @@ const CohortForm = ({ ...props }) => {
                                             onChange={e => 
                                                 !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                             }
-                                            placeholder='yyyy' 
+                                            placeholder='YYYY' 
                                             onBlur={e => 
                                                 populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                             } 

@@ -627,7 +627,7 @@ const MortalityForm = ({ ...props }) => {
                                                 dispatch(allactions.mortalityActions.setDeathNumbers(e.target.value));
                                                 dispatch(setHasUnsavedChanges(true));
                                             }}
-                                            placeholder='yyyy'
+                                            placeholder='YYYY'
                                         />
                                     </Reminder>
                                 </Col>
