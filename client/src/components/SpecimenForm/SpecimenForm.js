@@ -185,6 +185,7 @@ const SpecimenForm = ({ ...props }) => {
                     ? `The current questionnaire has been rejected for publication and an email containing your comments has been sent to the cohort owner.`
                     : `The current questionnaire could not be rejected for publication due to an internal error.`
             });
+            updateRejectionModal({show: false})
             dispatch(fetchCohort(cohortId));
         }
     }
