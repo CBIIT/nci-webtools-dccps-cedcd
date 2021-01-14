@@ -2,23 +2,22 @@
 
 import React from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import classNames from 'classnames';
 import './Tooltip.scss';
 
 export default function Reminder(props) {
-    return props.disabled
-        ? props.children
-        : <OverlayTrigger
-            trigger={props.trigger}
-            overlay={
-                <Tooltip
-                    className="tooltip-danger"
-                    id="tooltip"
-                    placement={props.placement || 'top'}>
-                    {props.message}
-                </Tooltip>
-            }>
-            <span className='p-0 m-0'>{props.children}</span>
-        </OverlayTrigger>
+    return <OverlayTrigger
+        trigger={props.trigger}
+        overlay={
+            <Tooltip
+                className={classNames("tooltip-danger", props.disabled && "tooltip-disabled")}
+                id="tooltip"
+                placement={props.placement || 'top'}>
+                {props.message}
+            </Tooltip>
+        }>
+        <span className='p-0 m-0'>{props.children}</span>
+    </OverlayTrigger>
 }
 
 
