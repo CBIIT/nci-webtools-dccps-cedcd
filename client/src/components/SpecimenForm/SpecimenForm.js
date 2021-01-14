@@ -821,7 +821,7 @@ const SpecimenForm = ({ ...props }) => {
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
 
-                        <Reminder message={"Required FIeld"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
                                 className='form-control'
@@ -1486,6 +1486,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15h {'  '}How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
+                                    {/* ERROR CAUSING REMINDER BECAUSE OF INDENT BELOW ??? */}
                                     <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
                                         <Form.Control type="text"
                                             style={+specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
@@ -1501,7 +1502,10 @@ const SpecimenForm = ({ ...props }) => {
                                                 if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
                                             }}
                                             onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
-                                        /> </Reminder>
+                                        /> 
+                                    </Reminder>
+                                    {/* ERROR CAUSING REMINDER BECAUSE OF INDENT ABOVE ??? */}
+                                    {/* When  G.15 = Yes but form below is empty*/}
                                 </Col>
                             </Form.Group>
 
