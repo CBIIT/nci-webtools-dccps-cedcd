@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch, batch } from 'react-redux'
 import { useHistory } from "react-router-dom";
+import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
 import classNames from 'classnames'
 import allactions from '../../actions'
 import validator from '../../validators'
@@ -16,7 +16,6 @@ import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collaps
 import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
 import { fetchCohort } from '../../reducers/cohort';
 import * as fieldList from './specimenFieldList';
-
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 
 const SpecimenForm = ({ ...props }) => {
@@ -551,7 +550,7 @@ const SpecimenForm = ({ ...props }) => {
         let item = field.items
         if (item && item.length === 2)
             return (
-                < Form.Group as={Row} sm='12' >
+                <Form.Group as={Row} sm='12' >
                     <Form.Label column sm='12'>
                         {field.title}
                     </Form.Label>
@@ -822,7 +821,7 @@ const SpecimenForm = ({ ...props }) => {
                     <Form.Label column sm="12">If yes, please specify:</Form.Label>
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
 
-                        <Reminder message={"Required FIeld"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
                                 className='form-control'
@@ -849,778 +848,779 @@ const SpecimenForm = ({ ...props }) => {
 
 
     return (
-        <div id='specimenInfoContainer' className="p-3 px-5">
-
+        <Container fluid>
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />
+            <Col md="12">
+                <Form>
+                    <CollapsiblePanelContainer>
 
-            <Form>
+                        {/* Specimen Collected */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelA'}
+                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                            panelTitle="Specimen Collected">
 
-                {/* START Specimen */}
-                <CollapsiblePanel
-                    condition={activePanel === 'panelA'}
-                    onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                    panelTitle="Specimen Collected">
-
-                    <div>
-                        Specify the types of specimens you collected, whether the speimen was collected at baseline, and/or collected at other time points.
+                            <div>
+                                <p>
+                                    Specify the types of specimens you collected, whether the specimen 
+                                    was collected at baseline, and/or collected at other time points.
+                                </p>
                             </div>
 
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.1 Blood
-                            {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.1 Blood
+                                    {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
 
-                        </Form.Label>
-                        <Col className='mb-0 pl-0' sm="12" >
-                            <Col sm='4'>
-                                Collected at baseline   <span style={{ color: 'red' }}>*</span>
-                            </Col>
-                            <Reminder message='Required Field' disabled={!(errors.bioBloodBaseline && saved)}>
-                                <Col sm='3' className='align-self-center' >
-                                    <Form.Check type='radio' xs='2' name='bioBloodBaseline' inline style={{ fontWeight: 'normal' }} id="bioBloodBaseline_no" >
-                                        <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodBaseline === 0} readOnly={isReadOnly}
-                                            onClick={() => {
-                                                if (!isReadOnly) {
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaseline(0));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
-                                                }
-                                            }}
-                                        />
-                                        <Form.Check.Label style={errors.bioBloodBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                            : { fontWeight: 'normal' }}
-                                        >
-                                            No
-                                </Form.Check.Label>
-                                    </Form.Check>
-
-                                    <Form.Check type='radio' xs='2' name='bioBloodBaseline' style={{ fontWeight: 'normal' }} inline id='bioBloodBaseline_yes' >
-                                        <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={specimen.bioBloodBaseline === 1} readOnly={isReadOnly}
-                                            onClick={() => {
-                                                if (!isReadOnly) {
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaseline(1));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
-                                                }
-                                            }} />
-                                        <Form.Check.Label style={errors.bioBloodBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                            : { fontWeight: 'normal' }}>
-                                            Yes
-                                </Form.Check.Label>
-                                    </Form.Check>
-                                </Col>
-                                <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (Select all that apply)</div>
-                                    <div key="checkbox">
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodBaselineSerum"
-                                            name="bioBloodBaselineSerum">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodBaselineSerum === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaselineSerum(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Serum </Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodBaselinePlasma"
-                                            name="bioBloodBaselinePlasma">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodBaselinePlasma === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaselinePlasma(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Plasma</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodBaselineBuffyCoat"
-                                            name="bioBloodBaselineBuffyCoat">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodBaselineBuffyCoat === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Buffy Coat</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodBaselineOtherDerivative"
-                                            name="bioBloodBaselineOtherDerivative">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodBaselineOtherDerivative === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Other blood derivative</Form.Check.Label>
-                                        </Form.Check>
-                                    </div>
-                                </Col>
-                            </Reminder>
-                        </Col>
-                        <Col><br></br></Col>
-
-                        <Col className='mb-0 pl-0' sm="12" >
-                            <Col sm='4'>
-                                Collected at other time points   <span style={{ color: 'red' }}>*</span>
-                            </Col>
-                            <Reminder message='Required Field' disabled={!(errors.bioBloodOtherTime && saved)}>
-                                <Col sm='3' className='align-self-center' >
-                                    <Form.Check type='radio' xs='2' name='bioBloodOtherTime' inline style={{ fontWeight: 'normal' }} id="bioBloodOtherTime_no" >
-                                        <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={+specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
-                                            onClick={() => {
-                                                if (!isReadOnly) {
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTime(0));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
-                                                }
-                                            }}
-                                        />
-                                        <Form.Check.Label style={errors.bioBloodOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                            : { fontWeight: 'normal' }}> No</Form.Check.Label>
-                                    </Form.Check>
-
-                                    <Form.Check type='radio' xs='2' name='bioBloodOtherTime' style={{ fontWeight: 'normal' }} inline id='bioBloodOtherTime_yes' >
-                                        <Form.Check.Input bsPrefix type='radio' className="mr-2"
-                                            checked={+specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
-                                            onClick={() => {
-                                                if (!isReadOnly) {
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTime(1));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
-                                                }
-                                            }} />
-                                        <Form.Check.Label style={errors.bioBloodOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
-                                            : { fontWeight: 'normal' }}> Yes </Form.Check.Label>
-                                    </Form.Check>
-                                </Col>
-                                <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (Select all that apply)</div>
-                                    <div key="checkbox">
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodOtherTimeSerum"
-                                            name="bioBloodOtherTimeSerum">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodOtherTimeSerum === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Serum </Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodOtherTimePlasma"
-                                            name="bioBloodOtherTimePlasma">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodOtherTimePlasma === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Plasma</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodOtherTimeBuffyCoat"
-                                            name="bioBloodOtherTimeBuffyCoat">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodOtherTimeBuffyCoat === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Buffy Coat</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioBloodOtherTimeOtherDerivative"
-                                            name="bioBloodOtherTimeOtherDerivative">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
-                                                checked={+specimen.bioBloodOtherTimeOtherDerivative === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Other blood derivative</Form.Check.Label>
-                                        </Form.Check>
-                                    </div>
-                                </Col>
-                            </Reminder>
-                        </Col>
-                    </Form.Group>
-                    {/* G.2 -G.8  */}
-                    {getPartContent('A')}
-                </CollapsiblePanel>
-                {/* END Part A */}
-
-                {/* START Part B */}
-                <CollapsiblePanel
-                    condition={activePanel === 'panelB'}
-                    onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                    panelTitle="Did you have ?">
-                    {getPartContent('B')}
-                </CollapsiblePanel>
-                {/* END Part B */}
-
-                {/* START Part C */}
-                <CollapsiblePanel
-                    condition={activePanel === 'panelC'}
-                    onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                    panelTitle="Metabolomic Data">
-
-                    < Form.Group as={Row} sm='12'  >
-                        <Form.Label column sm='12'>
-                            G.15 Metabolomic Data (from MS and/or NMR) <span style={{ color: 'red' }}>*</span>  If yes, please answer G15 a-i
-                        </Form.Label>
-                        <Col className='align-self-center' sm='12'>
-                            <Reminder message='Required Field' disabled={!(errors.bioMetabolomicData && saved)}>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMetabolomicData_no"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMetabolomicData">
-                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={specimen.bioMetabolomicData === 0}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMetabolomicData(0));
-                                                dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label
-                                        style={errors.bioMetabolomicData && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
-                                    >No </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMetabolomicData_yes"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMetabolomicData">
-                                    <Form.Check.Input bsPrefix type='radio' className='mr-2'
-                                        checked={+specimen.bioMetabolomicData === 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMetabolomicData(1));
-                                                dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors.bioMetabolomicData && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        Yes </Form.Check.Label>
-                                </Form.Check>
-                            </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 a */}
-                    < Form.Group as={Row} sm='12'  >
-
-                        <Form.Label column sm='12'>
-                            G.15a {'  '}Are the biospecimens collected fasting samples?<span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col className='align-self-center' sm='12'>
-                            <Reminder message='Required Field' disabled={!(errors.bioMetaFastingSample && saved)}>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMetaFastingSample_no"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMetaFastingSample">
-                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={specimen.bioMetaFastingSample === 0}
-                                        disabled={+specimen.bioMetabolomicData !== 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMetaFastingSample(0));
-                                                dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label
-                                        style={errors.bioMetaFastingSample && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
-                                    >No  </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMetaFastingSample_yes"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMetaFastingSample">
-                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen.bioMetaFastingSample === 1}
-                                        disabled={+specimen.bioMetabolomicData !== 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMetaFastingSample(1));
-                                                dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors.bioMetaFastingSample && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        Yes </Form.Check.Label>
-                                </Form.Check>
-                            </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 b */}
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15b {'  '}What are the disease outcome(s) in your study? <span style={{ color: 'red' }}>*</span> (Select all that apply)
-                           {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved
-                                && <span className='col-md-4 col-12' style={{ color: 'red' }}>
-                                    Missing required field</span>}
-                        </Form.Label>
-
-                        <Col className='mb-0 pl-0' sm="12" >
-                            <Reminder message='Required Field' disabled={!(errors.bioBloodBaseline && saved)}>
-                                <Col sm="12">
-                                    <div key="checkbox">
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioMetaOutcomesInCancerStudy"
-                                            name="bioMetaOutcomesInCancerStudy">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInCancerStudy === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Cancer </Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioMetaOutcomesInCvdStudy"
-                                            name="bioMetaOutcomesInCvdStudy">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInCvdStudy === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>CVD</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioMetaOutcomesInDiabetesStudy"
-                                            name="bioMetaOutcomesInDiabetesStudy">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInDiabetesStudy === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}> Diabetes</Form.Check.Label>
-                                        </Form.Check>
-                                        <Form.Check type="checkbox"
-                                            className="pl-0"
-                                            id="bioMetaOutcomesInOtherStudy"
-                                            name="bioMetaOutcomesInOtherStudy">
-                                            <Form.Check.Input bsPrefix
-                                                type="checkbox"
-                                                className="mr-2"
-                                                disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
-                                                onChange={(e) => {
-                                                    if (isReadOnly) return false;
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                    dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(+e.target.checked));
-                                                    dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(e.target.checked))
-                                                }} />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>Other (please specify)</Form.Check.Label>
-                                        </Form.Check>
-                                    </div>
-                                </Col>
-                            </Reminder>
-                        </Col>
-                        <Col sm='12' className='align-self-center' >
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} >
-                                <Form.Control as="textarea"
-                                    className="resize-vertical"
-                                    style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
-                                    name='bioMetaOutcomesOtherStudySpecify'
-                                    className='form-control'
-                                    value={specimen.bioMetaOutcomesOtherStudySpecify}
-                                    maxLength={200}
-                                    readOnly={isReadOnly}
-                                    placeholder='Max of 200 characters'
-                                    disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioMetaOutcomesOtherStudySpecify(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 c */}
-                    < Form.Group as={Row} >
-
-                        <Form.Label column sm='12'>
-                            G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)? <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col className='align-self-center' sm='12'>
-                            <Reminder message='Required Field' disabled={!(errors.bioMemberOfMetabolomicsStudies && saved)}>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMemberOfMetabolomicsStudies_no"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMemberOfMetabolomicsStudies">
-                                    <Form.Check.Input bsPrefix type="radio" className='mr-2'
-                                        checked={specimen.bioMemberOfMetabolomicsStudies === 0}
-                                        disabled={+specimen.bioMetabolomicData !== 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(0));
-                                                dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label
-                                        style={errors.bioMemberOfMetabolomicsStudies && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
-                                    > No  </Form.Check.Label>
-                                </Form.Check>
-                                <Form.Check type="radio" xs='2'
-                                    id="bioMemberOfMetabolomicsStudies_yes"
-                                    inline
-                                    style={{ fontWeight: 'normal' }}
-                                    name="bioMemberOfMetabolomicsStudies">
-                                    <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen.bioMemberOfMetabolomicsStudies === 1}
-                                        disabled={+specimen.bioMetabolomicData !== 1}
-                                        readOnly={isReadOnly}
-                                        onClick={() => {
-                                            if (!isReadOnly) {
-
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(1));
-                                                dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                            }
-                                        }} />
-                                    <Form.Check.Label style={errors.bioMemberOfMetabolomicsStudies && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
-                                        Yes </Form.Check.Label>
-                                </Form.Check>
-                            </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 d */}
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15d {'  '}What is the number of participants with metabolomics data in your study?<span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm="2">
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)} >
-                                <Form.Control type="text"
-                                    className="resize-vertical"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioMemberInStudy && saved && { border: '1px solid red' } || {}}
-                                    name='bioMemberInStudy'
-                                    value={specimen.bioMemberInStudy}
-                                    maxLength={15}
-                                    readOnly={isReadOnly}
-                                    placeholder='valid number'
-                                    disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioMemberInStudy(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMemberInStudy(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 e */}
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15e {'  '}Which laboratory or company was used for the analysis? <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm="12">
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)} >
-                                <Form.Control as="textarea"
-                                    className="resize-vertical"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioLabsUsedForAnalysis && saved && { border: '1px solid red' } || {}}
-                                    name='bioLabsUsedForAnalysis'
-                                    value={specimen.bioLabsUsedForAnalysis}
-                                    maxLength={200}
-                                    readOnly={isReadOnly}
-                                    placeholder='Max of 200 characters'
-                                    disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 f */}
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15f {'  '}Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?<span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm="12">
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} >
-                                <Form.Control as="textarea"
-                                    className="resize-vertical"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioAnalyticalPlatform && saved && { border: '1px solid red' } || {}}
-                                    name='bioAnalyticalPlatform'
-                                    value={specimen.bioAnalyticalPlatform}
-                                    maxLength={200}
-                                    readOnly={isReadOnly}
-                                    placeholder='Max of 200 characters'
-                                    disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioAnalyticalPlatform(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 g*/}
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?<span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm="12">
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)} >
-                                <Form.Control as="textarea"
-                                    className="resize-vertical"
-                                    style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioSeparationPlatform && saved && { border: '1px solid red' } || {}}
-                                    name='bioSeparationPlatform'
-                                    value={specimen.bioSeparationPlatform}
-                                    maxLength={200}
-                                    readOnly={isReadOnly}
-                                    placeholder='Max of 200 characters'
-                                    disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioSeparationPlatform(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioSeparationPlatform(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-
-                    {/* G15 h */}
-
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15h {'  '}How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm="2">
-                            <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
-                                <Form.Control type="text"
-                                    style={+specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
-                                    name='bioNumberMetabolitesMeasured'
-                                    value={specimen.bioNumberMetabolitesMeasured}
-                                    maxLength={15}
-                                    readOnly={isReadOnly}
-                                    placeholder='valid number'
-                                    disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                    onChange={e => {
-                                        dispatch(setHasUnsavedChanges(true));
-                                        dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(e.target.value));
-                                        if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
-                                    }}
-                                    onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
-                                /> </Reminder>
-                        </Col>
-                    </Form.Group>
-
-                    {/* G15 i */}
-                    <Form.Group as={Row}>
-                        <Form.Label column sm="12">
-                            G.15i {'  '} What year were samples analyzed?  <span style={{ color: 'red' }}>*</span>
-                        </Form.Label>
-                        <Col sm='2'  >
-                            {errors.bioYearSamplesSent && +specimen.bioMetabolomicData === 1 && saved ?
-                                <Reminder message={errors.bioYearSamplesSent}>
-                                    <Form.Control type="text"
-                                        style={{ color: 'red', border: '1px solid red' }}
-                                        name='bioYearSamplesSent'
-                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
-                                        value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
-                                        onChange={e =>
-                                            !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
-                                        }
-                                        placeholder='yyyy'
-                                        onBlur={e =>
-                                            populateErrors(e.target.value, true, 'year')
-                                        } />
-                                </Reminder> :
-                                <Form.Control type="text"
-                                    name='bioYearSamplesSent'
-                                    value={specimen.bioYearSamplesSent}
-                                    disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
-                                    onChange={e =>
-                                        !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
-                                    }
-                                    placeholder='yyyy'
-                                    onBlur={e =>
-                                        populateErrors(e.target.value, true, 'year')
-                                    }
-                                    readOnly={isReadOnly} />
-                            }
-                        </Col>
-                    </Form.Group>
-
-                </CollapsiblePanel>
-                {/* END Part C */}
-
-                {/* START Part D */}
-                <CollapsiblePanel
-                    condition={activePanel === 'panelD'}
-                    onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
-                    panelTitle="Biospecimen Counts">
-                    <div className="my-3">
-                        <Form.Label> G.16</Form.Label>
-                        <div> Please complete this table with the number of individuals with biospecimens available
-                        in your current inventory. If you do not have exact counts, please enter approximate counts.
-                        (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
-                                </div>
-                    </div>
-                    <div className="table-responsive">
-                        <Table bordered condensed className="table-valign-middle">
-                            <thead>
-                                <tr>
-                                    <th className='col-sm-1 text-center'>ICD-9</th>
-                                    <th className='col-sm-1 text-center'>ICD-10</th>
-                                    <th className='col-sm-3 text-center'>Cancer Site/Type</th>
-                                    <th className='col-sm-1 text-center'>Serum and/or Plasma</th>
-                                    <th className='col-sm-1 text-center'>Buffy Coat and/or Lymphocytes</th>
-                                    <th className='col-sm-1 text-center'>Saliva and/or Buccal</th>
-                                    <th className='col-sm-1 text-center'>Urine</th>
-                                    <th className='col-sm-1 text-center'>Feces</th>
-                                    <th className='col-sm-1 text-center'>Tumor Tissue Fresh/Frozen</th>
-                                    <th className='col-sm-1 text-center'>Tumor Tissue FFPE</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {lookup.cancer.map(c => {
-                                    const keyPrefix = `${cohortId}_${c.id}`;
-                                    const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
-                                        `${c.id}-${k.id}`);;
-
-
-                                    return <tr key={keyPrefix}>
-                                        <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
-                                        <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
-                                        <td className="text-nowrap bg-light-grey">{c.cancer}</td>
-
-                                        {inputKeys.map((key, i) =>
-                                            <td key={key} className="p-0">
-                                                <Form.Control
-                                                    className="input-number"
-                                                    name={key} value={specimen.counts[key] || 0}
-                                                    type="number"
-                                                    onChange={e => {
-                                                        dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
-                                                        dispatch(setHasUnsavedChanges(true));
+                                </Form.Label>
+                                <Col className='mb-0 pl-0' sm="12" >
+                                    <Col sm='4'>
+                                        Collected at baseline<span style={{ color: 'red' }}>*</span>
+                                    </Col>
+                                    <Reminder message='Required Field' disabled={!(errors.bioBloodBaseline && saved)}>
+                                        <Col sm='3' className='align-self-center' >
+                                            <Form.Check type='radio' xs='2' name='bioBloodBaseline' inline style={{ fontWeight: 'normal' }} id="bioBloodBaseline_no" >
+                                                <Form.Check.Input bsPrefix type='radio' className="mr-2"
+                                                    checked={specimen.bioBloodBaseline === 0} readOnly={isReadOnly}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaseline(0));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
+                                                        }
                                                     }}
-                                                    min="0"
-                                                    readOnly={isReadOnly} />
-                                            </td>
-                                        )}
-                                    </tr>
-                                })}
-                            </tbody>
-                        </Table>
-                    </div>
+                                                />
+                                                <Form.Check.Label style={errors.bioBloodBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
+                                                    : { fontWeight: 'normal' }}
+                                                >
+                                                    No
+                                        </Form.Check.Label>
+                                            </Form.Check>
 
-                </CollapsiblePanel>
-                {/* End Part D */}
+                                            <Form.Check type='radio' xs='2' name='bioBloodBaseline' style={{ fontWeight: 'normal' }} inline id='bioBloodBaseline_yes' >
+                                                <Form.Check.Input bsPrefix type='radio' className="mr-2"
+                                                    checked={specimen.bioBloodBaseline === 1} readOnly={isReadOnly}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaseline(1));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
+                                                        }
+                                                    }} />
+                                                <Form.Check.Label style={errors.bioBloodBaseline && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
+                                                    : { fontWeight: 'normal' }}>
+                                                    Yes
+                                        </Form.Check.Label>
+                                            </Form.Check>
+                                        </Col>
+                                        <Col sm="12">
+                                            <div sm='12'>If collected, types of aliquots (Select all that apply)</div>
+                                            <div key="checkbox">
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodBaselineSerum"
+                                                    name="bioBloodBaselineSerum">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodBaselineSerum === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaselineSerum(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Serum </Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodBaselinePlasma"
+                                                    name="bioBloodBaselinePlasma">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodBaselinePlasma === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaselinePlasma(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Plasma</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodBaselineBuffyCoat"
+                                                    name="bioBloodBaselineBuffyCoat">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodBaselineBuffyCoat === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Buffy Coat</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodBaselineOtherDerivative"
+                                                    name="bioBloodBaselineOtherDerivative">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodBaseline !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodBaselineOtherDerivative === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Other blood derivative</Form.Check.Label>
+                                                </Form.Check>
+                                            </div>
+                                        </Col>
+                                    </Reminder>
+                                </Col>
+                                <Col><br></br></Col>
 
-            </Form>
+                                <Col className='mb-0 pl-0' sm="12" >
+                                    <Col sm='4'>
+                                        Collected at other time points   <span style={{ color: 'red' }}>*</span>
+                                    </Col>
+                                    <Reminder message='Required Field' disabled={!(errors.bioBloodOtherTime && saved)}>
+                                        <Col sm='3' className='align-self-center' >
+                                            <Form.Check type='radio' xs='2' name='bioBloodOtherTime' inline style={{ fontWeight: 'normal' }} id="bioBloodOtherTime_no" >
+                                                <Form.Check.Input bsPrefix type='radio' className="mr-2"
+                                                    checked={+specimen.bioBloodOtherTime === 0} readOnly={isReadOnly}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTime(0));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
+                                                        }
+                                                    }}
+                                                />
+                                                <Form.Check.Label style={errors.bioBloodOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
+                                                    : { fontWeight: 'normal' }}> No</Form.Check.Label>
+                                            </Form.Check>
 
-            {/* END Specimen Information Collapsible Question Sections */}
-            <QuestionnaireFooter
-                isAdmin={isReadOnly}
-                handlePrevious={_ => props.sectionPicker('f')}
-                handleNext={false}
-                handleSave={handleSave}
-                handleSaveContinue={false}
-                handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
-                handleApprove={handleApprove}
-                handleReject={handleReject} />
-        </div>
+                                            <Form.Check type='radio' xs='2' name='bioBloodOtherTime' style={{ fontWeight: 'normal' }} inline id='bioBloodOtherTime_yes' >
+                                                <Form.Check.Input bsPrefix type='radio' className="mr-2"
+                                                    checked={+specimen.bioBloodOtherTime === 1} readOnly={isReadOnly}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTime(1));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
+                                                        }
+                                                    }} />
+                                                <Form.Check.Label style={errors.bioBloodOtherTime && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' }
+                                                    : { fontWeight: 'normal' }}> Yes </Form.Check.Label>
+                                            </Form.Check>
+                                        </Col>
+                                        <Col sm="12">
+                                            <div sm='12'>If collected, types of aliquots (Select all that apply)</div>
+                                            <div key="checkbox">
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodOtherTimeSerum"
+                                                    name="bioBloodOtherTimeSerum">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodOtherTimeSerum === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Serum </Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodOtherTimePlasma"
+                                                    name="bioBloodOtherTimePlasma">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodOtherTimePlasma === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Plasma</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodOtherTimeBuffyCoat"
+                                                    name="bioBloodOtherTimeBuffyCoat">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodOtherTimeBuffyCoat === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Buffy Coat</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioBloodOtherTimeOtherDerivative"
+                                                    name="bioBloodOtherTimeOtherDerivative">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioBloodOtherTime !== 1 || isReadOnly}
+                                                        checked={+specimen.bioBloodOtherTimeOtherDerivative === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Other blood derivative</Form.Check.Label>
+                                                </Form.Check>
+                                            </div>
+                                        </Col>
+                                    </Reminder>
+                                </Col>
+                            </Form.Group>
+                            {/* G.2 -G.8  */}
+                            {getPartContent('A')}
+                        </CollapsiblePanel>
+
+                        {/* Did you have ? */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelB'}
+                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                            panelTitle="Did you have ?">
+                            {getPartContent('B')}
+                        </CollapsiblePanel>
+
+                        {/* Metabolomic Data */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelC'}
+                            onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                            panelTitle="Metabolomic Data">
+
+                            < Form.Group as={Row} sm='12'  >
+                                <Form.Label column sm='12'>
+                                    G.15 Metabolomic Data (from MS and/or NMR) <span style={{ color: 'red' }}>*</span>  If yes, please answer G15 a-i
+                                </Form.Label>
+                                <Col className='align-self-center' sm='12'>
+                                    <Reminder message='Required Field' disabled={!(errors.bioMetabolomicData && saved)}>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMetabolomicData_no"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMetabolomicData">
+                                            <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                                checked={specimen.bioMetabolomicData === 0}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMetabolomicData(0));
+                                                        dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label
+                                                style={errors.bioMetabolomicData && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
+                                            >No </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMetabolomicData_yes"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMetabolomicData">
+                                            <Form.Check.Input bsPrefix type='radio' className='mr-2'
+                                                checked={+specimen.bioMetabolomicData === 1}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMetabolomicData(1));
+                                                        dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label style={errors.bioMetabolomicData && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                                Yes </Form.Check.Label>
+                                        </Form.Check>
+                                    </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 a */}
+                            < Form.Group as={Row} sm='12'  >
+
+                                <Form.Label column sm='12'>
+                                    G.15a {'  '}Are the biospecimens collected fasting samples?<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col className='align-self-center' sm='12'>
+                                    <Reminder message='Required Field' disabled={!(errors.bioMetaFastingSample && saved)}>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMetaFastingSample_no"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMetaFastingSample">
+                                            <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                                checked={specimen.bioMetaFastingSample === 0}
+                                                disabled={+specimen.bioMetabolomicData !== 1}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMetaFastingSample(0));
+                                                        dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label
+                                                style={errors.bioMetaFastingSample && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
+                                            >No  </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMetaFastingSample_yes"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMetaFastingSample">
+                                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen.bioMetaFastingSample === 1}
+                                                disabled={+specimen.bioMetabolomicData !== 1}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMetaFastingSample(1));
+                                                        dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label style={errors.bioMetaFastingSample && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                                Yes </Form.Check.Label>
+                                        </Form.Check>
+                                    </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 b */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15b {'  '}What are the disease outcome(s) in your study? <span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved
+                                        && <span className='col-md-4 col-12' style={{ color: 'red' }}>
+                                            Missing required field</span>}
+                                </Form.Label>
+
+                                <Col className='mb-0 pl-0' sm="12" >
+                                    <Reminder message='Required Field' disabled={!(errors.bioBloodBaseline && saved)}>
+                                        <Col sm="12">
+                                            <div key="checkbox">
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioMetaOutcomesInCancerStudy"
+                                                    name="bioMetaOutcomesInCancerStudy">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInCancerStudy === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Cancer </Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioMetaOutcomesInCvdStudy"
+                                                    name="bioMetaOutcomesInCvdStudy">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInCvdStudy === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>CVD</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioMetaOutcomesInDiabetesStudy"
+                                                    name="bioMetaOutcomesInDiabetesStudy">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInDiabetesStudy === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}> Diabetes</Form.Check.Label>
+                                                </Form.Check>
+                                                <Form.Check type="checkbox"
+                                                    className="pl-0"
+                                                    id="bioMetaOutcomesInOtherStudy"
+                                                    name="bioMetaOutcomesInOtherStudy">
+                                                    <Form.Check.Input bsPrefix
+                                                        type="checkbox"
+                                                        className="mr-2"
+                                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly} checked={specimen.bioMetaOutcomesInOtherStudy === 1}
+                                                        onChange={(e) => {
+                                                            if (isReadOnly) return false;
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                            dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(+e.target.checked));
+                                                            dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(e.target.checked))
+                                                        }} />
+                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>Other (please specify)</Form.Check.Label>
+                                                </Form.Check>
+                                            </div>
+                                        </Col>
+                                    </Reminder>
+                                </Col>
+                                <Col sm='12' className='align-self-center' >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} >
+                                        <Form.Control as="textarea"
+                                            className="resize-vertical"
+                                            style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
+                                            name='bioMetaOutcomesOtherStudySpecify'
+                                            className='form-control'
+                                            value={specimen.bioMetaOutcomesOtherStudySpecify}
+                                            maxLength={200}
+                                            readOnly={isReadOnly}
+                                            placeholder='Max of 200 characters'
+                                            disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioMetaOutcomesOtherStudySpecify(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 c */}
+                            < Form.Group as={Row} >
+
+                                <Form.Label column sm='12'>
+                                    G.15c {'  '}Are you a member of the Consortium of Metabolomics Studies (COMETS)? <span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col className='align-self-center' sm='12'>
+                                    <Reminder message='Required Field' disabled={!(errors.bioMemberOfMetabolomicsStudies && saved)}>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMemberOfMetabolomicsStudies_no"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMemberOfMetabolomicsStudies">
+                                            <Form.Check.Input bsPrefix type="radio" className='mr-2'
+                                                checked={specimen.bioMemberOfMetabolomicsStudies === 0}
+                                                disabled={+specimen.bioMetabolomicData !== 1}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(0));
+                                                        dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label
+                                                style={errors.bioMemberOfMetabolomicsStudies && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}
+                                            > No  </Form.Check.Label>
+                                        </Form.Check>
+                                        <Form.Check type="radio" xs='2'
+                                            id="bioMemberOfMetabolomicsStudies_yes"
+                                            inline
+                                            style={{ fontWeight: 'normal' }}
+                                            name="bioMemberOfMetabolomicsStudies">
+                                            <Form.Check.Input bsPrefix type='radio' className='mr-2' checked={specimen.bioMemberOfMetabolomicsStudies === 1}
+                                                disabled={+specimen.bioMetabolomicData !== 1}
+                                                readOnly={isReadOnly}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                        dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(1));
+                                                        dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                                    }
+                                                }} />
+                                            <Form.Check.Label style={errors.bioMemberOfMetabolomicsStudies && saved ? { fontWeight: 'normal', color: 'red', borderBottom: '1px solid red' } : { fontWeight: 'normal' }}>
+                                                Yes </Form.Check.Label>
+                                        </Form.Check>
+                                    </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 d */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15d {'  '}What is the number of participants with metabolomics data in your study?<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="2">
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)} >
+                                        <Form.Control type="text"
+                                            className="resize-vertical"
+                                            style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioMemberInStudy && saved && { border: '1px solid red' } || {}}
+                                            name='bioMemberInStudy'
+                                            value={specimen.bioMemberInStudy}
+                                            maxLength={15}
+                                            readOnly={isReadOnly}
+                                            placeholder='valid number'
+                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioMemberInStudy(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMemberInStudy(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 e */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15e {'  '}Which laboratory or company was used for the analysis? <span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)} >
+                                        <Form.Control as="textarea"
+                                            className="resize-vertical"
+                                            style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioLabsUsedForAnalysis && saved && { border: '1px solid red' } || {}}
+                                            name='bioLabsUsedForAnalysis'
+                                            value={specimen.bioLabsUsedForAnalysis}
+                                            maxLength={200}
+                                            readOnly={isReadOnly}
+                                            placeholder='Max of 200 characters'
+                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 f */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15f {'  '}Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} >
+                                        <Form.Control as="textarea"
+                                            className="resize-vertical"
+                                            style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioAnalyticalPlatform && saved && { border: '1px solid red' } || {}}
+                                            name='bioAnalyticalPlatform'
+                                            value={specimen.bioAnalyticalPlatform}
+                                            maxLength={200}
+                                            readOnly={isReadOnly}
+                                            placeholder='Max of 200 characters'
+                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioAnalyticalPlatform(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 g*/}
+
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15g {'  '}Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="12">
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)} >
+                                        <Form.Control as="textarea"
+                                            className="resize-vertical"
+                                            style={specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioSeparationPlatform && saved && { border: '1px solid red' } || {}}
+                                            name='bioSeparationPlatform'
+                                            value={specimen.bioSeparationPlatform}
+                                            maxLength={200}
+                                            readOnly={isReadOnly}
+                                            placeholder='Max of 200 characters'
+                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioSeparationPlatform(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioSeparationPlatform(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+
+                            {/* G15 h */}
+
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15h {'  '}How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="2">
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
+                                        <Form.Control type="text"
+                                            style={+specimen.bioMetaOutcomesInOtherStudy === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
+                                            name='bioNumberMetabolitesMeasured'
+                                            value={specimen.bioNumberMetabolitesMeasured}
+                                            maxLength={15}
+                                            readOnly={isReadOnly}
+                                            placeholder='valid number'
+                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                            onChange={e => {
+                                                dispatch(setHasUnsavedChanges(true));
+                                                dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(e.target.value));
+                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
+                                            }}
+                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
+                                        /> </Reminder>
+                                </Col>
+                            </Form.Group>
+
+                            {/* G15 i */}
+                            <Form.Group as={Row}>
+                                <Form.Label column sm="12">
+                                    G.15i {'  '} What year were samples analyzed?  <span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm='2'  >
+                                    {errors.bioYearSamplesSent && +specimen.bioMetabolomicData === 1 && saved ?
+                                        <Reminder message={errors.bioYearSamplesSent}>
+                                            <Form.Control type="text"
+                                                style={{ color: 'red', border: '1px solid red' }}
+                                                name='bioYearSamplesSent'
+                                                disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
+                                                value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
+                                                onChange={e =>
+                                                    !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
+                                                }
+                                                placeholder='yyyy'
+                                                onBlur={e =>
+                                                    populateErrors(e.target.value, true, 'year')
+                                                } />
+                                        </Reminder> :
+                                        <Form.Control type="text"
+                                            name='bioYearSamplesSent'
+                                            value={specimen.bioYearSamplesSent}
+                                            disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
+                                            onChange={e =>
+                                                !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
+                                            }
+                                            placeholder='yyyy'
+                                            onBlur={e =>
+                                                populateErrors(e.target.value, true, 'year')
+                                            }
+                                            readOnly={isReadOnly} />
+                                    }
+                                </Col>
+                            </Form.Group>
+
+                        </CollapsiblePanel>
+
+                        {/* Biospecimen Counts */}
+                        <CollapsiblePanel
+                            condition={activePanel === 'panelD'}
+                            onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
+                            panelTitle="Biospecimen Counts">
+                            <div className="my-3">
+                                <Form.Label> G.16</Form.Label>
+                                <div> Please complete this table with the number of individuals with biospecimens available
+                                in your current inventory. If you do not have exact counts, please enter approximate counts.
+                                (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
+                                        </div>
+                            </div>
+                            <div className="table-responsive">
+                                <Table bordered condensed className="table-valign-middle">
+                                    <thead>
+                                        <tr>
+                                            <th className='col-sm-1 text-center'>ICD-9</th>
+                                            <th className='col-sm-1 text-center'>ICD-10</th>
+                                            <th className='col-sm-3 text-center'>Cancer Site/Type</th>
+                                            <th className='col-sm-1 text-center'>Serum and/or Plasma</th>
+                                            <th className='col-sm-1 text-center'>Buffy Coat and/or Lymphocytes</th>
+                                            <th className='col-sm-1 text-center'>Saliva and/or Buccal</th>
+                                            <th className='col-sm-1 text-center'>Urine</th>
+                                            <th className='col-sm-1 text-center'>Feces</th>
+                                            <th className='col-sm-1 text-center'>Tumor Tissue Fresh/Frozen</th>
+                                            <th className='col-sm-1 text-center'>Tumor Tissue FFPE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {lookup.cancer.map(c => {
+                                            const keyPrefix = `${cohortId}_${c.id}`;
+                                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                                `${c.id}-${k.id}`);;
+
+
+                                            return <tr key={keyPrefix}>
+                                                <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
+                                                <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
+                                                <td className="text-nowrap bg-light-grey">{c.cancer}</td>
+
+                                                {inputKeys.map((key, i) =>
+                                                    <td key={key} className="p-0">
+                                                        <Form.Control
+                                                            className="input-number"
+                                                            name={key} value={specimen.counts[key] || 0}
+                                                            type="number"
+                                                            onChange={e => {
+                                                                dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
+                                                                dispatch(setHasUnsavedChanges(true));
+                                                            }}
+                                                            min="0"
+                                                            readOnly={isReadOnly} />
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        })}
+                                    </tbody>
+                                </Table>
+                            </div>
+
+                        </CollapsiblePanel>
+                    </CollapsiblePanelContainer>
+
+                </Form>
+
+                <QuestionnaireFooter
+                    isAdmin={isReadOnly}
+                    handlePrevious={_ => props.sectionPicker('F')}
+                    handleNext={false}
+                    handleSave={handleSave}
+                    handleSaveContinue={false}
+                    handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+                    handleApprove={handleApprove}
+                    handleReject={handleReject} />
+
+            </Col>
+        </Container>
 
     )
 }

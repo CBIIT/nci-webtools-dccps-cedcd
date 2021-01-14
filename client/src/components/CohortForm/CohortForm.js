@@ -2476,8 +2476,6 @@ const CohortForm = ({ ...props }) => {
                                                                                     !isReadOnly && 
                                                                                     <Form.Control
                                                                                         type="file"
-                                                                                        // label="No file chosen"
-                                                                                        // title=""
                                                                                         name='cohortFile'
                                                                                         id="inputGroupFile01"
                                                                                         aria-describedby="inputGroupFileAddon01"
@@ -2500,7 +2498,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!QfileLoading && cohort.questionnaireFileName.length === 0 && (
                                                                                             <span>
-                                                                                                No file chosen
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2577,8 +2575,6 @@ const CohortForm = ({ ...props }) => {
                                                                                     !isReadOnly && 
                                                                                     <Form.Control
                                                                                         type="file"
-                                                                                        // label="No file chosen"
-                                                                                        // title=""
                                                                                         name='cohortFile'
                                                                                         id="inputGroupFile02"
                                                                                         aria-describedby="inputGroupFileAddon02"
@@ -2600,7 +2596,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {!MfileLoading && cohort.mainFileName.length === 0 && (
                                                                                         <span>
-                                                                                            No file chosen
+                                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                         </span>
                                                                                     )
                                                                                 }
@@ -2677,8 +2673,6 @@ const CohortForm = ({ ...props }) => {
                                                                                     !isReadOnly && 
                                                                                     <Form.Control
                                                                                         type="file"
-                                                                                        // label="No file chosen"
-                                                                                        // title=""
                                                                                         name='cohortFile'
                                                                                         id="inputGroupFile03"
                                                                                         aria-describedby="inputGroupFileAddon03"
@@ -2700,7 +2694,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!DfileLoading && cohort.dataFileName.length === 0 && (
                                                                                             <span>
-                                                                                                No file chosen
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2777,8 +2771,6 @@ const CohortForm = ({ ...props }) => {
                                                                                     !isReadOnly && 
                                                                                     <Form.Control
                                                                                         type="file"
-                                                                                        // label="No file chosen"
-                                                                                        // title=""
                                                                                         name='cohortFile'
                                                                                         id="inputGroupFile04"
                                                                                         aria-describedby="inputGroupFileAddon04"
@@ -2800,7 +2792,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     }       
                                                                                     {!SfileLoading && cohort.specimenFileName.length === 0 && (
                                                                                             <span>
-                                                                                                No file chosen
+                                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                             </span>
                                                                                         )
                                                                                     }
@@ -2877,8 +2869,6 @@ const CohortForm = ({ ...props }) => {
                                                                                     !isReadOnly && 
                                                                                     <Form.Control
                                                                                         type="file"
-                                                                                        // label="No file chosen"
-                                                                                        // title=""
                                                                                         name='cohortFile'
                                                                                         id="inputGroupFile05"
                                                                                         aria-describedby="inputGroupFileAddon05"
@@ -2900,7 +2890,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }       
                                                                                 {!PfileLoading && cohort.publicationFileName.length === 0 && (
                                                                                         <span>
-                                                                                            No file chosen
+                                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                                         </span>
                                                                                     )
                                                                                 }
@@ -2978,13 +2968,11 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td >
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
                                                                         type="file"
-                                                                        // label="No file chosen"
-                                                                        // title=""
                                                                         name='cohortFile'
                                                                         id="inputGroupFile01"
                                                                         aria-describedby="inputGroupFileAddon01"
@@ -3007,7 +2995,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!QfileLoading && cohort.questionnaireFileName.length === 0 && (
                                                                             <span>
-                                                                                No file chosen
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3069,13 +3057,11 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
                                                                         type="file"
-                                                                        // label="No file chosen"
-                                                                        // title=""
                                                                         name='cohortFile'
                                                                         id="inputGroupFile02"
                                                                         aria-describedby="inputGroupFileAddon02"
@@ -3097,7 +3083,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {!MfileLoading && cohort.mainFileName.length === 0 && (
                                                                         <span>
-                                                                            No file chosen
+                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                         </span>
                                                                     )
                                                                 }
@@ -3158,13 +3144,11 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
                                                                         type="file"
-                                                                        // label="No file chosen"
-                                                                        // title=""
                                                                         name='cohortFile'
                                                                         id="inputGroupFile03"
                                                                         aria-describedby="inputGroupFileAddon03"
@@ -3186,7 +3170,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!DfileLoading && cohort.dataFileName.length === 0 && (
                                                                             <span>
-                                                                                No file chosen
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3247,13 +3231,11 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
                                                                         type="file"
-                                                                        // label="No file chosen"
-                                                                        // title=""
                                                                         name='cohortFile'
                                                                         id="inputGroupFile04"
                                                                         aria-describedby="inputGroupFileAddon04"
@@ -3275,7 +3257,7 @@ const CohortForm = ({ ...props }) => {
                                                                     }       
                                                                     {!SfileLoading && cohort.specimenFileName.length === 0 && (
                                                                             <span>
-                                                                                No file chosen
+                                                                                { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                             </span>
                                                                         )
                                                                     }
@@ -3334,13 +3316,11 @@ const CohortForm = ({ ...props }) => {
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col sm="3" className="pr-0">
+                                                            <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
                                                                 {
                                                                     !isReadOnly && 
                                                                     <Form.Control
                                                                         type="file"
-                                                                        // label="No file chosen"
-                                                                        // title=""
                                                                         name='cohortFile'
                                                                         id="inputGroupFile05"
                                                                         aria-describedby="inputGroupFileAddon05"
@@ -3362,7 +3342,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }       
                                                                 {!PfileLoading && cohort.publicationFileName.length === 0 && (
                                                                         <span>
-                                                                            No file chosen
+                                                                            { isReadOnly ? 'No file(s) uploaded' : 'No file chosen' }
                                                                         </span>
                                                                     )
                                                                 }

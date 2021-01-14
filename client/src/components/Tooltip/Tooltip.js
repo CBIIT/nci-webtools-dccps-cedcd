@@ -17,7 +17,7 @@ export default function Reminder(props) {
                     {props.message}
                 </Tooltip>
             }>
-            {props.children}
+            <span>{props.children}</span>
         </OverlayTrigger>
 }
 
