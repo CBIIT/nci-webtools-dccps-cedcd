@@ -2859,7 +2859,7 @@ BEGIN
     set @query = concat("select sql_calc_found_rows id, concat(u.last_name,', ', u.first_name) as name, user_name, u.email,
        ( case when access_level like '%SystemAdmin' then 'Admin' else 'Cohort Owner' end) as user_role,
 	   ( case when access_level like '%SystemAdmin' then 'All' 
-	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ',') as cohort_list 
+	      else (select GROUP_CONCAT(cohort_acronym SEPARATOR ', ') as cohort_list 
         from (select * from cohort_user_mapping where IFNULL(upper(active),'Y')='Y' and user_id = u.id order by cohort_acronym ) as a
         group by user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
