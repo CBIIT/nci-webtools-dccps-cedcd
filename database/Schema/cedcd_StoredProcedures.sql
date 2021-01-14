@@ -2382,7 +2382,7 @@ BEGIN
         if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
             select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         else -- if copy not exists, create a new one
-           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time) select name, acronym, 'draft', null,'v8', now(), now() from cohort
+           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time) select name, acronym, 'draft', null,'8.1', now(), now() from cohort
            where id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
@@ -2563,7 +2563,7 @@ from technology as old where old.cohort_id =old_cohort_id;
 
 SELECT document_ver INTO @cohort_ver FROM cohort where id = old_cohort_id;
 
-if @cohort_ver = 'v8' then set @new_status = 'complete' ;
+if @cohort_ver = '8.1' then set @new_status = 'complete' ;
 else set @new_status = 'incomplete' ;
 END IF;
 
@@ -2818,7 +2818,7 @@ BEGIN
 	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
-	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'v8',now());
+	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'8.1',now());
 
 	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
     

@@ -95,8 +95,8 @@ begin
         ALTER TABLE `cedcd`.`cohort` 
         ADD COLUMN `document_ver` VARCHAR(45) NULL AFTER `publish_time`;
 
-        update cohort set document_ver = 'v4' where id > 0 and document_ver is null and status ='published';
-        update cohort set document_ver = 'v8' where id > 0 and document_ver is null and status !='published';
+        update cohort set document_ver = '4.0' where id > 0 and document_ver is null and status ='published';
+        update cohort set document_ver = '8.1' where id > 0 and document_ver is null and status !='published';
     
     end if;
 
