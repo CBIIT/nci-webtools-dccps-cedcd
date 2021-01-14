@@ -2815,18 +2815,14 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
-    DECLARE new_id INT DEFAULT 0;
 
 	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 	
 	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'v8',now());
-    set new_id = last_insert_id();
-	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
-        
-	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-    values (new_id, IFNULL(JSON_UNQUOTE(JSON_EXTRACT(@owners,concat('$[',i,']'))),1), 'create new cohort', JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes')));
 
+	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+    
 	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
 
 	WHILE i < JSON_LENGTH(@owners) DO
