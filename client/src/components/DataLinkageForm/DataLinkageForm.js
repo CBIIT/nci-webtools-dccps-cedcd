@@ -140,7 +140,7 @@ const DataLinkageForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
+        if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
