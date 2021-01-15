@@ -20,10 +20,16 @@
 }
 
 .tooltip-info{
-    .arrow:before{
-        border-top-color: blue !important;       
+    .arrow{
+        display: none !important;       
     }
+    
     .tooltip-inner {
         background-color: transparent;
+        color: blue;
+        font-size: 1.2rem;
+        padding-bottom: 0;
+        position: absolute;
+        top: -12px;
     }
 }
