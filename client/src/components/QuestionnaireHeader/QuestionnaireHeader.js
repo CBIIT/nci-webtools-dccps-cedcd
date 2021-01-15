@@ -54,7 +54,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     const pickColor = (status) => {
         switch (status) {
             case 'incomplete':
-                return 'orange'
+                return '#ffd480'
             case 'complete':
                 return 'green'
             case 'new':
@@ -160,7 +160,7 @@ const QuestionnaireHeader = ({ ...props }) => {
         
         
         <div className="d-md-none">
-           <Reminder message={asTitleCase(sectionStatus['A'])}>
+           <Reminder message={asTitleCase(sectionStatus['A'])} info={true}>
             <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>

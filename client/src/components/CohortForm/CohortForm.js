@@ -1350,11 +1350,11 @@ const CohortForm = ({ ...props }) => {
                                                 <Form.Check.Input bsPrefix
                                                     type="checkbox" 
                                                     className="mr-2" 
-                                                    checked={cohort.eligible_disease === true} 
-                                                    onClick={() => {
-                                                        if(!isReadOnly) dispatch(allactions.cohortActions.eligible_disease(!cohort.eligible_disease))
+                                                    checked={cohort.eligible_disease === 1} 
+                                                    onClick={(e) => {
+                                                        if(!isReadOnly) dispatch(allactions.cohortActions.eligible_disease(+e.target.checked))
                                                     } } 
-                                                    disable={isReadOnly}/>
+                                                    />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Cancer survivors only, specify cancer site(s)
                                                 </Form.Check.Label>

@@ -208,6 +208,7 @@ class ManageCohort extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
+				console.dir(list)
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -420,10 +421,5 @@ class ManageCohort extends Component {
 	}
 }
 
-const mapStateToProps = function ({ user }) {
-	return {
-		user: user.id
-	}
-}
 
-export default connect(mapStateToProps)(ManageCohort);
+export default ManageCohort;
