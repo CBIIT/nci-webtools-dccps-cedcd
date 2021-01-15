@@ -322,13 +322,14 @@ const MortalityForm = ({ ...props }) => {
                                 <Col sm="2">
                                     <Reminder message={errors.mortalityYear} disabled={!(saved && errors.mortalityYear)} placement="right">
                                         <Form.Control
-                                            type="text"
+                                            // type="text"
                                             name='mortalityYear'
                                             type="number"
                                             min="1900"
                                             value={mortality.mortalityYear}
                                             readOnly={isReadOnly}
-                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
+                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
+                                            placeholder='YYYY'
                                         />
                                     </Reminder>
                                 </Col>
