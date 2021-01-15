@@ -316,7 +316,7 @@ class ManageCohort extends Component {
 					<td>{item.name}</td>
 					<td>{item.acronym}</td>
 					<td className="text-capitalize">{item.status}</td>
-					<td>{item.create_by}</td>
+					<td>{item.publish_by}</td>
 					<td>{item.update_time}</td>
 					<td>
 						<Link onClick={(e) => { this.reviewCohort(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
@@ -383,7 +383,7 @@ class ManageCohort extends Component {
 										{this.renderTableHeader("name", "30%")}
 										{this.renderTableHeader("acronym", "10%")}
 										{this.renderTableHeader("status", "15%")}
-										{this.renderTableHeader("create_by", "20%")}
+										{this.renderTableHeader("publish_by", "20%")}
 										{this.renderTableHeader("update_time", "15%")}
 										{this.renderTableHeader("action", "10%")}
 									</tr>
