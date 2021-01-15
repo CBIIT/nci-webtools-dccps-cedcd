@@ -23,6 +23,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -67,6 +68,7 @@ const CohortForm = ({ ...props }) => {
                         cohort_status = result.data.cohortStatus
 
                     batch(() => {
+                        console.log(currentCohort)
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
                         for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
                             dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
@@ -203,6 +205,8 @@ const CohortForm = ({ ...props }) => {
     }, [])
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
+
+        console.log(cohort)
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
             body: JSON.stringify(cohort),
@@ -734,7 +738,8 @@ const CohortForm = ({ ...props }) => {
                         }
                     }
                 })
-
+            
+            
         }
     }
     // model definition
@@ -2505,6 +2510,7 @@ const CohortForm = ({ ...props }) => {
                                     </p>
                                 </Col>                                 
                                 <Col sm="12">
+
                                     {/* Only show for medium windows and smaller */}
                                     <div className="table-responsive d-md-none">
                                         <Table bordered condensed className="table-valign-middle">
@@ -2517,18 +2523,18 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        <Form.Control type="text" 
+                                                                        
+                                                                        <Form.Control type="textarea" 
                                                                             bsPrefix 
                                                                             className='inputWriter' 
-                                                                            placeholder='Max of 100 characters' 
-                                                                            maxLength='100' 
                                                                             name='questionnaire_url' 
                                                                             id='questionnaire_url' 
                                                                             readOnly={isReadOnly} 
                                                                             value={cohort.questionnaire_url} 
                                                                             onChange={e => 
                                                                                 dispatch(allactions.cohortActions.questionnaire_url(e.target.value))
-                                                                            } />
+                                                                             } />
+                                                 
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -2620,8 +2626,6 @@ const CohortForm = ({ ...props }) => {
                                                                         <Form.Control type="text" 
                                                                             bsPrefix 
                                                                             className='inputWriter' 
-                                                                            placeholder='Max of 100 characters' 
-                                                                            maxLength='100' 
                                                                             name='main_cohort_url' 
                                                                             id='main_cohort_url' 
                                                                             disabled={isReadOnly} 
@@ -3021,20 +3025,23 @@ const CohortForm = ({ ...props }) => {
                                             <tbody>
                                                 <tr>
                                                     <td className="bg-light-grey">Questionnaires</td>
-                                                    <td>
-                                                        <Form.Control type="text" 
-                                                            bsPrefix
-                                                            className='inputWriter' 
-                                                            placeholder='Max of 100 characters' 
-                                                            maxLength='100' 
-                                                            name='questionnaire_url' 
-                                                            id='questionnaire_url' 
-                                                            value={cohort.questionnaire_url} 
-                                                            onChange={e => 
-                                                                dispatch(allactions.cohortActions.questionnaire_url(e.target.value)) 
-                                                            } 
-                                                            readOnly={isReadOnly} />
-                                                    </td>
+                                                    
+                                                        <td>
+                                                        
+                                                                <Form.Control as="textarea"
+                                                                    bsPrefix
+                                                                    className='inputWriter' 
+                                                                    name='questionnaire_url' 
+                                                                    id='questionnaire_url'
+                                                                    placeholder='Seperate multiple URL with commas. Each URL can have a max of 100 characters'
+                                                                    value={cohort.questionnaire_url} 
+                                                                    onChange={e => 
+                                                                        dispatch(allactions.cohortActions.questionnaire_url(e.target.value.split(','))) 
+                                                                    } 
+                                                                    readOnly={isReadOnly} />
+                                                            
+                                                        </td>
+                                                  
                                                     <td >
                                                         <Row className="w-100">
                                                             <Col sm={!isReadOnly ? "3" : "1"} className="pr-0">
