@@ -697,16 +697,6 @@ thead th a:hover {
   padding-right: 2rem;
   transition: all 300ms ease-out;
 }
-.filter-component-dropdown .btn-primary {
-  font-weight: bold;
-  padding: 0.25rem 0.5rem;
-  font-size: 1rem;
-  min-width: 1rem;
-  margin-right: 0.5rem;
-  position: absolute;
-  top:1rem;
-  right:1rem;
-}
 .btn-primary:hover, .btn-primary:focus, .btn-primary.focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
   color: #fff;
   background-color: #135B5D;
@@ -717,6 +707,45 @@ thead th a:hover {
   color: #777;
   border-color: #777;
   cursor: not-allowed;
+}
+.filter-component-dropdown .btn-primary {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  min-width: 1rem;
+  margin-right: 0.5rem;
+  position: absolute;
+  top:1rem;
+  right:1rem;
+}
+.btn-secondary {
+  background-color: #73a4a4;
+  border-color: #fff;
+  min-width: 100px;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  transition: all 300ms ease-out;
+}
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.focus, .btn-secondary:active, .btn-secondary.active, .open > .dropdown-toggle.btn-secondary {
+  color: #fff;
+  background-color: #507272;
+  border-color: #507272;
+}
+.btn-secondary.disabled, .btn-secondary[disabled], fieldset[disabled] .btn-secondary, .btn-secondary.disabled:hover, .btn-secondary[disabled]:hover, fieldset[disabled] .btn-secondary:hover, .btn-secondary.disabled:focus, .btn-secondary[disabled]:focus, fieldset[disabled] .btn-secondary:focus, .btn-secondary.disabled.focus, .btn-secondary[disabled].focus, fieldset[disabled] .btn-secondary.focus, .btn-secondary.disabled:active, .btn-secondary[disabled]:active, fieldset[disabled] .btn-secondary:active, .btn-secondary.disabled.active, .btn-secondary[disabled].active, fieldset[disabled] .btn-secondary.active {
+  background: #fff;
+  color: #777;
+  border-color: #777;
+  cursor: not-allowed;
+}
+.filter-component-dropdown .btn-secondary {
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  min-width: 1rem;
+  margin-right: 0.5rem;
+  position: absolute;
+  top:1rem;
+  right:1rem;
 }
 #addUserBtn.btn, #add.btn {
   margin-bottom: 1rem;

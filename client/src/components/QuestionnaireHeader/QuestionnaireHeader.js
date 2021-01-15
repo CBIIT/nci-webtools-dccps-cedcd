@@ -59,7 +59,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 return 'green'
             case 'new':
             default:
-                return 'grey'
+                return '#d9d9d9'
         }
     }
 

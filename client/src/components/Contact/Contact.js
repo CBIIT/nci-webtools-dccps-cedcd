@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Contact.css';
+import Button from 'react-bootstrap/Button';
 
 class Contact extends Component {
     constructor(props){
@@ -217,8 +218,19 @@ class Contact extends Component {
                       <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.message} onChange={(e) =>this.handleChange("message",e)}/>
                       </div>
                       <div className="bttn-group">
-                          <input type="submit"className="bttn_submit" value="Submit" />
-                          <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleClear}>Clear</a>
+                        <Button 
+                          variant="primary"
+                          type="submit"
+                          value="Submit" 
+                          className="col-lg-2 col-md-6">
+                          Submit
+                        </Button>
+                        <Button 
+                          variant="secondary" 
+                          className="col-lg-2 col-md-6" 
+                          onClick={this.handleClear}>
+                          Clear
+                        </Button>
                       </div>
                     </form>
                   </div>
