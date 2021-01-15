@@ -2379,7 +2379,7 @@ BEGIN
         if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID and a.status != 'archived') then -- find its copy
             select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         else -- if copy not exists, create a new one
-           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time) select name, acronym, 'draft', null,'8.1', now(), now() from cohort
+           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time, publish_time) select name, acronym, 'draft', null,'8.1', now(), now(), publish_time from cohort
            where id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
