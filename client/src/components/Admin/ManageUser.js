@@ -270,7 +270,7 @@ class ManageUser extends Component {
 				<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
 				<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
-					<div className="col-md-4 col-8 pl-0" style={{ "paddingBottom": "0px" }}>
+					<div className="col-sm-4 col-6 pl-0" style={{ "paddingBottom": "0px" }}>
 
 						<div className="input-group">
 							<div className="input-group-prepend">
@@ -283,11 +283,11 @@ class ManageUser extends Component {
 						</div>
 
 					</div>
-					<div className="col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
+					<div className="col-sm-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
 						<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 					</div>
 
-					<div className="col-md-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
+					<div className="col-sm-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
 
 						<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px", "paddingBottom": "0px", "marginBottom": "0px" }}>
 							<PageSummary pageInfo={this.state.pageInfo} mid="true" />

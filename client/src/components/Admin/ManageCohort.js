@@ -338,7 +338,7 @@ class ManageCohort extends Component {
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
       		    </p><p></p>
 				<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '-15px' }}>
-					<div className="col-md-3 col-xs-6 p-0" >
+					<div className="col-xl-3 col-sm-4 col-6 p-0" >
 						<div className="input-group">
 							<div className="input-group-prepend">
 								<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
@@ -348,21 +348,21 @@ class ManageCohort extends Component {
 								value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 						</div>
 					</div>
-					<div className="col-md-2 col-xs-6">
+					<div className="col-xl-2 col-sm-3 col-6">
 						<div id="cohortstatus" className="filter-component">
 							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 						</div>
 					</div>
-					<div className="col-md-2 col-xs-12" style={{ "paddingLeft": "0" }}>
+					<div className="col-xl-2 col-sm-3 col-12" style={{ "paddingLeft": "0" }}>
 						<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
 							<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
 								<i className="fas fa-times" ></i> Clear </a>
 
-							<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
+							<Link style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 						</div>
 
 					</div>
-					<div className="col-md-5 col-xs-12">
+					<div className="col-xl-5 col-sm-12 col-12">
 						<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
 							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
