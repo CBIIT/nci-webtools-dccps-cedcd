@@ -25,6 +25,7 @@ class ManageUser extends Component {
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
 			lastPage: 1,
+			viewAllFlag: false,
 		};
 		this.toFocus = React.createRef()
 	}
@@ -120,6 +121,11 @@ class ManageUser extends Component {
 
 	gotoPage(i) {
 		this.pageData(i);
+		if (i === 0) {
+			this.setState({ viewAllFlag: true })
+		} else {
+			this.setState({ viewAllFlag: false })
+		}
 	}
 
 	pageData(i, orderBy, filter, pagesize = -1) {
@@ -259,91 +265,91 @@ class ManageUser extends Component {
 		}
 
 		return <RequireAuthorization role="SystemAdmin">
-				<div className="col-md-12 col-12">
-					<h1 className="welcome pg-title">Manage Users</h1>
-					<p className="welcome">The list below contains all users registered on the CEDCD website.
+			<div className="col-md-12 col-12">
+				<h1 className="welcome pg-title">Manage Users</h1>
+				<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
-					<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
-						<div className="col-md-4 col-8 pl-0" style={{ "paddingBottom": "0px" }}>
+				<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
+					<div className="col-md-4 col-8 pl-0" style={{ "paddingBottom": "0px" }}>
 
-							<div className="input-group">
-								<div className="input-group-prepend">
-									<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
-									</div>
+						<div className="input-group">
+							<div className="input-group-prepend">
+								<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
 								</div>
-
-								<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " style={{ paddingLeft: '1rem' }}
-									onChange={(e) => this.handleuserNameSearchChange(e)} />
 							</div>
 
-						</div>
-						<div className="col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
-							<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
+							<input type="text" className="form-control" value={this.state.filter.userNameSearch} placeholder="Search User Name or Email " style={{ paddingLeft: '1rem' }}
+								onChange={(e) => this.handleuserNameSearchChange(e)} />
 						</div>
 
-						<div className="col-md-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
-
-							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px", "paddingBottom": "0px", "marginBottom": "0px" }}>
-								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
-							</div>
-							<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative", "paddingBottom": "0px", "marginBottom": "0px" }}>
-								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
-							</div>
-
-						</div>
 					</div>
-					<div className="table-responsive col-md-12">
-
-						<div className="cedcd-table home">
-							<div>
-								<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
-									<thead>
-										<tr id="summaryHeader" className="col-header">
-											{this.renderTableHeader("name", "15%")}
-											{this.renderTableHeader("user_name", "15%")}
-											{this.renderTableHeader("email", "15%")}
-											{this.renderTableHeader("user_role", "13%")}
-											{this.renderTableHeader("cohort_list", "20%")}
-											{this.renderTableHeader("active_status", "5%")}
-											{this.renderTableHeader("last_login", "12%")}
-											{this.renderTableHeader("action", "5%")}
-										</tr>
-									</thead>
-									<tbody>
-										{content}
-									</tbody>
-								</table>
-
-							</div>
-						</div>
+					<div className="col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
+						<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 					</div>
 
-					<div className="filter-block home col-md-12 col-12" >
+					<div className="col-md-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
 
-						<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
-							<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
-								Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleUserPageSizeChange(e)} >
-									<option value="5">5</option>
-									<option value="10">10</option>
-									<option value="15">15</option>
-									<option value="20">20</option>
-								</select>
-							</div>
-							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "4px" }}>
+						<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px", "paddingBottom": "0px", "marginBottom": "0px" }}>
+							<PageSummary pageInfo={this.state.pageInfo} mid="true" />
+						</div>
+						<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative", "paddingBottom": "0px", "marginBottom": "0px" }}>
+							<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
+						</div>
 
-								<div>
-									<PageSummary pageInfo={this.state.pageInfo} mid="true" />
-								</div>
+					</div>
+				</div>
+				<div className="table-responsive col-md-12">
 
-							</div>
+					<div className="cedcd-table home">
+						<div>
+							<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
+								<thead>
+									<tr id="summaryHeader" className="col-header">
+										{this.renderTableHeader("name", "15%")}
+										{this.renderTableHeader("user_name", "15%")}
+										{this.renderTableHeader("email", "15%")}
+										{this.renderTableHeader("user_role", "13%")}
+										{this.renderTableHeader("cohort_list", "20%")}
+										{this.renderTableHeader("active_status", "5%")}
+										{this.renderTableHeader("last_login", "12%")}
+										{this.renderTableHeader("action", "5%")}
+									</tr>
+								</thead>
+								<tbody>
+									{content}
+								</tbody>
+							</table>
 
-							<div style={{ "paddingRight": "15px", "paddingTop": "0px" }}>
-								<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
-							</div>
 						</div>
 					</div>
 				</div>
-			</RequireAuthorization>;
+
+				<div className="filter-block home col-md-12 col-12" >
+
+					<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
+						{this.state.viewAllFlag ? '' : <div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
+							Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleUserPageSizeChange(e)} >
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+							</select>
+						</div>}
+						<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "4px" }}>
+
+							<div>
+								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
+							</div>
+
+						</div>
+
+						<div style={{ "paddingRight": "15px", "paddingTop": "0px" }}>
+							<Paging pageInfo={this.state.pageInfo} onClick={(i) => this.gotoPage(i)} />
+						</div>
+					</div>
+				</div>
+			</div>
+		</RequireAuthorization>;
 	}
 }
 

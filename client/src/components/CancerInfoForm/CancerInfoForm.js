@@ -154,7 +154,7 @@ const CancerInfoForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
-
+                        dispatch(fetchCohort(cohortID))
                         if(nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
