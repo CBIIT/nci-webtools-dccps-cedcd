@@ -165,6 +165,9 @@ const MortalityForm = ({ ...props }) => {
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
 
+        if(!copy.mortalityYear && mortality.mortalityYear.toString().length !== 4)
+            copy.mortalityYear = 'Please enter a 4 digit year'
+
         if (!mortality.deathIndex && !mortality.deathCertificate && !mortality.otherDeath) {
             copy.deathConfirm = 'Required Field'
         }
@@ -322,7 +325,7 @@ const MortalityForm = ({ ...props }) => {
                                 <Col sm="2">
                                     <Reminder message={errors.mortalityYear} disabled={!(saved && errors.mortalityYear)} placement="right">
                                         <Form.Control
-                                            // type="text"
+                                            className='no-spinner'
                                             name='mortalityYear'
                                             type="number"
                                             min="1900"

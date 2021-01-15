@@ -33,9 +33,6 @@ const Content = ({currentSection, readOnlyOrNot = false, sectionJumper = f=>f}) 
 
 const QuestionnaireLoader = (props) => {
     const [current, setCurrent] = useState('A')
-    useEffect(() => {
-        props.isReadOnly ? props.setAdmin(1) : props.setAdmin(2)
-    }, [])
     return <Questionnaire activeSection={current} handler={(section) => setCurrent(section)} isReadOnly={props.isReadOnly} >
         <Content currentSection={current}  readOnlyOrNot={props.isReadOnly} sectionJumper={(section) => setCurrent(section)}/>
     </Questionnaire>

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import './MainContent.css';
 import Home from '../Home/Home';
 import Details from '../Details/Details';
 import Enrollment from '../Enrollment/Enrollment';
@@ -9,7 +8,7 @@ import Biospecimen from '../Biospecimen/Biospecimen';
 import About from '../About/About';
 import Information from '../Information/Information';
 import Contact from '../Contact/Contact';
-import QuestionnaireLoader from '../QuestionnaireLoader/QuestionnaireLoader'
+import Questionnaire from '../Questionnaire/Questionnaire';
 import ManageCohort from '../Admin/ManageCohort'
 import NewCohort from '../Admin/AddNewCohort'
 import SelectCohort from '../SelectCohort/SelectCohort';
@@ -17,6 +16,7 @@ import ManageUser from '../Admin/ManageUser'
 import EditUser from '../Admin/EditUser'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import ResourceNotFound from '../ResourceNotFound/ResourceNotFound';
+import './MainContent.css';
 
 
 class MainContent extends Component {
@@ -45,17 +45,16 @@ class MainContent extends Component {
         <Route exact path={match + '/cancer'} component={Cancer} />
         <Route exact path={match + '/biospecimen'} component={Biospecimen} />
         <Route exact path={match + '/about'} component={About} />
-        <Route path={match + '/contact'} component={Contact} />
+        <Route exact path={match + '/contact'} component={Contact} />
         <Route exact path={match + '/cohort/questionnaire'} component={SelectCohort} />
-        <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} />} />
+        <Route exact path={match + '/cohort/questionnaire/:id'} render={() => <Questionnaire />} />
         <Route exact path={match + '/cohort'} component={Information} />
-        <Route path={match + '/admin/managecohort'} render={() => <ManageCohort setAdmin={this.props.setAdmin} />} />
-     {/*}  <Route path={match + '/admin/viewcohort/:id/'} render={() => <ReviewCohort setAdmin={this.props.setAdmin} />} /> */}
-        <Route exact path={match + '/admin/viewcohort/:id/'} render={() => <QuestionnaireLoader setAdmin={this.props.setAdmin} isReadOnly={true} />} />
-        <Route exact path={match + '/admin/manageuser'} render={() => <ManageUser setAdmin={this.props.setAdmin} />} />
-        <Route exact path={match + '/admin/newcohort'} render={() => <NewCohort setAdmin={this.props.setAdmin} />} />
-        <Route exact path={match + '/admin/newuser'} render={() => <EditUser setAdmin={this.props.setAdmin} isNew={true} />} />
-        <Route exact path={match + '/admin/edituser/:id'} render={() => <EditUser setAdmin={this.props.setAdmin} isNew={false} />} />
+        <Route exact path={match + '/admin/managecohort'} render={() => <ManageCohort />} />
+        <Route exact path={match + '/admin/viewcohort/:id/'} render={() => <Questionnaire isReadOnly />} />
+        <Route exact path={match + '/admin/manageuser'} render={() => <ManageUser />} />
+        <Route exact path={match + '/admin/newcohort'} render={() => <NewCohort />} />
+        <Route exact path={match + '/admin/newuser'} render={() => <EditUser isNew={true} />} />
+        <Route exact path={match + '/admin/edituser/:id'} render={() => <EditUser isNew={false} />} />
         <Route path={match + '/unauthorized'} component={Unauthorized} />
         <Route path="*" component={ResourceNotFound} />
       </Switch>
