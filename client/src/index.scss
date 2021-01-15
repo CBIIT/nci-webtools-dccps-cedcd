@@ -1430,7 +1430,6 @@ tr.compare-row--hover, .body-header--hover {
 }
 
 .table input.form-control.input-number[type="number"] {
-  padding: 0;
   border: none;
   box-shadow: none;
   background-color: transparent;
@@ -1466,4 +1465,14 @@ tr.compare-row--hover, .body-header--hover {
 
 input[type='file'] {
   color: transparent;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+input[type=number] {
+  -moz-appearance:textfield;
 }
