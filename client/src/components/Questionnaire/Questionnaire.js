@@ -43,12 +43,9 @@ const Questionnaire = ({ ...props }) => {
                 dispatch(updateUserSession());
             }
             dispatch(initializeLookup());
+            dispatch(allactions.cohortIDAction.setCohortId(+id))
         }
     }, [location, id]);
-
-    useEffect(() => {
-        dispatch(allactions.cohortIDAction.setCohortId(+id))
-    }, id)
 
     if (!isAuthorized)
         return <Unauthorized />
