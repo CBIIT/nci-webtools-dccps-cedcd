@@ -37,13 +37,3 @@
 .click-width{
     width: 30px;
 }
-
-input[type=number].no-spinner {
-    -moz-appearance: textfield;
-}
-
-input::-webkit-outer-spin-button.no-spinner,
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
