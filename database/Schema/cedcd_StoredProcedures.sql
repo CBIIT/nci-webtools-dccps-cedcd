@@ -2839,7 +2839,10 @@ BEGIN
 			call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym, popSuccess);
             
 			IF popSuccess < 1 THEN
-				call raise_error;
+				BEGIN
+					delete from cohort where acronym = @cohortAcronym;
+					call raise_error;
+				END;
 			END IF;
             
 			WHILE i < JSON_LENGTH(@owners) DO
