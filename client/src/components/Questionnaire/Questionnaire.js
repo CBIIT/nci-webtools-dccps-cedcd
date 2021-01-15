@@ -47,7 +47,7 @@ const Questionnaire = ({ ...props }) => {
     }, [location, id]);
 
     useEffect(() => {
-        dispatch(allactions.cohortIDAction.setCohortId(id))
+        dispatch(allactions.cohortIDAction.setCohortId(+id))
     }, id)
 
     if (!isAuthorized)
