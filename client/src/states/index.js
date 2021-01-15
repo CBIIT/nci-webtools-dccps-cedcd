@@ -583,13 +583,13 @@ const InitialStates = {
     },
 
     sectionStatus: {
-        'A': 'complete',
-        'B': 'complete',
-        'C': 'complete',
-        'D': 'complete',
-        'E': 'complete',
-        'F': 'complete',
-        'G': 'complete'
+        'A': 'new',
+        'B': 'new',
+        'C': 'new',
+        'D': 'new',
+        'E': 'new',
+        'F': 'new',
+        'G': 'new'
     },
     lookup: {},
     cohortId: 0
