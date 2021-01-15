@@ -864,13 +864,12 @@ const CohortForm = ({ ...props }) => {
                 }  
                 body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)} 
                 footer={
-                    <input 
-                        type='button' 
-                        onClick={()=> 
-                            setFileModal(false)
-                        }
-                        className='btn btn-primary' 
-                        value='Close' />                    
+                    <Button 
+                        variant="primary" 
+                        className="col-lg-2 col-md-6" 
+                        onClick={() => setFileModal(false)}>
+                        Close
+                    </Button>   
                 }/> 
 
             <Col md="12">

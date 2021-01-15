@@ -8,6 +8,7 @@ import CenterModal from '../controls/modal/modal'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import './AddNewCohort.css';
+import Button from 'react-bootstrap/Button';
 
 const EditUser = ({ ...props }) => {
 
@@ -253,7 +254,7 @@ const EditUser = ({ ...props }) => {
                 title={<span>Validation Errors</span>}
                 body={<div className="my-3">There are validation errors. Please fix these issues before updating records.</div>}
                 footer={<div>
-                    <button className="btn btn-primary mx-2" onClick={() => setModalShow(false)} >OK</button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={() => setModalShow(false)} >OK</Button>
                 </div>}
             />
 
@@ -272,7 +273,7 @@ const EditUser = ({ ...props }) => {
                         <div id="edituser-col-1" className="col-md-12 col-12">
                             <form >
                                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                                <div id="ctl11_div_userName" className=" my-3 col-md-12 col-12">
+                                <div id="ctl11_div_userName" className="pl-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
                                     {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
                                     <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
@@ -281,7 +282,7 @@ const EditUser = ({ ...props }) => {
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                     </span>
                                 </div>
-                                <div id="ctl11_div_userEmail" className=" my-3 col-md-12 col-12">
+                                <div id="ctl11_div_userEmail" className="pl-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
                                     {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
                                     <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
@@ -293,7 +294,7 @@ const EditUser = ({ ...props }) => {
                                     </span>
                                 </div>
 
-                                <div id="ctl11_div_lastName" className=" my-3 col-md-12 col-12">
+                                <div id="ctl11_div_lastName" className="pl-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                     {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
                                     <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
@@ -301,7 +302,7 @@ const EditUser = ({ ...props }) => {
                                         onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
                                     </span>
                                 </div>
-                                <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12">
+                                <div id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
                                     {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
                                     <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
@@ -309,7 +310,7 @@ const EditUser = ({ ...props }) => {
                                         onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                     </span>
                                 </div>
-                                <div id="ctl11_div_firstName" className=" my-3 col-md-12 col-12" >
+                                <div id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
                                     <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
                                     {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
                                     <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
@@ -325,13 +326,13 @@ const EditUser = ({ ...props }) => {
                                     </div>
                                 </div>
 
-                                <div className="my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+                                <div className="pl-0 my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
 
-                                    <div className="col-md-12 col-12" > <label >Cohort </label>
+                                    <div className="pl-0 col-md-12 col-12" > <label >Cohort </label>
                                     </div>
 
                                     {userRole === 'Admin' ?
-                                        <div className="col-md-6 col-6" >
+                                        <div className="pl-0 col-md-6 col-6" >
                                             <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
                                                 <input className="form-control" type="text" value="All" readOnly />
                                             </span>
@@ -339,14 +340,14 @@ const EditUser = ({ ...props }) => {
                                         </div>
                                         :
                                         <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                            <div className="col-md-5 col-6" style={{ width: '90%' }}>
+                                            <div className="pl-0 col-md-5 col-6" style={{ width: '90%' }}>
                                                 <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
                                             </div>
                                         </div>
                                     }
                                 </div>
-                                <div className=" my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
-                                    <div className=" col-md-4 col-6">
+                                <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
+                                    <div className="pl-0 col-md-4 col-6">
                                         <span className="col-md-4 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
                                             onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                         </span>
@@ -355,11 +356,24 @@ const EditUser = ({ ...props }) => {
                             </form>
 
                             <div className="bttn-group col-md-4 col-xs-6">
-                                <input type='button' className='col-md-2 col-xs-6 btn btn-primary'
+                                <Button 
+                                    variant="primary"
+                                    value="Save" 
+                                    className="col-lg-2 col-md-6"
+                                    onClick={handleSave}>
+                                    Save
+                                </Button>
+                                <Button 
+                                    variant="secondary" 
+                                    className="col-lg-2 col-md-6" 
+                                    onClick={goBack}>
+                                    Cancel
+                                </Button>
+                                {/* <input type='button' className='col-md-2 col-xs-6 btn btn-primary'
                                     value="Save" onClick={handleSave} style={{ paddingLeft: '40', paddingRight: '20' }} />
 
                                 <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
-                                    value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
+                                    value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} /> */}
                             </div>
                         </div>
                     }
