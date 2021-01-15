@@ -3,6 +3,7 @@ import Select from 'react-select';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import Messenger from '../Snackbar/Snackbar'
 import './AddNewCohort.css';
+import Button from 'react-bootstrap/Button';
 
 class AddNewCohort extends Component {
 
@@ -316,8 +317,20 @@ class AddNewCohort extends Component {
                   <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
                 </div>
                 <div className="bttn-group">
-                  <input type="submit" className="bttn_submit" value="Submit" />
-                  <a id="ctl11_fg_cancelBtn" className="bttn_cancel" href="javascript:void(0);" onClick={this.handleCancel}>Cancel</a>
+                  <Button 
+                    variant="primary"
+                    type="submit"
+                    value="Submit" 
+                    className="col-lg-2 col-md-6">
+                    Submit
+                  </Button>
+                  <Button 
+                    variant="secondary" 
+                    className="col-lg-2 col-md-6" 
+                    onClick={this.handleCancel}>
+                    Cancel
+                  </Button>
+                  
                 </div>
               </form>
             </div>

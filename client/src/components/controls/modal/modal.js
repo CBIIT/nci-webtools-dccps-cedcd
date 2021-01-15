@@ -1,5 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+
 const ValidationModal = (props) => {
   return (
     <Modal show={props.show} backdrop="static">
@@ -18,16 +20,18 @@ const ValidationModal = (props) => {
       <Modal.Footer>
         { props.footer || 
             <div>
-              <button 
-                className='btn btn-light mr-1' 
-                onClick={props.handleClose}>
-                  Cancel
-              </button>
-              <button 
-                className='btn btn-primary'  
+              <Button 
+                variant="primary" 
+                className="col-lg-2 col-md-6" 
                 onClick={props.handleContentSave}>
-                  Save
-              </button>
+                Save
+              </Button>
+              <Button 
+                variant="secondary" 
+                className="col-lg-2 col-md-6" 
+                onClick={props.handleClose}>
+                Cancel
+              </Button>
             </div>
         }
       </Modal.Footer>

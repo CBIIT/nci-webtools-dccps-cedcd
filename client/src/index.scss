@@ -1476,3 +1476,7 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance:textfield;
 }
+
+.modal-footer {
+  justify-content: flex-start !important; 
+}
