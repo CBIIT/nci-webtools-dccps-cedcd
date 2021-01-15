@@ -130,7 +130,7 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.enrollment_ongoing === 0) { 
                             dispatch(allactions.cohortErrorActions.enrollment_target(true))
                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                            if(!currentCohort.enrollment_year_end) dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Filed'))
+                            //if(!currentCohort.enrollment_year_end) dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Filed'))
                          }
                         if (currentCohort.enrollment_ongoing === 1) {
                             if (currentCohort.enrollment_target && currentCohort.enrollment_target >= 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true))}
@@ -1441,7 +1441,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='YYYY' 
                                                     value={cohort.enrollment_year_start} 
                                                     onChange={e => 
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                        !isReadOnly &&  e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                     } 
                                                     onBlur={e => 
                                                         populateErrors('enrollment_year_start', e.target.value, true, 'startyear') 
@@ -1453,7 +1453,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='YYYY' 
                                                 value={cohort.enrollment_year_start} 
                                                 onChange={e => 
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                    !isReadOnly && e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                 } 
                                                 onBlur={e => 
                                                     populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
@@ -1464,7 +1464,7 @@ const CohortForm = ({ ...props }) => {
                                 </Col>
                                 <Col sm="12" className="p-0" className="mb-1">
                                     <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                        Ended in year
+                                        Ended in year<span style={{ color: 'red' }}>*</span>
                                     </Form.Label>
                                     <Col sm="2">
                                         {errors.enrollment_year_end && saved ? 
@@ -1477,15 +1477,15 @@ const CohortForm = ({ ...props }) => {
                                                     onChange={e => {
                                                         if(!isReadOnly)
                                                         {
-                                                            dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                            if(e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value))dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                             if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
                                                                 batch( () => {        
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                   // cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                   // cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -1503,15 +1503,15 @@ const CohortForm = ({ ...props }) => {
                                                 onChange={e => { // if it is already ended turn off on going
                                                     if(!isReadOnly)
                                                         {
-                                                            dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                            if(e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value)) dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                             if(/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <=(new Date()).getFullYear()){
                                                                 batch( () => {            
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                    cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                    //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                    //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
                                                             }
                                                         }
@@ -1542,11 +1542,12 @@ const CohortForm = ({ ...props }) => {
                                                             // value='0' 
                                                             checked={cohort.enrollment_ongoing === 0} 
                                                             onClick={() => {
-                                                                if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
-                                                                    dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                //if(!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined'){
+                                                                    if(!isReadOnly){
+                                                                        dispatch(allactions.cohortActions.enrollment_ongoing(0));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                        dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                 }
                                                             }} />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1564,9 +1565,10 @@ const CohortForm = ({ ...props }) => {
                                                         // value='0' 
                                                         checked={cohort.enrollment_ongoing === 0} 
                                                         onClick={e => {
-                                                            if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                            //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                            if(!isReadOnly ){
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
+                                                                //dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
@@ -1590,7 +1592,8 @@ const CohortForm = ({ ...props }) => {
                                                             // value='1' 
                                                             checked={cohort.enrollment_ongoing === 1} 
                                                             onClick={() => {
-                                                                if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
+                                                                //if(!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined'){
+                                                                if(!isReadOnly){
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
@@ -1611,7 +1614,8 @@ const CohortForm = ({ ...props }) => {
                                                         className="mr-2"
                                                         checked={cohort.enrollment_ongoing === 1} 
                                                         onClick={e => {
-                                                            if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
+                                                           // if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
+                                                            if(!isReadOnly){
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                 errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
@@ -1675,7 +1679,7 @@ const CohortForm = ({ ...props }) => {
                                                     placeholder='YYYY' 
                                                     value={cohort.enrollment_year_complete} 
                                                     onChange={e => 
-                                                        dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                        !isReadOnly && e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                     }
                                                     onBlur={e => {
                                                         !isReadOnly && populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -1688,7 +1692,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='YYYY' 
                                                 value={cohort.enrollment_year_complete} 
                                                 onChange={e => 
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                    !isReadOnly && e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                 }
                                                 onBlur={e => {
                                                     if(!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -2008,22 +2012,22 @@ const CohortForm = ({ ...props }) => {
                                                 name='most_recent_year' 
                                                 value={cohort.most_recent_year}
                                                 onChange={e => 
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                    !isReadOnly && e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                                 } 
                                                 placeholder='YYYY' 
                                                 onBlur={e => 
-                                                    populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
+                                                    !isReadOnly && populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                                 } />
                                         </Reminder> : 
                                         <Form.Control type="text" 
                                             name='most_recent_year' 
                                             value={cohort.most_recent_year} 
                                             onChange={e => 
-                                                !isReadOnly &&  dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                !isReadOnly && e.target.value.length <=4 && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                             }
                                             placeholder='YYYY' 
                                             onBlur={e => 
-                                                populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
+                                               !isReadOnly && populateErrors('most_recent_year', e.target.value, true, 'most_recent_year') 
                                             } 
                                             readOnly={isReadOnly} />
                                     }
