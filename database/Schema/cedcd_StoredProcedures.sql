@@ -2817,20 +2817,39 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
-
-	set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
-	set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
-	
-	insert into cohort (name,acronym,status,publish_by,document_ver, update_time) values(@cohortName,@cohortAcronym,"new",NULL,'8.1',now());
-
-	SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+    DECLARE popSuccess INT DEFAULT 1;
+    DECLARE flag INT DEFAULT 1;
     
-	call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym);
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0;
+      ROLLBACK;
+      SELECT flag as success;
+	END;
+    
 
-	WHILE i < JSON_LENGTH(@owners) DO
-		insert into cohort_user_mapping (cohort_acronym,user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
-		SELECT i + 1 INTO i;	
-	end WHILE;
+    START TRANSACTION;
+		BEGIN
+			set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			
+			insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,now());
+			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+			call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym, popSuccess);
+            
+			IF popSuccess < 1 THEN
+				call raise_error;
+			END IF;
+            
+			WHILE i < JSON_LENGTH(@owners) DO
+				insert into cohort_user_mapping (cohort_acronym, user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+				SELECT i + 1 INTO i;	
+			end WHILE;
+		END;
+    COMMIT;
+    
+    SELECT flag as success;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -3015,23 +3034,23 @@ end //
 
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20))
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
+      SET popSuccess = 0;
       ROLLBACK;
 	END;
-
-    START TRANSACTION;
-
+	
+   START TRANSACTION;
+   
    insert cohort_basic (cohort_id, cohort_name, cohort_acronym) values (cohortID,  cohortName, acronym);
    insert cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	
-    
     insert enrollment_count(cohort_id, race_id, ethnicity_id, gender_id, enrollment_counts, create_time, update_time) 
     select cohortID, r.id, e.id, g.id, 0, NOW(), NOW()
 	from lu_race r, lu_ethnicity e, lu_gender g where g.id < 4 order by r.id, e.id, g.id;
@@ -3059,7 +3078,7 @@ BEGIN
     
 	COMMIT;
    
-	SELECT flag as rowsAffacted;
+	-- SELECT flag as rowsAffacted;
 						
 			
 END //
