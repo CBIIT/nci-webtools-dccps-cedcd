@@ -289,7 +289,7 @@ class ManageCohort extends Component {
 	}
 
 
-	saveHistory = (e, id, status) => {
+	reviewCohort = (e, id, status) => {
 		e.preventDefault();
 		let review_url = `/admin/viewcohort/${id}`;
 		if (['submitted'].includes(status.toLowerCase())) (this.resetCohortStatus(id, status))
@@ -315,7 +315,7 @@ class ManageCohort extends Component {
 					<td>{item.create_by}</td>
 					<td>{item.update_time}</td>
 					<td>
-						<Link onClick={(e) => { this.saveHistory(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
+						<Link onClick={(e) => { this.reviewCohort(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
 					</td>
 				</tr>
 			);

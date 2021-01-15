@@ -10,7 +10,7 @@
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`user` (
+CREATE TABLE IF NOT  EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_name` varchar(200) NOT NULL,
   `first_name` varchar(100) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS`user` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_cancer` (
+CREATE TABLE IF NOT  EXISTS `lu_cancer` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `icd9` varchar(20) NOT NULL,
   `icd10` varchar(20) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS`lu_cancer` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_case_type` (
+CREATE TABLE IF NOT  EXISTS `lu_case_type` (
   `id` int(4) NOT NULL AUTO_INCREMENT,
   `case_type` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS`lu_case_type` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_cohort_status` (
+CREATE TABLE IF NOT  EXISTS `lu_cohort_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohortstatus` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS`lu_cohort_status` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_data_category` (
+CREATE TABLE IF NOT  EXISTS `lu_data_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(250) NOT NULL,
   `sub_category` varchar(250) DEFAULT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS`lu_data_category` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_ethnicity` (
+CREATE TABLE IF NOT  EXISTS `lu_ethnicity` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ethnicity` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS`lu_ethnicity` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_gender` (
+CREATE TABLE IF NOT  EXISTS `lu_gender` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `gender` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS`lu_gender` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_person_category` (
+CREATE TABLE IF NOT  EXISTS `lu_person_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `category` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS`lu_person_category` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_race` (
+CREATE TABLE IF NOT  EXISTS `lu_race` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `race` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS`lu_race` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`lu_specimen` (
+CREATE TABLE IF NOT  EXISTS `lu_specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `specimen` varchar(100) NOT NULL,
   `sub_category` varchar(100) DEFAULT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS`lu_specimen` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort` (
+CREATE TABLE IF NOT  EXISTS `cohort` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(500) NOT NULL,
   `acronym` varchar(100) NOT NULL,
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS`cohort` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort_basic` (
+CREATE TABLE IF NOT  EXISTS `cohort_basic` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cohort_name` varchar(500) DEFAULT NULL,
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS`cohort_basic` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`attachment` (
+CREATE TABLE IF NOT  EXISTS `attachment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `attachment_type` int(1) NOT NULL,
@@ -229,7 +229,7 @@ CREATE TABLE IF NOT EXISTS`attachment` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cancer_count` (
+CREATE TABLE IF NOT  EXISTS `cancer_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) NOT NULL,
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS`cancer_count` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cancer_info` (
+CREATE TABLE IF NOT  EXISTS `cancer_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL UNIQUE,
   `ci_confirmed_cancer_year` int(4) DEFAULT NULL,
@@ -301,7 +301,7 @@ CREATE TABLE IF NOT EXISTS`cancer_info` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`contact` (
+CREATE TABLE IF NOT  EXISTS `contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS`contact` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`dlh` (
+CREATE TABLE IF NOT  EXISTS `dlh` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `dlh_linked_to_existing_databases` int(1) DEFAULT NULL,
@@ -344,7 +344,7 @@ CREATE TABLE IF NOT EXISTS`dlh` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`enrollment_count` (
+CREATE TABLE IF NOT  EXISTS `enrollment_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `race_id` int(11) NOT NULL,
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS`enrollment_count` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`major_content` (
+CREATE TABLE IF NOT  EXISTS `major_content` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL COMMENT '1-Socio-economic Status (e.g., income)\n2-Education Level\n3-Marital Status\n4-Language/Country of Origin \n5-Employment Status \n6-Health Insurance Status\n7-Anthropometry (e.g., weight, height, waist circumference)\n8-Dietary Intake\n9-Dietary Supplement Use\n10-Complementary and Alternative Medicine\n11-Prescription Medication Use (not related to cancer treatment)\n12-Non-prescription Medication Use (not related to cancer treatment)\n13-Alcohol Consumption\n14-Cigarette Smoking\n15-Use of Tobacco Products Other than Cigarettes\n16-Physical Activity\n17-Sleep Habits\n18-Reproductive History\n19-Self-Reported Health\n20-Quality of Life \n21-Social Support\n22-Cognitive Function\n23-Depression\n24-Other Psychosocial Variables\n25-Fatigue\n26-Family History of Cancer\n27-Family History of Cancer with Pedigrees\n28-Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)\n29-Residential history Information (zip code, GIS) over time?\n30-Other Medical Conditions\n',
@@ -385,7 +385,7 @@ CREATE TABLE IF NOT EXISTS`major_content` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`mortality` (
+CREATE TABLE IF NOT  EXISTS `mortality` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `mort_year_mortality_followup` int(4) DEFAULT NULL,
@@ -410,7 +410,7 @@ CREATE TABLE IF NOT EXISTS`mortality` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`person` (
+CREATE TABLE IF NOT  EXISTS `person` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `category_id` int(11) NOT NULL,
@@ -431,7 +431,7 @@ CREATE TABLE IF NOT EXISTS`person` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`specimen` (
+CREATE TABLE IF NOT  EXISTS `specimen` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `bio_other_baseline_specify` varchar(200) DEFAULT NULL,
@@ -452,7 +452,7 @@ CREATE TABLE IF NOT EXISTS`specimen` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`specimen_collected_type` (
+CREATE TABLE IF NOT  EXISTS `specimen_collected_type` (
   `id` int NOT NULL AUTO_INCREMENT,
   `cohort_id` int NOT NULL,
   `specimen_id` int NOT NULL,
@@ -468,7 +468,7 @@ CREATE TABLE IF NOT EXISTS`specimen_collected_type` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`specimen_count` (
+CREATE TABLE IF NOT  EXISTS `specimen_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) DEFAULT NULL,
@@ -487,7 +487,7 @@ CREATE TABLE IF NOT EXISTS`specimen_count` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`technology` (
+CREATE TABLE IF NOT  EXISTS `technology` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `tech_use_of_mobile` int(1) DEFAULT NULL,
@@ -503,7 +503,7 @@ CREATE TABLE IF NOT EXISTS`technology` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort_activity_log` (
+CREATE TABLE IF NOT  EXISTS `cohort_activity_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -520,7 +520,7 @@ CREATE TABLE IF NOT EXISTS`cohort_activity_log` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort_user_mapping` (
+CREATE TABLE IF NOT  EXISTS `cohort_user_mapping` (
   `id` int NOT NULL AUTO_INCREMENT,
   `cohort_acronym` varchar(100) NOT NULL,
   `user_id` int NOT NULL,
@@ -536,7 +536,7 @@ CREATE TABLE IF NOT EXISTS`cohort_user_mapping` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort_page_mapping` (
+CREATE TABLE IF NOT  EXISTS `cohort_page_mapping` (
   `page_code` varchar(2) NOT NULL,
   `page_info` varchar(50) NOT NULL,
   PRIMARY KEY (`page_code`)
@@ -544,7 +544,7 @@ CREATE TABLE IF NOT EXISTS`cohort_page_mapping` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT EXISTS`cohort_edit_status` (
+CREATE TABLE IF NOT  EXISTS `cohort_edit_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `page_code` varchar(2) NOT NULL,

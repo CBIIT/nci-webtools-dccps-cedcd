@@ -1550,8 +1550,7 @@ category,
 filename,
 website,
 status,
-create_time,
-update_time
+create_time
 )
 select attachment_id,
 cohort_id,
@@ -1560,8 +1559,7 @@ category,
 filename,
 website,
 status,
-create_time,
-update_time
+create_time
 from cedcd_old.cohort_attachment;
 
 /*

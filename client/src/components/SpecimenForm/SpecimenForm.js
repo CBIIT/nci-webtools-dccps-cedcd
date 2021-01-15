@@ -47,7 +47,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const sendEmail = (template, topic, status) => {
 
-        if (status === 'published' || status === 'returned') {
+        if (status === 'published' || status === 'rejected') {
             fetch('/api/questionnaire/select_owners_from_id', {
                 method: "POST",
                 body: JSON.stringify({ id: cohortId }),
@@ -68,7 +68,7 @@ const SpecimenForm = ({ ...props }) => {
                                     cohortAcronym: owner.acronym,
                                     website: window.location.origin,
                                     publishDate: new Date().toLocaleString('en-US', { timeZone: 'UTC' }) + ' UTC',
-                                    reviewComments: status === 'returned' ? rejectionModal.notes : ''
+                                    reviewComments: status === 'rejected' ? rejectionModal.notes : ''
                                 },
                                 email: owner.email,
                                 template: template,
@@ -191,7 +191,7 @@ const SpecimenForm = ({ ...props }) => {
 
             updateRejectionModal({show: false})
             dispatch(fetchCohort(cohortId));
-            sendEmail('/templates/email-reject-template.html', 'CEDCD Cohort Review Rejected - ', 'returned')     
+            sendEmail('/templates/email-reject-template.html', 'CEDCD Cohort Review Rejected - ', 'rejected')     
         }
     }
 
@@ -252,7 +252,7 @@ const SpecimenForm = ({ ...props }) => {
 
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if (['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)) {
+        if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
