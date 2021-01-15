@@ -5,12 +5,13 @@ const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={})
     switch(action.type){
         case t.updateEnrollmentCount:
             let shallow = {...state}
-            //if(/^\d*$/.test(action.value.trim()))
+            if(/^\d*$/.test(action.value.trim()))
                 shallow[action.cell] = action.value
             return shallow
         case t.updateTotals:
             let stateCopy = {...state}
-            stateCopy[action.cell] = action.value
+            if(/^\d*$/.test(String(action.value).trim()))
+                stateCopy[action.cell] = action.value
             return stateCopy
         case t.updateMostRecentDate:
             return {
