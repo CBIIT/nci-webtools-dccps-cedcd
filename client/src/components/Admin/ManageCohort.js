@@ -29,6 +29,7 @@ class ManageCohort extends Component {
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
 			lastPage: 1,
+			viewAllFlag: false
 		};
 		this.toFocus = React.createRef()
 	}
@@ -176,6 +177,11 @@ class ManageCohort extends Component {
 
 	gotoPage(i) {
 		this.pageData(i);
+		if (i === 0) {
+			this.setState({ viewAllFlag: true })
+		} else {
+			this.setState({ viewAllFlag: false })
+		}
 	}
 
 	pageData(i, orderBy, filter, pagesize = -1) {
@@ -207,7 +213,7 @@ class ManageCohort extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				console.dir(list)
+
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -286,7 +292,6 @@ class ManageCohort extends Component {
 				})
 		}
 	}
-
 
 	reviewCohort = (e, id, status) => {
 		e.preventDefault();
@@ -394,14 +399,16 @@ class ManageCohort extends Component {
 				<div className="filter-block home col-md-12" >
 
 					<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
-						<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
+						{this.state.viewAllFlag ? '' : <div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
 							Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
 								<option value="5">5</option>
 								<option value="10">10</option>
 								<option value="15">15</option>
 								<option value="20">20</option>
 							</select>
+
 						</div>
+						}
 						<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "4px" }}>
 
 							<div>
