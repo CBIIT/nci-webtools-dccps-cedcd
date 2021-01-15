@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
+import Button from 'react-bootstrap/Button';
 import { postJSON } from '../../services/query';
 import allactions from '../../actions'
 import { fetchCohort } from '../../reducers/cohort';
@@ -154,7 +155,7 @@ const CancerInfoForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
-
+                        dispatch(fetchCohort(cohortID))
                         if(nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
@@ -282,8 +283,8 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div>
-                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
-                    <button className="btn btn-primary mx-2" onClick={onConfirm}>Save</button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save</Button>
+                    <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
                 </div>
             })
         }
@@ -307,8 +308,8 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div>
-                    <button className="btn btn-light mx-2" onClick={e => updateModal({ show: false })}>Cancel</button>
-                    <button className="btn btn-primary mx-2" onClick={onConfirm}>Save and Continue</button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save and Continue</Button>
+                    <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
                 </div>
             });
         }

@@ -11,8 +11,8 @@ export default function RoutedApp() {
 		title: <span>Leaving Page</span>,
 		body: <div className="py-4">You may have unsaved changes. Please confirm that you wish to navigate away from the current page.</div>,
 		footer: <div>
-			<Button variant="light">Cancel</Button>
-			<Button variant="primary">Confirm</Button>
+			<Button className="col-lg-2 col-md-6" variant="primary">Confirm</Button>
+			<Button className="col-lg-2 col-md-6" variant="secondary">Cancel</Button>
 		</div>
 	});
 	const mergeModal = obj => setModal({...modal, ...obj});
@@ -25,21 +25,24 @@ export default function RoutedApp() {
 				body: message,
 				footer: <div>
 					<Button 
-						variant="light"
-						onClick={e => {
-							callback(false);
-							mergeModal({show: false});
-						}}>
-						Cancel
-					</Button>
-					<Button 
 						variant="primary"
+						className="col-lg-2 col-md-6"
 						onClick={e => {
 							callback(true);
 							mergeModal({show: false});
 						}}>
 						Confirm
 					</Button>
+					<Button 
+						variant="secondary"
+						className="col-lg-2 col-md-6"
+						onClick={e => {
+							callback(false);
+							mergeModal({show: false});
+						}}>
+						Cancel
+					</Button>
+					
 				</div>
 			})
 		}}>

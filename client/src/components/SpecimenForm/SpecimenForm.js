@@ -6,6 +6,7 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import classNames from 'classnames'
 import allactions from '../../actions'
 import validator from '../../validators'
@@ -259,7 +260,7 @@ const SpecimenForm = ({ ...props }) => {
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
-
+                        dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
                     }
@@ -898,8 +899,8 @@ const SpecimenForm = ({ ...props }) => {
                     />
                 </Form.Group>} 
                 footer={<>
-                    <button className="btn btn-light mr-1" onClick={_ => updateRejectionModal({show: false})}>Cancel</button>
-                    <button className="btn btn-primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</Button>
+                    <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({show: false})}>Cancel</Button>
                 </>} />
             
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}

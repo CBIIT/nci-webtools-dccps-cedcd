@@ -29,6 +29,7 @@ class ManageCohort extends Component {
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
 			lastPage: 1,
+			viewAllFlag: false
 		};
 		this.toFocus = React.createRef()
 	}
@@ -176,6 +177,11 @@ class ManageCohort extends Component {
 
 	gotoPage(i) {
 		this.pageData(i);
+		if (i === 0) {
+			this.setState({ viewAllFlag: true })
+		} else {
+			this.setState({ viewAllFlag: false })
+		}
 	}
 
 	pageData(i, orderBy, filter, pagesize = -1) {
@@ -207,7 +213,7 @@ class ManageCohort extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				console.dir(list)
+
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -287,7 +293,6 @@ class ManageCohort extends Component {
 		}
 	}
 
-
 	reviewCohort = (e, id, status) => {
 		e.preventDefault();
 		let review_url = `/admin/viewcohort/${id}`;
@@ -311,7 +316,7 @@ class ManageCohort extends Component {
 					<td>{item.name}</td>
 					<td>{item.acronym}</td>
 					<td className="text-capitalize">{item.status}</td>
-					<td>{item.create_by}</td>
+					<td>{item.publish_by}</td>
 					<td>{item.update_time}</td>
 					<td>
 						<Link onClick={(e) => { this.reviewCohort(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
@@ -333,7 +338,7 @@ class ManageCohort extends Component {
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
       		    </p><p></p>
 				<div className="col-md-12" style={{ verticalAlign: 'middle', marginBottom: '-15px' }}>
-					<div className="col-md-3 col-xs-6 p-0" >
+					<div className="col-xl-3 col-sm-4 col-6 p-0" >
 						<div className="input-group">
 							<div className="input-group-prepend">
 								<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
@@ -343,21 +348,21 @@ class ManageCohort extends Component {
 								value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
 						</div>
 					</div>
-					<div className="col-md-2 col-xs-6">
+					<div className="col-xl-2 col-sm-3 col-6">
 						<div id="cohortstatus" className="filter-component">
 							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
 						</div>
 					</div>
-					<div className="col-md-2 col-xs-12" style={{ "paddingLeft": "0" }}>
+					<div className="col-xl-2 col-sm-3 col-12" style={{ "paddingLeft": "0" }}>
 						<div className="manageCohortClearAll" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
 							<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
 								<i className="fas fa-times" ></i> Clear </a>
 
-							<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
+							<Link style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }} to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 						</div>
 
 					</div>
-					<div className="col-md-5 col-xs-12">
+					<div className="col-xl-5 col-sm-12 col-12">
 						<div className="row" style={{ "display": "flex", "paddingRight": "0px" }}>
 							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
@@ -378,7 +383,7 @@ class ManageCohort extends Component {
 										{this.renderTableHeader("name", "30%")}
 										{this.renderTableHeader("acronym", "10%")}
 										{this.renderTableHeader("status", "15%")}
-										{this.renderTableHeader("create_by", "20%")}
+										{this.renderTableHeader("publish_by", "20%")}
 										{this.renderTableHeader("update_time", "15%")}
 										{this.renderTableHeader("action", "10%")}
 									</tr>
@@ -394,14 +399,16 @@ class ManageCohort extends Component {
 				<div className="filter-block home col-md-12" >
 
 					<div className="row" style={{ "display": "flex", "paddingLeft": "15px", verticalAlign: 'middle' }}>
-						<div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
+						{this.state.viewAllFlag ? '' : <div className="pageSize" style={{ verticalAlign: 'middle', "paddingTop": "2px" }}>
 							Page Size: <select className="pageSizeSelect" value={this.state.pageInfo.pageSize} onChange={(e) => this.handleCohortPageSizeChange(e)} >
 								<option value="5">5</option>
 								<option value="10">10</option>
 								<option value="15">15</option>
 								<option value="20">20</option>
 							</select>
+
 						</div>
+						}
 						<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "4px" }}>
 
 							<div>

@@ -110,7 +110,7 @@ const InitialStates = {
         enrollment_ongoing: 'Required Field',
         enrollment_total: 'Required Field',
         enrollment_year_start: 'Required Field',
-        //enrollment_year_end: 'Required Field',
+        enrollment_year_end: 'Required Field',
         enrollment_ongoing: 'Required Field',
         enrollment_target: 'Required Field',
         enrollment_year_complete: 'Required Field',
