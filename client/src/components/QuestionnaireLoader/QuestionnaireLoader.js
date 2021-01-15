@@ -25,7 +25,7 @@ const Content = ({currentSection, readOnlyOrNot = false, sectionJumper = f=>f}) 
         case 'F':
             return <DataLinkageForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'G':
-            return <SpecimenForm isReadOnly={readOnlyOrNot} />
+            return <SpecimenForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         default:
             return <Message isReadOnly={readOnlyOrNot} />
     }
