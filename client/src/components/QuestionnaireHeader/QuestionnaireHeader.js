@@ -94,7 +94,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
 
     return <>
-        <div className="mb-4">
+        <div className="px-5 mb-4">
             <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
 
             {!isReadOnly ? null : <div>
@@ -119,7 +119,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
         </div>
 
-        <div className="container-fluid mb-4 mx-3">
+        <div className="container-fluid mb-4 mx-5">
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
@@ -159,7 +159,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
         
         
-        <div className="d-md-none">
+        <div className="d-md-none px-5">
            <Reminder message={asTitleCase(sectionStatus['A'])} info={true}>
             <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
