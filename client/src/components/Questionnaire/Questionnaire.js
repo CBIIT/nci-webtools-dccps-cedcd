@@ -13,7 +13,8 @@ import MajorContentForm from '../MajorContentForm/MajorContentForm'
 import CancerInfoForm from '../CancerInfoForm/CancerInfoForm'
 import MortalityForm from '../MortalityForm/MortalityForm'
 import SpecimenForm from '../SpecimenForm/SpecimenForm'
-import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
+import DataLinkageForm from '../DataLinkageForm/DataLinkageForm';
+import allactions from '../../actions';
 
 const Questionnaire = ({ ...props }) => {
     const dispatch = useDispatch();
@@ -45,6 +46,10 @@ const Questionnaire = ({ ...props }) => {
         }
     }, [location, id]);
 
+    useEffect(() => {
+        dispatch(allactions.cohortIDAction.setCohortId(id))
+    }, id)
+
     if (!isAuthorized)
         return <Unauthorized />
 
@@ -53,7 +58,7 @@ const Questionnaire = ({ ...props }) => {
 
     return <div>
         <QuestionnaireHeader activeSection={current} handler={setCurrent} isReadOnly={props.isReadOnly} />
-        <Content isReadOnly={props.isReadOnly} sectionPicker={setCurrent} cohortID={+id} />
+        <Content isReadOnly={props.isReadOnly} sectionPicker={setCurrent} cohortId={+id} />
     </div>;
 }
 
