@@ -2376,7 +2376,7 @@ CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int)
 BEGIN
 	  set new_id = targetID; -- assume it is draft
     if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
-        if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID) then -- find its copy
+        if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID and a.status != 'archived') then -- find its copy
             select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         else -- if copy not exists, create a new one
            insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time) select name, acronym, 'draft', null,'8.1', now(), now() from cohort
@@ -2804,7 +2804,6 @@ begin
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
         values (targetID, 1, concat('cohort status updated to ',cohort_status ), null);
 	end;
-	end if;
     commit;
     select flag as rowAffacted;
  end //
