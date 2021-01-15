@@ -343,6 +343,7 @@ BEGIN
 	DEALLOCATE PREPARE stmt;
 END //
 
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: cohort_cancer_info
 -- -----------------------------------------------------------------------------------------------------------
@@ -1359,22 +1360,20 @@ BEGIN
 		-- set @specimenFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
         -- set @publicationFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
         
-        set @questionnaireUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireUrl'));
+        set @questionnaireUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'));
         set @mainUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainCohortUrl'));
         set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataUrl'));
         set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenUrl'));
         set @publicationUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationUrl'));
         -- questionnaire/url-2
-        IF(@questionnaireUrlEntry IS NOT NULL) THEN
-        BEGIN
-			IF EXISTS (SELECT * from attachment WHERE cohort_id = @latest_cohort and attachment_type = 0 and category = 2) THEN
-				UPDATE attachment SET website = @questionnaireUrlEntry, update_time = NOW() WHERE cohort_id = @latest_cohort and attachment_type = 0 and category = 2;
-			ELSE
-				INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time)
-				VALUES (@latest_cohort, 0, 2, '', @questionnaireUrlEntry, 1, NOW(), NOW());
-			END IF; 
-		END;
-		END IF;
+		SELECT 0 into i;
+
+		delete from attachment where cohort_id=@latest_cohort and attachment_type=0;
+
+		WHILE i < JSON_LENGTH(@questionnaireUrlEntry) DO
+			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			SELECT i + 1 INTO i;
+		END WHILE;
         -- main file/url-3
         IF(@mainUrlEntry IS NOT NULL) THEN
         BEGIN
@@ -1436,8 +1435,6 @@ BEGIN
 	SELECT `status` from cohort where id = new_id;
     
 END //
-
-
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_admin_cohortlist
