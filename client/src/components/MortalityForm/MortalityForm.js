@@ -331,7 +331,8 @@ const MortalityForm = ({ ...props }) => {
                                             min="1900"
                                             value={mortality.mortalityYear}
                                             readOnly={isReadOnly}
-                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} placeholder='yyyy'
+                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
+                                            placeholder='YYYY'
                                         />
                                     </Reminder>
                                 </Col>
