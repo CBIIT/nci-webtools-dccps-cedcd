@@ -109,7 +109,6 @@ class ManageUser extends Component {
 
 	componentDidMount() {
 		this._isMounted = true;
-		this.props.setAdmin(1);
 
 		this.loadingData();
 

@@ -119,7 +119,7 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
         </div>
 
-        <div className="container-fluid mb-4">
+        <div className="container-fluid mb-4 mx-3">
             <div className="border row py-4">
                 <div className="col-md px-4">
                     <strong>Cohort Status: </strong>
