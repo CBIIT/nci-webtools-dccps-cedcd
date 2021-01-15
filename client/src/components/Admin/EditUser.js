@@ -104,8 +104,10 @@ const EditUser = ({ ...props }) => {
                     'Accept': 'application/json'
                 }
             }).then(res => res.json());
+
             setExistingList(result.data.emailList)
-            setAllCohortList(result.data.cohortList).map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
+            let alls = (result.data.cohortList).map((item, idx) => ({ value: item.acronym, label: item.acronym, name: item.name }))
+            setAllCohortList(alls)
 
 
         };

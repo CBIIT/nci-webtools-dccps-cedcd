@@ -1173,6 +1173,7 @@ BEGIN
 	DECLARE new_id INT DEFAULT targetID;
 	
     DECLARE flag INT DEFAULT 1;
+
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
@@ -1206,7 +1207,7 @@ BEGIN
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
 		cohort_description = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description'))),
 		eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
-		eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) = 'true', 1 , 0),
+		eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease'))),
 		eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
 		eligible_disease_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_other_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_other_specify'))),
 		enrollment_total = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.enrollment_total'))),
@@ -1431,9 +1432,6 @@ BEGIN
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
-		
 	end if;
 	SELECT `status` from cohort where id = new_id;
     

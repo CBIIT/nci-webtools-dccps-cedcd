@@ -789,7 +789,7 @@ const SpecimenForm = ({ ...props }) => {
                     
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify && "has-error")}>
                         <Form.Label className="pl-0" column sm="12" style={{ fontWeight: 'normal' }}>If yes, please specify</Form.Label>
-                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify)}  addspan={true} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherBaselineSpecify'
                                 className='form-control'
@@ -852,7 +852,7 @@ const SpecimenForm = ({ ...props }) => {
 
                     <Col sm="12" className={classNames("form-group", "align-self-center", saved && errors.bioOtherOtherTimeSpecify && specimen.bioOtherOtherTime === 1 && "has-error")}>
                         <Form.Label className="pl-0" column sm="12" style={{ fontWeight: 'normal' }}>If yes, please specify</Form.Label>
-                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} placement="right">
+                        <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)}  addspan={true}placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
                                 className='form-control'
@@ -1344,7 +1344,7 @@ const SpecimenForm = ({ ...props }) => {
                                     </Col>
                                 </Col>
                                 <Col sm='12' className='align-self-center' >
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)}  addspan={true}>
                                         <Form.Control as="textarea"
                                             className="resize-vertical"
                                             style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
@@ -1421,7 +1421,7 @@ const SpecimenForm = ({ ...props }) => {
 
                                 </Form.Label>
                                 <Col sm="2">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)}  addspan={true}>
                                         <Form.Control type="text"
                                             className="resize-vertical"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved && { border: '1px solid red' } || {}}
@@ -1447,7 +1447,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15e Which laboratory or company was used for the analysis?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)}  addspan={true}>
                                         <Form.Control as="textarea"
                                             className="resize-vertical"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved && { border: '1px solid red' } || {}}
@@ -1473,7 +1473,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} addspan={true}>
                                         <Form.Control as="textarea"
                                             className="resize-vertical"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved && { border: '1px solid red' } || {}}
@@ -1500,7 +1500,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)}  addspan={true}>
                                         <Form.Control as="textarea"
                                             className="resize-vertical"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved && { border: '1px solid red' } || {}}
@@ -1528,7 +1528,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15h How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)}  addspan={true}>
                                         <Form.Control type="text"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
                                             name='bioNumberMetabolitesMeasured'
@@ -1553,7 +1553,7 @@ const SpecimenForm = ({ ...props }) => {
                                     G.15i What year were samples analyzed?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm='2'  >
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} >
+                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)}  addspan={true}>
                                         <Form.Control type="text"
                                             style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
                                             name='bioYearSamplesSent'

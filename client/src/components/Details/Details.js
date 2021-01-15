@@ -892,7 +892,7 @@ class Details extends Component {
 							<div className="filter-component">
 								<h3>Eligibility Requirements</h3>
 								<div className="col-sm-12">
-									<GenderList hasUnknown={false} hasBoth={true} hasOnly={true} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick} />
+									<GenderList hasUnknown={false} hasBoth={true} hasOnly={false} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick} />
 									<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick} />
 									<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />
 								</div>
@@ -1210,16 +1210,18 @@ class Details extends Component {
 				let id = item.id;
 				let url = './cohort?id=' + id;
 				let website = item.cohort_web_site;
-				if (!website.startsWith("http") && !website.startsWith("www")) {
-					website = "";
-				}
-				let website_label = website;
-				if (website.length > 30) {
-					website_label = website.substring(0, 27) + "...";
-				}
 				let website_content = "";
-				if (website !== "") {
-					website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
+				if(website){
+					if (!website.startsWith("http") && !website.startsWith("www")) {
+						website = "";
+					}
+					let website_label = website;
+					if (website.length > 30) {
+						website_label = website.substring(0, 27) + "...";
+					}					
+					if (website !== "") {
+						website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
+					}
 				}
 				let select_id = "select_" + id;
 				return (

@@ -10,22 +10,22 @@ import SpecimenForm from '../SpecimenForm/SpecimenForm'
 import DataLinkageForm from '../DataLinkageForm/DataLinkageForm'
 //import { defaultProps } from 'react-select/src/Select'
 
-const Content = ({currentSection, readOnlyOrNot = false}) => {
+const Content = ({currentSection, readOnlyOrNot = false, sectionJumper = f=>f}) => {
     switch (currentSection) {
         case 'A':
-            return <CohortForm isReadOnly={readOnlyOrNot} />
+            return <CohortForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'B':
-            return <EnrollmentCountsForm isReadOnly={readOnlyOrNot} />
+            return <EnrollmentCountsForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'C':
-            return <MajorContentForm isReadOnly={readOnlyOrNot} />
+            return <MajorContentForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'D':
-            return <CancerInfoForm isReadOnly={readOnlyOrNot} />
+            return <CancerInfoForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'E':
-            return <MortalityForm isReadOnly={readOnlyOrNot} />
+            return <MortalityForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'F':
-            return <DataLinkageForm isReadOnly={readOnlyOrNot} />
+            return <DataLinkageForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         case 'G':
-            return <SpecimenForm isReadOnly={readOnlyOrNot} />
+            return <SpecimenForm sectionPicker={sectionJumper} isReadOnly={readOnlyOrNot} />
         default:
             return <Message isReadOnly={readOnlyOrNot} />
     }
@@ -37,7 +37,7 @@ const QuestionnaireLoader = (props) => {
         props.isReadOnly ? props.setAdmin(1) : props.setAdmin(2)
     }, [])
     return <Questionnaire activeSection={current} handler={(section) => setCurrent(section)} isReadOnly={props.isReadOnly} >
-        <Content currentSection={current}  readOnlyOrNot={props.isReadOnly} />
+        <Content currentSection={current}  readOnlyOrNot={props.isReadOnly} sectionJumper={(section) => setCurrent(section)}/>
     </Questionnaire>
 }
 

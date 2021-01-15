@@ -18,3 +18,12 @@
         background-color: red;
     }
 }
+
+.tooltip-info{
+    .arrow:before{
+        border-top-color: blue !important;       
+    }
+    .tooltip-inner {
+        background-color: transparent;
+    }
+}
