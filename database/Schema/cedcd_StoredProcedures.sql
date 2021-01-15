@@ -2804,7 +2804,6 @@ begin
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
         values (targetID, 1, concat('cohort status updated to ',cohort_status ), null);
 	end;
-	end if;
     commit;
     select flag as rowAffacted;
  end //
