@@ -105,12 +105,12 @@ class App extends Component {
         {this.state.showImage && <Header />}
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
-            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} isAdmin={this.state.admin} />
+            <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />
           </div>
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          <MainContent setAdmin={(x) => this.handleAdmin(x)} />
+          <MainContent />
           <div className="clearFix"></div>
         </div>
       </div>
