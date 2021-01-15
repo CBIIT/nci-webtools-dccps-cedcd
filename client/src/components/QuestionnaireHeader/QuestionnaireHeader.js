@@ -10,6 +10,7 @@ import { parseISO } from 'date-fns';
 import './QuestionnaireHeader.css'
 import allactions from '../../actions'
 import Modal from '../controls/modal/modal';
+import Reminder from '../Tooltip/Tooltip'
 
 const QuestionnaireHeader = ({ ...props }) => {
     const history = useHistory();
@@ -53,7 +54,7 @@ const QuestionnaireHeader = ({ ...props }) => {
     const pickColor = (status) => {
         switch (status) {
             case 'incomplete':
-                return 'orange'
+                return '#ffd480'
             case 'complete':
                 return 'green'
             case 'new':
@@ -90,6 +91,7 @@ const QuestionnaireHeader = ({ ...props }) => {
         { label: 'Data Linkage & Harmonization', value: 'F' },
         { label: 'Specimen', value: 'G' },
     ];
+
 
     return <>
         <div className="mb-4">
@@ -155,7 +157,10 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
         </div>
 
+        
+        
         <div className="d-md-none">
+           <Reminder message={asTitleCase(sectionStatus['A'])} info={true}>
             <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -174,6 +179,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                 }
             </div>
+            </Reminder>
             <div id='sectionB' onClick={() => ['in review'].includes(status) ? '' : props.handler('B')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -287,132 +293,145 @@ const QuestionnaireHeader = ({ ...props }) => {
 
         <div className="d-none d-md-block">
             <div style={{ display: 'flex' }}>
-                <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('A')}>
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1' }}></div>
-                        {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
-                            </div>
-                        </div>
-                            :
-                            <div onMouseEnter={() => setARing('blue')} onMouseMove={() => setARing('blue')} onMouseOut={() => setARing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ARing ? `3px solid ${ARing}` : '3px solid ' + pickColor(sectionStatus['A']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}></div>
+                <Reminder message={asTitleCase(sectionStatus['A'])}>
+                    <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('A')}>
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ flex: '1' }}></div>
+                            {['in review'].includes(status) ? <div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                                 </div>
                             </div>
-                        }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                    </div>
-                    <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span></div>
-                </div>
-                <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('B')}>
-                    <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
-                        {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
-                            </div>
+                                :
+                                <div onMouseEnter={() => setARing('blue')} onMouseMove={() => setARing('blue')} onMouseOut={() => setARing('')}>
+                                    <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ARing ? `2px solid ${ARing}` : '2px solid ' + pickColor(sectionStatus['A']) }}>
+                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['A']), margin: 'auto' }}></div>
+                                    </div>
+                                </div>
+                            }
+                            <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         </div>
-                            :
-                            <div onMouseEnter={() => setBRing('blue')} onMouseMove={() => setBRing('blue')} onMouseOut={() => setBRing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: BRing ? `3px solid ${BRing}` : '3px solid ' + pickColor(sectionStatus['B']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}></div>
+                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span></div>
+                    </div>
+                </Reminder> 
+                <Reminder message={asTitleCase(sectionStatus['B'])}>
+                    <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('B')}>
+                        <div style={{ display: 'flex' }}>
+                            <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
+                            {['in review'].includes(status) ? <div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                                 </div>
                             </div>
-                        }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                                :
+                                <div onMouseEnter={() => setBRing('blue')} onMouseMove={() => setBRing('blue')} onMouseOut={() => setBRing('')}>
+                                    <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: BRing ? `2px solid ${BRing}` : '2px solid ' + pickColor(sectionStatus['B']) }}>
+                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['B']), margin: 'auto' }}></div>
+                                    </div>
+                                </div>
+                            }
+                            <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
+                        </div>
+                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span></div>
                     </div>
-                    <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span></div>
-                </div>
+                </Reminder>
+                <Reminder message={asTitleCase(sectionStatus['C'])}>
                 <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('C')}>
                     <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
                         </div>
                             :
                             <div onMouseEnter={() => setCRing('blue')} onMouseMove={() => setCRing('blue')} onMouseOut={() => setCRing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: CRing ? `3px solid ${CRing}` : '3px solid ' + pickColor(sectionStatus['C']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}></div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: CRing ? `2px solid ${CRing}` : '2px solid ' + pickColor(sectionStatus['C']) }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}></div>
                                 </div>
                             </div>
                         }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span></div>
                 </div>
+                </Reminder>
+                <Reminder message={asTitleCase(sectionStatus['D'])}>
                 <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('D')}>
                     <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
                         </div>
                             :
                             <div onMouseEnter={() => setDRing('blue')} onMouseMove={() => setDRing('blue')} onMouseOut={() => setDRing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: DRing ? `3px solid ${DRing}` : '3px solid ' + pickColor(sectionStatus['D']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}></div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: DRing ? `2px solid ${DRing}` : '2px solid ' + pickColor(sectionStatus['D']) }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['D']), margin: 'auto' }}></div>
                                 </div>
                             </div>
                         }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
                 </div>
+                </Reminder>
+                <Reminder message={asTitleCase(sectionStatus['E'])}>
                 <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('E')}>
                     <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
                         </div>
                             :
                             <div onMouseEnter={() => setERing('blue')} onMouseMove={() => setERing('blue')} onMouseOut={() => setERing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `3px solid ${ERing}` : '3px solid ' + pickColor(sectionStatus['E']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}></div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: ERing ? `2px solid ${ERing}` : '2px solid ' + pickColor(sectionStatus['E']) }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['E']), margin: 'auto' }}></div>
                                 </div>
                             </div>
                         }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span></div>
                 </div>
+                </Reminder>
+                 <Reminder message={asTitleCase(sectionStatus['F'])}>
                 <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('F')}>
                     <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
                         </div>
                             :
                             <div onMouseEnter={() => setFRing('blue')} onMouseMove={() => setFRing('blue')} onMouseOut={() => setFRing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: FRing ? `3px solid ${FRing}` : '3px solid ' + pickColor(sectionStatus['F']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}></div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: FRing ? `2px solid ${FRing}` : '2px solid ' + pickColor(sectionStatus['F']) }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['F']), margin: 'auto' }}></div>
                                 </div>
                             </div>
                         }
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                     </div>
                     <div style={{ marginTop: '5px', paddingLeft: '0', paddingRight: '0', width: '214px' }}><span style={props.activeSection === 'F' ? specialHeader : {}}>Data Linkage & Harmonization</span></div>
                 </div>
+                </Reminder>
+                <Reminder message={asTitleCase(sectionStatus['G'])}>
                 <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('G')}>
                     <div style={{ display: 'flex' }}>
-                        <div style={{ flex: '1', height: '3px', border: '3px solid #9f3', margin: 'auto 0' }}></div>
+                        <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         {['in review'].includes(status) ? <div>
-                            <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
-                                <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
+                            <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: '2px solid green' }}>
+                                <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: 'green', margin: 'auto' }}></div>
                             </div>
                         </div>
                             :
                             <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
-                                <div style={{ flex: '1', width: '37px', height: '37px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
-                                    <div style={{ width: '25px', height: '25px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}></div>
+                                <div style={{ flex: '1', width: '30px', height: '30px', borderRadius: '50%', display: 'flex', justifyContent: 'center', margin: 'auto', border: GRing ? `2px solid ${GRing}` : '2px solid ' + pickColor(sectionStatus['G']) }}>
+                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}></div>
                                 </div>
                             </div>
                         }
@@ -420,6 +439,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     </div>
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'G' ? activeStyle : {}}>Specimens</span></div>
                 </div>
+                </Reminder>
             </div>
         </div>
     </>

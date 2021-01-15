@@ -208,6 +208,7 @@ class ManageCohort extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
+				console.dir(list)
 				let list = result.data.list;
 				reqBody.paging.total = result.data.total;
 				this.setState(prevState => (
@@ -288,7 +289,7 @@ class ManageCohort extends Component {
 	}
 
 
-	saveHistory = (e, id, status) => {
+	reviewCohort = (e, id, status) => {
 		e.preventDefault();
 		let review_url = `/admin/viewcohort/${id}`;
 		if (['submitted'].includes(status.toLowerCase())) (this.resetCohortStatus(id, status))
@@ -314,7 +315,7 @@ class ManageCohort extends Component {
 					<td>{item.create_by}</td>
 					<td>{item.update_time}</td>
 					<td>
-						<Link onClick={(e) => { this.saveHistory(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
+						<Link onClick={(e) => { this.reviewCohort(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>
 					</td>
 				</tr>
 			);
@@ -420,10 +421,5 @@ class ManageCohort extends Component {
 	}
 }
 
-const mapStateToProps = function ({ user }) {
-	return {
-		user: user.id
-	}
-}
 
-export default connect(mapStateToProps)(ManageCohort);
+export default ManageCohort;

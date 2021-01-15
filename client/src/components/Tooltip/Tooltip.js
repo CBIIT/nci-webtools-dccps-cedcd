@@ -10,13 +10,13 @@ export default function Reminder(props) {
         trigger={props.trigger}
         overlay={
             <Tooltip
-                className={classNames("tooltip-danger", props.disabled && "tooltip-disabled")}
+                className={classNames(!props.info && "tooltip-danger", props.disabled && "tooltip-disabled", props.info && 'tooltip-info')}
                 id="tooltip"
                 placement={props.placement || 'top'}>
                 {props.message}
             </Tooltip>
         }>
-        <span className='p-0 m-0'>{props.children}</span>
+        {props.addspan ? <span className='p-0 m-0'>{props.children}</span> : props.children}
     </OverlayTrigger>
 }
 

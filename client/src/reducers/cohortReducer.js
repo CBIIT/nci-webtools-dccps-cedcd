@@ -10,7 +10,17 @@ actions[t.setAcronym] = (state, action) => ({...state, cohort_acronym: action.ac
 actions[t.setCompletionDate] = (state, action) => ({...state, completionDate: action.completionDate ? action.completionDate : ''})
 actions[t.setCompleterName] = (state, action) => ({...state, completerName: action.completerName})
 actions[t.setCompleterPosition] = (state, action) => ({...state, completerPosition: action.completerPosition})
-actions[t.setCompleterPhone] = (state, action) => ({...state, completerPhone: action.completerPhone && /^[-()\s0-9]*$/.test(action.completerPhone.trim()) ? action.completerPhone : state.completerPhone})
+actions[t.setCompleterPhone] = (state, action) => {let cloned = {...state}
+    if(action.completerPhone){
+        if(/^\s*[-()\s0-9]*\s*$/.test(action.completerPhone.trim()))
+            cloned.completerPhone = action.completerPhone
+        else
+            cloned.completerPhone = state.completerPhone
+    }
+    else
+        cloned.completerPhone = ''
+    return cloned
+}
 actions[t.setCompleterEmail] = (state, action) => ({...state, completerEmail: action.completerEmail})
 actions[t.setContacterRight] = (state, action) => ({...state, clarification_contact: action.isContacter})
 actions[t.setContacterName] = (state, action) => ({...state, contacterName: action.contacterName})

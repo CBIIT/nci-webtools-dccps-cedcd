@@ -12,6 +12,7 @@ import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collaps
 import { fetchCohort } from '../../reducers/cohort';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import 'react-datepicker/dist/react-datepicker.css';
+import { parseISO, format } from 'date-fns';
 import './EnrollmentCounts.css';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -131,7 +132,7 @@ const EnrollmentCountsForm = ({...props}) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
-        if(['new', 'draft', 'published', 'submitted', 'returned', 'in review'].includes(nextStatus)){
+        if(['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)){
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
                 method: "POST"
             }).then(res => res.json())
@@ -222,6 +223,16 @@ const EnrollmentCountsForm = ({...props}) => {
         enrollmentCount.sectionBStatus='incomplete'
         dispatch(allactions.enrollmentCountActions.setSectionBStatus('incomplete'))
         saveEnrollment(cohortID, true);setModalShow(false)
+    }
+
+    const validateDateString = (value) => {
+        if(!value)
+            return 'Required Field'
+        else{
+            let year = value.split()[3]
+            if(!/\d\d\d\d/.test(year))
+                return 'Invalid date value'
+        }
     }
 
     return (
@@ -411,15 +422,23 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 selected={enrollmentCount.mostRecentDate ? 
                                                     new Date(enrollmentCount.mostRecentDate) : 
                                                     null
-                                                } 
+                                                }
+
                                                 onChange={date => {
-                                                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date)); 
-                                                    if (!date) {
-                                                        dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
-                                                    }else { 
-                                                        dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
-                                                    }
-                                                }}/>
+                                                    dispatch(setHasUnsavedChanges(true));
+                                                    //dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                    
+                                                    if (!date) { 
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
+                                                        } else { 
+                                                            console.log(date.getFullYear().toString())
+                                                            if(/^\d\d\d\d$/.test(date.getFullYear().toString())){  
+                                                                dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                                dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                            }
+                                                        }
+                                                    }}  
+                                                />
                                         </Reminder> : 
                                         <DatePicker className='form-control' 
                                             popperProps={{
@@ -431,15 +450,21 @@ const EnrollmentCountsForm = ({...props}) => {
                                                 new Date(enrollmentCount.mostRecentDate) : 
                                                 null
                                             } 
-                                            onChange={date => {
+            
+                                           onChange={date => {
                                                 dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                //dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                
                                                 if (!date) { 
                                                         dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
                                                     } else { 
-                                                        dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                        if(/^\d\d\d\d$/.test(date.getFullYear().toString())){  
+                                                            dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+                                                            dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
+                                                        }
                                                     }
-                                            }} disabled={isReadOnly}/>
+                                                }}                                              
+                                            disabled={isReadOnly}/>
                                     }
                                 </Col>
                             </Form.Group>

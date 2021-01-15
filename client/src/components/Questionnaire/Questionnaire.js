@@ -38,7 +38,7 @@ const Questionnaire = ({ ...props }) => {
 
     return <div>
         <QuestionnaireHeader activeSection={props.activeSection} handler={props.handler} isReadOnly={props.isReadOnly} />
-        {React.cloneElement(props.children, { sectionPicker: props.handler, userId: userSession ? userSession.id : '' })}
+        {props.children}
     </div>;
 }
 
