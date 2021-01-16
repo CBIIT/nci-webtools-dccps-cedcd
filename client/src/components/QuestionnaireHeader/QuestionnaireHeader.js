@@ -63,6 +63,9 @@ const QuestionnaireHeader = ({ ...props }) => {
         }
     }
 
+    const getTooltip = (statstr) => asTitleCase(statstr).replace('New', 'Not Started')
+    
+
     const goBackManageCohort = () => {
         dispatch(allactions.cohortIDAction.setCohortId(0))
         history.push(`/admin/managecohort`);
@@ -160,7 +163,7 @@ const QuestionnaireHeader = ({ ...props }) => {
         
         
         <div className="d-md-none px-5">
-           <Reminder message={asTitleCase(sectionStatus['A'])} info={true}>
+           <Reminder message={getTooltip(sectionStatus['A'])} info={true}>
             <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -180,7 +183,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['B'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['B'])} info={true}>
             <div id='sectionB' onClick={() => ['in review'].includes(status) ? '' : props.handler('B')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -200,7 +203,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['C'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['C'])} info={true}>
             <div id='sectionC' onClick={() => ['in review'].includes(status) ? '' : props.handler('C')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -220,7 +223,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['D'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['D'])} info={true}>
             <div id='sectionD' onClick={() => ['in review'].includes(status) ? '' : props.handler('D')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -240,7 +243,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['E'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['E'])} info={true}>
             <div id='sectionE' onClick={() => ['in review'].includes(status) ? '' : props.handler('E')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -260,7 +263,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['F'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['F'])} info={true}>
             <div id='sectionF' onClick={() => ['in review'].includes(status) ? '' : props.handler('F')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -280,7 +283,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 }
             </div>
             </Reminder>
-            <Reminder message={asTitleCase(sectionStatus['G'])} info={true}>
+            <Reminder message={getTooltip(sectionStatus['G'])} info={true}>
             <div id='sectionF' onClick={() => ['in review'].includes(status) ? '' : props.handler('G')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
                     <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
@@ -305,7 +308,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
         <div className="d-none d-md-block">
             <div style={{ display: 'flex' }}>
-                <Reminder message={asTitleCase(sectionStatus['A'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['A'])} info={true}>
                     <div id='sectionA' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('A')}>
                         <div style={{ display: 'flex' }}>
                             <div style={{ flex: '1' }}></div>
@@ -326,7 +329,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                         <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'A' ? activeStyle : {}}>Basic Information</span></div>
                     </div>
                 </Reminder> 
-                <Reminder message={asTitleCase(sectionStatus['B'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['B'])} info={true}>
                     <div id='sectionB' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('B')}>
                         <div style={{ display: 'flex' }}>
                             <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
@@ -347,7 +350,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                         <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'B' ? activeStyle : {}}>Enrollment Counts</span></div>
                     </div>
                 </Reminder>
-                <Reminder message={asTitleCase(sectionStatus['C'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['C'])} info={true}>
                 <div id='sectionC' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('C')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
@@ -368,7 +371,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span></div>
                 </div>
                 </Reminder>
-                <Reminder message={asTitleCase(sectionStatus['D'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['D'])} info={true}>
                 <div id='sectionD' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('D')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
@@ -389,7 +392,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'D' ? activeStyle : {}}>Cancer Information</span></div>
                 </div>
                 </Reminder>
-                <Reminder message={asTitleCase(sectionStatus['E'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['E'])} info={true}>
                 <div id='sectionE' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('E')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
@@ -410,7 +413,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'E' ? activeStyle : {}}>Mortality</span></div>
                 </div>
                 </Reminder>
-                 <Reminder message={asTitleCase(sectionStatus['F'])} info={true}>
+                 <Reminder message={getTooltip(sectionStatus['F'])} info={true}>
                 <div id='sectionF' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('F')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
@@ -431,7 +434,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <div style={{ marginTop: '5px', paddingLeft: '0', paddingRight: '0', width: '214px' }}><span style={props.activeSection === 'F' ? specialHeader : {}}>Data Linkage & Harmonization</span></div>
                 </div>
                 </Reminder>
-                <Reminder message={asTitleCase(sectionStatus['G'])} info={true}>
+                <Reminder message={getTooltip(sectionStatus['G'])} info={true}>
                 <div id='sectionG' style={{ flex: '1', textAlign: 'center' }} onClick={() => ['in review'].includes(status) ? '' : props.handler('G')}>
                     <div style={{ display: 'flex' }}>
                         <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
