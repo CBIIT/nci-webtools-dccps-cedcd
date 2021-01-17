@@ -232,6 +232,35 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             }
         }
 
+        if(results[8] && Array.isArray(results[8])) {
+            basic_info.cohort.questionnaire_url = []
+            basic_info.cohort.main_cohort_url = []
+            basic_info.cohort.data_url = []
+            basic_info.cohort.specimen_url = []
+            basic_info.cohort.publication_url = []
+
+            for (let a of results[8]) {
+
+                switch(a.urlCategory) {
+                    case 2:
+                        basic_info.cohort.questionnaire_url.push(a.website)
+                        break;
+                    case 3:
+                        basic_info.cohort.main_cohort_url.push(a.website)
+                        break;
+                    case 4:
+                        basic_info.cohort.data_url.push(a.website)
+                        break;
+                    case 5:
+                        basic_info.cohort.specimen_url.push(a.website)
+                        break;
+                    case 6:
+                        basic_info.cohort.publication_url.push(a.website)
+                        break;
+                }
+            }
+        }
+
         res.json({ status: 200, data: basic_info })
     })
 })
