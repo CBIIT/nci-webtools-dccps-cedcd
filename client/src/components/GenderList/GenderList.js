@@ -56,7 +56,14 @@ class GenderList extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				let genders = result.data.list;
+				const customOrder = str => ({
+					all: 0,
+					unknonwn: 1,
+					male: 2,
+					female: 3,
+				}[str.toLowerCase()] || 0)
+				let genders = result.data.list.sort((a, b) => 
+					customOrder(a.gender) - customOrder(b.gender));
 				let arr = [];
 				let dict = {};
 				genders.forEach(function (element) {
