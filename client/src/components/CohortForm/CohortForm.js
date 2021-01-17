@@ -59,7 +59,7 @@ const CohortForm = ({ ...props }) => {
     const [urlTile, setUrlTile] = useState('')
     const [urlInput, setUrlInput] = useState('')
     const [urlList, setUrlListModal] = useState(false)
-    const [currentUrlList,setCurrentUrlList] = useState([])
+    const [currentUrlList, setCurrentUrlList] = useState([])
 
     const history = useHistory();
 
@@ -76,6 +76,7 @@ const CohortForm = ({ ...props }) => {
                         cohort_status = result.data.cohortStatus
 
                     batch(() => {
+                        console.log(result)
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
                         for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
                             dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
@@ -205,8 +206,6 @@ const CohortForm = ({ ...props }) => {
                             if (investigators[i].email) { dispatch(allactions.cohortErrorActions.investigatorEmail(i, true)) }
                         }
                         dispatch(allactions.cohortActions.setHasLoaded(true))
-
-                        dispatch(allactions.cohortActions.questionnaire_url([]))
                     })
 
                 })
@@ -808,9 +807,9 @@ const CohortForm = ({ ...props }) => {
     }
 
     const url_list = (urlTitle, urlTile, urls) => {
-        
+
         return (
-            <Col md="12" className="p-0 m-0">
+            <Col md="12" className="col-xs-12 p-0 m-0">
                 {/* Header */}
                 <div style={{
                     height: '40px',
@@ -823,33 +822,49 @@ const CohortForm = ({ ...props }) => {
                     <input type="button" style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em' }} value='x' onClick={() => setUrlListModal(false)} />
                 </div>
                 {/* Table */}
-                <Col md="12" className="mb-3 px-0">
+                <Col md="12" className=" col-xs-12 mb-3 px-0">
                     {/* Table header */}
                     <div className="bg-light-grey" style={{
                         height: '30px',
                         borderBottom: '1px solid #dee2e6'
                     }}>
-                        <Col md="10" style={{ fontSize: '1.5rem' }}>
+                        <Col md="10" className="col-xs-9" style={{ fontSize: '1.5rem' }}>
                             <h5>File Name</h5>
                         </Col>
-                        <Col md="2" style={{ fontSize: '1.5rem' }}>
+                        <Col md="2" className="col-xs-2" style={{ fontSize: '1.5rem' }}>
                             <h5>Remove</h5>
                         </Col>
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {urls.map((url,index) =>
+                        {urls.map((url, index) =>
                             <div className="my-1">
-                                <Col md="10">
+                                <Col md="10" className="col-xs-9">
                                     {url}
                                 </Col>
-                                <Col md="2" className="text-center">
+                                <Col md="2" className="col-xs-2 text-center">
                                     <span>
                                         {!isReadOnly &&
                                             <span className='closer'
                                                 onClick={() => {
                                                     urls.splice(index, 1)
-                                                    dispatch(allactions.cohortActions.questionnaire_url(urls))
+                                                    switch (urlTile) {
+                                                        case 'questionnaire_url':
+                                                            dispatch(allactions.cohortActions.questionnaire_url(urls))
+                                                            break;
+                                                        case 'main_cohort_url':
+                                                            dispatch(allactions.cohortActions.main_cohort_url(urls))
+                                                            break;
+                                                        case 'data_url':
+                                                            dispatch(allactions.cohortActions.data_url(urls))
+                                                            break;
+                                                        case 'specimen_url':
+                                                            dispatch(allactions.cohortActions.specimen_url(urls))
+                                                            break;
+                                                        case 'publication_url':
+                                                            dispatch(allactions.cohortActions.publication_url(urls))
+                                                            break;
+                                                    }
                                                 }}>
                                                 x
                                             </span>
@@ -989,11 +1004,34 @@ const CohortForm = ({ ...props }) => {
                         <input
                             type='button'
                             onClick={() => {
+                                let copy = [];
                                 switch (urlTile) {
+
                                     case "questionnaire_url":
-                                        const copy = [...cohort.questionnaire_url]
+                                        copy = [...cohort.questionnaire_url]
                                         copy.push(urlInput)
                                         dispatch(allactions.cohortActions.questionnaire_url(copy));
+                                        break;
+                                    case "main_cohort_url":
+                                        copy = [...cohort.main_cohort_url]
+                                        copy.push(urlInput)
+                                        dispatch(allactions.cohortActions.main_cohort_url(copy));
+                                        break;
+                                    case "data_url":
+                                        copy = [...cohort.data_url]
+                                        copy.push(urlInput)
+                                        dispatch(allactions.cohortActions.data_url(copy));
+                                        break;
+                                    case "specimen_url":
+                                        copy = [...cohort.specimen_url]
+                                        copy.push(urlInput)
+                                        dispatch(allactions.cohortActions.specimen_url(copy));
+                                        break;
+                                    case "publication_url":
+                                        copy = [...cohort.publication_url]
+                                        copy.push(urlInput)
+                                        dispatch(allactions.cohortActions.publication_url(copy));
+                                        break;
                                 }
                                 setUrlModal(false)
                             }}
@@ -1030,7 +1068,7 @@ const CohortForm = ({ ...props }) => {
                 handleClose={() =>
                     setUrlListModal(false)
                 }
-                body={url_list(urlTitle,urlTile,currentUrlList)}
+                body={url_list(urlTitle, urlTile, currentUrlList)}
                 footer={
                     <input
                         type='button'
@@ -2685,31 +2723,68 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        {
-                                                                            !isReadOnly &&
-                                                                            <Form.Control
-                                                                                type="file"
-                                                                                name='questionnaire_url'
-                                                                                id="questionnaire_url"
-                                                                                readOnly={isReadOnly}
-                                                                                onChange={e => {
-                                                                                    if (!isReadOnly) {
-                                                                                        showUrlModal("Questionnaire URL", "questionnaire_url")
-                                                                                    }
-                                                                                }} />
-                                                                        }
+                                                                        <Row className="w-100">
+                                                                            <Col sm="12">
+                                                                                {
 
-                                                                        {/*<Form.Control type="textarea" 
-                                                                            bsPrefix 
-                                                                            className='inputWriter' 
-                                                                            name='questionnaire_url' 
-                                                                            id='questionnaire_url' 
-                                                                            readOnly={isReadOnly} 
-                                                                            value={cohort.questionnaire_url} 
-                                                                            onChange={e => 
-                                                                                dispatch(allactions.cohortActions.questionnaire_url(e.target.value))
-                                                                             } />*/}
+                                                                                    !isReadOnly &&
+                                                                                    <Button
+                                                                                        name='questionnaire_url'
+                                                                                        id="questionnaire_url"
+                                                                                        readOnly={isReadOnly}
+                                                                                        onClick={() => {
+                                                                                            if (!isReadOnly) {
+                                                                                                showUrlModal("Questionniare URL", "questionnaire_url")
+                                                                                            }
+                                                                                        }}>Add URL</Button>
 
+                                                                                }
+                                                                            </Col>
+                                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                                {cohort.questionnaire_url.length === 0 && (
+                                                                                    <span>
+                                                                                        No URL(s) entered
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.questionnaire_url.length > 0 && (
+                                                                                    <span>
+                                                                                        {cohort.questionnaire_url[0]}
+                                                                                        {!isReadOnly &&
+                                                                                            <>
+                                                                                                {' '}(
+                                                                                                <span class="closer"
+                                                                                                    onClick={() => {
+                                                                                                        const copy = [...cohort.questionnaire_url];
+                                                                                                        copy.splice(0, 1)
+                                                                                                        dispatch(allactions.cohortActions.questionnaire_url(copy))
+                                                                                                    }}>
+                                                                                                    x
+                                                                                                </span>)
+                                                                                            </>
+                                                                                        }
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.questionnaire_url.length > 1 && (
+                                                                                    <>
+                                                                                        <span classNamne="mx-1">
+                                                                                            {' '}and{' '}
+                                                                                        </span>
+                                                                                        <span>
+                                                                                            <a href='#'
+                                                                                                onClick={e => {
+                                                                                                    e.preventDefault();
+                                                                                                    showUrlListModal('Questionnaire Url', 'questionnaire_url')
+                                                                                                }}>
+                                                                                                {cohort.questionnaire_url.length - 1} more
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </>
+                                                                                )
+                                                                                }
+                                                                            </Col>
+                                                                        </Row>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -2798,16 +2873,68 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        <Form.Control type="text"
-                                                                            bsPrefix
-                                                                            className='inputWriter'
-                                                                            name='main_cohort_url'
-                                                                            id='main_cohort_url'
-                                                                            disabled={isReadOnly}
-                                                                            value={cohort.main_cohort_url}
-                                                                            onChange={e =>
-                                                                                dispatch(allactions.cohortActions.main_cohort_url(e.target.value))
-                                                                            } />
+                                                                        <Row className="w-100">
+                                                                            <Col sm="12">
+                                                                                {
+
+                                                                                    !isReadOnly &&
+                                                                                    <Button
+                                                                                        name='main_cohort_url'
+                                                                                        id="main_cohort_url"
+                                                                                        readOnly={isReadOnly}
+                                                                                        onClick={() => {
+                                                                                            if (!isReadOnly) {
+                                                                                                showUrlModal("Main Cohort URL", "main_cohort_url")
+                                                                                            }
+                                                                                        }}>Add URL</Button>
+
+                                                                                }
+                                                                            </Col>
+                                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                                {cohort.main_cohort_url.length === 0 && (
+                                                                                    <span>
+                                                                                        No URL(s) entered
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.main_cohort_url.length > 0 && (
+                                                                                    <span>
+                                                                                        {cohort.main_cohort_url[0]}
+                                                                                        {!isReadOnly &&
+                                                                                            <>
+                                                                                                {' '}(
+                                                                                                <span class="closer"
+                                                                                                    onClick={() => {
+                                                                                                        const copy = [...cohort.main_cohort_url];
+                                                                                                        copy.splice(0, 1)
+                                                                                                        dispatch(allactions.cohortActions.main_cohort_url(copy))
+                                                                                                    }}>
+                                                                                                    x
+                                                                                                </span>)
+                                                                                            </>
+                                                                                        }
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.main_cohort_url.length > 1 && (
+                                                                                    <>
+                                                                                        <span classNamne="mx-1">
+                                                                                            {' '}and{' '}
+                                                                                        </span>
+                                                                                        <span>
+                                                                                            <a href='#'
+                                                                                                onClick={e => {
+                                                                                                    e.preventDefault();
+                                                                                                    showUrlListModal('Main Cohort Url', 'main_cohort_url')
+                                                                                                }}>
+                                                                                                {cohort.questionnaire_url.length - 1} more
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </>
+                                                                                )
+                                                                                }
+                                                                            </Col>
+                                                                        </Row>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -2895,18 +3022,68 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        <Form.Control type="text"
-                                                                            bsPrefix
-                                                                            className='inputWriter'
-                                                                            placeholder='Max of 100 characters'
-                                                                            maxLength='100'
-                                                                            name='data_url'
-                                                                            id='data_url'
-                                                                            disabled={isReadOnly}
-                                                                            value={cohort.data_url}
-                                                                            onChange={e =>
-                                                                                dispatch(allactions.cohortActions.data_url(e.target.value))
-                                                                            } />
+                                                                        <Row className="w-100">
+                                                                            <Col sm="12">
+                                                                                {
+
+                                                                                    !isReadOnly &&
+                                                                                    <Button
+                                                                                        name='data_url'
+                                                                                        id="data_url"
+                                                                                        readOnly={isReadOnly}
+                                                                                        onClick={() => {
+                                                                                            if (!isReadOnly) {
+                                                                                                showUrlModal("Data Sharing URL", "data_url")
+                                                                                            }
+                                                                                        }}>Add URL</Button>
+
+                                                                                }
+                                                                            </Col>
+                                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                                {cohort.data_url.length === 0 && (
+                                                                                    <span>
+                                                                                        No URL(s) entered
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.data_url.length > 0 && (
+                                                                                    <span>
+                                                                                        {cohort.data_url[0]}
+                                                                                        {!isReadOnly &&
+                                                                                            <>
+                                                                                                {' '}(
+                                                                                                <span class="closer"
+                                                                                                    onClick={() => {
+                                                                                                        const copy = [...cohort.data_url];
+                                                                                                        copy.splice(0, 1)
+                                                                                                        dispatch(allactions.cohortActions.data_url(copy))
+                                                                                                    }}>
+                                                                                                    x
+                                                                                                </span>)
+                                                                                            </>
+                                                                                        }
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.data_url.length > 1 && (
+                                                                                    <>
+                                                                                        <span classNamne="mx-1">
+                                                                                            {' '}and{' '}
+                                                                                        </span>
+                                                                                        <span>
+                                                                                            <a href='#'
+                                                                                                onClick={e => {
+                                                                                                    e.preventDefault();
+                                                                                                    showUrlListModal('Data Sharing Url', 'data_url')
+                                                                                                }}>
+                                                                                                {cohort.data_url.length - 1} more
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </>
+                                                                                )
+                                                                                }
+                                                                            </Col>
+                                                                        </Row>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -2994,18 +3171,68 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        <Form.Control type="text"
-                                                                            bsPrefix
-                                                                            className='inputWriter'
-                                                                            placeholder='Max of 100 characters'
-                                                                            maxLength='100'
-                                                                            name='specimen_url'
-                                                                            id='specimen_url'
-                                                                            disabled={isReadOnly}
-                                                                            value={cohort.specimen_url}
-                                                                            onChange={e =>
-                                                                                dispatch(allactions.cohortActions.specimen_url(e.target.value))
-                                                                            } />
+                                                                        <Row className="w-100">
+                                                                            <Col sm="12">
+                                                                                {
+
+                                                                                    !isReadOnly &&
+                                                                                    <Button
+                                                                                        name='specimen_url'
+                                                                                        id="specimen_url"
+                                                                                        readOnly={isReadOnly}
+                                                                                        onClick={() => {
+                                                                                            if (!isReadOnly) {
+                                                                                                showUrlModal("Biospecimen Sharing URL", "specimen_url")
+                                                                                            }
+                                                                                        }}>Add URL</Button>
+
+                                                                                }
+                                                                            </Col>
+                                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                                {cohort.specimen_url.length === 0 && (
+                                                                                    <span>
+                                                                                        No URL(s) entered
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.specimen_url.length > 0 && (
+                                                                                    <span>
+                                                                                        {cohort.specimen_url[0]}
+                                                                                        {!isReadOnly &&
+                                                                                            <>
+                                                                                                {' '}(
+                                                                                                <span class="closer"
+                                                                                                    onClick={() => {
+                                                                                                        const copy = [...cohort.specimen_url];
+                                                                                                        copy.splice(0, 1)
+                                                                                                        dispatch(allactions.cohortActions.specimen_url(copy))
+                                                                                                    }}>
+                                                                                                    x
+                                                                                                </span>)
+                                                                                            </>
+                                                                                        }
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.specimen_url.length > 1 && (
+                                                                                    <>
+                                                                                        <span classNamne="mx-1">
+                                                                                            {' '}and{' '}
+                                                                                        </span>
+                                                                                        <span>
+                                                                                            <a href='#'
+                                                                                                onClick={e => {
+                                                                                                    e.preventDefault();
+                                                                                                    showUrlListModal('Biospecimen Sharing Url', 'specimen_url')
+                                                                                                }}>
+                                                                                                {cohort.specimen_url.length - 1} more
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </>
+                                                                                )
+                                                                                }
+                                                                            </Col>
+                                                                        </Row>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -3093,18 +3320,68 @@ const CohortForm = ({ ...props }) => {
                                                                 <tr>
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
-                                                                        <Form.Control type="text"
-                                                                            bsPrefix
-                                                                            className='inputWriter'
-                                                                            placeholder='Max of 100 characters'
-                                                                            maxLength='100'
-                                                                            name='publication_url'
-                                                                            value={cohort.publication_url}
-                                                                            id='publication_url'
-                                                                            onChange={e =>
-                                                                                dispatch(allactions.cohortActions.publication_url(e.target.value))
-                                                                            }
-                                                                            disabled={isReadOnly} />
+                                                                        <Row className="w-100">
+                                                                            <Col sm="12">
+                                                                                {
+
+                                                                                    !isReadOnly &&
+                                                                                    <Button
+                                                                                        name='publication_url'
+                                                                                        id="publication_url"
+                                                                                        readOnly={isReadOnly}
+                                                                                        onClick={() => {
+                                                                                            if (!isReadOnly) {
+                                                                                                showUrlModal("Publication Policy URL", "publication_url")
+                                                                                            }
+                                                                                        }}>Add URL</Button>
+
+                                                                                }
+                                                                            </Col>
+                                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                                {cohort.publication_url.length === 0 && (
+                                                                                    <span>
+                                                                                        No URL(s) entered
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.publication_url.length > 0 && (
+                                                                                    <span>
+                                                                                        {cohort.publication_url[0]}
+                                                                                        {!isReadOnly &&
+                                                                                            <>
+                                                                                                {' '}(
+                                                                                                <span class="closer"
+                                                                                                    onClick={() => {
+                                                                                                        const copy = [...cohort.publication_url];
+                                                                                                        copy.splice(0, 1)
+                                                                                                        dispatch(allactions.cohortActions.publication_url(copy))
+                                                                                                    }}>
+                                                                                                    x
+                                                                                                </span>)
+                                                                                            </>
+                                                                                        }
+                                                                                    </span>
+                                                                                )
+                                                                                }
+                                                                                {cohort.publication_url.length > 1 && (
+                                                                                    <>
+                                                                                        <span classNamne="mx-1">
+                                                                                            {' '}and{' '}
+                                                                                        </span>
+                                                                                        <span>
+                                                                                            <a href='#'
+                                                                                                onClick={e => {
+                                                                                                    e.preventDefault();
+                                                                                                    showUrlListModal('Publication Policy Url', 'publication_url')
+                                                                                                }}>
+                                                                                                {cohort.publication_url.length - 1} more
+                                                                                            </a>
+                                                                                        </span>
+                                                                                    </>
+                                                                                )
+                                                                                }
+                                                                            </Col>
+                                                                        </Row>
                                                                     </td>
                                                                 </tr>
                                                                 <tr>
@@ -3204,7 +3481,7 @@ const CohortForm = ({ ...props }) => {
                                                     <td>
                                                         <Row className="w-100">
 
-                                                            <Col sm={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
@@ -3220,7 +3497,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} sm="7">
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.questionnaire_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -3228,7 +3505,7 @@ const CohortForm = ({ ...props }) => {
                                                                 )
                                                                 }
                                                                 {cohort.questionnaire_url.length > 0 && (
-                                                                    <div>
+                                                                    <div className="text-break">
                                                                         {cohort.questionnaire_url[0]}
                                                                         {!isReadOnly &&
                                                                             <>
@@ -3264,6 +3541,7 @@ const CohortForm = ({ ...props }) => {
                                                                 )
                                                                 }
                                                             </Col>
+
                                                         </Row>
                                                     </td>
 
@@ -3343,18 +3621,69 @@ const CohortForm = ({ ...props }) => {
                                                 <tr>
                                                     <td className="bg-light-grey">Main cohort protocol</td>
                                                     <td>
-                                                        <Form.Control type="text"
-                                                            bsPrefix
-                                                            className='inputWriter'
-                                                            placeholder='Max of 100 characters'
-                                                            maxLength='100'
-                                                            name='main_cohort_url'
-                                                            id='main_cohort_url'
-                                                            value={cohort.main_cohort_url}
-                                                            onChange={e =>
-                                                                dispatch(allactions.cohortActions.main_cohort_url(e.target.value))
-                                                            }
-                                                            readOnly={isReadOnly} />
+                                                        <Row className="w-100">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                                {
+
+                                                                    !isReadOnly &&
+                                                                    <Button
+                                                                        name='main_cohort_url'
+                                                                        id="main_cohort_url"
+                                                                        readOnly={isReadOnly}
+                                                                        onClick={() => {
+                                                                            if (!isReadOnly) {
+                                                                                showUrlModal("Main Cohort URL", "main_cohort_url")
+                                                                            }
+                                                                        }}>Add URL</Button>
+
+                                                                }
+                                                            </Col>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                {cohort.main_cohort_url.length === 0 && (
+                                                                    <span>
+                                                                        No URL(s) entered
+                                                                    </span>
+                                                                )
+                                                                }
+                                                                {cohort.main_cohort_url.length > 0 && (
+                                                                    <div className="text-break">
+                                                                        {cohort.main_cohort_url[0]}
+                                                                        {!isReadOnly &&
+                                                                            <>
+                                                                                {' '}(
+                                                                                <span class="closer"
+                                                                                    onClick={() => {
+                                                                                        const copy = [...cohort.main_cohort_url];
+                                                                                        copy.splice(0, 1)
+                                                                                        dispatch(allactions.cohortActions.main_cohort_url(copy))
+                                                                                    }}>
+                                                                                    x
+                                                                                </span>)
+                                                                            </>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                                }
+                                                                {cohort.main_cohort_url.length > 1 && (
+                                                                    <>
+                                                                        <span classNamne="mx-1">
+                                                                            {' '}and{' '}
+                                                                        </span>
+                                                                        <span>
+                                                                            <a href='#'
+                                                                                onClick={e => {
+                                                                                    e.preventDefault();
+                                                                                    showUrlListModal('Main Cohort Url', 'main_cohort_url')
+                                                                                }}>
+                                                                                {cohort.main_cohort_url.length - 1} more
+                                                                            </a>
+                                                                        </span>
+                                                                    </>
+                                                                )
+                                                                }
+                                                            </Col>
+
+                                                        </Row>
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
@@ -3431,18 +3760,68 @@ const CohortForm = ({ ...props }) => {
                                                 <tr>
                                                     <td className="bg-light-grey">Data sharing policy</td>
                                                     <td>
-                                                        <Form.Control type="text"
-                                                            bsPrefix
-                                                            className='inputWriter'
-                                                            placeholder='Max of 100 characters'
-                                                            maxLength='100'
-                                                            name='data_url'
-                                                            id='data_url'
-                                                            value={cohort.data_url}
-                                                            onChange={e =>
-                                                                dispatch(allactions.cohortActions.data_url(e.target.value))
-                                                            }
-                                                            disabled={isReadOnly} />
+                                                        <Row className="w-100">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                                {
+
+                                                                    !isReadOnly &&
+                                                                    <Button
+                                                                        name='data_url'
+                                                                        id="data_url"
+                                                                        readOnly={isReadOnly}
+                                                                        onClick={() => {
+                                                                            if (!isReadOnly) {
+                                                                                showUrlModal("Data Sharing URL", "data_url")
+                                                                            }
+                                                                        }}>Add URL</Button>
+
+                                                                }
+                                                            </Col>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                {cohort.data_url.length === 0 && (
+                                                                    <span>
+                                                                        No URL(s) entered
+                                                                    </span>
+                                                                )
+                                                                }
+                                                                {cohort.data_url.length > 0 && (
+                                                                    <div className="text-break">
+                                                                        {cohort.data_url[0]}
+                                                                        {!isReadOnly &&
+                                                                            <>
+                                                                                {' '}(
+                                                                                <span class="closer"
+                                                                                    onClick={() => {
+                                                                                        const copy = [...cohort.data_url];
+                                                                                        copy.splice(0, 1)
+                                                                                        dispatch(allactions.cohortActions.data_url(copy))
+                                                                                    }}>
+                                                                                    x
+                                                                                </span>)
+                                                                            </>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                                }
+                                                                {cohort.data_url.length > 1 && (
+                                                                    <>
+                                                                        <span classNamne="mx-1">
+                                                                            {' '}and{' '}
+                                                                        </span>
+                                                                        <span>
+                                                                            <a href='#'
+                                                                                onClick={e => {
+                                                                                    e.preventDefault();
+                                                                                    showUrlListModal('Data Sharing Url', 'data_url')
+                                                                                }}>
+                                                                                {cohort.data_url.length - 1} more
+                                                                            </a>
+                                                                        </span>
+                                                                    </>
+                                                                )
+                                                                }
+                                                            </Col>
+                                                        </Row>
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
@@ -3519,18 +3898,68 @@ const CohortForm = ({ ...props }) => {
                                                 <tr>
                                                     <td className="bg-light-grey">Biospecimen sharing policy</td>
                                                     <td>
-                                                        <Form.Control type="text"
-                                                            bsPrefix
-                                                            className='inputWriter'
-                                                            placeholder='Max of 100 characters'
-                                                            maxLength='100'
-                                                            name='specimen_url'
-                                                            id='specimen_url'
-                                                            value={cohort.specimen_url}
-                                                            onChange={e =>
-                                                                dispatch(allactions.cohortActions.specimen_url(e.target.value))
-                                                            }
-                                                            disabled={isReadOnly} />
+                                                        <Row className="w-100">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                                {
+
+                                                                    !isReadOnly &&
+                                                                    <Button
+                                                                        name='specimen_url'
+                                                                        id="specimen_url"
+                                                                        readOnly={isReadOnly}
+                                                                        onClick={() => {
+                                                                            if (!isReadOnly) {
+                                                                                showUrlModal("Biospecimen Sharing URL", "specimen_url")
+                                                                            }
+                                                                        }}>Add URL</Button>
+
+                                                                }
+                                                            </Col>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                {cohort.specimen_url.length === 0 && (
+                                                                    <span>
+                                                                        No URL(s) entered
+                                                                    </span>
+                                                                )
+                                                                }
+                                                                {cohort.specimen_url.length > 0 && (
+                                                                    <div className="text-break">
+                                                                        {cohort.specimen_url[0]}
+                                                                        {!isReadOnly &&
+                                                                            <>
+                                                                                {' '}(
+                                                                                <span class="closer"
+                                                                                    onClick={() => {
+                                                                                        const copy = [...cohort.specimen_url];
+                                                                                        copy.splice(0, 1)
+                                                                                        dispatch(allactions.cohortActions.specimen_url(copy))
+                                                                                    }}>
+                                                                                    x
+                                                                                </span>)
+                                                                            </>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                                }
+                                                                {cohort.specimen_url.length > 1 && (
+                                                                    <>
+                                                                        <span classNamne="mx-1">
+                                                                            {' '}and{' '}
+                                                                        </span>
+                                                                        <span>
+                                                                            <a href='#'
+                                                                                onClick={e => {
+                                                                                    e.preventDefault();
+                                                                                    showUrlListModal('Biospecimen Sharing Url', 'specimen_url')
+                                                                                }}>
+                                                                                {cohort.specimen_url.length - 1} more
+                                                                            </a>
+                                                                        </span>
+                                                                    </>
+                                                                )
+                                                                }
+                                                            </Col>
+                                                        </Row>
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
@@ -3600,23 +4029,74 @@ const CohortForm = ({ ...props }) => {
                                                                 )
                                                                 }
                                                             </Col>
-                                                        </Row>                                                    </td>
+                                                        </Row>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td className="bg-light-grey">Publication(authorship) policy</td>
                                                     <td>
-                                                        <Form.Control type="text"
-                                                            bsPrefix
-                                                            className='inputWriter'
-                                                            placeholder='Max of 100 characters'
-                                                            maxLength='100'
-                                                            name='publication_url'
-                                                            value={cohort.publication_url}
-                                                            id='publication_url'
-                                                            onChange={e =>
-                                                                dispatch(allactions.cohortActions.publication_url(e.target.value))
-                                                            }
-                                                            disabled={isReadOnly} />
+                                                        <Row className="w-100">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                                {
+
+                                                                    !isReadOnly &&
+                                                                    <Button
+                                                                        name='publication_url'
+                                                                        id="publication_url"
+                                                                        readOnly={isReadOnly}
+                                                                        onClick={() => {
+                                                                            if (!isReadOnly) {
+                                                                                showUrlModal("Publication Policy URL", "publication_url")
+                                                                            }
+                                                                        }}>Add URL</Button>
+
+                                                                }
+                                                            </Col>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                                {cohort.publication_url.length === 0 && (
+                                                                    <span>
+                                                                        No URL(s) entered
+                                                                    </span>
+                                                                )
+                                                                }
+                                                                {cohort.publication_url.length > 0 && (
+                                                                    <div className="text-break">
+                                                                        {cohort.publication_url[0]}
+                                                                        {!isReadOnly &&
+                                                                            <>
+                                                                                {' '}(
+                                                                                <span class="closer"
+                                                                                    onClick={() => {
+                                                                                        const copy = [...cohort.publication_url];
+                                                                                        copy.splice(0, 1)
+                                                                                        dispatch(allactions.cohortActions.publication_url(copy))
+                                                                                    }}>
+                                                                                    x
+                                                                                </span>)
+                                                                            </>
+                                                                        }
+                                                                    </div>
+                                                                )
+                                                                }
+                                                                {cohort.publication_url.length > 1 && (
+                                                                    <>
+                                                                        <span classNamne="mx-1">
+                                                                            {' '}and{' '}
+                                                                        </span>
+                                                                        <span>
+                                                                            <a href='#'
+                                                                                onClick={e => {
+                                                                                    e.preventDefault();
+                                                                                    showUrlListModal('Publication Policy Url', 'publication_url')
+                                                                                }}>
+                                                                                {cohort.publication_url.length - 1} more
+                                                                            </a>
+                                                                        </span>
+                                                                    </>
+                                                                )
+                                                                }
+                                                            </Col>
+                                                        </Row>
                                                     </td>
                                                     <td>
                                                         <Row className="w-100">
