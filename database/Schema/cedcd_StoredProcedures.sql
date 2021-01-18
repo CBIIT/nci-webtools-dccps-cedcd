@@ -1559,11 +1559,11 @@ BEGIN
         ,strategy_participant_input
         ,strategy_other 
         ,strategy_other_specify
-        ,questionnaire_url
-        ,main_cohort_url
-        ,data_url
-        ,specimen_url
-        ,publication_url
+        ,ifnull(questionnaire_url, '') as questionnaire_url
+        ,ifnull(main_cohort_url,'') as main_cohort_url
+        ,ifnull(data_url,'') as data_url
+        ,ifnull(specimen_url,'') as specimen_url
+        ,ifnull(publication_url,'') as publication_url
         
 	FROM cohort_basic WHERE cohort_id = `targetID`;
     
