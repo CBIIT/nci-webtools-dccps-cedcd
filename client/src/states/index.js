@@ -88,11 +88,11 @@ const InitialStates = {
         dataFileName: [],
         specimenFileName: [],
         publicationFileName: [],
-        questionnaire_url: '',
-        main_cohort_url: '',
-        data_url: '',
-        specimen_url: '',
-        publication_url: ''
+        questionnaire_url: [],
+        main_cohort_url: [],
+        data_url: [],
+        specimen_url: [],
+        publication_url: []
     },
     cohortErrors: {
         //completionDate: 'Required Field',
