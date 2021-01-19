@@ -32,6 +32,7 @@ const SpecimenForm = ({ ...props }) => {
     const specimen = useSelector(state => state.specimenReducer)
     const section = useSelector(state => state.sectionReducer)
     const history = useHistory();
+    const userSession = useSelector(state => state.user);
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [failureMsg, setFailureMsg] = useState(false)
@@ -253,8 +254,11 @@ const SpecimenForm = ({ ...props }) => {
 
 
     const resetCohortStatus = (cohortID, nextStatus) => {
+        let userId = userSession.id
+        console.log(userSession)
+        console.log(userId)
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {

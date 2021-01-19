@@ -17,10 +17,10 @@ begin
     start transaction;
 
     /*
-     check if user table being initialed with one one user index 
+     check if user table being initialed with two users (sys-admin and Kailing)
      */
 
-    if (select COUNT(*) = 1 from user) then
+    if (select COUNT(*) = 2 from user) then
 
     insert into user(user_name,first_name,last_name, access_level,active_status,last_login, email, create_time,update_time) 
     values

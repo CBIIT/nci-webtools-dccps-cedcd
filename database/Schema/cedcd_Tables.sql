@@ -117,6 +117,7 @@ CREATE TABLE IF NOT  EXISTS `cohort` (
   `name` varchar(500) NOT NULL,
   `acronym` varchar(100) NOT NULL,
   `status` varchar(50) NOT NULL,
+  `submit_by` int(11) DEFAULT NULL,
   `publish_by` int(11) DEFAULT NULL,
   `create_by` int(11) DEFAULT NULL,
   `cohort_last_update_date` timestamp DEFAULT NULL,
@@ -127,8 +128,10 @@ CREATE TABLE IF NOT  EXISTS `cohort` (
   PRIMARY KEY (`id`),
   KEY `cohort_create_id` (`create_by`),
   KEY `cohort_publish_id` (`publish_by`),
+  KEY `cohort_submit_id` (`submit_by`),
   KEY `cohort_acronym_index` (`acronym`),
   CONSTRAINT `cohort_create_id` FOREIGN KEY (`create_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `cohort_submit_id` FOREIGN KEY (`submit_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `cohort_publish_id` FOREIGN KEY (`publish_by`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
@@ -193,11 +196,6 @@ CREATE TABLE IF NOT  EXISTS `cohort_basic` (
   `data_file_attached`  INT(1) DEFAULT NULL,
   `specimen_file_attached`  INT(1) DEFAULT NULL,
   `publication_file_attached`  INT(1) DEFAULT NULL,
-  `questionnaire_url` varchar(2000) DEFAULT NULL,
-  `main_cohort_url` varchar(2000) DEFAULT NULL,
-  `data_url` varchar(2000) NULL,
-  `specimen_url` varchar(2000) NULL,
-  `publication_url` varchar(2000) NULL,
   `enrollment_most_recent_date` datetime DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -212,7 +210,7 @@ CREATE TABLE IF NOT  EXISTS `cohort_basic` (
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE IF NOT  EXISTS `attachment` (
+CREATE TABLE IF NOT  EXISTS `cohort_document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `attachment_type` int(1) NOT NULL,
@@ -767,10 +765,10 @@ insert into lu_person_category(id, category) values (4, "Person to contact if an
 /*
 Generate default users 
 */
-insert into user(id, user_name,first_name,last_name, access_level,active_status,last_login, email, create_time,update_time) 
+insert into user(id, user_name,first_name,last_name, access_level,active_status, email, create_time,update_time) 
 values
-/*(id","user_name","first_name","last_name","access_level","active_status","last_login","email","create_time","update_time),*/
-(1,"chenkai","Kailing","Chen","SystemAdmin","Y","2021-01-06 18:34:10","kai-ling.chen@nih.gov","2020-11-02 19:57:33",now());
+(1,"admin","System","Admin","SystemAdmin","Y","kai-ling.chen@nih.gov",now(),now()),
+(2,"chenkai","Kailing","Chen","SystemAdmin","Y","kai-ling.chen@nih.gov",now(),now());
 
 
 -- ======== end table data ===============
