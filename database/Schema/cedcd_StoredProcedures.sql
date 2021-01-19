@@ -3073,5 +3073,18 @@ BEGIN
 END //
 
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_activity_log_by_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_activity_log_by_cohort` //
+
+CREATE PROCEDURE `select_activity_log_by_cohort`(acronym varchar(100))
+BEGIN
+	
+    SELECT * FROM cohort_activity_log WHERE cohort_id IN (SELECT id from cohort WHERE acronym = @acronym) ORDER BY create_time DESC;
+    
+END //
+
+
 DELIMITER ;
 
