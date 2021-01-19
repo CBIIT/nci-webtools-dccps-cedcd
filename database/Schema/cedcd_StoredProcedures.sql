@@ -1455,11 +1455,11 @@ BEGIN
     
   set @query = concat("select sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status,l_status.id as status_id, 
      concat(u1.first_name, ' ', u1.last_name) create_by, 
-	  (case
+	   (case
        when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and publish_by =1 then 'SystemAdmin'
-       when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and publish_by is not null then  (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.publish_by) 
-       else 'N/A' end) publish_by,
-	 (case when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else 'N/A' end) as update_time,
+       when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and publish_by is not null then  (select concat(u2.first_name, ' ', u2.last_name) from user u2 where u2.id=ch.submit_by) 
+       else 'N/A' end) submit_by,
+	 (case when lower(ch.status) in ('submitted','draft', 'in review','published', 'rejected') and ch.update_time is not null then DATE_FORMAT(ch.update_time, '%m/%d/%Y') else 'N/A' end) as update_time,
 	  (case when lower(ch.status) in ('submitted', 'in review') then 'review' else 'view' end) action
 	 FROM cohort ch, user u1, lu_cohort_status l_status WHERE IFNULL(ch.create_by, 1)=u1.id and lower(ch.status)=lower(l_status.cohortstatus) ", @status_query);
   
