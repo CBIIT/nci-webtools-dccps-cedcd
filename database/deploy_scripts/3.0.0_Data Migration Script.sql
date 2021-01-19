@@ -1443,8 +1443,8 @@ DELIMITER ;
 /*
 Generate data for major table cohort from old cedcd schema
 */
-insert into cohort (id, name, acronym, create_by, status, cohort_last_update_date, publish_time,document_ver,create_time, update_time)
-select cohort_id, cohort_name, cohort_acronym, 1, 'published',update_time, update_time, '4.0', create_time,update_time
+insert into cohort (id, name, acronym, create_by, status, cohort_last_update_date, submit_by, publish_by, publish_time,document_ver,create_time, update_time)
+select cohort_id, cohort_name, cohort_acronym, 1, 'published',update_time, 1, 1, update_time, '4.0', create_time,update_time
 from cedcd_old.cohort_basic;
 
 /*
@@ -1541,8 +1541,9 @@ from cedcd_old.cohort_basic;
 
 /*
 Migrate data from table cohort_attachment to cohort_attachment_new
+* new schema attachment changed to name cohort_document, accoridng to new questionnaire (v8.1)
 */
-insert into attachment (
+insert into cohort_document (
 id,
 cohort_id,
 attachment_type,
@@ -1844,38 +1845,8 @@ DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 -- 4. publiication policy )
 
 
-update attachment set category = 0 where filename like '%questionnaire%' and id > 0;
-update attachment set category = 0 where website like '%questionnaire%' and id > 0;
-
- /* questionnaire category = 0 */
-update cohort_basic dest set questionnaire_url = 
-(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
-where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 0 and website is not null
-group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
-
-/* main_cohort category = 1 */
-update cohort_basic dest set main_cohort_url = 
-(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
-where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 1 and website is not null
-group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
-
-/* data sharing category = 2 */
-update cohort_basic dest set data_url = 
-(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
-where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 2  and website is not null
-group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
-
-/* specimen-sharing category = 3 */
-update cohort_basic dest set specimen_url = 
-(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
-where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 3 and website is not null
-group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
-
-/* publication category = 4 */
-update cohort_basic dest set publication_url = 
-(select GROUP_CONCAT(website SEPARATOR ',') as cohort_list from attachment src 
-where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 4 and website is not null
-group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
+update cohort_document set category = 0 where filename like '%questionnaire%' and id > 0;
+update cohort_document set category = 0 where website like '%questionnaire%' and id > 0;
 
 
 /* ***************************************************************************/
