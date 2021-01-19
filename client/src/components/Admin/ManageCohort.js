@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
@@ -313,8 +313,8 @@ class ManageCohort extends Component {
 			let id = item.id;
 			return (
 				<tr key={id}>
-					<td>{item.name}</td>
-					<td>{item.acronym}</td>
+					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.name}</Link></td>
+					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.acronym}</Link></td>
 					<td className="text-capitalize">{item.status}</td>
 					<td>{item.submit_by}</td>
 					<td>{item.update_time}</td>
