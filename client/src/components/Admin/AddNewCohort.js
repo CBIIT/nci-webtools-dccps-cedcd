@@ -174,7 +174,7 @@ class AddNewCohort extends Component {
               errors += 1;
             }
 
-            if (state.cohortAcronym.trim() === cohort.acronym.trim()) {
+            if (state.cohortAcronym.trim() === cohort.cohort_acronym.trim()) {
               state.acronym_error = 'acronym already exists'
               errors += 1;
             }
@@ -229,7 +229,7 @@ class AddNewCohort extends Component {
                   })
                 }
               }
-              else{
+              else {
                 state.submitted = true;
                 state.failureMsg = true;
                 this.setState(state);
@@ -317,20 +317,20 @@ class AddNewCohort extends Component {
                   <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
                 </div>
                 <div className="bttn-group">
-                  <Button 
+                  <Button
                     variant="primary"
                     type="submit"
-                    value="Submit" 
+                    value="Submit"
                     className="col-lg-2 col-md-6">
                     Submit
                   </Button>
-                  <Button 
-                    variant="secondary" 
-                    className="col-lg-2 col-md-6" 
+                  <Button
+                    variant="secondary"
+                    className="col-lg-2 col-md-6"
                     onClick={this.handleCancel}>
                     Cancel
                   </Button>
-                  
+
                 </div>
               </form>
             </div>
