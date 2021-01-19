@@ -375,7 +375,7 @@ DROP PROCEDURE IF EXISTS `select_cohort_description` //
 CREATE PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
 	select * from cohort_basic where cohort_id = c_id;
-    select * from attachment where cohort_id = c_id;
+    select * from cohort_document where cohort_id = c_id;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
@@ -447,7 +447,7 @@ DROP PROCEDURE IF EXISTS `select_all_cohort` //
 
 CREATE PROCEDURE `select_all_cohort`()
 BEGIN
-	select id, name, acronym from cohort order by acronym;
+	select id, name, acronym  as cohort_acronym from cohort order by acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1251,11 +1251,6 @@ BEGIN
         strategy_participant_input = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input'))),
 		strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
 		strategy_other_specify = IF(strategy_other = 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify'))), ''),
-		questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
-		main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'))),
-		data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'))),
-		specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'))),
-		publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'))),
 		update_time = NOW()
 		WHERE cohort_id = new_id;
 		-- update section status
@@ -1368,10 +1363,10 @@ BEGIN
         -- questionnaire/url-2
 		SELECT 0 into i;
 
-		delete from attachment where cohort_id=@latest_cohort and attachment_type=0;
+		delete from cohort_document where cohort_id=@latest_cohort and attachment_type=0;
 
 		WHILE i < JSON_LENGTH(@questionnaireUrlEntry) DO
-			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
         -- main file/url-3
@@ -1379,7 +1374,7 @@ BEGIN
 		SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@mainUrlEntry) DO
-			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 3, '', JSON_UNQUOTE(JSON_EXTRACT(@mainUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 3, '', JSON_UNQUOTE(JSON_EXTRACT(@mainUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
 
@@ -1387,21 +1382,21 @@ BEGIN
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@dataUrlEntry) DO
-			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
         -- specimen file/url-5
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@specimenUrlEntry) DO
-			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 5, '', JSON_UNQUOTE(JSON_EXTRACT(@specimenUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 5, '', JSON_UNQUOTE(JSON_EXTRACT(@specimenUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
         -- publication file/url
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@publicationUrlEntry) DO
-			INSERT INTO attachment (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 6, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 6, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
  commit;
@@ -1538,13 +1533,7 @@ BEGIN
         ,strategy_invitation 
         ,strategy_participant_input
         ,strategy_other 
-        ,strategy_other_specify
-        ,ifnull(questionnaire_url, '') as questionnaire_url
-        ,ifnull(main_cohort_url,'') as main_cohort_url
-        ,ifnull(data_url,'') as data_url
-        ,ifnull(specimen_url,'') as specimen_url
-        ,ifnull(publication_url,'') as publication_url
-        
+        ,strategy_other_specify        
 	FROM cohort_basic WHERE cohort_id = `targetID`;
     
     select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
@@ -1566,10 +1555,10 @@ BEGIN
     select
      id as fileId,
 	 category as fileCategory,
-     filename from attachment
+     filename from cohort_document 
      where cohort_id = targetID and filename !='' and filename is not null;
 
-	select category as urlCategory, website from attachment where cohort_id=targetID and website !='' and website is not null;
+	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1829,7 +1818,7 @@ begin
 		WHILE i < JSON_LENGTH(@filenames) DO
 			SELECT JSON_EXTRACT(@filenames, concat('$[',i,']')) INTO @filename;
             set @filename = replace(@filename, '"', '');
-			insert into attachment (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
+			insert into cohort_document (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
 			values (new_id, 1, categoryType, @fileName, '', 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
@@ -1838,7 +1827,7 @@ begin
     END IF;
     SELECT flag as rowsAffacted;
     SELECT new_id;
-    SELECT id AS fileId, category AS fileCategory, filename FROM attachment
+    SELECT id AS fileId, category AS fileCategory, filename FROM cohort_document 
 	WHERE cohort_id = new_id and category = categoryType;
 end //
 
@@ -2310,13 +2299,13 @@ begin
   if exists (select * from cohort where id = cohortID and status = 'new') then
 	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
 	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (cohortID, 1, concat('cohort status updated from new to draft. ', cohortID), null);
+		values (cohortID, 1, 'draft', null);
   end if;
   SELECT `status` from cohort where id = cohortID;
   end ;
   end if ;
   
-  end //
+end //
 
 
 DROP PROCEDURE if EXISTS `select_questionnaire_specimen_info` //
@@ -2370,7 +2359,7 @@ BEGIN
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
 
-		   insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, 1, concat('create new cohort from pubished cohort id ', targetID), null);
+		   insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, 1, 'draft', null);
  
         end if;
     end if;
@@ -2434,13 +2423,13 @@ from person new
 join (select * from person where cohort_id = old_cohort_id and category_id = 3 and name is not null and name != '') as old
 on new.name = old.name  and new.category_id and old.category_id where new.cohort_id = new_cohort_id and new.category_id = 3;
 
-insert into attachment (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
 select new_cohort_id, old.attachment_type, old.category, old.filename, old.website, old.status, now() as old_create_time, now() as old_update_time 
-from attachment as old where old.cohort_id = old_cohort_id;
+from cohort_document as old where old.cohort_id = old_cohort_id;
 
 insert into mapping_old_file_Id_To_New (cohort_id, old_file_id, new_file_id)
 select new_cohort_id, old.id, new.id
-from attachment as new join (select * from attachment where cohort_id = old_cohort_id and attachment_type = 1) as old
+from cohort_document as new join (select * from cohort_document where cohort_id = old_cohort_id and attachment_type = 1) as old
 on new.filename = old.filename and new.category where new.attachment_type = 1 and new.cohort_id = new_cohort_id;
 
 -- insert into enrollment_count
@@ -2788,7 +2777,7 @@ begin
         update cohort set `status` = cohort_status , cohort_last_update_date = now(), update_time = now() where id = targetID;
         end if;
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-        values (targetID, 1, concat('cohort status updated to ',cohort_status ), null);
+        values (targetID, 1, cohort_status, null);
 	end;
     commit;
     select flag as rowAffacted;
@@ -2875,7 +2864,7 @@ BEGIN
         group by user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
        (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-        from user u where u.id > 0 ", @status_query , @orderBy, @paging);
+        from user u where u.id > 1 ", @status_query , @orderBy, @paging);
 
 	
     PREPARE stmt FROM @query;
@@ -3013,7 +3002,7 @@ begin
 			else
 				set @updated_file_id = file_Id;
 			end if;
-			delete from attachment where id = @updated_file_id;
+			delete from cohort_document where id = @updated_file_id;
 		COMMIT;
     END;
     END IF;
@@ -3070,6 +3059,19 @@ BEGIN
 	-- SELECT flag as rowsAffacted;
 						
 			
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_activity_log_by_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_activity_log_by_cohort` //
+
+CREATE PROCEDURE `select_activity_log_by_cohort`(acronym varchar(100))
+BEGIN
+	
+    SELECT * FROM cohort_activity_log WHERE cohort_id IN (SELECT id from cohort WHERE acronym = @acronym) ORDER BY create_time DESC;
+    
 END //
 
 
