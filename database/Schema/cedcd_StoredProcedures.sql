@@ -1251,11 +1251,6 @@ BEGIN
         strategy_participant_input = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_participant_input'))),
 		strategy_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other'))),
 		strategy_other_specify = IF(strategy_other = 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.strategy_other_specify'))), ''),
-		questionnaire_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'))),
-		main_cohort_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'))),
-		data_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'))),
-		specimen_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'))),
-		publication_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'))),
 		update_time = NOW()
 		WHERE cohort_id = new_id;
 		-- update section status
@@ -1539,11 +1534,7 @@ BEGIN
         ,strategy_participant_input
         ,strategy_other 
         ,strategy_other_specify
-        ,ifnull(questionnaire_url, '') as questionnaire_url
-        ,ifnull(main_cohort_url,'') as main_cohort_url
-        ,ifnull(data_url,'') as data_url
-        ,ifnull(specimen_url,'') as specimen_url
-        ,ifnull(publication_url,'') as publication_url
+
         
 	FROM cohort_basic WHERE cohort_id = `targetID`;
     
