@@ -241,7 +241,6 @@ const CohortForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
-                    console.log(proceed)
                     if (!goNext) {
                         setSuccessMsg(true)
                     }
