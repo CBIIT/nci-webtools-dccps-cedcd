@@ -98,7 +98,7 @@ export default function CohortActivity() {
                     <div>
                         <label htmlFor="page-size" className="mr-1">Page Size: </label>
                         <select id="page-size" value={pageSize} onChange={e => {setPageSize(e.target.value); setPage(0)}}>
-                            {[2, 5, 10, 15, 20].map(size => <option value={size}>{size}</option>)}
+                            {[5, 10, 15, 20].map(size => <option value={size}>{size}</option>)}
                         </select>
                     </div>
 
