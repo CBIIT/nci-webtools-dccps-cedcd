@@ -316,7 +316,7 @@ class ManageCohort extends Component {
 					<td>{item.name}</td>
 					<td>{item.acronym}</td>
 					<td className="text-capitalize">{item.status}</td>
-					<td>{item.publish_by}</td>
+					<td>{item.submit_by}</td>
 					<td>{item.update_time}</td>
 					<td>
 						<Link onClick={(e) => { this.reviewCohort(e, id, item.status) }}>{['submitted', 'in review'].includes(item.status.toLowerCase()) ? 'Review' : 'View'}</Link>

@@ -232,7 +232,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             }
         }
 
-        if(results[8] && Array.isArray(results[8])) {
+        if (results[8] && Array.isArray(results[8])) {
             basic_info.cohort.questionnaire_url = []
             basic_info.cohort.main_cohort_url = []
             basic_info.cohort.data_url = []
@@ -241,7 +241,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
 
             for (let a of results[8]) {
 
-                switch(a.urlCategory) {
+                switch (a.urlCategory) {
                     case 2:
                         basic_info.cohort.questionnaire_url.push(a.website)
                         break;
@@ -610,10 +610,10 @@ router.post('/get_specimen/:id', function (req, res) {
 
 })
 
-router.post('/reset_cohort_status/:id/:status', function (req, res) {
+router.post('/reset_cohort_status/:id/:status/:uid?', function (req, res) {
     let func = 'reset_cohort_status'
     let params = []
-    params.push(req.params.id, req.params.status)
+    params.push(req.params.id, req.params.status, req.params.uid || 1)
     mysql.callProcedure(func, params, function (result) {
         if (result && result[0] && result[0][0].rowAffacted > 0)
             res.json({ status: 200, message: 'update was successful' })
@@ -632,7 +632,7 @@ router.post('/approve/:id', async function (request, response) {
         return response.status(400).json('Unauthorized').end();
     }
 
-    const {acronym} = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
+    const { acronym } = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
     await mysql.query(
         `update cohort
             set status = 'archived'
