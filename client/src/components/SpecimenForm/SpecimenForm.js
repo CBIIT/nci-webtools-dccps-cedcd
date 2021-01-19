@@ -880,7 +880,7 @@ const SpecimenForm = ({ ...props }) => {
 
 
     return (
-        <Container fluid>
+        <Container>
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
             {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({show: false})} />}

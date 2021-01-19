@@ -5,6 +5,7 @@ import {
     Prompt,
     useHistory
 } from "react-router-dom";
+import Container from 'react-bootstrap/Container';
 import classNames from 'classnames';
 import { parseISO } from 'date-fns';
 import './QuestionnaireHeader.css'
@@ -96,8 +97,8 @@ const QuestionnaireHeader = ({ ...props }) => {
     ];
 
 
-    return <>
-        <div className="px-5 mb-4">
+    return <Container>
+        <div className="mb-4">
             <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
 
             {!isReadOnly ? null : <div>
@@ -122,9 +123,9 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
         </div>
 
-        <div className="container-fluid mb-4 mx-5">
+        <div className="mb-4 container">
             <div className="border row py-4">
-                <div className="col-md px-4">
+                <div className="col-lg px-4">
                     <strong>Cohort Status: </strong>
                     <span className={classNames(
                         status === 'published' && 'text-success',
@@ -149,11 +150,11 @@ const QuestionnaireHeader = ({ ...props }) => {
                             </button>
                         </div>} />
                 </div>
-                <div className="col-md px-4">
+                <div className="col-lg px-4">
                     <strong>Last Updated Date: </strong>
                     {asDateString(updateDate) || 'N/A'}
                 </div>
-                <div className="col-md px-4">
+                <div className="col-lg px-4">
                     <strong>Last Published Date: </strong>
                     {asDateString(publishDate) || 'N/A'}
                 </div>
@@ -162,7 +163,7 @@ const QuestionnaireHeader = ({ ...props }) => {
 
         
         
-        <div className="d-md-none px-5">
+        <div className="d-md-none">
            <Reminder message={getTooltip(sectionStatus['A'])} info={true}>
             <div id='sectionA' onClick={() => ['in review'].includes(status) ? '' : props.handler('A')} style={{ marginBottom: '5px' }}>
                 {['in review'].includes(status) ? <div>
@@ -457,7 +458,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 </Reminder>
             </div>
         </div>
-    </>
+    </Container>
 }
 
 export default QuestionnaireHeader

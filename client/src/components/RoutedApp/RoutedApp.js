@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
 import Button from 'react-bootstrap/Button';
 import App from '../App/App';
 import Modal from '../controls/modal/modal';
@@ -18,7 +17,6 @@ export default function RoutedApp() {
 	const mergeModal = obj => setModal({...modal, ...obj});
 	
 	return <BrowserRouter 
-		history={createBrowserHistory()}
 		getUserConfirmation={(message, callback) => {
 			mergeModal({
 				show: true,
