@@ -1061,7 +1061,7 @@ BEGIN
 	  if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
+		values (new_id, 1, 'draft', null);
 	  end if;
 	  SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
 	end;
@@ -1748,7 +1748,7 @@ BEGIN
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (new_id, 1, concat('cohort status updated from new to draft. ', new_id), null);
+		values (new_id, 1, 'draft', null);
 	end if;
 	SELECT `status` from cohort where id = new_id;
 	
@@ -2627,7 +2627,7 @@ BEGIN
 	SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, 'draft', null);
 	end if;
 	SELECT `status` from cohort where id = targetID;
     end;
@@ -2745,7 +2745,7 @@ BEGIN
     if exists (select * from cohort where id = targetID and status = 'new') then
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (targetID, 1, concat('cohort status updated from new to draft. ', targetID), null);
+		values (targetID, 1, 'draft', null);
 		
 	end if;
 	SELECT `status` from cohort where id = targetID;
