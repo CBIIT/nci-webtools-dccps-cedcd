@@ -983,7 +983,7 @@ const CohortForm = ({ ...props }) => {
     }
 
     return (
-        <Container fluid>
+        <Container>
             {console.log(urlInput)}
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}

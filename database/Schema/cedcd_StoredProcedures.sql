@@ -2299,13 +2299,13 @@ begin
   if exists (select * from cohort where id = cohortID and status = 'new') then
 	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
 	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (cohortID, 1, 'draft', cohortID), null);
+		values (cohortID, 1, 'draft', null);
   end if;
   SELECT `status` from cohort where id = cohortID;
   end ;
   end if ;
   
-  end //
+end //
 
 
 DROP PROCEDURE if EXISTS `select_questionnaire_specimen_info` //
@@ -2864,7 +2864,7 @@ BEGIN
         group by user_id ) end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') as active_status,
        (case when last_login is null then 'Never' else DATE_FORMAT(last_login, '%m/%d/%Y') end) as last_login   
-        from user u where u.id > 0 ", @status_query , @orderBy, @paging);
+        from user u where u.id > 1 ", @status_query , @orderBy, @paging);
 
 	
     PREPARE stmt FROM @query;
@@ -3059,6 +3059,19 @@ BEGIN
 	-- SELECT flag as rowsAffacted;
 						
 			
+END //
+
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: select_activity_log_by_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `select_activity_log_by_cohort` //
+
+CREATE PROCEDURE `select_activity_log_by_cohort`(acronym varchar(100))
+BEGIN
+	
+    SELECT * FROM cohort_activity_log WHERE cohort_id IN (SELECT id from cohort WHERE acronym = @acronym) ORDER BY create_time DESC;
+    
 END //
 
 
