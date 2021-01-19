@@ -91,6 +91,9 @@ export default function CohortActivity() {
                                 </td>
                             )}
                         </tr>)}
+
+                        {activityLog.length === 0 && 
+                            <tr><td className="text-center" colSpan={4}>No Activity History Found</td></tr>}
                     </tbody>
                 </Table>
 
