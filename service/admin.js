@@ -173,7 +173,7 @@ router.get('/cohortActivityLog/:abbreviation', async function (request, response
 				concat_ws(', ', last_name, first_name) as user_display_name
 			from cohort_activity_log c
 			join user u on c.user_id = u.id
-			where cohort_id in (select id from cohort where acronym = 'ABCD')
+			where cohort_id in (select id from cohort where acronym = ?)
 			order by create_time desc`, 
 			abbreviation
 		);
