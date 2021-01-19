@@ -53,3 +53,43 @@ export const specimenFieldList = [
         part: 'B', title: 'G.14 Microbiome Data (16S RNA, metagenomics)', items: [{ field_id: 'bioMicrobiomeData', required: true, type: 'radio' }]
     }
 ];
+
+
+export const specimenColList = [
+    { col: 'bio_blood_baseline', field_id: 'bioBloodBaseline' },
+    { col: 'bio_blood_baseline_serum', field_id: 'bioBloodBaselineSerum' },
+    { col: 'bio_blood_baseline_plasma', field_id: 'bioBloodBaselinePlasma' },
+    { col: 'bio_blood_baseline_buffy_coat', field_id: 'bioBloodBaselineBuffyCoat' },
+    { col: 'bio_blood_baseline_other_derivative', field_id: 'bioBloodBaselineOtherDerivative' },
+    { col: 'bio_blood_other_time', field_id: 'bioBloodOtherTime' },
+    { col: 'bio_blood_other_time_serum', field_id: 'bioBloodOtherTimeSerum' },
+    { col: 'bio_blood_other_time_plasma', field_id: 'bioBloodOtherTimePlasma' },
+    { col: 'bio_blood_other_time_buffy_coat', field_id: 'bioBloodOtherTimeBuffyCoat' },
+    { col: 'bio_blood_other_time_other_derivative', field_id: 'bioBloodOtherTimeOtherDerivative' },
+    { col: 'bio_buccal_saliva_baseline', field_id: 'bioBuccalSalivaBaseline' },
+    { col: 'bio_buccal_saliva_other_time', field_id: 'bioBuccalSalivaOtherTime' },
+    { col: 'bio_tissue_baseline', field_id: 'bioTissueBaseline' },
+    { col: 'bio_tissue_other_time', field_id: 'bioTissueOtherTime' },
+    { col: 'bio_urine_baseline', field_id: 'bioUrineBaseline' },
+    { col: 'bio_urine_other_time', field_id: 'bioUrineOtherTime' },
+    { col: 'bio_feces_baseline', field_id: 'bioFecesBaseline' },
+    { col: 'bio_feces_other_time', field_id: 'bioFecesOtherTime' },
+    { col: 'bio_other_baseline', field_id: 'bioOtherBaseline' },
+    { col: 'bio_other_other_time', field_id: 'bioOtherOtherTime' },
+    { col: 'bio_repeated_sample_same_individual', field_id: 'bioRepeatedSampleSameIndividual' },
+    { col: 'bio_tumor_block_info', field_id: 'bioTumorBlockInfo' },
+    { col: 'bio_genotyping_data', field_id: 'bioGenotypingData' },
+    { col: 'bio_sequencing_data_exome', field_id: 'bioSequencingDataExome' },
+    { col: 'bio_sequencing_data_whole_genome', field_id: 'bioSequencingDataWholeGenome' },
+    { col: 'bio_epigenetic_or_metabolic_markers', field_id: 'bioEpigeneticOrMetabolicMarkers' },
+    { col: 'bio_other_omics_data', field_id: 'bioOtherOmicsData' },
+    { col: 'bio_transcriptomics_data', field_id: 'bioTranscriptomicsData' },
+    { col: 'bio_microbiome_data', field_id: 'bioMicrobiomeData' },
+    { col: 'bio_metabolomic_data', field_id: 'bioMetabolomicData' },
+    { col: 'bio_meta_fasting_sample', field_id: 'bioMetaFastingSample' },
+    { col: 'bio_meta_outcomes_in_cancer_study', field_id: 'bioMetaOutcomesInCancerStudy' },
+    { col: 'bio_meta_outcomes_in_cvd_study', field_id: 'bioMetaOutcomesInCvdStudy' },
+    { col: 'bio_meta_outcomes_in_diabetes_study', field_id: 'bioMetaOutcomesInDiabetesStudy' },
+    { col: 'bio_meta_outcomes_in_other_study', field_id: 'bioMetaOutcomesInOtherStudy' },
+    { col: 'bio_member_of_metabolomics_studies', field_id: 'bioMemberOfMetabolomicsStudies' }
+];

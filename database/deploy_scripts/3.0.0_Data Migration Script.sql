@@ -1878,4 +1878,14 @@ where src.cohort_id = dest.cohort_id and src.attachment_type = 0 and category = 
 group by src.cohort_id, src.attachment_type) where dest.cohort_id >0;
 
 
+/* ***************************************************************************/
+/*  Insert existing published cohorts into activity log                      */
+/* ***************************************************************************/
+INSERT INTO cohort_activity_log (cohort_id, user_id, activity, notes, create_time, update_time)
+SELECT * FROM
+(SELECT id, 1 AS user_id, status, 'Migrated from Westat Database', 
+	publish_time AS create_time, publish_time AS update_time FROM cohort where status = 'published') AS tmp
+    WHERE (SELECT count(1) FROM cohort_activity_log) <1;
+
+
 -- ====== End of Migration script =========
