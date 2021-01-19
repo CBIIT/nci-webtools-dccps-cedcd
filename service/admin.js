@@ -4,6 +4,7 @@ var mysql = require('../components/mysql');
 var cache = require('../components/cache');
 var config = require('../config');
 var logger = require('../components/logger');
+const { response } = require('express');
 
 router.use((request, response, next) => {
 	const { session } = request;
@@ -157,5 +158,36 @@ router.post('/updateUserProfile/:id', function (req, res) {
 
 });
 
+
+router.get('/cohortActivityLog/:abbreviation', async function (request, response) {
+	const { app, params } = request;
+    const { mysql } = app.locals;
+	const { abbreviation } = params;
+	
+	try {
+        const result = await mysql.query(
+			`select
+				activity,
+				notes,
+				c.create_time,
+				concat_ws(', ', last_name, first_name) as user_display_name
+			from cohort_activity_log c
+			join user u on c.user_id = u.id
+			where cohort_id in (select id from cohort where acronym = 'ABCD')
+			order by create_time desc`, 
+			abbreviation
+		);
+
+        if (result) {
+			response.json(result);
+        } else {
+            throw new Error('SQL Exception');
+		}
+		
+    } catch (e) {
+        logger.debug(e);
+        response.status(500).json('Could not fetch activity log')
+    }
+});
 
 module.exports = router;
