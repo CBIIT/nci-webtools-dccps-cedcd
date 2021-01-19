@@ -927,6 +927,7 @@ const CohortForm = ({ ...props }) => {
 
             setUrlTitle(title)
             setUrlTile(urlTile)
+            setUrlInput(''); // remove previous url
             setUrlModal(true)
         })
     }
@@ -1012,28 +1013,38 @@ const CohortForm = ({ ...props }) => {
 
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.questionnaire_url(copy));
+                                        if(urlInput){
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.questionnaire_url(copy));
+                                        }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.main_cohort_url(copy));
+                                        if(urlInput){
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.main_cohort_url(copy));
+                                        }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.data_url(copy));
+                                        if(urlInput){
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.data_url(copy));
+                                        }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.specimen_url(copy));
+                                        if(urlInput){
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.specimen_url(copy));
+                                        }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.publication_url(copy));
+                                        if(urlInput){
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.publication_url(copy));
+                                        }
                                         break;
                                 }
                                 setUrlModal(false)
