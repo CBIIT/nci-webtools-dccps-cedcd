@@ -1569,7 +1569,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" className='text-capitalize'
+                                        <Form.Control type="text" 
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"
