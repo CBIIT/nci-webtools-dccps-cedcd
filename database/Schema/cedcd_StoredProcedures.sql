@@ -2756,7 +2756,7 @@ end //
 
 DROP PROCEDURE IF EXISTS reset_cohort_status //
 
-CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30))
+CREATE  PROCEDURE `reset_cohort_status`(in targetID int, in cohort_status varchar(30), in userID int)
 begin
 	DECLARE rowAffacted int default 0;
     DECLARE flag INT DEFAULT 1;
@@ -2769,15 +2769,19 @@ begin
 	
     START TRANSACTION;
 	 begin
-        if( lower(cohort_status) = "published") then 
-		update cohort set `status` = cohort_status, publish_by = 1, 
-        cohort_last_update_date = now(), update_time = now()
-        where id = targetID;
-        else
-        update cohort set `status` = cohort_status , cohort_last_update_date = now(), update_time = now() where id = targetID;
+          if( lower(cohort_status) = "published") then 
+		   update cohort set `status` = cohort_status, publish_by = IFNULL(userID,10), 
+           cohort_last_update_date = now(), update_time = now()
+           where id = targetID;
+        elseif(lower(cohort_status) = "submitted" ) then 
+           update cohort set `status` = cohort_status , cohort_last_update_date = now(), 
+           update_time = now(), submit_by = IFNULL(userID,1) where id = targetID;
+        else  
+           update cohort set `status` = cohort_status , cohort_last_update_date = now(), 
+           update_time = now() where id = targetID;
         end if;
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-        values (targetID, 1, cohort_status, null);
+        values (targetID, IFNULL(userID,1),  cohort_status, null);
 	end;
     commit;
     select flag as rowAffacted;
