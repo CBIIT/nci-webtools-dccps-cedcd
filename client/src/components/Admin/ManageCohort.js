@@ -350,7 +350,7 @@ class ManageCohort extends Component {
 					</div>
 					<div className="col-xl-2 col-sm-3 col-6">
 						<div id="cohortstatus" className="filter-component">
-							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="3" onClick={this.handleCohortStatusClick} />
+							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="0" onClick={this.handleCohortStatusClick} />
 						</div>
 					</div>
 					<div className="col-xl-2 col-sm-3 col-12" style={{ "paddingLeft": "0" }}>
