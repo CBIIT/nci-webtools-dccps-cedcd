@@ -21,6 +21,7 @@ import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collaps
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css'
 
+
 const {
     setCancerCount,
     mergeCancerCounts,
@@ -36,6 +37,7 @@ const CancerInfoForm = ({ ...props }) => {
 
     const cohortId = useSelector(state => state.cohortIDReducer) || props.cohortId;
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const userSession = useSelector(state => state.user);
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
@@ -148,15 +150,17 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
+        let userId = userSession.id
+
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
                         dispatch(fetchCohort(cohortID))
-                        if(nextStatus === 'submitted')
+                        if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
                 })
@@ -349,7 +353,7 @@ const CancerInfoForm = ({ ...props }) => {
                     dispatch(({ type: 'SET_COHORT_STATUS', value: status }))
                     dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
                 } else {
-                    
+
                     if (newCohortId && +newCohortId !== id) {
                         id = newCohortId;
                     }
@@ -414,9 +418,9 @@ const CancerInfoForm = ({ ...props }) => {
     }
 
     function CheckedInputs({ options, props }) {
-        return options.map((option, i) => 
-            <CheckedInput 
-                key={`${option.name}_${option.value}`} 
+        return options.map((option, i) =>
+            <CheckedInput
+                key={`${option.name}_${option.value}`}
                 {...option}
                 {...props} />
         )
@@ -504,7 +508,7 @@ const CancerInfoForm = ({ ...props }) => {
                             panelTitle="Cancer Information">
 
                             <Form.Group className={classNames(submitted && errors.ci_confirmed_cancer_date && "has-error")}>
-                                <Form.Label htmlFor="ci_confirmed_cancer_date"  className="required-label">
+                                <Form.Label htmlFor="ci_confirmed_cancer_date" className="required-label">
                                     D.2 Please enter the most recent date when confirmed cancer cases were ascertained:
                                     </Form.Label>
 
@@ -599,8 +603,8 @@ const CancerInfoForm = ({ ...props }) => {
                                 </Form.Label>
                                 {submitted && errors.ci_treatment_data_type && <span className="ml-3 text-danger">Required Field</span>}
 
-                                <CheckedInputs 
-                                    props={{disabled: +form.ci_cancer_treatment_data === 0}}
+                                <CheckedInputs
+                                    props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
                                     options={[
                                         { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
                                         { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
@@ -636,8 +640,8 @@ const CancerInfoForm = ({ ...props }) => {
                                 </Form.Label>
                                 {submitted && errors.ci_data_source_type && <span className="ml-3 text-danger">Required Field</span>}
 
-                                <CheckedInputs 
-                                    props={{disabled: +form.ci_cancer_treatment_data === 0}}
+                                <CheckedInputs
+                                    props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
                                     options={[
                                         { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
                                         { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
@@ -709,7 +713,7 @@ const CancerInfoForm = ({ ...props }) => {
                                     D.9 Do you have tumor genetic markers data?
                                 </Form.Label>
                                 {submitted && errors.ci_tumor_genetic_markers_data && <span className="ml-3 text-danger">Required Field</span>}
-                                
+
                                 <CheckedInputs options={[
                                     { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
                                     { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
@@ -767,7 +771,7 @@ const CancerInfoForm = ({ ...props }) => {
                 <QuestionnaireFooter
                     isAdmin={isReadOnly}
                     handlePrevious={_ => props.sectionPicker('C')}
-                    handleNext={_ => props.sectionPicker('E')} 
+                    handleNext={_ => props.sectionPicker('E')}
                     handleSave={handleSave}
                     handleSaveContinue={handleSaveContinue}
                     handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}

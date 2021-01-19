@@ -26,6 +26,7 @@ const MortalityForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const userSession = useSelector(state => state.user);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -144,15 +145,17 @@ const MortalityForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
+        let userId = userSession.id
+
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
                         dispatch(fetchCohort(cohortID))
-                        if(nextStatus === 'submitted')
+                        if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
                 })
@@ -165,7 +168,7 @@ const MortalityForm = ({ ...props }) => {
 
         copy.mortalityYear = validator.numberValidator(mortality.mortalityYear, true, false)
 
-        if(!copy.mortalityYear && mortality.mortalityYear.toString().length !== 4)
+        if (!copy.mortalityYear && mortality.mortalityYear.toString().length !== 4)
             copy.mortalityYear = 'Please enter a 4 digit year'
 
         if (!mortality.deathIndex && !mortality.deathCertificate && !mortality.otherDeath) {
@@ -331,7 +334,7 @@ const MortalityForm = ({ ...props }) => {
                                             min="1900"
                                             value={mortality.mortalityYear}
                                             readOnly={isReadOnly}
-                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }} 
+                                            onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }}
                                             placeholder='YYYY'
                                         />
                                     </Reminder>
@@ -340,7 +343,7 @@ const MortalityForm = ({ ...props }) => {
 
                             <Form.Group as={Row} className={saved && errors.otherDeathSpecify && 'has-error'}>
                                 <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)<span style={{ color: 'red' }}>*</span>
-                                {saved && errors.deathConfirm && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
+                                    {saved && errors.deathConfirm && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
                                     <div key="checkbox">

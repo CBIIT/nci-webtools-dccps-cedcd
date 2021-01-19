@@ -26,6 +26,7 @@ const DataLinkageForm = ({ ...props }) => {
     //const cohortId = +window.location.pathname.split('/').pop();
     const cohortId = useSelector(state => state.cohortIDReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const userSession = useSelector(state => state.user);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -140,15 +141,17 @@ const DataLinkageForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
+        let userId = userSession.id
+
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {
                     if (result && result.status === 200) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
                         dispatch(fetchCohort(cohortID))
-                        if(nextStatus === 'submitted')
+                        if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
                     }
                 })
@@ -205,7 +208,7 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
-            if (!dataLinkage.dataOnlinePolicy && !dataLinkage.dataOnlineWebsite ) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
+            if (!dataLinkage.dataOnlinePolicy && !dataLinkage.dataOnlineWebsite) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
                 if (dataLinkage.dataOnlineURL.length > 200)
@@ -361,11 +364,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type="radio"
                                                     className="mr-2"
                                                     checked={dataLinkage.haveDataLink === 0}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); 
-                                                        dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(''));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setHaveDataLink(0));
+                                                            dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(''));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }}
                                                 />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     No
@@ -380,11 +385,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type="radio"
                                                 className="mr-2"
                                                 checked={dataLinkage.haveDataLink === 0}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setHaveDataLink(0)); 
-                                                    dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(''));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setHaveDataLink(0));
+                                                        dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(''));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 No
@@ -401,10 +408,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type='radio'
                                                     className="mr-2"
                                                     checked={dataLinkage.haveDataLink === 1}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setHaveDataLink(1));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }} />
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setHaveDataLink(1));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
@@ -417,10 +426,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.haveDataLink === 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setHaveDataLink(1));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }} />
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setHaveDataLink(1));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
@@ -466,7 +477,7 @@ const DataLinkageForm = ({ ...props }) => {
 
                             <Form as={Row}>
                                 <Form.Label column sm="12"
-                                    >F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span>
+                                >F.2 Have you participated in projects that required cross-cohort data harmonization?<span style={{ color: 'red' }}>*</span>
                                     {saved && errors.haveHarmonization && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Form.Label>
 
@@ -482,11 +493,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type="radio"
                                                     className="mr-2"
                                                     checked={dataLinkage.haveHarmonization === 0}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); 
-                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(''));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setHaveHarmonization(0));
+                                                            dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(''));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }}
                                                 />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     No
@@ -501,11 +514,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type="radio"
                                                 className="mr-2"
                                                 checked={dataLinkage.haveHarmonization === 0}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setHaveHarmonization(0)); 
-                                                    dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(''));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonization(0));
+                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonizationSpecify(''));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 No
@@ -522,10 +537,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type='radio'
                                                     className="mr-2"
                                                     checked={dataLinkage.haveHarmonization === 1}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonization(1));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }} />
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setHaveHarmonization(1));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
@@ -538,10 +555,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.haveHarmonization === 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setHaveHarmonization(1));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }} />
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setHaveHarmonization(1));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
@@ -649,10 +668,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type='radio'
                                                     className="mr-2"
                                                     checked={dataLinkage.haveDeposited === 1}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setHaveDeposited(1));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }} />
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setHaveDeposited(1));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
@@ -665,10 +686,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.haveDeposited === 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setHaveDeposited(1));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }} />
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setHaveDeposited(1));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
@@ -690,10 +713,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 className="mr-2"
                                                 checked={dataLinkage.dbGaP === 1}
                                                 disabled={dataLinkage.haveDeposited !== 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setdbGaP((dataLinkage.dbGaP + 1) % 2));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 dbGaP
@@ -706,10 +731,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 className="mr-2"
                                                 checked={dataLinkage.BioLINCC === 1}
                                                 disabled={dataLinkage.haveDeposited !== 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setbioLinCC((dataLinkage.BioLINCC + 1) % 2));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 BioLINCC
@@ -722,10 +749,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 className="mr-2"
                                                 checked={dataLinkage.otherRepo === 1}
                                                 disabled={dataLinkage.haveDeposited !== 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setOtherRepo((dataLinkage.otherRepo + 1) % 2));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Other Repo
@@ -801,10 +830,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type='radio'
                                                     className="mr-2"
                                                     checked={dataLinkage.dataOnline === 1}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setDataOnline(1));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }} />
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setDataOnline(1));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
@@ -817,10 +848,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.dataOnline === 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setDataOnline(1));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }} />
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setDataOnline(1));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
@@ -842,10 +875,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 className="mr-2"
                                                 checked={dataLinkage.dataOnlinePolicy === 1}
                                                 disabled={dataLinkage.dataOnline !== 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setDataOnlinePolicy((dataLinkage.dataOnlinePolicy + 1) % 2));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Policy attached (PDF)
@@ -920,11 +955,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type="radio"
                                                     className="mr-2"
                                                     checked={dataLinkage.createdRepo === 0}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); 
-                                                        dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(''));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setCreatedRepo(0));
+                                                            dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(''));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }}
                                                 />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     No
@@ -939,11 +976,13 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type="radio"
                                                 className="mr-2"
                                                 checked={dataLinkage.createdRepo === 0}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setCreatedRepo(0)); 
-                                                    dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(''));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }}
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setCreatedRepo(0));
+                                                        dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(''));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 No
@@ -960,10 +999,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                     type='radio'
                                                     className="mr-2"
                                                     checked={dataLinkage.createdRepo === 1}
-                                                    onClick={() => { if (!isReadOnly) { 
-                                                        dispatch(allactions.dataLinkageActions.setCreatedRepo(1));
-                                                        dispatch(setHasUnsavedChanges(true));
-                                                    } }} />
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.dataLinkageActions.setCreatedRepo(1));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }
+                                                    }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                     Yes
                                                 </Form.Check.Label>
@@ -976,10 +1017,12 @@ const DataLinkageForm = ({ ...props }) => {
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.createdRepo === 1}
-                                                onClick={() => { if (!isReadOnly) { 
-                                                    dispatch(allactions.dataLinkageActions.setCreatedRepo(1));
-                                                    dispatch(setHasUnsavedChanges(true));
-                                                } }} />
+                                                onClick={() => {
+                                                    if (!isReadOnly) {
+                                                        dispatch(allactions.dataLinkageActions.setCreatedRepo(1));
+                                                        dispatch(setHasUnsavedChanges(true));
+                                                    }
+                                                }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
@@ -1032,7 +1075,7 @@ const DataLinkageForm = ({ ...props }) => {
                     handleSave={handleSave}
                     handleSaveContinue={handleSaveContinue}
                     handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')} />
-                    
+
             </Col>
         </Container >
     )
