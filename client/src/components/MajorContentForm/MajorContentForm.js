@@ -346,7 +346,7 @@ const MajorContentForm = ({ ...props }) => {
         }
     }
 
-    const saveMajorContent = (id, errorsRemain = true, proceed = false) => {
+    const saveMajorContent = (id, errorsRemain = true, goNext = proceed || false) => {
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
             body: JSON.stringify(majorContent),
@@ -371,7 +371,7 @@ const MajorContentForm = ({ ...props }) => {
                             dispatch(fetchCohort(result.data.duplicated_cohort_id))
                         }
                     }
-                    if (!proceed)
+                    if (!goNext)
                         setSuccessMsg(true)
                     else
                         props.sectionPicker('D')

@@ -150,7 +150,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
         }
     }
 
-    const saveEnrollment = (id = cohortID, proceed = false) => {
+    const saveEnrollment = (id = cohortID, goNext = proceed || false) => {
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`, {
             method: "POST",
             body: JSON.stringify(enrollmentCount),
@@ -178,8 +178,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
                         }
                     }
-                    console.log(proceed)
-                    if (!proceed)
+                    if (!goNext)
                         setSuccessMsg(true)
                     else
                         props.sectionPicker('C')

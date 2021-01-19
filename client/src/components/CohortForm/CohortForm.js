@@ -242,7 +242,6 @@ const CohortForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
-                    console.log(proceed)
                     if (!goNext) {
                         setSuccessMsg(true)
                     }
@@ -1573,7 +1572,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" className='text-capitalize'
+                                        <Form.Control type="text" 
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"
@@ -1692,8 +1691,8 @@ const CohortForm = ({ ...props }) => {
                                                                 batch(() => {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                    //dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                    //dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                     //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
                                                                     //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
@@ -1717,8 +1716,8 @@ const CohortForm = ({ ...props }) => {
                                                             batch(() => {
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                //dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                //dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                 //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
                                                                 //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
