@@ -2823,6 +2823,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         aria-describedby="inputGroupFileAddon01"
                                                                                         multiple
                                                                                         readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setQfileLoading(true)
@@ -2972,6 +2973,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile02"
                                                                                         aria-describedby="inputGroupFileAddon02"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setMfileLoading(true)
@@ -3121,6 +3123,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile03"
                                                                                         aria-describedby="inputGroupFileAddon03"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setDfileLoading(true)
@@ -3270,6 +3273,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile04"
                                                                                         aria-describedby="inputGroupFileAddon04"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setSfileLoading(true)
@@ -3419,6 +3423,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile05"
                                                                                         aria-describedby="inputGroupFileAddon05"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setPfileLoading(true)
@@ -3579,6 +3584,7 @@ const CohortForm = ({ ...props }) => {
                                                                         aria-describedby="inputGroupFileAddon01"
                                                                         multiple
                                                                         readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setQfileLoading(true)
@@ -3718,6 +3724,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile02"
                                                                         aria-describedby="inputGroupFileAddon02"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setMfileLoading(true)
@@ -3856,6 +3863,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile03"
                                                                         aria-describedby="inputGroupFileAddon03"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setDfileLoading(true)
@@ -3994,6 +4002,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile04"
                                                                         aria-describedby="inputGroupFileAddon04"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setSfileLoading(true)
@@ -4131,6 +4140,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile05"
                                                                         aria-describedby="inputGroupFileAddon05"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setPfileLoading(true)
