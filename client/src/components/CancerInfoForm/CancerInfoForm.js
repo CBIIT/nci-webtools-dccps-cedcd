@@ -287,8 +287,8 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div>
-                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save</Button>
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save</Button>
                 </div>
             })
         }
@@ -312,8 +312,8 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div>
-                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save and Continue</Button>
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save and Continue</Button>
                 </div>
             });
         }

@@ -1005,8 +1005,16 @@ const CohortForm = ({ ...props }) => {
                 body={add_url()}
                 footer={
                     <div>
-                        <input
-                            type='button'
+                        <Button
+                            variant="secondary"
+                            onClick={() =>
+                                setUrlModal(false)
+                            }
+                            className='col-lg-2 col-md-6'>
+                            Close
+                        </Button>
+                        <Button
+                            variant='primary'
                             onClick={() => {
                                 let copy = [];
                                 switch (urlTile) {
@@ -1049,16 +1057,9 @@ const CohortForm = ({ ...props }) => {
                                 }
                                 setUrlModal(false)
                             }}
-                            className='btn btn-primary'
-                            value='Add URL'></input>
-
-                        <input
-                            type='button'
-                            onClick={() =>
-                                setUrlModal(false)
-                            }
-                            className='btn btn-secondary'
-                            value='Close'></input>
+                            className='col-lg-2 col-md-6'>
+                            Add URL
+                        </Button>
                     </div>
                 }
             />
@@ -1069,13 +1070,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant="primary"
                         onClick={() =>
                             setFileModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 } />
 
             <FileModal show={urlList}
@@ -1084,13 +1086,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={url_list(urlTitle, urlTile, currentUrlList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant='primary'
                         onClick={() =>
                             setUrlListModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 }
             />
 
@@ -2751,6 +2754,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='questionnaire_url'
                                                                                         id="questionnaire_url"
                                                                                         readOnly={isReadOnly}
@@ -2902,6 +2907,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='main_cohort_url'
                                                                                         id="main_cohort_url"
                                                                                         readOnly={isReadOnly}
@@ -3052,6 +3059,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='data_url'
                                                                                         id="data_url"
                                                                                         readOnly={isReadOnly}
@@ -3202,6 +3211,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='specimen_url'
                                                                                         id="specimen_url"
                                                                                         readOnly={isReadOnly}
@@ -3352,6 +3363,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='publication_url'
                                                                                         id="publication_url"
                                                                                         readOnly={isReadOnly}
@@ -3513,6 +3526,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='questionnaire_url'
                                                                         id="questionnaire_url"
                                                                         readOnly={isReadOnly}
@@ -3655,6 +3670,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='main_cohort_url'
                                                                         id="main_cohort_url"
                                                                         readOnly={isReadOnly}
@@ -3795,6 +3812,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='data_url'
                                                                         id="data_url"
                                                                         readOnly={isReadOnly}
@@ -3934,6 +3953,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='specimen_url'
                                                                         id="specimen_url"
                                                                         readOnly={isReadOnly}
@@ -4072,6 +4093,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='publication_url'
                                                                         id="publication_url"
                                                                         readOnly={isReadOnly}

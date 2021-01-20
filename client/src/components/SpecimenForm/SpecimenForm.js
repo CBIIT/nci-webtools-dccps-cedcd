@@ -816,8 +816,8 @@ const SpecimenForm = ({ ...props }) => {
                     />
                 </Form.Group>}
                 footer={<>
-                    <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</Button>
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({ show: false })}>Cancel</Button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</Button>
                 </>} />
 
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}

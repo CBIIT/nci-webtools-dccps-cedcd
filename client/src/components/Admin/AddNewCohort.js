@@ -316,21 +316,20 @@ class AddNewCohort extends Component {
                   {this.state.notes_error !== '' && <label style={{ color: 'red', paddingLeft: '5px' }}>{this.state.notes_error}</label>}
                   <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
                 </div>
-                <div className="bttn-group">
+                <div className="bttn-group" style={{ width: '90%' }}>
                   <Button
                     variant="primary"
                     type="submit"
                     value="Submit"
-                    className="col-lg-2 col-md-6">
+                    className="col-lg-2 col-md-6 float-right">
                     Submit
                   </Button>
                   <Button
                     variant="secondary"
-                    className="col-lg-2 col-md-6"
+                    className="col-lg-2 col-md-6 float-right"
                     onClick={this.handleCancel}>
                     Cancel
                   </Button>
-
                 </div>
               </form>
             </div>

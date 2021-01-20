@@ -23,15 +23,6 @@ export default function RoutedApp() {
 				body: message,
 				footer: <div>
 					<Button 
-						variant="primary"
-						className="col-lg-2 col-md-6"
-						onClick={e => {
-							callback(true);
-							mergeModal({show: false});
-						}}>
-						Confirm
-					</Button>
-					<Button 
 						variant="secondary"
 						className="col-lg-2 col-md-6"
 						onClick={e => {
@@ -40,7 +31,15 @@ export default function RoutedApp() {
 						}}>
 						Cancel
 					</Button>
-					
+					<Button 
+						variant="primary"
+						className="col-lg-2 col-md-6"
+						onClick={e => {
+							callback(true);
+							mergeModal({show: false});
+						}}>
+						Confirm
+					</Button>
 				</div>
 			})
 		}}>
