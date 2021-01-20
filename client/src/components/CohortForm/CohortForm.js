@@ -748,11 +748,6 @@ const CohortForm = ({ ...props }) => {
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
-                            // if cohort_id changed, refresh section status
-                            let secStatusList = result.data.sectionStatusList
-                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
-                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
-                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
                         }
