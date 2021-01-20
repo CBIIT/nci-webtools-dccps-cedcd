@@ -2796,6 +2796,7 @@ DROP PROCEDURE IF EXISTS `insert_new_cohort` //
 CREATE PROCEDURE `insert_new_cohort`(in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
+    DECLARE new_id INT DEFAULT 0;
     DECLARE popSuccess INT DEFAULT 1;
     DECLARE flag INT DEFAULT 1;
     
@@ -2805,17 +2806,21 @@ BEGIN
       ROLLBACK;
       SELECT flag as success;
 	END;
-    
 
     START TRANSACTION;
 		BEGIN
 			set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+            set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
+			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
 			
-			insert into cohort (name,acronym,status,publish_by,update_time) values(@cohortName,@cohortAcronym,"new",NULL,now());
+			insert into cohort (name,acronym,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,"new",'8.1', @createBy,now());
+            set new_id = last_insert_id();
+			insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
+            
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
-			call populate_cohort_tables(last_insert_id(), @cohortName, @cohortAcronym, popSuccess);
+			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, popSuccess);
             
 			IF popSuccess < 1 THEN
 				BEGIN
