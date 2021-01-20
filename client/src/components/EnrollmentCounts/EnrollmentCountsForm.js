@@ -169,6 +169,11 @@ const EnrollmentCountsForm = ({ ...props }) => {
                     }
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID) {
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                             // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))

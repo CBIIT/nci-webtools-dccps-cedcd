@@ -1411,6 +1411,8 @@ BEGIN
 		update cohort set status = 'draft', update_time = NOW() where id = new_id;
 	end if;
 	SELECT `status` from cohort where id = new_id;
+
+	SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
     
 END //
 
@@ -1751,6 +1753,8 @@ BEGIN
 		values (new_id, 1, 'draft', null);
 	end if;
 	SELECT `status` from cohort where id = new_id;
+
+	SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
 	
     end;
     end if;
@@ -1975,6 +1979,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
 		update cohort set status = 'draft', update_time = NOW() where id = targetID;
 	end if;
 	SELECT `status` from cohort where id = targetID;
+	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
     end;
     end if;
 end //
@@ -2302,6 +2307,8 @@ begin
 		values (cohortID, 1, 'draft', null);
   end if;
   SELECT `status` from cohort where id = cohortID;
+
+  SELECT page_code, status from cohort_edit_status where cohort_id = cohortID;
   end ;
   end if ;
   
@@ -2630,6 +2637,7 @@ BEGIN
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, 'draft', null);
 	end if;
 	SELECT `status` from cohort where id = targetID;
+	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
     end;
     end if;
 end //
@@ -2749,6 +2757,8 @@ BEGIN
 		
 	end if;
 	SELECT `status` from cohort where id = targetID;
+
+	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
     
     end;
     end if;

@@ -743,6 +743,11 @@ const CohortForm = ({ ...props }) => {
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
                         if (result.data.new_ID != cohortID) {
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
                         }
@@ -1021,35 +1026,35 @@ const CohortForm = ({ ...props }) => {
 
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.questionnaire_url(copy));
                                         }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.main_cohort_url(copy));
                                         }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.data_url(copy));
                                         }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.specimen_url(copy));
                                         }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.publication_url(copy));
                                         }
@@ -1586,7 +1591,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" 
+                                        <Form.Control type="text"
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"

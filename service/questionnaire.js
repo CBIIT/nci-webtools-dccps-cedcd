@@ -175,6 +175,7 @@ router.post('/update_cohort_basic/:id', function (req, res) {
             }
             if (result[2]) updatedCohortInfo.newCohortID = result[2][0].duplicated_cohort_id
             if (result[3]) updatedCohortInfo.status = result[3][0].status
+            if (result[4]) updatedCohortInfo.sectionStatusList = result[4]
             res.json({ status: 200, message: 'update successful', newCohortInfo: updatedCohortInfo })
         }
         else
@@ -279,6 +280,7 @@ router.post('/upsert_enrollment_counts/:id', function (req, res) {
                 const updatedCounts = {}
                 updatedCounts.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedCounts.status = result[2][0].status
+                if (result[3]) updatedCounts.sectionStatusList = result[3]
                 res.json({ status: 200, message: 'update successful', data: updatedCounts })
             }
             else
@@ -340,6 +342,7 @@ router.post('/update_major_content/:id', function (req, res) {
                 const updatedInfo = {}
                 updatedInfo.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedInfo.status = result[2][0].status
+                if (result[3]) updatedInfo.sectionStatusList = result[3]
                 res.json({ status: 200, message: 'update successful', data: updatedInfo })
             } else
                 res.json({ status: 200, message: 'update successful' })
@@ -381,6 +384,7 @@ router.post('/update_mortality/:id', function (req, res) {
                 const updatedMortality = {}
                 updatedMortality.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedMortality.status = result[2][0].status
+                if (result[3]) updatedMortality.sectionStatusList = result[3]
                 res.json({ status: 200, message: 'update successful', data: updatedMortality })
             } else
                 res.json({ status: 200, message: 'update successful' })
@@ -424,6 +428,7 @@ router.post('/update_dlh/:id', function (req, res) {
                 const updatedDlh = {}
                 updatedDlh.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedDlh.status = result[2][0].status
+                if (result[3]) updatedDlh.sectionStatusList = result[3]
                 res.json({ status: 200, message: 'update successful', data: updatedDlh })
             } else
                 res.json({ status: 200, message: 'update successful' })
@@ -519,6 +524,7 @@ router.post('/update_specimen/:id', function (req, res) {
                 const updatedSpecimen = {}
                 updatedSpecimen.duplicated_cohort_id = result[1][0].duplicated_cohort_id
                 if (result[2]) updatedSpecimen.status = result[2][0].status
+                if (result[3]) updatedSpecimen.sectionStatusList = result[3]
                 res.json({ status: 200, message: 'update successful', data: updatedSpecimen })
             } else
                 res.json({ status: 200, message: 'update successful' })
