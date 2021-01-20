@@ -231,6 +231,11 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        // if cohort_id changed, refresh section status
+                        let secStatusList = result.data.sectionStatusList
+                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                            dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                        })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
