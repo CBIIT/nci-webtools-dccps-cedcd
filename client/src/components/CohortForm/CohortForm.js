@@ -1370,14 +1370,14 @@ const CohortForm = ({ ...props }) => {
                             panelTitle="Principal Investigators">
 
                             {/* A.5 Cohort Principal Investigator(s) */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
+                            <Form.Group as={Row} className="mb-2">
+                                <Form.Label column sm="6">
                                     A.5 Cohort Principal Investigator(s)
                                 </Form.Label>
-                                <Col sm="12">
+                                <Col sm="6">
                                     <Button
                                         variant="primary"
-                                        className="col-lg-2 col-md-6"
+                                        className="float-right"
                                         disabled={isReadOnly}
                                         onClick={e => {
                                             e.preventDefault();
@@ -1390,6 +1390,9 @@ const CohortForm = ({ ...props }) => {
                                         Add New Investigator
                                     </Button>
                                 </Col>
+                            </Form.Group>
+                            <Form.Group as={Row}>
+                                {/* </Col> */}
                                 {
                                     cohort.investigators.map((item, idx) =>
                                         <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
