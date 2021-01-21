@@ -37,11 +37,11 @@ const MajorContentForm = ({ ...props }) => {
 
     const subtitles = [
         'hasLoded', 'C.1 Socio-economic Status', '', 'C.2 Education Level', '', 'C.3 Marital Status', '', 'C.4 Language/Country of Origin', '',
-        'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry(e.g., weight, height, waist circumference)',
-        '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use(not related to cancer treatment', '', 'C.12 Non-prescription Medication Use(not related to cancer treatment', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
+        'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry (e.g., weight, height, waist circumference)',
+        '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use (not related to cancer treatment)', '', 'C.12 Non-prescription Medication Use (not related to cancer treatment)', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
         // remove to keep it sync with the object, 'C.15 Use of Tobacco Products Other than Cigarettes', '',
         'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '',
-        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self_Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function meassures(e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
+        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self_Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function meassures (e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
         //removed to snyc with majorContent index 'C.31 Other Medical Conditions', '',
         'a. Diabetes', '', 'b. Stroke', '', 'c. COPD and/or Emphysema', '', 'd. Cardiovascular Disease', '', 'e. Osteoporosis', '', 'f. Mental Health', '',
         'g. Cognitive Decline', ''
@@ -347,9 +347,14 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const saveMajorContent = (id, errorsRemain = true, goNext = proceed || false) => {
+        let userID = userSession.id
+
+        let majorContentBody = majorContent
+        majorContentBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
-            body: JSON.stringify(majorContent),
+            body: JSON.stringify(majorContentBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -363,12 +368,21 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'incomplete'))
                     }
                     if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id))
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                        }else{
+                            dispatch(fetchCohort(cohortId))
+                        }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
-                            dispatch(fetchCohort(result.data.duplicated_cohort_id))
+                            
                         }
                     }
                     if (!goNext)

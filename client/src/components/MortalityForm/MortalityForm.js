@@ -230,8 +230,11 @@ const MortalityForm = ({ ...props }) => {
     }
 
     const saveMortality = (id = cohortId, proceed = false, complete) => {
-        const copy = { ...mortality, sectionEStatus: complete }
-        console.log(JSON.stringify(copy))
+
+        let user_id = userSession.id
+        const copy = { ...mortality, sectionEStatus: complete, 'userID': user_id }
+
+        // console.log(JSON.stringify(copy))
         fetch(`/api/questionnaire/update_mortality/${id}`, {
             method: "POST",
             body: JSON.stringify(copy),
@@ -245,13 +248,19 @@ const MortalityForm = ({ ...props }) => {
                     dispatch(setHasUnsavedChanges(false));
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id))
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                             // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
-                        }
+                        }else dispatch(fetchCohort(cohortId))
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
-                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
+                            //dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
                         }
                     }
                     if (!proceed) {

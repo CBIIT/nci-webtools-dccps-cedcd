@@ -270,22 +270,22 @@ const EditUser = ({ ...props }) => {
                                 value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} />
                         </div></div>
                         :
-                        <div id="edituser-col-1" className="col-md-12 col-12">
+                        <div id="edituser-col-1" className="col-md-6 col-6">
                             <form >
                                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                                <div id="ctl11_div_userName" className="pl-0 my-3 col-md-12 col-12">
+                                <div id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
                                     {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
-                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
+                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
                                         <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
                                             id="user_userName" value={userName} maxLength="100"
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                     </span>
                                 </div>
-                                <div id="ctl11_div_userEmail" className="pl-0 my-3 col-md-12 col-12">
+                                <div id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
                                     {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
-                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
+                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
                                         placeholder='Valid email address' maxLength="100"
                                         onChange={(e) => {
                                             setUserEmail(e.target.value);
@@ -294,18 +294,18 @@ const EditUser = ({ ...props }) => {
                                     </span>
                                 </div>
 
-                                <div id="ctl11_div_lastName" className="pl-0 my-3 col-md-12 col-12">
+                                <div id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
                                     {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
-                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
+                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
                                         id="user_lastName" value={lastName} maxLength="50"
                                         onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
                                     </span>
                                 </div>
-                                <div id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12">
+                                <div id="ctl11_div_firstName" className="px-0 my-3 col-md-12 col-12">
                                     <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
                                     {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
-                                    <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
+                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
                                         id="user_firstName" value={firstName} maxLength="50"
                                         onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                     </span>
@@ -313,11 +313,11 @@ const EditUser = ({ ...props }) => {
                                 <div id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
                                     <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
                                     {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
-                                    <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
+                                    <div className='col-md-3 col-6' style={{ paddingLeft: '0' }} >
                                         <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
                                             checked={userRole === 'Admin'} onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
                                     </div>
-                                    <div className='col-md-2 col-6' style={{ paddingLeft: '0' }} >
+                                    <div className='col-md-3 col-6' style={{ paddingLeft: '0' }} >
                                         <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
                                             checked={userRole === 'Cohort Owner'} onChange={(e) => {
                                                 setUserRole(e.target.value); setCohortList([]);
@@ -332,49 +332,59 @@ const EditUser = ({ ...props }) => {
                                     </div>
 
                                     {userRole === 'Admin' ?
-                                        <div className="pl-0 col-md-6 col-6" >
-                                            <span className="col-md-4 col-12" style={{ paddingLeft: '0' }}>
+                                        <div className="px-0 col-md-12 col-12" >
+                                            <span className="px-0 col-md-12 col-12">
                                                 <input className="form-control" type="text" value="All" readOnly />
                                             </span>
 
                                         </div>
                                         :
-                                        <div className="col-md-12 col-12" style={{ paddingLeft: '0', width: '90%' }}>
-                                            <div className="pl-0 col-md-5 col-6" style={{ width: '90%' }}>
+                                        <div className="col-md-12 col-12 px-0">
+                                            <div className="col-md-12 col-12 px-0">
                                                 <Select name='owners' isMulti='true' value={cohortList} options={allCohortList} onChange={handleMultiChange} />
                                             </div>
                                         </div>
                                     }
                                 </div>
                                 <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
-                                    <div className="pl-0 col-md-4 col-6">
-                                        <span className="col-md-4 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
+                                    <div className="pl-0 col-md-12 col-12">
+                                        <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
                                             onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                         </span>
                                     </div>
                                 </div>
+                                <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
+                                    <Button 
+                                        variant="primary"
+                                        value="Save" 
+                                        className="col-lg-2 col-md-6 float-right"
+                                        onClick={handleSave}>
+                                        Save
+                                    </Button>
+                                    <Button 
+                                        variant="secondary" 
+                                        className="col-lg-2 col-md-6 float-right" 
+                                        onClick={goBack}>
+                                        Cancel
+                                    </Button>
+                                </div>
                             </form>
 
-                            <div className="bttn-group col-md-4 col-xs-6">
+                            {/* <div className="bttn-group col-md-12 col-xs-12">
                                 <Button 
                                     variant="primary"
                                     value="Save" 
-                                    className="col-lg-2 col-md-6"
+                                    className="col-lg-2 col-md-6 float-right"
                                     onClick={handleSave}>
                                     Save
                                 </Button>
                                 <Button 
                                     variant="secondary" 
-                                    className="col-lg-2 col-md-6" 
+                                    className="col-lg-2 col-md-6 float-right" 
                                     onClick={goBack}>
                                     Cancel
                                 </Button>
-                                {/* <input type='button' className='col-md-2 col-xs-6 btn btn-primary'
-                                    value="Save" onClick={handleSave} style={{ paddingLeft: '40', paddingRight: '20' }} />
-
-                                <input type='button' className='col-md-1 col-xs-6 btn btn-primary'
-                                    value="Cancel" onClick={goBack} style={{ paddingLeft: '20' }} /> */}
-                            </div>
+                            </div> */}
                         </div>
                     }
                 </div>

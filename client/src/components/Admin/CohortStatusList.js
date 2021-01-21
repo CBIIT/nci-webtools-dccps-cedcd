@@ -112,7 +112,7 @@ class CohortStatusList extends Component {
 		const selectedList = values.map((item, idx) => {
 			const key = "s_cohortstatus_" + idx;
 			if (idx >= displayMax) {
-				if (idx === values.length - 1 && displayMax < values.length) {
+				if (idx === values.length - 1 && displayMax > 0 && displayMax < values.length) {
 					return (
 						<li key={key}>
 							and {values.length - displayMax} more...

@@ -21,16 +21,16 @@ const ValidationModal = (props) => {
         { props.footer || 
             <div>
               <Button 
-                variant="primary" 
-                className="col-lg-2 col-md-6" 
-                onClick={props.handleContentSave}>
-                Save
-              </Button>
-              <Button 
                 variant="secondary" 
                 className="col-lg-2 col-md-6" 
                 onClick={props.handleClose}>
                 Cancel
+              </Button>
+              <Button 
+                variant="primary" 
+                className="col-lg-2 col-md-6" 
+                onClick={props.handleContentSave}>
+                Save
               </Button>
             </div>
         }

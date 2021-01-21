@@ -215,9 +215,14 @@ const CohortForm = ({ ...props }) => {
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
 
+        let userID = userSession.id
+
+        let cohortBody = cohort
+        cohortBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
-            body: JSON.stringify(cohort),
+            body: JSON.stringify(cohortBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -225,22 +230,30 @@ const CohortForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
+                    
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        dispatch(fetchCohort(result.newCohortInfo.newCohortID))
+                        // if cohort_id changed, refresh section status
+                        let secStatusList = result.newCohortInfo.sectionStatusList
+                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                            dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                        })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                         // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                    }else{
+                        dispatch(fetchCohort(cohortID))
                     }
                     if (result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
 
                     if (result.newCohortInfo.status && result.newCohortInfo.status != cohortStatus) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
-                        dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
                     if (!goNext) {
                         setSuccessMsg(true)
@@ -1005,43 +1018,51 @@ const CohortForm = ({ ...props }) => {
                 body={add_url()}
                 footer={
                     <div>
-                        <input
-                            type='button'
+                        <Button
+                            variant="secondary"
+                            onClick={() =>
+                                setUrlModal(false)
+                            }
+                            className='col-lg-2 col-md-6'>
+                            Close
+                        </Button>
+                        <Button
+                            variant='primary'
                             onClick={() => {
                                 let copy = [];
                                 switch (urlTile) {
 
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.questionnaire_url(copy));
                                         }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.main_cohort_url(copy));
                                         }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.data_url(copy));
                                         }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.specimen_url(copy));
                                         }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.publication_url(copy));
                                         }
@@ -1049,16 +1070,9 @@ const CohortForm = ({ ...props }) => {
                                 }
                                 setUrlModal(false)
                             }}
-                            className='btn btn-primary'
-                            value='Add URL'></input>
-
-                        <input
-                            type='button'
-                            onClick={() =>
-                                setUrlModal(false)
-                            }
-                            className='btn btn-secondary'
-                            value='Close'></input>
+                            className='col-lg-2 col-md-6'>
+                            Add URL
+                        </Button>
                     </div>
                 }
             />
@@ -1069,13 +1083,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant="primary"
                         onClick={() =>
                             setFileModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 } />
 
             <FileModal show={urlList}
@@ -1084,13 +1099,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={url_list(urlTitle, urlTile, currentUrlList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant='primary'
                         onClick={() =>
                             setUrlListModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 }
             />
 
@@ -1583,7 +1599,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" 
+                                        <Form.Control type="text"
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"
@@ -2751,6 +2767,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='questionnaire_url'
                                                                                         id="questionnaire_url"
                                                                                         readOnly={isReadOnly}
@@ -2823,6 +2841,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         aria-describedby="inputGroupFileAddon01"
                                                                                         multiple
                                                                                         readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setQfileLoading(true)
@@ -2901,6 +2920,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='main_cohort_url'
                                                                                         id="main_cohort_url"
                                                                                         readOnly={isReadOnly}
@@ -2972,6 +2993,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile02"
                                                                                         aria-describedby="inputGroupFileAddon02"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setMfileLoading(true)
@@ -3050,6 +3072,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='data_url'
                                                                                         id="data_url"
                                                                                         readOnly={isReadOnly}
@@ -3121,6 +3145,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile03"
                                                                                         aria-describedby="inputGroupFileAddon03"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setDfileLoading(true)
@@ -3199,6 +3224,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='specimen_url'
                                                                                         id="specimen_url"
                                                                                         readOnly={isReadOnly}
@@ -3270,6 +3297,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile04"
                                                                                         aria-describedby="inputGroupFileAddon04"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setSfileLoading(true)
@@ -3348,6 +3376,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='publication_url'
                                                                                         id="publication_url"
                                                                                         readOnly={isReadOnly}
@@ -3419,6 +3449,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile05"
                                                                                         aria-describedby="inputGroupFileAddon05"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setPfileLoading(true)
@@ -3508,6 +3539,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='questionnaire_url'
                                                                         id="questionnaire_url"
                                                                         readOnly={isReadOnly}
@@ -3579,6 +3612,7 @@ const CohortForm = ({ ...props }) => {
                                                                         aria-describedby="inputGroupFileAddon01"
                                                                         multiple
                                                                         readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setQfileLoading(true)
@@ -3649,6 +3683,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='main_cohort_url'
                                                                         id="main_cohort_url"
                                                                         readOnly={isReadOnly}
@@ -3718,6 +3754,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile02"
                                                                         aria-describedby="inputGroupFileAddon02"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setMfileLoading(true)
@@ -3788,6 +3825,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='data_url'
                                                                         id="data_url"
                                                                         readOnly={isReadOnly}
@@ -3856,6 +3895,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile03"
                                                                         aria-describedby="inputGroupFileAddon03"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setDfileLoading(true)
@@ -3926,6 +3966,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='specimen_url'
                                                                         id="specimen_url"
                                                                         readOnly={isReadOnly}
@@ -3994,6 +4036,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile04"
                                                                         aria-describedby="inputGroupFileAddon04"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setSfileLoading(true)
@@ -4063,6 +4106,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='publication_url'
                                                                         id="publication_url"
                                                                         readOnly={isReadOnly}
@@ -4131,6 +4176,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile05"
                                                                         aria-describedby="inputGroupFileAddon05"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setPfileLoading(true)
