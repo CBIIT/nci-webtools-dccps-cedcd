@@ -123,8 +123,8 @@ const QuestionnaireHeader = ({ ...props }) => {
             </div>
         </div>
 
-        <div className="mb-4 container">
-            <div className="border row py-4">
+        <div className="mb-4">
+            <div className="row border mx-0 py-4">
                 <div className="col-lg px-4">
                     <strong>Cohort Status: </strong>
                     <span className={classNames(

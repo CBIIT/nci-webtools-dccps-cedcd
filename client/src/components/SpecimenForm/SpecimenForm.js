@@ -832,7 +832,6 @@ const SpecimenForm = ({ ...props }) => {
                 </>} />
 
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}
-            <Col md="12">
                 <Form>
                     <CollapsiblePanelContainer>
 
@@ -1242,7 +1241,6 @@ const SpecimenForm = ({ ...props }) => {
                     handleApprove={updateStatusDisabled ? null : handleApprove}
                     handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({ show: true })} />
 
-            </Col>
         </Container>
 
     )
