@@ -687,7 +687,7 @@ const CohortForm = ({ ...props }) => {
                         {urls.map((url, index) =>
                             <div className="my-1">
                                 <Col md="10" className="col-xs-9">
-                                    {url}
+                                    <a href={url} target="_blank">{url}</a>
                                 </Col>
                                 <Col md="2" className="col-xs-2 text-center">
                                     <span>
@@ -941,7 +941,6 @@ const CohortForm = ({ ...props }) => {
                 }
             />
 
-            <Col md="12">
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                     If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
                 </div>
@@ -1202,14 +1201,14 @@ const CohortForm = ({ ...props }) => {
                             panelTitle="Principal Investigators">
 
                             {/* A.5 Cohort Principal Investigator(s) */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
+                            <Form.Group as={Row} className="mb-2">
+                                <Form.Label column sm="6">
                                     A.5 Cohort Principal Investigator(s)
                                 </Form.Label>
-                                <Col sm="12">
+                                <Col sm="6">
                                     <Button
                                         variant="primary"
-                                        className="col-lg-2 col-md-6"
+                                        className="float-right"
                                         disabled={isReadOnly}
                                         onClick={e => {
                                             e.preventDefault();
@@ -1222,6 +1221,9 @@ const CohortForm = ({ ...props }) => {
                                         Add New Investigator
                                     </Button>
                                 </Col>
+                            </Form.Group>
+                            <Form.Group as={Row}>
+                                {/* </Col> */}
                                 {
                                     cohort.investigators.map((item, idx) =>
                                         <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
@@ -1409,7 +1411,7 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Baseline population consists of
                                     </Form.Label>
-                                    <Col sm="12">
+                                    <Col sm="12" className="mb-3">
                                         <div key="checkbox">
                                             <Form.Check type="checkbox"
                                                 className="pl-0"
@@ -2107,7 +2109,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.11 How was Info Collected */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.dataCollection && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2115,7 +2117,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-collected-in-person"
@@ -2227,7 +2229,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.12 Specific Requirements */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.requirements && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2235,7 +2237,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-require-none"
@@ -2391,7 +2393,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.13 Strategies Used */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.strategy && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2399,7 +2401,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-strategy-routine"
@@ -2620,7 +2622,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.questionnaire_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.questionnaire_url[0]}
+                                                                                        <a href={cohort.questionnaire_url[0]} target="_blank">{cohort.questionnaire_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -2773,7 +2775,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.main_cohort_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.main_cohort_url[0]}
+                                                                                        <a href={cohort.main_cohort_url[0]} target="_blank">{cohort.main_cohort_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -2925,7 +2927,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.data_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.data_url[0]}
+                                                                                        <a href={cohort.data_url[0]} target="_blank">{cohort.data_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3077,7 +3079,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.specimen_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.specimen_url[0]}
+                                                                                        <a href={cohort.specimen_url[0]} target="_blank">{cohort.specimen_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3229,7 +3231,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.publication_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.publication_url[0]}
+                                                                                        <a href={cohort.publication_url[0]} target="_blank">{cohort.publication_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3392,7 +3394,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.questionnaire_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.questionnaire_url[0]}
+                                                                        <a href={cohort.questionnaire_url[0]} target='_blank'>{cohort.questionnaire_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3536,7 +3538,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.main_cohort_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.main_cohort_url[0]}
+                                                                        <a href={cohort.main_cohort_url[0]} target="_blank">{cohort.main_cohort_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3678,7 +3680,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.data_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.data_url[0]}
+                                                                        <a href={cohort.data_url[0]} target="_blank">{cohort.data_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3819,7 +3821,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.specimen_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.specimen_url[0]}
+                                                                        <a href={cohort.specimen_url[0]} target="_blank">{cohort.specimen_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3959,7 +3961,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.publication_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.publication_url[0]}
+                                                                        <a href={cohort.publication_url[0]} target="_blank">{cohort.publication_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -4094,7 +4096,6 @@ const CohortForm = ({ ...props }) => {
                     // fileListShow && file_list(fileListTile, currentFileListName, currentFileList)
                 }
 
-            </Col>
         </Container>
     )
 }

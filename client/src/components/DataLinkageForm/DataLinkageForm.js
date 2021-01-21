@@ -342,7 +342,6 @@ const DataLinkageForm = ({ ...props }) => {
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-            <Col md="12">
                 <Form>
                     <CollapsiblePanelContainer>
 
@@ -447,7 +446,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight:'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.haveDataLinkSpecify ?
                                         <Reminder message={errors.haveDataLinkSpecify} disabled={!errors.haveDataLinkSpecify} placement="right">
@@ -576,7 +575,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight: 'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.haveHarmonizationSpecify ?
                                         <Reminder message={errors.haveHarmonizationSpecify} disabled={!errors.haveHarmonizationSpecify} placement="right">
@@ -874,7 +873,7 @@ const DataLinkageForm = ({ ...props }) => {
                                     {saved && errors.dataOnlineSelected && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check className="pl-0" name='dataOnlinePolicy'>
                                             <Form.Check.Input bsPrefix
                                                 type='checkbox'
@@ -1038,7 +1037,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight:'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.createdRepoSpecify ?
                                         <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
@@ -1082,7 +1081,6 @@ const DataLinkageForm = ({ ...props }) => {
                     handleSaveContinue={handleSaveContinue}
                     handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')} />
 
-            </Col>
         </Container >
     )
 }

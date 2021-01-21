@@ -1457,10 +1457,6 @@ cohort_name,
 cohort_acronym,
 cohort_web_site,
 clarification_contact,
-request_procedures_web,
-request_procedures_web_url,
-request_procedures_pdf,
-request_procedures_none,
 cohort_description,
 eligible_gender_id,
 eligible_disease,
@@ -1497,10 +1493,6 @@ cohort_name,
 cohort_acronym,
 cohort_web_site,
 clarification_contact,
-request_procedures_web,
-request_procedures_web_url,
-request_procedures_pdf,
-request_procedures_none,
 cohort_description,
 case when eligible_gender = 0 then 4
              when eligible_gender = 1 then 1
@@ -1689,6 +1681,17 @@ create_time,
 update_time
 from cedcd_old.cohort_dlh;
 
+/*  update dlh request_proecedure data from cohort_basic */
+
+UPDATE dlh a
+INNER JOIN cedcd_old.cohort_basic b ON a.cohort_id = b.cohort_id
+SET a.dlh_procedure_online = IF(b.request_procedures_pdf = 1 OR request_procedures_web =1 , 1 ,0),
+a.dlh_procedure_website = b.request_procedures_web,
+a.dlh_procedure_url = b.request_procedures_web_url,
+a.dlh_procedure_attached = b.request_procedures_pdf
+where a.cohort_id > 1;
+
+
 /*
 Migrate data from table cohort_enrollment to cohort_enrollment_counts
 */
@@ -1845,8 +1848,8 @@ DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 -- 4. publiication policy )
 
 
-update cohort_document set category = 0 where filename like '%questionnaire%' and id > 0;
-update cohort_document set category = 0 where website like '%questionnaire%' and id > 0;
+update cohort_document set category = 0 where id > 0;
+update cohort_document set category = 0 where id > 0;
 
 
 /* ***************************************************************************/
