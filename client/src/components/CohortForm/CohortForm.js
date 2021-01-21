@@ -31,6 +31,7 @@ const CohortForm = ({ ...props }) => {
     const section = useSelector(state => state.sectionReducer)
     const errors = useSelector(state => state.cohortErrorReducer)
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
+    const userSession = useSelector(state => state.user);
     const dispatch = useDispatch()
     const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
@@ -214,9 +215,14 @@ const CohortForm = ({ ...props }) => {
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
 
+        let userID = userSession.id
+
+        let cohortBody = cohort
+        cohortBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
-            body: JSON.stringify(cohort),
+            body: JSON.stringify(cohortBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -230,6 +236,11 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        // if cohort_id changed, refresh section status
+                        let secStatusList = result.newCohortInfo.sectionStatusList
+                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                            dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                        })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
@@ -241,7 +252,6 @@ const CohortForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
-                    console.log(proceed)
                     if (!goNext) {
                         setSuccessMsg(true)
                     }
@@ -332,8 +342,11 @@ const CohortForm = ({ ...props }) => {
     }
 
     const resetCohortStatus = (cohortID, nextStatus) => {
+
+        let userId = userSession.id
+
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
-            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+            fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
             }).then(res => res.json())
                 .then(result => {
@@ -924,6 +937,7 @@ const CohortForm = ({ ...props }) => {
 
             setUrlTitle(title)
             setUrlTile(urlTile)
+            setUrlInput(''); // remove previous url
             setUrlModal(true)
         })
     }
@@ -1001,50 +1015,61 @@ const CohortForm = ({ ...props }) => {
                 body={add_url()}
                 footer={
                     <div>
-                        <input
-                            type='button'
+                        <Button
+                            variant="secondary"
+                            onClick={() =>
+                                setUrlModal(false)
+                            }
+                            className='col-lg-2 col-md-6'>
+                            Close
+                        </Button>
+                        <Button
+                            variant='primary'
                             onClick={() => {
                                 let copy = [];
                                 switch (urlTile) {
 
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.questionnaire_url(copy));
+                                        if (urlInput) {
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.questionnaire_url(copy));
+                                        }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.main_cohort_url(copy));
+                                        if (urlInput) {
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.main_cohort_url(copy));
+                                        }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.data_url(copy));
+                                        if (urlInput) {
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.data_url(copy));
+                                        }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.specimen_url(copy));
+                                        if (urlInput) {
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.specimen_url(copy));
+                                        }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
-                                        copy.push(urlInput)
-                                        dispatch(allactions.cohortActions.publication_url(copy));
+                                        if (urlInput) {
+                                            copy.push(urlInput)
+                                            dispatch(allactions.cohortActions.publication_url(copy));
+                                        }
                                         break;
                                 }
                                 setUrlModal(false)
                             }}
-                            className='btn btn-primary'
-                            value='Add URL'></input>
-
-                        <input
-                            type='button'
-                            onClick={() =>
-                                setUrlModal(false)
-                            }
-                            className='btn btn-secondary'
-                            value='Close'></input>
+                            className='col-lg-2 col-md-6'>
+                            Add URL
+                        </Button>
                     </div>
                 }
             />
@@ -1055,13 +1080,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={file_list(fileListTile, currentFileListName, currentFileList, deleteFileFromList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant="primary"
                         onClick={() =>
                             setFileModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 } />
 
             <FileModal show={urlList}
@@ -1070,13 +1096,14 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={url_list(urlTitle, urlTile, currentUrlList)}
                 footer={
-                    <input
-                        type='button'
+                    <Button
+                        variant='primary'
                         onClick={() =>
                             setUrlListModal(false)
                         }
-                        className='btn btn-primary'
-                        value='Close' />
+                        className='col-lg-2 col-md-6'>
+                        Close
+                    </Button>
                 }
             />
 
@@ -1569,7 +1596,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" className='text-capitalize'
+                                        <Form.Control type="text"
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"
@@ -1688,8 +1715,8 @@ const CohortForm = ({ ...props }) => {
                                                                 batch(() => {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                    //dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                    //dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                    dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                     //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
                                                                     //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                                 })
@@ -1713,8 +1740,8 @@ const CohortForm = ({ ...props }) => {
                                                             batch(() => {
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                //dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                //dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
                                                                 //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
                                                                 //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
@@ -1748,13 +1775,13 @@ const CohortForm = ({ ...props }) => {
                                                             checked={cohort.enrollment_ongoing === 0}
                                                             onClick={() => {
                                                                 //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                                    if (!isReadOnly){
+                                                                if (!isReadOnly) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(0));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                     dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                    }
                                                                 }
+                                                            }
                                                             } />
                                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                             No
@@ -1772,13 +1799,14 @@ const CohortForm = ({ ...props }) => {
                                                         checked={cohort.enrollment_ongoing === 0}
                                                         onClick={e => {
                                                             //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                            if (!isReadOnly){
+                                                            if (!isReadOnly) {
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                                 //dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                                            }}
+                                                            }
+                                                        }
                                                         } />
                                                     <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                         No
@@ -1799,7 +1827,7 @@ const CohortForm = ({ ...props }) => {
                                                             checked={cohort.enrollment_ongoing === 1}
                                                             onClick={() => {
                                                                 //if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                                if (!isReadOnly){
+                                                                if (!isReadOnly) {
                                                                     dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                     //errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
                                                                     dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
@@ -1821,7 +1849,7 @@ const CohortForm = ({ ...props }) => {
                                                         checked={cohort.enrollment_ongoing === 1}
                                                         onClick={e => {
                                                             //if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                            if (!isReadOnly){
+                                                            if (!isReadOnly) {
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(1))
                                                                 //errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
@@ -1853,7 +1881,7 @@ const CohortForm = ({ ...props }) => {
                                                     }
                                                     onBlur={e => {
                                                         //if (!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) 
-                                                        if(!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                        if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
                                                     }
                                                     }
                                                     disabled={cohort.enrollment_ongoing == 0} />
@@ -1867,7 +1895,7 @@ const CohortForm = ({ ...props }) => {
                                                 }
                                                 onBlur={e => {
                                                     //if (!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) 
-                                                    if(!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
                                                 }
                                                 }
                                                 readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
@@ -1890,7 +1918,7 @@ const CohortForm = ({ ...props }) => {
                                                         dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                     }
                                                     onBlur={e => {
-                                                        if(!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                                        if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                                     }}
                                                     disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                             </Reminder> :
@@ -2736,6 +2764,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='questionnaire_url'
                                                                                         id="questionnaire_url"
                                                                                         readOnly={isReadOnly}
@@ -2808,6 +2838,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         aria-describedby="inputGroupFileAddon01"
                                                                                         multiple
                                                                                         readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setQfileLoading(true)
@@ -2886,6 +2917,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='main_cohort_url'
                                                                                         id="main_cohort_url"
                                                                                         readOnly={isReadOnly}
@@ -2957,6 +2990,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile02"
                                                                                         aria-describedby="inputGroupFileAddon02"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setMfileLoading(true)
@@ -3035,6 +3069,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='data_url'
                                                                                         id="data_url"
                                                                                         readOnly={isReadOnly}
@@ -3106,6 +3142,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile03"
                                                                                         aria-describedby="inputGroupFileAddon03"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setDfileLoading(true)
@@ -3184,6 +3221,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='specimen_url'
                                                                                         id="specimen_url"
                                                                                         readOnly={isReadOnly}
@@ -3255,6 +3294,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile04"
                                                                                         aria-describedby="inputGroupFileAddon04"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setSfileLoading(true)
@@ -3333,6 +3373,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
+                                                                                        variant="primary"
+                                                                                        className="col-lg-2 col-md-6"
                                                                                         name='publication_url'
                                                                                         id="publication_url"
                                                                                         readOnly={isReadOnly}
@@ -3404,6 +3446,7 @@ const CohortForm = ({ ...props }) => {
                                                                                         id="inputGroupFile05"
                                                                                         aria-describedby="inputGroupFileAddon05"
                                                                                         multiple readOnly={isReadOnly}
+                                                                                        onClick={e => e.target.value = null}
                                                                                         onChange={e => {
                                                                                             if (!isReadOnly) {
                                                                                                 setPfileLoading(true)
@@ -3493,6 +3536,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='questionnaire_url'
                                                                         id="questionnaire_url"
                                                                         readOnly={isReadOnly}
@@ -3564,6 +3609,7 @@ const CohortForm = ({ ...props }) => {
                                                                         aria-describedby="inputGroupFileAddon01"
                                                                         multiple
                                                                         readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setQfileLoading(true)
@@ -3634,6 +3680,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='main_cohort_url'
                                                                         id="main_cohort_url"
                                                                         readOnly={isReadOnly}
@@ -3703,6 +3751,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile02"
                                                                         aria-describedby="inputGroupFileAddon02"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setMfileLoading(true)
@@ -3773,6 +3822,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='data_url'
                                                                         id="data_url"
                                                                         readOnly={isReadOnly}
@@ -3841,6 +3892,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile03"
                                                                         aria-describedby="inputGroupFileAddon03"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setDfileLoading(true)
@@ -3911,6 +3963,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='specimen_url'
                                                                         id="specimen_url"
                                                                         readOnly={isReadOnly}
@@ -3979,6 +4033,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile04"
                                                                         aria-describedby="inputGroupFileAddon04"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setSfileLoading(true)
@@ -4048,6 +4103,8 @@ const CohortForm = ({ ...props }) => {
 
                                                                     !isReadOnly &&
                                                                     <Button
+                                                                        variant="primary"
+                                                                        className="col-lg-2 col-md-6"
                                                                         name='publication_url'
                                                                         id="publication_url"
                                                                         readOnly={isReadOnly}
@@ -4116,6 +4173,7 @@ const CohortForm = ({ ...props }) => {
                                                                         id="inputGroupFile05"
                                                                         aria-describedby="inputGroupFileAddon05"
                                                                         multiple readOnly={isReadOnly}
+                                                                        onClick={e => e.target.value = null}
                                                                         onChange={e => {
                                                                             if (!isReadOnly) {
                                                                                 setPfileLoading(true)

@@ -14,6 +14,7 @@ import NewCohort from '../Admin/AddNewCohort'
 import SelectCohort from '../SelectCohort/SelectCohort';
 import ManageUser from '../Admin/ManageUser'
 import EditUser from '../Admin/EditUser'
+import CohortActivity from '../Admin/CohortActivity'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import ResourceNotFound from '../ResourceNotFound/ResourceNotFound';
 import './MainContent.css';
@@ -55,6 +56,7 @@ class MainContent extends Component {
         <Route exact path={match + '/admin/newcohort'} render={() => <NewCohort />} />
         <Route exact path={match + '/admin/newuser'} render={() => <EditUser isNew={true} />} />
         <Route exact path={match + '/admin/edituser/:id'} render={() => <EditUser isNew={false} />} />
+        <Route exact path={match + '/admin/activitylog/:abbreviation'} component={CohortActivity} />
         <Route path={match + '/unauthorized'} component={Unauthorized} />
         <Route path="*" component={ResourceNotFound} />
       </Switch>
