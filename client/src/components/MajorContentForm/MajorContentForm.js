@@ -630,7 +630,6 @@ const MajorContentForm = ({ ...props }) => {
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-            <Col md="12">
                 <Form>
                     <CollapsiblePanelContainer>
                         <CollapsiblePanel
@@ -672,7 +671,6 @@ const MajorContentForm = ({ ...props }) => {
                     handleApprove={false}
                     handleReject={false} />
 
-            </Col>
         </Container>
     )
 }

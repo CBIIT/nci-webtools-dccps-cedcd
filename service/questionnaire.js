@@ -675,7 +675,6 @@ router.post('/reject/:id', async function (request, response) {
     const { notes } = body;
     const updates = {
         status: 'rejected',
-        publish_by: userId,
         cohort_activity_log: [{
             user_id: userId,
             activity: 'rejected',
