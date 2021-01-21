@@ -134,7 +134,15 @@ router.post('/deleteFile', function (req, res) {
 
 router.post('/update_cohort_basic/:id', function (req, res) {
     logger.debug(req.body)
-    req.body.cohort_description = req.body.cohort_description ? req.body.cohort_description.replace(/\n/g, '\\n') : req.body.cohort_description
+    let keys = ['cohort_description', 'cohort_web_site', 'completerName', 'completerPosition', 'completerEmail', 'contacterName', 'contacterPosition', 'contacterEmail', 'collaboratorName', 'collaboratorPosition', 'collaboratorEmail', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify', 'time_interval', 'data_collected_other_specify', 'restrictions_other_specify', 'strategy_other_specify',]
+    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
+
+    for (let i in req.body.investigators){
+        req.body.investigators[i].name = req.body.investigators[i].name ? req.body.investigators[i].name.replace(/\n/g, '\\n') : req.body.investigators[i].name;
+        req.body.investigators[i].institution = req.body.investigators[i].institution ? req.body.investigators[i].institution.replace(/\n/g, '\\n') : req.body.investigators[i].institution;
+        req.body.investigators[i].email = req.body.investigators[i].email ? req.body.investigators[i].email.replace(/\n/g, '\\n') : req.body.investigators[i].email;
+    }
+
     let body = { ...req.body }
     if (body.clarification_contact === 1) {
         body.contacterName = body.completerName
