@@ -175,6 +175,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                     }
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortID) {
+                            dispatch(fetchCohort(result.data.duplicated_cohort_id))
                             // if cohort_id changed, refresh section status
                             let secStatusList = result.data.sectionStatusList
                             if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
@@ -183,10 +184,11 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                             // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                        }else{
+                            dispatch(fetchCohort(cohortID))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
-                            dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
                         }
                     }
                     if (!goNext)
