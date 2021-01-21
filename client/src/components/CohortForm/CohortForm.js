@@ -856,7 +856,7 @@ const CohortForm = ({ ...props }) => {
                         {urls.map((url, index) =>
                             <div className="my-1">
                                 <Col md="10" className="col-xs-9">
-                                    {url}
+                                    <a href={url} target="_blank">{url}</a>
                                 </Col>
                                 <Col md="2" className="col-xs-2 text-center">
                                     <span>
@@ -2789,7 +2789,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.questionnaire_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.questionnaire_url[0]}
+                                                                                        <a href={cohort.questionnaire_url[0]} target="_blank">{cohort.questionnaire_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -2942,7 +2942,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.main_cohort_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.main_cohort_url[0]}
+                                                                                        <a href={cohort.main_cohort_url[0]} target="_blank">{cohort.main_cohort_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3094,7 +3094,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.data_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.data_url[0]}
+                                                                                        <a href={cohort.data_url[0]} target="_blank">{cohort.data_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3246,7 +3246,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.specimen_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.specimen_url[0]}
+                                                                                        <a href={cohort.specimen_url[0]} target="_blank">{cohort.specimen_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3398,7 +3398,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.publication_url.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.publication_url[0]}
+                                                                                        <a href={cohort.publication_url[0]} target="_blank">{cohort.publication_url[0]}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3561,7 +3561,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.questionnaire_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.questionnaire_url[0]}
+                                                                        <a href={cohort.questionnaire_url[0]} target='_blank'>{cohort.questionnaire_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3705,7 +3705,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.main_cohort_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.main_cohort_url[0]}
+                                                                        <a href={cohort.main_cohort_url[0]} target="_blank">{cohort.main_cohort_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3847,7 +3847,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.data_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.data_url[0]}
+                                                                        <a href={cohort.data_url[0]} target="_blank">{cohort.data_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3988,7 +3988,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.specimen_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.specimen_url[0]}
+                                                                        <a href={cohort.specimen_url[0]} target="_blank">{cohort.specimen_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -4128,7 +4128,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.publication_url.length > 0 && (
                                                                     <div className="text-break">
-                                                                        {cohort.publication_url[0]}
+                                                                        <a href={cohort.publication_url[0]} target="_blank">{cohort.publication_url[0]}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
