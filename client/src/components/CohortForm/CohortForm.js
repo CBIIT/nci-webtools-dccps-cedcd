@@ -1110,7 +1110,6 @@ const CohortForm = ({ ...props }) => {
                 }
             />
 
-            <Col md="12">
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                     If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
                 </div>
@@ -4263,7 +4262,6 @@ const CohortForm = ({ ...props }) => {
                     // fileListShow && file_list(fileListTile, currentFileListName, currentFileList)
                 }
 
-            </Col>
         </Container>
     )
 }
