@@ -5,6 +5,7 @@ import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import Messenger from '../Snackbar/Snackbar'
 import './AddNewCohort.css';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 class AddNewCohort extends Component {
 
@@ -150,20 +151,20 @@ class AddNewCohort extends Component {
         state.notes_error = ''
 
         if (state.cohortName === null || !state.cohortName) {
-          state.name_error = 'required field'
+          state.name_error = ' Required field'
           errors += 1
         }
         else if (state.cohortName.length > 500) {
-          state.name_error = 'max length of 500 characters'
+          state.name_error = ' Max length of 500 characters'
           errors += 1
         }
 
         if (state.cohortAcronym === null || !state.cohortAcronym) {
-          state.acronym_error = 'required field'
+          state.acronym_error = ' Required field'
           errors += 1
         }
         else if (state.cohortAcronym.length > 100) {
-          state.acronym_error = 'max length of 100 characters'
+          state.acronym_error = ' Max length of 100 characters'
           errors += 1
         }
 
@@ -171,12 +172,12 @@ class AddNewCohort extends Component {
           cohortList.map((cohort) => {
 
             if (state.cohortName.trim() === cohort.name.trim()) {
-              state.name_error = 'cohort already exists'
+              state.name_error = ' Cohort already exists'
               errors += 1;
             }
 
             if (state.cohortAcronym.trim() === cohort.cohort_acronym.trim()) {
-              state.acronym_error = 'acronym already exists'
+              state.acronym_error = ' Acronym already exists'
               errors += 1;
             }
           })
@@ -191,8 +192,8 @@ class AddNewCohort extends Component {
             ownerIDs.push(owner.value)
           })
         }
-        if ((state.notes !== null || !state.notes) && state.notes.length > 500) {
-          state.notes_error = 'max length of 500 characters'
+        if ((state.notes !== null || !state.notes) && state.notes.length > 2000) {
+          state.notes_error = ' Max length of 2000 characters'
           errors += 1
         }
 
@@ -295,29 +296,29 @@ class AddNewCohort extends Component {
               <h1 className="pg-title">Add New Cohort</h1>
             </div>
             <div id="contact-col-1" className="col-md-6 contact-col">
-              <form onSubmit={this.handleSubmit}>
+              <Form onSubmit={this.handleSubmit}>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                <div id="ctl11_div_cohortName">
-                  <label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name <span className="required">*</span></label>
-                  {this.state.name_error !== '' && <label style={{ color: 'red' }}>{this.state.name_error}</label>}
-                  <input name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
-                </div>
-                <div id="ctl11_div_cohortAcronym">
-                  <label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym <span className="required">*</span></label>
-                  {this.state.acronym_error !== '' && <label style={{ color: 'red' }}>{this.state.acronym_error}</label>}
-                  <input name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
-                </div>
-                <div id="ctl11_div_organization" className={org_cls}>
-                  <label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s) </label>
+                <Form.Group id="ctl11_div_cohortName">
+                  <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name<span style={{color:'red'}}>*</span></Form.Label>
+                  {this.state.name_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.name_error}</Form.Label>}
+                  <input className="form-control" placeholder="Max of 500 characters" name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
+                </Form.Group>
+                <Form.Group id="ctl11_div_cohortAcronym">
+                  <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{color:'red'}}>*</span></Form.Label>
+                  {this.state.acronym_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.acronym_error}</Form.Label>}
+                  <input className="form-control" placeholder="Max of 100 characters" name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
+                </Form.Group>
+                <Form.Group id="ctl11_div_organization" className={org_cls}>
+                  <Form.Label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s)</Form.Label>
                   <div style={{ width: '90%' }}>
                     <Select name='owners' isMulti='true' value={this.state.cohortOwners} options={this.state.ownerOptions} onChange={this.handleMultiChange} />
                   </div>
-                </div>
-                <div id="ctl11_div_message">
-                  <label className="oneLineLabel" htmlFor="cu_message">Notes </label>
-                  {this.state.notes_error !== '' && <label style={{ color: 'red', paddingLeft: '5px' }}>{this.state.notes_error}</label>}
-                  <textarea name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
-                </div>
+                </Form.Group>
+                <Form.Group id="ctl11_div_message">
+                  <Form.Label className="oneLineLabel" htmlFor="cu_message">Notes </Form.Label>
+                  {this.state.notes_error !== '' && <Form.Label style={{ color: 'red', paddingLeft: '5px' }}> {this.state.notes_error}</Form.Label>}
+                  <textarea className="form-control" placeholder="Max of 2000 characters" name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
+                </Form.Group>
                 <div className="bttn-group" style={{ width: '90%' }}>
                   <Button
                     variant="primary"
@@ -333,7 +334,7 @@ class AddNewCohort extends Component {
                     Cancel
                   </Button>
                 </div>
-              </form>
+              </Form>
             </div>
             <div id="contact-col-2" className="col-md-6 contact-col">
               <h2>General Instructions</h2>
