@@ -350,7 +350,7 @@ const MortalityForm = ({ ...props }) => {
                             </Form.Group>
 
                             <Form.Group as={Row} className={saved && errors.otherDeathSpecify && 'has-error'}>
-                                <Form.Label column sm="12">E.2 How did your cohort confirm death? (Select all that apply)<span style={{ color: 'red' }}>*</span>
+                                <Form.Label column sm="12">E.2 How did your cohort confirm death?<span style={{ color: 'red' }}>*</span><span style={{ fontWeight: 'normal'}}> (Select all that apply)</span>
                                     {saved && errors.deathConfirm && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
