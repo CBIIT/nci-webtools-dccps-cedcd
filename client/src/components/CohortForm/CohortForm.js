@@ -2762,13 +2762,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='questionnaire_url'
                                                                                         id="questionnaire_url"
                                                                                         readOnly={isReadOnly}
@@ -2865,7 +2865,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.questionnaireFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.questionnaireFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -2915,13 +2915,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='main_cohort_url'
                                                                                         id="main_cohort_url"
                                                                                         readOnly={isReadOnly}
@@ -3017,7 +3017,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.mainFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.mainFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3067,13 +3067,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='data_url'
                                                                                         id="data_url"
                                                                                         readOnly={isReadOnly}
@@ -3169,7 +3169,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.dataFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.dataFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3219,13 +3219,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='specimen_url'
                                                                                         id="specimen_url"
                                                                                         readOnly={isReadOnly}
@@ -3321,7 +3321,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.specimenFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.specimenFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3371,13 +3371,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='publication_url'
                                                                                         id="publication_url"
                                                                                         readOnly={isReadOnly}
@@ -3473,7 +3473,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.publicationFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.publicationFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3531,16 +3531,15 @@ const CohortForm = ({ ...props }) => {
                                                 <tr>
                                                     <td className="bg-light-grey">Questionnaires</td>
 
-                                                    <td>
+                                                    <td style={{verticalAlign: 'middle'}}>
                                                         <Row className="w-100">
 
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
-
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='questionnaire_url'
                                                                         id="questionnaire_url"
                                                                         readOnly={isReadOnly}
@@ -3636,7 +3635,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.questionnaireFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.questionnaireFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3678,13 +3677,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Main cohort protocol</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='main_cohort_url'
                                                                         id="main_cohort_url"
                                                                         readOnly={isReadOnly}
@@ -3696,7 +3695,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.main_cohort_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -3778,7 +3777,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.mainFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.mainFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3820,13 +3819,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Data sharing policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='data_url'
                                                                         id="data_url"
                                                                         readOnly={isReadOnly}
@@ -3838,7 +3837,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.data_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -3919,7 +3918,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.dataFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.dataFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3961,13 +3960,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Biospecimen sharing policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='specimen_url'
                                                                         id="specimen_url"
                                                                         readOnly={isReadOnly}
@@ -3979,7 +3978,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.specimen_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -4060,7 +4059,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.specimenFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.specimenFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -4101,13 +4100,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Publication(authorship) policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='publication_url'
                                                                         id="publication_url"
                                                                         readOnly={isReadOnly}
@@ -4119,7 +4118,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.publication_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -4200,7 +4199,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.publicationFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.publicationFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
