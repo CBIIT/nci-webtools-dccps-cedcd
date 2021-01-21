@@ -526,8 +526,8 @@ const CancerInfoForm = ({ ...props }) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.3 How were your cancer cases ascertained?<span className="font-weight-normal">{' '}(Select all that apply)</span>
+                                <Form.Label>
+                                    <span className="required-label">D.3 How were your cancer cases ascertained?</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                 </Form.Label>
                                 {submitted && errors.ci_ascertained_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -638,8 +638,8 @@ const CancerInfoForm = ({ ...props }) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.6b Specify the data sources the treatment information is from:<span className="font-weight-normal">{' '}(Select all that apply)</span>
+                                <Form.Label>
+                                    <span className="required-label">D.6b Specify the data sources the treatment information is from:</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                 </Form.Label>
                                 {submitted && errors.ci_data_source_type && <span className="ml-3 text-danger">Required Field</span>}
 
