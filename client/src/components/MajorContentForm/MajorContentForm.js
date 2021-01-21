@@ -530,7 +530,7 @@ const MajorContentForm = ({ ...props }) => {
             } else if (idx === 29) {
                 return <Form.Group as={Row} sm='12' className='mb-0' style={{ marginTop: '10px' }} >
                     <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
-                        C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <small style={{ paddingRight: '0' }}>(Select all that apply)</small>
+                        C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
                     <Col sm='12'>
                         <span>If data was collected at baseline, please specify all tobacco products that apply</span>
@@ -594,12 +594,12 @@ const MajorContentForm = ({ ...props }) => {
     const getThirdContent = () => {
         return <Form.Group className='mb-0' style={{ marginTop: '10px' }} >
             <Form.Label style={{ marginBottom: '8px' }}>
-                C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <small style={{ paddingRight: '0' }}>(Select all that apply)</small>
+                C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal">{' '}(Select all that apply)</span>
 
                 {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
                     <span className="font-weight-normal text-danger ml-3">Required Field</span>}
             </Form.Label>
-            <div style={{ marginLeft: '-3rem' }}>{
+            <div style={{ marginLeft: '-3rem' }} className="mb-3">{
                 getMultiSelectList(
                     [
                         'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
@@ -630,7 +630,6 @@ const MajorContentForm = ({ ...props }) => {
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
-            <Col md="12">
                 <Form>
                     <CollapsiblePanelContainer>
                         <CollapsiblePanel
@@ -672,7 +671,6 @@ const MajorContentForm = ({ ...props }) => {
                     handleApprove={false}
                     handleReject={false} />
 
-            </Col>
         </Container>
     )
 }

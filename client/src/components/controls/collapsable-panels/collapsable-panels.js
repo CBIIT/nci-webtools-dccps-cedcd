@@ -41,13 +41,10 @@ export const CollapsiblePanel = ({
 export const CollapsiblePanelContainer = ({
     children = []
 }) => {
-
-    return(
+    return (
         // container
-        <div className="collapsable-panel-container row">
-            <div id="attachments" className="cohortInfo col-md-12">
-                { children }
-            </div>
+        <div className="collapsable-panel-container">
+            { children }
         </div>
     )
 }

@@ -411,176 +411,7 @@ const CohortForm = ({ ...props }) => {
             dispatch(allactions.cohortErrorActions[fieldName](true))
         }
     }
-    /*
-        const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-            if(checkFourAges('enrollment_age_min', value)){
-                if(maxAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-            }
-            else if(maxAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
     
-                if(errors.enrollment_age_max && cohort.enrollment_age_max >= Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-                else if (cohort.enrollment_age_max < Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(cohort.enrollment_age_max, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
-                if(errors.enrollment_age_median && cohort.enrollment_age_median >= value && cohort.enrollment_age_median <= cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                else if(cohort.enrollment_age_median < value || cohort.enrollment_age_median > cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
-                if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= value && cohort.enrollment_age_mean <= cohort.enrollment_age_max )
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                else if(cohort.enrollment_age_mean < value || cohort.enrollment_age_mean > cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
-                
-            }
-        }
-    
-        const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-            if(checkFourAges('enrollment_age_max', value)){
-                if(!value || minAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-            }
-            else if(minAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-    
-                if(errors.enrollment_age_min && cohort.enrollment_age_min <= Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                else if (cohort.enrollment_age_min > Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(cohort.enrollment_age_min, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
-                if(errors.enrollment_age_median && cohort.enrollment_age_median >= cohort.enrollment_age_min && cohort.enrollment_age_median <= value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                else if(cohort.enrollment_age_median < cohort.enrollment_age_min || cohort.enrollment_age_median > value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
-                if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= cohort.enrollment_age_min && cohort.enrollment_age_mean <= value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                else if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
-                
-            }
-        }
-    
-        const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-            let result  = 
-           if(checkFourAges('current_age_min', value)){
-                if(!value || maxAge && medianAge && meanAge){
-                    dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-    
-                }
-            }
-            else if(maxAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.current_age_min(true))
-    
-                if(errors.current_age_max && cohort.current_age_max >= Math.max(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_max(true))
-                else if (cohort.current_age_max < Math.max(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(cohort.current_age_max, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
-                if(errors.current_age_median && cohort.current_age_median >= value && cohort.current_age_median <= cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_median(true))
-                else if(cohort.current_age_median < value || cohort.current_age_median > cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
-                if(errors.current_age_mean && cohort.current_age_mean >= value && cohort.current_age_mean <= cohort.current_age_max )
-                    dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                else if(cohort.current_age_mean < value || cohort.current_age_mean > cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
-                
-            } 
-        }
-    
-        const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-            if(checkFourAges('current_age_max', value)){
-                if(!value || minAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-            }
-            else if(minAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.current_age_max(true))
-    
-                if(errors.current_age_min && cohort.current_age_min <= Math.min(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_min(true))
-                else if (cohort.current_age_min > Math.min(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(cohort.current_age_min, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
-                if(errors.current_age_median && cohort.current_age_median >= cohort.current_age_min && cohort.current_age_median <= value)
-                    dispatch(allactions.cohortErrorActions.current_age_median(true))
-                else if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > value)
-                    dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
-                if(errors.current_age_mean && cohort.current_age_mean >= cohort.current_age_min && cohort.current_age_mean <= value)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                else if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > value)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
-                
-            }
-        }
-    
-    
-    
-        const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-            if(checkFourAges(fieldName, value)){ //if there is an error dispatch it
-                dispatch(allactions.cohortErrorActions[fieldName](false, getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)))
-            }else{ //if there is no error
-                dispatch(allactions.cohortErrorActions[fieldName](true))
-                if(fieldName.includes('enrollment')){
-                    if(fieldName.includes('median')) {
-                        dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-                        if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > cohort.enrollment_age_max)
-                            dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, 'Out of age range'))
-                    }
-                    else {
-                        dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_max(true));
-                        if(cohort.enrollment_age_median < cohort.enrollment_age_min && cohort.enrollment_age_median > cohort.enrollment_age_max) 
-                            dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Out of age range'));     
-                    }
-                }else{
-                    if(fieldName.includes('median')) {
-                        dispatch(allactions.cohortErrorActions.current_age_min(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_max(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_median(true))
-                        if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > cohort.current_age_max)
-                            dispatch(allactions.cohortErrorActions.current_age_mean(false, 'Out of age range'))
-                    }
-                    else {
-                        dispatch(allactions.cohortErrorActions.current_age_min(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_max(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                        if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > cohort.current_age_max)
-                            dispatch(allactions.cohortErrorActions.current_age_median(false, 'Out of age range'))
-                    }
-                }
-            }
-        }
-    
-        const checkFourAges = (currentKey, currentValue)=>{
-            let checkWithError = false //assume no error at first
-            if(!currentValue) return true
-            if(currentKey.includes('enrollment')){
-                if(currentKey.includes('min')) //enrollment_age_min
-                    checkWithError |= currentValue > Math.min(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                else if(currentKey.includes('max'))
-                    checkWithError |= currentValue < Math.max(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                else if(currentKey.includes('median') || currentKey.includes('mean'))
-                    checkWithError |= currentValue < cohort.enrollment_age_min || currentValue > cohort.enrollment_age_max
-            }else{
-                if(currentKey.includes('min')){//current_age_min
-                    if(cohort.current_age_max && cohort.current_age_median && cohort.current_age_mean)
-                        checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                    else if (cohort.current_age_max && cohort.current_age_median) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median)
-                    else if(cohort.current_age_median && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_mean, cohort.current_age_median)
-                    else if (cohort.current_age_max && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_mean)
-                    else if (cohort.current_age_max) checkWithError |= currentValue > cohort.current_age_max
-                }
-                else if(currentKey.includes('max'))
-                    checkWithError |= currentValue < Math.max(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                else if(currentKey.includes('median') || currentKey.includes('mean'))
-                    checkWithError |= currentValue < cohort.current_age_min || currentValue > cohort.current_age_max
-            }
-    
-            return checkWithError
-        }
-    
-        */
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -1110,7 +941,6 @@ const CohortForm = ({ ...props }) => {
                 }
             />
 
-            <Col md="12">
                 <div style={{ marginTop: '20px', marginBottom: '20px' }}>
                     If your cohort is comprised of more than one distinct enrollment period or population, please complete separate CEDCD Data Collection Forms to treat them as separate cohorts
                 </div>
@@ -1371,14 +1201,14 @@ const CohortForm = ({ ...props }) => {
                             panelTitle="Principal Investigators">
 
                             {/* A.5 Cohort Principal Investigator(s) */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
+                            <Form.Group as={Row} className="mb-2">
+                                <Form.Label column sm="6">
                                     A.5 Cohort Principal Investigator(s)
                                 </Form.Label>
-                                <Col sm="12">
+                                <Col sm="6">
                                     <Button
                                         variant="primary"
-                                        className="col-lg-2 col-md-6"
+                                        className="float-right"
                                         disabled={isReadOnly}
                                         onClick={e => {
                                             e.preventDefault();
@@ -1391,6 +1221,9 @@ const CohortForm = ({ ...props }) => {
                                         Add New Investigator
                                     </Button>
                                 </Col>
+                            </Form.Group>
+                            <Form.Group as={Row}>
+                                {/* </Col> */}
                                 {
                                     cohort.investigators.map((item, idx) =>
                                         <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
@@ -1578,7 +1411,7 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Baseline population consists of
                                     </Form.Label>
-                                    <Col sm="12">
+                                    <Col sm="12" className="mb-3">
                                         <div key="checkbox">
                                             <Form.Check type="checkbox"
                                                 className="pl-0"
@@ -2212,7 +2045,7 @@ const CohortForm = ({ ...props }) => {
                                             <Form.Control type="text" className='text-capitalize'
                                                 style={{ color: 'red', border: '1px solid red' }}
                                                 placeholder='Max of 200 characters'
-                                                maxLength='200' c
+                                                maxLength='200'
                                                 name='time_interval'
                                                 value={cohort.time_interval}
                                                 onChange={e =>
@@ -2276,7 +2109,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.11 How was Info Collected */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.dataCollection && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2284,7 +2117,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-collected-in-person"
@@ -2373,7 +2206,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
+                                                    cohort.data_collected_other && populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.data_collected_other} />
                                         </Reminder> :
@@ -2386,7 +2219,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
+                                                cohort.data_collected_other && populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.data_collected_other || isReadOnly} />
                                     }
@@ -2396,7 +2229,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.12 Specific Requirements */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.requirements && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2404,7 +2237,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-require-none"
@@ -2537,7 +2370,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
+                                                    cohort.restrictOther && populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.restrictOther} />
                                         </Reminder> :
@@ -2550,7 +2383,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
+                                                cohort.restrictOther && populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.restrictOther || isReadOnly} />
                                     }
@@ -2560,7 +2393,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.13 Strategies Used */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.strategy && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2568,7 +2401,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-strategy-routine"
@@ -2706,7 +2539,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
+                                                    cohort.strategy_other && populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.strategy_other} />
                                         </Reminder> :
@@ -2719,7 +2552,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
+                                                cohort.strategy_other && populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.strategy_other || isReadOnly} />
                                     }
@@ -4262,7 +4095,6 @@ const CohortForm = ({ ...props }) => {
                     // fileListShow && file_list(fileListTile, currentFileListName, currentFileList)
                 }
 
-            </Col>
         </Container>
     )
 }
