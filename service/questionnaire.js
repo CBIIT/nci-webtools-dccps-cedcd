@@ -134,7 +134,7 @@ router.post('/deleteFile', function (req, res) {
 
 router.post('/update_cohort_basic/:id', function (req, res) {
     logger.debug(req.body)
-    let keys = ['cohort_description', 'cohort_web_site', 'completerName', 'completerPosition', 'completerEmail', 'contacterName', 'contacterPosition', 'contacterEmail', 'collaboratorName', 'collaboratorPosition', 'collaboratorEmail', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify', 'time_interval', 'data_collected_other_specify', 'restrictions_other_specify', 'strategy_other_specify',]
+    let keys = ['cohort_description', 'cohort_web_site', 'completerName', 'completerPosition', 'completerEmail', 'contacterName', 'contacterPosition', 'contacterEmail', 'collaboratorName', 'collaboratorPosition', 'collaboratorEmail', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify', 'time_interval', 'data_collected_other_specify', 'restrictions_other_specify', 'strategy_other_specify']
     keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
 
     for (let i in req.body.investigators){
@@ -337,6 +337,8 @@ router.post('/major_content/:id', function (req, res) {
 
 router.post('/update_major_content/:id', function (req, res) {
     let func = 'upsert_major_content'
+    let keys = ['noncigarBaseLineSpecify', 'noncigarFollowUpSpecify', 'cancerOtherSpecify']
+    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
     let body = JSON.stringify(req.body)
     let params = []
     params.push(req.params.id)
@@ -379,6 +381,8 @@ router.post('/mortality/:id', function (req, res) {
 
 router.post('/update_mortality/:id', function (req, res) {
     let func = 'update_mortality'
+    let keys = ['otherDeathSpecify', 'otherCodeSpecify']
+    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
     let body = JSON.stringify(req.body)
     let params = []
     params.push(req.params.id)
@@ -422,6 +426,8 @@ router.post('/dlh/:id', function (req, res) {
 
 router.post('/update_dlh/:id', function (req, res) {
     let func = 'update_dlh'
+    let keys = ['dataOnlineURL', 'haveHarmonizationSpecify', 'haveDataLinkSpecify', 'createdRepoSpecify']
+    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
     let body = JSON.stringify(req.body)
     let params = []
     params.push(req.params.id)
@@ -518,6 +524,8 @@ router.post('/update_cancer_info/:id', async function (req, res) {
 
 router.post('/update_specimen/:id', function (req, res) {
     let func = 'update_specimen_section_data'
+    let keys = ['bioOtherBaselineSpecify', 'bioOtherOtherTimeSpecify', 'bioMetaOutcomesOtherStudySpecify', 'bioMemberInStudy', 'bioLabsUsedForAnalysis', 'bioAnalyticalPlatform', 'bioSeparationPlatform']
+    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
     let body = req.body
     for (let k of Object.keys(body.counts)) { if (body.counts[k] === '') body.counts[k] = 0 }
     body = JSON.stringify(body)
