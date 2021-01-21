@@ -151,6 +151,12 @@ const EnrollmentCountsForm = ({ ...props }) => {
     }
 
     const saveEnrollment = (id = cohortID, goNext = proceed || false) => {
+
+        let userID = userSession.id
+
+        let enrollmentCountBody = enrollmentCount
+        enrollmentCountBody["userID"] = userID
+
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`, {
             method: "POST",
             body: JSON.stringify(enrollmentCount),

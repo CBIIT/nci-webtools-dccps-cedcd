@@ -1172,6 +1172,7 @@ CREATE  PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
+    DECLARE user_id INT DEFAULT 10;
 	
     DECLARE flag INT DEFAULT 1;
 
@@ -1182,9 +1183,10 @@ BEGIN
 	END;
 
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+    set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
 
     IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id); 
+	   call select_unpublished_cohort_id(targetID, new_id, user_id); 
     else 
        set new_id = targetID;
     END IF;
@@ -1408,7 +1410,10 @@ BEGIN
 	where cohort_id = new_id and category_id = 3;
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = new_id;
+		update cohort set status = 'draft',  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
+        insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	end if;
 	SELECT `status` from cohort where id = new_id;
 
@@ -1572,6 +1577,7 @@ DROP PROCEDURE IF EXISTS update_enrollment_count //
 CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 10;
     DECLARE flag INT DEFAULT 1;
  
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -1581,8 +1587,9 @@ BEGIN
 	END;
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
+    set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
     IF @cohort_status = 'published' then 
-    call select_unpublished_cohort_id(targetID, new_id); 
+    call select_unpublished_cohort_id(targetID, new_id, user_id); 
     else
      set new_id = targetID;
     END IF;
@@ -1748,16 +1755,17 @@ BEGIN
     
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = new_id;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (new_id, 1, 'draft', null);
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
+		 insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	end if;
 	SELECT `status` from cohort where id = new_id;
-
-	SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
+    select page_code, status from cohort_edit_status where cohort_id = new_id;
 	
     end;
     end if;
+    
     
 END //
 -- -----------------------------------------------------------------------------------------------------------
@@ -2354,23 +2362,24 @@ END //
 
 DROP PROCEDURE IF EXISTS `select_unpublished_cohort_id` //
 
-CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int)
+CREATE PROCEDURE `select_unpublished_cohort_id`(in targetID int, out new_id int, in user_id int)
 BEGIN
 	  set new_id = targetID; -- assume it is draft
     if exists (select * from cohort where status = 'published' and id = targetID) then -- if it is published
         if exists (select * from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID and a.status != 'archived') then -- find its copy
             select a.id into new_id from cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         else -- if copy not exists, create a new one
-           insert cohort (name, acronym, status, publish_by, document_ver, create_time, update_time, publish_time) select name, acronym, 'draft', null,'8.1', now(), now(), publish_time from cohort
+           insert cohort (name, acronym, status, publish_by, document_ver,create_by, create_time, update_time, cohort_last_update_date, publish_time) 
+           select name, acronym, 'draft', null,'8.1',user_id, now(), now(),now(),  publish_time from cohort
            where id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
 
-		   insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, 1, 'draft', null);
+		   insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
  
         end if;
     end if;
-END//
+END //
 
 
 DROP PROCEDURE IF EXISTS `insert_new_cohort_from_published` //

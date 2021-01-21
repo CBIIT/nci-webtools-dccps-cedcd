@@ -215,9 +215,14 @@ const CohortForm = ({ ...props }) => {
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
 
+        let userID = userSession.id
+
+        let cohortBody = cohort
+        cohortBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
-            body: JSON.stringify(cohort),
+            body: JSON.stringify(cohortBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -232,7 +237,7 @@ const CohortForm = ({ ...props }) => {
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         // if cohort_id changed, refresh section status
-                        let secStatusList = result.data.sectionStatusList
+                        let secStatusList = result.newCohortInfo.sectionStatusList
                         if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
                             dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
                         })
