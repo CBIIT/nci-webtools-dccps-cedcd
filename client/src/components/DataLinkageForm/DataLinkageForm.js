@@ -446,7 +446,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight:'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.haveDataLinkSpecify ?
                                         <Reminder message={errors.haveDataLinkSpecify} disabled={!errors.haveDataLinkSpecify} placement="right">
@@ -575,7 +575,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight: 'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.haveHarmonizationSpecify ?
                                         <Reminder message={errors.haveHarmonizationSpecify} disabled={!errors.haveHarmonizationSpecify} placement="right">
@@ -1037,7 +1037,7 @@ const DataLinkageForm = ({ ...props }) => {
                             </Form>
 
                             <Form.Group as={Row}>
-                                <Form.Label column sm="12">If yes, please specify:</Form.Label>
+                                <Form.Label column sm="12"><span style={{fontWeight:'normal'}}>If yes, please specify:</span></Form.Label>
                                 <Col sm="12">
                                     {saved && errors.createdRepoSpecify ?
                                         <Reminder message={errors.createdRepoSpecify} disabled={!errors.createdRepoSpecify} placement="right">
