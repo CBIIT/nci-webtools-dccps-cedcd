@@ -897,6 +897,7 @@ CREATE PROCEDURE `update_cancer_info`(in cohort_id integer, in params json)
 BEGIN
 	DECLARE success INT DEFAULT 1;
     DECLARE new_id INT DEFAULT cohort_id;
+	DECLARE user_id INT DEFAULT 1;
    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
 	BEGIN
@@ -905,7 +906,7 @@ BEGIN
 	END;
 
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
-    IF @cohort_status = 'published' THEN CALL select_unpublished_cohort_id(cohort_id, new_id); END IF;
+    IF @cohort_status = 'published' THEN CALL select_unpublished_cohort_id(cohort_id, new_id, user_id); END IF;
     START TRANSACTION;
 	
     set @cohort_id = new_id;
@@ -1059,9 +1060,10 @@ BEGIN
 	IF success = 1 then
     begin
 	  if exists (select * from cohort where id = new_id and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = new_id;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (new_id, 1, 'draft', null);
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
+	  else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	  end if;
 	  SELECT success , id AS duplicated_cohort_id , `status` from cohort WHERE id = new_id;
 	end;
@@ -1172,7 +1174,7 @@ CREATE  PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
-    DECLARE user_id INT DEFAULT 10;
+    DECLARE user_id INT DEFAULT 1;
 	
     DECLARE flag INT DEFAULT 1;
 
@@ -1577,7 +1579,7 @@ DROP PROCEDURE IF EXISTS update_enrollment_count //
 CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT 0;
-	DECLARE user_id INT DEFAULT 10;
+	DECLARE user_id INT DEFAULT 1;
     DECLARE flag INT DEFAULT 1;
  
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -1748,15 +1750,13 @@ BEGIN
     set enrollment_most_recent_date = if(@recentDate is not null and @recentDate != '' and @recentDate != 'null', replace(replace(@recentDate, 'T', ' '), 'Z', ''), NULL)
 	where cohort_id = new_id;
 
-	update cohort set cohort_last_update_date = now(), update_time = now() where id = new_id;
-
     -- SET @rowcount = ROW_COUNT();
     SELECT flag AS rowsAffacted;
     
 	SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
-		 insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
         update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	end if;
@@ -1808,6 +1808,7 @@ begin
 	DECLARE i INT default 0;
     DECLARE flag INT DEFAULT 1;
 	DECLARE new_id INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 1;
    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -1818,7 +1819,7 @@ begin
     SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
 
     IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id); 
+	   call select_unpublished_cohort_id(targetID, new_id, user_id ); 
     else 
        set new_id = targetID;
     END IF;
@@ -1863,6 +1864,7 @@ CREATE  PROCEDURE `upsert_major_content`(in Old_targetID int, in info JSON)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE targetID INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 1;
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -1871,7 +1873,8 @@ begin
 	END;
 
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
-    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+    set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID, user_id);
 	else set targetID = Old_targetID;
     END IF;
     IF targetID > 0 then
@@ -1975,8 +1978,6 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
         cohort_id = targetID and page_code = 'C';
     end;
 
-	update cohort set cohort_last_update_date = now(), update_time = now() where id = targetID;
-
     end if;
     commit;
     
@@ -1984,7 +1985,10 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
     
     SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = targetID;
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 	end if;
 	SELECT `status` from cohort where id = targetID;
 	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
@@ -2012,6 +2016,7 @@ begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE i INT DEFAULT 0;
     DECLARE cohortID INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 1;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -2020,8 +2025,9 @@ begin
 	END;
     
     SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
+	set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
 
-    IF @cohort_status = 'published' then call select_unpublished_cohort_id(targetID, cohortID); 
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(targetID, cohortID, user_id); 
     else 
      set cohortID = targetID;
     END IF;
@@ -2304,19 +2310,19 @@ begin
 
   update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
         cohort_id = `cohortID` and page_code = 'G';
-	update cohort set cohort_last_update_date = now(), update_time = now() where id = `cohortID`;
-  
+	
   commit;
-  select flag as rowsAffacted;
-  SELECT cohortID as duplicated_cohort_id;
-  if exists (select * from cohort where id = cohortID and status = 'new') then
-	update cohort set status = 'draft', update_time = NOW() where id = cohortID;
-	insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (cohortID, 1, 'draft', null);
-  end if;
-  SELECT `status` from cohort where id = cohortID;
+  	select flag as rowsAffacted;
+  	SELECT cohortID as duplicated_cohort_id;
+  	if exists (select * from cohort where id = cohortID and status = 'new') then
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = cohortID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (cohortID, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = cohortID;
+  	end if;
+  	SELECT `status` from cohort where id = cohortID;
 
-  SELECT page_code, status from cohort_edit_status where cohort_id = cohortID;
+ 	SELECT page_code, status from cohort_edit_status where cohort_id = cohortID;
   end ;
   end if ;
   
@@ -2603,6 +2609,7 @@ CREATE  PROCEDURE `update_mortality`(in Old_targetID int, in info JSON)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
 	DECLARE targetID INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 1;
     
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -2611,7 +2618,8 @@ BEGIN
 	END;
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
-    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID, user_id);
 	else set targetID = Old_targetID;
     END IF;
     IF targetID > 0 then
@@ -2634,16 +2642,15 @@ BEGIN
 		update mortality set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
 	end if;
-
-	update cohort set cohort_last_update_date = now(), update_time = now() where id = targetID;
-
     commit;
 	select flag as rowAffacted;
     
 	SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = targetID;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, 1, 'draft', null);
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 	end if;
 	SELECT `status` from cohort where id = targetID;
 	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
@@ -2682,6 +2689,7 @@ DROP PROCEDURE if EXISTS `update_dlh` //
 CREATE PROCEDURE `update_dlh`(in Old_targetID int, in info JSON)
 BEGIN
 	DECLARE targetID INT DEFAULT Old_targetID;
+	DECLARE user_id INT DEFAULT 1;
     DECLARE flag INT DEFAULT 1;
     
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -2691,7 +2699,8 @@ BEGIN
 	END;
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = Old_targetID;
-    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID);
+	set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
+    IF @cohort_status = 'published' then call select_unpublished_cohort_id(Old_targetID, targetID, user_id );
 	else set targetID = Old_targetID;
     END IF;
     IF targetID > 0 then
@@ -2760,9 +2769,10 @@ BEGIN
 	SELECT flag as rowAffacted;
     SELECT targetID as duplicated_cohort_id;
     if exists (select * from cohort where id = targetID and status = 'new') then
-		update cohort set status = 'draft', update_time = NOW() where id = targetID;
-		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) 
-		values (targetID, 1, 'draft', null);
+		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
+		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
+	else
+        update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 		
 	end if;
 	SELECT `status` from cohort where id = targetID;
@@ -3007,6 +3017,7 @@ CREATE PROCEDURE `delete_cohort_file`(in file_Id int, in cohort_ID int)
 begin
 	DECLARE flag INT DEFAULT 1;
 	DECLARE new_id INT DEFAULT 0;
+	DECLARE user_id INT DEFAULT 1;
    
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
@@ -3017,7 +3028,7 @@ begin
     SELECT `status` INTO @cohort_status FROM cohort WHERE id = cohort_ID;
 
     IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(cohort_ID, new_id); 
+	   call select_unpublished_cohort_id(cohort_ID, new_id, user_id); 
     else 
        set new_id = cohort_ID;
     END IF;

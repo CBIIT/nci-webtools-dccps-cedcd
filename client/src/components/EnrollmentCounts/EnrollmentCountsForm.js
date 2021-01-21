@@ -159,7 +159,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
 
         fetch(`/api/questionnaire/upsert_enrollment_counts/${id}`, {
             method: "POST",
-            body: JSON.stringify(enrollmentCount),
+            body: JSON.stringify(enrollmentCountBody),
             headers: {
                 'Content-Type': 'application/json'
             }

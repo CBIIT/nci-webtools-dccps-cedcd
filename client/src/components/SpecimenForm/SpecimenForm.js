@@ -523,7 +523,9 @@ const SpecimenForm = ({ ...props }) => {
 
     const saveSpecimen = (id = 79, errorsRemain = true, proceed = false) => {
 
-        const { errors, error, ...specimenBody } = specimen
+        let userID = userSession.id
+        let specimenBody = specimen
+        specimenBody["userID"] = userID
 
         fetch(`/api/questionnaire/update_specimen/${id}`, {
             method: "POST",

@@ -347,9 +347,14 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const saveMajorContent = (id, errorsRemain = true, goNext = proceed || false) => {
+        let userID = userSession.id
+
+        let majorContentBody = majorContent
+        majorContentBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
-            body: JSON.stringify(majorContent),
+            body: JSON.stringify(majorContentBody),
             headers: {
                 'Content-Type': 'application/json'
             }

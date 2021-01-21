@@ -247,8 +247,8 @@ const DataLinkageForm = ({ ...props }) => {
     }
 
     const saveDataLinkage = (id = cohortId, proceed = false, complete) => {
-
-        const copy = { ...dataLinkage, sectionFStatus: complete }
+        let user_id = userSession.id
+        const copy = { ...dataLinkage, sectionFStatus: complete, 'userID': user_id }
 
         fetch(`/api/questionnaire/update_dlh/${id}`, {
             method: "POST",

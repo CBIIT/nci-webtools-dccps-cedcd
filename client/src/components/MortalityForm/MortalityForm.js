@@ -230,8 +230,11 @@ const MortalityForm = ({ ...props }) => {
     }
 
     const saveMortality = (id = cohortId, proceed = false, complete) => {
-        const copy = { ...mortality, sectionEStatus: complete }
-        console.log(JSON.stringify(copy))
+
+        let user_id = userSession.id
+        const copy = { ...mortality, sectionEStatus: complete, 'userID': user_id }
+
+        // console.log(JSON.stringify(copy))
         fetch(`/api/questionnaire/update_mortality/${id}`, {
             method: "POST",
             body: JSON.stringify(copy),
