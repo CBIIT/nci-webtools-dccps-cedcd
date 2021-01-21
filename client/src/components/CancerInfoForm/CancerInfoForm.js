@@ -353,7 +353,7 @@ const CancerInfoForm = ({ ...props }) => {
                     dispatch(({ type: 'SET_COHORT_STATUS', value: status }))
                     dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
                 } else {
-
+                    dispatch(fetchCohort(cohortId))
                     if (newCohortId && +newCohortId !== id) {
                         id = newCohortId;
                     }

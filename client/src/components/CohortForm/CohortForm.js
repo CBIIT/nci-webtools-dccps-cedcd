@@ -230,12 +230,14 @@ const CohortForm = ({ ...props }) => {
             .then(res => res.json())
             .then(result => {
                 if (result.status === 200) {
+                    
                     if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                         // if cohort_id changed, refresh section status
                         let secStatusList = result.newCohortInfo.sectionStatusList
                         if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
@@ -245,12 +247,13 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                         // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                    }else{
+                        dispatch(fetchCohort(cohortID))
                     }
                     if (result.newCohortInfo.investigators) dispatch(allactions.cohortActions.setInvestigators(result.newCohortInfo.investigators))
 
                     if (result.newCohortInfo.status && result.newCohortInfo.status != cohortStatus) {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: result.newCohortInfo.status }))
-                        dispatch(fetchCohort(result.newCohortInfo.newCohortID))
                     }
                     if (!goNext) {
                         setSuccessMsg(true)
