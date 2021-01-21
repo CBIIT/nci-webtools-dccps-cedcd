@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import { connect } from 'react-redux';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
@@ -280,9 +280,10 @@ class ManageCohort extends Component {
 	}
 
 	resetCohortStatus = (cohortID, currStatus) => {
+		let usid = this.props.user
 		if (['submitted'].includes(currStatus.toLowerCase())) {
 			let nextStatus = 'in review'
-			fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}`, {
+			fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${usid}`, {
 				method: "POST"
 			}).then(res => res.json())
 				.then(result => {
@@ -427,5 +428,10 @@ class ManageCohort extends Component {
 	}
 }
 
+const mapStateToProps = function ({ user }) {
+	return {
+		user: user.id
+	}
+}
 
-export default ManageCohort;
+export default connect(mapStateToProps)(ManageCohort);

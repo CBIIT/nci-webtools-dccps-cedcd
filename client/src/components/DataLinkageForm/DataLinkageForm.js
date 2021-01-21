@@ -247,8 +247,8 @@ const DataLinkageForm = ({ ...props }) => {
     }
 
     const saveDataLinkage = (id = cohortId, proceed = false, complete) => {
-
-        const copy = { ...dataLinkage, sectionFStatus: complete }
+        let user_id = userSession.id
+        const copy = { ...dataLinkage, sectionFStatus: complete, 'userID': user_id }
 
         fetch(`/api/questionnaire/update_dlh/${id}`, {
             method: "POST",
@@ -263,6 +263,11 @@ const DataLinkageForm = ({ ...props }) => {
                     dispatch(setHasUnsavedChanges(false));
                     if (result.data) {
                         if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                             // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))

@@ -215,9 +215,14 @@ const CohortForm = ({ ...props }) => {
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
 
+        let userID = userSession.id
+
+        let cohortBody = cohort
+        cohortBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_cohort_basic/${id}`, {
             method: "POST",
-            body: JSON.stringify(cohort),
+            body: JSON.stringify(cohortBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -231,6 +236,11 @@ const CohortForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
+                        // if cohort_id changed, refresh section status
+                        let secStatusList = result.newCohortInfo.sectionStatusList
+                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                            dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                        })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
@@ -1021,35 +1031,35 @@ const CohortForm = ({ ...props }) => {
 
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.questionnaire_url(copy));
                                         }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.main_cohort_url(copy));
                                         }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.data_url(copy));
                                         }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.specimen_url(copy));
                                         }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
-                                        if(urlInput){
+                                        if (urlInput) {
                                             copy.push(urlInput)
                                             dispatch(allactions.cohortActions.publication_url(copy));
                                         }
@@ -1586,7 +1596,7 @@ const CohortForm = ({ ...props }) => {
                                         </div>
                                     </Col>
                                     <Col sm="12">
-                                        <Form.Control type="text" 
+                                        <Form.Control type="text"
                                             name='cancerSites'
                                             value={cohort.eligible_disease_cancer_specify}
                                             maxLength="100"

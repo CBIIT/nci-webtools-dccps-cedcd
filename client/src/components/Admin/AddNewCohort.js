@@ -1,5 +1,6 @@
 import React, { Component, useEffect } from 'react';
 import Select from 'react-select';
+import { connect } from 'react-redux';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import Messenger from '../Snackbar/Snackbar'
 import './AddNewCohort.css';
@@ -205,7 +206,8 @@ class AddNewCohort extends Component {
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
             cohortOwners: ownerIDs,
-            notes: state.notes
+            notes: state.notes,
+            createBy: this.props.user
           };
           fetch('/api/cohort/add', {
             method: "POST",
@@ -344,4 +346,11 @@ class AddNewCohort extends Component {
   }
 }
 
-export default AddNewCohort;
+
+const mapStateToProps = function ({ user }) {
+  return {
+    user: user.id
+  }
+}
+
+export default connect(mapStateToProps)(AddNewCohort);

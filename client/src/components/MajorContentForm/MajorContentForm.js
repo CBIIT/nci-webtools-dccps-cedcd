@@ -347,9 +347,14 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const saveMajorContent = (id, errorsRemain = true, goNext = proceed || false) => {
+        let userID = userSession.id
+
+        let majorContentBody = majorContent
+        majorContentBody["userID"] = userID
+
         fetch(`/api/questionnaire/update_major_content/${id}`, {
             method: 'POST',
-            body: JSON.stringify(majorContent),
+            body: JSON.stringify(majorContentBody),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -363,9 +368,15 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.sectionActions.setSectionStatus('C', 'incomplete'))
                     }
                     if (result.data) {
-                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId)
+                        if (result.data.duplicated_cohort_id && result.data.duplicated_cohort_id != cohortId) {
+                            // if cohort_id changed, refresh section status
+                            let secStatusList = result.data.sectionStatusList
+                            if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                                dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                            })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
-                        history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                            history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
+                        }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                             dispatch(fetchCohort(result.data.duplicated_cohort_id))
