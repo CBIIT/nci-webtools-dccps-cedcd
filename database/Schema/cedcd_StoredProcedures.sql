@@ -374,7 +374,7 @@ DROP PROCEDURE IF EXISTS `select_cohort_description` //
 
 CREATE PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
-	select a.*,  dlh_procedure_online = 0 as request_procedures_none,
+	select a.*,  dlh_procedure_online as request_procedures_none,
       dlh_procedure_website as request_procedures_web,
       dlh_procedure_url as request_procedures_web_url,
       dlh_procedure_attached as request_procedures_pdf
