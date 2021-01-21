@@ -9,6 +9,8 @@ import Unauthorized from '../Unauthorized/Unauthorized';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import './AddNewCohort.css';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
 
 const EditUser = ({ ...props }) => {
 
@@ -271,20 +273,20 @@ const EditUser = ({ ...props }) => {
                         </div></div>
                         :
                         <div id="edituser-col-1" className="col-md-6 col-6">
-                            <form >
+                            <Form>
                                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                                <div id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
-                                    <label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name <span className="required">*</span></label>
-                                    {errors.userName_error !== '' && <label style={{ color: 'red' }}>{errors.userName_error}</label>}
+                                <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    {errors.userName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
                                         <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
                                             id="user_userName" value={userName} maxLength="100"
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                     </span>
-                                </div>
-                                <div id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
-                                    <label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span className="required">*</span></label>
-                                    {errors.email_error !== '' && <label style={{ color: 'red' }}>{errors.email_error}</label>}
+                                </Form.Group>
+                                <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span style={{color:'red'}}>*</span></Form.Label>
+                                    {errors.email_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.email_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
                                         placeholder='Valid email address' maxLength="100"
                                         onChange={(e) => {
@@ -292,44 +294,60 @@ const EditUser = ({ ...props }) => {
                                             if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
                                         }} />
                                     </span>
-                                </div>
+                                </Form.Group>
 
-                                <div id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
-                                    <label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name <span className="required">*</span></label>
-                                    {errors.lastName_error !== '' && <label style={{ color: 'red' }}>{errors.lastName_error}</label>}
+                                <Form.Group id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    {errors.lastName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.lastName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
                                         id="user_lastName" value={lastName} maxLength="50"
                                         onChange={(e) => { setLastName(e.target.value); if (errors.lastName_error !== '') setErrors({ ...errors, lastName_error: '' }) }} />
                                     </span>
-                                </div>
-                                <div id="ctl11_div_firstName" className="px-0 my-3 col-md-12 col-12">
-                                    <label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span className="required">*</span></label>
-                                    {errors.firstName_error !== '' && <label style={{ color: 'red' }}>{errors.firstName_error}</label>}
+                                </Form.Group>
+                                <Form.Group id="ctl11_div_firstName" className="px-0 my-3 col-md-12 col-12">
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    {errors.firstName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.firstName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
                                         id="user_firstName" value={firstName} maxLength="50"
                                         onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                     </span>
-                                </div>
-                                <div id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
-                                    <label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span className="required">*</span></label>
-                                    {errors.userRole_error !== '' && <label style={{ color: 'red' }}>{errors.userRole_error}</label>}
-                                    <div className='col-md-3 col-6' style={{ paddingLeft: '0' }} >
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Admin"
-                                            checked={userRole === 'Admin'} onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }} /> Admin</span>
-                                    </div>
-                                    <div className='col-md-3 col-6' style={{ paddingLeft: '0' }} >
-                                        <span ><input type='radio' style={{ marign: 'auto' }} name={userRole} value="Cohort Owner"
-                                            checked={userRole === 'Cohort Owner'} onChange={(e) => {
-                                                setUserRole(e.target.value); setCohortList([]);
-                                                if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' })
-                                            }} />{' '}Cohort Owner</span>
-                                    </div>
-                                </div>
+                                </Form.Group>
+                                <Form.Group id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{color:'red'}}>*</span></Form.Label>
+                                    {errors.userRole_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userRole_error}</Form.Label>}
+                                    <Col sm="6" className="align-self-center">
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="Admin"
+                                                checked={userRole === 'Admin'}
+                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Admin
+                                            </Form.Check.Label>
+                                        </Form.Check>
 
-                                <div className="pl-0 my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="Cohort Owner"
+                                                checked={userRole === 'Cohort Owner'}
+                                                onChange={(e) => {
+                                                    setUserRole(e.target.value); setCohortList([]);
+                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' })
+                                                }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Cohort Owner
+                                            </Form.Check.Label>
+                                        </Form.Check>
+                                    </Col>
+                                </Form.Group>
 
-                                    <div className="pl-0 col-md-12 col-12" > <label >Cohort </label>
-                                    </div>
+                                <Form.Group className="pl-0 my-3 col-md-12 col-12" style={{ paddingLeft: '0' }}>
+
+                                    <Form.Label className="pl-0 col-md-12 col-12">Cohort</Form.Label>
 
                                     {userRole === 'Admin' ?
                                         <div className="px-0 col-md-12 col-12" >
@@ -345,14 +363,14 @@ const EditUser = ({ ...props }) => {
                                             </div>
                                         </div>
                                     }
-                                </div>
-                                <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
+                                </Form.Group>
+                                <Form.Group className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
                                     <div className="pl-0 col-md-12 col-12">
                                         <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
                                             onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                         </span>
                                     </div>
-                                </div>
+                                </Form.Group>
                                 <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
                                     <Button 
                                         variant="primary"
@@ -368,7 +386,7 @@ const EditUser = ({ ...props }) => {
                                         Cancel
                                     </Button>
                                 </div>
-                            </form>
+                            </Form>
 
                             {/* <div className="bttn-group col-md-12 col-xs-12">
                                 <Button 
