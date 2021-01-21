@@ -2275,7 +2275,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.11 How was Info Collected */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.11 How was information from the questionnaire administered/collected?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.dataCollection && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2395,7 +2395,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.12 Specific Requirements */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.12 Does your cohort have any specific requirements or restrictions concerning participanting in collaborative projects involving pooling of data or specimens or use of specimens in genomic studies?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.requirements && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
@@ -2559,7 +2559,7 @@ const CohortForm = ({ ...props }) => {
                             {/* A.13 Strategies Used */}
                             <Form.Group as={Row}>
                                 <Form.Label column sm="12">
-                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span> (Select all that apply)
+                                    A.13 What strategies does your cohort use to engage participants?<span style={{ color: 'red' }}>*</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                     {errors.strategy && saved &&
                                         <span style={{ color: 'red', marginLeft: '10px', fontWeight: 'normal' }}>
                                             {errorMsg}
