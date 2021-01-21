@@ -526,8 +526,9 @@ const CancerInfoForm = ({ ...props }) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.3 How were your cancer cases ascertained? (Select all that apply)
+                                <Form.Label>
+                                    <span className="required-label">D.3 How were your cancer cases ascertained?</span>
+                                    <small className="ml-1">(Select all that apply)</small>
                                 </Form.Label>
                                 {submitted && errors.ci_ascertained_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -601,8 +602,9 @@ const CancerInfoForm = ({ ...props }) => {
                             
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.6a Specify the treatment information you have: (Select all that apply)
+                                <Form.Label>
+                                    <span className="required-label">D.6a Specify the treatment information you have:</span>
+                                    <small className="ml-1">(Select all that apply)</small>
                                 </Form.Label>
                                 {submitted && errors.ci_treatment_data_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -638,8 +640,11 @@ const CancerInfoForm = ({ ...props }) => {
                             </Form.Group>
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.6b Specify the data sources the treatment information is from: (Select all that apply)
+                                <Form.Label>
+                                    <span className="required-label">
+                                        D.6b Specify the data sources the treatment information is from:
+                                    </span>
+                                    <small className="ml-1">(Select all that apply)</small>
                                 </Form.Label>
                                 {submitted && errors.ci_data_source_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -759,7 +764,8 @@ const CancerInfoForm = ({ ...props }) => {
 
                             <Form.Group>
                                 <Form.Label>
-                                    D.11 Do you have histological and/or molecular cancer subtyping? (Select all that apply)
+                                    D.11 Do you have histological and/or molecular cancer subtyping? 
+                                    <small className="ml-1">(Select all that apply)</small>
                                 </Form.Label>
 
                                 <CheckedInputs options={[
