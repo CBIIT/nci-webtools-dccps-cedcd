@@ -873,7 +873,7 @@ const DataLinkageForm = ({ ...props }) => {
                                     {saved && errors.dataOnlineSelected && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check className="pl-0" name='dataOnlinePolicy'>
                                             <Form.Check.Input bsPrefix
                                                 type='checkbox'

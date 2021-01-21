@@ -1580,7 +1580,7 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Baseline population consists of
                                     </Form.Label>
-                                    <Col sm="12">
+                                    <Col sm="12" className="mb-3">
                                         <div key="checkbox">
                                             <Form.Check type="checkbox"
                                                 className="pl-0"
@@ -2286,7 +2286,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-collected-in-person"
@@ -2406,7 +2406,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-require-none"
@@ -2570,7 +2570,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-strategy-routine"

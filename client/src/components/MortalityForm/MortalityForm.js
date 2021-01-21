@@ -354,7 +354,7 @@ const MortalityForm = ({ ...props }) => {
                                     {saved && errors.deathConfirm && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check className="pl-0" name='deathIndex'>
                                             <Form.Check.Input bsPrefix
                                                 type='checkbox'
@@ -535,7 +535,7 @@ const MortalityForm = ({ ...props }) => {
                                     {saved && errors.coded && <span className="font-weight-normal text-danger ml-3">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check className="pl-0" name='icd9'>
                                             <Form.Check.Input bsPrefix
                                                 type='checkbox'

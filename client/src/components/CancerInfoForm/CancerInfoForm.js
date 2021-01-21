@@ -437,9 +437,8 @@ const CancerInfoForm = ({ ...props }) => {
                             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
                             panelTitle="Cancer Counts">
                             <div className="my-3">
-                                <Form.Label>
-                                    D.1 Please enter the number of participants with these cancers by sex.
-                                </Form.Label>
+                                <Form.Label>D.1 Cancer Counts</Form.Label>
+                                <div>Please enter the number of participants with these cancers by sex.</div>
                             </div>
                             <div className="table-responsive mb-4">
                                 <Table bordered condensed className="table-valign-middle">
@@ -530,13 +529,15 @@ const CancerInfoForm = ({ ...props }) => {
                                     <span className="required-label">D.3 How were your cancer cases ascertained?</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                 </Form.Label>
                                 {submitted && errors.ci_ascertained_type && <span className="ml-3 text-danger">Required Field</span>}
-
-                                <CheckedInputs options={[
-                                    { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
-                                    { type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry' },
-                                    { type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review' },
-                                    { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
-                                ]} />
+                                
+                                <div className="mb-3">
+                                    <CheckedInputs options={[
+                                        { type: 'checkbox', value: 1, name: 'ci_ascertained_self_reporting', label: 'Self-report' },
+                                        { type: 'checkbox', value: 1, name: 'ci_ascertained_tumor_registry', label: 'Cancer registry' },
+                                        { type: 'checkbox', value: 1, name: 'ci_ascertained_medical_records', label: 'Medical record review' },
+                                        { type: 'checkbox', value: 1, name: 'ci_ascertained_other', label: 'Other (please specify)' },
+                                    ]} />
+                                </div>
 
                                 <div className={classNames(submitted && errors.ci_ascertained_other_specify && "has-error")}>
                                     <Reminder message="Required Field" disabled={!errors.ci_ascertained_other_specify}>
@@ -590,32 +591,30 @@ const CancerInfoForm = ({ ...props }) => {
                                 {submitted && errors.ci_cancer_treatment_data && <span className="ml-3 text-danger">Required Field</span>}
 
                                 <CheckedInputs options={[
-                                    { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No' },
+                                    { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (skip the next two questions)' },
                                     { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
                                 ]} />
-
-                                <div className="mt-2">
-                                    If no, skip the next two questions, D.6a and D.6b
-                                </div>
                             </Form.Group>
-                            
+
 
                             <Form.Group>
-                                <Form.Label className="required-label">
-                                    D.6a Specify the treatment information you have:<span className="font-weight-normal">{' '}(Select all that apply)</span>
+                                <Form.Label>
+                                    <span className="required-label">D.6a Specify the treatment information you have:</span><span className="font-weight-normal">{' '}(Select all that apply)</span>
                                 </Form.Label>
                                 {submitted && errors.ci_treatment_data_type && <span className="ml-3 text-danger">Required Field</span>}
 
-                                <CheckedInputs
-                                    props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
-                                    options={[
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy' },
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy' },
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant' },
-                                        { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
-                                    ]} />
+                                <div className="mb-3">
+                                    <CheckedInputs
+                                        props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
+                                        options={[
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_surgery', label: 'Surgery' },
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_radiation', label: 'Radiation' },
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_chemotherapy', label: 'Chemotherapy' },
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_hormonal_therapy', label: 'Hormonal therapy' },
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_bone_stem_cell', label: 'Bone marrow/stem cell transplant' },
+                                            { type: 'checkbox', value: 1, name: 'ci_treatment_data_other', label: 'Other (please specify)' },
+                                        ]} />
+                                </div>
 
                                 <div className={classNames(submitted && errors.ci_treatment_data_other_specify && "has-error")}>
                                     <Reminder message="Required Field" disabled={!errors.ci_treatment_data_other_specify}>
@@ -643,15 +642,17 @@ const CancerInfoForm = ({ ...props }) => {
                                 </Form.Label>
                                 {submitted && errors.ci_data_source_type && <span className="ml-3 text-danger">Required Field</span>}
 
-                                <CheckedInputs
-                                    props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
-                                    options={[
-                                        { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
-                                        { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
-                                        { type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction' },
-                                        { type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire' },
-                                        { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
-                                    ]} />
+                                <div className="mb-3">
+                                    <CheckedInputs
+                                        props={{ disabled: +form.ci_cancer_treatment_data === 0 }}
+                                        options={[
+                                            { type: 'checkbox', value: 1, name: 'ci_data_source_admin_claims', label: 'Administrative claims data' },
+                                            { type: 'checkbox', value: 1, name: 'ci_data_source_electronic_records', label: 'Electronic health record' },
+                                            { type: 'checkbox', value: 1, name: 'ci_data_source_chart_abstraction', label: 'Chart abstraction' },
+                                            { type: 'checkbox', value: 1, name: 'ci_data_source_patient_reported', label: 'Patient-reported questionnaire' },
+                                            { type: 'checkbox', value: 1, name: 'ci_data_source_other', label: 'Other (please specify)' },
+                                        ]} />
+                                </div>
 
                                 <div className={classNames(submitted && errors.ci_data_source_other_specify && "has-error")}>
                                     <Reminder message="Required Field" disabled={!errors.ci_data_source_other_specify}>
@@ -717,18 +718,18 @@ const CancerInfoForm = ({ ...props }) => {
                                 </Form.Label>
                                 {submitted && errors.ci_tumor_genetic_markers_data && <span className="ml-3 text-danger">Required Field</span>}
 
-                                <CheckedInputs options={[
-                                    { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
-                                    { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes' },
-                                ]} />
+                                <div className="mb-3">
+                                    <CheckedInputs options={[
+                                        { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
+                                        { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
+                                    ]} />
+                                </div>
 
-                                <div className={classNames("mt-2", submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
-                                    <Form.Label htmlFor="ci_tumor_genetic_markers_data_describe" className="font-weight-normal">If yes, please describe</Form.Label>
+                                <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
                                     <Reminder message="Required Field" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
                                         <Form.Control
                                             as="textarea"
                                             className="resize-vertical"
-                                            id="ci_tumor_genetic_markers_data_describe"
                                             name="ci_tumor_genetic_markers_data_describe"
                                             aria-label="Do you have tumor genetic markers data? Please describe:"
                                             length="40"
