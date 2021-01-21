@@ -437,8 +437,9 @@ const CancerInfoForm = ({ ...props }) => {
                             onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
                             panelTitle="Cancer Counts">
                             <div className="my-3">
-                                <Form.Label>D.1 Cancer Counts</Form.Label>
-                                <div>Please enter the number of participants with these cancers by sex.</div>
+                                <Form.Label>
+                                    D.1 Please enter the number of participants with these cancers by sex.
+                                </Form.Label>
                             </div>
                             <div className="table-responsive mb-4">
                                 <Table bordered condensed className="table-valign-middle">
@@ -526,7 +527,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                             <Form.Group>
                                 <Form.Label className="required-label">
-                                    D.3 How were your cancer cases ascertained? <small>(Select all that apply)</small>
+                                    D.3 How were your cancer cases ascertained? (Select all that apply)
                                 </Form.Label>
                                 {submitted && errors.ci_ascertained_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -589,15 +590,19 @@ const CancerInfoForm = ({ ...props }) => {
                                 {submitted && errors.ci_cancer_treatment_data && <span className="ml-3 text-danger">Required Field</span>}
 
                                 <CheckedInputs options={[
-                                    { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No (skip the next two questions)' },
+                                    { value: 0, name: 'ci_cancer_treatment_data', type: 'radio', label: 'No' },
                                     { value: 1, name: 'ci_cancer_treatment_data', type: 'radio', label: 'Yes' },
                                 ]} />
-                            </Form.Group>
 
+                                <div className="mt-2">
+                                    If no, skip the next two questions, D.6a and D.6b
+                                </div>
+                            </Form.Group>
+                            
 
                             <Form.Group>
                                 <Form.Label className="required-label">
-                                    D.6a Specify the treatment information you have <small>(Select all that apply)</small>:
+                                    D.6a Specify the treatment information you have: (Select all that apply)
                                 </Form.Label>
                                 {submitted && errors.ci_treatment_data_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -634,7 +639,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                             <Form.Group>
                                 <Form.Label className="required-label">
-                                    D.6b Specify the data sources the treatment information is from <small>(Select all that apply)</small>:
+                                    D.6b Specify the data sources the treatment information is from: (Select all that apply)
                                 </Form.Label>
                                 {submitted && errors.ci_data_source_type && <span className="ml-3 text-danger">Required Field</span>}
 
@@ -714,14 +719,16 @@ const CancerInfoForm = ({ ...props }) => {
 
                                 <CheckedInputs options={[
                                     { value: 0, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'No' },
-                                    { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes (please describe)' },
+                                    { value: 1, name: 'ci_tumor_genetic_markers_data', type: 'radio', label: 'Yes' },
                                 ]} />
 
-                                <div className={classNames(submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                                <div className={classNames("mt-2", submitted && errors.ci_tumor_genetic_markers_data_describe && "has-error")}>
+                                    <Form.Label htmlFor="ci_tumor_genetic_markers_data_describe" className="font-weight-normal">If yes, please describe</Form.Label>
                                     <Reminder message="Required Field" disabled={!errors.ci_tumor_genetic_markers_data_describe}>
                                         <Form.Control
                                             as="textarea"
                                             className="resize-vertical"
+                                            id="ci_tumor_genetic_markers_data_describe"
                                             name="ci_tumor_genetic_markers_data_describe"
                                             aria-label="Do you have tumor genetic markers data? Please describe:"
                                             length="40"
@@ -752,7 +759,7 @@ const CancerInfoForm = ({ ...props }) => {
 
                             <Form.Group>
                                 <Form.Label>
-                                    D.11 Do you have histological and/or molecular cancer subtyping? <small>(Select all that apply)</small>
+                                    D.11 Do you have histological and/or molecular cancer subtyping? (Select all that apply)
                                 </Form.Label>
 
                                 <CheckedInputs options={[
