@@ -1848,10 +1848,6 @@ DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
 -- 4. publiication policy )
 
 
-update cohort_document set category = 0 where id > 0;
-update cohort_document set category = 0 where id > 0;
-
-
 /* ***************************************************************************/
 /*  Insert existing published cohorts into activity log                      */
 /* ***************************************************************************/
