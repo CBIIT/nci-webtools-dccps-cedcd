@@ -703,8 +703,9 @@ const SpecimenForm = ({ ...props }) => {
                 < Form.Group as={Row}>
                     <Form.Label column sm='12' >
                         {field.title} <span style={{ color: 'red' }}>{' '}*</span>
+                        {(errors[item[0].field_id] && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
                     </Form.Label>
-                    {(errors[item[0].field_id] && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
+
                     <Col sm='12' className='mb-0 pl-0' >
                         <Col sm='4'>
                             <RadioButtonInput {...item[0]} />
