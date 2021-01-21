@@ -599,7 +599,7 @@ const MajorContentForm = ({ ...props }) => {
                 {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
                     <span className="font-weight-normal text-danger ml-3">Required Field</span>}
             </Form.Label>
-            <div style={{ marginLeft: '-3rem' }}>{
+            <div style={{ marginLeft: '-3rem' }} className="mb-3">{
                 getMultiSelectList(
                     [
                         'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',

@@ -411,176 +411,7 @@ const CohortForm = ({ ...props }) => {
             dispatch(allactions.cohortErrorActions[fieldName](true))
         }
     }
-    /*
-        const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-            if(checkFourAges('enrollment_age_min', value)){
-                if(maxAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-            }
-            else if(maxAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
     
-                if(errors.enrollment_age_max && cohort.enrollment_age_max >= Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-                else if (cohort.enrollment_age_max < Math.max(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(cohort.enrollment_age_max, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
-                if(errors.enrollment_age_median && cohort.enrollment_age_median >= value && cohort.enrollment_age_median <= cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                else if(cohort.enrollment_age_median < value || cohort.enrollment_age_median > cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
-                if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= value && cohort.enrollment_age_mean <= cohort.enrollment_age_max )
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                else if(cohort.enrollment_age_mean < value || cohort.enrollment_age_mean > cohort.enrollment_age_max)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
-                
-            }
-        }
-    
-        const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-            if(checkFourAges('enrollment_age_max', value)){
-                if(!value || minAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-            }
-            else if(minAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-    
-                if(errors.enrollment_age_min && cohort.enrollment_age_min <= Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                else if (cohort.enrollment_age_min > Math.min(cohort.enrollment_age_median, cohort.enrollment_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.enrollment_age_min(false, getMinAgeValidationResult(cohort.enrollment_age_min, requiredOrNot, value, cohort.enrollment_age_median, cohort.enrollment_age_mean)))
-                if(errors.enrollment_age_median && cohort.enrollment_age_median >= cohort.enrollment_age_min && cohort.enrollment_age_median <= value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                else if(cohort.enrollment_age_median < cohort.enrollment_age_min || cohort.enrollment_age_median > value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_median(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_median, requiredOrNot, cohort.enrollment_age_min, value)))
-                if(errors.enrollment_age_mean && cohort.enrollment_age_mean >= cohort.enrollment_age_min && cohort.enrollment_age_mean <= value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                else if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > value)
-                    dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, getMeanMedianAgeValidationResult(cohort.enrollment_age_mean, requiredOrNot, cohort.enrollment_age_min, value)))
-                
-            }
-        }
-    
-        const populateCurrentMinAgeError = (value, requiredOrNot, maxAge, medianAge, meanAge) => {
-            let result  = 
-           if(checkFourAges('current_age_min', value)){
-                if(!value || maxAge && medianAge && meanAge){
-                    dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(value, requiredOrNot, maxAge, medianAge, meanAge)))
-    
-                }
-            }
-            else if(maxAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.current_age_min(true))
-    
-                if(errors.current_age_max && cohort.current_age_max >= Math.max(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_max(true))
-                else if (cohort.current_age_max < Math.max(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(cohort.current_age_max, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
-                if(errors.current_age_median && cohort.current_age_median >= value && cohort.current_age_median <= cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_median(true))
-                else if(cohort.current_age_median < value || cohort.current_age_median > cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
-                if(errors.current_age_mean && cohort.current_age_mean >= value && cohort.current_age_mean <= cohort.current_age_max )
-                    dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                else if(cohort.current_age_mean < value || cohort.current_age_mean > cohort.current_age_max)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
-                
-            } 
-        }
-    
-        const populateCurrentMaxAgeError = (value, requiredOrNot, minAge, medianAge, meanAge) => {
-            if(checkFourAges('current_age_max', value)){
-                if(!value || minAge && medianAge && meanAge)
-                    dispatch(allactions.cohortErrorActions.current_age_max(false, getMaxAgeValidationResult(value, requiredOrNot, minAge, medianAge, meanAge)))
-            }
-            else if(minAge && medianAge && meanAge){
-                dispatch(allactions.cohortErrorActions.current_age_max(true))
-    
-                if(errors.current_age_min && cohort.current_age_min <= Math.min(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_min(true))
-                else if (cohort.current_age_min > Math.min(cohort.current_age_median, cohort.current_age_mean, value))
-                    dispatch(allactions.cohortErrorActions.current_age_min(false, getMinAgeValidationResult(cohort.current_age_min, requiredOrNot, value, cohort.current_age_median, cohort.current_age_mean)))
-                if(errors.current_age_median && cohort.current_age_median >= cohort.current_age_min && cohort.current_age_median <= value)
-                    dispatch(allactions.cohortErrorActions.current_age_median(true))
-                else if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > value)
-                    dispatch(allactions.cohortErrorActions.current_age_median(false, getMeanMedianAgeValidationResult(cohort.current_age_median, requiredOrNot, cohort.current_age_min, value)))
-                if(errors.current_age_mean && cohort.current_age_mean >= cohort.current_age_min && cohort.current_age_mean <= value)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                else if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > value)
-                    dispatch(allactions.cohortErrorActions.current_age_mean(false, getMeanMedianAgeValidationResult(cohort.current_age_mean, requiredOrNot, cohort.current_age_min, value)))
-                
-            }
-        }
-    
-    
-    
-        const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-            if(checkFourAges(fieldName, value)){ //if there is an error dispatch it
-                dispatch(allactions.cohortErrorActions[fieldName](false, getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)))
-            }else{ //if there is no error
-                dispatch(allactions.cohortErrorActions[fieldName](true))
-                if(fieldName.includes('enrollment')){
-                    if(fieldName.includes('median')) {
-                        dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-                        if(cohort.enrollment_age_mean < cohort.enrollment_age_min || cohort.enrollment_age_mean > cohort.enrollment_age_max)
-                            dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, 'Out of age range'))
-                    }
-                    else {
-                        dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-                        dispatch(allactions.cohortErrorActions.enrollment_age_max(true));
-                        if(cohort.enrollment_age_median < cohort.enrollment_age_min && cohort.enrollment_age_median > cohort.enrollment_age_max) 
-                            dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Out of age range'));     
-                    }
-                }else{
-                    if(fieldName.includes('median')) {
-                        dispatch(allactions.cohortErrorActions.current_age_min(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_max(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_median(true))
-                        if(cohort.current_age_mean < cohort.current_age_min || cohort.current_age_mean > cohort.current_age_max)
-                            dispatch(allactions.cohortErrorActions.current_age_mean(false, 'Out of age range'))
-                    }
-                    else {
-                        dispatch(allactions.cohortErrorActions.current_age_min(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_max(true)); 
-                        dispatch(allactions.cohortErrorActions.current_age_mean(true))
-                        if(cohort.current_age_median < cohort.current_age_min || cohort.current_age_median > cohort.current_age_max)
-                            dispatch(allactions.cohortErrorActions.current_age_median(false, 'Out of age range'))
-                    }
-                }
-            }
-        }
-    
-        const checkFourAges = (currentKey, currentValue)=>{
-            let checkWithError = false //assume no error at first
-            if(!currentValue) return true
-            if(currentKey.includes('enrollment')){
-                if(currentKey.includes('min')) //enrollment_age_min
-                    checkWithError |= currentValue > Math.min(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                else if(currentKey.includes('max'))
-                    checkWithError |= currentValue < Math.max(cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                else if(currentKey.includes('median') || currentKey.includes('mean'))
-                    checkWithError |= currentValue < cohort.enrollment_age_min || currentValue > cohort.enrollment_age_max
-            }else{
-                if(currentKey.includes('min')){//current_age_min
-                    if(cohort.current_age_max && cohort.current_age_median && cohort.current_age_mean)
-                        checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                    else if (cohort.current_age_max && cohort.current_age_median) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_median)
-                    else if(cohort.current_age_median && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_mean, cohort.current_age_median)
-                    else if (cohort.current_age_max && cohort.current_age_mean) checkWithError |= currentValue > Math.min(cohort.current_age_max, cohort.current_age_mean)
-                    else if (cohort.current_age_max) checkWithError |= currentValue > cohort.current_age_max
-                }
-                else if(currentKey.includes('max'))
-                    checkWithError |= currentValue < Math.max(cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                else if(currentKey.includes('median') || currentKey.includes('mean'))
-                    checkWithError |= currentValue < cohort.current_age_min || currentValue > cohort.current_age_max
-            }
-    
-            return checkWithError
-        }
-    
-        */
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -1370,14 +1201,14 @@ const CohortForm = ({ ...props }) => {
                             panelTitle="Principal Investigators">
 
                             {/* A.5 Cohort Principal Investigator(s) */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
+                            <Form.Group as={Row} className="mb-2">
+                                <Form.Label column sm="6">
                                     A.5 Cohort Principal Investigator(s)
                                 </Form.Label>
-                                <Col sm="12">
+                                <Col sm="6">
                                     <Button
                                         variant="primary"
-                                        className="col-lg-2 col-md-6"
+                                        className="float-right"
                                         disabled={isReadOnly}
                                         onClick={e => {
                                             e.preventDefault();
@@ -1390,6 +1221,9 @@ const CohortForm = ({ ...props }) => {
                                         Add New Investigator
                                     </Button>
                                 </Col>
+                            </Form.Group>
+                            <Form.Group as={Row}>
+                                {/* </Col> */}
                                 {
                                     cohort.investigators.map((item, idx) =>
                                         <Col className="mb-1" sm="12" key={'investigator_key_' + idx}>
@@ -1577,7 +1411,7 @@ const CohortForm = ({ ...props }) => {
                                     <Form.Label column sm="12" style={{ fontWeight: 'normal' }}>
                                         Baseline population consists of
                                     </Form.Label>
-                                    <Col sm="12">
+                                    <Col sm="12" className="mb-3">
                                         <div key="checkbox">
                                             <Form.Check type="checkbox"
                                                 className="pl-0"
@@ -2211,7 +2045,7 @@ const CohortForm = ({ ...props }) => {
                                             <Form.Control type="text" className='text-capitalize'
                                                 style={{ color: 'red', border: '1px solid red' }}
                                                 placeholder='Max of 200 characters'
-                                                maxLength='200' c
+                                                maxLength='200'
                                                 name='time_interval'
                                                 value={cohort.time_interval}
                                                 onChange={e =>
@@ -2283,7 +2117,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-collected-in-person"
@@ -2372,7 +2206,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
+                                                    cohort.data_collected_other && populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.data_collected_other} />
                                         </Reminder> :
@@ -2385,7 +2219,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.data_collected_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
+                                                cohort.data_collected_other && populateErrors('data_collected_other_specify', cohort.data_collected_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.data_collected_other || isReadOnly} />
                                     }
@@ -2403,7 +2237,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-require-none"
@@ -2536,7 +2370,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
+                                                    cohort.restrictOther && populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.restrictOther} />
                                         </Reminder> :
@@ -2549,7 +2383,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.restrictions_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
+                                                cohort.restrictOther && populateErrors('restrictions_other_specify', cohort.restrictions_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.restrictOther || isReadOnly} />
                                     }
@@ -2567,7 +2401,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Form.Label>
                                 <Col sm="12">
-                                    <div key="checkbox">
+                                    <div key="checkbox" className="mb-3">
                                         <Form.Check type="checkbox"
                                             className="pl-0"
                                             id="default-strategy-routine"
@@ -2705,7 +2539,7 @@ const CohortForm = ({ ...props }) => {
                                                     !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                                 }
                                                 onBlur={() =>
-                                                    populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
+                                                    cohort.strategy_other && populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                                 }
                                                 disabled={!cohort.strategy_other} />
                                         </Reminder> :
@@ -2718,7 +2552,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && dispatch(allactions.cohortActions.strategy_other_specify(e.target.value))
                                             }
                                             onBlur={() =>
-                                                populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
+                                                cohort.strategy_other && populateErrors('strategy_other_specify', cohort.strategy_other_specify, true, 'string')
                                             }
                                             readOnly={!cohort.strategy_other || isReadOnly} />
                                     }
@@ -2761,13 +2595,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='questionnaire_url'
                                                                                         id="questionnaire_url"
                                                                                         readOnly={isReadOnly}
@@ -2864,7 +2698,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.questionnaireFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.questionnaireFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -2914,13 +2748,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='main_cohort_url'
                                                                                         id="main_cohort_url"
                                                                                         readOnly={isReadOnly}
@@ -3016,7 +2850,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.mainFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.mainFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3066,13 +2900,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='data_url'
                                                                                         id="data_url"
                                                                                         readOnly={isReadOnly}
@@ -3168,7 +3002,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.dataFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.dataFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3218,13 +3052,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='specimen_url'
                                                                                         id="specimen_url"
                                                                                         readOnly={isReadOnly}
@@ -3320,7 +3154,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.specimenFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.specimenFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3370,13 +3204,13 @@ const CohortForm = ({ ...props }) => {
                                                                     <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Web Url</th>
                                                                     <td>
                                                                         <Row className="w-100">
-                                                                            <Col sm="12">
+                                                                            <Col xs="12">
                                                                                 {
 
                                                                                     !isReadOnly &&
                                                                                     <Button
                                                                                         variant="primary"
-                                                                                        className="col-lg-2 col-md-6"
+                                                                                        bsPrefix
                                                                                         name='publication_url'
                                                                                         id="publication_url"
                                                                                         readOnly={isReadOnly}
@@ -3472,7 +3306,7 @@ const CohortForm = ({ ...props }) => {
                                                                                 }
                                                                                 {cohort.publicationFileName.length > 0 && (
                                                                                     <span>
-                                                                                        {cohort.publicationFileName[0].filename}
+                                                                                        <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                         {!isReadOnly &&
                                                                                             <>
                                                                                                 {' '}(
@@ -3530,16 +3364,15 @@ const CohortForm = ({ ...props }) => {
                                                 <tr>
                                                     <td className="bg-light-grey">Questionnaires</td>
 
-                                                    <td>
+                                                    <td style={{verticalAlign: 'middle'}}>
                                                         <Row className="w-100">
 
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
-
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='questionnaire_url'
                                                                         id="questionnaire_url"
                                                                         readOnly={isReadOnly}
@@ -3635,7 +3468,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.questionnaireFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.questionnaireFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3677,13 +3510,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Main cohort protocol</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='main_cohort_url'
                                                                         id="main_cohort_url"
                                                                         readOnly={isReadOnly}
@@ -3695,7 +3528,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.main_cohort_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -3777,7 +3610,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.mainFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.mainFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3819,13 +3652,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Data sharing policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='data_url'
                                                                         id="data_url"
                                                                         readOnly={isReadOnly}
@@ -3837,7 +3670,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.data_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -3918,7 +3751,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.dataFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.dataFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -3960,13 +3793,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Biospecimen sharing policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='specimen_url'
                                                                         id="specimen_url"
                                                                         readOnly={isReadOnly}
@@ -3978,7 +3811,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.specimen_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -4059,7 +3892,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.specimenFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.specimenFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
@@ -4100,13 +3933,13 @@ const CohortForm = ({ ...props }) => {
                                                     <td className="bg-light-grey">Publication(authorship) policy</td>
                                                     <td>
                                                         <Row className="w-100">
-                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "5" : "1"} className="pr-0">
+                                                            <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                                 {
 
                                                                     !isReadOnly &&
                                                                     <Button
                                                                         variant="primary"
-                                                                        className="col-lg-2 col-md-6"
+                                                                        bsPrefix
                                                                         name='publication_url'
                                                                         id="publication_url"
                                                                         readOnly={isReadOnly}
@@ -4118,7 +3951,7 @@ const CohortForm = ({ ...props }) => {
 
                                                                 }
                                                             </Col>
-                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} lg={!isReadOnly ? "7" : "11"}>
+                                                            <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                                 {cohort.publication_url.length === 0 && (
                                                                     <span>
                                                                         No URL(s) entered
@@ -4199,7 +4032,7 @@ const CohortForm = ({ ...props }) => {
                                                                 }
                                                                 {cohort.publicationFileName.length > 0 && (
                                                                     <span>
-                                                                        {cohort.publicationFileName[0].filename}
+                                                                        <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                         {!isReadOnly &&
                                                                             <>
                                                                                 {' '}(
