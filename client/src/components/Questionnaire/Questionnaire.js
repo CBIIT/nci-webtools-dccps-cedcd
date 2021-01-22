@@ -55,7 +55,7 @@ const Questionnaire = ({ ...props }) => {
 
     return <div className="w-100">
         <QuestionnaireHeader activeSection={current} handler={setCurrent} isReadOnly={props.isReadOnly} />
-        <Content isReadOnly={props.isReadOnly} sectionPicker={setCurrent} cohortId={+id} />
+        <Content isReadOnly={props.isReadOnly || /review|submitted/i.test(cohort.status)} sectionPicker={setCurrent} cohortId={+id} />
     </div>;
 }
 
