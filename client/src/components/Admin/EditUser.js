@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory } from "react-router-dom";
+import { useHistory, NavLink } from "react-router-dom";
 import Select from 'react-select';
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
@@ -213,7 +212,7 @@ const EditUser = ({ ...props }) => {
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
-            
+
             if (JSON.stringify(initial) !== JSON.stringify(userInfo)) {
                 setInitial(userInfo)
                 const saveData = async function () {
@@ -286,6 +285,12 @@ const EditUser = ({ ...props }) => {
             <div id="editUserForm" className="row pop-form col-md-12">
                 <div id="edituser-main" className="col">
                     <div id="edituser-header" className="col-md-12">
+                        <p className="welcome p-0">
+                            <NavLink to="/admin/manageuser">
+                                <i className="fas fa-chevron-left mr-2" />
+                    Back to Manage Users
+                </NavLink>
+                        </p>
                         {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                     </div>
                     {nonExistUser ? <div className="col-md-12 col-6">
