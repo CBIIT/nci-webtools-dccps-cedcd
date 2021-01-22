@@ -93,15 +93,16 @@ router.post('/upload/:id/:category', function (req, res, next) {
             //logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
-            fs.access(`${config.file_path}/CohortID_${returnedData.new_ID}`, (err) => {
+            const acronym = result[2][0].acronym
+            fs.access(`${config.file_path}/${acronym}`, (err) => {
                 if (err) {
-                    fs.mkdirSync(`${config.file_path}/CohortID_${returnedData.new_ID}`, { recursive: true }, (err) => {
+                    fs.mkdirSync(`${config.file_path}/${acronym}`, { recursive: true }, (err) => {
                         logger.debug(err.message)
                         if (err) res.json({ status: 500 })
                     });
                 }
-                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${f.name}`) })
-                else cohortFiles.mv(`${config.file_path}/CohortID_${returnedData.new_ID}/${cohortFiles.name}`)
+                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${acronym}/${f.name}`) })
+                else cohortFiles.mv(`${config.file_path}/${acronym}/${cohortFiles.name}`)
             })
             res.json({ status: 200, data: returnedData })
         }
@@ -119,9 +120,11 @@ router.post('/deleteFile', function (req, res) {
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             if (Array.isArray(result[1])) {
+                /*
                 fs.unlink(`${config.file_path}/CohortID_${cohort_ID}/${currentFile}`, (err => {
                     if (err) console.log(err);
                 }))
+                */
                 res.json({ status: 200, data: result[1][0].new_id })
             }
             else
