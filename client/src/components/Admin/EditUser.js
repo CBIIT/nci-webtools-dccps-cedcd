@@ -105,7 +105,7 @@ const EditUser = ({ ...props }) => {
                         user_role: data.user_role,
                         active_status: data.activeStatus,
                         active_status: data.active_status,
-                        cohort_list: initialAcronym
+                        cohort_list: initialAcronym.sort()
                     })
 
                     console.log(JSON.stringify(initial))
@@ -207,8 +207,11 @@ const EditUser = ({ ...props }) => {
             user_role: userRole,
             active_status: activeStatus,
             cohort_list: cohortList ? Object.values(cohortList).map((item, idx) => item.label) : [],
-
         }
+
+        userInfo.cohort_list.sort()
+        console.log(initial)
+        console.log(userInfo)
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
