@@ -1480,3 +1480,7 @@ input[type=number] {
 .c-pointer {
   cursor: pointer !important;
 }
+
+.resize-disabled {
+  resize: none;
+}

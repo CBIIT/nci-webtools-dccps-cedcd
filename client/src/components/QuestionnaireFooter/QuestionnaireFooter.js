@@ -13,8 +13,9 @@ export default function QuestionnaireFooter({
     handleSaveContinue,
     handleSubmitForReview,
 }) {
+    const user = useSelector(state => state.user);
     const section = useSelector(state => state.sectionReducer);
-    const cohortStatus = useSelector(state => state.cohortStatusReducer);
+    const cohortStatus = useSelector(state => state.cohort.status);
     const saveDisabled = ['submitted', 'in review'].includes(cohortStatus);
     const sectionsIncomplete = [section.A, section.B, section.C, section.D, section.E, section.F, section.G].some(status => status !== 'complete');
     const submitForReviewDisabled = (
@@ -62,7 +63,7 @@ export default function QuestionnaireFooter({
 
         <div className="w-100 d-block d-lg-none mb-2" />
 
-        {isAdmin ? <>
+        {(isAdmin && /SystemAdmin/.test(user.role)) ? <>
             <Button 
                 variant="primary" 
                 className="col-lg-2 col-md-6" 

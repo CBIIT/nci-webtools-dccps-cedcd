@@ -254,9 +254,6 @@ const EditUser = ({ ...props }) => {
         copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
 
-        if ((isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
-            if (existingList.some(item => item.email === userEmail)) copy.email_error = 'Existing email'
-        }
         if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
             if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
         }
