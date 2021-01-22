@@ -2703,7 +2703,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(

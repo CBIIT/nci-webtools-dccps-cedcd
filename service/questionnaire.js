@@ -90,7 +90,7 @@ router.post('/upload/:id/:category', function (req, res, next) {
     mysql.callJsonProcedure(proc, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             const returnedData = {}
-            //logger.debug(result[2])
+            logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
             const acronym = result[2][0].acronym
