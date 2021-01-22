@@ -825,6 +825,7 @@ const SpecimenForm = ({ ...props }) => {
                         value={rejectionModal.notes}
                         onChange={ev => updateRejectionModal({ notes: ev.target.value })}
                         placeholder="Max of 250 Characters"
+                        className="resize-disabled"
                         maxLength={250}
                     />
                 </Form.Group>}
