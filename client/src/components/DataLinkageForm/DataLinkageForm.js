@@ -217,7 +217,7 @@ const DataLinkageForm = ({ ...props }) => {
                 if (dataLinkage.dataOnlineURL.length > 200)
                     copy.dataOnlineURL = 'Cannot exceed 200 characters'
                 else {
-                    copy.dataOnlineURL = validator.urlValidator(dataLinkage.dataOnlineURL, true)
+                    copy.dataOnlineURL = ''
                 }
             }
             else {
