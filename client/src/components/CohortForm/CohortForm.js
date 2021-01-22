@@ -1511,7 +1511,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='YYYY'
                                                 value={cohort.enrollment_year_start}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                    !isReadOnly && e.target.value.length <=4 &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                                 }
                                                 onBlur={e =>
                                                     populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
@@ -1523,7 +1523,7 @@ const CohortForm = ({ ...props }) => {
                                             placeholder='YYYY'
                                             value={cohort.enrollment_year_start}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
+                                                !isReadOnly && e.target.value.length <=4 &&  dispatch(allactions.cohortActions.enrollment_year_start(e.target.value))
                                             }
                                             onBlur={e =>
                                                 populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
@@ -1546,7 +1546,7 @@ const CohortForm = ({ ...props }) => {
                                                 value={cohort.enrollment_year_end}
                                                 onChange={e => {
                                                     if (!isReadOnly) {
-                                                        dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                        e.target.value.length <=4 && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                         if (/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <= (new Date()).getFullYear()) {
                                                             batch(() => {
                                                                 dispatch(allactions.cohortActions.enrollment_ongoing(0))
@@ -1571,7 +1571,7 @@ const CohortForm = ({ ...props }) => {
                                             value={cohort.enrollment_year_end}
                                             onChange={e => { // if it is already ended turn off on going
                                                 if (!isReadOnly) {
-                                                    dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
+                                                    e.target.value.length <=4 && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                     if (/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <= (new Date()).getFullYear()) {
                                                         batch(() => {
                                                             dispatch(allactions.cohortActions.enrollment_ongoing(0))
@@ -1751,7 +1751,7 @@ const CohortForm = ({ ...props }) => {
                                                 placeholder='YYYY'
                                                 value={cohort.enrollment_year_complete}
                                                 onChange={e =>
-                                                    dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                    !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                                 }
                                                 onBlur={e => {
                                                     if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -1764,7 +1764,7 @@ const CohortForm = ({ ...props }) => {
                                             placeholder='YYYY'
                                             value={cohort.enrollment_year_complete}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                                !isReadOnly &&  e.target.value.length <=4 && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
                                             }
                                             onBlur={e => {
                                                 if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
@@ -2005,7 +2005,7 @@ const CohortForm = ({ ...props }) => {
                                                 name='current_age_mean'
                                                 value={cohort.current_age_mean}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                    !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                                 }
                                                 onBlur={e =>
                                                     populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
@@ -2084,7 +2084,7 @@ const CohortForm = ({ ...props }) => {
                                             name='most_recent_year'
                                             value={cohort.most_recent_year}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                             }
                                             placeholder='YYYY'
                                             onBlur={e =>
@@ -2095,7 +2095,7 @@ const CohortForm = ({ ...props }) => {
                                         name='most_recent_year'
                                         value={cohort.most_recent_year}
                                         onChange={e =>
-                                            !isReadOnly && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                            !isReadOnly &&  e.target.value.length <=4 && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
                                         }
                                         placeholder='YYYY'
                                         onBlur={e =>
