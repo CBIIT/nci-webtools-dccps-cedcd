@@ -146,9 +146,11 @@ var callJsonProcedure = function(func, params, next){
           next(null);
 		}
 		const placeholders = params.map(_ => '?').join(',');
-		const sql = `call ${func} (${placeholders})`;
-        logger.debug('sql: ' + sql);
-        connection.query(sql, params, function(err_1, rows){
+		const sql = `call ?? (${placeholders})`;
+		logger.debug('sql: ' + sql);
+		logger.debug('func: ' + func);
+		logger.debug('params: ' + params);
+        connection.query(sql, [func, ...params], function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
@@ -168,9 +170,11 @@ var callProcedure = function(func, params, next){
           next(null);
         }
 		const placeholders = params.map(_ => '?').join(',');
-		const sql = `call ${func} (${placeholders})`;
-        logger.debug('sql: ' + sql);
-        connection.query(sql, params, function(err_1, rows){
+		const sql = `call ?? (${placeholders})`;
+		logger.debug('sql: ' + sql);
+		logger.debug('func: ' + func);
+		logger.debug('params: ' + params);
+        connection.query(sql, [func, ...params], function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
