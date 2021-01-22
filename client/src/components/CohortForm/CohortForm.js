@@ -33,7 +33,7 @@ const CohortForm = ({ ...props }) => {
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const userSession = useSelector(state => state.user);
     const dispatch = useDispatch()
-    const isReadOnly = props.isReadOnly || false
+    const isReadOnly = props.isReadOnly || ['submitted'].includes(cohortStatus) || false
     const errorMsg = 'Required Field'
 
     const [QfileLoading, setQfileLoading] = useState(false)
