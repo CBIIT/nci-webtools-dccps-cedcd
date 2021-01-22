@@ -1,4 +1,5 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
+import { NavLink } from 'react-router-dom';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
@@ -293,18 +294,24 @@ class AddNewCohort extends Component {
         <div id="newCohortForm" className="row pop-form">
           <div id="contact-main" className="col">
             <div id="contactt-header" className="col-md-12">
+              <p className="welcome p-0">
+                <NavLink to="/admin/managecohort">
+                  <i className="fas fa-chevron-left mr-2" />
+                    Back to Manage Cohorts
+                </NavLink>
+              </p>
               <h1 className="pg-title">Add New Cohort</h1>
             </div>
             <div id="contact-col-1" className="col-md-6 contact-col">
               <Form onSubmit={this.handleSubmit}>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                 <Form.Group id="ctl11_div_cohortName">
-                  <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name<span style={{color:'red'}}>*</span></Form.Label>
+                  <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.name_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.name_error}</Form.Label>}
                   <input className="form-control" placeholder="Max of 500 characters" name="cu_firstName" type="text" id="cu_firstName" value={this.state.cohortName} onChange={(e) => this.handleChange("cohortName", e)} />
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortAcronym">
-                  <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{color:'red'}}>*</span></Form.Label>
+                  <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.acronym_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.acronym_error}</Form.Label>}
                   <input className="form-control" placeholder="Max of 100 characters" name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
                 </Form.Group>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useHistory } from "react-router-dom";
+import { useHistory, NavLink } from "react-router-dom";
 import Select from 'react-select';
 import validator from '../../validators'
 import Messenger from '../Snackbar/Snackbar'
@@ -32,6 +31,7 @@ const EditUser = ({ ...props }) => {
     const [userEmail, setUserEmail] = useState('');
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState('');
+    const [initial, setInitial] = useState({});
 
     const isNew = props.isNew;
 
@@ -80,6 +80,7 @@ const EditUser = ({ ...props }) => {
                     setUserName(data.user_name || '')
                     setUserRole(data.user_role)
                     setActiveStatus(data.active_status)
+                    const initialAcronym = []
                     if (data.cohort_list) {
 
                         const list = data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item }))
@@ -88,12 +89,26 @@ const EditUser = ({ ...props }) => {
                         list.map((cohort) => {
 
                             const object = allCohorts.find(item => item.value === cohort.value)
+                            initialAcronym.push(object.value)
                             toAdd.push(object)
                         })
 
                         setCohortList(toAdd)
                     }
                     setCurrentUser({ email: data.email, user_name: data.user_name })
+
+                    setInitial({
+                        email: data.email,
+                        first_name: data.first_name,
+                        last_name: data.last_name,
+                        user_name: data.user_name,
+                        user_role: data.user_role,
+                        active_status: data.activeStatus,
+                        active_status: data.active_status,
+                        cohort_list: initialAcronym
+                    })
+
+                    console.log(JSON.stringify(initial))
                 }
             } else {
                 setNonExistUser(true)
@@ -190,29 +205,36 @@ const EditUser = ({ ...props }) => {
             last_name: lastName,
             user_name: userName,
             user_role: userRole,
+            active_status: activeStatus,
             cohort_list: cohortList ? Object.values(cohortList).map((item, idx) => item.label) : [],
-            active_status: activeStatus
+
         }
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
-            const saveData = async function () {
-                const result = await fetch(`/api/managecohort/updateUserProfile/${uid}`, {
-                    method: "POST",
-                    body: JSON.stringify(userInfo),
-                    headers: {
-                        'Content-Type': 'application/json'
+
+            if (JSON.stringify(initial) !== JSON.stringify(userInfo)) {
+                setInitial(userInfo)
+                const saveData = async function () {
+                    const result = await fetch(`/api/managecohort/updateUserProfile/${uid}`, {
+                        method: "POST",
+                        body: JSON.stringify(userInfo),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(res => res.json());
+                    if (result.status === 200) {
+                        setSuccessMsg(true)
+                        sendEmail()
+                        if (isNew) resetState()
+                    } else {
+                        setFailureMsg(true)
                     }
-                }).then(res => res.json());
-                if (result.status === 200) {
-                    setSuccessMsg(true)
-                    sendEmail()
-                    if (isNew) resetState()
-                } else {
-                    setFailureMsg(true)
-                }
-            };
-            saveData();
+                };
+                saveData();
+            }
+            else
+                setSuccessMsg(true)
         }
         else {
             setModalShow(true)
@@ -263,6 +285,12 @@ const EditUser = ({ ...props }) => {
             <div id="editUserForm" className="row pop-form col-md-12">
                 <div id="edituser-main" className="col">
                     <div id="edituser-header" className="col-md-12">
+                        <p className="welcome p-0">
+                            <NavLink to="/admin/manageuser">
+                                <i className="fas fa-chevron-left mr-2" />
+                    Back to Manage Users
+                </NavLink>
+                        </p>
                         {isNew ? <h1 className="pg-title">Add User </h1> : <h1 className="pg-title"> Edit User </h1>}
                     </div>
                     {nonExistUser ? <div className="col-md-12 col-6">
@@ -276,7 +304,7 @@ const EditUser = ({ ...props }) => {
                             <Form>
                                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
                                 <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
                                         <input className="form-control" name="user_userName" type="text" placeholder='Max of 100 characters'
@@ -285,7 +313,7 @@ const EditUser = ({ ...props }) => {
                                     </span>
                                 </Form.Group>
                                 <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span style={{color:'red'}}>*</span></Form.Label>
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.email_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.email_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
                                         placeholder='Valid email address' maxLength="100"
@@ -297,7 +325,7 @@ const EditUser = ({ ...props }) => {
                                 </Form.Group>
 
                                 <Form.Group id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_lastName" style={{ paddingLeft: '0' }}>Last Name<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.lastName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.lastName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_lastName" type="text" placeholder='Max of 50 characters'
                                         id="user_lastName" value={lastName} maxLength="50"
@@ -305,7 +333,7 @@ const EditUser = ({ ...props }) => {
                                     </span>
                                 </Form.Group>
                                 <Form.Group id="ctl11_div_firstName" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span style={{color:'red'}}>*</span></Form.Label>
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_firstName" style={{ paddingLeft: '0' }}>First Name<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.firstName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.firstName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_firstName" type="text" placeholder='Max of 50 characters'
                                         id="user_firstName" value={firstName} maxLength="50"
@@ -313,7 +341,7 @@ const EditUser = ({ ...props }) => {
                                     </span>
                                 </Form.Group>
                                 <Form.Group id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{color:'red'}}>*</span></Form.Label>
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userRole_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userRole_error}</Form.Label>}
                                     <Col sm="6" className="align-self-center">
                                         <Form.Check type='radio' inline>
@@ -372,16 +400,16 @@ const EditUser = ({ ...props }) => {
                                     </div>
                                 </Form.Group>
                                 <div className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
-                                    <Button 
+                                    <Button
                                         variant="primary"
-                                        value="Save" 
+                                        value="Save"
                                         className="col-lg-2 col-md-6 float-right"
                                         onClick={handleSave}>
                                         Save
                                     </Button>
-                                    <Button 
-                                        variant="secondary" 
-                                        className="col-lg-2 col-md-6 float-right" 
+                                    <Button
+                                        variant="secondary"
+                                        className="col-lg-2 col-md-6 float-right"
                                         onClick={goBack}>
                                         Cancel
                                     </Button>
