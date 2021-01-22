@@ -39,25 +39,8 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
     return (
         <Form id={id}>
             <Col sm="12" className="py-3 px-0" style={{ border: '1px solid lightgray' }}>
-                <Col sm="6" className="p-0">
-                    {/* {idx !== '0' ? 
-                        <Col sm="12" className="inspectorheader">
-                            <span className="inspectorClose position-absolute" style={{ color: 'blue' }} 
-                                onClick={() => handleRemove(idx)}>
-                                Remove
-                            </span>
-                        </Col> : 
-                        <Col sm="12" className="inspectorheader"></Col>
-                    } */}
+                <Col sm="6" className="pl-0">
                     <Form.Group as={Row} className="mb-1">
-                        {/* {(idx !== '0' && !disabled) && 
-                            <Col sm={{ order: 'last', span: 5 }} className="align-self-center">
-                                <span className="inspectorClose float-right" style={{ color: 'blue' }} 
-                                    onClick={() => handleRemove(idx)}>
-                                    Remove
-                                </span>
-                            </Col>
-                        } */}
                         <Form.Label column sm="6" style={{ fontWeight: 'normal' }}>
                             <span className="pl-3">Name<span style={{ color: 'red' }}>*</span></span>
                         </Form.Label>

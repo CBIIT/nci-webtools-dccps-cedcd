@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import React, { useState, useEffect, useContext } from 'react';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import allactions from '../../actions'
-import validator from '../../validators'
-import Person from './Person/Person'
-import Investigator from './Investigator/Investigator'
+import allactions from '../../actions';
+import validator from '../../validators';
+import Person from './Person/Person';
+import Investigator from './Investigator/Investigator';
 import DatePicker from 'react-datepicker';
-import Messenger from '../Snackbar/Snackbar'
-import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../controls/modal/modal'
-import FileModal from '../controls/modal/FileModal.js'
+import Messenger from '../Snackbar/Snackbar';
+import Reminder from '../Tooltip/Tooltip';
+import CenterModal from '../controls/modal/modal';
+import ReviewModal from '../controls/modal/modal';
+import FileModal from '../controls/modal/FileModal.js';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
-import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 import "react-datepicker/dist/react-datepicker.css";
-import './CohortForm.scss'
-import cohortErrorActions from '../../actions/cohortErrorActions'
+import './CohortForm.scss';
+import cohortErrorActions from '../../actions/cohortErrorActions';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -45,6 +45,7 @@ const CohortForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
+    const [reviewModalShow, setReviewModalShow] = useState(false)
     const [fileModal, setFileModal] = useState(false)
     const [urlModal, setUrlModal] = useState(false)
     const [proceed, setProceed] = useState(false)
@@ -292,6 +293,10 @@ const CohortForm = ({ ...props }) => {
             setModalShow(true)
             setProceed(true)
         }
+    }
+
+    const handleSubmitForReview = () => {
+        setReviewModalShow(true);
     }
 
     const sendEmail = (template, topic) => {
@@ -840,7 +845,36 @@ const CohortForm = ({ ...props }) => {
                 handleClose={() =>
                     setModalShow(false)
                 }
-                handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay}
+                handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
+
+            <ReviewModal show={reviewModalShow}
+                title={
+                    <span>
+                        Submit for Review
+                    </span>
+                }
+                body={
+                    <span>
+                        This cohort questionnaire will be locked against further modifications 
+                        once you submit it for review. Are you sure you want to continue?                  
+                    </span>
+                }
+                footer={
+                    <div>
+                        <Button 
+                            variant="secondary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => setReviewModalShow(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => resetCohortStatus(cohortID, 'submitted')}>
+                            Submit
+                        </Button>
+                    </div>
+                }
             />
 
             <FileModal show={urlModal}
@@ -1554,8 +1588,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
                                                         }
                                                     }
@@ -1579,8 +1613,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                            //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         })
                                                     }
                                                 }
@@ -1617,6 +1651,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             }
                                                         }
                                                         } />
@@ -1642,6 +1678,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         }
                                                     }
                                                     } />
@@ -4092,7 +4130,7 @@ const CohortForm = ({ ...props }) => {
                 handleNext={_ => props.sectionPicker('B')}
                 handleSave={handleSave}
                 handleSaveContinue={handleSaveContinue}
-                handleSubmitForReview={_ => resetCohortStatus(cohortID, 'submitted')}
+                handleSubmitForReview={handleSubmitForReview}
                 handleApprove={false}
                 handleReject={false} />
 
