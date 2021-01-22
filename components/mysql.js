@@ -145,27 +145,10 @@ var callJsonProcedure = function(func, params, next){
           logger.error(err);
           next(null);
 		}
-		let sql = "CALL "+func+"(";
-        params.forEach(function(p){
-        	let t = typeof p;
-          if(t === "string"){
-            p = p.replace(/'/g,"''");
-            sql += "'"+p+"',";
-          }
-          else if(t === "number"){
-            sql += ""+p+",";
-          }
-          else{
-            sql += "'"+p+"',";
-          }
-        });
-        
-        if(params.length > 0){
-          sql = sql.substring(0, sql.length -1);
-        }
-        sql += ")";
+		const placeholders = params.map(_ => '?').join(',');
+		const sql = `call ${func} (${placeholders})`;
         logger.debug('sql: ' + sql);
-        connection.query(sql,function(err_1, rows){
+        connection.query(sql, params, function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
@@ -184,28 +167,10 @@ var callProcedure = function(func, params, next){
           logger.error(err);
           next(null);
         }
-
-        let sql = "CALL "+func+"(";
-        params.forEach(function(p){
-        	let t = typeof p;
-          if(t === "string"){
-            p = p.replace(/'/g,"''");
-            sql += '"'+p+'",';
-          }
-          else if(t === "number"){
-            sql += ""+p+",";
-          }
-          else{
-            sql += '"'+p+'",';
-          }
-        });
-        
-        if(params.length > 0){
-          sql = sql.substring(0, sql.length -1);
-        }
-        sql += ")";
+		const placeholders = params.map(_ => '?').join(',');
+		const sql = `call ${func} (${placeholders})`;
         logger.debug('sql: ' + sql);
-        connection.query(sql,function(err_1, rows){
+        connection.query(sql, params, function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
