@@ -374,7 +374,11 @@ DROP PROCEDURE IF EXISTS `select_cohort_description` //
 
 CREATE PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
-	select * from cohort_basic where cohort_id = c_id;
+	select a.*,  dlh_procedure_online as request_procedures_none,
+      dlh_procedure_website as request_procedures_web,
+      dlh_procedure_url as request_procedures_web_url,
+      dlh_procedure_attached as request_procedures_pdf
+     from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
     select * from cohort_document where cohort_id = c_id;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
