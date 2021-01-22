@@ -650,7 +650,7 @@ router.get('/:id', function (req, res) {
 						}
 						info.attachments.questionnaires.push({
 							type: attach.attachment_type,
-							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
+							url: attach.attachment_type == 1 ? './api/download/' + basic.cohort_acronym + '/' + attach.filename : attach.website,
 							name: attach.filename
 						});
 					}
@@ -661,7 +661,7 @@ router.get('/:id', function (req, res) {
 						}
 						info.attachments.protocols.push({
 							type: attach.attachment_type,
-							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
+							url: attach.attachment_type == 1 ? './api/download/' + basic.cohort_acronym + '/' + attach.filename : attach.website,
 							name: attach.filename
 						});
 					}
