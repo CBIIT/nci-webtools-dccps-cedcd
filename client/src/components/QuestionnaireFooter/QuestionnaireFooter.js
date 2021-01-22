@@ -27,11 +27,21 @@ export default function QuestionnaireFooter({
     )
     const noop = e => {};
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
     return <Row className="mx-0 my-3">
         <Button 
             variant="primary" 
             className="col-lg-2 col-md-6" 
-            onClick={handlePrevious || noop}
+            onClick={e => {
+                e.preventDefault();
+                if (handlePrevious) {
+                    handlePrevious();
+                    scrollToTop();
+                }
+            }}
             disabled={!handlePrevious}>
             Previous
         </Button>
@@ -39,7 +49,13 @@ export default function QuestionnaireFooter({
         <Button 
             variant="primary" 
             className="col-lg-2 col-md-6 mr-auto" 
-            onClick={handleNext || noop}
+            onClick={e => {
+                e.preventDefault();
+                if (handleNext) {
+                    handleNext();
+                    scrollToTop();
+                }
+            }}
             disabled={!handleNext}>
             Next
         </Button>
@@ -74,7 +90,13 @@ export default function QuestionnaireFooter({
                 className="col-lg-2 col-md-4" 
                 variant="primary" 
                 disabled={saveDisabled || !handleSaveContinue}
-                onClick={handleSaveContinue || noop}>
+                onClick={e => {
+                    e.preventDefault();
+                    if (handleSaveContinue) {
+                        handleSaveContinue();
+                        scrollToTop();
+                    }
+                }}>
                 Save &amp; Continue
             </Button>
             
