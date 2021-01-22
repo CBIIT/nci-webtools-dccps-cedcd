@@ -187,8 +187,8 @@ const SpecimenForm = ({ ...props }) => {
                 show: true,
                 type: success ? 'success' : 'warning',
                 content: success
-                    ? `The current questionnaire has been rejected for publication and an email containing your comments has been sent to the cohort owner.`
-                    : `The current questionnaire could not be rejected for publication due to an internal error.`
+                    ? `The questionnaire has been rejected.`
+                    : `The questionnaire could not be rejected due to an internal error.`
             });
 
             updateRejectionModal({ show: false })
@@ -819,16 +819,19 @@ const SpecimenForm = ({ ...props }) => {
                     <Form.Label>
                         Feedback for Cohort Owner
                     </Form.Label>
-                    <Form.Control as="textarea"
+                    <Form.Control
+                        as="textarea"
+                        rows="5"
                         value={rejectionModal.notes}
                         onChange={ev => updateRejectionModal({ notes: ev.target.value })}
                         placeholder="Max of 250 Characters"
+                        className="resize-disabled"
                         maxLength={250}
                     />
                 </Form.Group>}
                 footer={<>
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({ show: false })}>Cancel</Button>
-                    <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Send Comments</Button>
+                    <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Save</Button>
                 </>} />
 
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}

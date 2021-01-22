@@ -13,8 +13,9 @@ export default function QuestionnaireFooter({
     handleSaveContinue,
     handleSubmitForReview,
 }) {
+    const user = useSelector(state => state.user);
     const section = useSelector(state => state.sectionReducer);
-    const cohortStatus = useSelector(state => state.cohortStatusReducer);
+    const cohortStatus = useSelector(state => state.cohort.status);
     const saveDisabled = ['submitted', 'in review'].includes(cohortStatus);
     const sectionsIncomplete = [section.A, section.B, section.C, section.D, section.E, section.F, section.G].some(status => status !== 'complete');
     const submitForReviewDisabled = (
@@ -27,11 +28,21 @@ export default function QuestionnaireFooter({
     )
     const noop = e => {};
 
+    const scrollToTop = () => {
+        window.scrollTo(0, 0);
+    };
+
     return <Row className="mx-0 my-3">
         <Button 
             variant="primary" 
             className="col-lg-2 col-md-6" 
-            onClick={handlePrevious || noop}
+            onClick={e => {
+                e.preventDefault();
+                if (handlePrevious) {
+                    handlePrevious();
+                    scrollToTop();
+                }
+            }}
             disabled={!handlePrevious}>
             Previous
         </Button>
@@ -39,14 +50,20 @@ export default function QuestionnaireFooter({
         <Button 
             variant="primary" 
             className="col-lg-2 col-md-6 mr-auto" 
-            onClick={handleNext || noop}
+            onClick={e => {
+                e.preventDefault();
+                if (handleNext) {
+                    handleNext();
+                    scrollToTop();
+                }
+            }}
             disabled={!handleNext}>
             Next
         </Button>
 
         <div className="w-100 d-block d-lg-none mb-2" />
 
-        {isAdmin ? <>
+        {(isAdmin && /SystemAdmin/.test(user.role)) ? <>
             <Button 
                 variant="primary" 
                 className="col-lg-2 col-md-6" 
@@ -74,7 +91,13 @@ export default function QuestionnaireFooter({
                 className="col-lg-2 col-md-4" 
                 variant="primary" 
                 disabled={saveDisabled || !handleSaveContinue}
-                onClick={handleSaveContinue || noop}>
+                onClick={e => {
+                    e.preventDefault();
+                    if (handleSaveContinue) {
+                        handleSaveContinue();
+                        scrollToTop();
+                    }
+                }}>
                 Save &amp; Continue
             </Button>
             
