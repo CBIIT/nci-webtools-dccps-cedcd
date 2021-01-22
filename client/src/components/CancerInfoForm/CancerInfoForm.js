@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import DatePicker from 'react-datepicker';
-import classNames from 'classnames'
+import classNames from 'classnames';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -10,16 +10,17 @@ import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { postJSON } from '../../services/query';
-import allactions from '../../actions'
+import allactions from '../../actions';
 import { fetchCohort } from '../../reducers/cohort';
 import { parseISO, format } from 'date-fns';
-import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 import ValidationModal from '../controls/modal/modal';
-import Messenger from '../Snackbar/Snackbar'
-import Reminder from '../Tooltip/Tooltip'
+import ReviewModal from '../controls/modal/modal';
+import Messenger from '../Snackbar/Snackbar';
+import Reminder from '../Tooltip/Tooltip';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
-import './CancerInfoForm.css'
+import './CancerInfoForm.css';
 
 
 const {
@@ -45,6 +46,7 @@ const CancerInfoForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modal, setModal] = useState({ show: false });
+    const [reviewModalShow, setReviewModalShow] = useState(false)
     const updateModal = state => setModal({ ...modal, ...state });
     const setCount = (key, value) => dispatch(setCancerCount(key, value));
     const setFormValue = (key, value) => {
@@ -317,6 +319,10 @@ const CancerInfoForm = ({ ...props }) => {
                 </div>
             });
         }
+    }
+
+    const handleSubmitForReview = () => {
+        setReviewModalShow(true);
     }
 
     async function saveCohort() {
@@ -773,6 +779,35 @@ const CancerInfoForm = ({ ...props }) => {
                 </Form>
 
                 <ValidationModal show={modal.show} footer={modal.footer} />
+                <ReviewModal show={reviewModalShow}
+                    title={
+                        <span>
+                            Submit for Review
+                        </span>
+                    }
+                    body={
+                        <span>
+                            This cohort questionnaire will be locked against further modifications 
+                            once you submit it for review. Are you sure you want to continue?                  
+                        </span>
+                    }
+                    footer={
+                        <div>
+                            <Button 
+                                variant="secondary" 
+                                className="col-lg-2 col-md-6" 
+                                onClick={_ => setReviewModalShow(false)}>
+                                Cancel
+                            </Button>
+                            <Button 
+                                variant="primary" 
+                                className="col-lg-2 col-md-6" 
+                                onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
+                                Submit
+                            </Button>
+                        </div>
+                    }
+                />
 
                 <QuestionnaireFooter
                     isAdmin={isReadOnly}
@@ -780,7 +815,7 @@ const CancerInfoForm = ({ ...props }) => {
                     handleNext={_ => props.sectionPicker('E')}
                     handleSave={handleSave}
                     handleSaveContinue={handleSaveContinue}
-                    handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+                    handleSubmitForReview={handleSubmitForReview}
                 />
         </Container>
     )
