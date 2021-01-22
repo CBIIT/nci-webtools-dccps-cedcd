@@ -33,7 +33,7 @@ const CohortForm = ({ ...props }) => {
     const cohortStatus = useSelector(state => state.cohortStatusReducer)
     const userSession = useSelector(state => state.user);
     const dispatch = useDispatch()
-    const isReadOnly = props.isReadOnly || ['submitted'].includes(cohortStatus) || false
+    const isReadOnly = props.isReadOnly || false
     const errorMsg = 'Required Field'
 
     const [QfileLoading, setQfileLoading] = useState(false)
@@ -1554,8 +1554,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
                                                         }
                                                     }
@@ -1579,8 +1579,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                            //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         })
                                                     }
                                                 }
@@ -1617,6 +1617,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             }
                                                         }
                                                         } />
@@ -1642,6 +1644,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         }
                                                     }
                                                     } />
