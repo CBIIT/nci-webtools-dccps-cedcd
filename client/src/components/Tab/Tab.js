@@ -45,10 +45,8 @@ export default function Tab(props) {
       url = `/cohort/questionnaire/${cohortId}`;
     else if (cohorts.length === 1)
       url = `/cohort/questionnaire/${cohorts[0].id}`;
-    else if (cohorts.length > 1)
-      url = '/cohort/questionnaire';
     else
-      url = '/home';
+      url = '/cohort/questionnaire';
     
     name="Questionnaire"
     // target = "_self"
