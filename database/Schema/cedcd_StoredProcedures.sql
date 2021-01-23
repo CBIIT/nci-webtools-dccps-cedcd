@@ -1569,7 +1569,7 @@ BEGIN
      join cohort c on cd.cohort_id = c.id
      WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
 
-	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null and cd.status = 1 and attachment_type = 0;
+	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null and status = 1 and attachment_type = 0;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
