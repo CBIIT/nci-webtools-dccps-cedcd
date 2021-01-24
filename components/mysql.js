@@ -145,27 +145,12 @@ var callJsonProcedure = function(func, params, next){
           logger.error(err);
           next(null);
 		}
-		let sql = "CALL "+func+"(";
-        params.forEach(function(p){
-        	let t = typeof p;
-          if(t === "string"){
-            p = p.replace(/'/g,"''");
-            sql += "'"+p+"',";
-          }
-          else if(t === "number"){
-            sql += ""+p+",";
-          }
-          else{
-            sql += "'"+p+"',";
-          }
-        });
-        
-        if(params.length > 0){
-          sql = sql.substring(0, sql.length -1);
-        }
-        sql += ")";
-        logger.debug('sql: ' + sql);
-        connection.query(sql,function(err_1, rows){
+		const placeholders = params.map(_ => '?').join(',');
+		const sql = `call ?? (${placeholders})`;
+		logger.debug('sql: ' + sql);
+		logger.debug('func: ' + func);
+		logger.debug('params: ' + params);
+        connection.query(sql, [func, ...params], function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
@@ -184,28 +169,12 @@ var callProcedure = function(func, params, next){
           logger.error(err);
           next(null);
         }
-
-        let sql = "CALL "+func+"(";
-        params.forEach(function(p){
-        	let t = typeof p;
-          if(t === "string"){
-            p = p.replace(/'/g,"''");
-            sql += '"'+p+'",';
-          }
-          else if(t === "number"){
-            sql += ""+p+",";
-          }
-          else{
-            sql += '"'+p+'",';
-          }
-        });
-        
-        if(params.length > 0){
-          sql = sql.substring(0, sql.length -1);
-        }
-        sql += ")";
-        logger.debug('sql: ' + sql);
-        connection.query(sql,function(err_1, rows){
+		const placeholders = params.map(_ => '?').join(',');
+		const sql = `call ?? (${placeholders})`;
+		logger.debug('sql: ' + sql);
+		logger.debug('func: ' + func);
+		logger.debug('params: ' + params);
+        connection.query(sql, [func, ...params], function(err_1, rows){
             connection.release();
             if(err_1){
 	          logger.error(err_1);
