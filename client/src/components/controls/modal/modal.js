@@ -5,19 +5,19 @@ import Button from 'react-bootstrap/Button';
 const ValidationModal = (props) => {
   return (
     <Modal show={props.show} backdrop="static">
-      <Modal.Header>
-        <Modal.Title>
+      <Modal.Header className={props.headerClassName}>
+        <Modal.Title className={props.titleClassName}>
           { props.title || 
             <span>Validation Errors</span>
           }
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center p-3">
+      <Modal.Body className={props.bodyClassName || "text-center p-3"}>
         { props.body || 
           <span>There were validation errors. Do you still wish to save your current progress?</span>
         }
       </Modal.Body>
-      <Modal.Footer>
+      <Modal.Footer className={props.footerClassName}>
         { props.footer || 
             <div>
               <Button 
