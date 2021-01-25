@@ -595,7 +595,7 @@ const CohortForm = ({ ...props }) => {
                 fileList.push(fileData[i].name)
             }
 
-            fetch(`/api/questionnaire/upload/${cohortID}/${cohort.cohort_acronym}/${category}`, {
+            fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
                 method: "POST",
                 body: formData
             }).then(res => res.json())
@@ -669,7 +669,7 @@ const CohortForm = ({ ...props }) => {
                         {files.map(f =>
                             <div className="my-1">
                                 <Col md="10">
-                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + f.filename} download target="_blank">{f.filename}</a>
+                                    <a href={'../../../api/download/' + f.filename} download target="_blank">{f.filename}</a>
                                 </Col>
                                 <Col md="2" className="text-center">
                                     <span>
@@ -828,7 +828,7 @@ const CohortForm = ({ ...props }) => {
     const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
         fetch(`/api/questionnaire/deleteFile`, {
             method: "POST",
-            body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID, cohortAcronym: cohort.cohort_acronym}),
+            body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID }),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -2768,7 +2768,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -2920,7 +2920,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.mainFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3072,7 +3072,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3224,7 +3224,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3376,7 +3376,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.publicationFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3539,7 +3539,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3682,7 +3682,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.mainFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3824,7 +3824,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3966,7 +3966,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4107,7 +4107,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.publicationFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(

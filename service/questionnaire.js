@@ -71,7 +71,7 @@ router.post('/select_admin_info', async function (req, res) {
     })
 })
 
-router.post('/upload/:id/:acronym/:category', function (req, res, next) {
+router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
     //logger.debug('uplaod to here: '+config.file_path)
     let uploadedFiles = { filenames: [] }
@@ -93,15 +93,15 @@ router.post('/upload/:id/:acronym/:category', function (req, res, next) {
             logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
-            fs.access(`${config.file_path}/${req.params.acronym}`, (err) => {
+            fs.access(`${config.file_path}`, (err) => {
                 if (err) {
-                    fs.mkdirSync(`${config.file_path}/${req.params.acronym}`, { recursive: true }, (err) => {
+                    fs.mkdirSync(`${config.file_path}`, { recursive: true }, (err) => {
                         logger.debug(err.message)
                         if (err) res.json({ status: 500 })
                     });
                 }
-                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${req.params.acronym}/${f.name}`) })
-                else cohortFiles.mv(`${config.file_path}/${req.params.acronym}/${cohortFiles.name}`)
+                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${f.name}`) })
+                else cohortFiles.mv(`${config.file_path}/${cohortFiles.name}`)
             })
             res.json({ status: 200, data: returnedData })
         }
@@ -116,13 +116,10 @@ router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
     let currentFile = req.body.filename
     let cohort_ID = req.body.cohortId
-    let acronym = req.body.cohortAcronym
+    
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             if (Array.isArray(result[1])) {
-                fs.unlink(`${config.file_path}/${acronym}/${currentFile}`, (err => {
-                    if (err) console.log(err);
-                }))
             
                 res.json({ status: 200, data: result[1][0].new_id })
             }
