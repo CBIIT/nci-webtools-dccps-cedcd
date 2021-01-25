@@ -78,7 +78,6 @@ const CohortForm = ({ ...props }) => {
                         cohort_status = result.data.cohortStatus
 
                     batch(() => {
-                        console.log(result)
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
                         for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
                             dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
@@ -97,22 +96,56 @@ const CohortForm = ({ ...props }) => {
                                     dispatch(allactions.cohortActions.country_code('completerCountry', completer.completerCountry))
                             }
                         if (currentCohort.clarification_contact === 1) {
-                            for (let k of Object.keys(completer)) {
-                                dispatch(allactions.cohortActions.contacterName(completer.completerName))
-                                dispatch(allactions.cohortActions.contacterPosition(completer.completerPosition))
-                                dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
-                                dispatch(allactions.cohortActions.contacterPhone(completer.completerPhone))
-                                dispatch(allactions.cohortActions.contacterEmail(completer.completerEmail))
-                            }
-                        } else if (contacter) {
-                            for (let k of Object.keys(contacter)) {
-                                if (k != 'contacterCountry')
-                                    dispatch(allactions.cohortActions[k](contacter[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('contacterCountry', completer.contacterCountry))
+                            if(!isReadOnly){
+                                    dispatch(allactions.cohortActions.contacterName(''))
+                                    dispatch(allactions.cohortActions.contacterPosition(''))
+                                    dispatch(allactions.cohortActions.country_code(''))
+                                    dispatch(allactions.cohortActions.contacterPhone(''))
+                                    dispatch(allactions.cohortActions.contacterEmail(''))
+                                }else{
+                                    dispatch(allactions.cohortActions.contacterName(completer.completerName))
+                                    dispatch(allactions.cohortActions.contacterPosition(completer.completerPosition))
+                                    dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
+                                    dispatch(allactions.cohortActions.contacterPhone(completer.completerPhone))
+                                    dispatch(allactions.cohortActions.contacterEmail(completer.completerEmail))
+                                }
+                        }else if (contacter) { // 0 
+                                for (let k of Object.keys(contacter)) {
+                                    if (k != 'contacterCountry')
+                                        dispatch(allactions.cohortActions[k](contacter[k]))
+                                    else
+                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
+                                }
+                        }
+
+                        if([0,1].includes(currentCohort.sameAsSomeone)){
+                            if(!isReadOnly){
+                                dispatch(allactions.cohortActions.collaboratorName(''))
+                                dispatch(allactions.cohortActions.collaboratorPosition(''))
+                                dispatch(allactions.cohortActions.country_code(''))
+                                dispatch(allactions.cohortActions.collaboratorPhone(''))
+                                dispatch(allactions.cohortActions.collaboratorEmail(''))
+                            }else{
+                                if(currentCohort.sameAsSomeone === 0){
+                                    if(completer){
+                                        dispatch(allactions.cohortActions.collaboratorName(completer.completerName))
+                                        dispatch(allactions.cohortActions.collaboratorPosition(completer.completerPosition))
+                                        dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
+                                        dispatch(allactions.cohortActions.collaboratorPhone(completer.completerPhone))
+                                        dispatch(allactions.cohortActions.collaboratorEmail(completer.completerEmail))
+                                    }
+                                }else{
+                                    if(contacter){
+                                        dispatch(allactions.cohortActions.collaboratorName(contacter.completerName))
+                                        dispatch(allactions.cohortActions.collaboratorPosition(contacter.completerPosition))
+                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.completerCountry))
+                                        dispatch(allactions.cohortActions.collaboratorPhone(contacter.completerPhone))
+                                        dispatch(allactions.cohortActions.collaboratorEmail(contacter.completerEmail))
+                                    }
+                                }
                             }
                         }
-                        if (collaborator) {
+                        else if (collaborator) {
                             for (let k of Object.keys(collaborator)) {
                                 if (k != 'collaboratorCountry')
                                     dispatch(allactions.cohortActions[k](collaborator[k]))
