@@ -74,7 +74,7 @@ router.post('/contact/add', function (req, res, next) {
 	});
 
 });
-/*
+
 router.get('/download/:filename', function (req, res, next) {
 	let filename = req.params.filename;
 	let filePath = path.format({
@@ -86,18 +86,8 @@ router.get('/download/:filename', function (req, res, next) {
 		res.send(data);
 	});
 });
-*/
-router.get('/download/:acronym/:filename', function (req, res, next) {
-	let filename = req.params.filename;
-	let filePath = path.format({
-		dir: `config.file_path/${acronym}`,
-		base: filename
-	});
-	fs.readFile(filePath, function (err, data) {
-		//res.contentType("application/pdf");
-		res.send(data);
-	});
-});
+
+
 
 router.post('/export/home', function (req, res) {
 	const ds = moment().format('YYYYMMDD');
