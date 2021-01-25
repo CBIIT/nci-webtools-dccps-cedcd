@@ -272,7 +272,7 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus);
-                            setReviewModalShow(false);
+                        setReviewModalShow(false);
                     }
                 })
         }
@@ -561,7 +561,7 @@ const SpecimenForm = ({ ...props }) => {
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
                             // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
-                        }else dispatch(fetchCohort(cohortId))
+                        } else dispatch(fetchCohort(cohortId))
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
                             //dispatch(fetchCohort(result.data.duplicated_cohort_id)) /* if result.data.status present, duplicated_cohort_id is too */
@@ -819,8 +819,8 @@ const SpecimenForm = ({ ...props }) => {
 
     return (
         <Container>
-            {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
-            {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
+            {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
+            {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
             <CenterModal
                 headerClassName="border-bottom-0"
@@ -853,21 +853,21 @@ const SpecimenForm = ({ ...props }) => {
                 }
                 body={
                     <span>
-                        This cohort questionnaire will be locked against further modifications 
-                        once you submit it for review. Are you sure you want to continue?                  
+                        This cohort questionnaire will be locked against further modifications
+                        once you submit it for review. Are you sure you want to continue?
                     </span>
                 }
                 footer={
                     <div>
-                        <Button 
-                            variant="secondary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="secondary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => setReviewModalShow(false)}>
                             Cancel
                         </Button>
-                        <Button 
-                            variant="primary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="primary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
                             Submit
                         </Button>
@@ -883,21 +883,21 @@ const SpecimenForm = ({ ...props }) => {
                 }
                 body={
                     <span>
-                        This submitted cohort will be published on the CEDCD public website 
-                        once you click on Publish. Are you sure you want to continue?                  
+                        This submitted cohort will be published on the CEDCD public website
+                        once you click on Publish. Are you sure you want to continue?
                     </span>
                 }
                 footer={
                     <div>
-                        <Button 
-                            variant="secondary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="secondary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => setReviewApproveModalShow(false)}>
                             Cancel
                         </Button>
-                        <Button 
-                            variant="primary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="primary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => handleApprove()}>
                             Publish
                         </Button>
@@ -906,414 +906,414 @@ const SpecimenForm = ({ ...props }) => {
             />
 
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}
-                <Form>
-                    <CollapsiblePanelContainer>
+            <Form>
+                <CollapsiblePanelContainer>
 
-                        {/* Specimen Collected */}
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelA'}
-                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                            panelTitle="Specimen Collected">
+                    {/* Specimen Collected */}
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelA'}
+                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                        panelTitle="Specimen Collected">
 
-                            <div>
-                                <p>
-                                    Specify the types of specimens you collected, whether the specimen
-                                    was collected at baseline, and/or collected at other time points.
+                        <div>
+                            <p>
+                                Specify the types of specimens you collected, whether the specimen
+                                was collected at baseline, and/or collected at other time points.
                                 </p>
-                            </div>
+                        </div>
 
-                            <Form.Group as={Row}>
-                                <Form.Label column sm='12' >
-                                    G.1 Blood
+                        <Form.Group as={Row}>
+                            <Form.Label column sm='12' >
+                                G.1 Blood
                                 </Form.Label>
-                                <Col className='mb-0 pl-0' sm="12" >
-                                    <Col sm='5'>
-                                        <label className="required-label">Collected at baseline</label>
-                                    </Col>
-                                    <Col sm='3' className='align-self-center' >
-                                        <RadioButtonInput field_id='bioBloodBaseline'
-                                        />
-                                        {(errors.bioBloodBaseline) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
-
-                                    </Col>
-                                    <Col sm="12">
-                                        <div sm='12'>If collected, types of aliquots (select all that apply)</div>
-                                        <CheckBoxInputs optionList={[
-                                            { field_id: 'bioBloodBaselineSerum', label: 'Serum', disabled_id: 'bioBloodBaseline' },
-                                            { field_id: 'bioBloodBaselinePlasma', label: 'Plasma', disabled_id: 'bioBloodBaseline' },
-                                            { field_id: 'bioBloodBaselineBuffyCoat', label: 'Buffy Coat', disabled_id: 'bioBloodBaseline' },
-                                            { field_id: 'bioBloodBaselineOtherDerivative', label: 'Other Blood Derivative', disabled_id: 'bioBloodBaseline' }
-                                        ]}
-                                        />
-
-                                    </Col>
+                            <Col className='mb-0 pl-0' sm="12" >
+                                <Col sm='5'>
+                                    <label className="required-label">Collected at baseline</label>
                                 </Col>
-                                <Col><br></br></Col>
+                                <Col sm='3' className='align-self-center' >
+                                    <RadioButtonInput field_id='bioBloodBaseline'
+                                    />
+                                    {(errors.bioBloodBaseline) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
 
-                                <Col className='mb-0 pl-0' sm="12" >
-                                    <Col sm='5'>
-                                        <label className="required-label">Collected at other time points</label>
-                                    </Col>
-
-                                    <Col sm='3' className='align-self-center' >
-                                        <RadioButtonInput field_id='bioBloodOtherTime'
-                                        />
-                                        {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
-                                    </Col>
-                                    <Col sm="12">
-                                        <div sm='12'>If collected, types of aliquots (select all that apply)</div>
-                                        <CheckBoxInputs optionList={[
-                                            { field_id: 'bioBloodOtherTimeSerum', label: 'Serum', disabled_id: 'bioBloodOtherTime' },
-                                            { field_id: 'bioBloodOtherTimePlasma', label: 'Plasma', disabled_id: 'bioBloodOtherTime' },
-                                            { field_id: 'bioBloodOtherTimeBuffyCoat', label: 'Buffy Coat', disabled_id: 'bioBloodOtherTime' },
-                                            { field_id: 'bioBloodOtherTimeOtherDerivative', label: 'Other Blood Derivative', disabled_id: 'bioBloodOtherTime' }
-                                        ]}
-                                        />
-                                    </Col>
                                 </Col>
-                            </Form.Group>
-                            {/* G.2 -G.8  */}
-                            {getPartContent('A')}
-                        </CollapsiblePanel>
+                                <Col sm="12">
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)</div>
+                                    <CheckBoxInputs optionList={[
+                                        { field_id: 'bioBloodBaselineSerum', label: 'Serum', disabled_id: 'bioBloodBaseline' },
+                                        { field_id: 'bioBloodBaselinePlasma', label: 'Plasma', disabled_id: 'bioBloodBaseline' },
+                                        { field_id: 'bioBloodBaselineBuffyCoat', label: 'Buffy Coat', disabled_id: 'bioBloodBaseline' },
+                                        { field_id: 'bioBloodBaselineOtherDerivative', label: 'Other Blood Derivative', disabled_id: 'bioBloodBaseline' }
+                                    ]}
+                                    />
 
-                        {/* Do you have ...? */}
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelB'}
-                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                            panelTitle="Data Collected">
-                            <div>
-                                <p>
-                                    Do you collect the following data?
+                                </Col>
+                            </Col>
+                            <Col><br></br></Col>
+
+                            <Col className='mb-0 pl-0' sm="12" >
+                                <Col sm='5'>
+                                    <label className="required-label">Collected at other time points</label>
+                                </Col>
+
+                                <Col sm='3' className='align-self-center' >
+                                    <RadioButtonInput field_id='bioBloodOtherTime'
+                                    />
+                                    {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                </Col>
+                                <Col sm="12">
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)</div>
+                                    <CheckBoxInputs optionList={[
+                                        { field_id: 'bioBloodOtherTimeSerum', label: 'Serum', disabled_id: 'bioBloodOtherTime' },
+                                        { field_id: 'bioBloodOtherTimePlasma', label: 'Plasma', disabled_id: 'bioBloodOtherTime' },
+                                        { field_id: 'bioBloodOtherTimeBuffyCoat', label: 'Buffy Coat', disabled_id: 'bioBloodOtherTime' },
+                                        { field_id: 'bioBloodOtherTimeOtherDerivative', label: 'Other Blood Derivative', disabled_id: 'bioBloodOtherTime' }
+                                    ]}
+                                    />
+                                </Col>
+                            </Col>
+                        </Form.Group>
+                        {/* G.2 -G.8  */}
+                        {getPartContent('A')}
+                    </CollapsiblePanel>
+
+                    {/* Do you have ...? */}
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelB'}
+                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                        panelTitle="Data Collected">
+                        <div>
+                            <p>
+                                Do you collect the following data?
                                 </p>
-                            </div>
-                            {getPartContent('B')}
-                        </CollapsiblePanel>
+                        </div>
+                        {getPartContent('B')}
+                    </CollapsiblePanel>
 
-                        {/* Metabolomic Data */}
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelC'}
-                            onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                            panelTitle="Metabolomic Data">
+                    {/* Metabolomic Data */}
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelC'}
+                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                        panelTitle="Metabolomic Data">
 
-                            < Form.Group as={Row} sm='12'  >
-                                <Form.Label column sm='8'>
-                                    G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: 'red' }}>*</span>
-                                    {(errors.bioMetabolomicData && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
-                                </Form.Label>
+                        < Form.Group as={Row} sm='12'  >
+                            <Form.Label column sm='8'>
+                                G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: 'red' }}>*</span>
+                                {(errors.bioMetabolomicData && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
+                            </Form.Label>
 
-                                <Col className='align-self-center' sm='12'>
-                                    <RadioButtonInput field_id='bioMetabolomicData'
+                            <Col className='align-self-center' sm='12'>
+                                <RadioButtonInput field_id='bioMetabolomicData'
+                                />
+                            </Col>
+                            <Col className='mt-3' sm='12'>
+                                <div>If yes, please answer questions G.15a - G.15i</div>
+                            </Col>
+                        </Form.Group>
+
+                        {/* G15 a */}
+                        < Form.Group as={Row} sm='12'  >
+
+                            <Form.Label column sm='12'>
+                                G.15a Are the biospecimens collected fasting samples?<span style={{ color: 'red' }}>*</span>
+                                {(+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                            </Form.Label>
+                            <Col className='align-self-center' sm='12'>
+                                <RadioButtonInput field_id='bioMetaFastingSample' disabled_id='bioMetabolomicData'
+                                />
+                            </Col>
+                        </Form.Group>
+
+                        {/* G15 b */}
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15b What are the disease outcome(s) in your study?<span style={{ color: 'red' }}>*</span>
+                                <span className="font-weight-normal">{' '}(Select all that apply)</span>
+                                {(+specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesInCancerStudy
+                                    && errors.bioMetaOutcomesInCvdStudy && errors.bioMetaOutcomesInDiabetesStudy && errors.bioMetaOutcomesInOtherStudy)
+                                    && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+
+                            </Form.Label>
+
+                            <Col className='mb-0 pl-0' sm="12" >
+                                <Col sm="12">
+                                    <CheckBoxInputs optionList={[
+                                        { field_id: 'bioMetaOutcomesInCancerStudy', label: 'Cancer', disabled_id: 'bioMetabolomicData' },
+                                        { field_id: 'bioMetaOutcomesInCvdStudy', label: 'CVD', disabled_id: 'bioMetabolomicData' },
+                                        { field_id: 'bioMetaOutcomesInDiabetesStudy', label: 'Diabetes', disabled_id: 'bioMetabolomicData' },
+                                        { field_id: 'bioMetaOutcomesInOtherStudy', label: 'Other, specify:', disabled_id: 'bioMetabolomicData' }
+                                    ]}
                                     />
                                 </Col>
-                                <Col className='mt-3' sm='12'>
-                                    <div>If yes, please answer questions G.15a - G.15i</div>
-                                </Col>
-                            </Form.Group>
+                            </Col>
+                            <Col sm='12' className='align-self-center' >
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} addspan={true}>
+                                    <Form.Control as="textarea"
+                                        className="resize-vertical"
+                                        style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
+                                        name='bioMetaOutcomesOtherStudySpecify'
+                                        className='form-control'
+                                        value={specimen.bioMetaOutcomesOtherStudySpecify}
+                                        maxLength={200}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioMetaOutcomesOtherStudySpecify(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
-                            {/* G15 a */}
-                            < Form.Group as={Row} sm='12'  >
+                        {/* G15 c */}
+                        < Form.Group as={Row} >
 
-                                <Form.Label column sm='12'>
-                                    G.15a Are the biospecimens collected fasting samples?<span style={{ color: 'red' }}>*</span>
-                                    {(+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
-                                </Form.Label>
-                                <Col className='align-self-center' sm='12'>
-                                    <RadioButtonInput field_id='bioMetaFastingSample' disabled_id='bioMetabolomicData'
-                                    />
-                                </Col>
-                            </Form.Group>
+                            <Form.Label column sm='12'>
+                                G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?<span style={{ color: 'red' }}>*</span>
+                                {(+specimen.bioMetabolomicData === 1 && errors.bioMemberOfMetabolomicsStudies) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                            </Form.Label>
+                            <Col className='align-self-center' sm='12'>
+                                <RadioButtonInput field_id='bioMemberOfMetabolomicsStudies' disabled_id='bioMetabolomicData'
+                                />
+                            </Col>
+                        </Form.Group>
 
-                            {/* G15 b */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15b What are the disease outcome(s) in your study?<span style={{ color: 'red' }}>*</span>
-                                    <span className="font-weight-normal">{' '}(Select all that apply)</span>
-                                    {(+specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesInCancerStudy
-                                        && errors.bioMetaOutcomesInCvdStudy && errors.bioMetaOutcomesInDiabetesStudy && errors.bioMetaOutcomesInOtherStudy)
-                                        && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                        {/* G15 d */}
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15d What is the number of participants with metabolomics data in your study?<span style={{ color: 'red' }}>*</span>
 
-                                </Form.Label>
+                            </Form.Label>
+                            <Col sm="2">
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)} addspan={true}>
+                                    <Form.Control type="text"
+                                        className="resize-vertical"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved && { border: '1px solid red' } || {}}
+                                        name='bioMemberInStudy'
+                                        value={specimen.bioMemberInStudy}
+                                        maxLength={15}
+                                        readOnly={isReadOnly}
+                                        placeholder='Valid number'
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioMemberInStudy(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMemberInStudy(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
-                                <Col className='mb-0 pl-0' sm="12" >
-                                    <Col sm="12">
-                                        <CheckBoxInputs optionList={[
-                                            { field_id: 'bioMetaOutcomesInCancerStudy', label: 'Cancer', disabled_id: 'bioMetabolomicData' },
-                                            { field_id: 'bioMetaOutcomesInCvdStudy', label: 'CVD', disabled_id: 'bioMetabolomicData' },
-                                            { field_id: 'bioMetaOutcomesInDiabetesStudy', label: 'Diabetes', disabled_id: 'bioMetabolomicData' },
-                                            { field_id: 'bioMetaOutcomesInOtherStudy', label: 'Other, specify:', disabled_id: 'bioMetabolomicData' }
-                                        ]}
-                                        />
-                                    </Col>
-                                </Col>
-                                <Col sm='12' className='align-self-center' >
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} addspan={true}>
-                                        <Form.Control as="textarea"
-                                            className="resize-vertical"
-                                            style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
-                                            name='bioMetaOutcomesOtherStudySpecify'
-                                            className='form-control'
-                                            value={specimen.bioMetaOutcomesOtherStudySpecify}
-                                            maxLength={200}
-                                            readOnly={isReadOnly}
-                                            placeholder='Max of 200 characters'
-                                            disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMetaOutcomesOtherStudySpecify(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
+                        {/* G15 e */}
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15e Which laboratory or company was used for the analysis?<span style={{ color: 'red' }}>*</span>
+                            </Form.Label>
+                            <Col sm="12">
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)} addspan={true}>
+                                    <Form.Control as="textarea"
+                                        className="resize-vertical"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved && { border: '1px solid red' } || {}}
+                                        name='bioLabsUsedForAnalysis'
+                                        value={specimen.bioLabsUsedForAnalysis}
+                                        maxLength={200}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
-                            {/* G15 c */}
-                            < Form.Group as={Row} >
+                        {/* G15 f */}
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?<span style={{ color: 'red' }}>*</span>
+                            </Form.Label>
+                            <Col sm="12">
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} addspan={true}>
+                                    <Form.Control as="textarea"
+                                        className="resize-vertical"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved && { border: '1px solid red' } || {}}
+                                        name='bioAnalyticalPlatform'
+                                        value={specimen.bioAnalyticalPlatform}
+                                        maxLength={200}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioAnalyticalPlatform(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
-                                <Form.Label column sm='12'>
-                                    G.15c Are you a member of the Consortium of Metabolomics Studies (COMETS)?<span style={{ color: 'red' }}>*</span>
-                                    {(+specimen.bioMetabolomicData === 1 && errors.bioMemberOfMetabolomicsStudies) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
-                                </Form.Label>
-                                <Col className='align-self-center' sm='12'>
-                                    <RadioButtonInput field_id='bioMemberOfMetabolomicsStudies' disabled_id='bioMetabolomicData'
-                                    />
-                                </Col>
-                            </Form.Group>
+                        {/* G15 g*/}
 
-                            {/* G15 d */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15d What is the number of participants with metabolomics data in your study?<span style={{ color: 'red' }}>*</span>
-
-                                </Form.Label>
-                                <Col sm="2">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved)} addspan={true}>
-                                        <Form.Control type="text"
-                                            className="resize-vertical"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioMemberInStudy && saved && { border: '1px solid red' } || {}}
-                                            name='bioMemberInStudy'
-                                            value={specimen.bioMemberInStudy}
-                                            maxLength={15}
-                                            readOnly={isReadOnly}
-                                            placeholder='Valid number'
-                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioMemberInStudy(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioMemberInStudy(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
-
-                            {/* G15 e */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15e Which laboratory or company was used for the analysis?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved)} addspan={true}>
-                                        <Form.Control as="textarea"
-                                            className="resize-vertical"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioLabsUsedForAnalysis && saved && { border: '1px solid red' } || {}}
-                                            name='bioLabsUsedForAnalysis'
-                                            value={specimen.bioLabsUsedForAnalysis}
-                                            maxLength={200}
-                                            readOnly={isReadOnly}
-                                            placeholder='Max of 200 characters'
-                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
-
-                            {/* G15 f */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15f Which type(s) of analytical platform was used, (e.g., NMR, Orbitrap mass spectrometry, QTOF mass spectrometry)?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved)} addspan={true}>
-                                        <Form.Control as="textarea"
-                                            className="resize-vertical"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioAnalyticalPlatform && saved && { border: '1px solid red' } || {}}
-                                            name='bioAnalyticalPlatform'
-                                            value={specimen.bioAnalyticalPlatform}
-                                            maxLength={200}
-                                            readOnly={isReadOnly}
-                                            placeholder='Max of 200 characters'
-                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioAnalyticalPlatform(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
-
-                            {/* G15 g*/}
-
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="12">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)} addspan={true}>
-                                        <Form.Control as="textarea"
-                                            className="resize-vertical"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved && { border: '1px solid red' } || {}}
-                                            name='bioSeparationPlatform'
-                                            value={specimen.bioSeparationPlatform}
-                                            maxLength={200}
-                                            readOnly={isReadOnly}
-                                            placeholder='Max of 200 characters'
-                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioSeparationPlatform(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioSeparationPlatform(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15g Which separation platform(s) was used (e.g., GC, HILIC, RPLC, Ion pairing LC)?<span style={{ color: 'red' }}>*</span>
+                            </Form.Label>
+                            <Col sm="12">
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved)} addspan={true}>
+                                    <Form.Control as="textarea"
+                                        className="resize-vertical"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioSeparationPlatform && saved && { border: '1px solid red' } || {}}
+                                        name='bioSeparationPlatform'
+                                        value={specimen.bioSeparationPlatform}
+                                        maxLength={200}
+                                        readOnly={isReadOnly}
+                                        placeholder='Max of 200 characters'
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioSeparationPlatform(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioSeparationPlatform(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
 
-                            {/* G15 h */}
+                        {/* G15 h */}
 
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15h How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="2">
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} addspan={true}>
-                                        <Form.Control type="text"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
-                                            name='bioNumberMetabolitesMeasured'
-                                            value={specimen.bioNumberMetabolitesMeasured}
-                                            maxLength={15}
-                                            readOnly={isReadOnly}
-                                            placeholder='Valid number'
-                                            disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
-                                            onChange={e => {
-                                                dispatch(setHasUnsavedChanges(true));
-                                                dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(e.target.value));
-                                                if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
-                                            }}
-                                            onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
-                                        /> </Reminder>
-                                </Col>
-                            </Form.Group>
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15h How many metabolites were measured?<span style={{ color: 'red' }}>*</span>
+                            </Form.Label>
+                            <Col sm="2">
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved)} addspan={true}>
+                                    <Form.Control type="text"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioNumberMetabolitesMeasured && saved && { border: '1px solid red' } || {}}
+                                        name='bioNumberMetabolitesMeasured'
+                                        value={specimen.bioNumberMetabolitesMeasured}
+                                        maxLength={15}
+                                        readOnly={isReadOnly}
+                                        placeholder='Valid number'
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        onChange={e => {
+                                            dispatch(setHasUnsavedChanges(true));
+                                            dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(e.target.value));
+                                            if (!isNull(e.target.value)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
+                                        }}
+                                        onBlur={(e) => dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(e.target.value)))}
+                                    /> </Reminder>
+                            </Col>
+                        </Form.Group>
 
-                            {/* G15 i */}
-                            <Form.Group as={Row}>
-                                <Form.Label column sm="12">
-                                    G.15i What year were samples analyzed?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm='2'  >
-                                    <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
-                                        <Form.Control type="text"
-                                            style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
-                                            name='bioYearSamplesSent'
-                                            maxLength={4}
-                                            disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
-                                            value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
-                                            onChange={e =>
-                                                !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
-                                            }
-                                            placeholder='YYYY'
-                                            onBlur={e =>
-                                                populateErrors(e.target.value, true, 'year')
-                                            } />
-                                    </Reminder>
+                        {/* G15 i */}
+                        <Form.Group as={Row}>
+                            <Form.Label column sm="12">
+                                G.15i What year were samples analyzed?<span style={{ color: 'red' }}>*</span>
+                            </Form.Label>
+                            <Col sm='2'  >
+                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
+                                    <Form.Control type="text"
+                                        style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
+                                        name='bioYearSamplesSent'
+                                        maxLength={4}
+                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
+                                        value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
+                                        onChange={e =>
+                                            !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
+                                        }
+                                        placeholder='YYYY'
+                                        onBlur={e =>
+                                            populateErrors(e.target.value, true, 'year')
+                                        } />
+                                </Reminder>
 
-                                </Col>
-                            </Form.Group>
+                            </Col>
+                        </Form.Group>
 
-                        </CollapsiblePanel>
+                    </CollapsiblePanel>
 
-                        {/* Biospecimen Counts */}
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelD'}
-                            onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
-                            panelTitle="Biospecimen Counts">
-                            <div className="my-3">
-                                <Form.Label> G.16</Form.Label>
-                                <div> Please complete this table with the number of individuals with biospecimens available
-                                in your current inventory. If you do not have exact counts, please enter approximate counts.
-                                (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
+                    {/* Biospecimen Counts */}
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelD'}
+                        onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
+                        panelTitle="Biospecimen Counts">
+                        <div className="my-3">
+                            <Form.Label> G.16</Form.Label>
+                            <div> Please complete this table with the number of individuals with biospecimens available
+                            in your current inventory. If you do not have exact counts, please enter approximate counts.
+                            (Note, please record the number of individual participants for whom there are available samples– NOT the number of aliquots.)
                                         </div>
-                            </div>
-                            <div className="table-responsive m-0">
-                                <Table bordered condensed className="table-valign-middle">
-                                    <thead>
-                                        <tr>
-                                            <th className='col-sm-1 text-center'>ICD-9</th>
-                                            <th className='col-sm-1 text-center'>ICD-10</th>
-                                            <th className='col-sm-3 text-center'>Cancer Site/Type</th>
-                                            <th className='col-sm-1 text-center'>Serum and/or Plasma</th>
-                                            <th className='col-sm-1 text-center'>Buffy Coat and/or Lymphocytes</th>
-                                            <th className='col-sm-1 text-center'>Saliva and/or Buccal</th>
-                                            <th className='col-sm-1 text-center'>Urine</th>
-                                            <th className='col-sm-1 text-center'>Feces</th>
-                                            <th className='col-sm-1 text-center'>Tumor Tissue Fresh/Frozen</th>
-                                            <th className='col-sm-1 text-center'>Tumor Tissue FFPE</th>
+                        </div>
+                        <div className="table-responsive m-0">
+                            <Table bordered condensed className="table-valign-middle">
+                                <thead>
+                                    <tr>
+                                        <th className='col-sm-1 text-center'>ICD-9</th>
+                                        <th className='col-sm-1 text-center'>ICD-10</th>
+                                        <th className='col-sm-3 text-center'>Cancer Site/Type</th>
+                                        <th className='col-sm-1 text-center'>Serum and/or Plasma</th>
+                                        <th className='col-sm-1 text-center'>Buffy Coat and/or Lymphocytes</th>
+                                        <th className='col-sm-1 text-center'>Saliva and/or Buccal</th>
+                                        <th className='col-sm-1 text-center'>Urine</th>
+                                        <th className='col-sm-1 text-center'>Feces</th>
+                                        <th className='col-sm-1 text-center'>Tumor Tissue Fresh/Frozen</th>
+                                        <th className='col-sm-1 text-center'>Tumor Tissue FFPE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {lookup.cancer.map(c => {
+                                        const keyPrefix = `${cohortId}_${c.id}`;
+                                        const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
+                                            `${c.id}-${k.id}`);;
+
+
+                                        return <tr key={keyPrefix}>
+                                            <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
+                                            <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
+                                            <td className="text-nowrap bg-light-grey">{c.cancer}</td>
+
+                                            {inputKeys.map((key, i) =>
+                                                <td key={key} className="p-0">
+                                                    <Form.Control
+                                                        className="input-number"
+                                                        name={key} value={specimen.counts[key] || 0}
+                                                        type="number"
+                                                        onChange={e => {
+                                                            dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
+                                                            dispatch(setHasUnsavedChanges(true));
+                                                        }}
+                                                        min="0"
+                                                        readOnly={isReadOnly} />
+                                                </td>
+                                            )}
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {lookup.cancer.map(c => {
-                                            const keyPrefix = `${cohortId}_${c.id}`;
-                                            const inputKeys = lookup.specimen.filter(k => { return k.id < 10; }).map((k) =>
-                                                `${c.id}-${k.id}`);;
+                                    })}
+                                </tbody>
+                            </Table>
+                        </div>
 
+                    </CollapsiblePanel>
+                </CollapsiblePanelContainer>
 
-                                            return <tr key={keyPrefix}>
-                                                <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
-                                                <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
-                                                <td className="text-nowrap bg-light-grey">{c.cancer}</td>
+            </Form>
 
-                                                {inputKeys.map((key, i) =>
-                                                    <td key={key} className="p-0">
-                                                        <Form.Control
-                                                            className="input-number"
-                                                            name={key} value={specimen.counts[key] || 0}
-                                                            type="number"
-                                                            onChange={e => {
-                                                                dispatch(allactions.specimenActions.setSpecimenCount(key, e.target.value));
-                                                                dispatch(setHasUnsavedChanges(true));
-                                                            }}
-                                                            min="0"
-                                                            readOnly={isReadOnly} />
-                                                    </td>
-                                                )}
-                                            </tr>
-                                        })}
-                                    </tbody>
-                                </Table>
-                            </div>
-
-                        </CollapsiblePanel>
-                    </CollapsiblePanelContainer>
-
-                </Form>
-
-                <QuestionnaireFooter
-                    isAdmin={isReadOnly}
-                    handlePrevious={_ => props.sectionPicker('F')}
-                    handleNext={false}
-                    handleSave={handleSave}
-                    handleSaveContinue={false}
-                    handleSubmitForReview={handleSubmitForReview}
-                    handleApprove={updateStatusDisabled ? null : _ => setReviewApproveModalShow(true)}
-                    handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({ show: true })} />
+            <QuestionnaireFooter
+                isAdmin={isReadOnly}
+                handlePrevious={_ => props.sectionPicker('F')}
+                handleNext={false}
+                handleSave={handleSave}
+                handleSaveContinue={false}
+                handleSubmitForReview={handleSubmitForReview}
+                handleApprove={updateStatusDisabled ? null : _ => setReviewApproveModalShow(true)}
+                handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({ show: true })} />
 
         </Container>
 
