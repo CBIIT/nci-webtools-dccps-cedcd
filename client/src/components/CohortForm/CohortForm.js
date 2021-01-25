@@ -1588,8 +1588,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
                                                         }
                                                     }
@@ -1613,8 +1613,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                            //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         })
                                                     }
                                                 }
@@ -1651,6 +1651,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             }
                                                         }
                                                         } />
@@ -1676,6 +1678,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         }
                                                     }
                                                     } />
