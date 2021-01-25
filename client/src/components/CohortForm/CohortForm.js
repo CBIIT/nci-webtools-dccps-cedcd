@@ -136,11 +136,11 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 }else{
                                     if(contacter){
-                                        dispatch(allactions.cohortActions.collaboratorName(contacter.completerName))
-                                        dispatch(allactions.cohortActions.collaboratorPosition(contacter.completerPosition))
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.completerCountry))
-                                        dispatch(allactions.cohortActions.collaboratorPhone(contacter.completerPhone))
-                                        dispatch(allactions.cohortActions.collaboratorEmail(contacter.completerEmail))
+                                        dispatch(allactions.cohortActions.collaboratorName(contacter.contacterName))
+                                        dispatch(allactions.cohortActions.collaboratorPosition(contacter.contacterPosition))
+                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
+                                        dispatch(allactions.cohortActions.collaboratorPhone(contacter.contacterPhone))
+                                        dispatch(allactions.cohortActions.collaboratorEmail(contacter.contacterEmail))
                                     }
                                 }
                             }
@@ -150,7 +150,7 @@ const CohortForm = ({ ...props }) => {
                                 if (k != 'collaboratorCountry')
                                     dispatch(allactions.cohortActions[k](collaborator[k]))
                                 else
-                                    dispatch(allactions.cohortActions.country_code('collaboratorCountry', completer.collaboratorCountry))
+                                    dispatch(allactions.cohortActions.country_code('collaboratorCountry', collaborator.collaboratorCountry))
                             }
 
                             dispatch(allactions.cohortActions.sameAsSomeone(currentCohort.sameAsSomeone))
