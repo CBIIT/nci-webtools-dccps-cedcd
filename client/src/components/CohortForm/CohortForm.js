@@ -1,29 +1,29 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import React, { useState, useEffect, useContext } from 'react';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import allactions from '../../actions'
-import validator from '../../validators'
-import Person from './Person/Person'
-import Investigator from './Investigator/Investigator'
+import allactions from '../../actions';
+import validator from '../../validators';
+import Person from './Person/Person';
+import Investigator from './Investigator/Investigator';
 import DatePicker from 'react-datepicker';
-import Messenger from '../Snackbar/Snackbar'
-import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../controls/modal/modal'
-import FileModal from '../controls/modal/FileModal.js'
+import Messenger from '../Snackbar/Snackbar';
+import Reminder from '../Tooltip/Tooltip';
+import CenterModal from '../controls/modal/modal';
+import ReviewModal from '../controls/modal/modal';
+import FileModal from '../controls/modal/FileModal.js';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { fetchCohort } from '../../reducers/cohort';
-import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 import "react-datepicker/dist/react-datepicker.css";
-import './CohortForm.scss'
-import cohortErrorActions from '../../actions/cohortErrorActions'
+import './CohortForm.scss';
+import cohortErrorActions from '../../actions/cohortErrorActions';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 
 const CohortForm = ({ ...props }) => {
     const cohort = useSelector(state => state.cohortReducer)
@@ -45,6 +45,7 @@ const CohortForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
+    const [reviewModalShow, setReviewModalShow] = useState(false)
     const [fileModal, setFileModal] = useState(false)
     const [urlModal, setUrlModal] = useState(false)
     const [proceed, setProceed] = useState(false)
@@ -292,6 +293,10 @@ const CohortForm = ({ ...props }) => {
             setModalShow(true)
             setProceed(true)
         }
+    }
+
+    const handleSubmitForReview = () => {
+        setReviewModalShow(true);
     }
 
     const sendEmail = (template, topic) => {
@@ -557,7 +562,7 @@ const CohortForm = ({ ...props }) => {
                 fileList.push(fileData[i].name)
             }
 
-            fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
+            fetch(`/api/questionnaire/upload/${cohortID}/${cohort.cohort_acronym}/${category}`, {
                 method: "POST",
                 body: formData
             }).then(res => res.json())
@@ -631,7 +636,7 @@ const CohortForm = ({ ...props }) => {
                         {files.map(f =>
                             <div className="my-1">
                                 <Col md="10">
-                                    <a href={'../../../api/download/' + f.filename} target="_blank">{f.filename}</a>
+                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + f.filename} target="_blank">{f.filename}</a>
                                 </Col>
                                 <Col md="2" className="text-center">
                                     <span>
@@ -791,7 +796,7 @@ const CohortForm = ({ ...props }) => {
     const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
         fetch(`/api/questionnaire/deleteFile`, {
             method: "POST",
-            body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID }),
+            body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID, cohortAcronym: cohort.cohort_acronym}),
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -840,7 +845,36 @@ const CohortForm = ({ ...props }) => {
                 handleClose={() =>
                     setModalShow(false)
                 }
-                handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay}
+                handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
+
+            <ReviewModal show={reviewModalShow}
+                title={
+                    <span>
+                        Submit for Review
+                    </span>
+                }
+                body={
+                    <span>
+                        This cohort questionnaire will be locked against further modifications 
+                        once you submit it for review. Are you sure you want to continue?                  
+                    </span>
+                }
+                footer={
+                    <div>
+                        <Button 
+                            variant="secondary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => setReviewModalShow(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => resetCohortStatus(cohortID, 'submitted')}>
+                            Submit
+                        </Button>
+                    </div>
+                }
             />
 
             <FileModal show={urlModal}
@@ -1554,8 +1588,8 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                                //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                                //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             })
                                                         }
                                                     }
@@ -1579,8 +1613,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                            //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         })
                                                     }
                                                 }
@@ -1617,8 +1651,6 @@ const CohortForm = ({ ...props }) => {
                                                                 dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                                 dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                             }
                                                         }
                                                         } />
@@ -1644,8 +1676,6 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true))
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         }
                                                     }
                                                     } />
@@ -2855,7 +2885,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.mainFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3007,7 +3037,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3159,7 +3189,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3311,7 +3341,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.publicationFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3474,7 +3504,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3617,7 +3647,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.mainFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3759,7 +3789,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3901,7 +3931,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4042,7 +4072,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.publicationFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4096,7 +4126,7 @@ const CohortForm = ({ ...props }) => {
                 handleNext={_ => props.sectionPicker('B')}
                 handleSave={handleSave}
                 handleSaveContinue={handleSaveContinue}
-                handleSubmitForReview={_ => resetCohortStatus(cohortID, 'submitted')}
+                handleSubmitForReview={handleSubmitForReview}
                 handleApprove={false}
                 handleReject={false} />
 

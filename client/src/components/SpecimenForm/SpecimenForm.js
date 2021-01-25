@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useHistory } from "react-router-dom";
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import classNames from 'classnames'
-import allactions from '../../actions'
-import validator from '../../validators'
-import Messenger from '../Snackbar/Snackbar'
-import Reminder from '../Tooltip/Tooltip'
-import CenterModal from '../controls/modal/modal'
+import classNames from 'classnames';
+import allactions from '../../actions';
+import validator from '../../validators';
+import Messenger from '../Snackbar/Snackbar';
+import Reminder from '../Tooltip/Tooltip';
+import CenterModal from '../controls/modal/modal';
+import ReviewModal from '../controls/modal/modal';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
-import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter'
+import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 import { fetchCohort } from '../../reducers/cohort';
 import { postJSON } from '../../services/query';
 import * as fieldList from './specimenFieldList';
@@ -42,6 +43,7 @@ const SpecimenForm = ({ ...props }) => {
     const updateRejectionModal = state => setRejectionModal({ ...rejectionModal, ...state });
     const [updateStatusDisabled, setUpdateStatusDisabled] = useState(false);
     const [modalShow, setModalShow] = useState(false)
+    const [reviewModalShow, setReviewModalShow] = useState(false)
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
@@ -586,6 +588,10 @@ const SpecimenForm = ({ ...props }) => {
         }
     }
 
+    const handleSubmitForReview = () => {
+        setReviewModalShow(true);
+    }
+
     const confirmSaveStay = () => {
         specimen.sectionGStatus = 'incomplete'
         dispatch(allactions.specimenActions.setSectionGStatus('incomplete'));
@@ -833,6 +839,35 @@ const SpecimenForm = ({ ...props }) => {
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({ show: false })}>Cancel</Button>
                     <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Save</Button>
                 </>} />
+            <ReviewModal show={reviewModalShow}
+                title={
+                    <span>
+                        Submit for Review
+                    </span>
+                }
+                body={
+                    <span>
+                        This cohort questionnaire will be locked against further modifications 
+                        once you submit it for review. Are you sure you want to continue?                  
+                    </span>
+                }
+                footer={
+                    <div>
+                        <Button 
+                            variant="secondary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => setReviewModalShow(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
+                            Submit
+                        </Button>
+                    </div>
+                }
+            />
 
             {modalShow && <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={confirmSaveStay} />}
                 <Form>
@@ -1240,7 +1275,7 @@ const SpecimenForm = ({ ...props }) => {
                     handleNext={false}
                     handleSave={handleSave}
                     handleSaveContinue={false}
-                    handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')}
+                    handleSubmitForReview={handleSubmitForReview}
                     handleApprove={updateStatusDisabled ? null : handleApprove}
                     handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({ show: true })} />
 

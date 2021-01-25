@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch, batch } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch, batch } from 'react-redux';
 import { useHistory } from "react-router-dom";
 import classNames from 'classnames';
-import allactions from '../../actions'
-import validator from '../../validators'
-import Messenger from '../Snackbar/Snackbar'
+import allactions from '../../actions';
+import validator from '../../validators';
+import Messenger from '../Snackbar/Snackbar';
 import CenterModal from '../controls/modal/modal'
-import Reminder from '../Tooltip/Tooltip'
+import ReviewModal from '../controls/modal/modal';
+import Reminder from '../Tooltip/Tooltip';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
@@ -17,6 +18,7 @@ import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import { fetchCohort } from '../../reducers/cohort';
 import './MortalityForm.css';
 import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
+import Button from 'react-bootstrap/Button';
 
 const MortalityForm = ({ ...props }) => {
     const isReadOnly = props.isReadOnly || false
@@ -30,6 +32,7 @@ const MortalityForm = ({ ...props }) => {
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
     const [modalShow, setModalShow] = useState(false)
+    const [reviewModalShow, setReviewModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
     const [saved, setSaved] = useState(false)
     const [userEmails, setEmails] = useState('')
@@ -301,6 +304,10 @@ const MortalityForm = ({ ...props }) => {
         }
     }
 
+    const handleSubmitForReview = () => {
+        setReviewModalShow(true);
+    }
+
     const confirmSaveStay = () => {
 
         dispatch(allactions.mortalityActions.setSectionEStatus('incomplete'))
@@ -324,6 +331,35 @@ const MortalityForm = ({ ...props }) => {
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
+            <ReviewModal show={reviewModalShow}
+                title={
+                    <span>
+                        Submit for Review
+                    </span>
+                }
+                body={
+                    <span>
+                        This cohort questionnaire will be locked against further modifications 
+                        once you submit it for review. Are you sure you want to continue?                  
+                    </span>
+                }
+                footer={
+                    <div>
+                        <Button 
+                            variant="secondary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => setReviewModalShow(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
+                            Submit
+                        </Button>
+                    </div>
+                }
+            />
                 <Form>
                     <CollapsiblePanelContainer>
                         <CollapsiblePanel
@@ -656,7 +692,7 @@ const MortalityForm = ({ ...props }) => {
                     handleNext={_ => props.sectionPicker('F')}
                     handleSave={handleSave}
                     handleSaveContinue={handleSaveContinue}
-                    handleSubmitForReview={_ => resetCohortStatus(cohortId, 'submitted')} />
+                    handleSubmitForReview={handleSubmitForReview} />
         </Container>
     )
 }

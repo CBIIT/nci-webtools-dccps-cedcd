@@ -75,10 +75,10 @@ router.post('/contact/add', function (req, res, next) {
 
 });
 
-router.get('/download/:filename', function (req, res, next) {
+router.get('/download/:acronym/:filename', function (req, res, next) {
 	let filename = req.params.filename;
 	let filePath = path.format({
-		dir: config.file_path,
+		dir: config.file_path + '/' + req.params.acronym,
 		base: filename
 	});
 	fs.readFile(filePath, function (err, data) {

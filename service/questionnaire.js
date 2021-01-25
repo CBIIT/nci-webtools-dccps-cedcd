@@ -71,7 +71,7 @@ router.post('/select_admin_info', async function (req, res) {
     })
 })
 
-router.post('/upload/:id/:category', function (req, res, next) {
+router.post('/upload/:id/:acronym/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
     //logger.debug('uplaod to here: '+config.file_path)
     let uploadedFiles = { filenames: [] }
@@ -93,16 +93,15 @@ router.post('/upload/:id/:category', function (req, res, next) {
             logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
-            const acronym = result[2][0].acronym
-            fs.access(`${config.file_path}/${acronym}`, (err) => {
+            fs.access(`${config.file_path}/${req.params.acronym}`, (err) => {
                 if (err) {
-                    fs.mkdirSync(`${config.file_path}/${acronym}`, { recursive: true }, (err) => {
+                    fs.mkdirSync(`${config.file_path}/${req.params.acronym}`, { recursive: true }, (err) => {
                         logger.debug(err.message)
                         if (err) res.json({ status: 500 })
                     });
                 }
-                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${acronym}/${f.name}`) })
-                else cohortFiles.mv(`${config.file_path}/${acronym}/${cohortFiles.name}`)
+                if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${req.params.acronym}/${f.name}`) })
+                else cohortFiles.mv(`${config.file_path}/${req.params.acronym}/${cohortFiles.name}`)
             })
             res.json({ status: 200, data: returnedData })
         }
@@ -117,14 +116,14 @@ router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
     let currentFile = req.body.filename
     let cohort_ID = req.body.cohortId
+    let acronym = req.body.cohortAcronym
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             if (Array.isArray(result[1])) {
-                /*
-                fs.unlink(`${config.file_path}/CohortID_${cohort_ID}/${currentFile}`, (err => {
+                fs.unlink(`${config.file_path}/${acronym}/${currentFile}`, (err => {
                     if (err) console.log(err);
                 }))
-                */
+            
                 res.json({ status: 200, data: result[1][0].new_id })
             }
             else
@@ -585,7 +584,7 @@ router.get('/lookup', async (request, response) => {
     try {
         if (!lookup) {
             locals.lookup = lookup = {
-                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer where icd9 is not null and icd9 != '' ORDER BY icd9 = '', icd9`),
+                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer where cancer != 'No Cancer' ORDER BY icd9 = '', icd9`),
                 case_type: await mysql.query(`SELECT id, case_type FROM lu_case_type`),
                 cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
                 data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),

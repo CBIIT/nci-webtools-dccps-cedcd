@@ -1565,13 +1565,11 @@ BEGIN
     
     select `status` as cohort_status from cohort where id = targetID;
     
-    select
-     id as fileId,
-	 category as fileCategory,
-     filename from cohort_document 
-     where cohort_id = targetID and filename !='' and filename is not null;
+    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
+     join cohort c on cd.cohort_id = c.id
+     WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
 
-	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null;
+	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null and status = 1 and attachment_type = 0;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1844,8 +1842,9 @@ begin
     END IF;
     SELECT flag as rowsAffacted;
     SELECT new_id;
-    SELECT id AS fileId, category AS fileCategory, filename FROM cohort_document 
-	WHERE cohort_id = new_id and category = categoryType;
+    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
+    join cohort c on cd.cohort_id = c.id
+    WHERE cohort_id = new_id and category = categoryType and cd.status = 1 and cd.attachment_type = 1;
 end //
 
 DROP PROCEDURE IF EXISTS get_major_content //
@@ -3045,7 +3044,8 @@ begin
 			else
 				set @updated_file_id = file_Id;
 			end if;
-			delete from cohort_document where id = @updated_file_id;
+        update cohort_document set status = 0 where id = @updated_file_id;
+
 		COMMIT;
     END;
     END IF;
