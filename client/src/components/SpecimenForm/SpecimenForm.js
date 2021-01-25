@@ -13,7 +13,8 @@ import validator from '../../validators';
 import Messenger from '../Snackbar/Snackbar';
 import Reminder from '../Tooltip/Tooltip';
 import CenterModal from '../controls/modal/modal';
-import ReviewModal from '../controls/modal/modal';
+import ReviewSubmitModal from '../controls/modal/modal';
+import ReviewApproveModal from '../controls/modal/modal';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import QuestionnaireFooter from '../QuestionnaireFooter/QuestionnaireFooter';
 import { fetchCohort } from '../../reducers/cohort';
@@ -44,6 +45,7 @@ const SpecimenForm = ({ ...props }) => {
     const [updateStatusDisabled, setUpdateStatusDisabled] = useState(false);
     const [modalShow, setModalShow] = useState(false)
     const [reviewModalShow, setReviewModalShow] = useState(false)
+    const [reviewApproveModalShow, setReviewApproveModalShow] = useState(false)
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
@@ -170,7 +172,8 @@ const SpecimenForm = ({ ...props }) => {
                     : `The cohort could not be published due to an internal error.`
             })
             dispatch(fetchCohort(cohortId));
-            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', 'published')
+            sendEmail('/templates/email-publish-template.html', 'CEDCD Cohort Review Approved - ', 'published');
+            setReviewApproveModalShow(false);
         }
     }
 
@@ -842,7 +845,7 @@ const SpecimenForm = ({ ...props }) => {
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({ show: false })}>Cancel</Button>
                     <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Save</Button>
                 </>} />
-            <ReviewModal show={reviewModalShow}
+            <ReviewSubmitModal show={reviewModalShow}
                 title={
                     <span>
                         Submit for Review
@@ -867,6 +870,36 @@ const SpecimenForm = ({ ...props }) => {
                             className="col-lg-2 col-md-6" 
                             onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
                             Submit
+                        </Button>
+                    </div>
+                }
+            />
+
+            <ReviewApproveModal show={reviewApproveModalShow}
+                title={
+                    <span>
+                        Publish Cohort
+                    </span>
+                }
+                body={
+                    <span>
+                        This submitted cohort will be published on the CEDCD public website 
+                        once you click on Publish. Are you sure you want to continue?                  
+                    </span>
+                }
+                footer={
+                    <div>
+                        <Button 
+                            variant="secondary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => setReviewApproveModalShow(false)}>
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            className="col-lg-2 col-md-6" 
+                            onClick={_ => handleApprove()}>
+                            Publish
                         </Button>
                     </div>
                 }
@@ -1279,7 +1312,7 @@ const SpecimenForm = ({ ...props }) => {
                     handleSave={handleSave}
                     handleSaveContinue={false}
                     handleSubmitForReview={handleSubmitForReview}
-                    handleApprove={updateStatusDisabled ? null : handleApprove}
+                    handleApprove={updateStatusDisabled ? null : _ => setReviewApproveModalShow(true)}
                     handleReject={updateStatusDisabled ? null : _ => updateRejectionModal({ show: true })} />
 
         </Container>

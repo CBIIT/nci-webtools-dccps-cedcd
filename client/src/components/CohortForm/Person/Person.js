@@ -34,7 +34,6 @@ const Person =({id, type, name, position, phone, email, marginWidth, inputWidth,
     
     const populateErrors = (fieldName, value, requiredOrNot, valueType, countryCode) => {
         const result = getValidationResult(value, requiredOrNot, valueType, countryCode)
-        console.log('value: '+value+' result: '+ result)
         if(result) {
             dispatch(allactions.cohortErrorActions[fieldName](false, result))
         }else{

@@ -17,7 +17,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
             case 'phone':
                 return validator.phoneValidator(value)
             case 'email':
-                return validator.emailValidator(value)
+                return validator.emailValidator(value, requiredOrNot)
             default: 
                 return validator.stringValidator(value, requiredOrNot)
         }
