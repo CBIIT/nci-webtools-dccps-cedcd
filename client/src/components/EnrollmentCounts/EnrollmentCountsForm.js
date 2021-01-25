@@ -481,9 +481,9 @@ const EnrollmentCountsForm = ({ ...props }) => {
                                                     //dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
 
                                                     if (!date) {
+                                                        dispatch(allactions.enrollmentCountActions.updateMostRecentDate(''))
                                                         dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
                                                     } else {
-                                                        console.log(date.getFullYear().toString())
                                                         if (/^\d\d\d\d$/.test(date.getFullYear().toString())) {
                                                             dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
                                                             dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
@@ -508,6 +508,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
                                                 //dispatch(allactions.enrollmentCountActions.updateMostRecentDate(date));
 
                                                 if (!date) {
+                                                    dispatch(allactions.enrollmentCountActions.updateMostRecentDate(''))
                                                     dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Field'))
                                                 } else {
                                                     if (/^\d\d\d\d$/.test(date.getFullYear().toString())) {
