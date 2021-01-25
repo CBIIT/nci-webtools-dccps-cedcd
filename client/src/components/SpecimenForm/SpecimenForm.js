@@ -820,13 +820,15 @@ const SpecimenForm = ({ ...props }) => {
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
             {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
             <CenterModal
+                headerClassName="border-bottom-0"
+                titleClassName="my-2"
+                bodyClassName="py-0"
+                footerClassName="border-top-0"
                 show={rejectionModal.show}
-                title={<span>Reject Questionnaire Responses</span>}
-                body={<Form.Group className="text-left px-3">
-                    <Form.Label>
-                        Feedback for Cohort Owner
-                    </Form.Label>
+                title={<label htmlFor="review-comments" className="my-0">Review Comments</label>}
+                body={<div className="px-3">
                     <Form.Control
+                        id="review-comments"
                         as="textarea"
                         rows="5"
                         value={rejectionModal.notes}
@@ -835,7 +837,7 @@ const SpecimenForm = ({ ...props }) => {
                         className="resize-disabled"
                         maxLength={250}
                     />
-                </Form.Group>}
+                </div>}
                 footer={<>
                     <Button className="col-lg-2 col-md-6" variant="secondary" onClick={_ => updateRejectionModal({ show: false })}>Cancel</Button>
                     <Button className="col-lg-2 col-md-6" variant="primary" disabled={!rejectionModal.notes} onClick={handleReject}>Save</Button>
