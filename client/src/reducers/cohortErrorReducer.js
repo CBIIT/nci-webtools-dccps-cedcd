@@ -36,7 +36,7 @@ actions[t.enrollment_age_median] = (state, action) => {let cloned = {...state}; 
 
 //actions[t.current_age_min] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.current_age_min) delete cloned.current_age_min}else{if(!cloned.current_age_min || action.value !== cloned.current_age_min) cloned.current_age_min = action.value}; return cloned}
 
-actions[t.current_age_min] = (state, action) => {console.log(action.remove+'----'+action.value); let cloned = {...state}; if(action.remove){if(cloned.current_age_min) delete cloned.current_age_min}else{if(!cloned.current_age_min ||  action.value !== cloned.current_age_min) cloned.current_age_min = action.value}; return cloned}
+actions[t.current_age_min] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.current_age_min) delete cloned.current_age_min}else{if(!cloned.current_age_min ||  action.value !== cloned.current_age_min) cloned.current_age_min = action.value}; return cloned}
 
 actions[t.current_age_max] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.current_age_max) delete cloned.current_age_max}else{if(!cloned.current_age_max || action.value && action.value !== cloned.current_age_max) cloned.current_age_max = action.value}; return cloned}
 actions[t.current_age_mean] = (state, action) => {let cloned = {...state}; if(action.remove){if(cloned.current_age_mean) delete cloned.current_age_mean}else{if(!cloned.current_age_mean || action.value && action.value !== cloned.current_age_mean) cloned.current_age_mean = action.value}; return cloned}

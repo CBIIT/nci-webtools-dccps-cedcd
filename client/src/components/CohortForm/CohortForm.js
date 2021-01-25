@@ -766,7 +766,6 @@ const CohortForm = ({ ...props }) => {
     }
 
     const add_url = () => {
-        console.log(add_url)
         return (
             <Col md="12" className="px-0">
                 {/* Header */}
@@ -871,7 +870,6 @@ const CohortForm = ({ ...props }) => {
 
     return (
         <Container>
-            {console.log(urlInput)}
             {successMsg && <Messenger message='update succeeded' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='update failed' severity='warning' open={true} changeMessage={setFailureMsg} />}
             <CenterModal show={modalShow}
@@ -1909,7 +1907,7 @@ const CohortForm = ({ ...props }) => {
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Median age<span style={{ color: 'red' }}>*</span>
+                                    Baseline Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
                                     {errors.enrollment_age_median && saved ?
@@ -1941,7 +1939,7 @@ const CohortForm = ({ ...props }) => {
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Mean age<span style={{ color: 'red' }}>*</span>
+                                   Baseline Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
                                     {errors.enrollment_age_mean && saved ?
@@ -2035,7 +2033,7 @@ const CohortForm = ({ ...props }) => {
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Median age<span style={{ color: 'red' }}>*</span>
+                                   Current Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
                                     {errors.current_age_median && saved ?
@@ -2067,7 +2065,7 @@ const CohortForm = ({ ...props }) => {
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Mean age<span style={{ color: 'red' }}>*</span>
+                                    Current Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
                                     {errors.current_age_mean && saved ?
