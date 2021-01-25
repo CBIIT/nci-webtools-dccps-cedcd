@@ -669,7 +669,7 @@ const CohortForm = ({ ...props }) => {
                         {files.map(f =>
                             <div className="my-1">
                                 <Col md="10">
-                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + f.filename} target="_blank">{f.filename}</a>
+                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + f.filename} download target="_blank">{f.filename}</a>
                                 </Col>
                                 <Col md="2" className="text-center">
                                     <span>
@@ -2770,7 +2770,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -2922,7 +2922,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.mainFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3074,7 +3074,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3226,7 +3226,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3378,7 +3378,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.publicationFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3541,7 +3541,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3684,7 +3684,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.mainFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3826,7 +3826,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3968,7 +3968,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4109,7 +4109,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.publicationFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.cohort_acronym + '/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(

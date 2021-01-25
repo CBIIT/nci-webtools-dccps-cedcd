@@ -6,6 +6,7 @@ import {
     NavLink,
     useHistory
 } from "react-router-dom";
+import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import classNames from 'classnames';
 import { parseISO } from 'date-fns';
@@ -141,17 +142,33 @@ const QuestionnaireHeader = ({ ...props }) => {
                         onClick={_ => setReviewModal({ show: true })}>
                         Review Comments
                     </button>}
+
                     <Modal
                         show={reviewModal.show}
-                        title={<span>Reviewing Comments</span>}
-                        body={<span>{latestReviewComment || 'N/A'}</span>}
-                        footer={<div>
+                        headerClassName="border-bottom-0"
+                        titleClassName="my-2"
+                        bodyClassName="py-0"
+                        footerClassName="border-top-0"
+                        title={<label htmlFor="review-comments" className="my-0">Review Comments</label>}
+                        body={<div className="px-3">
+                            <Form.Control
+                                id="review-comments"
+                                as="textarea"
+                                rows="5"
+                                value={latestReviewComment || 'Not Provided'}
+                                readOnly
+                                placeholder="Max of 250 Characters"
+                                className="resize-disabled"
+                                maxLength={250}
+                            />
+                        </div>}
+                        footer={<>
                             <button
                                 className="btn btn-primary"
                                 onClick={_ => setReviewModal({ show: false })}>
                                 Close
                             </button>
-                        </div>} />
+                        </>} />
                 </div>
                 <div className="col-lg px-4">
                     <strong>Last Updated Date: </strong>
