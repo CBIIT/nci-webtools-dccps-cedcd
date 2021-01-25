@@ -159,7 +159,8 @@ const MortalityForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
-                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ')
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ');
+                            setReviewModalShow(false);
                     }
                 })
         }

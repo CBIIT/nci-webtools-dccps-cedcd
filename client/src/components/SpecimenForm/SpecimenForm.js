@@ -268,7 +268,8 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: nextStatus }))
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
-                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus)
+                            sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus);
+                            setReviewModalShow(false);
                     }
                 })
         }
