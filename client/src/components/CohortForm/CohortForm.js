@@ -2077,7 +2077,7 @@ const CohortForm = ({ ...props }) => {
                                                 name='current_age_mean'
                                                 value={cohort.current_age_mean}
                                                 onChange={e =>
-                                                    !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.most_recent_year(e.target.value))
+                                                    !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
                                                 }
                                                 onBlur={e =>
                                                     populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
