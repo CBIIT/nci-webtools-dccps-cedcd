@@ -81,8 +81,29 @@ router.get('/download/:acronym/:filename', function (req, res, next) {
 		dir: config.file_path + '/' + req.params.acronym,
 		base: filename
 	});
+
+	const fileType = filename.split('.').pop()
+
 	fs.readFile(filePath, function (err, data) {
-		res.contentType("application/pdf");
+
+		switch(fileType){
+
+			case 'doc':
+				res.contentType("application/msword");
+				break;
+			case 'docx':
+				res.contentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+				break;
+			case 'ppt':
+				res.contentType("application/vnd.ms-powerpoint");
+				break;
+			case 'pptx':
+				res.contentType("application/vnd.openxmlformats-officedocument.presentationml.presentation")
+				break;
+			default:
+				res.contentType("application/" + fileType);
+		}
+
 		res.send(data);
 	});
 });
