@@ -1840,6 +1840,8 @@ DROP PROCEDURE IF EXISTS `update_cohort_published_status`;
  update cancer_info set ci_confirmed_cancer_date = MAKEDATE(ci_confirmed_cancer_year, 1) 
  where ci_confirmed_cancer_date is null and ci_confirmed_cancer_year is not null and cohort_id > 0;
 
+ update cancer_count set case_type_id = 2 where case_type_id is null;
+
  -- attachment_type ( 1.  file ,  0 -url)
 -- category (0 questionnaires
 -- 1. protocol
