@@ -20,29 +20,29 @@ const path = require('path');
 async function readTemplate(filePath, data) {
 	const template = await fs.promises.readFile(path.resolve(filePath));
 	console.log(template)
-  
-    // replace {tokens} with data values or removes them if not found
-    return String(template).replace(
-      /{[^{}]+}/g,
-      key => data[key.replace(/[{}]+/g, '')] || ''
-    );
+
+	// replace {tokens} with data values or removes them if not found
+	return String(template).replace(
+		/{[^{}]+}/g,
+		key => data[key.replace(/[{}]+/g, '')] || ''
+	);
 }
 
 router.post('/sendUserEmail', async function (req, res, next) {
 
-    try {
+	try {
 		await mail.sendMail(
-			config.mail.from, 
-			req.body.email, 
-			req.body.topic, 
+			config.mail.from,
+			req.body.email,
+			req.body.topic,
 			'',
 			await readTemplate(__dirname + req.body.template, req.body.templateData),
 		);
-        res.json({ status: 200, data: 'sent' });
-    } catch (e) {
+		res.json({ status: 200, data: 'sent' });
+	} catch (e) {
 		logger.debug(e)
-        res.json({ status: 200, data: 'failed' });
-    }
+		res.json({ status: 200, data: 'failed' });
+	}
 })
 
 
@@ -50,6 +50,25 @@ router.post('/list', function (req, res) {
 	let body = req.body;
 	//let searchText = body.searchText || "";
 	let func = "select_all_cohort";
+	let params = [];
+
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			let dt = {};
+			dt.list = results[0];
+			dt.total = dt.list.length;
+			res.json({ status: 200, data: dt });
+		}
+		else {
+			res.json({ status: 200, data: { list: [], total: 0 } });
+		}
+	});
+});
+
+router.post('/published_list', function (req, res) {
+	let body = req.body;
+	//let searchText = body.searchText || "";
+	let func = "select_cohort_list";
 	let params = [];
 
 	mysql.callProcedure(func, params, function (results) {
@@ -83,19 +102,19 @@ router.post('/owners', function (req, res) {
 	})
 });
 
-router.post('/add', function(req, res){
+router.post('/add', function (req, res) {
 
 	let func = 'insert_new_cohort'
 	let body = JSON.stringify(req.body)
 	let params = []
 	params.push(body)
 
-    mysql.callJsonProcedure(func, params, function (result) {
+	mysql.callJsonProcedure(func, params, function (result) {
 
-		if(result && result[0] && result[0][0].success === 1)
-			res.json({status: 200, message: 'update successful'})
+		if (result && result[0] && result[0][0].success === 1)
+			res.json({ status: 200, message: 'update successful' })
 		else
-			res.json({status: 500, message: 'update failed'})
+			res.json({ status: 500, message: 'update failed' })
 	})
 });
 
