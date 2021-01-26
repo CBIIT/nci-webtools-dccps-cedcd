@@ -540,7 +540,7 @@ const MajorContentForm = ({ ...props }) => {
                     <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
                         C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
-                    <Col sm='12'>
+                    <Col sm='12' className='mb-1'>
                         <span>If data was collected at baseline, please specify all tobacco products that apply</span>
                         {(errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
@@ -563,7 +563,7 @@ const MajorContentForm = ({ ...props }) => {
                                 onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine || isReadOnly} />
                         </Reminder>
                     </Col>
-                    <Col sm='12'>
+                    <Col sm='12' className='mb-1'>
                         <span>If data was collected during follow-up, please specify all tobacco products that apply</span>
                         {(errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
