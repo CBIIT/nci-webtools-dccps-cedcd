@@ -474,7 +474,7 @@ DROP PROCEDURE IF EXISTS `select_admin_info` //
 
 CREATE PROCEDURE `select_admin_info`(in targetID int)
 BEGIN
-	select distinct first_name, last_name, email, name, acronym from user x, cohort y where access_level='SystemAdmin' and y.id=targetID;
+	select distinct first_name, last_name, email, name, acronym from user x, cohort y where access_level='SystemAdmin' and y.id=targetID and x.id >1 ;
 END //
 -- -----------------------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------------------
