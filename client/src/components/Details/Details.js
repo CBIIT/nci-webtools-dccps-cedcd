@@ -59,7 +59,7 @@ class Details extends Component {
 				booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"]
 			},
 			orderBy: {
-				column: "cohort_acronym",
+				column: "cohort_name",
 				order: "asc"
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
@@ -229,7 +229,7 @@ class Details extends Component {
 			document.getElementById("cancerAll").checked = false;
 		}
 		let orderBy = {
-			column: "cohort_acronym",
+			column: "cohort_name",
 			order: "asc"
 		};
 		let filter = {
@@ -365,7 +365,7 @@ class Details extends Component {
 	clearAdvancedFilter = () => {
 		this.setAllToFalse();
 		let orderBy = {
-			column: "cohort_acronym",
+			column: "cohort_name",
 			order: "asc"
 		};
 		let advancedFilter = {

@@ -24,7 +24,7 @@ class ManageCohort extends Component {
 				cohortSearch: '',
 			},
 			orderBy: {
-				column: "acronym",
+				column: "name",
 				order: "asc"
 			},
 			pageInfo: { page: 1, pageSize: 15, total: 0 },
