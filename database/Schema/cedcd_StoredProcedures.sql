@@ -474,7 +474,12 @@ DROP PROCEDURE IF EXISTS `select_admin_info` //
 
 CREATE PROCEDURE `select_admin_info`(in targetID int)
 BEGIN
-	select distinct first_name, last_name, email, name, acronym from user x, cohort y where access_level='SystemAdmin' and y.id=targetID;
+	set @query = "select distinct first_name, last_name, email, name, acronym 
+      from user x, cohort y where access_level='SystemAdmin' and y.id= ? and x.id >1 ";
+    set @cohort_id = targetID;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
 END //
 -- -----------------------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------------------

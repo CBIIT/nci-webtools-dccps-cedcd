@@ -1211,14 +1211,14 @@ class Details extends Component {
 				let url = './cohort?id=' + id;
 				let website = item.cohort_web_site;
 				let website_content = "";
-				if(website){
+				if (website) {
 					if (!website.startsWith("http") && !website.startsWith("www")) {
 						website = "";
 					}
 					let website_label = website;
 					if (website.length > 30) {
 						website_label = website.substring(0, 27) + "...";
-					}					
+					}
 					if (website !== "") {
 						website_content = (<a href={website} title={website} target="_blank">{website_label}</a>);
 					}
