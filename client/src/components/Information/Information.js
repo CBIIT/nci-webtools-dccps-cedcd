@@ -43,7 +43,7 @@ class Information extends Component {
 	}
 
 	renderLinks = (idx) => {
-		if(idx === 0){
+	/*	if(idx === 0){
 			if(this.state.info.attachments && this.state.info.attachments.protocols){
 				const links = this.state.info.attachments.protocols.map((item, id) => {
 					const uid = "protocol_"+id;
@@ -81,7 +81,8 @@ class Information extends Component {
 				);
 			}
 		}
-		else if(idx === 1){
+		else */
+		if(idx === 0){
 			if(this.state.info.attachments && this.state.info.attachments.questionnaires){
 				const links = this.state.info.attachments.questionnaires.map((item, id) => {
 					const uid = "questionnair_"+id;
@@ -304,13 +305,13 @@ class Information extends Component {
 					condition={this.state.protocol}
 					panelTitle = 'Questionnaires'
 					onClick={this.protocolClick}>
-				   	<h3 style={{"display":"none"}}>Study Protocol</h3>
-	                <div id="prot_attachments" style={{"display":"none"}}>
+				   {/*}	<h3 >Study Protocol</h3>
+	                <div id="prot_attachments">
 	                	{this.renderLinks(0)}
-	                </div>
+	                </div>*/}
 	                <h3>Cohort Questionnaires</h3>
 	                <div id="quest_attachments">
-	                  	{this.renderLinks(1)}
+	                  	{this.renderLinks(0)}
 	                </div>
 				</CollapsiblePanel>
 				<CollapsiblePanel

@@ -196,7 +196,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
-        logger.debug(results)
+        logger.debug(results[8])
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]

@@ -1549,7 +1549,7 @@ create_time
 select attachment_id,
 cohort_id,
 attachment_type,
-(case when category < 2 then 0 else category -1 end) category,
+(case when category < 2 then 0 else category end) category,
 filename,
 website,
 status,

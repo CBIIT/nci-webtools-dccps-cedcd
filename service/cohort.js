@@ -591,7 +591,7 @@ router.post('/specimen', function (req, res) {
 router.get('/:id', function (req, res) {
 	let id = req.params.id;
 	let info = cache.getValue("cohort:" + id);
-	if (info == undefined) {
+	//if (info == undefined) {
 		let func = "select_cohort_description";
 		let params = [id];
 		mysql.callProcedure(func, params, function (results) {
@@ -654,7 +654,7 @@ router.get('/:id', function (req, res) {
 				let attachs = results[1];
 				let tmp = [[], [], []];
 				attachs.forEach(function (attach) {
-					let idx = attach.category > 1 ? 2 : attach.category;
+					let idx = attach.category > 0 ? 1 : attach.category;
 					let content = attach.attachment_type == 1 ? attach.filename.trim() : attach.website.trim();
 					if (tmp[idx].indexOf(content) > -1) {
 						return;
@@ -662,7 +662,7 @@ router.get('/:id', function (req, res) {
 					else {
 						tmp[idx].push(content);
 					}
-					if (attach.category == 1) {
+					if (attach.category == 0) {
 						//cohort questionnaires
 						if (info.attachments.questionnaires == undefined) {
 							info.attachments.questionnaires = [];
@@ -673,7 +673,7 @@ router.get('/:id', function (req, res) {
 							name: attach.filename
 						});
 					}
-					else if (attach.category == 0) {
+					/*else if (attach.category == 0) {
 						//study protocol
 						if (info.attachments.protocols == undefined) {
 							info.attachments.protocols = [];
@@ -683,7 +683,7 @@ router.get('/:id', function (req, res) {
 							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
 							name: attach.filename
 						});
-					}
+					}*/
 					else {
 						//policies
 						if (info.attachments.policies == undefined) {
@@ -696,18 +696,19 @@ router.get('/:id', function (req, res) {
 						});
 					}
 				});
-				cache.setValue("cohort:" + id, info, config.cohort_ttl);
+				logger.debug(results[1])
+				//cache.setValue("cohort:" + id, info, config.cohort_ttl);
 			}
 			res.json({ status: 200, data: info });
 		});
-	}
+	/*}
 	else {
 		logger.debug("get from cache <cohort:" + id + ">");
 		res.json({
 			status: 200,
 			data: info
 		});
-	}
+	}*/
 
 });
 
