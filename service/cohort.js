@@ -591,7 +591,7 @@ router.post('/specimen', function (req, res) {
 router.get('/:id', function (req, res) {
 	let id = req.params.id;
 	let info = cache.getValue("cohort:" + id);
-	if (info == undefined) {
+	//if (info == undefined) {
 		let func = "select_cohort_description";
 		let params = [id];
 		mysql.callProcedure(func, params, function (results) {
@@ -696,19 +696,19 @@ router.get('/:id', function (req, res) {
 						});
 					}
 				});
-				logger.debug(info.attachments.questionnaires)
-				cache.setValue("cohort:" + id, info, config.cohort_ttl);
+				logger.debug(results[1])
+				//cache.setValue("cohort:" + id, info, config.cohort_ttl);
 			}
 			res.json({ status: 200, data: info });
 		});
-	}
+	/*}
 	else {
 		logger.debug("get from cache <cohort:" + id + ">");
 		res.json({
 			status: 200,
 			data: info
 		});
-	}
+	}*/
 
 });
 
