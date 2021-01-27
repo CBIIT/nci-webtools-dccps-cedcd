@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import classNames from 'classnames'
 import './collapsable-panels.scss';
 
@@ -12,14 +12,22 @@ export const CollapsiblePanel = ({
     condition = false,
 }) => { 
     const isActive = (activePanel && panelName && activePanel === panelName) || condition;
+    const divRef = useRef();
 
     return (
-        <div className={className}>
+        <div className={className} ref={divRef}>
             <button type="button" 
                 className={classNames('cedcd-btn',  isActive && 'active')} 
                 aria-expanded={isActive} 
                 aria-controls="more" 
-                onClick={onClick}>
+                onClick={e => {
+                    e.preventDefault();
+                    onClick();
+                    setTimeout(() => {
+                        const { offsetTop } = divRef.current;
+                        window.scrollTo(0, offsetTop);
+                    }, 100);
+                }}>
                 <span className="triangle"></span>{ panelTitle }
             </button>
             <div className="px-5 py-4" 
