@@ -759,7 +759,9 @@ Generate default users
 insert into user(id, user_name,first_name,last_name, access_level,active_status, email, create_time,update_time) 
 values
 (1,"admin","System","Admin","SystemAdmin","Y","kai-ling.chen@nih.gov",now(),now()),
-(2,"chenkai","Kailing","Chen","SystemAdmin","Y","kai-ling.chen@nih.gov",now(),now());
-
+(2,"chenkai","Kailing","Chen","SystemAdmin","Y","kai-ling.chen@nih.gov",now(),now()),
+(3,"elenajw","Joanne","Elena","SystemAdmin","Y","joanne.elena@nih.gov",now(),now()),
+(4,"rogerssc","Scott","Rogers","SystemAdmin","Y","rogerssc@nih.gov",now(),now()),
+(5,"pottingerca","Camille","Pottinger","SystemAdmin","Y","camille.pottinger@nih.gov",now(),now());
 
 -- ======== end table data ===============

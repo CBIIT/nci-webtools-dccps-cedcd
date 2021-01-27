@@ -474,7 +474,12 @@ DROP PROCEDURE IF EXISTS `select_admin_info` //
 
 CREATE PROCEDURE `select_admin_info`(in targetID int)
 BEGIN
-	select distinct first_name, last_name, email, name, acronym from user x, cohort y where access_level='SystemAdmin' and y.id=targetID;
+	set @query = "select distinct first_name, last_name, email, name, acronym 
+      from user x, cohort y where access_level='SystemAdmin' and y.id= ? and x.id >1 ";
+    set @cohort_id = targetID;
+    PREPARE stmt FROM @query;
+	EXECUTE stmt using @cohort_id;
+	DEALLOCATE PREPARE stmt;
 END //
 -- -----------------------------------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------------------------------
@@ -1368,43 +1373,43 @@ BEGIN
         set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
         set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
         set @publicationUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'));
-        -- questionnaire/url-2
+        -- questionnaire/url-0
 		SELECT 0 into i;
 
 		delete from cohort_document where cohort_id=@latest_cohort and attachment_type=0;
 
 		WHILE i < JSON_LENGTH(@questionnaireUrlEntry) DO
-			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 0, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
-        -- main file/url-3
+        -- main file/url-1
 
 		SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@mainUrlEntry) DO
-			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 3, '', JSON_UNQUOTE(JSON_EXTRACT(@mainUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 1, '', JSON_UNQUOTE(JSON_EXTRACT(@mainUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
 
-        -- data file/url-4
+        -- data file/url-2
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@dataUrlEntry) DO
-			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
-        -- specimen file/url-5
+        -- specimen file/url-3
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@specimenUrlEntry) DO
-			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 5, '', JSON_UNQUOTE(JSON_EXTRACT(@specimenUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 3, '', JSON_UNQUOTE(JSON_EXTRACT(@specimenUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
-        -- publication file/url
+        -- publication file/url-4
         SELECT 0 into i;
 
         WHILE i < JSON_LENGTH(@publicationUrlEntry) DO
-			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 6, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
+			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
  commit;
