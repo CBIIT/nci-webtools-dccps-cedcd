@@ -696,6 +696,7 @@ router.get('/:id', function (req, res) {
 						});
 					}
 				});
+				logger.debug(info.attachments.questionnaires)
 				cache.setValue("cohort:" + id, info, config.cohort_ttl);
 			}
 			res.json({ status: 200, data: info });
