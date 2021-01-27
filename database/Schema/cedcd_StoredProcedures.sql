@@ -379,7 +379,7 @@ BEGIN
       dlh_procedure_url as request_procedures_web_url,
       dlh_procedure_attached as request_procedures_pdf
      from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
-    select * from cohort_document where cohort_id = c_id;
+    select * from cohort_document where cohort_id = c_id and status = 1;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
