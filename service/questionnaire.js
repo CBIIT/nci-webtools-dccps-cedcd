@@ -196,7 +196,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
-        logger.debug(results)
+        logger.debug(results[8])
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
@@ -250,19 +250,19 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             for (let a of results[8]) {
 
                 switch (a.urlCategory) {
-                    case 2:
+                    case 0:
                         basic_info.cohort.questionnaire_url.push(a.website)
                         break;
-                    case 3:
+                    case 1:
                         basic_info.cohort.main_cohort_url.push(a.website)
                         break;
-                    case 4:
+                    case 2:
                         basic_info.cohort.data_url.push(a.website)
                         break;
-                    case 5:
+                    case 3:
                         basic_info.cohort.specimen_url.push(a.website)
                         break;
-                    case 6:
+                    case 4:
                         basic_info.cohort.publication_url.push(a.website)
                         break;
                 }

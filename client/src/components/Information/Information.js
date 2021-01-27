@@ -304,10 +304,10 @@ class Information extends Component {
 					condition={this.state.protocol}
 					panelTitle = 'Questionnaires'
 					onClick={this.protocolClick}>
-				   	<h3 style={{"display":"none"}}>Study Protocol</h3>
-	                <div id="prot_attachments" style={{"display":"none"}}>
+				   {/*}	<h3 >Study Protocol</h3>
+	                <div id="prot_attachments">
 	                	{this.renderLinks(0)}
-	                </div>
+	                </div>*/}
 	                <h3>Cohort Questionnaires</h3>
 	                <div id="quest_attachments">
 	                  	{this.renderLinks(1)}
