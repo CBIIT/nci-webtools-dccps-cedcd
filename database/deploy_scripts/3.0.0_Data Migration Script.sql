@@ -1534,6 +1534,7 @@ from cedcd_old.cohort_basic;
 /*
 Migrate data from table cohort_attachment to cohort_attachment_new
 * new schema attachment changed to name cohort_document, accoridng to new questionnaire (v8.1)
+* from orginal data, category 0 and 1 would be considered as questionnaire category (0)
 */
 insert into cohort_document (
 id,
@@ -1548,7 +1549,7 @@ create_time
 select attachment_id,
 cohort_id,
 attachment_type,
-category,
+(case when category < 2 then 0 else category -1 end) category,
 filename,
 website,
 status,

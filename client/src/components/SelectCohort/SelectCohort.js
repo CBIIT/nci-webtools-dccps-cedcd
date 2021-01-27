@@ -12,7 +12,10 @@ export default function SelectCohort() {
         <div>
             <h1 className="welcome pg-title">Select a Cohort</h1>
             <p className="welcome">
-                Please select the cohort you wish to update from the list below.
+                {user.cohorts.length
+                    ? 'Please select the cohort you wish to update from the list below.'
+                    : 'Your user account is not associated with any cohorts. Please contact an administrator to grant access to your questionnaire.'
+                }
             </p>
 
             <div className="col-md-12">
