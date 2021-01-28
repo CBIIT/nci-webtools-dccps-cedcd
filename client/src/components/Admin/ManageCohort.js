@@ -352,8 +352,8 @@ class ManageCohort extends Component {
 						</div>
 
 						<div className="manageCohortClearAll mx-0" >
-							<Link className="linkButton" href="javascript:void(0);" onClick={this.clearFilter} style={{ color: 'blue', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-								<i className="fas fa-times" ></i>Clear</Link>
+							<Link className="linkButton" href="javascript:void(0);" onClick={this.clearFilter} style={{ color: '#23527c', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+								<i className="fas fa-times" ></i> Clear </Link>
 							<Link className="linkButton" style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
 								to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 						</div>
