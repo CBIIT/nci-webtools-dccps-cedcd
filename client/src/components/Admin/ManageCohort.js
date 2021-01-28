@@ -362,7 +362,7 @@ class ManageCohort extends Component {
 
 					<div style={{ verticalAlign: 'middle' }}>
 						<div style={{ "display": "flex", "justifyContent": "right", "paddingRight": "0px" }}>
-							<div style={{ "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
+							<div style={{ "paddingRight": "1rem", "position": "relative", "paddingTop": "10px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
 							</div>
 							<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative" }}>
