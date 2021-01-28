@@ -341,32 +341,28 @@ class ManageCohort extends Component {
 				<div className="d-flex flex-wrap flex-fill justify-content-between mx-4" style={{ verticalAlign: 'middle', marginBottom: '-15px' }}>
 					<div className="d-flex flex-wrap flex-fill justify-content-left" >
 
-						<div className="input-group mr-3" style={{ maxWidth: '250px' }} >
-							<div className="input-group-prepend" style={{ height: '100%' }}>
-								<div className="input-group-text" id="btnGroupAddon2" ><i className="fa fa-search"></i>
-								</div>
-							</div>
-							<input type="text" className="form-control" style={{ paddingLeft: '1rem' }}
+						<div className="mr-3 mb-0" style={{ width: '290px', minWidth: '175px', margin: '0', padding: '0', boxSizing: 'border-box', position: 'relative' }} >
+							<input type="text" className="form-control" style={{ paddingLeft: '1rem', borderRadius: '5px' }}
 								value={this.state.filter.cohortSearch} placeholder="Search with key word " onChange={(e) => this.handleCohortSearchChange(e)} />
+							<i className="fa fa-search" style={{ width: '100%', pointerEvents: 'none', position: 'absolute', bottom: '45%', right: '-45%', borderRadius: '5px' }}></i>
 						</div>
 
 						<div id="cohortstatus" className="filter-component mr-2" style={{ minWidth: '125px' }}>
 							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="0" onClick={this.handleCohortStatusClick} />
 						</div>
 
-						<div className="manageCohortClearAll mx=0" style={{ "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingLeft": "0" }}>
-							<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter} style={{ "marginLeft": "0" }}>
-								<i className="fas fa-times" ></i> Clear </a>
-
-							<Link style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+						<div className="manageCohortClearAll mx-0" >
+							<Link className="linkButton" href="javascript:void(0);" onClick={this.clearFilter} style={{ color: 'blue', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+								<i className="fas fa-times" ></i>Clear</Link>
+							<Link className="linkButton" style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
 								to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 						</div>
 
 					</div>
 
-					<div className="d-flex flex-wrap " style={{ verticalAlign: 'middle' }}>
+					<div style={{ verticalAlign: 'middle' }}>
 						<div style={{ "display": "flex", "justifyContent": "right", "paddingRight": "0px" }}>
-							<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
+							<div style={{ "paddingRight": "1rem", "position": "relative", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
 							</div>
 							<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative" }}>
