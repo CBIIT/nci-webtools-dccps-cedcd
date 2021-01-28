@@ -174,7 +174,7 @@ class Information extends Component {
 						</ul>
 					);
 			}else{
-				return <ul> {return_body} </ul>;
+				return <ul className="links-list"> {return_body} </ul>;
 			}
 		}// end else 
 	}
