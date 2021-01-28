@@ -200,6 +200,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
+        basic_info.cohort.cohort_description = basic_info.cohort.cohort_description.replace(/\\n/g, '\n')
         basic_info.completer = results[1][0]
         basic_info.contacter = results[2][0]
         results[3].map((item) => {

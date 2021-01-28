@@ -273,6 +273,17 @@ const SpecimenForm = ({ ...props }) => {
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ', nextStatus);
                         setReviewModalShow(false);
+                        updateMessage({
+                            show: true,
+                            type: 'success',
+                            content: `The cohort has been submitted.`
+                        })
+                    } else {
+                        updateMessage({
+                            show: true,
+                            type: 'warning',
+                            content: `The cohort could not be submitted due to an internal error.`
+                        })
                     }
                 })
         }
