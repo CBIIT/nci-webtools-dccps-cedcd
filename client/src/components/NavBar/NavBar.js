@@ -106,12 +106,6 @@ const NavBar = (props) => {
                   </div>
                 </li>
               }
-              {userSession && userSession.role ? <>
-                <li><a href='#' target="_self" onClick={logout}>Log out</a></li>
-              </> : <>
-                <li><a href='/private/external' >External Login</a></li>
-                <li><a href='/private/internal' >NIH Login</a></li>
-              </>}
             </ul>
           </div>
         }
