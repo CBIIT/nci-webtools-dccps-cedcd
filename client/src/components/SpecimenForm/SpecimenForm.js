@@ -277,13 +277,13 @@ const SpecimenForm = ({ ...props }) => {
                             show: true,
                             type: 'success',
                             content: `The cohort has been submitted.`
-                        })
+                        });
                     } else {
                         updateMessage({
                             show: true,
                             type: 'warning',
                             content: `The cohort could not be submitted due to an internal error.`
-                        })
+                        });
                     }
                 })
         }

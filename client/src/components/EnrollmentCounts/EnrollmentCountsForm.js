@@ -35,6 +35,8 @@ const EnrollmentCountsForm = ({ ...props }) => {
     //const [displayStyle, setDisplay] = useState('0')
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState({ show: false, type: null, content: null })
+    const updateMessage = state => setMessage({ ...message, ...state });
     const [modalShow, setModalShow] = useState(false)
     const [reviewModalShow, setReviewModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
@@ -148,7 +150,18 @@ const EnrollmentCountsForm = ({ ...props }) => {
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ');
-                            setReviewModalShow(false);
+                        setReviewModalShow(false);
+                        updateMessage({
+                            show: true,
+                            type: 'success',
+                            content: `The cohort has been submitted.`
+                        });
+                    } else {
+                        updateMessage({
+                            show: true,
+                            type: 'warning',
+                            content: `The cohort could not be submitted due to an internal error.`
+                        });
                     }
                 })
         }
@@ -262,7 +275,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
         <Container>
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
-
+            {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
             <ReviewModal show={reviewModalShow}
                 title={
