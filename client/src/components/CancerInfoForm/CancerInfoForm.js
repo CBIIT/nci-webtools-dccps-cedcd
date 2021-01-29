@@ -45,6 +45,8 @@ const CancerInfoForm = ({ ...props }) => {
     const [submitted, setSubmitted] = useState(false);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState({ show: false, type: null, content: null })
+    const updateMessage = state => setMessage({ ...message, ...state });
     const [modal, setModal] = useState({ show: false });
     const [reviewModalShow, setReviewModalShow] = useState(false)
     const updateModal = state => setModal({ ...modal, ...state });
@@ -164,7 +166,18 @@ const CancerInfoForm = ({ ...props }) => {
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ');
-                            setReviewModalShow(false);
+                        setReviewModalShow(false);
+                        updateMessage({
+                            show: true,
+                            type: 'success',
+                            content: `The cohort has been submitted.`
+                        });
+                    } else {
+                        updateMessage({
+                            show: true,
+                            type: 'warning',
+                            content: `The cohort could not be submitted due to an internal error.`
+                        });
                     }
                 })
         }
@@ -437,6 +450,7 @@ const CancerInfoForm = ({ ...props }) => {
         <Container>
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
+            {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
                 <Form>
                     <CollapsiblePanelContainer>
                         <CollapsiblePanel
