@@ -1105,7 +1105,8 @@ BEGIN
 		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") ");
     end if;
     
-    set @query = concat(@queryString, " order by cc.cancer_id, cc.gender_id, cs.cohort_acronym");
+    set @query = concat(@queryString, " order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, cc.gender_id, cs.cohort_acronym");
+  
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -1139,7 +1140,9 @@ BEGIN
     end if;
     
     -- set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
-	set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
+	set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, 
+    case when ec.race_id = 3 then 4.5 
+    when ec.race_id = 6 then 8 else ec.race_id end, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
