@@ -350,10 +350,13 @@ class ManageCohort extends Component {
 						<div id="cohortstatus" className="filter-component mr-2" style={{ minWidth: '125px' }}>
 							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="0" onClick={this.handleCohortStatusClick} />
 						</div>
-
-						<div className="manageCohortClearAll mx-0" >
+						<div>
 							<Link className="linkButton" href="javascript:void(0);" onClick={this.clearFilter} style={{ color: '#23527c', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
 								<i className="fas fa-times" ></i> Clear </Link>
+						</div>
+
+						<div className="manageCohortClearAll mx-0" >
+
 							<Link className="linkButton" style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
 								to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
 						</div>
