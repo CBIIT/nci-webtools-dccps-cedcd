@@ -1,15 +1,17 @@
 import React, { useState, useContext, useEffect } from "react";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch} from 'react-redux';
 import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
-
+import {resetUser} from "../../reducers/user"
 const NavBar = (props) => {
   const userSession = useSelector(state => state.user);
+  const dispatch = useDispatch()
   //const [loggedin, setLogin] = useState(false)
   const logout = async () => {
     // can not use normal 301 response, since session is not properly cleared
     // setLogin(false)
+    dispatch(resetUser())
     const response = await fetch('/api/logout');
     window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
   }
@@ -106,11 +108,11 @@ const NavBar = (props) => {
                   </div>
                 </li>
               }
-              {userSession ? <>
+              {Object.keys(userSession).length > 0 ? <>
                 <li><a href='#' onClick={logout}>Log out</a></li>
               </> : <>
-                <li><a href='/login/external' >External Login</a></li>
-                <li><a href='/login/internal' >NIH Login</a></li>
+                <li><a href='/private/external' >External Login</a></li>
+                <li><a href='/private/internal' >NIH Login</a></li>
               </>}
             </ul>
           </div>
