@@ -969,7 +969,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <Col sm='3' className='align-self-center' >
                                     <RadioButtonInput field_id='bioBloodOtherTime'
                                     />
-                                    {(errors.bioBloodBaseline && errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                    {(errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Col>
                                 <Col sm="12">
                                     <div sm='12'>If collected, types of aliquots (select all that apply)</div>
