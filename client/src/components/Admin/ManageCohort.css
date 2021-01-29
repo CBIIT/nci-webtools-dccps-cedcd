@@ -178,6 +178,18 @@ h1.welcome{
     text-decoration: none;
     display: block;
   }
+
+  .linkButton {
+    padding: 5px 0px;
+    display: inline-block;
+    background-color: white;
+    color: white;
+    border: 5px solid white;
+    transition: border 0.2s ease;
+  }
+  .linkButton:hover {
+    cursor: pointer;
+  }
   
   /* Change color of dropdown links on hover */
   .pagesizedropbtn-content a:hover {background-color: #ddd}
