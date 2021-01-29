@@ -149,9 +149,9 @@ class Enrollment extends Component {
 			.then(result => {
 				let rst = result.data;
 				// move "More Than One Race" and "Unknown or Not Reported" to bottom list
-				let olist = rst.list.map(x => (x.c2 === "More Than One Race" || x.c2 === "Unknown or Not Reported") ? { ...x, c2: ('Z' + x.c2) } : x);
+				//	let olist = rst.list.map(x => (x.c2 === "More Than One Race" || x.c2 === "Unknown or Not Reported") ? { ...x, c2: ('Z' + x.c2) } : x);
 
-				rst.list = olist.sort((a, b) => a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZMore Than One Race" || x.c2 === "ZUnknown or Not Reported") ? { ...x, c2: x.c2.slice(1) } : x);;
+				//	rst.list = olist.sort((a, b) => a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZMore Than One Race" || x.c2 === "ZUnknown or Not Reported") ? { ...x, c2: x.c2.slice(1) } : x);;
 
 				this.setState(prevState => (
 					{
