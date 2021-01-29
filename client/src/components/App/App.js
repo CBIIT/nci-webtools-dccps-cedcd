@@ -102,7 +102,7 @@ class App extends Component {
     return (
       <div>
         <ScrollToTop />
-        {this.state.showImage && <Header />}
+        <Header displayBanner={this.state.showImage} />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
             <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />
