@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import './login-button.css'
 
 
-export default function Header({ props }) {
+export default function Header(props) {
     const userSession = useSelector(state => state.user);
     // console.dir('in header: ',userSession)
     const logout = async e => {
@@ -14,48 +14,81 @@ export default function Header({ props }) {
     }
 
     return (
-        <div id="header">
-
-            <div id="header-inner" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <a href="/" style={{ border: '0' }}>
-                    <img
-                        src="/assets/img/logo_CEDCD_white.png"
-                        id="ctl09_mastLogo"
-                        alt="Cancer Epidemiology Descriptive Cohort Database"
-                        style={{ marginLeft: '0px', marginTop: '6px' }}
-                    />
-                </a>
-
-                <div style={{ marginLeft: '10%', marginTop: '20px' }}>
-                    {userSession && userSession.role && <>
-                        <a
-                            className="login-button"
-                            href="#"
-                            onClick={logout}
-                            style={{ margin: '5px' }}
-                            target="_self">
-                            Logout
+        <div>
+            {props.displayBanner ? 
+                <div id="header">
+                    <div id="header-inner" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <a href="/" style={{ border: '0' }}>
+                            <img
+                                src="/assets/img/logo_CEDCD_white.png"
+                                id="ctl09_mastLogo"
+                                alt="Cancer Epidemiology Descriptive Cohort Database"
+                                style={{ marginLeft: '0px', marginTop: '6px' }}
+                            />
                         </a>
-                    </> || <>
+        
+                        <div style={{ marginLeft: '10%', marginTop: '20px' }}>
+                            {userSession && userSession.role && <>
+                                <a
+                                    className="login-button"
+                                    href="#"
+                                    onClick={logout}
+                                    style={{ margin: '5px' }}
+                                    target="_self">
+                                    Logout
+                                </a>
+                            </> || <>
+                                    <a
+                                        className="login-button"
+                                        href="/private/external"
+                                        style={{ margin: '5px' }}
+                                        target="_self">
+                                        External Login
+                                </a>
+                                    <a
+                                        className="login-button"
+                                        href="/private/internal"
+                                        style={{ margin: '5px' }}
+                                        target="_self">
+                                        NIH Login
+                                </a>
+                                </>}
+                        </div>
+                    </div>
+                </div>      
+                :
+                <div className="row">
+                    {userSession && userSession.role && 
+                        <div className="col-12">
                             <a
-                                className="login-button"
-                                href="/private/external"
+                                className="login-button float-right"
+                                href="#"
+                                onClick={logout}
                                 style={{ margin: '5px' }}
                                 target="_self">
-                                External Login
-                        </a>
+                                Logout
+                            </a>
+                        </div> 
+                        || 
+                        <div className="col-12">
                             <a
-                                className="login-button"
+                                className="login-button float-right"
                                 href="/private/internal"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 NIH Login
-                        </a>
-                        </>}
+                            </a>
+                            <a
+                                className="login-button float-right"
+                                href="/private/external"
+                                style={{ margin: '5px' }}
+                                target="_self">
+                                External Login
+                            </a>
+                        </div>
+                    }
                 </div>
-
-            </div>
-
+            }
         </div>
     )
 }

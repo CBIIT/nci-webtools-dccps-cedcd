@@ -538,6 +538,7 @@ const CancerInfoForm = ({ ...props }) => {
                                             className="form-control"
                                             selected={form.ci_confirmed_cancer_date}
                                             readOnly={isReadOnly}
+                                            maxDate = {new Date()}
                                             onChange={value => setFormValue('ci_confirmed_cancer_date', value)}
                                         />
                                     </Reminder>
