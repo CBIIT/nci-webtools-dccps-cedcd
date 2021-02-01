@@ -1160,7 +1160,7 @@ CREATE PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in co
 BEGIN
     set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts 
 	from specimen_count sc, cohort_basic cs, lu_specimen ls, lu_cancer lc, cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and sc.cohort_id = cs.cohort_id and sc.specimen_id = ls.id and sc.cancer_id = lc.id ";
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and sc.cohort_id = cs.cohort_id and sc.specimen_id = ls.id and sc.cancer_id = lc.id and lc.cancer <> 'No Cancer' ";
     
     if specimen != "" then
 		set @queryString = concat(@queryString, "and sc.specimen_id in (",specimen,") ");
@@ -1174,7 +1174,7 @@ BEGIN
 		set @queryString = concat(@queryString, "and sc.cohort_id in (",cohort,") ");
     end if;
     
-    set @query = concat(@queryString, " order by ls.specimen, case when lc.cancer = 'All Other Cancers' then 'zza' when lc.cancer = 'No Cancer' then 'zzz' else lc.cancer end asc, cs.cohort_acronym");
+    set @query = concat(@queryString, " order by ls.specimen, case when lc.cancer = 'All Other Cancers' then 'zza' else lc.cancer end asc, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
