@@ -1079,7 +1079,10 @@ BEGIN
     else
         select success;
     END IF;
-    
+    set @query1 = "SELECT page_code, status from cohort_edit_status where cohort_id = ? ";
+      PREPARE stmt1 FROM @query1;
+    EXECUTE stmt1 using @cohort_id;
+    DEALLOCATE PREPARE stmt1;
 END //
 
 
@@ -1171,7 +1174,7 @@ BEGIN
 		set @queryString = concat(@queryString, "and sc.cohort_id in (",cohort,") ");
     end if;
     
-    set @query = concat(@queryString, " order by sc.specimen_id, sc.cancer_id, cs.cohort_acronym");
+    set @query = concat(@queryString, " order by ls.specimen, case when lc.cancer = 'All Other Cancers' then 'zza' when lc.cancer = 'No Cancer' then 'zzz' else lc.cancer end asc, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
