@@ -2782,7 +2782,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download={cohort.questionnaireFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -2934,7 +2934,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.mainFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download={cohort.mainFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3086,7 +3086,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download={cohort.dataFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3238,7 +3238,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download={cohort.specimenFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3390,7 +3390,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.publicationFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download={cohort.publicationFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3553,7 +3553,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download={cohort.questionnaireFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3696,7 +3696,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.mainFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download={cohort.mainFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3838,7 +3838,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download={cohort.dataFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3980,7 +3980,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download={cohort.specimenFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4121,7 +4121,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.publicationFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download={cohort.publicationFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(

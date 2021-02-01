@@ -1079,7 +1079,10 @@ BEGIN
     else
         select success;
     END IF;
-    
+    set @query1 = "SELECT page_code, status from cohort_edit_status where cohort_id = ? ";
+      PREPARE stmt1 FROM @query1;
+    EXECUTE stmt1 using @cohort_id;
+    DEALLOCATE PREPARE stmt1;
 END //
 
 

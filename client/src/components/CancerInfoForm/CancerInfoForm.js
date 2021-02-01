@@ -366,20 +366,19 @@ const CancerInfoForm = ({ ...props }) => {
 
             const result = await postJSON(`/api/questionnaire/update_cancer_info/${id}`, [info]);
             if (result && result.data) {
-                const { duplicated_cohort_id: newCohortId, status } = result.data;
-                // console.log("new id: "+newCohortId)
-                // console.log("new stats: "+status)
+                const { duplicated_cohort_id, status } = result.data;
                 if (status && status != cohortStatus) {
                     dispatch(({ type: 'SET_COHORT_STATUS', value: status }))
-                    dispatch(fetchCohort(newCohortId)) /* if result.data.status present, duplicated_cohort_id is too */
-                } else {
-                    dispatch(fetchCohort(cohortId))
-                    if (newCohortId && +newCohortId !== id) {
-                        id = newCohortId;
-                    }
-                }
+                    if (duplicated_cohort_id && +duplicated_cohort_id !== id)
+                        id = duplicated_cohort_id;
+                } 
+                console.dir(result.data)
+                let sectionStatusList = result.data.sectionStatusList
+                if (sectionStatusList && sectionStatusList.length > 0)
+                    sectionStatusList.forEach((item, idx) => {
+                        dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
+                    })
             }
-
             await postJSON(`/api/questionnaire/update_cancer_count/${id}`, cancerCounts);
 
             await postJSON(`/api/questionnaire/cohort/${id}`, {

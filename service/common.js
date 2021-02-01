@@ -10,6 +10,7 @@ var path = require('path');
 var moment = require('moment');
 var mail = require('../components/mail');
 const XlsxPopulate = require('xlsx-populate');
+const logger = require('../components/logger');
 
 router.get('/', function (req, res, next) {
 	res.json({ status: 200, data: 'Welcome to CEDCD API Center.' });
@@ -81,11 +82,11 @@ router.get('/download/:filename', function (req, res, next) {
 		dir: config.file_path,
 		base: filename
 	});
-
+	logger.debug(filePath)
 	const fileType = filename.split('.').pop()
 
 	fs.readFile(filePath, function (err, data) {
-
+		logger.debug(data)
 		switch(fileType){
 
 			case 'doc':
