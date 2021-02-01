@@ -86,12 +86,15 @@ const EditUser = ({ ...props }) => {
                         const list = data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item }))
                         const toAdd = []
 
-                        list.map((cohort) => {
-
-                            const object = allCohorts.find(item => item.value === cohort.value)
-                            initialAcronym.push(object.value)
-                            toAdd.push(object)
-                        })
+                        console.log(list)
+                        console.log(data.user_role)
+                        if (data.user_role !== 'Admin') {
+                            list.map((cohort) => {
+                                const object = allCohorts.find(item => item.value === cohort.value)
+                                initialAcronym.push(object.value)
+                                toAdd.push(object)
+                            })
+                        }
 
                         setCohortList(toAdd)
                     }
