@@ -66,7 +66,6 @@ const SpecimenForm = ({ ...props }) => {
 
                     if (result && result.status === 200) {
                         result.data.map((owner) => {
-                            console.log(window.location.origin)
                             let reqBody = {
                                 templateData: {
                                     user: owner.first_name + ' ' + owner.last_name,
@@ -260,8 +259,6 @@ const SpecimenForm = ({ ...props }) => {
 
     const resetCohortStatus = (cohortID, nextStatus) => {
         let userId = userSession.id
-        console.log(userSession)
-        console.log(userId)
         if (['new', 'draft', 'published', 'submitted', 'rejected', 'in review'].includes(nextStatus)) {
             fetch(`/api/questionnaire/reset_cohort_status/${cohortID}/${nextStatus}/${userId}`, {
                 method: "POST"
@@ -305,7 +302,6 @@ const SpecimenForm = ({ ...props }) => {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
                                 if (specimenCounts[k]) {
-                                    console.log(specimenCounts[k])
                                     let value = +specimenCounts[k] < 0 ? 0 : +specimenCounts[k]
                                     dispatch(allactions.specimenActions.setSpecimenCount(k, value.toString()))
                                 }
