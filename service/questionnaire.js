@@ -116,11 +116,11 @@ router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
     let currentFile = req.body.filename
     let cohort_ID = req.body.cohortId
-    
+
     mysql.callProcedure(proc, [req.body.id, cohort_ID], function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             if (Array.isArray(result[1])) {
-            
+
                 res.json({ status: 200, data: result[1][0].new_id })
             }
             else
@@ -136,7 +136,7 @@ router.post('/update_cohort_basic/:id', function (req, res) {
     let keys = ['cohort_description', 'cohort_web_site', 'completerName', 'completerPosition', 'completerEmail', 'contacterName', 'contacterPosition', 'contacterEmail', 'collaboratorName', 'collaboratorPosition', 'collaboratorEmail', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify', 'time_interval', 'data_collected_other_specify', 'restrictions_other_specify', 'strategy_other_specify']
     keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : '')
 
-    for (let i in req.body.investigators){
+    for (let i in req.body.investigators) {
         req.body.investigators[i].name = req.body.investigators[i].name ? req.body.investigators[i].name.replace(/\n/g, '\\n') : '';
         req.body.investigators[i].institution = req.body.investigators[i].institution ? req.body.investigators[i].institution.replace(/\n/g, '\\n') : '';
         req.body.investigators[i].email = req.body.investigators[i].email ? req.body.investigators[i].email.replace(/\n/g, '\\n') : '';
@@ -582,7 +582,7 @@ router.get('/lookup', async (request, response) => {
     try {
         if (!lookup) {
             locals.lookup = lookup = {
-                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer where cancer != 'No Cancer' ORDER BY icd9 = '', icd9`),
+                cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer  ORDER BY icd9 = '', icd9`),
                 case_type: await mysql.query(`SELECT id, case_type FROM lu_case_type`),
                 cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
                 data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),
