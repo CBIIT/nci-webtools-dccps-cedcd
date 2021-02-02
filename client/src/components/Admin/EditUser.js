@@ -86,8 +86,6 @@ const EditUser = ({ ...props }) => {
                         const list = data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item }))
                         const toAdd = []
 
-                        console.log(list)
-                        console.log(data.user_role)
                         if (data.user_role !== 'Admin') {
                             list.map((cohort) => {
                                 const object = allCohorts.find(item => item.value === cohort.value)
@@ -110,8 +108,6 @@ const EditUser = ({ ...props }) => {
                         active_status: data.active_status,
                         cohort_list: initialAcronym.sort()
                     })
-
-                    console.log(JSON.stringify(initial))
                 }
             } else {
                 setNonExistUser(true)
@@ -213,8 +209,6 @@ const EditUser = ({ ...props }) => {
         }
 
         userInfo.cohort_list.sort()
-        console.log(initial)
-        console.log(userInfo)
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
