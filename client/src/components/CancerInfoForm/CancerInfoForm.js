@@ -88,8 +88,8 @@ const CancerInfoForm = ({ ...props }) => {
                         count.case_type_id === caseType.id
                     );
                     const key = [cohortId, cancer.id, gender.id, caseType.id].join('_');
-                    const value = entry ? Math.abs(parseInt(entry.cancer_counts) || 0) : 0;
-                    counts[key] = value;
+                    const value = entry ? parseInt(entry.cancer_counts || 0) : 0;
+                    counts[key] = value < 0 ? 0 : value;
                 }
             }
         }
@@ -189,7 +189,6 @@ const CancerInfoForm = ({ ...props }) => {
         // do not rely on the Date(dateString) constructor, as it is inconsistent across browsers
         if (form.ci_confirmed_cancer_date && form.ci_confirmed_cancer_date.constructor !== Date) {
             const date = parseISO(form.ci_confirmed_cancer_date)
-            console.log(date);
             formUpdates.ci_confirmed_cancer_date = date !== 'Invalid Date' ? date : null;
         }
 
@@ -372,7 +371,6 @@ const CancerInfoForm = ({ ...props }) => {
                     if (duplicated_cohort_id && +duplicated_cohort_id !== id)
                         id = duplicated_cohort_id;
                 }
-                console.dir(result.data)
                 let sectionStatusList = result.data.sectionStatusList
                 if (sectionStatusList && sectionStatusList.length > 0)
                     sectionStatusList.forEach((item, idx) => {
