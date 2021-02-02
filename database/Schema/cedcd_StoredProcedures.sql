@@ -1225,7 +1225,7 @@ BEGIN
 		-- date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate in ('null', ''), replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
 		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
-		cohort_description = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description'))),
+		cohort_description = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')) in ('null', ''), null, RTRIM(LTRIM(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description'))))),
 		eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
 		eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease'))),
 		eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
