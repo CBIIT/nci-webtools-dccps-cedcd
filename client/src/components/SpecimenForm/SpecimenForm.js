@@ -304,7 +304,11 @@ const SpecimenForm = ({ ...props }) => {
                     if (result && specimenCounts) {
                         batch(() => {
                             for (let k of Object.keys(specimenCounts)) {
-                                if (specimenCounts[k]) dispatch(allactions.specimenActions.setSpecimenCount(k, specimenCounts[k].toString()))
+                                if (specimenCounts[k]) {
+                                    console.log(specimenCounts[k])
+                                    let value = +specimenCounts[k] < 0 ? 0 : +specimenCounts[k]
+                                    dispatch(allactions.specimenActions.setSpecimenCount(k, value.toString()))
+                                }
                             }
 
                             for (let k of Object.keys(specimenInfo)) {

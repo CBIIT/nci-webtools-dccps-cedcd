@@ -88,8 +88,8 @@ const CancerInfoForm = ({ ...props }) => {
                         count.case_type_id === caseType.id
                     );
                     const key = [cohortId, cancer.id, gender.id, caseType.id].join('_');
-                    const value = entry ? Math.abs(parseInt(entry.cancer_counts) || 0) : 0;
-                    counts[key] = value;
+                    const value = entry ? parseInt(entry.cancer_counts || 0) : 0;
+                    counts[key] = value < 0 ? 0 : value;
                 }
             }
         }
