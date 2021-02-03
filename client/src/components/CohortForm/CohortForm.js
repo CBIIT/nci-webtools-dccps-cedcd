@@ -419,6 +419,7 @@ const CohortForm = ({ ...props }) => {
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
+/*
     const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
         const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
         if (result) {
@@ -463,7 +464,7 @@ const CohortForm = ({ ...props }) => {
             dispatch(allactions.cohortErrorActions[fieldName](true))
         }
     }
-
+*/
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -1863,59 +1864,39 @@ const CohortForm = ({ ...props }) => {
                                 </Form.Label>
                                 <Col sm="4">
                                     <InputGroup>
-                                        {errors.enrollment_age_min && saved ?
-                                            <Reminder message={errors.enrollment_age_min}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='enrollment_age_min'
-                                                    value={cohort.enrollment_age_min}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.enrollment_age_min} disabled={!(errors.enrollment_age_min && saved)}>
+                                            <Form.Control type="text" 
+                                                style={!(errors.enrollment_age_min && saved) ? {minWidth: '100px', maxWidth: '100px'}: { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_min'
                                                 value={cohort.enrollment_age_min}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                onBlur={e =>{
+                                                    if(!isReadOnly){
+                                                        if(!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_min(false, 'Required Filed'))
+                                                        else dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+                                                    }
+                                                }} />
+                                        </Reminder> 
                                         <InputGroup.Append>
                                             <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
                                         </InputGroup.Append>
-                                        {errors.enrollment_age_max && saved ?
-                                            <Reminder message={errors.enrollment_age_max} >
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
+                                            <Reminder message={errors.enrollment_age_max} disabled={!(errors.enrollment_age_max && saved)}>
+                                                <Form.Control type="text" 
+                                                    style={!(errors.enrollment_age_max && saved) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                     name='enrollment_age_max'
                                                     value={cohort.enrollment_age_max}
                                                     onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
+                                                        !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                     }
-                                                    onBlur={e =>
-                                                        populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean)
+                                                    onBlur={e =>{
+                                                        if(!isReadOnly){
+                                                            if(!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_max(false, 'Required Filed'))
+                                                            else dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+                                                        }}
                                                     } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
-                                                name='enrollment_age_max'
-                                                value={cohort.enrollment_age_max}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                }
-                                                readOnly={isReadOnly} />
-                                        }
+                                            </Reminder> 
                                     </InputGroup>
                                 </Col>
                             </Col>
@@ -1924,31 +1905,19 @@ const CohortForm = ({ ...props }) => {
                                     Baseline Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.enrollment_age_median && saved ?
-                                        <Reminder message={errors.enrollment_age_median}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.enrollment_age_median} disabled={!(errors.enrollment_age_median && saved)}>
+                                            <Form.Control type="text" 
+                                                style={!(errors.enrollment_age_median && saved) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_median'
                                                 value={cohort.enrollment_age_median}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
-                                            name='enrollment_age_median'
-                                            value={cohort.enrollment_age_median}
-                                            onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
-                                            }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                                onBlur={e =>{ if(!isReadOnly){
+                                                    if(!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
+                                                }}}/>
+                                        </Reminder>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
@@ -1956,31 +1925,18 @@ const CohortForm = ({ ...props }) => {
                                    Baseline Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.enrollment_age_mean && saved ?
-                                        <Reminder message={errors.enrollment_age_mean}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='enrollment_age_mean'
-                                                value={cohort.enrollment_age_mean}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                    <Reminder message={errors.enrollment_age_mean} disabled={!(errors.enrollment_age_mean && saved)}>
+                                        <Form.Control type="text" 
+                                            style={!(errors.enrollment_age_mean && saved) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='enrollment_age_mean'
                                             value={cohort.enrollment_age_mean}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            onBlur={e =>{ if(!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, 'Required Filed'))
+                                            else dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))}
+                                            } />
+                                    </Reminder>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
@@ -1989,59 +1945,33 @@ const CohortForm = ({ ...props }) => {
                                 </Form.Label>
                                 <Col sm="4">
                                     <InputGroup>
-                                        {errors.current_age_min && saved ?
-                                            <Reminder message={errors.current_age_min}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='current_age_min'
-                                                    value={cohort.current_age_min}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.current_age_min} disabled={!(errors.current_age_min && saved)}>
+                                            <Form.Control type="text"
+                                                style={!(errors.current_age_min && saved) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='current_age_min'
                                                 value={cohort.current_age_min}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                                                }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                onBlur={e =>{ if(!e.target.value) dispatch(allactions.cohortErrorActions.current_age_min(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.current_age_min(true))}
+                                                } />
+                                        </Reminder> 
                                         <InputGroup.Append>
                                             <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
-                                        </InputGroup.Append>
-                                        {errors.current_age_max && saved ?
-                                            <Reminder message={errors.current_age_max}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
+                                        </InputGroup.Append>                                        
+                                            <Reminder message={errors.current_age_max} disabled={!(errors.current_age_max && saved)}>
+                                                <Form.Control type="text"
+                                                    style={!(errors.current_age_max && saved)? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                     name='current_age_max'
                                                     value={cohort.current_age_max}
                                                     onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                        !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                     }
-                                                    onBlur={e =>
-                                                        populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
+                                                    onBlur={e =>{ if(!e.target.value) dispatch(allactions.cohortErrorActions.current_age_max(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.current_age_max(true))}
                                                     } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
-                                                name='current_age_max'
-                                                value={cohort.current_age_max}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
-                                                }
-                                                readOnly={isReadOnly} />
-                                        }
+                                            </Reminder> 
                                     </InputGroup>
                                 </Col>
                             </Col>
@@ -2050,31 +1980,18 @@ const CohortForm = ({ ...props }) => {
                                    Current Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.current_age_median && saved ?
-                                        <Reminder message={errors.current_age_median}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='current_age_median'
-                                                value={cohort.current_age_median}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_median(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                    <Reminder message={errors.current_age_median} disabled={!(errors.current_age_median && saved)}>
+                                        <Form.Control type="text"
+                                            style={!(errors.current_age_median && saved) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='current_age_median'
                                             value={cohort.current_age_median}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_median(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_median(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            onBlur={e =>{ if(!e.target.value) dispatch(allactions.cohortErrorActions.current_age_median(false, 'Required Filed'))
+                                            else dispatch(allactions.cohortErrorActions.current_age_median(true))}
+                                            } />
+                                    </Reminder> 
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
@@ -2082,31 +1999,18 @@ const CohortForm = ({ ...props }) => {
                                     Current Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.current_age_mean && saved ?
-                                        <Reminder message={errors.current_age_mean}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='current_age_mean'
-                                                value={cohort.current_age_mean}
-                                                onChange={e =>
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                } />
-                                        </Reminder> :
+                                    <Reminder message={errors.current_age_mean} disabled={!(errors.current_age_mean && saved)}>
                                         <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                            style={!(errors.current_age_mean && saved ) ? {minWidth: '100px', maxWidth: '100px'} : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='current_age_mean'
                                             value={cohort.current_age_mean}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            onBlur={e =>{ if(!e.target.value) dispatch(allactions.cohortErrorActions.current_age_mean(false, 'Required Filed'))
+                                            else dispatch(allactions.cohortErrorActions.current_age_mean(true))}
+                                            } />
+                                    </Reminder>
                                 </Col>
                             </Col>
                         </Form.Group>
