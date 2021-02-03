@@ -6,6 +6,7 @@ import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -26,16 +27,16 @@ class App extends Component {
   }
   componentDidMount() {
     this.updateTab();
-    window.addEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
-    //window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100); //results in memory leak
+    window.addEventListener('popstate', () => setTimeout(()=> this.updateTab(), 100), false)  
     window.addEventListener('resize', () => {
       if (window.innerWidth <= 800) this.setState({ showImage: false })
       else this.setState({ showImage: true })
-    })
+    }) 
+    
   }
 
   componentWillUnmount() {
-    window.removeEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
+    window.removeEventListener('popstate', () => {alert(window.location.pathname)})
     window.removeEventListener('resize', () => {
       if (window.innerWidth <= 800) this.setState({ showImage: false })
       else this.setState({ showImage: true })
