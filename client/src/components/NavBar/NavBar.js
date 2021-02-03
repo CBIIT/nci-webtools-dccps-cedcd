@@ -179,9 +179,9 @@ const NavBar = (props) => {
           }
           {/* use target=_self to enforce apache login rules (force normal navigation) */}
           {userSession && /SystemAdmin/.test(userSession.role) &&
-            <li className={active==='/admin/managecohort' ? "dropdown valid" : "dropdown"} style={{ padding: "0px", margin: "0px" }}  >
+            <li className={active.indexOf('admin') > 0 ? "dropdown valid" : "dropdown"} style={{ padding: "0px", margin: "0px" }}  >
               <div id="dropHeader" style={{ margin: "0px", paddingLeft: "0px" }} >
-                <a target="_self"  href="/admin/managecohort" style={active==='/admin/managecohort' ? { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px", backgroundColor: '#01857b' } : { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px" }} >
+                <a target="_self"  href="/admin/managecohort" style={active.indexOf('admin') > 0 ? { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px", backgroundColor: '#01857b' } : { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px" }} >
                   Admin
               </a>
                 <span className="arrow down"></span>
