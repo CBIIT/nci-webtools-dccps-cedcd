@@ -1513,7 +1513,7 @@ BEGIN
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
         ,clarification_contact
         ,sameAsSomeone
-        ,cohort_description
+        ,LTRIM(cohort_description) as cohort_description
         ,eligible_gender_id
         ,eligible_disease
         ,eligible_disease_cancer_specify
