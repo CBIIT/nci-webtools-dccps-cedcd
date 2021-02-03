@@ -20,8 +20,9 @@ const NavBar = (props) => {
     console.log(showSubMenu);
     setSubMenuShow(!showSubMenu)
   }
-
-  let active = '/' + window.location.pathname.split('/')[1];
+  let urlparts = window.location.pathname.split('/')
+  urlparts.shift()
+  let active = '/' + urlparts.join('/');
   if (active === '/')
     active = '/home'
 
@@ -84,11 +85,13 @@ const NavBar = (props) => {
                 onClick={() => props.onClick(6)}
               />
               {/*<TourBox currTab={this.props.currTab}  />*/}
+
               {userSession && /CohortAdmin/.test(userSession.role) &&
                   <Tab
                     id="newCohortTab"
                     value={7}
                     currTab={props.currTab}
+                    active={active}
                     onClick={() => props.onClick(7)}
                   /> 
               }
@@ -96,7 +99,7 @@ const NavBar = (props) => {
               {userSession && /SystemAdmin/.test(userSession.role) &&
                 <li className="miniDropdown" onClick={() => setContent(miniDropdownContent == 'none' ? 'flex' : 'none')} style={{ paddingLeft: '0' }}>
                   <div id="miniDropHeader" >
-                    <a style={{ paddingLeft: '10px' }} target="_self" href="#">
+                    <a style={{ paddingLeft: '10px', backgroundColor: '#01857b' }} target="_self" href="#">
                       Admin
               </a>
                     <div style={{ display: miniDropdownContent, flexDirection: 'column', justifyContent: 'space-evenly', paddingLeft: '0px', maring: '0' }}>
@@ -170,23 +173,24 @@ const NavBar = (props) => {
               id="newCohortTab"
               value={7}
               currTab={props.currTab}
+              active={active}
               onClick={() => props.onClick(7)}
             />
           }
           {/* use target=_self to enforce apache login rules (force normal navigation) */}
           {userSession && /SystemAdmin/.test(userSession.role) &&
-            <li className="dropdown" style={{ padding: "0px", margin: "0px" }}  >
-
+            <li className={active.indexOf('admin') > 0 ? "dropdown valid" : "dropdown"} style={{ padding: "0px", margin: "0px" }}  >
               <div id="dropHeader" style={{ margin: "0px", paddingLeft: "0px" }} >
-                <a target="_self" href="/admin/managecohort" style={{ height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px" }} >
+                <a target="_self"  href="/admin/managecohort" style={active.indexOf('admin') > 0 ? { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px", backgroundColor: '#01857b' } : { height: '100%', marginTop: '0px', marginBottom: '0', paddingLeft: '15px', paddingRight: '15px', paddingBottom: "0px" }} >
                   Admin
-            </a>
+              </a>
+                <span className="arrow down"></span>
                 <div className="admindropdown-content" style={{ margin: "1px" }}>
                   <a style={{ justifyContent: 'left' }} target="_self" href="/admin/managecohort">Manage Cohorts</a>
                   <div className="dropdown-divider" style={{ margin: "0px" }} ></div>
                   <a style={{ justifyContent: 'left' }} target="_self" href="/admin/manageuser">Manage Users</a>
                 </div>
-              </div>
+              </div>              
             </li>
           }
           <li className='icon' onClick={toggleSubMenu}><a style={{ height: '100%', color: 'white' }}>&#9776;</a></li>

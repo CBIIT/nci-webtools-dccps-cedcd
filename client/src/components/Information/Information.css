@@ -3,3 +3,8 @@
 .lastUpdated {
     vertical-align: text-top;
 }
+
+#cd_contact, #piList{
+    list-style: none;
+    padding-left: 0;
+  }
