@@ -188,7 +188,7 @@ const MortalityForm = ({ ...props }) => {
             copy.mortalityYear = 'Please enter a 4 digit year'
         else if (+mortality.mortalityYear > (new Date()).getFullYear())
             copy.mortalityYear = 'No future year is allowed'
-        else copy.mortalityYear = 'Invalid year'
+        else copy.mortalityYear = ''
 
         if (!mortality.deathIndex && !mortality.deathCertificate && !mortality.otherDeath) {
             copy.deathConfirm = 'Required Field'
