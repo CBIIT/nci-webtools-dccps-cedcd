@@ -1466,7 +1466,7 @@ BEGIN
     
     
   if columnName != "" then
-		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+		set @orderBy = concat(" order by ch.",columnName," ",columnOrder," ");
 	else
 		set @orderBy = "order by ch.id desc";
   end if;
