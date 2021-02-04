@@ -500,7 +500,7 @@ DROP PROCEDURE IF EXISTS `select_cohort_lookup` //
 CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	  select * from lu_gender;
-    select * from lu_cancer where id < 29 order by case when id=1 then 'zzz' else cancer end, cancer;
+    select * from lu_cancer where id <= 29 order by case when id=1 then 'zza' when id=29 then 'zzz' else cancer end, cancer;
     select * from v_lu_data_category;
     select * from lu_ethnicity;
     select * from lu_race order by case when id=7 then 'zzz' else race end, race;
