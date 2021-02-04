@@ -945,7 +945,8 @@ class Details extends Component {
 
 									<div className="col-sm-11" style={{ "width": "90%" }}>
 										<div style={{ "width": "92%", "float": "left" }}>
-											<GenderList hasUnknown={false} hasBoth={true} hasOnly={true} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick} />
+
+											<GenderList hasUnknown={false} hasBoth={true} hasOnly={false} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
 											<select className="btn btn-default" style={{ "borderColor": "#ccc", "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[0]} title="Boolean operation between options in gender filter" onChange={e => this.handleBooleanWithinChange(e, 0)}>
