@@ -2593,6 +2593,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='questionnaire_url'
                                                                                     id="questionnaire_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px',borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Questionniare URL", "questionnaire_url")
@@ -2662,6 +2668,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     aria-describedby="inputGroupFileAddon01"
                                                                                     multiple
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{height: '27px'}}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -2746,6 +2753,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='main_cohort_url'
                                                                                     id="main_cohort_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px',borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Main Cohort URL", "main_cohort_url")
@@ -2814,6 +2827,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile02"
                                                                                     aria-describedby="inputGroupFileAddon02"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{height: '27px'}}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -2898,6 +2912,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='data_url'
                                                                                     id="data_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px',borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Data Sharing URL", "data_url")
@@ -2966,6 +2986,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile03"
                                                                                     aria-describedby="inputGroupFileAddon03"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{height: '27px'}}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -3050,6 +3071,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='specimen_url'
                                                                                     id="specimen_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px',borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Biospecimen Sharing URL", "specimen_url")
@@ -3119,6 +3146,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     aria-describedby="inputGroupFileAddon04"
                                                                                     multiple readOnly={isReadOnly}
                                                                                     onClick={e => e.target.value = null}
+                                                                                    style={{height: '27px'}}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
                                                                                             setSfileLoading(true)
@@ -3202,6 +3230,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='publication_url'
                                                                                     id="publication_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px',borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Publication Policy URL", "publication_url")
@@ -3270,6 +3304,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile05"
                                                                                     aria-describedby="inputGroupFileAddon05"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{height: '27px'}}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -3364,7 +3399,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='questionnaire_url'
                                                                     id="questionnaire_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px',
+                                                                        borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Questionniare URL", "questionnaire_url")
@@ -3433,6 +3474,7 @@ const CohortForm = ({ ...props }) => {
                                                                     aria-describedby="inputGroupFileAddon01"
                                                                     multiple
                                                                     readOnly={isReadOnly}
+                                                                    style={{height: '27px'}}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3509,7 +3551,12 @@ const CohortForm = ({ ...props }) => {
                                                                     name='main_cohort_url'
                                                                     id="main_cohort_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px',borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Main Cohort URL", "main_cohort_url")
@@ -3576,6 +3623,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile02"
                                                                     aria-describedby="inputGroupFileAddon02"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{height: '27px'}}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3652,7 +3700,12 @@ const CohortForm = ({ ...props }) => {
                                                                     name='data_url'
                                                                     id="data_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px',borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Data Sharing URL", "data_url")
@@ -3718,6 +3771,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile03"
                                                                     aria-describedby="inputGroupFileAddon03"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{height: '27px'}}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3794,7 +3848,12 @@ const CohortForm = ({ ...props }) => {
                                                                     name='specimen_url'
                                                                     id="specimen_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px',borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Biospecimen Sharing URL", "specimen_url")
@@ -3860,6 +3919,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile04"
                                                                     aria-describedby="inputGroupFileAddon04"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{height: '27px'}}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3927,7 +3987,6 @@ const CohortForm = ({ ...props }) => {
                                                     <Row className="w-100">
                                                         <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
-
                                                                 !isReadOnly &&
                                                                 <Button
                                                                     variant="primary"
@@ -3935,7 +3994,12 @@ const CohortForm = ({ ...props }) => {
                                                                     name='publication_url'
                                                                     id="publication_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px',borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Publication Policy URL", "publication_url")
@@ -4001,6 +4065,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile05"
                                                                     aria-describedby="inputGroupFileAddon05"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{height: '27px'}}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
