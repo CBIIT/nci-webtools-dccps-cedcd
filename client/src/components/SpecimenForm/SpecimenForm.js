@@ -924,7 +924,7 @@ const SpecimenForm = ({ ...props }) => {
                     <CollapsiblePanel
                         condition={activePanel === 'panelA'}
                         onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                        panelTitle="Specimen Collected">
+                        panelTitle="Biospecimens Collected">
 
                         <div>
                             <p>
@@ -991,7 +991,7 @@ const SpecimenForm = ({ ...props }) => {
                     <CollapsiblePanel
                         condition={activePanel === 'panelB'}
                         onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                        panelTitle="Data Collected">
+                        panelTitle="Additional Data Collected">
                         <div>
                             <p>
                                 Do you collect the following data?
@@ -1004,7 +1004,7 @@ const SpecimenForm = ({ ...props }) => {
                     <CollapsiblePanel
                         condition={activePanel === 'panelC'}
                         onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                        panelTitle="Metabolomic Data">
+                        panelTitle="Metabolomics Data">
 
                         < Form.Group as={Row} sm='12'  >
                             <Form.Label column sm='8'>
@@ -1255,7 +1255,7 @@ const SpecimenForm = ({ ...props }) => {
                     <CollapsiblePanel
                         condition={activePanel === 'panelD'}
                         onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
-                        panelTitle="Biospecimen Counts">
+                        panelTitle="Biospecimens Counts">
                         <div className="my-3">
                             <Form.Label> G.16</Form.Label>
                             <div> Please complete this table with the number of individuals with biospecimens available
