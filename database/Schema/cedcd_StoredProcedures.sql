@@ -1098,7 +1098,7 @@ BEGIN
     end if;
     
     if cohort != "" then
-		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") ");
+		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") group by cc.cohort_id, u_id, cc.gender_id, cc.cancer_id ) as ac , ");
     else
         set @filterString = "";
         select concat(
