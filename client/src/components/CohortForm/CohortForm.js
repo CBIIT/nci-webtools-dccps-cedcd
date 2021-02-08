@@ -3378,20 +3378,20 @@ const CohortForm = ({ ...props }) => {
                                     <Table bordered condensed className="table-valign-middle">
                                         <thead>
                                             <tr>
-                                                <th className="text-center w-10">Document</th>
-                                                <th className="text-center w-40">Website URL (preferred)</th>
-                                                <th className="text-center w-50">Attached (if url not applicable)</th>
+                                                <th className="text-center col-sm-2">Document</th>
+                                                <th className="text-center col-sm-4">Website URL (preferred)</th>
+                                                <th className="text-center col-sm-6">Attached (if url not applicable)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td className="bg-light-grey">Questionnaires</td>
 
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <Row className="w-100">
-
-                                                        <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
+                                                <td>
+                                                    <Row className="w-100" style={{paddingRight: '0'}}>
+                                                        <Col style={{paddingRight: '0', marginRight: '0'}} md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
+
                                                                 !isReadOnly &&
                                                                 <Button
                                                                     variant="primary"
@@ -3401,10 +3401,10 @@ const CohortForm = ({ ...props }) => {
                                                                     readOnly={isReadOnly}
                                                                     style={{
                                                                         whiteSpace: 'nowrap',
+                                                                        width: '80px',
                                                                         border: '1px solid gray',
                                                                         backgroundColor: 'rgb(239, 239, 239)',
-                                                                        height: '27px',
-                                                                        borderRadius: '2px'
+                                                                        height: '27px',borderRadius: '2px'
                                                                     }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
@@ -3414,9 +3414,9 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.questionnaire_url.length === 0 && (
-                                                                <span>
+                                                                <span style={{padding: '0'}}>
                                                                     No URL(s) entered
                                                                 </span>
                                                             )
@@ -3540,8 +3540,8 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <td className="bg-light-grey">Main cohort protocol</td>
                                                 <td>
-                                                    <Row className="w-100">
-                                                        <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
+                                                    <Row className="w-100" style={{paddingRight: '0'}}>
+                                                        <Col style={{paddingRight: '0', marginRight: '0'}} md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
 
                                                                 !isReadOnly &&
@@ -3553,6 +3553,7 @@ const CohortForm = ({ ...props }) => {
                                                                     readOnly={isReadOnly}
                                                                     style={{
                                                                         whiteSpace: 'nowrap',
+                                                                        width: '80px',
                                                                         border: '1px solid gray',
                                                                         backgroundColor: 'rgb(239, 239, 239)',
                                                                         height: '27px',borderRadius: '2px'
@@ -3565,7 +3566,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.main_cohort_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3703,6 +3704,7 @@ const CohortForm = ({ ...props }) => {
                                                                     style={{
                                                                         whiteSpace: 'nowrap',
                                                                         border: '1px solid gray',
+                                                                        width: '80px',
                                                                         backgroundColor: 'rgb(239, 239, 239)',
                                                                         height: '27px',borderRadius: '2px'
                                                                     }}
@@ -3714,7 +3716,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.data_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3851,6 +3853,7 @@ const CohortForm = ({ ...props }) => {
                                                                     style={{
                                                                         whiteSpace: 'nowrap',
                                                                         border: '1px solid gray',
+                                                                        width: '80px',
                                                                         backgroundColor: 'rgb(239, 239, 239)',
                                                                         height: '27px',borderRadius: '2px'
                                                                     }}
@@ -3862,7 +3865,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0'  }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.specimen_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3997,6 +4000,7 @@ const CohortForm = ({ ...props }) => {
                                                                     style={{
                                                                         whiteSpace: 'nowrap',
                                                                         border: '1px solid gray',
+                                                                        width: '80px',
                                                                         backgroundColor: 'rgb(239, 239, 239)',
                                                                         height: '27px',borderRadius: '2px'
                                                                     }}
@@ -4008,7 +4012,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0'  }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.publication_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
