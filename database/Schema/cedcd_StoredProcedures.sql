@@ -1168,7 +1168,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_specimen_counts` //
 
-CREATE PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in cohort text)
+CREATE PROCEDURE `select_specimen_counts`(in specimen varchar(1000), in cancer varchar(1000),in cohort varchar(1000))
 BEGIN
     set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, 
 		(case when IFNULL(sc.specimens_counts,0) > 0 then sc.specimens_counts else 0 end ) as specimens_counts    
