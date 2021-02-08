@@ -2296,7 +2296,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData')
                                             } />
                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                            Require data use agreements and/or materrial transfer agreement
+                                            Require data use agreements and/or material transfer agreement
                                             </Form.Check.Label>
                                     </Form.Check>
                                     <Form.Check type="checkbox"
