@@ -64,40 +64,65 @@ DROP PROCEDURE IF EXISTS `upsertEnrollment_count` //
 
 DROP PROCEDURE IF EXISTS `select_advanced_cohort` //
 
-CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population text,
-		in race text, in ethnicity text, 
-									in category text,in collected_specimen varchar(200),in cancer text,
-                                    in booleanOperationBetweenField text, in booleanOperationWithInField text,
-                                    in columnName varchar(40), in columnOrder varchar(10),
-									in pageIndex int, in pageSize int)
+CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population varchar(2000),
+		in race varchar(2000), in ethnicity varchar(2000), 
+		in category varchar(2000),in collected_specimen varchar(2000),in cancer varchar(2000),
+		in booleanOperationBetweenField varchar(200), in booleanOperationWithInField varchar(200),
+		in columnName varchar(40), in columnOrder varchar(10),
+		in pageIndex int, in pageSize int)
 BEGIN
 	declare tmp text default '';
     declare v text default ''; 
 	declare i int default 0;
     declare tmp_count int default 0; 
+    declare len_gender int default 0;
+    declare len_age int default 0;
+    declare len_study int default 0;
+    declare len_race int default 0;
+    declare len_ethnicity int default 0;
+    declare len_category int default 0;
+    declare len_specimen int default 0;
+    declare len_cancer int default 0;
+    
+    set @gender_query="";
+    set @age_query="";
+	set @study_query="";
+    set @race_query="";
+    set @ethnicity_query="";
+    set @major_content_query="";
+	set @specimen_query="";
+    set @cancer_query="";
     
     set @and_query = "";
     set @or_query = "";
+  
+    set @globalANDOR = substring_index(booleanOperationBetweenField,',',1);
+    if @globalANDOR = "" then 
+     set @globalANDOR = " OR ";
+    end if;
+    set @condition_query ="";
     
-    set @gender_query = "";
     if gender != "" then
 		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
 			set gender = concat(gender, ",4");
 		end if;
-		set @gender_query = concat("cs.eligible_gender_id in (",gender,") ");
-		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',1)),',',1));
+		set @gender_query = concat(" cs.cohort_id in (select distinct cohort_id from cohort_basic gendercs where gendercs.eligible_gender_id in (",gender,") ");
+		set tmp = substring_index(booleanOperationWithInField,',',1);
 		if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @gender_query);
-		else
-			set @or_query = concat(@or_query, " or ", @gender_query);
+            set @len_gender =  LENGTH(gender) - LENGTH(REPLACE(gender, ',', '')) + 1;
+			set @gender_query = concat( @gender_query, " group by cohort_id having sum(1) >= ", @len_gender, " ) ");
+            else
+            set @gender_query = concat( @gender_query, " ) ");
 		end if;
+       
 	end if;
 
     set i = 0;
-    set @age_query = "";
     if age_info != "" then
-		set tmp_count = 1+length(age_info) - length(replace(age_info,',','')); 
-		while i < tmp_count
+		set @len_age = 1+length(age_info) - length(replace(age_info,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',2)),',',1));
+        set @age_query = " cs.cohort_id in ( select distinct cohort_id from cohort_basic as cs where "; 
+     while i < @len_age
 		do
 			set i=i+1;
             set v = reverse(substring_index(reverse(substring_index(age_info,',',i)),',',1));
@@ -134,145 +159,112 @@ BEGIN
 			else
 				set @age_query = "";
             end if;
-			if i < tmp_count then
-				set @age_query = concat(@age_query," or ");
+			if i < @len_age then
+				set @age_query = concat(@age_query," ", @andor," ");
             end if;
 		end while;
-        
-		set @age_query = concat("(",@age_query,") ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',2)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @age_query);
-		else
-			set @or_query = concat(@or_query, " or ", @age_query);
-        end if;
-    end if;
+        set @age_query = concat(@age_query," ) ");
+	end if;
     
-    set @study_query = "";
     if study_population != "" then
-		set @study_query = concat("cs.eligible_disease in (",study_population,") ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',3)),',',1));
+        set @len_study = 1+length(study_population) - length(replace(study_population,',','')); 
+        set @study_query = concat(" cs.cohort_id in ( select distinct cohort_id from cohort_basic stcs where stcs.eligible_disease in (",study_population,") ");
+        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',3)),',',1));
         if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @study_query);
+			set @study_query = concat(@study_query, " group by cohort_id having sum(1) >=",  @len_study, " ) " );
 		else
-			set @or_query = concat(@or_query, " or ", @study_query);
+            set @study_query = concat(@study_query, " ) ");
         end if;
     end if;
     
-    set @enrollment_race_query = "";
+    set @race_query = "";
     if race != "" then
-		set @enrollment_race_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where race_id in (",race,") and enrollment_counts > 0)");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',4)),',',1));
+        set @len_race = 1+length(race) - length(replace(race,',','')); 
+        set tmp =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',4)),',',1));
+		set @race_query = concat(" cs.cohort_id in ( select distinct cohort_id from enrollment_count where race_id in (",race,") and enrollment_counts > 0 ");
         if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @enrollment_race_query);
+			set @race_query = concat( @race_query, " group by cohort_id having sum(1) >= ", @len_race , ") ");
 		else
-			set @or_query = concat(@or_query, " or ", @enrollment_race_query);
+            set @race_query = concat(@race_query, " ) ");
         end if;
     end if;
     
-    set @enrollment_ethnicity_query = "";
+    set @ethnicity_query = "";
     if ethnicity != "" then
-		set @enrollment_ethnicity_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where ethnicity_id in (",ethnicity,") and enrollment_counts > 0)");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',5)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @enrollment_ethnicity_query);
+        set @len_ethnicity = 1+length(ethnicity) - length(replace(ethnicity,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',5)),',',1));
+		set @ethnicity_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+        from enrollment_count where ethnicity_id in (",ethnicity,") and enrollment_counts > 0");
+        if @andor = "AND" then
+			set @ethnicity_query = concat(@ethnicity_query, " group by cohort_id having sum(1) >=  ", @len_ethnicity, " ) ");
 		else
-			set @or_query = concat(@or_query, " or ", @enrollment_ethnicity_query);
+            set @ethnicity_query = concat(@ethnicity_query, " ) ");
         end if;
     end if;
     
-    set @major_content_query = "";
     if category != "" then
-      if category = "99" then
-        set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
-      elseif locate("99", category) > 0 then
-        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+		set @len_category = 1+length(category) - length(replace(category,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
+      if locate("99", category) > 0 then
+        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1
+        union 
+        select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
-        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
-        union
-        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       else
-		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
+		set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       end if;
-	
-  
-       set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
-        if tmp = "AND" then
-			set @len = LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1;
-			set @major_content_query = concat(@major_content_query, " having sum(1) >= ", @len);
-        end if;
-        set @major_content_query = concat(@major_content_query, " )");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',6)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @major_content_query);
+
+        if @andor = "AND" then
+			set @major_content_query = concat(@major_content_query, " group by cohort_id having sum(1) >= ", @len_category, " ) ");
 		else
-			set @or_query = concat(@or_query, " or ", @major_content_query);
+            set @major_content_query = concat(@major_content_query, " ) ");
         end if;
+       
     end if;
     
     set @specimen_query = "";
     if collected_specimen != "" then
-    
-		set @operator = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1));
-        
-		set tmp_count = 1+length(collected_specimen) - length(replace(collected_specimen,',','')); 
-		while i < tmp_count
+        set @len_specimen = 1+length(collected_specimen) - length(replace(collected_specimen,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1));
+        set tmp="";
+		while i < @len_specimen
 		do
 			set i=i+1;
 			set tmp = concat(tmp,reverse(substring_index(reverse(substring_index(collected_specimen,',',i)),',',1)),"=1");
-            if i < tmp_count then
-				set tmp = concat(tmp," ", @operator, " ");
+            if i < @len_specimen then
+				set tmp = concat(tmp," ", @andor, " ");
             end if;
 		end while;
-
-		set @specimen_query = concat(" cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',7)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @specimen_query);
-		else
-			set @or_query = concat(@or_query, " or ", @specimen_query);
-        end if;
+		set @specimen_query = concat(" cs.cohort_id in ( select cohort_id from v_specimen where 1=1 ", "and (",tmp,")  )");
 	end if;
         
-        
-	set @cancer_query = "";
     if cancer != "" then
-		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1));
-        if tmp = "OR" then
-			set @cancer_query = concat("and cs.cohort_id in (select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ");
-		elseif tmp = "AND" then
-			set @len = LENGTH(cancer) - LENGTH(REPLACE(cancer, ',', '')) + 1;
-			set @cancer_query = concat("and cs.cohort_id in (select t.cohort_id from ( select cohort_id, cancer_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
-			set @cancer_query = concat(@cancer_query, " having sum(1) >= ", @len);
-        end if;
-		set @cancer_query = concat(@cancer_query,") ");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',8)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @cancer_query);
-		else
-			set @or_query = concat(@or_query, " or ", @cancer_query);
+        set @len_cancer = 1+length(cancer) - length(replace(cancer,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1));
+        if @andor  = "OR" then
+			set @cancer_query = concat(" cs.cohort_id in ( select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ) ");
+		elseif@andor = "AND" then
+			set @cancer_query = concat(" cs.cohort_id in ( select t.cohort_id from ( select cohort_id, cancer_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
+			set @cancer_query = concat(@cancer_query, " having sum(1) >= ", @len_cancer, " ) ");
         end if;
     end if;
     
     set @query = "select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,
 	sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status) = 'published' and cs.cohort_id = ec.cohort_id  ";
-    
-    if @and_query = "" and @or_query = "" then
-		set @query = concat(@query, " ");
-    elseif @and_query != "" and @or_query = "" then
-		set @query = concat(@query, @and_query);
-    elseif @and_query = "" and @or_query != "" then
-		set @or_query = SUBSTRING(@or_query, 5);
-        set @query = concat(@query, " and (", @or_query, ")");
-    else
-		set @query = concat(@query, @and_query, @or_query);
-    end if;
+	select concat(case when @gender_query != "" then concat(@gender_query, @globalANDOR) else "" end,
+        case when @age_query != "" then  concat(@age_query, @globalANDOR) else "" end,
+         case when @study_query != "" then  concat(@study_query, @globalANDOR) else "" end,
+          case when @race_query != "" then  concat(@race_query, @globalANDOR) else "" end, 
+          case when @ethnicity_query != "" then  concat(@ethnicity_query, @globalANDOR) else "" end,
+          case when @major_content_query != "" then  concat(@major_content_query, @globalANDOR) else "" end,
+         case when @specimen_query != "" then concat(@specimen_query, @globalANDOR) else "" end,
+          @cancer_query ) into @condition_query;
+          set @condition_query = TRIM(trailing @globalANDOR from rtrim(@condition_query));
+       set @query = concat(@query, " and ( ", @condition_query, " ) ");
     
     set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
@@ -289,6 +281,7 @@ BEGIN
     end if;
     
     set @query = concat(@query, @groupBy, @orderBy, @paging);
+   -- select @query;
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
@@ -537,9 +530,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cohort` //
 
-CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population text, 
-									in race text, in ethnicity text, 
-									in category text,in collected_specimen varchar(200),in cancer text,
+CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population varchar(1000), 
+									in race varchar(1000), in ethnicity varchar(1000), 
+									in category varchar(1000),in collected_specimen varchar(2000),in cancer varchar(2000),
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN

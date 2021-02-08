@@ -217,7 +217,7 @@ class Home extends Component {
 
 							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
-							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., gender, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
+							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
 						</div>
 					</Link>
 				</div>
@@ -229,7 +229,7 @@ class Home extends Component {
 
 							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
-							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific gender, race, and ethnicity terms.</p>
+							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity terms.</p>
 						</div>
 					</Link>
 				</div>
@@ -241,7 +241,7 @@ class Home extends Component {
 
 						</div>
 						<h2 class="card-header" align = "center">Cancer Counts</h2>
-						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by gender.</p>
+						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by sex.</p>
 					</div>
 					</Link>
 				</div>
