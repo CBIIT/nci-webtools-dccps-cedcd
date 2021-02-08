@@ -229,7 +229,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     {['in review'].includes(status) ? <div>
                         <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                             <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}>
-                                <span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span>
+                                <span style={props.activeSection === 'C' ? activeStyle : {}}>Data Collection</span>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                         <div onMouseEnter={() => setCRing('blue')} onMouseMove={() => setCRing('blue')} onMouseOut={() => setCRing('')}>
                             <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: CRing ? `3px solid ${CRing}` : '3px solid ' + pickColor(sectionStatus['C']) }}>
                                 <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['C']), margin: 'auto' }}>
-                                    <span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span>
+                                    <span style={props.activeSection === 'C' ? activeStyle : {}}>Data Collection</span>
                                 </div>
                             </div>
                         </div>
@@ -309,7 +309,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                     {['in review'].includes(status) ? <div>
                         <div style={{ color: 'white', height: '38px', borderRadius: '25px', display: 'flex', justifyContent: 'center', margin: 'auto', border: '3px solid green' }}>
                             <div style={{ width: '99%', paddingTop: '3px', height: '25px', borderRadius: '25px', paddingLeft: '15px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
-                                <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
+                                <span style={props.activeSection === 'G' ? activeStyle : {}}>Biospecimens</span>
                             </div>
                         </div>
                     </div>
@@ -317,7 +317,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                         <div onMouseEnter={() => setGRing('blue')} onMouseMove={() => setGRing('blue')} onMouseOut={() => setGRing('')}>
                             <div style={{ color: 'white', height: '38px', display: 'flex', justifyContent: 'center', borderRadius: '25px', margin: 'auto', border: GRing ? `3px solid ${GRing}` : '3px solid ' + pickColor(sectionStatus['G']) }}>
                                 <div style={{ width: '99%', height: '25px', borderRadius: '25px', paddingLeft: '15px', paddingTop: '3px', backgroundColor: pickColor(sectionStatus['G']), margin: 'auto' }}>
-                                    <span style={props.activeSection === 'G' ? activeStyle : {}}>Specimen</span>
+                                    <span style={props.activeSection === 'G' ? activeStyle : {}}>Biospecimens</span>
                                 </div>
                             </div>
                         </div>
@@ -389,7 +389,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                             }
                             <div style={{ flex: '1', height: '2px', border: '2px solid #9f3', margin: 'auto 0' }}></div>
                         </div>
-                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Major Content</span></div>
+                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'C' ? activeStyle : {}}>Data Collection</span></div>
                     </div>
                 </Reminder>
                 <Reminder message={getTooltip(sectionStatus['D'])} info={true}>
@@ -473,7 +473,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                             }
                             <div style={{ flex: '1' }}></div>
                         </div>
-                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'G' ? activeStyle : {}}>Specimens</span></div>
+                        <div style={{ marginTop: '5px' }}><span style={props.activeSection === 'G' ? activeStyle : {}}>Biospecimens</span></div>
                     </div>
                 </Reminder>
             </div>
