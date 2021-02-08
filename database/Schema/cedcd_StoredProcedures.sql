@@ -1083,11 +1083,11 @@ END //
 -- Stored Procedure: select_cancer_counts
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cancer_counts` //
-CREATE PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
+CREATE PROCEDURE `select_cancer_counts`(in gender varchar(200), in cancer varchar(1000),in cohort varchar(1000))
 BEGIN
     set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts 
 	from cancer_count cc, cohort_basic cs, lu_gender lg, lu_cancer lc, cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cc.cohort_id = cs.cohort_id and cc.gender_id = lg.id and cc.cancer_id = lc.id ";
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cc.cohort_id = cs.cohort_id and cc.gender_id = lg.id and cc.cancer_id = lc.id and cc.case_type_id = 2  ";
     
     if gender != "" then
 		set @queryString = concat(@queryString, "and cc.gender_id in (",gender,") ");
@@ -1099,6 +1099,13 @@ BEGIN
     
     if cohort != "" then
 		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") ");
+    else
+        set @filterString = "";
+        select concat(
+        case when gender != "" then concat(" and tc.gender_id in (",gender,") " ) else "" end,
+        case when cancer != "" then  concat(" and tc.cancer_id in (",cancer,")  ") else "" end ) into @filterString;
+        set @queryString = concat(@queryString, "and cc.cohort_id in (select tc.cohort_id from cancer_count tc where abs(IFNULL(tc.cancer_counts, 0)) >=0  ", @filterString,
+        " group by tc.cohort_id having sum(case when IFNULL(tc.cancer_counts, 0) > 1  then tc.cancer_counts else 0 end)  ) ");
     end if;
     
     set @query = concat(@queryString, " order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, cc.gender_id, cs.cohort_acronym");
@@ -1113,7 +1120,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_enrollment_counts` //
 
-CREATE PROCEDURE `select_enrollment_counts`(in gender text, in race text,in ethnicity text,in cohort text)
+CREATE PROCEDURE `select_enrollment_counts`(in gender varchar(200), in race varchar(500),in ethnicity varchar(500),in cohort varchar(1000) )
 BEGIN
     set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts 
 	from enrollment_count ec, cohort_basic cs, lu_gender lg, lu_ethnicity le, lu_race lr, cohort ch
@@ -1133,6 +1140,14 @@ BEGIN
     
     if cohort != "" then
 		set @queryString = concat(@queryString, "and ec.cohort_id in (",cohort,") ");
+    else
+        set @filterString = "";
+        select concat(
+        case when gender != "" then concat(" and tc.gender_id in (",gender,") " ) else "" end,
+        case when race != "" then  concat(" and tc.race_id in (",race,")  ") else "" end,
+		case when ethnicity != "" then  concat(" and tc.ethnicity_id in (",ethnicity,")  ") else "" end ) into @filterString;
+        set @queryString = concat(@queryString, "and ec.cohort_id in (select tc.cohort_id from enrollment_count tc where abs(IFNULL(tc.enrollment_counts, 0)) >=0  ", @filterString,
+        " group by tc.cohort_id having sum(case when IFNULL(tc.enrollment_counts, 0) > 1  then tc.enrollment_counts else 0 end)  ) ");
     end if;
     
     -- set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");

@@ -105,11 +105,11 @@ class CountsTable extends Component {
 				</table>
 				<div className="fixed-header-column fixed-header-column--double fixed-header-column--enroll" aria-hidden="true">
 					<div className="header-column__half" style={config.blockStyle}>
-						<div className="table-header" style={{ height: "51px", width: "100%" }}>{topic[0]}</div>
+						<div className="table-header" style={{ height: "50px", width: "100%" }}>{topic[0]}</div>
 						{column_1_content}
 					</div>
 					<div className="header-column__half" style={config.blockStyle}>
-						<div className="table-header" style={{ height: "51px", width: "100%", borderRight: "1px #B7B5B0 solid" }}>{topic[1]}</div>
+						<div className="table-header" style={{ height: "50px", width: "100%", borderRight: "1px #B7B5B0 solid" }}>{topic[1]}</div>
 						{column_2_content}
 					</div>
 				</div>
