@@ -306,7 +306,7 @@ class Enrollment extends Component {
 						<div className="table-inner col-md-12">
 							<div className="tableTopMatter row">
 								<div id="tableLegend" className="col-md-10">
-									<p>N/A: Not Applicable; N/P: Not Provided</p>
+									<p>{/* N/A: Not Applicable; N/P: Not Provided */} </p>
 								</div>
 								<div id="tableExport" className="col-md-2">
 									{exportTable}
