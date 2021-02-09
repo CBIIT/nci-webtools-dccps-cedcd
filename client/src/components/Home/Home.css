@@ -1,5 +1,6 @@
 .row-for-home-grid {
     overflow-x: auto;
+    overflow-y: hidden;
     display: flex;
     flex: 50%;
     /* height: 50%; */
