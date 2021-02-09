@@ -894,7 +894,7 @@ class Details extends Component {
 								<div className="col-sm-12">
 									<GenderList hasUnknown={false} hasBoth={true} hasOnly={false} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick} />
 									<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick} />
-									<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />
+									{/*<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />*/}
 								</div>
 							</div>
 						</div>
@@ -975,7 +975,7 @@ class Details extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="row">
+								{/*<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
 										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
@@ -992,8 +992,8 @@ class Details extends Component {
 												<option value="OR">OR</option>
 											</select>
 										</div>
-									</div>
-								</div>
+									</div> 
+								</div>*/}
 							</div>
 						</div>
 					</div>
