@@ -15,7 +15,7 @@ export default function Header(props) {
 
     return (
         <div>
-            {props.displayBanner ? 
+            <div className="d-none d-md-block">
                 <div id="header">
                     <div id="header-inner" style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <a href="/" style={{ border: '0' }}>
@@ -56,7 +56,8 @@ export default function Header(props) {
                         </div>
                     </div>
                 </div>      
-                :
+            </div>
+            <div className="d-block d-md-none">
                 <div className="row">
                     {userSession && userSession.role && 
                         <div className="col-12">
@@ -88,7 +89,7 @@ export default function Header(props) {
                         </div>
                     }
                 </div>
-            }
+            </div>  
         </div>
     )
 }

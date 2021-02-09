@@ -12,8 +12,7 @@ class App extends Component {
     super(props);
     this.state = {
       currTab: 0,
-      admin: 0,
-      showImage: window.innerWidth > 800
+      admin: 0
     };
   }
 
@@ -27,20 +26,11 @@ class App extends Component {
   }
   componentDidMount() {
     this.updateTab();
-    window.addEventListener('popstate', () => setTimeout(()=> this.updateTab(), 100), false)  
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 800) this.setState({ showImage: false })
-      else this.setState({ showImage: true })
-    }) 
-    
+    window.addEventListener('popstate', () => setTimeout(()=> this.updateTab(), 100), false)    
   }
 
   componentWillUnmount() {
     window.removeEventListener('popstate', () => {alert(window.location.pathname)})
-    window.removeEventListener('resize', () => {
-      if (window.innerWidth <= 800) this.setState({ showImage: false })
-      else this.setState({ showImage: true })
-    })
   }
 
   updateTab() {
@@ -103,7 +93,7 @@ class App extends Component {
     return (
       <div>
         <ScrollToTop />
-        <Header displayBanner={this.state.showImage} />
+        <Header />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
             <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />
