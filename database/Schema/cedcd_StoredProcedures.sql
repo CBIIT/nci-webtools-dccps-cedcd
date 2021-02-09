@@ -1861,6 +1861,7 @@ begin
 			values (new_id, 1, categoryType, @fileName, '', 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
+
 	COMMIT;
     END;
     END IF;
@@ -1869,6 +1870,9 @@ begin
     SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
     join cohort c on cd.cohort_id = c.id
     WHERE cohort_id = new_id and category = categoryType and cd.status = 1 and cd.attachment_type = 1;
+	IF @cohort_status = 'published' then 
+		SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
+    end if;
 end //
 
 DROP PROCEDURE IF EXISTS get_major_content //
