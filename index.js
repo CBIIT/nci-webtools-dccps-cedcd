@@ -6,6 +6,7 @@ var config = require('./config');
 var mysql = require('./components/mysql');
 var cache = require('./components/cache');
 var app = express();
+app.set('trust proxy', 1);
 
 require('./config/express')(app);
 require('./routes')(app);
