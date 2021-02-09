@@ -73,7 +73,7 @@ router.post('/select_admin_info', async function (req, res) {
 
 router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
-    //logger.debug('uplaod to here: '+config.file_path)
+    let idIn = req.params.id
     let uploadedFiles = { filenames: [] }
     if (cohortFiles.length > 1)
         //Array.from(cohortFiles).forEach(f => uploadedFiles.filenames.push(f.name)) 
@@ -82,7 +82,7 @@ router.post('/upload/:id/:category', function (req, res, next) {
         uploadedFiles.filenames.push(cohortFiles.name)
     let proc = 'add_file_attachment'
     let params = []
-    params.push(req.params.id)
+    params.push(idIn)
     params.push(req.params.category)
     params.push(JSON.stringify(uploadedFiles))
     //logger.debug(uploadedFiles)
@@ -93,6 +93,7 @@ router.post('/upload/:id/:category', function (req, res, next) {
             logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
+            if(returnedData.new_ID !== idIn) returnedData.updatedStatus = result[3]
             fs.access(`${config.file_path}`, (err) => {
                 if (err) {
                     fs.mkdirSync(`${config.file_path}`, { recursive: true }, (err) => {
