@@ -989,7 +989,7 @@ a.section-expand {
 }
 
 .table-header {
-  height: 53px;
+  height: 50px;
   background-color: #01857b;
   color: white;
   border-left: 1px #B7B5B0 solid;
@@ -1483,4 +1483,13 @@ input[type=number] {
 
 .resize-disabled {
   resize: none;
+}
+
+.form-check-label {
+  display: inline !important;
+}
+
+.modal-backdrop  {
+  width: 100%;
+  height: 100%;
 }

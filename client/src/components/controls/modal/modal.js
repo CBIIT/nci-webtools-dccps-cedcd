@@ -19,19 +19,17 @@ const ValidationModal = (props) => {
       </Modal.Body>
       <Modal.Footer className={props.footerClassName}>
         { props.footer || 
-            <div>
-              <Button 
-                variant="secondary" 
-                className="col-lg-2 col-md-6" 
-                onClick={props.handleClose}>
-                Cancel
-              </Button>
-              <Button 
-                variant="primary" 
-                className="col-lg-2 col-md-6" 
-                onClick={props.handleContentSave}>
-                Save
-              </Button>
+            <div className="w-100 text-sm-right text-center">
+                <Button 
+                  variant="secondary" 
+                  onClick={props.handleClose}>
+                  Cancel
+                </Button>
+                <Button 
+                  variant="primary" 
+                  onClick={props.handleContentSave}>
+                  Save
+                </Button>
             </div>
         }
       </Modal.Footer>

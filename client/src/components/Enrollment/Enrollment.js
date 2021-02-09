@@ -258,7 +258,7 @@ class Enrollment extends Component {
 			<div id="cedcd-main-content">
 				<input id="tourable" type="hidden" />
 				<h1 className="welcome pg-title">Enrollment Counts</h1>
-				<p className="welcome">Specify the Gender, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by gender, race and ethnicity across the selected cohorts.
+				<p className="welcome">Specify the Sex, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by sex, race and ethnicity across the selected cohorts.
       		</p>
 				<div id="filter-block" className="filter-block col-md-12">
 					<div id="filter-panel" className="panel panel-default">
@@ -269,7 +269,7 @@ class Enrollment extends Component {
 							<div className="filter row">
 								<div className="col-sm-3 filterCol">
 									<div id="gender" className="filter-component">
-										<h3>Gender</h3>
+										<h3>Sex</h3>
 										<GenderList hasUnknown={true} hasBoth={false} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick} />
 									</div>
 								</div>
@@ -306,7 +306,7 @@ class Enrollment extends Component {
 						<div className="table-inner col-md-12">
 							<div className="tableTopMatter row">
 								<div id="tableLegend" className="col-md-10">
-									<p>N/A: Not Applicable; N/P: Not Provided</p>
+									<p>{/* N/A: Not Applicable; N/P: Not Provided */} </p>
 								</div>
 								<div id="tableExport" className="col-md-2">
 									{exportTable}
