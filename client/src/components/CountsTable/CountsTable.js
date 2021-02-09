@@ -45,7 +45,7 @@ class CountsTable extends Component {
 			const content = data_columns.map((item_1, idx_1) => {
 				let key = "td_" + idx + "_" + idx_1;
 				return (
-					<td key={key}>{item[item_1]}</td>
+					<td key={key}>{item[item_1] || 0}</td>
 				);
 			});
 			return (
