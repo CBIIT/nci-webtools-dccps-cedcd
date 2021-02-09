@@ -38,7 +38,7 @@ class Followup extends Component {
 
 	handleScroll(event){
 		let left = event.target.scrollLeft;
-		document.getElementById("floatingRow").style.marginLeft = 0-left;
+		// document.getElementById("floatingRow").style.marginLeft = 0-left;
 	}
 
 	componentDidMount(){
@@ -173,7 +173,7 @@ class Followup extends Component {
 				<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
 					<DetailsTable expand={this.handleExpand} params={params}/>
 					<FloatingSideHeader expand={this.handleExpand} params={params}/>
-					<FloatingHeader saveHistory={this.props.saveHistory} params={params}/>
+					{/* <FloatingHeader saveHistory={this.props.saveHistory} params={params}/> */}
 	            </div> 
 	        </div>
 	    </div>
