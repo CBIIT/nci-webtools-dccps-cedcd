@@ -45,6 +45,17 @@
   <title>Cancer Epidemiology Descriptive Cohort Database (CEDCD)</title>
   <!-- style links -->
   <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700" rel="stylesheet" type="text/css" />
+  <style>
+    .header_img_container{
+      width: 60%;
+      height: auto;
+    }
+    @media only screen and (max-width: 800px){
+      .header_img_container{
+        width: 95%;
+      }
+    }
+  </style>
 </head>
 
 <body id="selectPage" onload="detectIE()">
@@ -52,9 +63,11 @@
   <div id="compatibleInfo" class="hidden-section"> You are using Internet Explorer, an unsupported browser. Please upgrade to a modern browser such as Chrome, Firefox, or Edge. </div>
   <div id="wrapper-inner">
     <!-- HEADER-NCI -->
-    <div id="header-nci-bg">
+    <div id="header-nci-bg"></div>
       <div id="header-nci">
-        <img src="/assets/img/NIH_NCI_Logo_Grey.svg" alt="National Cancer Institute" />
+        <div class="header_img_container">
+          <img src="/assets/img/NIH_NCI_Logo_Grey.svg" style="width: 100%; height: auto" alt="National Cancer Institute" />
+        </div>
       </div>
       <!-- header-nci-->
     </div>
