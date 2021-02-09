@@ -1,8 +1,9 @@
 .row-for-home-grid {
+    overflow-x: auto;
     display: flex;
-    flex:50%;
-    height: 50%;
-    height:420px;
+    flex: 50%;
+    /* height: 50%; */
+    height: 420px;
     min-height: 500px;
     width: 100%;
 }
@@ -13,8 +14,8 @@
     padding-bottom: 15px;
     /*border: 1px solid #135B5D;*/
     min-width:250px;
-    width:100%;
-    height:100%;
+    width: 100%;
+    height: 94%;
 }
 
 .animation-card{
