@@ -602,7 +602,7 @@ router.get('/:id', function (req, res) {
 				info.cohort_name = basic.cohort_name;
 				info.cohort_acronym = basic.cohort_acronym;
 				info.update_time = basic.update_time;
-
+				info.procedure_files = [];
 				let persons = results[2];
 				info.pis = [];
 				persons.forEach(function (p) {
@@ -649,6 +649,9 @@ router.get('/:id', function (req, res) {
 				info.request_procedures_web_url = "";
 				if (basic.request_procedures_web == 1) {
 					info.request_procedures_web_url = basic.request_procedures_web_url;
+				}
+				if(basic.request_procedures_pdf === 1){
+					//info.procedure_files.push("CEDCD Descriptive Db Collection Form v8.1.pdf");
 				}
 				info.attachments = {};
 				let attachs = results[1];

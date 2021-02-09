@@ -239,15 +239,30 @@ class Information extends Component {
 			});
 			*/
 
-			let website;
+			let website, proceduresite, files;
 			if (info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available" && info.cohort_web_site.trim() !== "") {
 				website = (
-					<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a>
+					//<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a>
+					<a href={info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>
 				);
+
 			}
-			else {
+			/*else {
 				website = <a href="#" id="cd_website" className="link-url">Cohort Website (Not Provided)</a>;
+			} */
+
+			if (info.request_procedures_web_url && info.request_procedures_web_url.trim() !== "Not Available" && info.request_procedures_web_url.trim() !== "") {
+				proceduresite = (
+					<li><a href={info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a></li>
+				);
+
 			}
+
+			if(info.procedure_files.length > 0){
+				files = info.procedure_files.map((item, idx) => <li i key={idx} className="link-pdf"><a
+				style={{lineHeight: '2rem'}} href={`/api/download/${item}`} download={false} target="_blank">{item}</a></li>)
+			}
+
 			let desc = "<p>" + info.cohort_description + "</p>";
 			desc = desc.replace(/\\n/g, '\n').replace(/\n/g, '<br/>');
 			let description = {
@@ -290,7 +305,23 @@ class Information extends Component {
 						<div className="col-md-6" style={{ paddingLeft: '4rem' }}>
 							<h3>Principal Investigators</h3>
 							<ul id="piList">{pis}</ul>
-							{website}
+							{
+								website && <div style={{marginBottom: '12px'}}>
+									<h3>Cohort Website</h3>
+									{website}
+								</div>
+							}
+							{/*<p>{proceduresite}</p>
+							<ol>{files}</ol>*/}
+							{	
+								(proceduresite || info.procedure_files.length > 0) && <div>
+									<h3>Data Requesting Procedure</h3>
+									<ul style={{listStyle: 'none', paddingLeft:'0'}}>
+										{proceduresite}
+										{files}
+									</ul>
+								</div>
+							}
 						</div>
 					</div>
 
