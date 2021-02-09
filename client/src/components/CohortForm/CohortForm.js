@@ -646,7 +646,7 @@ const CohortForm = ({ ...props }) => {
                                 result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
                                 dispatch(fetchCohort(result.data.new_ID))
                             })
-                            
+
                         }
                     }
                 })
@@ -786,27 +786,31 @@ const CohortForm = ({ ...props }) => {
 
     const add_url = () => {
         return (
-            <Col md="12" className="px-0">
+            <>
                 {/* Header */}
-                <div style={{
+                <Row className="mx-0" style={{
                     height: '40px',
                     backgroundColor: '#01857b',
                     color: 'white',
                 }}>
-                    <Col sm="10">
+                    <Col className="col-10">
                         <h4><b>{urlTitle}</b></h4>
                     </Col>
-                    <input type="button" style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em' }} value='x' onClick={() => setUrlModal(false)} />
-                </div>
-                <Col sm="12" className="my-3">
-                    <Form.Control
-                        type="text"
-                        placeholder="Max of 100 characters"
-                        maxLength="100"
-                        onChange={e => setUrlInput(e.target.value)}
-                    />
-                </Col>
-            </Col>
+                    <Col className="col-2">
+                        <input type="button" style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em' }} value='x' onClick={() => setUrlModal(false)} />
+                    </Col>
+                </Row>
+                <Row className="mx-0">
+                    <Col sm="12" className="my-3">
+                        <Form.Control
+                            type="text"
+                            placeholder="Max of 100 characters"
+                            maxLength="100"
+                            onChange={e => setUrlInput(e.target.value)}
+                        />
+                    </Col>
+                </Row>
+            </>
         )
     }
 
@@ -934,7 +938,7 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={add_url()}
                 footer={
-                    <div>
+                    <div className="d-flex">
                         <Button
                             variant="secondary"
                             onClick={() =>
