@@ -19,7 +19,7 @@ app.locals.mysql = {
 	upsert: mysql.upsert,
 }
 
-mysql.deferUntilConnected(connection).then(function(connection) {
+mysql.deferUntilConnected(connection).then(function (connection) {
 	connection.query('call select_cohort_lookup()', (error, results, columns) => {
 		if (!error && results && results[0] && results[0].length > 0) {
 			let gender = results[0];
@@ -36,7 +36,7 @@ mysql.deferUntilConnected(connection).then(function(connection) {
 			cache.setValue("lookup:race", race, -1);
 			cache.setValue("lookup:specimen", specimen, -1);
 			cache.setValue("lookup:cohortstatus", cohortstatus, -1);
-	
+
 			app.listen(config.port, function () {
 				console.log(`Project CEDCD listening on port: ${config.port}`);
 			});

@@ -391,7 +391,7 @@ const EditUser = ({ ...props }) => {
                                 </Form.Group>
                                 <Form.Group className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
                                     <div className="pl-0 col-md-12 col-12">
-                                        <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
+                                        <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus ? activeStatus === 'Y' : true}
                                             onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                         </span>
                                     </div>
