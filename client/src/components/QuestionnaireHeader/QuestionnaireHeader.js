@@ -113,7 +113,11 @@ const QuestionnaireHeader = ({ ...props }) => {
             <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
             <Prompt
                 when={true}
-                message={location => !/\/cohort\/questionnaire\/\d+/.test(location) && `You may have unsaved changes. Please confirm that you wish to navigate away from the current page.`}
+                message={location => {
+                    console.log(location);
+                    const showPrompt = !/\/cohort\/questionnaire\/\d+/.test(location.pathname);
+                    return showPrompt && `You may have unsaved changes. Please confirm that you wish to navigate away from the current page.`
+                }}
             />
 
             <div >
