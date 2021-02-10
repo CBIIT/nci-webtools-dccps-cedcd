@@ -88,8 +88,15 @@ const CohortForm = ({ ...props }) => {
                         }
                         for (let k of Object.keys(currentCohort)) {
                             //if(k==='eligible_disease') console.log(currentCohort.eligible_disease)
+                            if(['questionnaire_url', 'main_cohort_url', 'data_url', 'specimen_url', 'publication_url'].includes(k)){
+                                currentCohort[k] = currentCohort[k].map(url => {
+                                    if(!/^https?:\/\//.test(url.trim()))
+                                     return 'https://' + url
+                                })
+                            }
                             dispatch(allactions.cohortActions[k](currentCohort[k]))
                         }
+
                         if (completer)
                             for (let k of Object.keys(completer)) {
                                 if (k != 'completerCountry')
@@ -2751,7 +2758,7 @@ const CohortForm = ({ ...props }) => {
                                                                                                 e.preventDefault();
                                                                                                 showUrlListModal('Main Cohort Url', 'main_cohort_url')
                                                                                             }}>
-                                                                                            {cohort.questionnaire_url.length - 1} more
+                                                                                            {cohort.main_url.length - 1} more
                                                                                             </a>
                                                                                     </span>
                                                                                 </>
