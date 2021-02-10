@@ -49,6 +49,12 @@ const SpecimenForm = ({ ...props }) => {
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
+    const [g1to6Flag, setG1to6Flag] = useState(false)
+    const [g1to6FlagList, setG1to6FlagList] = useState({
+        bioBloodBaseline: 1, bioBloodOtherTime: 1, bioBuccalSalivaBaseline: 1, bioBuccalSalivaOtherTime: 1,
+        bioTissueBaseline: 1, bioTissueOtherTime: 1, bioUrineBaseline: 1, bioUrineOtherTime: 1,
+        bioFecesBaseline: 1, bioFecesOtherTime: 1, bioOtherBaseline: 1, bioOtherOtherTime: 1
+    })  // g1to6Flag true will disable all following question, default false
     //const cohortId = window.location.pathname.split('/').pop();
 
     const sendEmail = (template, topic, status) => {
@@ -314,6 +320,7 @@ const SpecimenForm = ({ ...props }) => {
                                         case 'bio_blood_baseline': // specimen_id 11
                                             dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
+                                            setG1to6FlagList((state) => ({ ...state, bioBloodBaseline: specimenInfo[k].collected_yn }))
                                             break
                                         case 'bio_blood_baseline_serum': // specimen_id 12
                                             dispatch(allactions.specimenActions.bioBloodBaselineSerum(specimenInfo[k].collected_yn))
@@ -334,6 +341,7 @@ const SpecimenForm = ({ ...props }) => {
                                         case 'bio_blood_other_time': // specimen_id 16
                                             dispatch(allactions.specimenActions.bioBloodOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioBloodOtherTime: +specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_blood_other_time_serum': // specimen_id 17
                                             dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(specimenInfo[k].collected_yn))
@@ -354,42 +362,52 @@ const SpecimenForm = ({ ...props }) => {
                                         case 'bio_buccal_saliva_baseline': // specimen_id 21
                                             dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaBaseline: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_buccal_saliva_other_time': // specimen_id 22
                                             dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaOtherTime: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_tissue_baseline': // specimen_id 23
                                             dispatch(allactions.specimenActions.bioTissueBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioTissueBaseline(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioTissueBaseline: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_tissue_other_time': // specimen_id 24
                                             dispatch(allactions.specimenActions.bioTissueOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioTissueOtherTime: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_urine_baseline': // specimen_id 25
                                             dispatch(allactions.specimenActions.bioUrineBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioUrineBaseline(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioUrineBaseline: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_urine_other_time': // specimen_id 26
                                             dispatch(allactions.specimenActions.bioUrineOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioUrineOtherTime: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_feces_baseline': // specimen_id 27
                                             dispatch(allactions.specimenActions.bioFecesBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioFecesBaseline(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioFecesBaseline: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_feces_other_time': // specimen_id 28
                                             dispatch(allactions.specimenActions.bioFecesOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioFecesOtherTime: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_other_baseline': // specimen_id 29
                                             dispatch(allactions.specimenActions.bioOtherBaseline(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioOtherBaseline: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_other_other_time': // specimen_id 30
                                             dispatch(allactions.specimenActions.bioOtherOtherTime(specimenInfo[k].collected_yn))
                                             dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
+                                            setG1to6FlagList({ ...g1to6FlagList, bioOtherOtherTime: specimenInfo[k].collected_yn })
                                             break
                                         case 'bio_repeated_sample_same_individual': // specimen_id 31
                                             dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(specimenInfo[k].collected_yn))
@@ -508,6 +526,8 @@ const SpecimenForm = ({ ...props }) => {
                         })
                     }
                     dispatch(allactions.specimenActions.setSpecimenLoaded(true))
+                    updateSecG1to6Flag()
+
 
                 })
                 .catch((error) => {
@@ -591,7 +611,7 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = refreshErrors()
+        let errorsRemain = g1to6Flag ? false : refreshErrors()
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -614,6 +634,27 @@ const SpecimenForm = ({ ...props }) => {
         setModalShow(false)
     }
 
+    const g1to6List = ["bioBloodBaseline", "bioBloodOtherTime", "bioBuccalSalivaBaseline", "bioBuccalSalivaOtherTime",
+        "bioTissueBaseline", "bioTissueOtherTime", "bioUrineBaseline", "bioUrineOtherTime",
+        "bioFecesBaseline", "bioFecesOtherTime", "bioOtherBaseline", "bioOtherOtherTime"];
+
+    useEffect(() => {
+
+        setG1to6Flag(!(+specimen.bioBloodBaseline === 1 || +specimen.bioBloodOtherTime === 1 || +specimen.bioBuccalSalivaBaseline === 1 || +specimen.bioBuccalSalivaOtherTime === 1
+            || +specimen.bioTissueBaseline === 1 || +specimen.bioTissueOtherTime === 1 || +specimen.bioUrineBaseline === 1 || +specimen.bioUrineOtherTime === 1 ||
+            +specimen.bioFecesBaseline === 1 || +specimen.bioFecesOtherTime === 1 || +specimen.bioOtherBaseline === 1 || +specimen.bioOtherOtherTime === 1));
+
+        if (g1to6Flag) {
+            dispatch(allactions.specimenActions.bioMetabolomicData(0));
+            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true));
+        }
+
+    }, [g1to6FlagList, g1to6Flag])
+
+    function updateSecG1to6Flag(field, value) {
+        setG1to6FlagList({ ...g1to6FlagList, [field]: value });
+    }
+
     function RadioButtonInput({ field_id, disabled_id }) {
         {/* field_id: , type : type of button
             disabled_id: disable-condition
@@ -629,11 +670,13 @@ const SpecimenForm = ({ ...props }) => {
             options.map(({ label, value }, i) =>
                 <Form.Check
                     id={`${key}_${value}`}
+                    key={`${key}_${value}`}
                     inline
                     type="radio"
                     name={key}
                     label={label}
-                    disabled={isNull(disabled_id) ? '' : +specimen[disabled_id] !== 1}
+                    disabled={g1to6List.includes(key) ? '' : g1to6Flag ? true : isNull(disabled_id) ? '' : +specimen[disabled_id] !== 1}
+                    // disabled={!g1to6Flag}
                     checked={specimen[key] === value}
                     readOnly={isReadOnly}
                     onChange={e => {
@@ -644,6 +687,9 @@ const SpecimenForm = ({ ...props }) => {
                             if (+value === 1 && key === 'bioMetabolomicData') metabolomicFieldsUpdate();
                             else if (+value === 0 && key === 'bioOtherBaseline') dispatch(allactions.specimenActions.bioOtherBaselineSpecify(''));
                             else if (+value === 0 && key === 'bioOtherOtherTime') dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(''));
+                        }
+                        if (g1to6List.includes(key)) {
+                            updateSecG1to6Flag(key, value)
                         }
                     }}
                 />
@@ -662,11 +708,13 @@ const SpecimenForm = ({ ...props }) => {
             <Form.Check type="checkbox"
                 className="pl-0"
                 id={key}
+                key={key}
                 name={key} >
                 <Form.Check.Input bsPrefix
                     type="checkbox"
                     className="mr-2"
-                    disabled={isNull(disabled_id) ? '' : +specimen[disabled_id] !== 1}
+                    key={key}
+                    disabled={g1to6List.includes(key) ? '' : g1to6Flag ? true : isNull(disabled_id) ? '' : +specimen[disabled_id] !== 1}
                     checked={specimen[key] === 1}
                     readOnly={isReadOnly}
                     onChange={e => {
@@ -725,7 +773,7 @@ const SpecimenForm = ({ ...props }) => {
                 <Form.Group as={Row}>
                     <Form.Label column sm='12' >
                         {field.title}<span style={{ color: 'red' }}>*</span>
-                        {(errors[item[0].field_id] && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
+                        {(errors[item[0].field_id] && saved) && !g1to6Flag && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
                     </Form.Label>
 
                     <Col sm='12' className='mb-0 pl-0' >
@@ -770,6 +818,7 @@ const SpecimenForm = ({ ...props }) => {
                             <Form.Control type='text'
                                 name='bioOtherBaselineSpecify'
                                 className='form-control'
+                                key="bioOtherBaselineSpecify"
                                 value={specimen.bioOtherBaselineSpecify}
                                 readOnly={isReadOnly}
                                 placeholder='Max of 200 characters'
@@ -805,6 +854,7 @@ const SpecimenForm = ({ ...props }) => {
                         <Reminder message={"Required Field"} disabled={!(saved && +specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify)} addspan={true} placement="right">
                             <Form.Control type='text'
                                 name='bioOtherOtherTimeSpecify'
+                                key="bioOtherOtherTimeSpecify"
                                 className='form-control'
                                 value={specimen.bioOtherOtherTimeSpecify}
                                 readOnly={isReadOnly}
@@ -1009,7 +1059,7 @@ const SpecimenForm = ({ ...props }) => {
                         < Form.Group as={Row} sm='12'  >
                             <Form.Label column sm='8'>
                                 G.15 Metabolomic Data (from MS and/or NMR)<span style={{ color: 'red' }}>*</span>
-                                {(errors.bioMetabolomicData && saved) && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
+                                {(errors.bioMetabolomicData && saved) && !g1to6Flag && <span className="ml-3 text-danger font-weight-normal">Required Field</span>}
                             </Form.Label>
 
                             <Col className='align-self-center' sm='12'>
@@ -1026,7 +1076,7 @@ const SpecimenForm = ({ ...props }) => {
 
                             <Form.Label column sm='12'>
                                 G.15a Are the biospecimens collected fasting samples?<span style={{ color: 'red' }}>*</span>
-                                {(+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                {(+specimen.bioMetabolomicData === 1 && errors.bioMetaFastingSample) && saved && !g1to6Flag && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                             </Form.Label>
                             <Col className='align-self-center' sm='12'>
                                 <RadioButtonInput field_id='bioMetaFastingSample' disabled_id='bioMetabolomicData'
@@ -1041,7 +1091,7 @@ const SpecimenForm = ({ ...props }) => {
                                 <span className="font-weight-normal">{' '}(Select all that apply)</span>
                                 {(+specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesInCancerStudy
                                     && errors.bioMetaOutcomesInCvdStudy && errors.bioMetaOutcomesInDiabetesStudy && errors.bioMetaOutcomesInOtherStudy)
-                                    && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                    && saved && !g1to6Flag && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
 
                             </Form.Label>
 
@@ -1057,7 +1107,8 @@ const SpecimenForm = ({ ...props }) => {
                                 </Col>
                             </Col>
                             <Col sm='12' className='align-self-center' >
-                                <Reminder message='Required Field' disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} addspan={true}>
+                                <Reminder message='Required Field'
+                                    disabled={!(+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved)} addspan={true}>
                                     <Form.Control as="textarea"
                                         className="resize-vertical"
                                         style={+specimen.bioMetaOutcomesInOtherStudy === 1 && +specimen.bioMetabolomicData === 1 && errors.bioMetaOutcomesOtherStudySpecify && saved && { border: '1px solid red' } || {}}
@@ -1067,7 +1118,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={200}
                                         readOnly={isReadOnly}
                                         placeholder='Max of 200 characters'
-                                        disabled={+specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
+                                        disabled={+g1to6Flag === 1 || +specimen.bioMetaOutcomesInOtherStudy !== 1 || +specimen.bioMetabolomicData !== 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioMetaOutcomesOtherStudySpecify(e.target.value));
@@ -1107,7 +1158,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={15}
                                         readOnly={isReadOnly}
                                         placeholder='Valid number'
-                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1 || +g1to6Flag === 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioMemberInStudy(e.target.value));
@@ -1133,7 +1184,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={200}
                                         readOnly={isReadOnly}
                                         placeholder='Max of 200 characters'
-                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1 || +g1to6Flag === 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(e.target.value));
@@ -1159,7 +1210,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={200}
                                         readOnly={isReadOnly}
                                         placeholder='Max of 200 characters'
-                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1 || +g1to6Flag === 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioAnalyticalPlatform(e.target.value));
@@ -1186,7 +1237,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={200}
                                         readOnly={isReadOnly}
                                         placeholder='Max of 200 characters'
-                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1 || +g1to6Flag === 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioSeparationPlatform(e.target.value));
@@ -1213,7 +1264,7 @@ const SpecimenForm = ({ ...props }) => {
                                         maxLength={15}
                                         readOnly={isReadOnly}
                                         placeholder='Valid number'
-                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1}
+                                        disabled={isReadOnly || +specimen.bioMetabolomicData !== 1 || +g1to6Flag === 1}
                                         onChange={e => {
                                             dispatch(setHasUnsavedChanges(true));
                                             dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(e.target.value));
@@ -1235,7 +1286,7 @@ const SpecimenForm = ({ ...props }) => {
                                         style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
                                         name='bioYearSamplesSent'
                                         maxLength={4}
-                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly}
+                                        disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly || +g1to6Flag === 1}
                                         value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
                                         onChange={e =>
                                             !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
@@ -1302,6 +1353,7 @@ const SpecimenForm = ({ ...props }) => {
                                                             dispatch(setHasUnsavedChanges(true));
                                                         }}
                                                         min="0"
+                                                        disabled={+g1to6Flag === 1}
                                                         readOnly={isReadOnly} />
                                                 </td>
                                             )}
