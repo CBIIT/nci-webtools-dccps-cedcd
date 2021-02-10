@@ -640,9 +640,9 @@ const SpecimenForm = ({ ...props }) => {
 
     useEffect(() => {
 
-        setG1to6Flag(!(+specimen.bioBloodBaseline === 1 || +specimen.bioBloodOtherTime === 1 || +specimen.bioBuccalSalivaBaseline === 1 || +specimen.bioBuccalSalivaOtherTime === 1
-            || +specimen.bioTissueBaseline === 1 || +specimen.bioTissueOtherTime === 1 || +specimen.bioUrineBaseline === 1 || +specimen.bioUrineOtherTime === 1 ||
-            +specimen.bioFecesBaseline === 1 || +specimen.bioFecesOtherTime === 1 || +specimen.bioOtherBaseline === 1 || +specimen.bioOtherOtherTime === 1));
+        setG1to6Flag((specimen.bioBloodBaseline === 0 && specimen.bioBloodOtherTime === 0 && specimen.bioBuccalSalivaBaseline === 0 && specimen.bioBuccalSalivaOtherTime === 0
+            && specimen.bioTissueBaseline === 0 && specimen.bioTissueOtherTime === 0 && specimen.bioUrineBaseline === 0 && specimen.bioUrineOtherTime === 0 &&
+            specimen.bioFecesBaseline === 0 && specimen.bioFecesOtherTime === 0 && specimen.bioOtherBaseline === 0 && specimen.bioOtherOtherTime === 0));
 
         if (g1to6Flag) {
             dispatch(allactions.specimenActions.bioMetabolomicData(0));
