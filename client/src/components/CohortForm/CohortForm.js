@@ -87,13 +87,15 @@ const CohortForm = ({ ...props }) => {
                             dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
                         }
                         for (let k of Object.keys(currentCohort)) {
-                            //if(k==='eligible_disease') console.log(currentCohort.eligible_disease)
-                            if(['questionnaire_url', 'main_cohort_url', 'data_url', 'specimen_url', 'publication_url'].includes(k)){
+                            /*if(['questionnaire_url', 'main_cohort_url', 'data_url', 'specimen_url', 'publication_url'].includes(k)){
                                 currentCohort[k] = currentCohort[k].map(url => {
                                     if(!/^https?:\/\//.test(url.trim()))
-                                     return 'https://' + url
+                                        return 'https://' + url
+                                    else
+                                        return url
                                 })
-                            }
+                            } */
+                            console.log('Key: '+ k + " value: "+ currentCohort[k])
                             dispatch(allactions.cohortActions[k](currentCohort[k]))
                         }
 
@@ -283,15 +285,17 @@ const CohortForm = ({ ...props }) => {
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
+                        //result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
                         // if cohort_id changed, refresh section status
                         let secStatusList = result.newCohortInfo.sectionStatusList
-                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                        
+                        if (secStatusList && secStatusList.length > 0) secStatusList.forEach((item, idx) => {
                             dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
                         })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
-                        // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     } else {
                         dispatch(fetchCohort(cohortID))
                     }
@@ -428,52 +432,7 @@ const CohortForm = ({ ...props }) => {
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
-    /*
-        const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
-            const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-            }
-        }
     
-        const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
-            const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-            }
-        }
-    
-        const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
-            const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.current_age_min(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.current_age_min(true))
-            }
-        }
-    
-        const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
-            const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.current_age_max(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.current_age_max(true))
-            }
-        }
-    
-        const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-            const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions[fieldName](false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions[fieldName](true))
-            }
-        }
-    */
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -595,13 +554,9 @@ const CohortForm = ({ ...props }) => {
         } else if (personType === 'contacter') {
             dispatch(allactions.cohortActions.clarification_contact(checkedValue))
             dispatch(allactions.cohortErrorActions.clarification_contact(true))
-            //if (cohort.clarification_contact == 1 || name) dispatch(allactions.cohortErrorActions.contacterName(true))
             dispatch(allactions.cohortActions.contacterName(name))
-            //if (cohort.clarification_contact == 1 || position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
             dispatch(allactions.cohortActions.contacterPosition(position))
-            //if (cohort.clarification_contact == 1 || phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
             dispatch(allactions.cohortActions.contacterPhone(phone))
-            //if (cohort.clarification_contact == 1 || email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
             dispatch(allactions.cohortActions.contacterEmail(email))
         }
     }
@@ -648,15 +603,10 @@ const CohortForm = ({ ...props }) => {
                                 break;
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
-                        if (result.data.new_ID != cohortID) {
+                        /*if (result.data.new_ID != cohortID) {
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
-                            batch(() => {
-                                dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
-                                result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
-                                dispatch(fetchCohort(result.data.new_ID))
-                            })
-
-                        }
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
+                        }*/
                     }
                 })
 
@@ -2758,7 +2708,7 @@ const CohortForm = ({ ...props }) => {
                                                                                                 e.preventDefault();
                                                                                                 showUrlListModal('Main Cohort Url', 'main_cohort_url')
                                                                                             }}>
-                                                                                            {cohort.main_url.length - 1} more
+                                                                                            {cohort.main_cohort_url.length - 1} more
                                                                                             </a>
                                                                                     </span>
                                                                                 </>

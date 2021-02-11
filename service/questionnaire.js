@@ -36,8 +36,6 @@ router.post('/select_owners_from_id', async function (req, res) {
     let proc = 'select_owners_from_id'
 
     mysql.callProcedure(proc, params, function (result) {
-        logger.debug(result)
-        logger.debug(result[0][0])
 
         if (result && result[0][0])
             res.json({ status: 200, data: result[0] })
@@ -62,8 +60,6 @@ router.post('/select_admin_info', async function (req, res) {
     let proc = 'select_admin_info'
 
     mysql.callProcedure(proc, params, function (result) {
-        logger.debug(result)
-
         if (result && result[0][0])
             res.json({ status: 200, data: result[0] })
         else
@@ -90,7 +86,6 @@ router.post('/upload/:id/:category', function (req, res, next) {
     mysql.callJsonProcedure(proc, params, function (result) {
         if (result && result[0] && result[0][0].rowsAffacted > 0) {
             const returnedData = {}
-            logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
             if(returnedData.new_ID !== idIn) returnedData.updatedStatus = result[3]
@@ -133,7 +128,6 @@ router.post('/deleteFile', function (req, res) {
 })
 
 router.post('/update_cohort_basic/:id', function (req, res) {
-    logger.debug(req.body)
     let keys = ['cohort_description', 'cohort_web_site', 'completerName', 'completerPosition', 'completerEmail', 'contacterName', 'contacterPosition', 'contacterEmail', 'collaboratorName', 'collaboratorPosition', 'collaboratorEmail', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify', 'time_interval', 'data_collected_other_specify', 'restrictions_other_specify', 'strategy_other_specify']
     keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : '')
 
@@ -197,7 +191,6 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let func = 'get_cohort_basic_info'
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
-        logger.debug(results[8])
         const basic_info = {}
         basic_info.investigators = []
         basic_info.cohort = results[0][0]
@@ -248,7 +241,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             basic_info.cohort.data_url = []
             basic_info.cohort.specimen_url = []
             basic_info.cohort.publication_url = []
-
+            
             for (let a of results[8]) {
 
                 switch (a.urlCategory) {
@@ -307,14 +300,16 @@ router.post('/enrollment_counts/:id', function (req, res) {
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function (result) {
-        logger.debug(typeof result[4][0].mostRecentDate)
-        const enrollmentCounts = {}
-        enrollmentCounts.details = result[0]
-        enrollmentCounts.rowTotals = result[1]
-        enrollmentCounts.colTotals = result[2]
-        enrollmentCounts.grandTotal = result[3][0]
-        enrollmentCounts.mostRecentDate = result[4][0]
-        res.json({ data: enrollmentCounts })
+        let enrollmentCounts = {}
+        for(let i = 0; i < result[0].length; i++)
+            enrollmentCounts[result[0][i].cellId] = result[0][i].cellCount
+        for(let i = 0; i < result[1].length; i++)
+            enrollmentCounts[result[1][i].rowId.toString()+ '41'] = result[1][i].rowTotal
+        for(let i = 0; i < result[2].length; i++)
+            enrollmentCounts['8'+result[2][i].colId.toString()] = result[2][i].colTotal
+        enrollmentCounts['841'] = result[3][0].grandTotal;
+        enrollmentCounts.mostRecentDate = result[4][0].mostRecentDate ? result[4][0] : ''
+        res.json({ data: {...enrollmentCounts} })
     })
 
 })
@@ -344,10 +339,10 @@ router.post('/update_major_content/:id', function (req, res) {
     let params = []
     params.push(req.params.id)
     params.push(body)
-    logger.debug(body)
+   
 
     mysql.callJsonProcedure(func, params, function (result) {
-        logger.debug(result)
+        
         if (result && result[0] && result[0][0].rowAffacted > 0) {
             if (Array.isArray(result[1])) {
                 const updatedInfo = {}
@@ -369,7 +364,6 @@ router.post('/mortality/:id', function (req, res) {
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function (result) {
-        logger.debug(result)
         const mortality = {}
         mortality.info = result[0]
 
@@ -388,10 +382,9 @@ router.post('/update_mortality/:id', function (req, res) {
     let params = []
     params.push(req.params.id)
     params.push(body)
-    logger.debug(body)
 
     mysql.callJsonProcedure(func, params, function (result) {
-        logger.debug(result)
+
         if (result && result[0] && result[0][0].rowAffacted > 0) {
             if (Array.isArray(result[1])) {
                 const updatedMortality = {}
@@ -413,7 +406,7 @@ router.post('/dlh/:id', function (req, res) {
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function (result) {
-        logger.debug(result)
+        
         const dlh = {}
         dlh.info = result[0]
         dlh.completion = result[1]
@@ -433,10 +426,10 @@ router.post('/update_dlh/:id', function (req, res) {
     let params = []
     params.push(req.params.id)
     params.push(body)
-    logger.debug(body)
+   
 
     mysql.callJsonProcedure(func, params, function (result) {
-        logger.debug(result)
+        
         if (result && result[0] && result[0][0].rowAffacted > 0) {
             if (Array.isArray(result[1])) {
 
@@ -471,7 +464,7 @@ router.get('/cancer_info/:id', function (req, res) {
     let body = JSON.stringify(req.body)
     let params = []
     params.push(req.params.id)
-    logger.debug(body)
+    
 
     mysql.callJsonProcedure(func, params, function (result) {
         if (result)

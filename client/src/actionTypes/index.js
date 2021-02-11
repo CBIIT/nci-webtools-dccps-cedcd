@@ -138,6 +138,7 @@ const actionTypes = {
     specimen: 'specimen',
     publication: 'publication',
     /*section B*/
+    renewEnrollmentCounts: 'RENEW_ENROLLMENT_COUNTS',
     enrollmentCountLoaded: 'SET_ENROLLMENT_COUNT_LOADED',
     updateEnrollmentCount: 'UPDATE_ENROLLMENT_COUNT',
     updateTotals: 'UPDATE_TOTALS',

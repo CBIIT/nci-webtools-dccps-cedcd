@@ -140,7 +140,7 @@ const InitialStates = {
     },
     enrollmentCount: {
         'hasLoaded': false,
-        '111': 0,
+        /*'111': 0,
         '112': 0,
         '113': 0,
         '121': 0,
@@ -220,7 +220,7 @@ const InitialStates = {
         '832': 0,
         '833': 0,
         '841': 0,
-        'mostRecentDate': null,
+        'mostRecentDate': null, */
         sectionBStatus: ''
     },
     enrollmentCountErrors: {

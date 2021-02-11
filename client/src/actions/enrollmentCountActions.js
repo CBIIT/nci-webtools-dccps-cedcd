@@ -1,4 +1,9 @@
 import t from '../actionTypes'
+const renewEnrollmentCounts = (v) => ({
+    type: t.renewEnrollmentCounts,
+    value: v
+})
+
 const updateEnrollmentCounts = (cellid, amount) => ({
     type: t.updateEnrollmentCount,
     cell: cellid,
@@ -27,6 +32,7 @@ const setSectionBStatus = (v) => ({
     value: v
 })
 export default {
+    renewEnrollmentCounts,
     updateEnrollmentCounts,
     updateTotals,
     updateMostRecentDate,
