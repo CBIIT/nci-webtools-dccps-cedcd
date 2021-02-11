@@ -93,7 +93,7 @@ router.post('/upload/:id/:category', function (req, res, next) {
             logger.debug(result[2])
             returnedData.new_ID = result[1][0].new_id
             returnedData.files = result[2]
-            if(returnedData.new_ID !== idIn) returnedData.updatedStatus = result[3]
+            if (returnedData.new_ID !== idIn) returnedData.updatedStatus = result[3]
             fs.access(`${config.file_path}`, (err) => {
                 if (err) {
                     fs.mkdirSync(`${config.file_path}`, { recursive: true }, (err) => {
@@ -525,7 +525,7 @@ router.post('/update_cancer_info/:id', async function (req, res) {
 
 router.post('/update_specimen/:id', function (req, res) {
     let func = 'update_specimen_section_data'
-    let keys = ['bioOtherBaselineSpecify', 'bioOtherOtherTimeSpecify', 'bioMetaOutcomesOtherStudySpecify', 'bioMemberInStudy', 'bioLabsUsedForAnalysis', 'bioAnalyticalPlatform', 'bioSeparationPlatform']
+    let keys = ['bioOtherBaselineSpecify', 'bioOtherOtherTimeSpecify', 'bioMetaOutcomesOtherStudySpecify', 'bioLabsUsedForAnalysis', 'bioAnalyticalPlatform', 'bioSeparationPlatform']
     keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
     let body = req.body
     for (let k of Object.keys(body.counts)) { if (body.counts[k] === '') body.counts[k] = 0 }

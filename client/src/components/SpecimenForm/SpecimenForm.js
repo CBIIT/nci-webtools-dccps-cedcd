@@ -242,7 +242,7 @@ const SpecimenForm = ({ ...props }) => {
         (errors.bioOtherBaseline && errors.bioOtherOtherTime) || /* G6 */
         (+specimen.bioOtherBaseline === 1 && errors.bioOtherBaselineSpecify) || /* G6 -specify */
         (+specimen.bioOtherOtherTime === 1 && errors.bioOtherOtherTimeSpecify) || /* G6 -specify */
-        (errors.bioRepeatedSampleSameIndividua) || /* G7 */
+        (errors.bioRepeatedSampleSameIndividual) || /* G7 */
         (errors.bioTumorBlockInfo) || /* G8 */
         (errors.bioGenotypingData) || /* G9 */
         (errors.bioSequencingDataExome) || /* G10 */
@@ -295,246 +295,251 @@ const SpecimenForm = ({ ...props }) => {
     //console.log(fieldList)
 
     useEffect(() => {
-        if (!specimen.specimenLoaded) {
-            fetch(`/api/questionnaire/get_specimen/${cohortId}`, {
-                method: "POST"
-            }).then(res => res.json())
-                .then(result => {
-                    let specimenCounts = result.data.counts
-                    let specimenInfo = result.data.info
-                    let specimenDetails = result.data.details
-                    setEmails(result.data.emails)
-                    if (result && specimenCounts) {
-                        batch(() => {
-                            for (let k of Object.keys(specimenCounts)) {
-                                if (specimenCounts[k]) {
-                                    let value = +specimenCounts[k] < 0 ? 0 : +specimenCounts[k]
-                                    dispatch(allactions.specimenActions.setSpecimenCount(k, value.toString()))
-                                }
+
+        fetch(`/api/questionnaire/get_specimen/${cohortId}`, {
+            method: "POST"
+        }).then(res => res.json())
+            .then(result => {
+                let specimenCounts = result.data.counts
+                let specimenInfo = result.data.info
+                let specimenDetails = result.data.details
+                setEmails(result.data.emails)
+                if (result && specimenCounts) {
+                    batch(() => {
+                        for (let k of Object.keys(specimenCounts)) {
+                            if (specimenCounts[k]) {
+                                let value = +specimenCounts[k] < 0 ? 0 : +specimenCounts[k]
+                                dispatch(allactions.specimenActions.setSpecimenCount(k, value.toString()))
+                            } else {
+                                dispatch(allactions.specimenActions.setSpecimenCount(k, "0"))
                             }
+                        }
+                        let k_field_status = false
+                        for (let k of Object.keys(specimenInfo)) {
 
-                            for (let k of Object.keys(specimenInfo)) {
-                                if ([0, 1].includes(specimenInfo[k].collected_yn)) {
+                            k_field_status = [0, 1].includes(specimenInfo[k].collected_yn)
+                            console.log(specimenInfo[k].sub_category + " " + specimenInfo[k].collected_yn)
 
-                                    switch (specimenInfo[k].sub_category) {
-                                        case 'bio_blood_baseline': // specimen_id 11
-                                            dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaseline(true))
-                                            setG1to6FlagList((state) => ({ ...state, bioBloodBaseline: specimenInfo[k].collected_yn }))
-                                            break
-                                        case 'bio_blood_baseline_serum': // specimen_id 12
-                                            dispatch(allactions.specimenActions.bioBloodBaselineSerum(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(true))
-                                            break
-                                        case 'bio_blood_baseline_plasma': // specimen_id 13
-                                            dispatch(allactions.specimenActions.bioBloodBaselinePlasma(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(true))
-                                            break
-                                        case 'bio_blood_baseline_buffy_coat': // specimen_id 14
-                                            dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(true))
-                                            break
-                                        case 'bio_blood_baseline_other_derivative': // specimen_id 15
-                                            dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(true))
-                                            break
-                                        case 'bio_blood_other_time': // specimen_id 16
-                                            dispatch(allactions.specimenActions.bioBloodOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioBloodOtherTime: +specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_blood_other_time_serum': // specimen_id 17
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(true))
-                                            break
-                                        case 'bio_blood_other_time_plasma': // specimen_id 18
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(true))
-                                            break
-                                        case 'bio_blood_other_time_buffy_coat': // specimen_id 19
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(true))
-                                            break
-                                        case 'bio_blood_other_time_other_derivative': // specimen_id 20
-                                            dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(true))
-                                            break
-                                        case 'bio_buccal_saliva_baseline': // specimen_id 21
-                                            dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaBaseline: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_buccal_saliva_other_time': // specimen_id 22
-                                            dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaOtherTime: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_tissue_baseline': // specimen_id 23
-                                            dispatch(allactions.specimenActions.bioTissueBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTissueBaseline(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioTissueBaseline: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_tissue_other_time': // specimen_id 24
-                                            dispatch(allactions.specimenActions.bioTissueOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTissueOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioTissueOtherTime: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_urine_baseline': // specimen_id 25
-                                            dispatch(allactions.specimenActions.bioUrineBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioUrineBaseline(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioUrineBaseline: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_urine_other_time': // specimen_id 26
-                                            dispatch(allactions.specimenActions.bioUrineOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioUrineOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioUrineOtherTime: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_feces_baseline': // specimen_id 27
-                                            dispatch(allactions.specimenActions.bioFecesBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioFecesBaseline(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioFecesBaseline: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_feces_other_time': // specimen_id 28
-                                            dispatch(allactions.specimenActions.bioFecesOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioFecesOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioFecesOtherTime: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_other_baseline': // specimen_id 29
-                                            dispatch(allactions.specimenActions.bioOtherBaseline(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherBaseline(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioOtherBaseline: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_other_other_time': // specimen_id 30
-                                            dispatch(allactions.specimenActions.bioOtherOtherTime(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherOtherTime(true))
-                                            setG1to6FlagList({ ...g1to6FlagList, bioOtherOtherTime: specimenInfo[k].collected_yn })
-                                            break
-                                        case 'bio_repeated_sample_same_individual': // specimen_id 31
-                                            dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true))
-                                            break
-                                        case 'bio_tumor_block_info': // specimen_id 32
-                                            dispatch(allactions.specimenActions.bioTumorBlockInfo(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true))
-                                            break
-                                        case 'bio_genotyping_data': // specimen_id 33
-                                            dispatch(allactions.specimenActions.bioGenotypingData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioGenotypingData(true))
-                                            break
-                                        case 'bio_sequencing_data_exome': // specimen_id 34
-                                            dispatch(allactions.specimenActions.bioSequencingDataExome(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true))
-                                            break
-                                        case 'bio_sequencing_data_whole_genome': // specimen_id 35
-                                            dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true))
-                                            break
-                                        case 'bio_epigenetic_or_metabolic_markers': // specimen_id 36
-                                            dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true))
-                                            break
-                                        case 'bio_other_omics_data': // specimen_id 37
-                                            dispatch(allactions.specimenActions.bioOtherOmicsData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioOtherOmicsData(true))
-                                            break
-                                        case 'bio_transcriptomics_data': // specimen_id 38
-                                            dispatch(allactions.specimenActions.bioTranscriptomicsData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true))
-                                            break
-                                        case 'bio_microbiome_data': // specimen_id 39
-                                            dispatch(allactions.specimenActions.bioMicrobiomeData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true))
-                                            break
-                                        case 'bio_metabolomic_data': // specimen_id 40
-                                            dispatch(allactions.specimenActions.bioMetabolomicData(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
-                                            if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                                dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                                dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                                                dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                                                dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                                                dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
-                                                dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                                            }
-                                            break
-                                        case 'bio_meta_fasting_sample': // specimen_id 41
-                                            dispatch(allactions.specimenActions.bioMetaFastingSample(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_cancer_study': // specimen_id 42
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(specimenInfo[k].collected_yn))
-
-                                            if (specimenInfo[k].collected_yn) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
-                                            }
-                                            break
-                                        case 'bio_meta_outcomes_in_cvd_study': // specimen_id 43
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(specimenInfo[k].collected_yn))
-                                            if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_diabetes_study': // specimen_id 44
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(specimenInfo[k].collected_yn))
-                                            if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
-                                            break
-                                        case 'bio_meta_outcomes_in_other_study': // specimen_id 45
-                                            dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(specimenInfo[k].collected_yn))
-                                            if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                                            } else {
-                                                dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
-                                            }
-                                            break
-                                        case 'bio_member_of_metabolomics_studies': // specimen_id 46
-                                            dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(specimenInfo[k].collected_yn))
-                                            dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
-                                            break
-                                        default:
-                                            break
-
+                            switch (specimenInfo[k].sub_category) {
+                                case 'bio_blood_baseline': // specimen_id 11
+                                    dispatch(allactions.specimenActions.bioBloodBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodBaseline(k_field_status))
+                                    setG1to6FlagList((state) => ({ ...state, bioBloodBaseline: specimenInfo[k].collected_yn }))
+                                    break
+                                case 'bio_blood_baseline_serum': // specimen_id 12
+                                    dispatch(allactions.specimenActions.bioBloodBaselineSerum(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineSerum(k_field_status))
+                                    break
+                                case 'bio_blood_baseline_plasma': // specimen_id 13
+                                    dispatch(allactions.specimenActions.bioBloodBaselinePlasma(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodBaselinePlasma(k_field_status))
+                                    break
+                                case 'bio_blood_baseline_buffy_coat': // specimen_id 14
+                                    dispatch(allactions.specimenActions.bioBloodBaselineBuffyCoat(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineBuffyCoat(k_field_status))
+                                    break
+                                case 'bio_blood_baseline_other_derivative': // specimen_id 15
+                                    dispatch(allactions.specimenActions.bioBloodBaselineOtherDerivative(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodBaselineOtherDerivative(k_field_status))
+                                    break
+                                case 'bio_blood_other_time': // specimen_id 16
+                                    dispatch(allactions.specimenActions.bioBloodOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioBloodOtherTime: +specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_blood_other_time_serum': // specimen_id 17
+                                    dispatch(allactions.specimenActions.bioBloodOtherTimeSerum(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeSerum(k_field_status))
+                                    break
+                                case 'bio_blood_other_time_plasma': // specimen_id 18
+                                    dispatch(allactions.specimenActions.bioBloodOtherTimePlasma(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimePlasma(k_field_status))
+                                    break
+                                case 'bio_blood_other_time_buffy_coat': // specimen_id 19
+                                    dispatch(allactions.specimenActions.bioBloodOtherTimeBuffyCoat(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeBuffyCoat(k_field_status))
+                                    break
+                                case 'bio_blood_other_time_other_derivative': // specimen_id 20
+                                    dispatch(allactions.specimenActions.bioBloodOtherTimeOtherDerivative(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBloodOtherTimeOtherDerivative(k_field_status))
+                                    break
+                                case 'bio_buccal_saliva_baseline': // specimen_id 21
+                                    dispatch(allactions.specimenActions.bioBuccalSalivaBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBuccalSalivaBaseline(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaBaseline: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_buccal_saliva_other_time': // specimen_id 22
+                                    dispatch(allactions.specimenActions.bioBuccalSalivaOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioBuccalSalivaOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioBuccalSalivaOtherTime: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_tissue_baseline': // specimen_id 23
+                                    dispatch(allactions.specimenActions.bioTissueBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioTissueBaseline(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioTissueBaseline: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_tissue_other_time': // specimen_id 24
+                                    dispatch(allactions.specimenActions.bioTissueOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioTissueOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioTissueOtherTime: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_urine_baseline': // specimen_id 25
+                                    dispatch(allactions.specimenActions.bioUrineBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioUrineBaseline(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioUrineBaseline: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_urine_other_time': // specimen_id 26
+                                    dispatch(allactions.specimenActions.bioUrineOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioUrineOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioUrineOtherTime: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_feces_baseline': // specimen_id 27
+                                    dispatch(allactions.specimenActions.bioFecesBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioFecesBaseline(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioFecesBaseline: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_feces_other_time': // specimen_id 28
+                                    dispatch(allactions.specimenActions.bioFecesOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioFecesOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioFecesOtherTime: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_other_baseline': // specimen_id 29
+                                    dispatch(allactions.specimenActions.bioOtherBaseline(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioOtherBaseline(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioOtherBaseline: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_other_other_time': // specimen_id 30
+                                    dispatch(allactions.specimenActions.bioOtherOtherTime(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioOtherOtherTime(k_field_status))
+                                    setG1to6FlagList({ ...g1to6FlagList, bioOtherOtherTime: specimenInfo[k].collected_yn })
+                                    break
+                                case 'bio_repeated_sample_same_individual': // specimen_id 31
+                                    dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(k_field_status))
+                                    break
+                                case 'bio_tumor_block_info': // specimen_id 32
+                                    dispatch(allactions.specimenActions.bioTumorBlockInfo(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(k_field_status))
+                                    break
+                                case 'bio_genotyping_data': // specimen_id 33
+                                    dispatch(allactions.specimenActions.bioGenotypingData(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioGenotypingData(k_field_status))
+                                    break
+                                case 'bio_sequencing_data_exome': // specimen_id 34
+                                    dispatch(allactions.specimenActions.bioSequencingDataExome(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioSequencingDataExome(k_field_status))
+                                    break
+                                case 'bio_sequencing_data_whole_genome': // specimen_id 35
+                                    dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(k_field_status))
+                                    break
+                                case 'bio_epigenetic_or_metabolic_markers': // specimen_id 36
+                                    dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(k_field_status))
+                                    break
+                                case 'bio_other_omics_data': // specimen_id 37
+                                    dispatch(allactions.specimenActions.bioOtherOmicsData(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioOtherOmicsData(k_field_status))
+                                    break
+                                case 'bio_transcriptomics_data': // specimen_id 38
+                                    dispatch(allactions.specimenActions.bioTranscriptomicsData(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(k_field_status))
+                                    break
+                                case 'bio_microbiome_data': // specimen_id 39
+                                    dispatch(allactions.specimenActions.bioMicrobiomeData(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioMicrobiomeData(k_field_status))
+                                    break
+                                case 'bio_metabolomic_data': // specimen_id 40
+                                    dispatch(allactions.specimenActions.bioMetabolomicData(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioMetabolomicData(k_field_status))
+                                    if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
+                                        dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(true))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(true))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(true))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                        dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
+                                        dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                                        dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                                        dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                                        dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                                        dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
                                     }
-                                } else if (specimenInfo[k].sub_category === 'bio_metabolomic_data') {
-                                    metabolomicFieldsUpdate(true)
-                                }
+                                    break
+                                case 'bio_meta_fasting_sample': // specimen_id 41
+                                    dispatch(allactions.specimenActions.bioMetaFastingSample(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioMetaFastingSample(k_field_status))
+                                    break
+                                case 'bio_meta_outcomes_in_cancer_study': // specimen_id 42
+                                    dispatch(allactions.specimenActions.bioMetaOutcomesInCancerStudy(specimenInfo[k].collected_yn))
+
+                                    if (specimenInfo[k].collected_yn) {
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCancerStudy(k_field_status))
+                                    }
+                                    break
+                                case 'bio_meta_outcomes_in_cvd_study': // specimen_id 43
+                                    dispatch(allactions.specimenActions.bioMetaOutcomesInCvdStudy(specimenInfo[k].collected_yn))
+                                    if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInCvdStudy(k_field_status))
+                                    break
+                                case 'bio_meta_outcomes_in_diabetes_study': // specimen_id 44
+                                    dispatch(allactions.specimenActions.bioMetaOutcomesInDiabetesStudy(specimenInfo[k].collected_yn))
+                                    if (specimenInfo[k].collected_yn) dispatch(allactions.specimenErrorActions.bioMetaOutcomesInDiabetesStudy(k_field_status))
+                                    break
+                                case 'bio_meta_outcomes_in_other_study': // specimen_id 45
+                                    dispatch(allactions.specimenActions.bioMetaOutcomesInOtherStudy(specimenInfo[k].collected_yn))
+                                    if (isNull(specimenInfo[k].collected_yn) || +specimenInfo[k].collected_yn === 0) {
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                                    } else {
+                                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesInOtherStudy(true))
+                                    }
+                                    break
+                                case 'bio_member_of_metabolomics_studies': // specimen_id 46
+                                    dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(specimenInfo[k].collected_yn))
+                                    dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(k_field_status))
+                                    break
+                                default:
+                                    break
+
                             }
-                            // details part
-                            dispatch(allactions.specimenActions.bioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
-                            dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
-                            dispatch(allactions.specimenActions.bioMemberInStudy(specimenDetails.bio_member_in_study))
-                            dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
-                            dispatch(allactions.specimenActions.bioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
-                            dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
-                            dispatch(allactions.specimenActions.bioSeparationPlatform(specimenDetails.bio_separation_platform))
-                            dispatch(allactions.specimenActions.bioYearSamplesSent(specimenDetails.bio_year_samples_sent))
+                            if (specimenInfo[k].sub_category === 'bio_metabolomic_data' && ![0, 1].includes(specimenInfo[k].collected_yn)) {
+                                metabolomicFieldsUpdate(true)
+                            }
+                        }
+                        // details part
+                        dispatch(allactions.specimenActions.bioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
+                        dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
+                        dispatch(allactions.specimenActions.bioMemberInStudy(specimenDetails.bio_member_in_study))
+                        dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
+                        dispatch(allactions.specimenActions.bioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
+                        dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
+                        dispatch(allactions.specimenActions.bioSeparationPlatform(specimenDetails.bio_separation_platform))
+                        dispatch(allactions.specimenActions.bioYearSamplesSent(specimenDetails.bio_year_samples_sent))
 
-                            if (!isNull(specimenDetails.bio_analytical_platform)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                            if (!isNull(specimenDetails.bio_labs_used_for_analysis)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                            if (!isNull(specimenDetails.bio_member_in_study)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                            if (!isNull(specimenDetails.bio_meta_outcomes_other_study_specify)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                            if (!isNull(specimenDetails.bio_number_metabolites_measured)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
-                            if (!isNull(specimenDetails.bio_other_baseline_specify)) dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))
-                            if (!isNull(specimenDetails.bio_other_other_time_specify)) dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))
-                            if (!isNull(specimenDetails.bio_separation_platform)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                            if (specimenDetails.bio_year_samples_sent && +specimenDetails.bio_year_samples_sent > 1900 && +specimenDetails.bio_year_samples_sent < 2100)
-                                dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                        if (!isNull(specimenDetails.bio_analytical_platform)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
+                        if (!isNull(specimenDetails.bio_labs_used_for_analysis)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
+                        if (!isNull(specimenDetails.bio_member_in_study)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
+                        if (!isNull(specimenDetails.bio_meta_outcomes_other_study_specify)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
+                        if (!isNull(specimenDetails.bio_number_metabolites_measured)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
+                        if (!isNull(specimenDetails.bio_other_baseline_specify)) dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))
+                        if (!isNull(specimenDetails.bio_other_other_time_specify)) dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))
+                        if (!isNull(specimenDetails.bio_separation_platform)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
+                        if (specimenDetails.bio_year_samples_sent && +specimenDetails.bio_year_samples_sent > 1900 && +specimenDetails.bio_year_samples_sent < 2100)
+                            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
 
-                        })
-                    }
-                    dispatch(allactions.specimenActions.setSpecimenLoaded(true))
-                    updateSecG1to6Flag()
+                    })
+                }
+                dispatch(allactions.specimenActions.setSpecimenLoaded(true))
+                updateSecG1to6Flag()
+                console.log(g1to6FlagList)
 
 
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-        } // end if
-    }, [])
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+
+    }, [cohortId])
 
     const metabolomicFieldsUpdate = (status = false) => {
         batch(() => {
@@ -555,6 +560,22 @@ const SpecimenForm = ({ ...props }) => {
                 dispatch(allactions.specimenActions.bioMetaFastingSample(null))
                 dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(null))
             }
+        })
+    }
+
+    const g7to15FieldsUpdate = () => {
+        batch(() => {
+            dispatch(allactions.specimenActions.bioRepeatedSampleSameIndividual(0))
+            dispatch(allactions.specimenActions.bioTumorBlockInfo(0))
+            dispatch(allactions.specimenActions.bioGenotypingData(0))
+            dispatch(allactions.specimenActions.bioSequencingDataExome(0))
+            dispatch(allactions.specimenActions.bioSequencingDataWholeGenome(0))
+            dispatch(allactions.specimenActions.bioEpigeneticOrMetabolicMarkers(0))
+            dispatch(allactions.specimenActions.bioTranscriptomicsData(0))
+            dispatch(allactions.specimenActions.bioMicrobiomeData(0))
+            dispatch(allactions.specimenActions.bioMetabolomicData(0))
+            dispatch(allactions.specimenActions.bioMetaFastingSample(0))
+            dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(0))
         })
     }
 
@@ -611,7 +632,14 @@ const SpecimenForm = ({ ...props }) => {
 
     const handleSave = () => {
         setSaved(true)
-        let errorsRemain = g1to6Flag ? false : refreshErrors()
+
+        let errorsRemain = true;
+
+        if (g1to6Flag === true) {
+            errorsRemain = false;
+        } else {
+            errorsRemain = refreshErrors();
+        }
 
         if (!errorsRemain) {
             specimen.sectionGStatus = 'complete'
@@ -645,8 +673,7 @@ const SpecimenForm = ({ ...props }) => {
             specimen.bioFecesBaseline === 0 && specimen.bioFecesOtherTime === 0 && specimen.bioOtherBaseline === 0 && specimen.bioOtherOtherTime === 0));
 
         if (g1to6Flag) {
-            dispatch(allactions.specimenActions.bioMetabolomicData(0));
-            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true));
+            g7to15FieldsUpdate()
         }
 
     }, [g1to6FlagList, g1to6Flag])
