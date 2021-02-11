@@ -506,14 +506,14 @@ const SpecimenForm = ({ ...props }) => {
                             }
                         }
                         // details part
-                        dispatch(allactions.specimenActions.bioAnalyticalPlatform(specimenDetails.bio_analytical_platform))
-                        dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis))
-                        dispatch(allactions.specimenActions.bioMemberInStudy(specimenDetails.bio_member_in_study))
-                        dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured))
-                        dispatch(allactions.specimenActions.bioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify))
-                        dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify))
-                        dispatch(allactions.specimenActions.bioSeparationPlatform(specimenDetails.bio_separation_platform))
-                        dispatch(allactions.specimenActions.bioYearSamplesSent(specimenDetails.bio_year_samples_sent))
+                        dispatch(allactions.specimenActions.bioAnalyticalPlatform(specimenDetails.bio_analytical_platform || ''))
+                        dispatch(allactions.specimenActions.bioLabsUsedForAnalysis(specimenDetails.bio_labs_used_for_analysis || ''))
+                        dispatch(allactions.specimenActions.bioMemberInStudy(specimenDetails.bio_member_in_study || ''))
+                        dispatch(allactions.specimenActions.bioNumberMetabolitesMeasured(specimenDetails.bio_number_metabolites_measured || ''))
+                        dispatch(allactions.specimenActions.bioOtherBaselineSpecify(specimenDetails.bio_other_baseline_specify || ''))
+                        dispatch(allactions.specimenActions.bioOtherOtherTimeSpecify(specimenDetails.bio_other_other_time_specify || ''))
+                        dispatch(allactions.specimenActions.bioSeparationPlatform(specimenDetails.bio_separation_platform || ''))
+                        dispatch(allactions.specimenActions.bioYearSamplesSent(specimenDetails.bio_year_samples_sent || ''))
 
                         if (!isNull(specimenDetails.bio_analytical_platform)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
                         if (!isNull(specimenDetails.bio_labs_used_for_analysis)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
