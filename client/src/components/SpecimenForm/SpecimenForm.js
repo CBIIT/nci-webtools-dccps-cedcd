@@ -318,7 +318,6 @@ const SpecimenForm = ({ ...props }) => {
                         for (let k of Object.keys(specimenInfo)) {
 
                             k_field_status = [0, 1].includes(specimenInfo[k].collected_yn)
-                            console.log(specimenInfo[k].sub_category + " " + specimenInfo[k].collected_yn)
 
                             switch (specimenInfo[k].sub_category) {
                                 case 'bio_blood_baseline': // specimen_id 11
@@ -531,8 +530,6 @@ const SpecimenForm = ({ ...props }) => {
                 }
                 dispatch(allactions.specimenActions.setSpecimenLoaded(true))
                 updateSecG1to6Flag()
-                console.log(g1to6FlagList)
-
 
             })
             .catch((error) => {
