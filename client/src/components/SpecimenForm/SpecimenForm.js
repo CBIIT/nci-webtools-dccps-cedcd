@@ -573,6 +573,18 @@ const SpecimenForm = ({ ...props }) => {
             dispatch(allactions.specimenActions.bioMetabolomicData(0))
             dispatch(allactions.specimenActions.bioMetaFastingSample(0))
             dispatch(allactions.specimenActions.bioMemberOfMetabolomicsStudies(0))
+
+            dispatch(allactions.specimenErrorActions.bioRepeatedSampleSameIndividual(true))
+            dispatch(allactions.specimenErrorActions.bioTumorBlockInfo(true))
+            dispatch(allactions.specimenErrorActions.bioGenotypingData(true))
+            dispatch(allactions.specimenErrorActions.bioSequencingDataExome(true))
+            dispatch(allactions.specimenErrorActions.bioSequencingDataWholeGenome(true))
+            dispatch(allactions.specimenErrorActions.bioEpigeneticOrMetabolicMarkers(true))
+            dispatch(allactions.specimenErrorActions.bioTranscriptomicsData(true))
+            dispatch(allactions.specimenErrorActions.bioMicrobiomeData(true))
+            dispatch(allactions.specimenErrorActions.bioMetabolomicData(true))
+            dispatch(allactions.specimenErrorActions.bioMetaFastingSample(true))
+            dispatch(allactions.specimenErrorActions.bioMemberOfMetabolomicsStudies(true))
         })
     }
 
