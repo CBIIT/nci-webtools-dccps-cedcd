@@ -3,9 +3,26 @@ const InitialStates = {
     cohort: {
         hasLoaded: false,
         sectionAStatus: '',
-        cohort_name: '',
+        investigators: [
+            {
+                personId: 0,
+                name: '',
+                institution: '',
+                email: ''
+            }
+        ],
+        questionnaireFileName: [],
+        mainFileName: [],
+        dataFileName: [],
+        specimenFileName: [],
+        publicationFileName: [],
+        questionnaire_url: [],
+        main_cohort_url: [],
+        data_url: [],
+        specimen_url: [],
+        publication_url: []
+      /*  cohort_name: '',
         cohort_acronym: '',
-        //completionDate: null,
         completerName: '',
         completerPosition: '',
         completerPhone: '',
@@ -93,6 +110,7 @@ const InitialStates = {
         data_url: [],
         specimen_url: [],
         publication_url: []
+        */
     },
     cohortErrors: {
         //completionDate: 'Required Field',

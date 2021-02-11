@@ -3,6 +3,7 @@ import InitialStates from '../states'
 
 const cohortIDReducer = (state = InitialStates.cohortId, action = {}) => {
     if(action.type == t.setCohortId){
+        console.log('setting cohort ID...')
         return action.value
     }
     else{

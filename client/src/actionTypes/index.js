@@ -2,6 +2,7 @@ const actionTypes = {
     setCohortStatus: 'SET_COHORT_STATUS',
     setHasLoaded: 'SET_COHORT_LOADED_FROM_DB',
     setSectionAStatus: 'SET_COHORT_STATUS',
+    renewCohort: 'RENEW_COHORT',
     setCountryCode: 'SET_PERSON_PHONE_COUNTRY_CODE',
     setCohortId: 'SET_COHORT_ID',
     setCohortName: 'SET_COHORT_NAME',

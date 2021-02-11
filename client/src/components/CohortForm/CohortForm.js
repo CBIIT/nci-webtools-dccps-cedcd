@@ -68,17 +68,22 @@ const CohortForm = ({ ...props }) => {
     const history = useHistory();
 
     useEffect(() => {
-        if (!cohort.hasLoaded || tempId != cohortID) {
+        //if (!cohort.hasLoaded || tempId != cohortID) {
             dispatch(allactions.cohortIDAction.setCohortId(tempId))
             fetch(`/api/questionnaire/cohort_basic_info/${tempId}`, {
                 method: 'POST'
             }).then(res => res.json())
                 .then(result => {
-                    let currentCohort = result.data.cohort,
+/*                    let currentCohort = result.data.cohort,
                         investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
                         completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
                         cohort_status = result.data.cohortStatus
+*/                  
 
+                    let currentCohort = result.data, investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
+                    cohort_status = result.data.cohortStatus
+                    console.dir(currentCohort)
+                    dispatch(allactions.cohortActions.renewCohort(currentCohort))
                     batch(() => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
                         for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
@@ -86,7 +91,8 @@ const CohortForm = ({ ...props }) => {
                             dispatch(allactions.cohortErrorActions.investigatorInstitution(i, false, errorMsg))
                             dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
                         }
-                        for (let k of Object.keys(currentCohort)) {
+                        
+                    /*    for (let k of Object.keys(currentCohort)) {
                             /*if(['questionnaire_url', 'main_cohort_url', 'data_url', 'specimen_url', 'publication_url'].includes(k)){
                                 currentCohort[k] = currentCohort[k].map(url => {
                                     if(!/^https?:\/\//.test(url.trim()))
@@ -95,8 +101,7 @@ const CohortForm = ({ ...props }) => {
                                         return url
                                 })
                             } */
-                            console.log('Key: '+ k + " value: "+ currentCohort[k])
-                            dispatch(allactions.cohortActions[k](currentCohort[k]))
+                /*      dispatch(allactions.cohortActions[k](currentCohort[k]))
                         }
 
                         if (completer)
@@ -166,13 +171,14 @@ const CohortForm = ({ ...props }) => {
 
                             dispatch(allactions.cohortActions.sameAsSomeone(currentCohort.sameAsSomeone))
                         }
+                        */
                         if (result.data.sectionStatus)
                             for (let k of result.data.sectionStatus) {
                                 dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                             }
-                        if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
+                //        if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
 
-                        if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
+                    //    if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
                         if ([0, 1].includes(currentCohort.clarification_contact)) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
 
                         if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
@@ -223,18 +229,18 @@ const CohortForm = ({ ...props }) => {
                         if (currentCohort.strategy_other_specify || !currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
 
                         //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                        if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
-                        if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
-                        if (completer && completer.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
+                        if (currentCohort.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
+                        if (currentCohort.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
+                        if (currentCohort.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
 
                         if (currentCohort.clarification_contact === 1) {
                             dispatch(allactions.cohortErrorActions.contacterName(true))
                             dispatch(allactions.cohortErrorActions.contacterPosition(true))
                             dispatch(allactions.cohortErrorActions.contacterEmail(true))
                         } else {
-                            if (contacter && contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                            if (contacter && contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                            if (contacter && contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
+                            if (currentCohort.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
+                            if (currentCohort.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
+                            if (currentCohort.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
                         }
 
 
@@ -243,9 +249,9 @@ const CohortForm = ({ ...props }) => {
                             dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
                             dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
                         } else {
-                            if (collaborator && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
-                            if (collaborator && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
-                            if (collaborator && collaborator.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
+                            if (currentCohort.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
+                            if (currentCohort.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
+                            if (currentCohort.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
                         }
 
                         for (let i = 0; i < investigators.length; i++) {
@@ -257,7 +263,7 @@ const CohortForm = ({ ...props }) => {
                     })
 
                 })
-        }
+        
     }, [])
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {

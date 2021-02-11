@@ -192,78 +192,95 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
         const basic_info = {}
+        Object.assign(basic_info, {...results[0][0]}) //basic info
+        basic_info.cohort_description = basic_info.cohort_description ? basic_info.cohort_description.replace(/\\n/g, '\n') : ''
         basic_info.investigators = []
-        basic_info.cohort = results[0][0]
-        basic_info.cohort.cohort_description = basic_info.cohort.cohort_description ? basic_info.cohort.cohort_description.replace(/\\n/g, '\n') : ''
-        basic_info.completer = results[1][0]
-        basic_info.contacter = results[2][0]
+        Object.assign(basic_info, results[1][0])//completer
+        Object.assign(basic_info, results[2][0])//contacter
+        //basic_info.cohort = results[0][0]
+        //basic_info.cohort.cohort_description = basic_info.cohort.cohort_description ? basic_info.cohort.cohort_description.replace(/\\n/g, '\n') : ''
+        //basic_info.completer = results[1][0]
+        //basic_info.contacter = results[2][0]
+        if(results[3].length === 0){
+            basic_info.investigators.push({
+                personId: 0,
+                name: '',
+                institution: '',
+                email: ''
+            })
+        }else{
         results[3].map((item) => {
             if (item.name) {
                 basic_info.investigators.push(item)
             }
-        })
-        basic_info.collaborator = results[4][0]
+        })}
+        Object.assign(basic_info, results[4][0])
+        //basic_info.collaborator = results[4][0]
         basic_info.sectionStatus = results[5]
-        basic_info.cohortStatus = results[6][0].cohort_status
-
+        basic_info.cohortStatus = results[6][0].cohort_status      
 
         if (results[7] && Array.isArray(results[7])) {
-            basic_info.cohort.questionnaireFileName = []
+/*            basic_info.cohort.questionnaireFileName = []
             basic_info.cohort.mainFileName = []
             basic_info.cohort.dataFileName = []
             basic_info.cohort.specimenFileName = []
             basic_info.cohort.publicationFileName = []
-
+*/
+            basic_info.questionnaireFileName = []
+            basic_info.mainFileName = []
+            basic_info.dataFileName = []
+            basic_info.specimenFileName = []
+            basic_info.publicationFileName = []
             for (let a of results[7]) {
                 switch (a.fileCategory) {
                     case 0:
-                        basic_info.cohort.questionnaireFileName.push(a)
+                        basic_info.questionnaireFileName.push(a)
                         break;
                     case 1:
-                        basic_info.cohort.mainFileName.push(a)
+                        basic_info.mainFileName.push(a)
                         break;
                     case 2:
-                        basic_info.cohort.dataFileName.push(a)
+                        basic_info.dataFileName.push(a)
                         break;
                     case 3:
-                        basic_info.cohort.specimenFileName.push(a)
+                        basic_info.specimenFileName.push(a)
                         break;
                     default:
-                        basic_info.cohort.publicationFileName.push(a)
+                        basic_info.publicationFileName.push(a)
                         break;
                 }
             }
         }
 
         if (results[8] && Array.isArray(results[8])) {
-            basic_info.cohort.questionnaire_url = []
-            basic_info.cohort.main_cohort_url = []
-            basic_info.cohort.data_url = []
-            basic_info.cohort.specimen_url = []
-            basic_info.cohort.publication_url = []
+            basic_info.questionnaire_url = []
+            basic_info.main_cohort_url = []
+            basic_info.data_url = []
+            basic_info.specimen_url = []
+            basic_info.publication_url = []
             
             for (let a of results[8]) {
 
                 switch (a.urlCategory) {
                     case 0:
-                        basic_info.cohort.questionnaire_url.push(a.website)
+                        basic_info.questionnaire_url.push(a.website)
                         break;
                     case 1:
-                        basic_info.cohort.main_cohort_url.push(a.website)
+                        basic_info.main_cohort_url.push(a.website)
                         break;
                     case 2:
-                        basic_info.cohort.data_url.push(a.website)
+                        basic_info.data_url.push(a.website)
                         break;
                     case 3:
-                        basic_info.cohort.specimen_url.push(a.website)
+                        basic_info.specimen_url.push(a.website)
                         break;
                     case 4:
-                        basic_info.cohort.publication_url.push(a.website)
+                        basic_info.publication_url.push(a.website)
                         break;
                 }
             }
         }
-
+        
         res.json({ status: 200, data: basic_info })
     })
 })
