@@ -501,8 +501,8 @@ const SpecimenForm = ({ ...props }) => {
                                     break
 
                             }
-                            if (specimenInfo[k].sub_category === 'bio_metabolomic_data' && ![0, 1].includes(specimenInfo[k].collected_yn)) {
-                                metabolomicFieldsUpdate(true)
+                            if (specimenInfo[k].sub_category === 'bio_metabolomic_data') {
+                                metabolomicFieldsUpdate(![0, 1].includes(specimenInfo[k].collected_yn))
                             }
                         }
                         // details part
@@ -515,16 +515,19 @@ const SpecimenForm = ({ ...props }) => {
                         dispatch(allactions.specimenActions.bioSeparationPlatform(specimenDetails.bio_separation_platform || ''))
                         dispatch(allactions.specimenActions.bioYearSamplesSent(specimenDetails.bio_year_samples_sent || ''))
 
-                        if (!isNull(specimenDetails.bio_analytical_platform)) dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(true))
-                        if (!isNull(specimenDetails.bio_labs_used_for_analysis)) dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(true))
-                        if (!isNull(specimenDetails.bio_member_in_study)) dispatch(allactions.specimenErrorActions.bioMemberInStudy(true))
-                        if (!isNull(specimenDetails.bio_meta_outcomes_other_study_specify)) dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(true))
-                        if (!isNull(specimenDetails.bio_number_metabolites_measured)) dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(true))
-                        if (!isNull(specimenDetails.bio_other_baseline_specify)) dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(true))
-                        if (!isNull(specimenDetails.bio_other_other_time_specify)) dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(true))
-                        if (!isNull(specimenDetails.bio_separation_platform)) dispatch(allactions.specimenErrorActions.bioSeparationPlatform(true))
-                        if (specimenDetails.bio_year_samples_sent && +specimenDetails.bio_year_samples_sent > 1900 && +specimenDetails.bio_year_samples_sent < 2100)
+                        dispatch(allactions.specimenErrorActions.bioAnalyticalPlatform(!isNull(specimenDetails.bio_analytical_platform)))
+                        dispatch(allactions.specimenErrorActions.bioLabsUsedForAnalysis(!isNull(specimenDetails.bio_labs_used_for_analysis)))
+                        dispatch(allactions.specimenErrorActions.bioMemberInStudy(!isNull(specimenDetails.bio_member_in_study)))
+                        dispatch(allactions.specimenErrorActions.bioMetaOutcomesOtherStudySpecify(!isNull(specimenDetails.bio_meta_outcomes_other_study_specify)))
+                        dispatch(allactions.specimenErrorActions.bioNumberMetabolitesMeasured(!isNull(specimenDetails.bio_number_metabolites_measured)))
+                        dispatch(allactions.specimenErrorActions.bioOtherBaselineSpecify(!isNull(specimenDetails.bio_other_baseline_specify)))
+                        dispatch(allactions.specimenErrorActions.bioOtherOtherTimeSpecify(!isNull(specimenDetails.bio_other_other_time_specify)))
+                        dispatch(allactions.specimenErrorActions.bioSeparationPlatform(!isNull(specimenDetails.bio_separation_platform)))
+                        if (specimenDetails.bio_year_samples_sent && +specimenDetails.bio_year_samples_sent > 1900 && +specimenDetails.bio_year_samples_sent < 2100) {
                             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+                        } else {
+                            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(false))
+                        }
 
                     })
                 }
@@ -677,11 +680,14 @@ const SpecimenForm = ({ ...props }) => {
 
     useEffect(() => {
 
-        setG1to6Flag((specimen.bioBloodBaseline === 0 && specimen.bioBloodOtherTime === 0 && specimen.bioBuccalSalivaBaseline === 0 && specimen.bioBuccalSalivaOtherTime === 0
+        let tempStatus = (specimen.bioBloodBaseline === 0 && specimen.bioBloodOtherTime === 0 && specimen.bioBuccalSalivaBaseline === 0 && specimen.bioBuccalSalivaOtherTime === 0
             && specimen.bioTissueBaseline === 0 && specimen.bioTissueOtherTime === 0 && specimen.bioUrineBaseline === 0 && specimen.bioUrineOtherTime === 0 &&
-            specimen.bioFecesBaseline === 0 && specimen.bioFecesOtherTime === 0 && specimen.bioOtherBaseline === 0 && specimen.bioOtherOtherTime === 0));
+            specimen.bioFecesBaseline === 0 && specimen.bioFecesOtherTime === 0 && specimen.bioOtherBaseline === 0 && specimen.bioOtherOtherTime === 0);
 
-        if (g1to6Flag) {
+        setG1to6Flag(tempStatus);
+
+        if (tempStatus === true) {
+            console.log("line 688 G1-6 all Nos updates" + specimen.bioBloodBaseline + " G1 " + specimen.bioBloodOtherTime)
             g7to15FieldsUpdate()
         }
 
