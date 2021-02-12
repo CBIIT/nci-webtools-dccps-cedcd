@@ -52,9 +52,14 @@ const MajorContentForm = ({ ...props }) => {
         'g. Cognitive Decline', ''
     ]
 
-    const loadErrorPart = (keylist, content) => keylist.map((key, idx) => {
-        dispatch(allactions.majorContentErrorActions[key+'BaseLine'](content[14+idx].baseline === 1))
-        dispatch(allactions.majorContentErrorActions[key+'FollowUp'](content[14+idx].followup === 1))
+    const loadErrorPart = (keylist, content, start=0) => keylist.map((key, idx) => {
+        if(start != 14){
+            dispatch(allactions.majorContentErrorActions[key+'BaseLine']([0,1].includes(content[start+idx].baseline)))
+            dispatch(allactions.majorContentErrorActions[key+'FollowUp']([0,1].includes(content[start+idx].followup)))
+        }else{
+            dispatch(allactions.majorContentErrorActions[key+'BaseLine'](content[start+idx].baseline === 1))
+            dispatch(allactions.majorContentErrorActions[key+'FollowUp'](content[start+idx].followup === 1))
+        }
     }) 
     useEffect(() => {
         //let id = 118
@@ -164,10 +169,10 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify || ''))
                         loadErrorPart(['seStatus', 'education', 'maritalStatus', 'origin', 'empStatus', 'insuranceStatus', 'anthropometry', 'dietary', 'supplement', 'medicine', 'prescription', 'nonprescription', 'alcohol', 'cigarette'], content)
                         
-                       loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content)
+                       loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content, 14)
                 
                          loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure','residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
-                         'cognitiveDecline'], content)
+                         'cognitiveDecline'], content, 19)
                          dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
                        
                         if (content[40]) {
