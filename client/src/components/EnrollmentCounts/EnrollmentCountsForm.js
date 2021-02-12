@@ -66,16 +66,18 @@ const EnrollmentCountsForm = ({ ...props }) => {
     }
     //var dates = ''
     useEffect(() => {
-        if (!enrollmentCount.hasLoaded) {
+        //if (!enrollmentCount.hasLoaded) {
             fetch(`/api/questionnaire/enrollment_counts/${cohortID}`, {
                 method: 'POST',
             }).then(res => res.json())
             .then(result => {
                 dispatch(allactions.enrollmentCountActions.renewEnrollmentCounts(result.data))
-                dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
+                if(!result.data.mostRecentDate)
+                    dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Data'))
+                else dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
             })// end of then
-        }
-    }, [])
+      //  }
+    }, [cohortID])
 
     const sendEmail = (template, topic) => {
 

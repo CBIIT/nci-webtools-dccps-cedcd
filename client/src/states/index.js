@@ -149,7 +149,6 @@ const InitialStates = {
         strategy_other_specify: 'Required Field' */
     },
     enrollmentCount: {
-        'hasLoaded': false,
         /*'111': 0,
         '112': 0,
         '113': 0,

@@ -51,10 +51,15 @@ const MajorContentForm = ({ ...props }) => {
         'a. Diabetes', '', 'b. Stroke', '', 'c. COPD and/or Emphysema', '', 'd. Cardiovascular Disease', '', 'e. Osteoporosis', '', 'f. Mental Health', '',
         'g. Cognitive Decline', ''
     ]
+
+    const loadErrorPart = (keylist, content) => keylist.map((key, idx) => {
+        dispatch(allactions.majorContentErrorActions[key+'BaseLine'](content[14+idx].baseline === 1))
+        dispatch(allactions.majorContentErrorActions[key+'FollowUp'](content[14+idx].followup === 1))
+    }) 
     useEffect(() => {
         //let id = 118
         //window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', `/cohort/questionnaire/${id}`)
-        if (!majorContent.hasLoaded) {
+        //if (!majorContent.hasLoaded) {
             fetch(`/api/questionnaire/major_content/${cohortId}`, {
                 method: 'POST'
             }).then(res => res.json())
@@ -102,8 +107,8 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.ecigarFollowUp(content[17].followup))
                         dispatch(allactions.majorContentActions.noncigarOtherBaseLine(content[18].baseline))
                         dispatch(allactions.majorContentActions.noncigarOtherFollowUp(content[18].followup))
-                        dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(content[18].other_specify_baseline))
-                        dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(content[18].other_specify_followup))
+                        dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(content[18].other_specify_baseline || ''))
+                        dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(content[18].other_specify_followup || ''))
                         dispatch(allactions.majorContentActions.physicalBaseLine(content[19].baseline))
                         dispatch(allactions.majorContentActions.physicalFollowUp(content[19].followup))
 
@@ -129,8 +134,6 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.cancerHistoryFollowUp(content[29].followup))
                         dispatch(allactions.majorContentActions.cancerPedigreeBaseLine(content[30].baseline))
                         dispatch(allactions.majorContentActions.cancerPedigreeFollowUp(content[30].followup))
-                        //dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[30].baseline))
-                        //dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[30].followup))
 
                         dispatch(allactions.majorContentActions.exposureBaseLine(content[31].baseline))
                         dispatch(allactions.majorContentActions.exposureFollowUp(content[31].followup))
@@ -154,122 +157,33 @@ const MajorContentForm = ({ ...props }) => {
                             dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[40].baseline))
                             dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[40].followup))
                         }
-
                         dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
                         dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
                         dispatch(allactions.majorContentActions.cancerSymptom(cancerInfo.cancerSymptom))
                         dispatch(allactions.majorContentActions.cancerOther(cancerInfo.cancerOther))
-                        dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify))
-                        //dispatch(allactions.majorContentActions.setHasLoaded(true))
-
-                        if ([0, 1].includes(content[0].baseline)) { dispatch(allactions.majorContentErrorActions.seStatusBaseLine(true)) }
-                        if ([0, 1].includes(content[0].followup)) { dispatch(allactions.majorContentErrorActions.seStatusFollowUp(true)) }
-                        if ([0, 1].includes(content[1].baseline)) { dispatch(allactions.majorContentErrorActions.educationBaseLine(true)) }
-                        if ([0, 1].includes(content[1].followup)) { dispatch(allactions.majorContentErrorActions.educationFollowUp(true)) }
-                        if ([0, 1].includes(content[2].baseline)) { dispatch(allactions.majorContentErrorActions.maritalStatusBaseLine(true)) }
-                        if ([0, 1].includes(content[2].followup)) { dispatch(allactions.majorContentErrorActions.maritalStatusFollowUp(true)) }
-                        if ([0, 1].includes(content[3].baseline)) { dispatch(allactions.majorContentErrorActions.originBaseLine(true)) }
-                        if ([0, 1].includes(content[3].followup)) { dispatch(allactions.majorContentErrorActions.originFollowUp(true)) }
-                        if ([0, 1].includes(content[4].baseline)) { dispatch(allactions.majorContentErrorActions.empStatusBaseLine(true)) }
-                        if ([0, 1].includes(content[4].followup)) { dispatch(allactions.majorContentErrorActions.empStatusFollowUp(true)) }
-                        if ([0, 1].includes(content[5].baseline)) { dispatch(allactions.majorContentErrorActions.insuranceStatusBaseLine(true)) }
-                        if ([0, 1].includes(content[5].followup)) { dispatch(allactions.majorContentErrorActions.insuranceStatusFollowUp(true)) }
-                        if ([0, 1].includes(content[6].baseline)) { dispatch(allactions.majorContentErrorActions.anthropometryBaseLine(true)) }
-                        if ([0, 1].includes(content[6].followup)) { dispatch(allactions.majorContentErrorActions.anthropometryFollowUp(true)) }
-                        if ([0, 1].includes(content[7].baseline)) { dispatch(allactions.majorContentErrorActions.dietaryBaseLine(true)) }
-                        if ([0, 1].includes(content[7].followup)) { dispatch(allactions.majorContentErrorActions.dietaryFollowUp(true)) }
-                        if ([0, 1].includes(content[8].baseline)) { dispatch(allactions.majorContentErrorActions.supplementBaseLine(true)) }
-                        if ([0, 1].includes(content[8].followup)) { dispatch(allactions.majorContentErrorActions.supplementFollowUp(true)) }
-                        if ([0, 1].includes(content[9].baseline)) { dispatch(allactions.majorContentErrorActions.medicineBaseLine(true)) }
-                        if ([0, 1].includes(content[9].followup)) { dispatch(allactions.majorContentErrorActions.medicineFollowUp(true)) }
-                        if ([0, 1].includes(content[10].baseline)) { dispatch(allactions.majorContentErrorActions.prescriptionBaseLine(true)) }
-                        if ([0, 1].includes(content[10].followup)) { dispatch(allactions.majorContentErrorActions.prescriptionFollowUp(true)) }
-                        if ([0, 1].includes(content[11].baseline)) { dispatch(allactions.majorContentErrorActions.nonprescriptionBaseLine(true)) }
-                        if ([0, 1].includes(content[11].followup)) { dispatch(allactions.majorContentErrorActions.nonprescriptionFollowUp(true)) }
-                        if ([0, 1].includes(content[12].baseline)) { dispatch(allactions.majorContentErrorActions.alcoholBaseLine(true)) }
-                        if ([0, 1].includes(content[12].followup)) { dispatch(allactions.majorContentErrorActions.alcoholFollowUp(true)) }
-                        if ([0, 1].includes(content[13].baseline)) { dispatch(allactions.majorContentErrorActions.cigaretteBaseLine(true)) }
-                        if ([0, 1].includes(content[13].followup)) { dispatch(allactions.majorContentErrorActions.cigaretteFollowUp(true)) }
-                        if (content[14].baseline == 1) { dispatch(allactions.majorContentErrorActions.cigarBaseLine(true)) }
-                        if (content[15].baseline == 1) { dispatch(allactions.majorContentErrorActions.pipeBaseLine(true)) }
-                        if (content[16].baseline == 1) { dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(true)) }
-                        if (content[17].baseline == 1) { dispatch(allactions.majorContentErrorActions.ecigarBaseLine(true)) }
-                        if (content[18].baseline == 1) { dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(true)) }
-
-                        if (content[14].followup == 1) { dispatch(allactions.majorContentErrorActions.cigarFollowUp(true)) }
-                        if (content[15].followup == 1) { dispatch(allactions.majorContentErrorActions.pipeFollowUp(true)) }
-                        if (content[16].followup == 1) { dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(true)) }
-                        if (content[17].followup == 1) { dispatch(allactions.majorContentErrorActions.ecigarFollowUp(true)) }
-                        if (content[18].followup == 1) { dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(true)) }
-                        if (content[18].baseline == 0 || content[18].other_specify_baseline) { dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(true)) }
-
-
-                        if (content[18].followup == 0 || content[18].other_specify_followup) { dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(true)) }
-                        if ([0, 1].includes(content[19].baseline)) { dispatch(allactions.majorContentErrorActions.physicalBaseLine(true)) }
-                        if ([0, 1].includes(content[19].followup)) { dispatch(allactions.majorContentErrorActions.physicalFollowUp(true)) }
-                        if ([0, 1].includes(content[20].baseline)) { dispatch(allactions.majorContentErrorActions.sleepBaseLine(true)) }
-                        if ([0, 1].includes(content[20].followup)) { dispatch(allactions.majorContentErrorActions.sleepFollowUp(true)) }
-                        if ([0, 1].includes(content[21].baseline)) { dispatch(allactions.majorContentErrorActions.reproduceBaseLine(true)) }
-                        if ([0, 1].includes(content[21].followup)) { dispatch(allactions.majorContentErrorActions.reproduceFollowUp(true)) }
-                        if ([0, 1].includes(content[22].baseline)) { dispatch(allactions.majorContentErrorActions.reportedHealthBaseLine(true)) }
-                        if ([0, 1].includes(content[22].followup)) { dispatch(allactions.majorContentErrorActions.reportedHealthFollowUp(true)) }
-                        if ([0, 1].includes(content[23].baseline)) { dispatch(allactions.majorContentErrorActions.lifeBaseLine(true)) }
-                        if ([0, 1].includes(content[23].followup)) { dispatch(allactions.majorContentErrorActions.lifeFollowUp(true)) }
-                        if ([0, 1].includes(content[24].baseline)) { dispatch(allactions.majorContentErrorActions.socialSupportBaseLine(true)) }
-                        if ([0, 1].includes(content[24].followup)) { dispatch(allactions.majorContentErrorActions.socialSupportFollowUp(true)) }
-                        if ([0, 1].includes(content[25].baseline)) { dispatch(allactions.majorContentErrorActions.cognitionBaseLine(true)) }
-                        if ([0, 1].includes(content[25].followup)) { dispatch(allactions.majorContentErrorActions.cognitionFollowUp(true)) }
-                        if ([0, 1].includes(content[26].baseline)) { dispatch(allactions.majorContentErrorActions.depressionBaseLine(true)) }
-                        if ([0, 1].includes(content[26].followup)) { dispatch(allactions.majorContentErrorActions.depressionFollowUp(true)) }
-                        if ([0, 1].includes(content[27].baseline)) { dispatch(allactions.majorContentErrorActions.psychosocialBaseLine(true)) }
-                        if ([0, 1].includes(content[27].followup)) { dispatch(allactions.majorContentErrorActions.psychosocialFollowUp(true)) }
-                        if ([0, 1].includes(content[28].baseline)) { dispatch(allactions.majorContentErrorActions.fatigueBaseLine(true)) }
-                        if ([0, 1].includes(content[28].followup)) { dispatch(allactions.majorContentErrorActions.fatigueFollowUp(true)) }
-                        if ([0, 1].includes(content[29].baseline)) { dispatch(allactions.majorContentErrorActions.cancerHistoryBaseLine(true)) }
-                        if ([0, 1].includes(content[29].followup)) { dispatch(allactions.majorContentErrorActions.cancerHistoryFollowUp(true)) }
-                        if ([0, 1].includes(content[30].baseline)) { dispatch(allactions.majorContentErrorActions.cancerPedigreeBaseLine(true)) }
-                        if ([0, 1].includes(content[30].followup)) { dispatch(allactions.majorContentErrorActions.cancerPedigreeFollowUp(true)) }
-
-                        if ([0, 1].includes(content[31].baseline)) { dispatch(allactions.majorContentErrorActions.exposureBaseLine(true)) }
-                        if ([0, 1].includes(content[31].followup)) { dispatch(allactions.majorContentErrorActions.exposureFollowUp(true)) }
-                        if ([0, 1].includes(content[32].baseline)) { dispatch(allactions.majorContentErrorActions.residenceBaseLine(true)) }
-                        if ([0, 1].includes(content[32].followup)) { dispatch(allactions.majorContentErrorActions.residenceFollowUp(true)) }
-                        if ([0, 1].includes(content[33].baseline)) { dispatch(allactions.majorContentErrorActions.diabetesBaseLine(true)) }
-                        if ([0, 1].includes(content[33].followup)) { dispatch(allactions.majorContentErrorActions.diabetesFollowUp(true)) }
-                        if ([0, 1].includes(content[34].baseline)) { dispatch(allactions.majorContentErrorActions.strokeBaseLine(true)) }
-                        if ([0, 1].includes(content[34].followup)) { dispatch(allactions.majorContentErrorActions.strokeFollowUp(true)) }
-                        if ([0, 1].includes(content[35].baseline)) { dispatch(allactions.majorContentErrorActions.copdBaseLine(true)) }
-                        if ([0, 1].includes(content[35].followup)) { dispatch(allactions.majorContentErrorActions.copdFollowUp(true)) }
-                        if ([0, 1].includes(content[36].baseline)) { dispatch(allactions.majorContentErrorActions.cardiovascularBaseLine(true)) }
-                        if ([0, 1].includes(content[36].followup)) { dispatch(allactions.majorContentErrorActions.cardiovascularFollowUp(true)) }
-                        if ([0, 1].includes(content[37].baseline)) { dispatch(allactions.majorContentErrorActions.osteoporosisBaseLine(true)) }
-                        if ([0, 1].includes(content[37].followup)) { dispatch(allactions.majorContentErrorActions.osteoporosisFollowUp(true)) }
-                        if ([0, 1].includes(content[38].baseline)) { dispatch(allactions.majorContentErrorActions.mentalBaseLine(true)) }
-                        if ([0, 1].includes(content[38].followup)) { dispatch(allactions.majorContentErrorActions.mentalFollowUp(true)) }
-                        if ([0, 1].includes(content[39].baseline)) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineBaseLine(true)) }
-                        if ([0, 1].includes(content[39].followup)) { dispatch(allactions.majorContentErrorActions.cognitiveDeclineFollowUp(true)) }
+                        dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify || ''))
+                        loadErrorPart(['seStatus', 'education', 'maritalStatus', 'origin', 'empStatus', 'insuranceStatus', 'anthropometry', 'dietary', 'supplement', 'medicine', 'prescription', 'nonprescription', 'alcohol', 'cigarette'], content)
+                        
+                       loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content)
+                
+                         loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure','residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
+                         'cognitiveDecline'], content)
+                         dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
+                       
                         if (content[40]) {
-                            if ([0, 1].includes(content[40].baseline)) { dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine(true)) }
-                            if ([0, 1].includes(content[40].followup)) { dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp(true)) }
+                            dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine([0, 1].includes(content[40].baseline))) 
+                            dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp([0, 1].includes(content[40].followup))) 
                         }
-
-                        if (cancerInfo.cancerToxicity == 1) { dispatch(allactions.majorContentErrorActions.cancerToxicity(true)) }
-                        if (cancerInfo.cancerLateEffects == 1) { dispatch(allactions.majorContentErrorActions.cancerLateEffects(true)) }
-                        if (cancerInfo.cancerSymptom == 1) { dispatch(allactions.majorContentErrorActions.cancerSymptom(true)) }
-                        if (cancerInfo.cancerOther == 1) { dispatch(allactions.majorContentErrorActions.cancerOther(true)) }
-
-                        //if(cancerInfo.cancerToxicity || cancerInfo.cancerSymptom || cancerInfo.cancerLateEffects || cancerInfo.cancerOther)
-                        //{dispatch(allactions.majorContentErrorActions.cancerToxicity = false; shadow.cancerLateEffects = false; shadow.cancerSymptom = false; shadow.cancerOther = false; changed=true;}
-                        if (!cancerInfo.cancerOther || cancerInfo.cancerOtherSpecify) {
-                            dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(true))
-                        }
-
-                        dispatch(allactions.majorContentActions.setHasLoaded(true))
+                        dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1)) 
+                        dispatch(allactions.majorContentErrorActions.cancerLateEffects(cancerInfo.cancerLateEffects == 1)) 
+                        dispatch(allactions.majorContentErrorActions.cancerSymptom(cancerInfo.cancerSymptom == 1)) 
+                        dispatch(allactions.majorContentErrorActions.cancerOther(cancerInfo.cancerOther == 1))                         
+                        dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(!cancerInfo.cancerOther || cancerInfo.cancerOtherSpecify))
                     })
 
                 })//end of then
-        }//end of if
-    }, [])
+        //}//end of if
+    }, [cohortId])
 
 
     //const refreshErrors = () => (errors.seStatusBaseLine && errors.seStatusFollowUp) || (errors.educationBaseLine && errors.educationFollowUp) || (errors.maritalStatusBaseLine && errors.maritalStatusFollowUp) || (errors.originBaseLine && errors.originFollowUp) || (errors.empStatusBaseLine && errors.empStatusFollowUp) || (errors.insuranceStatusBaseLine && errors.insuranceStatusFollowUp) || (errors.anthropometryBaseLine && errors.anthropometryFollowUp) || (errors.dietaryBaseLine && errors.dietaryFollowUp) || (errors.supplementBaseLine && errors.supplementFollowUp) || (errors.medicineBaseLine && errors.medicineFollowUp) || (errors.prescriptionBaseLine && errors.prescriptionFollowUp) || (errors.nonprescriptionBaseLine && errors.nonprescriptionFollowUp) || (errors.alcoholBaseLine && errors.alcoholFollowUp) || (errors.cigaretteBaseLine && errors.cigaretteFollowUp) || (errors.cigarBaseLine && errors.cigarFollowUp && errors.pipeBaseLine && errors.pipeFollowUp && errors.tobaccoBaseLine && errors.tobaccoFollowUp && errors.ecigarBaseLine && errors.ecigarFollowUp && errors.noncigarOtherBaseLine && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.physicalBaseLine && errors.physicalFollowUp) || (errors.sleepBaseLine && errors.sleepFollowUp) || (errors.reproduceBaseLine && errors.reproduceFollowUp) || (errors.reportedHealthBaseLine && errors.reportedHealthFollowUp) || (errors.lifeBaseLine && errors.lifeFollowUp) || (errors.socialSupportBaseLine && errors.socialSupportFollowUp) || (errors.cognitionBaseLine & errors.cognitionFollowUp) || (errors.depressionBaseLine && errors.depressionFollowUp) || (errors.psychosocialBaseLine && errors.psychosocialFollowUp) || (errors.fatigueBaseLine && errors.fatigueFollowUp) || (errors.cancerHistoryBaseLine && errors.cancerHistoryFollowUp) || (errors.cancerPedigreeBaseLine && errors.cancerPedigreeFollowUp) || (errors.physicalMeasureBaseLine && errors.physicalMeasureFollowUp) || (errors.exposureBaseLine && errors.exposureFollowUp) || (errors.residenceBaseLine && errors.residenceFollowUp) || (errors.diabetesBaseLine && errors.diabetesFollowUp) || (errors.strokeBaseLine && errors.strokeFollowUp) || (errors.copdBaseLine && errors.copdFollowUp) || (errors.cardiovascularBaseLine && errors.cardiovascularFollowUp) || (errors.osteoporosisBaseLine && errors.osteoporosisFollowUp) || (errors.mentalBaseLine && errors.mentalFollowUp) || (errors.cognitiveDeclineBaseLine && errors.cognitiveDeclineFollowUp) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify) 
