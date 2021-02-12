@@ -1,7 +1,7 @@
 const InitialStates = {
     cohort_status: '',
     cohort: {
-        hasLoaded: false,
+        //hasLoaded: false,
         sectionAStatus: '',
         investigators: [
             {
@@ -113,8 +113,7 @@ const InitialStates = {
         */
     },
     cohortErrors: {
-        //completionDate: 'Required Field',
-        clarification_contact: 'Required Field',
+      /*  clarification_contact: 'Required Field',
         completerName: 'Required Field',
         completerPosition: 'Required Field',
         completerEmail: 'Required Field',
@@ -147,14 +146,7 @@ const InitialStates = {
         strategy: 'Required Field',
         data_collected_other_specify: 'Required Field',
         restrictions_other_specify: 'Required Field',
-        strategy_other_specify: 'Required Field'
-        /*
-        questionnaire: true,
-        main: true,
-        data: true,
-        specimen: true,
-        publication: true
-        */
+        strategy_other_specify: 'Required Field' */
     },
     enrollmentCount: {
         'hasLoaded': false,

@@ -192,15 +192,71 @@ router.post('/cohort_basic_info/:id', function (req, res) {
     let params = [id]
     mysql.callProcedure(func, params, function (results) {
         const basic_info = {}
+        const cohort_errors = {}
         Object.assign(basic_info, {...results[0][0]}) //basic info
+        Object.keys(basic_info).forEach(k => {
+            if(!['cohort_description', 'cohort_web_site', 'clarification_contact', 'eligible_disease',  'sameAsSomeone', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify','data_collected_in_person','data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other', 'enrollment_ongoing', 'enrollment_target', 'enrollment_year_complete','data_collected_other_specify', 'requireNone', 'requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther', 'strategy_routine', 'strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other', 'restrictions_other_specify', 'strategy_other_specify'].includes(k)){if(!basic_info[k]) cohort_errors[k] = "Required field"}
+            else{
+                switch(k){
+                    case 'clarification_contact':
+                    case 'enrollment_ongoing':
+                        if(![0,1].includes(basic_info[k])) cohort_errors[k]='Required field'
+                        break;
+                    case 'enrollment_target':
+                    case 'enrollment_year_complete':
+                        if(basic_info.enrollment_ongoing || basic_info.enrollment_ongoing !== 0)
+                            if(basic_info[k] === '') cohort_errors[k] = 'Required field'
+                        break;
+                    case 'data_collected_other_specify':
+                        if(basic_info.data_collected_other && !basic_info[k]) cohort_errors[k]='Required field'
+                        break;
+                    case 'restrictions_other_specify':
+                        if(basic_info.restrictOther && !basic_info[k]) cohort_errors[k]='Required field'
+                        break;
+                    case 'strategy_other_specify': 
+                        if(basic_info.strategy_other && !basic_info[k]) cohort_errors[k]='Required field'
+                        break;
+                    default: 
+                        break;
+                }
+            }})
+        if(!['data_collected_in_person','data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other'].some(k => basic_info[k] === 1)) cohort_errors.dataCollection = 'Required field'
+        if(!['requireNone', 'requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'].some(k => basic_info[k] === 1)) cohort_errors.requirements = 'Required field'
+        if(!['strategy_routine', 'strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other'].some(k => basic_info[k] === 1)) cohort_errors.strategy = 'Required field'
         basic_info.cohort_description = basic_info.cohort_description ? basic_info.cohort_description.replace(/\\n/g, '\n') : ''
         basic_info.investigators = []
-        Object.assign(basic_info, results[1][0])//completer
-        Object.assign(basic_info, results[2][0])//contacter
-        //basic_info.cohort = results[0][0]
-        //basic_info.cohort.cohort_description = basic_info.cohort.cohort_description ? basic_info.cohort.cohort_description.replace(/\\n/g, '\n') : ''
-        //basic_info.completer = results[1][0]
-        //basic_info.contacter = results[2][0]
+        if(results[1][0] && Object.keys(results[1][0]).length > 0){
+            Object.assign(basic_info, results[1][0])//completer
+            if(!results[1][0].completerName) cohort_errors.completerName = 'Required field'
+            if(!results[1][0].completerEmail) cohort_errors.completerEmail = 'Required field'
+            if(!results[1][0].completerPosition) cohort_errors.completerPosition = 'Required field'   
+        }
+        else{
+            basic_info.completerName = ''
+            basic_info.completerEmail = ''
+            basic_info.completerPosition = ''
+            basic_info.completerPhone = ''
+            basic_info.completerCountry = '+1'
+            cohort_errors.completerName = 'Required field'
+            cohort_errors.completerEmail = 'Required field'
+            cohort_errors.completerPosition = 'Required field'            
+        }
+        if(results[2][0] && Object.keys(results[2][0]).length > 0){
+            Object.assign(basic_info, results[2][0])//contacter
+            if(!results[2][0].contacterName) cohort_errors.contacterName = 'Required field'
+            if(!results[2][0].contacterEmail) cohort_errors.contacterEmail = 'Required field'
+            if(!results[2][0].contacterPosition) cohort_errors.contacterPosition = 'Required field'   
+        }
+        else{
+            basic_info.contacterName = ''
+            basic_info.contacterEmail = ''
+            basic_info.contacterPosition = ''
+            basic_info.contacterPhone = ''
+            basic_info.contacterCountry = '+1'
+            cohort_errors.contacterName = 'Required field'
+            cohort_errors.contacterEmail = 'Required field'
+            cohort_errors.contacterPosition = 'Required field'
+        }
         if(results[3].length === 0){
             basic_info.investigators.push({
                 personId: 0,
@@ -208,24 +264,39 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                 institution: '',
                 email: ''
             })
+            cohort_errors.investigator_name_0 = 'Required field'
+            cohort_errors.investigator_inst_0 = 'Required field'
+            cohort_errors.investigator_email_0 = 'Required field'
         }else{
-        results[3].map((item) => {
-            if (item.name) {
-                basic_info.investigators.push(item)
-            }
+            results[3].map((item, idx) => {
+                if (item.name) basic_info.investigators.push(item)
+                else {
+                    let adjustedIdx = (idx+1).toString()
+                    if(!item.name) cohort_errors['investigator_name_'+adjustedIdx] = 'Required field'
+                    if(!item.institution) cohort_errors['investigator_inst_'+adjustedIdx] = 'Required field'
+                    if(!item.email) cohort_errors['investigator_email_'+adjustedIdx] = 'Required field'
+                }
         })}
-        Object.assign(basic_info, results[4][0])
-        //basic_info.collaborator = results[4][0]
+        if(results[4][0] && Object.keys(results[4][0]).length > 0){
+            Object.assign(basic_info, results[4][0])
+            if(!results[4][0].collaboratorName) cohort_errors.collaboratorName = 'Required field'
+            if(!results[4][0].collaboratorEmail) cohort_errors.collaboratorEmail = 'Required field'
+            if(!results[4][0].collaboratorPosition) cohort_errors.collaboratorPosition = 'Required field'   
+        }
+        else{
+            basic_info.collaboratorName = ''
+            basic_info.collaboratorEmail = ''
+            basic_info.collaboratorPosition = ''
+            basic_info.collaboratorPhone = ''
+            basic_info.collaboratorCountry = '+1'
+            cohort_errors.collaboratorName = 'Required field'
+            cohort_errors.collaboratorEmail = 'Required field'
+            cohort_errors.collaboratorPosition = 'Required field'
+        }
         basic_info.sectionStatus = results[5]
         basic_info.cohortStatus = results[6][0].cohort_status      
 
         if (results[7] && Array.isArray(results[7])) {
-/*            basic_info.cohort.questionnaireFileName = []
-            basic_info.cohort.mainFileName = []
-            basic_info.cohort.dataFileName = []
-            basic_info.cohort.specimenFileName = []
-            basic_info.cohort.publicationFileName = []
-*/
             basic_info.questionnaireFileName = []
             basic_info.mainFileName = []
             basic_info.dataFileName = []
@@ -280,8 +351,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                 }
             }
         }
-        
-        res.json({ status: 200, data: basic_info })
+        res.json({ status: 200, data: basic_info, error: cohort_errors })
     })
 })
 

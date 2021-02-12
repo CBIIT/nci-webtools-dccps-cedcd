@@ -1,5 +1,5 @@
 import React, { useEffect} from 'react';
-import { useSelector, batch, useDispatch  } from 'react-redux';
+import { useSelector } from 'react-redux';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
 import Select from 'react-select';
 import { useHistory } from 'react-router-dom'
@@ -7,9 +7,9 @@ import allactions from '../../actions'
 
 export default function SelectCohort() {
     const user = useSelector(state => state.user);
-    const dispatch = useDispatch();
+    //const dispatch = useDispatch();
     const history = useHistory();
-    useEffect(() => {
+   /* useEffect(() => {
         batch(() => {
             dispatch(allactions.cohortActions.setHasLoaded(false));
             dispatch(allactions.enrollmentCountActions.setHasLoaded(false));
@@ -18,7 +18,7 @@ export default function SelectCohort() {
             dispatch(allactions.dataLinkageActions.setHasLoaded(false));
             dispatch(allactions.specimenActions.setSpecimenLoaded(false));
             })
-    }, [])
+    }, []) */
     return <RequireAuthorization role="CohortAdmin">
         <div>
             <h1 className="welcome pg-title">Select a Cohort</h1>
