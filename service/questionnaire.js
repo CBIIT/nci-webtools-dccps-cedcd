@@ -243,9 +243,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         }
         if(results[2][0] && Object.keys(results[2][0]).length > 0){
             Object.assign(basic_info, results[2][0])//contacter
-            if(!results[2][0].contacterName) cohort_errors.contacterName = 'Required field'
-            if(!results[2][0].contacterEmail) cohort_errors.contacterEmail = 'Required field'
-            if(!results[2][0].contacterPosition) cohort_errors.contacterPosition = 'Required field'   
+            if(!basic_info.clarification_contact){
+                if(!results[2][0].contacterName) cohort_errors.contacterName = 'Required field'
+                if(!results[2][0].contacterEmail) cohort_errors.contacterEmail = 'Required field'
+                if(!results[2][0].contacterPosition) cohort_errors.contacterPosition = 'Required field'
+            }   
         }
         else{
             basic_info.contacterName = ''
@@ -253,9 +255,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             basic_info.contacterPosition = ''
             basic_info.contacterPhone = ''
             basic_info.contacterCountry = '+1'
-            cohort_errors.contacterName = 'Required field'
-            cohort_errors.contacterEmail = 'Required field'
-            cohort_errors.contacterPosition = 'Required field'
+            if(!basic_info.clarification_contact){
+                cohort_errors.contacterName = 'Required field'
+                cohort_errors.contacterEmail = 'Required field'
+                cohort_errors.contacterPosition = 'Required field'
+            }
         }
         if(results[3].length === 0){
             basic_info.investigators.push({
@@ -279,9 +283,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         })}
         if(results[4][0] && Object.keys(results[4][0]).length > 0){
             Object.assign(basic_info, results[4][0])
-            if(!results[4][0].collaboratorName) cohort_errors.collaboratorName = 'Required field'
-            if(!results[4][0].collaboratorEmail) cohort_errors.collaboratorEmail = 'Required field'
-            if(!results[4][0].collaboratorPosition) cohort_errors.collaboratorPosition = 'Required field'   
+            if(![0,1].includes(basic_info.sameAsSomeone)){
+                if(!results[4][0].collaboratorName) cohort_errors.collaboratorName = 'Required field'
+                if(!results[4][0].collaboratorEmail) cohort_errors.collaboratorEmail = 'Required field'
+                if(!results[4][0].collaboratorPosition) cohort_errors.collaboratorPosition = 'Required field' 
+            }  
         }
         else{
             basic_info.collaboratorName = ''
@@ -289,9 +295,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             basic_info.collaboratorPosition = ''
             basic_info.collaboratorPhone = ''
             basic_info.collaboratorCountry = '+1'
-            cohort_errors.collaboratorName = 'Required field'
-            cohort_errors.collaboratorEmail = 'Required field'
-            cohort_errors.collaboratorPosition = 'Required field'
+            if(![0,1].includes(basic_info.sameAsSomeone)){
+                cohort_errors.collaboratorName = 'Required field'
+                cohort_errors.collaboratorEmail = 'Required field'
+                cohort_errors.collaboratorPosition = 'Required field'
+            }
         }
         basic_info.sectionStatus = results[5]
         basic_info.cohortStatus = results[6][0].cohort_status      
