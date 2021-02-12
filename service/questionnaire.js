@@ -395,7 +395,7 @@ router.post('/enrollment_counts/:id', function (req, res) {
         for(let i = 0; i < result[2].length; i++)
             enrollmentCounts['8'+result[2][i].colId.toString()] = result[2][i].colTotal
         enrollmentCounts['841'] = result[3][0].grandTotal;
-        enrollmentCounts.mostRecentDate = result[4][0].mostRecentDate ? result[4][0] : ''
+        enrollmentCounts.mostRecentDate = result[4][0].mostRecentDate ? result[4][0].mostRecentDate : ''
         res.json({ data: {...enrollmentCounts} })
     })
 
