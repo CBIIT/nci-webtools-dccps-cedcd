@@ -1,5 +1,10 @@
 import t from '../actionTypes'
 
+const renewCohort = (v) => ({
+    type: t.renewCohort,
+    value: v
+})
+
 const setHasLoaded = (v) => ({
     type: t.setHasLoaded,
     loaded: v
@@ -361,6 +366,7 @@ const publication_url = (v) => ({type: t.setPublicationUrl, url: v})
 export default {
     setHasLoaded,
     setSectionAStatus,
+    renewCohort,
     country_code,
     cohort_id,
     cohort_name,

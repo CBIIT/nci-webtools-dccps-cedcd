@@ -70,20 +70,10 @@ const EnrollmentCountsForm = ({ ...props }) => {
             fetch(`/api/questionnaire/enrollment_counts/${cohortID}`, {
                 method: 'POST',
             }).then(res => res.json())
-                .then(result => {
-                    batch(() => {
-                        if (result.data.mostRecentDate.mostRecentDate) dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
-                        for (let i = 0; i < result.data.details.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
-                        for (let i = 0; i < result.data.rowTotals.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateTotals(result.data.rowTotals[i].rowId + '41', result.data.rowTotals[i].rowTotal))
-                        for (let i = 0; i < result.data.colTotals.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateTotals('8' + result.data.colTotals[i].colId, result.data.colTotals[i].colTotal))
-                        dispatch(allactions.enrollmentCountActions.updateTotals('841', result.data.grandTotal.grandTotal))
-                        dispatch(allactions.enrollmentCountActions.updateMostRecentDate(result.data.mostRecentDate.mostRecentDate))
-                        dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
-                    })//end of batch
-                })// end of then
+            .then(result => {
+                dispatch(allactions.enrollmentCountActions.renewEnrollmentCounts(result.data))
+                dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
+            })// end of then
         }
     }, [])
 
@@ -471,13 +461,13 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             </Form.Group>
 
                             {/* B.2 Most Recent Date Enrollment */}
-                            <Form.Group as={Row}>
+                         <Form.Group as={Row}>
                                 <Form.Label column sm="5">
                                     B.2 Most recent date enrollment counts were confirmed<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="3">
                                     {errors.mostRecentDate && saved ?
-                                        <Reminder message={errors.mostRecentDate}>
+                                        <Reminder message={errors.mostRecentDate} >
                                             <DatePicker className='form-control errorDate'
                                                 popperProps={{
                                                     positionFixed: true // fix overflow hidden
@@ -534,7 +524,6 @@ const EnrollmentCountsForm = ({ ...props }) => {
                                     }
                                 </Col>
                             </Form.Group>
-
                         </CollapsiblePanel>
                     </CollapsiblePanelContainer>
                 </Form>

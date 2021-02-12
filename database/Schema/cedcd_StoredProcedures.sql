@@ -1522,37 +1522,37 @@ BEGIN
 		-- cohort_id
         cohort_name
         ,cohort_acronym
-        ,cohort_web_site
+        ,coalesce(cohort_web_site, '') as cohort_web_site
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
         ,clarification_contact
         ,sameAsSomeone
-        ,LTRIM(cohort_description) as cohort_description
+        ,coalesce(LTRIM(cohort_description), '') as cohort_description
         ,eligible_gender_id
         ,eligible_disease
-        ,eligible_disease_cancer_specify
-        ,eligible_disease_other_specify
-        ,enrollment_total
-        ,enrollment_year_start
-        ,enrollment_year_end
+        ,coalesce(eligible_disease_cancer_specify, '') as eligible_disease_cancer_specify
+        ,coalesce(eligible_disease_other_specify, '') as eligible_disease_other_specify
+        ,coalesce(enrollment_total, '') as enrollment_total
+        ,coalesce(enrollment_year_start, '') as enrollment_year_start
+        ,coalesce(enrollment_year_end, '') as enrollment_year_end
         ,enrollment_ongoing
-        ,enrollment_target
-        ,enrollment_year_complete
-        ,enrollment_age_min
-        ,enrollment_age_max
-        ,enrollment_age_median
-        ,enrollment_age_mean
-        ,current_age_min
-        ,current_age_max
-        ,current_age_median
-        ,current_age_mean
-        ,time_interval
-        ,most_recent_year
+        ,coalesce(enrollment_target, '') as enrollment_target
+        ,coalesce(enrollment_year_complete, '') as enrollment_year_complete
+        ,coalesce(enrollment_age_min, '') as enrollment_age_min
+        ,coalesce(enrollment_age_max, '') as enrollment_age_max
+        ,coalesce(enrollment_age_median, '') as enrollment_age_median
+        ,coalesce(enrollment_age_mean, '') as enrollment_age_mean
+        ,coalesce(current_age_min, '') as current_age_min
+        ,coalesce(current_age_max, '') as current_age_max
+        ,coalesce(current_age_median, '') as current_age_median
+        ,coalesce(current_age_mean, '') as current_age_mean
+        ,coalesce(time_interval, '') as time_interval
+        ,coalesce(most_recent_year, '') as most_recent_year
         ,data_collected_in_person
         ,data_collected_phone
         ,data_collected_paper
         ,data_collected_web
         ,data_collected_other
-        ,data_collected_other_specify
+        ,coalesce(data_collected_other_specify, '') as data_collected_other_specify
         ,cast(substring(restrictions, 1, 1) as signed) as requireNone
         ,cast(substring(restrictions, 3, 1) as signed) as requireCollab
         ,cast(substring(restrictions, 5, 1) as signed) as requireIrb
@@ -1561,7 +1561,7 @@ BEGIN
         ,cast(substring(restrictions, 11, 1) as signed) as restrictOtherDb
         ,cast(substring(restrictions, 13, 1) as signed) as restrictCommercial
         ,cast(substring(restrictions, 15, 1) as signed) as restrictOther
-        ,restrictions_other_specify
+        ,coalesce(restrictions_other_specify, '') as restrictions_other_specify
         ,strategy_routine 
         ,strategy_mailing 
         ,strategy_aggregate_study 
@@ -1573,16 +1573,22 @@ BEGIN
         ,strategy_other_specify        
 	FROM cohort_basic WHERE cohort_id = `targetID`;
     
-    select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
+    select coalesce(`name`, '') as completerName, coalesce(`position`, '') as completerPosition,
+    coalesce(phone, '') as completerPhone, coalesce(country_code, '') as completerCountry, 
+    coalesce(email, '') as completerEmail 
     from person where category_id = 1 and cohort_id = `targetID`;
     
-    select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, country_code as contacterCountry, email as contacterEmail 
+    select coalesce(`name`, '') as contacterName, coalesce(`position`, '') as contacterPosition,
+    coalesce(phone, '') as contacterPhone, coalesce(country_code, '') as contacterCountry,
+    coalesce(email, '') as contacterEmail 
     from person where category_id = 2 and cohort_id = `targetID`;
     
-    select id as personId, `name` as `name`, institution as institution, email as email
+    select id as personId, coalesce(`name`, '') as `name`, coalesce(institution, '') as institution, 
+    coalesce(email, '') as email
     from person where (`name` is not null and `name` <> '') and category_id = 3 and cohort_id = `targetID`;
     
-    select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, country_code as collaboratorCountry, email as collaboratorEmail 
+    select coalesce(`name`, '') as collaboratorName, coalesce(`position`, '') as collaboratorPosition,
+    coalesce(phone, '') as collaboratorPhone, coalesce(country_code, '') as collaboratorCountry, coalesce(email, '') as collaboratorEmail 
     from person where category_id = 4 and cohort_id = `targetID`;
     
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
@@ -1593,7 +1599,7 @@ BEGIN
      join cohort c on cd.cohort_id = c.id
      WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
 
-	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null and status = 1 and attachment_type = 0;
+	select category as urlCategory, website from cohort_document where cohort_id=targetID and website not in('', 'null') and website is not null and status = 1 and attachment_type = 0;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------

@@ -68,198 +68,29 @@ const CohortForm = ({ ...props }) => {
     const history = useHistory();
 
     useEffect(() => {
-        if (!cohort.hasLoaded || tempId != cohortID) {
+        //if (!cohort.hasLoaded || tempId != cohortID) {
             dispatch(allactions.cohortIDAction.setCohortId(tempId))
             fetch(`/api/questionnaire/cohort_basic_info/${tempId}`, {
                 method: 'POST'
             }).then(res => res.json())
-                .then(result => {
-                    let currentCohort = result.data.cohort,
-                        investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
-                        completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
-                        cohort_status = result.data.cohortStatus
-
+                .then(result => {                
+                    let currentCohort = result.data, cohort_status = result.data.cohortStatus, errors = result.error   
                     batch(() => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
-                        for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
-                            dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
-                            dispatch(allactions.cohortErrorActions.investigatorInstitution(i, false, errorMsg))
-                            dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
-                        }
-                        for (let k of Object.keys(currentCohort)) {
-                            //if(k==='eligible_disease') console.log(currentCohort.eligible_disease)
-                            if(['questionnaire_url', 'main_cohort_url', 'data_url', 'specimen_url', 'publication_url'].includes(k)){
-                                currentCohort[k] = currentCohort[k].map(url => {
-                                    if(!/^https?:\/\//.test(url.trim()))
-                                     return 'https://' + url
-                                })
-                            }
-                            dispatch(allactions.cohortActions[k](currentCohort[k]))
-                        }
-
-                        if (completer)
-                            for (let k of Object.keys(completer)) {
-                                if (k != 'completerCountry')
-                                    dispatch(allactions.cohortActions[k](completer[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('completerCountry', completer.completerCountry))
-                            }
-                        if (currentCohort.clarification_contact === 1) {
-                            if (!isReadOnly) {
-                                dispatch(allactions.cohortActions.contacterName(''))
-                                dispatch(allactions.cohortActions.contacterPosition(''))
-                                dispatch(allactions.cohortActions.country_code(''))
-                                dispatch(allactions.cohortActions.contacterPhone(''))
-                                dispatch(allactions.cohortActions.contacterEmail(''))
-                            } else {
-                                dispatch(allactions.cohortActions.contacterName(completer.completerName))
-                                dispatch(allactions.cohortActions.contacterPosition(completer.completerPosition))
-                                dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
-                                dispatch(allactions.cohortActions.contacterPhone(completer.completerPhone))
-                                dispatch(allactions.cohortActions.contacterEmail(completer.completerEmail))
-                            }
-                        } else if (contacter) { // 0 
-                            for (let k of Object.keys(contacter)) {
-                                if (k != 'contacterCountry')
-                                    dispatch(allactions.cohortActions[k](contacter[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
-                            }
-                        }
-
-                        if ([0, 1].includes(currentCohort.sameAsSomeone)) {
-                            if (!isReadOnly) {
-                                dispatch(allactions.cohortActions.collaboratorName(''))
-                                dispatch(allactions.cohortActions.collaboratorPosition(''))
-                                dispatch(allactions.cohortActions.country_code(''))
-                                dispatch(allactions.cohortActions.collaboratorPhone(''))
-                                dispatch(allactions.cohortActions.collaboratorEmail(''))
-                            } else {
-                                if (currentCohort.sameAsSomeone === 0) {
-                                    if (completer) {
-                                        dispatch(allactions.cohortActions.collaboratorName(completer.completerName))
-                                        dispatch(allactions.cohortActions.collaboratorPosition(completer.completerPosition))
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
-                                        dispatch(allactions.cohortActions.collaboratorPhone(completer.completerPhone))
-                                        dispatch(allactions.cohortActions.collaboratorEmail(completer.completerEmail))
-                                    }
-                                } else {
-                                    if (contacter) {
-                                        dispatch(allactions.cohortActions.collaboratorName(contacter.contacterName))
-                                        dispatch(allactions.cohortActions.collaboratorPosition(contacter.contacterPosition))
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
-                                        dispatch(allactions.cohortActions.collaboratorPhone(contacter.contacterPhone))
-                                        dispatch(allactions.cohortActions.collaboratorEmail(contacter.contacterEmail))
-                                    }
-                                }
-                            }
-                        }
-                        else if (collaborator) {
-                            for (let k of Object.keys(collaborator)) {
-                                if (k != 'collaboratorCountry')
-                                    dispatch(allactions.cohortActions[k](collaborator[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('collaboratorCountry', collaborator.collaboratorCountry))
-                            }
-
-                            dispatch(allactions.cohortActions.sameAsSomeone(currentCohort.sameAsSomeone))
-                        }
+                        dispatch(allactions.cohortActions.renewCohort(currentCohort))
+                     
                         if (result.data.sectionStatus)
                             for (let k of result.data.sectionStatus) {
                                 dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                             }
-                        if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
-
-                        if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
-                        if ([0, 1].includes(currentCohort.clarification_contact)) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
-
-                        if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
-                        if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
-                        if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
-                        if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
-
-                        if (currentCohort.enrollment_year_end && currentCohort.enrollment_year_end >= currentCohort.enrollment_year_start && currentCohort.enrollment_year_end <= (new Date()).getFullYear() && errors.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
-
-                        if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
-                        if (currentCohort.enrollment_ongoing === 0) {
-                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                            if (!currentCohort.enrollment_year_end) dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Filed'))
-                        }
-                        if (currentCohort.enrollment_ongoing === 1) {
-                            if (currentCohort.enrollment_target && currentCohort.enrollment_target >= 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)) }
-                            if (currentCohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                            if (currentCohort.enrollment_year_end) dispatch(allactions.cohortActions.enrollment_year_end(''))
-                            dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                        }
-                        if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
-                        if (currentCohort.enrollment_age_max) { dispatch(allactions.cohortErrorActions.enrollment_age_max(true)) }
-                        if (currentCohort.enrollment_age_mean) { dispatch(allactions.cohortErrorActions.enrollment_age_mean(true)) }
-                        if (currentCohort.enrollment_age_median) { dispatch(allactions.cohortErrorActions.enrollment_age_median(true)) }
-                        if (currentCohort.current_age_min) { dispatch(allactions.cohortErrorActions.current_age_min(true)) }
-                        if (currentCohort.current_age_max) { dispatch(allactions.cohortErrorActions.current_age_max(true)) }
-                        if (currentCohort.current_age_mean) { dispatch(allactions.cohortErrorActions.current_age_mean(true)) }
-                        if (currentCohort.current_age_median) { dispatch(allactions.cohortErrorActions.current_age_median(true)) }
-                        if (currentCohort.time_interval) { dispatch(allactions.cohortErrorActions.time_interval(true)) }
-                        if (currentCohort.most_recent_year) {
-                            if (currentCohort.most_recent_year <= (new Date()).getFullYear()) { dispatch(allactions.cohortErrorActions.most_recent_year(true)) }
-                            else dispatch(allactions.cohortErrorActions.most_recent_year(false, 'expecting year in the past'))
-                        }
-                        if (currentCohort.strategy_other !== 1) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
-                        if ([4, 2, 1].includes(currentCohort.eligible_gender_id)) { dispatch(allactions.cohortErrorActions.eligible_gender_id(true)) }
-
-                        if (currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) { dispatch(allactions.cohortErrorActions.dataCollection(true)) }
-
-                        if (currentCohort.data_collected_other_specify || !currentCohort.data_collected_other) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
-
-                        if (currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.requirements(true)) }
-
-                        if (currentCohort.restrictions_other_specify || !currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
-
-                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_committees || currentCohort.strategy_invitation || currentCohort.strategy_participant_input || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
-
-                        if (currentCohort.strategy_other_specify || !currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
-
-                        //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                        if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
-                        if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
-                        if (completer && completer.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
-
-                        if (currentCohort.clarification_contact === 1) {
-                            dispatch(allactions.cohortErrorActions.contacterName(true))
-                            dispatch(allactions.cohortErrorActions.contacterPosition(true))
-                            dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                        } else {
-                            if (contacter && contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                            if (contacter && contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                            if (contacter && contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
-                        }
-
-
-                        if ([0, 1].includes(currentCohort.sameAsSomeone)) {
-                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
-                        } else {
-                            if (collaborator && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
-                            if (collaborator && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
-                            if (collaborator && collaborator.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
-                        }
-
-                        for (let i = 0; i < investigators.length; i++) {
-                            if (investigators[i].name) { dispatch(allactions.cohortErrorActions.investigatorName(i, true)) }
-                            if (investigators[i].institution) { dispatch(allactions.cohortErrorActions.investigatorInstitution(i, true)) }
-                            if (investigators[i].email) { dispatch(allactions.cohortErrorActions.investigatorEmail(i, true)) }
-                        }
-                        dispatch(allactions.cohortActions.setHasLoaded(true))
+                        dispatch(allactions.cohortErrorActions.renewCohortErrors(errors))
                     })
 
                 })
-        }
+            
     }, [])
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
-
         let userID = userSession.id
 
         let cohortBody = cohort
@@ -283,15 +114,17 @@ const CohortForm = ({ ...props }) => {
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
+                        //result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
                         // if cohort_id changed, refresh section status
                         let secStatusList = result.newCohortInfo.sectionStatusList
-                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                        
+                        if (secStatusList && secStatusList.length > 0) secStatusList.forEach((item, idx) => {
                             dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
                         })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
-                        // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     } else {
                         dispatch(fetchCohort(cohortID))
                     }
@@ -311,6 +144,7 @@ const CohortForm = ({ ...props }) => {
             })
     }
     const handleSave = () => {
+        console.dir(errors)
         setSaved(true)
         //console.dir(errors)
         if (Object.entries(errors).length === 0) {
@@ -428,52 +262,7 @@ const CohortForm = ({ ...props }) => {
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
-    /*
-        const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
-            const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-            }
-        }
     
-        const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
-            const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-            }
-        }
-    
-        const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
-            const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.current_age_min(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.current_age_min(true))
-            }
-        }
-    
-        const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
-            const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions.current_age_max(false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions.current_age_max(true))
-            }
-        }
-    
-        const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-            const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
-            if (result) {
-                dispatch(allactions.cohortErrorActions[fieldName](false, result))
-            } else {
-                dispatch(allactions.cohortErrorActions[fieldName](true))
-            }
-        }
-    */
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -595,13 +384,9 @@ const CohortForm = ({ ...props }) => {
         } else if (personType === 'contacter') {
             dispatch(allactions.cohortActions.clarification_contact(checkedValue))
             dispatch(allactions.cohortErrorActions.clarification_contact(true))
-            //if (cohort.clarification_contact == 1 || name) dispatch(allactions.cohortErrorActions.contacterName(true))
             dispatch(allactions.cohortActions.contacterName(name))
-            //if (cohort.clarification_contact == 1 || position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
             dispatch(allactions.cohortActions.contacterPosition(position))
-            //if (cohort.clarification_contact == 1 || phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
             dispatch(allactions.cohortActions.contacterPhone(phone))
-            //if (cohort.clarification_contact == 1 || email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
             dispatch(allactions.cohortActions.contacterEmail(email))
         }
     }
@@ -648,15 +433,10 @@ const CohortForm = ({ ...props }) => {
                                 break;
                         }
                         if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
-                        if (result.data.new_ID != cohortID) {
+                        /*if (result.data.new_ID != cohortID) {
                             window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
-                            batch(() => {
-                                dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
-                                result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
-                                dispatch(fetchCohort(result.data.new_ID))
-                            })
-
-                        }
+                            dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
+                        }*/
                     }
                 })
 
@@ -2758,7 +2538,7 @@ const CohortForm = ({ ...props }) => {
                                                                                                 e.preventDefault();
                                                                                                 showUrlListModal('Main Cohort Url', 'main_cohort_url')
                                                                                             }}>
-                                                                                            {cohort.main_url.length - 1} more
+                                                                                            {cohort.main_cohort_url.length - 1} more
                                                                                             </a>
                                                                                     </span>
                                                                                 </>

@@ -1,11 +1,28 @@
 const InitialStates = {
     cohort_status: '',
     cohort: {
-        hasLoaded: false,
+        //hasLoaded: false,
         sectionAStatus: '',
-        cohort_name: '',
+        investigators: [
+            {
+                personId: 0,
+                name: '',
+                institution: '',
+                email: ''
+            }
+        ],
+        questionnaireFileName: [],
+        mainFileName: [],
+        dataFileName: [],
+        specimenFileName: [],
+        publicationFileName: [],
+        questionnaire_url: [],
+        main_cohort_url: [],
+        data_url: [],
+        specimen_url: [],
+        publication_url: []
+      /*  cohort_name: '',
         cohort_acronym: '',
-        //completionDate: null,
         completerName: '',
         completerPosition: '',
         completerPhone: '',
@@ -93,10 +110,10 @@ const InitialStates = {
         data_url: [],
         specimen_url: [],
         publication_url: []
+        */
     },
     cohortErrors: {
-        //completionDate: 'Required Field',
-        clarification_contact: 'Required Field',
+      /*  clarification_contact: 'Required Field',
         completerName: 'Required Field',
         completerPosition: 'Required Field',
         completerEmail: 'Required Field',
@@ -129,18 +146,11 @@ const InitialStates = {
         strategy: 'Required Field',
         data_collected_other_specify: 'Required Field',
         restrictions_other_specify: 'Required Field',
-        strategy_other_specify: 'Required Field'
-        /*
-        questionnaire: true,
-        main: true,
-        data: true,
-        specimen: true,
-        publication: true
-        */
+        strategy_other_specify: 'Required Field' */
     },
     enrollmentCount: {
         'hasLoaded': false,
-        '111': 0,
+        /*'111': 0,
         '112': 0,
         '113': 0,
         '121': 0,
@@ -220,7 +230,7 @@ const InitialStates = {
         '832': 0,
         '833': 0,
         '841': 0,
-        'mostRecentDate': null,
+        'mostRecentDate': null, */
         sectionBStatus: ''
     },
     enrollmentCountErrors: {
