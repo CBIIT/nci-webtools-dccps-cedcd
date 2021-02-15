@@ -67,7 +67,7 @@ router.post('/select_admin_info', async function (req, res) {
     })
 })
 
-router.post('/upload/:id/:category', function (req, res, next) {
+/* router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
     let idIn = req.params.id
     let uploadedFiles = { filenames: [] }
@@ -103,10 +103,25 @@ router.post('/upload/:id/:category', function (req, res, next) {
         }
         else
             res.json({ status: 500 })
-    })
+    }) 
 
     //res.json({status: 200})
-})
+}) */
+
+router.post('/upload/:id/:category', function (req, res, next) {
+    let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
+    fs.access(`${config.file_path}`, (err) => {
+        if (err) {
+            fs.mkdirSync(`${config.file_path}`, { recursive: true }, (err) => {
+                logger.debug(err.message)
+                if (err) res.json({ status: 500 })
+            });
+        }
+        if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${f.name}`) })
+        else cohortFiles.mv(`${config.file_path}/${cohortFiles.name}`)
+    })
+    res.json({ status: 200})
+}) 
 
 router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
