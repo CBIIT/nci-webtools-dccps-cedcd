@@ -146,7 +146,7 @@ var callJsonProcedure = function(func, params, next){
           next(null);
 		}
 
-
+/*
 		let esql = "CALL "+func+"(";
         params.forEach(function(p){
               let t = typeof p;
@@ -167,7 +167,7 @@ var callJsonProcedure = function(func, params, next){
         }
         esql += ")";
         logger.debug('esql: ' + esql);
-
+*/
 
 		logger.debug(`call ${func} `)
 		const placeholders = params.map(_ => '?').join(',');
