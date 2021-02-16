@@ -67,7 +67,7 @@ router.post('/select_admin_info', async function (req, res) {
     })
 })
 
-router.post('/upload/:id/:category', function (req, res, next) {
+/* router.post('/upload/:id/:category', function (req, res, next) {
     let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
     let idIn = req.params.id
     let uploadedFiles = { filenames: [] }
@@ -103,10 +103,25 @@ router.post('/upload/:id/:category', function (req, res, next) {
         }
         else
             res.json({ status: 500 })
-    })
+    }) 
 
     //res.json({status: 200})
-})
+}) */
+
+router.post('/upload/:id/:category', function (req, res, next) {
+    let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile
+    fs.access(`${config.file_path}`, (err) => {
+        if (err) {
+            fs.mkdirSync(`${config.file_path}`, { recursive: true }, (err) => {
+                logger.debug(err.message)
+                if (err) res.json({ status: 500 })
+            });
+        }
+        if (Array.isArray(cohortFiles)) cohortFiles.forEach(f => { f.mv(`${config.file_path}/${f.name}`) })
+        else cohortFiles.mv(`${config.file_path}/${cohortFiles.name}`)
+    })
+    res.json({ status: 200})
+}) 
 
 router.post('/deleteFile', function (req, res) {
     let proc = 'delete_cohort_file'
@@ -159,7 +174,14 @@ router.post('/update_cohort_basic/:id', function (req, res) {
         body.collaboratorPhone = body.contacterPhone
         body.collaboratorEmail = body.contacterEmail
     }
-
+    let fileToUpload = [];
+    ['questionnaireFileName', 'mainFileName', 'dataFileName', 'specimenFileName', 'publicationFileName'].forEach(k => {
+        if(body[k].length > 0){
+            body[k].forEach(f => {fileToUpload.push(f.filename)})
+            body[k] = [...fileToUpload]
+            fileToUpload = []
+        }
+    })
     let updatedBody = JSON.stringify(body)
     let proc = 'update_cohort_basic'
     let params = []
@@ -182,8 +204,7 @@ router.post('/update_cohort_basic/:id', function (req, res) {
         }
         else
             res.json({ status: 500, message: 'update failed' })
-    })
-
+    }) 
 })
 
 router.post('/cohort_basic_info/:id', function (req, res) {
@@ -243,9 +264,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         }
         if(results[2][0] && Object.keys(results[2][0]).length > 0){
             Object.assign(basic_info, results[2][0])//contacter
-            if(!results[2][0].contacterName) cohort_errors.contacterName = 'Required field'
-            if(!results[2][0].contacterEmail) cohort_errors.contacterEmail = 'Required field'
-            if(!results[2][0].contacterPosition) cohort_errors.contacterPosition = 'Required field'   
+            if(!basic_info.clarification_contact){
+                if(!results[2][0].contacterName) cohort_errors.contacterName = 'Required field'
+                if(!results[2][0].contacterEmail) cohort_errors.contacterEmail = 'Required field'
+                if(!results[2][0].contacterPosition) cohort_errors.contacterPosition = 'Required field'
+            }   
         }
         else{
             basic_info.contacterName = ''
@@ -253,9 +276,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             basic_info.contacterPosition = ''
             basic_info.contacterPhone = ''
             basic_info.contacterCountry = '+1'
-            cohort_errors.contacterName = 'Required field'
-            cohort_errors.contacterEmail = 'Required field'
-            cohort_errors.contacterPosition = 'Required field'
+            if(!basic_info.clarification_contact){
+                cohort_errors.contacterName = 'Required field'
+                cohort_errors.contacterEmail = 'Required field'
+                cohort_errors.contacterPosition = 'Required field'
+            }
         }
         if(results[3].length === 0){
             basic_info.investigators.push({
@@ -279,9 +304,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         })}
         if(results[4][0] && Object.keys(results[4][0]).length > 0){
             Object.assign(basic_info, results[4][0])
-            if(!results[4][0].collaboratorName) cohort_errors.collaboratorName = 'Required field'
-            if(!results[4][0].collaboratorEmail) cohort_errors.collaboratorEmail = 'Required field'
-            if(!results[4][0].collaboratorPosition) cohort_errors.collaboratorPosition = 'Required field'   
+            if(![0,1].includes(basic_info.sameAsSomeone)){
+                if(!results[4][0].collaboratorName) cohort_errors.collaboratorName = 'Required field'
+                if(!results[4][0].collaboratorEmail) cohort_errors.collaboratorEmail = 'Required field'
+                if(!results[4][0].collaboratorPosition) cohort_errors.collaboratorPosition = 'Required field' 
+            }  
         }
         else{
             basic_info.collaboratorName = ''
@@ -289,9 +316,11 @@ router.post('/cohort_basic_info/:id', function (req, res) {
             basic_info.collaboratorPosition = ''
             basic_info.collaboratorPhone = ''
             basic_info.collaboratorCountry = '+1'
-            cohort_errors.collaboratorName = 'Required field'
-            cohort_errors.collaboratorEmail = 'Required field'
-            cohort_errors.collaboratorPosition = 'Required field'
+            if(![0,1].includes(basic_info.sameAsSomeone)){
+                cohort_errors.collaboratorName = 'Required field'
+                cohort_errors.collaboratorEmail = 'Required field'
+                cohort_errors.collaboratorPosition = 'Required field'
+            }
         }
         basic_info.sectionStatus = results[5]
         basic_info.cohortStatus = results[6][0].cohort_status      
@@ -395,7 +424,7 @@ router.post('/enrollment_counts/:id', function (req, res) {
         for(let i = 0; i < result[2].length; i++)
             enrollmentCounts['8'+result[2][i].colId.toString()] = result[2][i].colTotal
         enrollmentCounts['841'] = result[3][0].grandTotal;
-        enrollmentCounts.mostRecentDate = result[4][0].mostRecentDate ? result[4][0] : ''
+        enrollmentCounts.mostRecentDate = result[4][0].mostRecentDate ? result[4][0].mostRecentDate : ''
         res.json({ data: {...enrollmentCounts} })
     })
 

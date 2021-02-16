@@ -105,9 +105,10 @@ const CohortForm = ({ ...props }) => {
         })
             .then(res => res.json())
             .then(result => {
+                //if (result.status === 200) {}
                 if (result.status === 200) {
 
-                    if (Object.entries(errors).length === 0)
+                   if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
@@ -141,10 +142,10 @@ const CohortForm = ({ ...props }) => {
                 } else {
                     setFailureMsg(true)
                 }
+               
             })
     }
     const handleSave = () => {
-        console.dir(errors)
         setSaved(true)
         //console.dir(errors)
         if (Object.entries(errors).length === 0) {
@@ -396,13 +397,13 @@ const CohortForm = ({ ...props }) => {
     const handleUpload = (fileData, category) => {
         if (fileData) {
             let fileList = []
+            if (fileData.length > 1) fileList = Array.from(fileData)
+            else fileList.push(fileData)
             const formData = new FormData();
-
             for (let i = 0; i < fileData.length; i++) {
                 formData.append('cohortFile', fileData[i], fileData[i].name)
-                fileList.push(fileData[i].name)
             }
-
+            
             fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
                 method: "POST",
                 body: formData
@@ -432,11 +433,20 @@ const CohortForm = ({ ...props }) => {
                                 setPfileLoading(false)
                                 break;
                         }
-                        if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
-                        /*if (result.data.new_ID != cohortID) {
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
-                            dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
-                        }*/
+                        //console.dir(fileList)
+                        fileList = fileList.map(f => (
+                                {
+                                    fileId: 0,
+                                    fileCategory: category,
+                                    filename: fileList.length > 1 ? f.name : f[0].name,
+                                    status: 1
+                                })
+                            )                       
+                        let loadedFileList = []
+                        cohort[dispatchName].forEach(f => loadedFileList.push(f))
+                        fileList.forEach(f => loadedFileList.push(f))
+                        //console.dir(loadedFileList)
+                        if (dispatchName) dispatch(allactions.cohortActions[dispatchName](loadedFileList))
                     }
                 })
 
@@ -474,7 +484,7 @@ const CohortForm = ({ ...props }) => {
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {files.map(f =>
+                        {files.filter(f => f.status > 0).map(f =>
                             <div className="my-1">
                                 <Col md="10">
                                     <a href={'../../../api/download/' + f.filename} download target="_blank">{f.filename}</a>
@@ -638,7 +648,7 @@ const CohortForm = ({ ...props }) => {
     }
 
     const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
-        fetch(`/api/questionnaire/deleteFile`, {
+        /*fetch(`/api/questionnaire/deleteFile`, {
             method: "POST",
             body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID }),
             headers: {
@@ -665,6 +675,10 @@ const CohortForm = ({ ...props }) => {
                     })
                 }
             })
+            */
+        let uploadedFiles = [...cohort[fileListName]]
+        uploadedFiles.forEach(f => {if(f.filename === fileName) {f.status = 0}})
+        dispatch(allactions.cohortActions[fileListName](uploadedFiles.filter(f => f.status > 0)))
     }
 
     const confirmSaveStay = () => {
@@ -745,35 +759,35 @@ const CohortForm = ({ ...props }) => {
                                     case "questionnaire_url":
                                         copy = [...cohort.questionnaire_url]
                                         if (urlInput) {
-                                            copy.push(/^\s*https?:\/\//.test(urlInput) ? urlInput : 'https://' + urlInput)
+                                            copy.push(urlInput)
                                             dispatch(allactions.cohortActions.questionnaire_url(copy));
                                         }
                                         break;
                                     case "main_cohort_url":
                                         copy = [...cohort.main_cohort_url]
                                         if (urlInput) {
-                                            copy.push(/^\s*https?:\/\//.test(urlInput) ? urlInput : 'https://' + urlInput)
+                                            copy.push(urlInput)
                                             dispatch(allactions.cohortActions.main_cohort_url(copy));
                                         }
                                         break;
                                     case "data_url":
                                         copy = [...cohort.data_url]
                                         if (urlInput) {
-                                            copy.push(/^\s*https?:\/\//.test(urlInput) ? urlInput : 'https://' + urlInput)
+                                            copy.push(urlInput)
                                             dispatch(allactions.cohortActions.data_url(copy));
                                         }
                                         break;
                                     case "specimen_url":
                                         copy = [...cohort.specimen_url]
                                         if (urlInput) {
-                                            copy.push(/^\s*https?:\/\//.test(urlInput) ? urlInput : 'https://' + urlInput)
+                                            copy.push(urlInput)
                                             dispatch(allactions.cohortActions.specimen_url(copy));
                                         }
                                         break;
                                     case "publication_url":
                                         copy = [...cohort.publication_url]
                                         if (urlInput) {
-                                            copy.push(/^\s*https?:\/\//.test(urlInput) ? urlInput : 'https://' + urlInput)
+                                            copy.push(urlInput)
                                             dispatch(allactions.cohortActions.publication_url(copy));
                                         }
                                         break;
@@ -2305,7 +2319,7 @@ const CohortForm = ({ ...props }) => {
                             <Col sm="12">
 
                                 {/* Only show for medium windows and smaller */}
-                                <div className="table-responsive d-md-none">
+    {/*                            <div className="table-responsive d-md-none">
                                     <Table bordered condensed className="table-valign-middle">
                                         <tbody>
                                             <tr>
@@ -3122,6 +3136,7 @@ const CohortForm = ({ ...props }) => {
                                                 <td className="bg-light-grey">Questionnaires</td>
 
                                                 <td>
+                                                    
                                                     <Row className="w-100" style={{ paddingRight: '0' }}>
                                                         <Col style={{ paddingRight: '0', marginRight: '0' }} md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
@@ -3238,9 +3253,9 @@ const CohortForm = ({ ...props }) => {
                                                                         <>
                                                                             {' '}(
                                                                             <span class="closer"
-                                                                                onClick={() =>
-                                                                                    deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)
-                                                                                }>
+                                                                              onClick={() =>
+                                                                                    deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID) 
+                                                                                } > 
                                                                                 x
                                                                                 </span>)
                                                                         </>

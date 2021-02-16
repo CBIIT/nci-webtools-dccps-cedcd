@@ -340,18 +340,7 @@ const EditUser = ({ ...props }) => {
                                 <Form.Group id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
                                     <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userRole_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userRole_error}</Form.Label>}
-                                    <Col sm="6" className="align-self-center">
-                                        <Form.Check type='radio' inline>
-                                            <Form.Check.Input
-                                                type='radio'
-                                                value="Admin"
-                                                checked={userRole === 'Admin'}
-                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
-                                            />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Admin
-                                            </Form.Check.Label>
-                                        </Form.Check>
+                                    <Col sm="6" className="d-flex justify-content-between align-self-center">
 
                                         <Form.Check type='radio' inline>
                                             <Form.Check.Input
@@ -367,6 +356,19 @@ const EditUser = ({ ...props }) => {
                                                 Cohort Owner
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="Admin"
+                                                checked={userRole === 'Admin'}
+                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Admin
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                     </Col>
                                 </Form.Group>
 

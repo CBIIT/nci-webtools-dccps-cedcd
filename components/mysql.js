@@ -145,6 +145,31 @@ var callJsonProcedure = function(func, params, next){
           logger.error(err);
           next(null);
 		}
+
+/*
+		let esql = "CALL "+func+"(";
+        params.forEach(function(p){
+              let t = typeof p;
+          if(t === "string"){
+            p = p.replace(/'/g,"''");
+            esql += "'"+p+"',";
+          }
+          else if(t === "number"){
+            esql += ""+p+",";
+          }
+          else{
+            esql += "'"+p+"',";
+          }
+        });
+       
+        if(params.length > 0){
+          esql = esql.substring(0, esql.length -1);
+        }
+        esql += ")";
+        logger.debug('esql: ' + esql);
+*/
+
+		logger.debug(`call ${func} `)
 		const placeholders = params.map(_ => '?').join(',');
 		const sql = `call ?? (${placeholders})`;
 		logger.debug('sql: ' + sql);
