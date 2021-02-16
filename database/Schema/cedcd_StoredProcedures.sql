@@ -1203,24 +1203,30 @@ BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
     DECLARE user_id INT DEFAULT 1;
-	
-    DECLARE flag INT DEFAULT 1;
 
+    DECLARE flag INT DEFAULT 1;
+ 	
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-
+   
+	set @acronym = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_acronym')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_acronym')));
+    
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
     set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
 
-    IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id, user_id); 
+    IF @cohort_status = 'published' then
+	   IF exists (select acronym from cohort where acronym is not null and acronym = @acronym and status not in ('published', 'archived', 'submitted', 'in review')) Then
+			select id into new_id from cohort where acronym = @acronym and status not in ('published', 'archived', 'submitted', 'in review');
+	   ELSE 
+			call select_unpublished_cohort_id(targetID, new_id, user_id); 
+       END IF;
     else 
        set new_id = targetID;
     END IF;
-
+  
   START transaction;
   
 	drop table if exists temp_PI_IDS;
@@ -1230,7 +1236,6 @@ BEGIN
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
 
-    SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
     SET @latest_cohort = new_id;
 	UPDATE `cohort_basic` 
 	SET 
@@ -1377,21 +1382,19 @@ BEGIN
 		
 		delete from person where cohort_id = new_id and category_id = 3 and id not in (select upToDatePIId from temp_PI_IDS);
 		TRUNCATE TABLE mapping_old_PI_Id_To_New;
-
-        -- END IF; */
-        -- attachment_type: 1 for files, 0 for websites
-        -- category: 1 for main website, 2 for questionnaire, 3 for main protocol, 4 for data policy, 5 for specimen, 6 for publication
-        -- set @questionnaireFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
-        -- set @mainFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainFileName'));
-        -- set @dataFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
-		-- set @specimenFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
-        -- set @publicationFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
         
         set @questionnaireUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'));
         set @mainUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'));
         set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
         set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
         set @publicationUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'));
+		
+        set @questionnaireFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
+        set @mainFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainFileName'));
+        set @dataFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
+        set @specimenFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
+        set @publicationFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
+        
         -- questionnaire/url-0
 		SELECT 0 into i;
 
@@ -1431,6 +1434,7 @@ BEGIN
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
+
  commit;
 	
     SELECT flag AS rowsAffacted;
@@ -1438,17 +1442,43 @@ BEGIN
 	`name`, `position`, institution, phone, country_code,
 	email, create_time, update_time from person
 	where cohort_id = new_id and category_id = 3;
-	SELECT new_id as duplicated_cohort_id;
+	 SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft',  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
         update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	end if;
-	SELECT `status` from cohort where id = new_id;
+	 SELECT `status` from cohort where id = new_id;
 
-	SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
-    
+	 SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
+     
+	 IF JSON_LENGTH(@questionnaireFiles) > 0 Then
+		call add_file_attachment(new_id, 0,JSON_OBJECT('filenames', @questionnaireFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 0 and attachment_type = 1;
+	 END IF;
+
+	IF JSON_LENGTH(@mainFiles) > 0 Then
+		call add_file_attachment(new_id, 1,JSON_OBJECT('filenames', @mainFiles ));
+	else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 1 and attachment_type = 1;
+	END IF;
+	IF JSON_LENGTH(@dataFiles) > 0 Then
+		call add_file_attachment(new_id, 2,JSON_OBJECT('filenames', @dataFiles )); 
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 2 and attachment_type = 1;
+	END IF;
+	IF JSON_LENGTH(@specimenFiles) > 0 Then
+		call add_file_attachment(new_id, 3,JSON_OBJECT('filenames', @specimenFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 3 and attachment_type = 1;
+	END IF;
+	IF JSON_LENGTH(@publicationFiles) > 0 Then
+		call add_file_attachment(new_id, 4,JSON_OBJECT('filenames', @publicationFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 4 and attachment_type = 1;
+	END IF;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1839,46 +1869,42 @@ CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in 
 begin
 	DECLARE i INT default 0;
     DECLARE flag INT DEFAULT 1;
-	DECLARE new_id INT DEFAULT 0;
-	DECLARE user_id INT DEFAULT 1;
-   
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
 
-    SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-
-    IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id, user_id ); 
-    else 
-       set new_id = targetID;
-    END IF;
-    
-    IF new_id > 0 THEN
-    BEGIN
     START TRANSACTION;
+    set @inputFileNames = '';
+    set @fileCategory = categoryType;
+    set @cohort_id = targetID;
 	SET @filenames = JSON_UNQUOTE(JSON_EXTRACT(info, '$.filenames'));
+	select JSON_LENGTH(@filenames) as json_length;
+    IF JSON_LENGTH(@filenames) > 0 Then
 		WHILE i < JSON_LENGTH(@filenames) DO
 			SELECT JSON_EXTRACT(@filenames, concat('$[',i,']')) INTO @filename;
+            set @inputFileNames = concat(@inputFileNames, @filename, ",");
             set @filename = replace(@filename, '"', '');
-			insert into cohort_document (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
-			values (new_id, 1, categoryType, @fileName, '', 1, NOW(), NOW());
+            
+            IF NOT EXISTS (select * from cohort_document where cohort_id = targetID and category = categoryType and attachment_type = 1 and filename = @filename) THEN
+				insert into cohort_document (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
+				values (targetID, 1, categoryType, @fileName, '', 1, NOW(), NOW());
+			ELSE 
+				update cohort_document set status = 1, update_time=now() where cohort_id = targetID and category = categoryType and attachment_type = 1 and filename = @filename;
+			END IF;
 			SELECT i + 1 INTO i;
 		END WHILE;
 
+		set @inputFileNames = substring(@inputFileNames, 1, length(@inputFileNames)-1);
+		set @sql = concat("update cohort_document set status = 0 where cohort_id = ? and attachment_type = 1 and category = ? and filename not in (", @inputFileNames, ")"); 
+	end if;
+        
+        PREPARE stmt FROM @sql;
+		EXECUTE stmt using @cohort_id, @fileCategory;
+		DEALLOCATE PREPARE stmt;
 	COMMIT;
-    END;
-    END IF;
-    SELECT flag as rowsAffacted;
-    SELECT new_id;
-    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
-    join cohort c on cd.cohort_id = c.id
-    WHERE cohort_id = new_id and category = categoryType and cd.status = 1 and cd.attachment_type = 1;
-	IF @cohort_status = 'published' then 
-		SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
-    end if;
 end //
 
 DROP PROCEDURE IF EXISTS get_major_content //
