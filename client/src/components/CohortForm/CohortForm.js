@@ -105,9 +105,10 @@ const CohortForm = ({ ...props }) => {
         })
             .then(res => res.json())
             .then(result => {
+                //if (result.status === 200) {}
                 if (result.status === 200) {
 
-                    if (Object.entries(errors).length === 0)
+                   if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
@@ -141,6 +142,7 @@ const CohortForm = ({ ...props }) => {
                 } else {
                     setFailureMsg(true)
                 }
+               
             })
     }
     const handleSave = () => {
@@ -482,7 +484,7 @@ const CohortForm = ({ ...props }) => {
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {files.map(f =>
+                        {files.filter(f => f.status > 0).map(f =>
                             <div className="my-1">
                                 <Col md="10">
                                     <a href={'../../../api/download/' + f.filename} download target="_blank">{f.filename}</a>

@@ -174,7 +174,14 @@ router.post('/update_cohort_basic/:id', function (req, res) {
         body.collaboratorPhone = body.contacterPhone
         body.collaboratorEmail = body.contacterEmail
     }
-
+    let fileToUpload = [];
+    ['questionnaireFileName', 'mainFileName', 'dataFileName', 'specimenFileName', 'publicationFileName'].forEach(k => {
+        if(body[k].length > 0){
+            body[k].forEach(f => {fileToUpload.push(f.filename)})
+            body[k] = [...fileToUpload]
+            fileToUpload = []
+        }
+    })
     let updatedBody = JSON.stringify(body)
     let proc = 'update_cohort_basic'
     let params = []
@@ -197,8 +204,7 @@ router.post('/update_cohort_basic/:id', function (req, res) {
         }
         else
             res.json({ status: 500, message: 'update failed' })
-    })
-
+    }) 
 })
 
 router.post('/cohort_basic_info/:id', function (req, res) {
