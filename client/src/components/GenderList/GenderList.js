@@ -62,7 +62,7 @@ class GenderList extends Component {
 					male: 2,
 					female: 3,
 				}[str.toLowerCase()] || 0)
-				let genders = result.data.list.sort((a, b) => 
+				let genders = result.data.list.sort((a, b) =>
 					customOrder(a.gender) - customOrder(b.gender));
 				let arr = [];
 				let dict = {};
@@ -76,12 +76,12 @@ class GenderList extends Component {
 						lookup: dict
 					});
 				}
-				if(this.props.hasOnly){
-					let allGenders = {...this.state}
-					allGenders.list.sort((a,b) => b.id - a.id)
-					for(let k of allGenders.list)
-						if(k.gender != 'All' && k.gender != 'Unknown')
-							k.gender = k.gender+'s only'
+				if (this.props.hasOnly) {
+					let allGenders = { ...this.state }
+					allGenders.list.sort((a, b) => b.id - a.id)
+					for (let k of allGenders.list)
+						if (k.gender != 'All' && k.gender != 'Unknown')
+							k.gender = k.gender + 's'
 				}
 			});
 	}
@@ -107,13 +107,14 @@ class GenderList extends Component {
 		if (!hasBoth) {
 			f_list = f_list.filter(r => r.gender != "All");
 		}
-	
+
 		/*f_list.forEach(alert(r => r.gender))*/
 		const list = f_list.map((item, idx) => {
 			const key = "gender_" + item.id;
 			let checked = (values.indexOf(item.id) > -1);
 			let genderId = 'gender_checkbox_' + item.id;
 			//console.log('gender_Id: ' + genderId);
+			console.log("checked " + checked)
 
 			return (
 				<li key={key}>
@@ -148,7 +149,7 @@ class GenderList extends Component {
 					const gender = lookup[item].gender;
 					return (
 						<li key={key}>
-							{gender}
+							{this.props.hasOnly ? gender + "s" : gender}
 						</li>
 					);
 				}
