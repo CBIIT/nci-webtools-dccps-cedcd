@@ -1625,7 +1625,7 @@ BEGIN
     
     select `status` as cohort_status from cohort where id = targetID;
     
-    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
+    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, cd.status as status FROM cohort_document cd
      join cohort c on cd.cohort_id = c.id
      WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
 
