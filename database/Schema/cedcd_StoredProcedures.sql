@@ -264,7 +264,9 @@ BEGIN
          case when @specimen_query != "" then concat(@specimen_query, @globalANDOR) else "" end,
           @cancer_query ) into @condition_query;
           set @condition_query = TRIM(trailing @globalANDOR from rtrim(@condition_query));
-       set @query = concat(@query, " and ( ", @condition_query, " ) ");
+	if(@condition_query != "") then  
+	   set @query = concat(@query, " and ( ", @condition_query, " ) ");
+    end if;
     
     set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
@@ -2946,7 +2948,7 @@ BEGIN
        or lower(email) like lower('%", cohortSearch, "%') or lower(IFNULL(user_name,'')) like lower('%", cohortSearch, "%') ) ", @status_query);
     end if;
     if columnName != "" && columnName !="action" then 
-      set @orderBy = concat(" order by ",columnName," ",columnOrder,", name asc ");
+	  set @orderBy = concat(" order by ",columnName," is NULL, ", columnName," ",columnOrder,", name asc ");
     else
 	  set @orderBy = "order by name asc";
 	end if;
