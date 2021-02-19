@@ -313,6 +313,7 @@ class Information extends Component {
 							}
 							{/*<p>{proceduresite}</p>
 							<ol>{files}</ol>*/}
+							{console.dir(info.procedure_files)}
 							{	
 								(proceduresite || info.procedure_files.length > 0) && <div>
 									<h3>Data Requesting Procedure</h3>
