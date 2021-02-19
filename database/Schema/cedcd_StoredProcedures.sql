@@ -381,7 +381,7 @@ BEGIN
        union 
 	   select null,cohort_id , 0, 5, null, 
        dlh_procedure_url as website, 1, null, null
-      f rom dlh where cohort_id = c_id and dlh_procedure_url is not null;
+	   from dlh where cohort_id = c_id and dlh_procedure_url is not null;
     end if;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
