@@ -233,8 +233,10 @@ const SpecimenForm = ({ ...props }) => {
     const isNull = v => ['', undefined, null].includes(v)
 
     const refreshErrors = () => (errors.bioBloodBaseline && errors.bioBloodOtherTime) || /* G1 */
-        (errors.bioBloodBaseline && (errors.bioBloodBaselineSerum || errors.bioBloodBaselinePlasma || errors.bioBloodBaselineBuffyCoat || errors.bioBloodBaselineOtherDerivative)) ||
-        (errors.bioBloodOtherTime && (errors.bioBloodOtherTimeSerum || errors.bioBloodOtherTimePlasma || errors.bioBloodOtherTimeBuffyCoat || errors.bioBloodOtherTimeOtherDerivative)) ||
+        (+specimen.bioBloodBaseline === 1 && (specimen.bioBloodBaselineSerum === 0 && specimen.bioBloodBaselinePlasma === 0
+            && specimen.bioBloodBaselineBuffyCoat === 0 && specimen.bioBloodBaselineOtherDerivative === 0)) ||
+        (specimen.bioBloodOtherTime === 1 && (specimen.bioBloodOtherTimeSerum === 0 && specimen.bioBloodOtherTimePlasma === 0
+            && specimen.bioBloodOtherTimeBuffyCoat === 0 && specimen.bioBloodOtherTimeOtherDerivative === 0)) ||
         (errors.bioBuccalSalivaBaseline && errors.bioBuccalSalivaOtherTime) || /* G2 */
         (errors.bioTissueBaseline && errors.bioTissueOtherTime) || /* G3 */
         (errors.bioUrineBaseline && errors.bioUrineOtherTime) || /* G4 */
@@ -1040,7 +1042,10 @@ const SpecimenForm = ({ ...props }) => {
 
                                 </Col>
                                 <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (select all that apply)</div>
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)
+                                    {+specimen.bioBloodBaseline === 1 && (specimen.bioBloodBaselineSerum === 0
+                                            && specimen.bioBloodBaselinePlasma === 0 && specimen.bioBloodBaselineBuffyCoat === 0 && specimen.bioBloodBaselineOtherDerivative === 0)
+                                            && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>} </div>
                                     <CheckBoxInputs optionList={[
                                         { field_id: 'bioBloodBaselineSerum', label: 'Serum', disabled_id: 'bioBloodBaseline' },
                                         { field_id: 'bioBloodBaselinePlasma', label: 'Plasma', disabled_id: 'bioBloodBaseline' },
@@ -1064,7 +1069,9 @@ const SpecimenForm = ({ ...props }) => {
                                     {(errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Col>
                                 <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (select all that apply)</div>
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)
+                                    {+specimen.bioBloodOtherTime === 1 && (specimen.bioBloodOtherTimeSerum === 0 && specimen.bioBloodOtherTimePlasma === 0 && specimen.bioBloodOtherTimeBuffyCoat === 0 && specimen.bioBloodOtherTimeOtherDerivative === 0)
+                                            && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>} </div>
                                     <CheckBoxInputs optionList={[
                                         { field_id: 'bioBloodOtherTimeSerum', label: 'Serum', disabled_id: 'bioBloodOtherTime' },
                                         { field_id: 'bioBloodOtherTimePlasma', label: 'Plasma', disabled_id: 'bioBloodOtherTime' },
