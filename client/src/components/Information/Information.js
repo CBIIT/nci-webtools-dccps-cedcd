@@ -258,9 +258,9 @@ class Information extends Component {
 
 			}
 
-			if(info.procedure_files.length > 0){
+			if (info.procedure_files.length > 0) {
 				files = info.procedure_files.map((item, idx) => <li i key={idx} className="link-pdf"><a
-				style={{lineHeight: '2rem'}} href={`/api/download/${item}`} download={false} target="_blank">{item}</a></li>)
+					style={{ lineHeight: '2rem' }} href={`/api/download/${item}`} download={false} target="_blank">{item}</a></li>)
 			}
 
 			let desc = "<p>" + info.cohort_description + "</p>";
@@ -306,18 +306,18 @@ class Information extends Component {
 							<h3>Principal Investigators</h3>
 							<ul id="piList">{pis}</ul>
 							{
-								website && <div style={{marginBottom: '12px'}}>
+								website && <div style={{ marginBottom: '12px' }}>
 									<h3>Cohort Website</h3>
 									{website}
 								</div>
 							}
 							{/*<p>{proceduresite}</p>
 							<ol>{files}</ol>*/}
-							{console.dir(info.procedure_files)}
-							{	
+
+							{
 								(proceduresite || info.procedure_files.length > 0) && <div>
 									<h3>Data Requesting Procedure</h3>
-									<ul style={{listStyle: 'none', paddingLeft:'0'}}>
+									<ul style={{ listStyle: 'none', paddingLeft: '0' }}>
 										{proceduresite}
 										{files}
 									</ul>
