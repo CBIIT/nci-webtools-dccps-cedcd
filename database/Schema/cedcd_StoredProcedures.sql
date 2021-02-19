@@ -2747,6 +2747,8 @@ BEGIN
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
 	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
+	select id as fileId, category as fileCategory, filename, status from cohort_document
+    where cohort_id = targetID and category = 5;
 end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
@@ -2771,6 +2773,8 @@ BEGIN
     IF targetID > 0 then
     begin
     start transaction;
+    set @dataFileName = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')));
+    set @dataUrl = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')));
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2828,6 +2832,22 @@ BEGIN
 		);
 		insert into cohort_edit_status (cohort_id, page_code, `status`)
 		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
+	end if;
+    
+	if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5;
+	end if;
+    if @dataFileName <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 1, 5, @dataFileName, null, 1, Now(), Now());
+	end if;
+    
+    if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5;
+	end if;
+    if @dataUrl <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 0, 5, null, @dataUrl, 1, Now(), Now());
 	end if;
     commit;
     
