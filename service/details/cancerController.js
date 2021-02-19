@@ -281,7 +281,7 @@ exports.run = function (req, res) {
 							v = "N/A";
 						}
 						else {
-							v = l[vl.column_specify];
+							v = l[vl.column_specify] || 'N/A';
 						}
 						tmp["c_" + l.c_id] = v;
 					});

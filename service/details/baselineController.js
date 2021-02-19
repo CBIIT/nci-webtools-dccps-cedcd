@@ -148,7 +148,7 @@ exports.run = function (req, res) {
 				if (vl.title) {
 					tmp.title = vl.title;
 				}
-				let baselines = dict[vl.category_id];
+				let baselines = dict[vl.category_id] || 'N/A';
 
 				for (key in baselines) {
 					let v = baselines[key];

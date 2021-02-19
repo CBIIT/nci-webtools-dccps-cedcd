@@ -60,7 +60,7 @@ exports.run = function (req, res) {
 			tmp.name = "Cancer Survivors: Specified Cancer Site";
 			list.forEach(function (l) {
 				let v = l["eligible_disease_cancer_specify"];
-				if (v === "") {
+				if (v === "" || v === null) {
 					v = (l["eligible_disease_state"] == -1 ? "N/P" : "N/A");
 				}
 				tmp["c_" + l.id] = v;
@@ -71,7 +71,7 @@ exports.run = function (req, res) {
 			tmp.name = "Other Disease State, Specify";
 			list.forEach(function (l) {
 				let v = l["eligible_disease_other_specify"];
-				if (v === "") {
+				if (v === "" || v === null) {
 					v = (l["eligible_disease_state"] == -1 ? "N/P" : "N/A");
 				}
 				tmp["c_" + l.id] = v;
