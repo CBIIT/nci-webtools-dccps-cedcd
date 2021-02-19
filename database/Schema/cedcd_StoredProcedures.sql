@@ -264,7 +264,9 @@ BEGIN
          case when @specimen_query != "" then concat(@specimen_query, @globalANDOR) else "" end,
           @cancer_query ) into @condition_query;
           set @condition_query = TRIM(trailing @globalANDOR from rtrim(@condition_query));
-       set @query = concat(@query, " and ( ", @condition_query, " ) ");
+	if(@condition_query != "") then  
+	   set @query = concat(@query, " and ( ", @condition_query, " ) ");
+    end if;
     
     set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
     
@@ -371,8 +373,16 @@ BEGIN
       dlh_procedure_website as request_procedures_web,
       dlh_procedure_url as request_procedures_web_url,
       dlh_procedure_attached as request_procedures_pdf
-     from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
-    select * from cohort_document where cohort_id = c_id and status = 1;
+    from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
+	if exists ( select * from cohort_document where cohort_id = c_id and status = 1 and category= 5 and attachment_type = 0 ) then
+       select * from cohort_document where cohort_id = c_id and status = 1;
+    else 
+       select * from cohort_document where cohort_id = c_id and status = 1
+       union 
+	   select null,cohort_id , 0, 5, null, 
+       dlh_procedure_url as website, 1, null, null
+	   from dlh where cohort_id = c_id and dlh_procedure_url is not null;
+    end if;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
@@ -407,20 +417,24 @@ DROP PROCEDURE IF EXISTS `select_cohort_linkages_technology` //
 
 CREATE PROCEDURE `select_cohort_linkages_technology`(in cohort_info text)
 BEGIN
-	set @queryString = "";
-    
+	set @queryString = cohort_info;
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
+		set @query = concat(" select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id in (",   @queryString, " )  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc ") ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt  ;
+	   DEALLOCATE PREPARE stmt;
+    else
+        set @query = " select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc " ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt ;
+	    DEALLOCATE PREPARE stmt;
     end if;
-    
-    set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
-    
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* 
-	from cohort_basic cs, dlh cd, technology ct , cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
-    PREPARE stmt FROM @query;
-	EXECUTE stmt;
-	DEALLOCATE PREPARE stmt;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -2745,6 +2759,8 @@ BEGIN
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
 	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
+	select id as fileId, category as fileCategory,  coalesce(filename, '') as filename, status from cohort_document
+    where cohort_id = targetID and category = 5;
 end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
@@ -2769,6 +2785,8 @@ BEGIN
     IF targetID > 0 then
     begin
     start transaction;
+    set @dataFileName = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')));
+    set @dataUrl = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')));
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2826,6 +2844,22 @@ BEGIN
 		);
 		insert into cohort_edit_status (cohort_id, page_code, `status`)
 		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
+	end if;
+    
+	if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5;
+	end if;
+    if @dataFileName <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 1, 5, @dataFileName, null, 1, Now(), Now());
+	end if;
+    
+    if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5;
+	end if;
+    if @dataUrl <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 0, 5, null, @dataUrl, 1, Now(), Now());
 	end if;
     commit;
     
@@ -2946,7 +2980,7 @@ BEGIN
        or lower(email) like lower('%", cohortSearch, "%') or lower(IFNULL(user_name,'')) like lower('%", cohortSearch, "%') ) ", @status_query);
     end if;
     if columnName != "" && columnName !="action" then 
-      set @orderBy = concat(" order by ",columnName," ",columnOrder,", name asc ");
+	  set @orderBy = concat(" order by ",columnName," is NULL, ", columnName," ",columnOrder,", name asc ");
     else
 	  set @orderBy = "order by name asc";
 	end if;

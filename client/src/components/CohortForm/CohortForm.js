@@ -2319,7 +2319,7 @@ const CohortForm = ({ ...props }) => {
                             <Col sm="12">
 
                                 {/* Only show for medium windows and smaller */}
-    {/*                            <div className="table-responsive d-md-none">
+                                <div className="table-responsive d-md-none">
                                     <Table bordered condensed className="table-valign-middle">
                                         <tbody>
                                             <tr>

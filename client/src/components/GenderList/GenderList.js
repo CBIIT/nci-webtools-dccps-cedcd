@@ -113,8 +113,6 @@ class GenderList extends Component {
 			const key = "gender_" + item.id;
 			let checked = (values.indexOf(item.id) > -1);
 			let genderId = 'gender_checkbox_' + item.id;
-			//console.log('gender_Id: ' + genderId);
-			console.log("checked " + checked)
 
 			return (
 				<li key={key}>

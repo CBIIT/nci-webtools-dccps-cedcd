@@ -77,7 +77,7 @@ exports.run = function (req, res) {
 				}
 				list.forEach(function (l) {
 					let v = l[vl.column];
-					if (v == -1) {
+					if (v == -1 || v === null) {
 						v = "N/A";
 					}
 					else {
@@ -105,7 +105,7 @@ exports.run = function (req, res) {
 				tmp.name = vl.name;
 				list.forEach(function (l) {
 					let v = l[vl.column];
-					if (v == -1) {
+					if (v == -1 || v === null) {
 						v = "N/P";
 					}
 					else {
@@ -137,7 +137,7 @@ exports.run = function (req, res) {
 				tmp.name = vl.name;
 				list.forEach(function (l) {
 					let v = l[vl.column];
-					if (v == -1) {
+					if (v == -1 || v === null) {
 						v = "N/P";
 					}
 					else {
@@ -175,7 +175,7 @@ exports.run = function (req, res) {
 				tmp.name = vl.name;
 				list.forEach(function (l) {
 					let v = l[vl.column];
-					if (v == -1) {
+					if (v == -1 || v === null) {
 						v = "N/P";
 					}
 					else {

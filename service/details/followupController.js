@@ -35,7 +35,7 @@ exports.run = function (req, res) {
 				}
 				let tmp = dict[l.category_id];
 				let v = l.followup;
-				if (v == -1) {
+				if (v == -1 || v === null) {
 					v = "N/P";
 				}
 				else {

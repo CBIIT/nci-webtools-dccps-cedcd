@@ -74,17 +74,17 @@ exports.run = function (req, res) {
 							v = "N/A";
 						}
 						else {
-							v = l[vl.column_specify];
+							v = l[vl.column_specify] || 'N/A';
 						}
 						tmp["c_" + l.c_id] = v;
 					});
 				}
 				else {
 					list.forEach(function (l) {
-						let v = l[vl.column];
+						let v = l[vl.column] || 'N/A';
 						if (vl.text) {
 						}
-						else if (v == -1) {
+						else if (v == -1 || v === null) {
 							v = "N/P";
 						}
 						else {
