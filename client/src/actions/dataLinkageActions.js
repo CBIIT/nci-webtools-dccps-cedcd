@@ -16,6 +16,7 @@ const setDataOnlineURL = (v) => ({type: t.setDataOnlineURL, value: v})
 const setCreatedRepo = (v) => ({type: t.setCreatedRepo, value: v})
 const setCreatedRepoSpecify = (v) => ({type: t.setCreatedRepoSpecify, value: v})
 const setSectionFStatus = (v) => ({type: t.setSectionFStatus, value: v})
+const dataFileName = (v) => ({type: t.setUploadFileName, value: v})
 
 export default{
     setHasLoaded,
@@ -33,5 +34,6 @@ export default{
     setDataOnlineURL,
     setCreatedRepo,
     setCreatedRepoSpecify,
-    setSectionFStatus
+    setSectionFStatus,
+    dataFileName
 }

@@ -522,12 +522,12 @@ router.post('/dlh/:id', function (req, res) {
     let params = []
     params.push(id)
     mysql.callProcedure(func, params, function (result) {
-        
         const dlh = {}
         dlh.info = result[0]
         dlh.completion = result[1]
-
-        if (dlh)
+        dlh.files = result[2]
+        logger.debug(dlh)
+        if (Object.entries(dlh).length > 0)
             res.json({ status: 200, data: dlh })
         else
             res.json({ status: 500, message: 'failed to load data' })
@@ -536,12 +536,14 @@ router.post('/dlh/:id', function (req, res) {
 
 router.post('/update_dlh/:id', function (req, res) {
     let func = 'update_dlh'
+    let body = {...req.body}
     let keys = ['dataOnlineURL', 'haveHarmonizationSpecify', 'haveDataLinkSpecify', 'createdRepoSpecify']
-    keys.forEach(k => req.body[k] = req.body[k] ? req.body[k].replace(/\n/g, '\\n') : req.body[k])
-    let body = JSON.stringify(req.body)
+    keys.forEach(k => body[k] = body[k] ? body[k].replace(/\n/g, '\\n') : body[k])
+    body.dataFileName = !body.dataFileName || body.dataFileName.status !== 1 ? '' : body.dataFileName.filename  
+    let bodyJson = JSON.stringify(body)
     let params = []
     params.push(req.params.id)
-    params.push(body)
+    params.push(bodyJson)
    
 
     mysql.callJsonProcedure(func, params, function (result) {

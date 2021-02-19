@@ -340,6 +340,7 @@ const actionTypes = {
     setSectionStatus: 'SET_COHORT_SECTION_STATUS',
 
     /* section E */
+    setUploadFileName: 'SET_UPLOADED_FILE_NAME',
     setMortalityLoaded: 'SET_MORTALITY_LOADED',
     setMortalityYear: 'SET_MORTALITY_YEAR',
     setDeathIndex: 'SET_MORTALITY_DEATH_INDEX',

@@ -446,6 +446,7 @@ const InitialStates = {
         haveHarmonization: null,
         haveHarmonizationSpecify: null,
         haveDeposited: null,
+        dataFileName: {fileId: 0, fileCategory: 5, filename: '', status: 0},
         dbGaP: 0,
         BioLINCC: 0,
         otherRepo: 0,

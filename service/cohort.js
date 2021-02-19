@@ -647,14 +647,14 @@ router.get('/:id', function (req, res) {
 				info.cohort_web_site = basic.cohort_web_site;
 				info.cohort_description = basic.cohort_description;
 				info.request_procedures_web_url = "";
-				if (basic.request_procedures_web == 1) {
-					info.request_procedures_web_url = basic.request_procedures_web_url;
-				}
-				if(basic.request_procedures_pdf === 1){
-					//info.procedure_files.push("CEDCD Descriptive Db Collection Form v8.1.pdf");
+				if([0,1].includes(basic.request_procedures_none)){
+					if (basic.request_procedures_none == 1)
+						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website;
+					else 
+						info.procedure_files.push(results[1].find(f => f.attachment_type === 1 && f.category === 5 && f.status === 1).filename);
 				}
 				info.attachments = {};
-				let attachs = results[1];
+				let attachs = results[1].filter(f => f.category !== 5)
 				let tmp = [[], [], []];
 				attachs.forEach(function (attach) {
 					let idx = attach.category > 0 ? 1 : attach.category;
@@ -699,7 +699,6 @@ router.get('/:id', function (req, res) {
 						});
 					}
 				});
-				logger.debug(results[1])
 				//cache.setValue("cohort:" + id, info, config.cohort_ttl);
 			}
 			res.json({ status: 200, data: info });

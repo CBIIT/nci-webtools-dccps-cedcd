@@ -23,6 +23,7 @@ const DataLinkageForm = ({ ...props }) => {
 
     const dataLinkage = useSelector(state => state.dataLinkageReducer)
     const section = useSelector(state => state.sectionReducer)
+    const [MfileLoading, setMfileLoading] = useState(false)
     const dispatch = useDispatch();
     const radioError = 'please choose one'
     //const cohortId = +window.location.pathname.split('/').pop();
@@ -56,6 +57,7 @@ const DataLinkageForm = ({ ...props }) => {
         haveDeposited: '',
         deposit: '',
         dataOnline: '',
+        dataFileName: '',
         dataOnlineSelected: '',
         dataOnlineURL: '',
         createdRepo: '',
@@ -69,10 +71,9 @@ const DataLinkageForm = ({ ...props }) => {
                 method: 'POST',
             }).then(res => res.json())
                 .then(result => {
-                    console.log(result)
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
-
+                        const files = result.data.files[0]
                         batch(() => {
                             dispatch(allactions.dataLinkageActions.setHasLoaded(true))
                             dispatch(allactions.dataLinkageActions.setHaveDataLink(data.dlh_linked_to_existing_databases))
@@ -86,6 +87,7 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
                             dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
                             dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
+                            if(files) dispatch(allactions.dataLinkageActions.dataFileName(files))
                             if (data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
@@ -94,6 +96,38 @@ const DataLinkageForm = ({ ...props }) => {
                 })
         }
     }, [])
+
+    const handleUpload = (fileData) => {
+        if (fileData) {
+            const formData = new FormData();
+            for (let i = 0; i < fileData.length; i++) {
+                formData.append('cohortFile', fileData[i], fileData[i].name)
+            }
+            
+            fetch(`/api/questionnaire/upload/${cohortId}/5`, {
+                method: "POST",
+                body: formData
+            }).then(res => res.json())
+            .then((result) => {
+                if (result.status === 200) {
+                    setMfileLoading(false)
+                    let fileList = {
+                            fileId: 0,
+                            fileCategory: 5,
+                            filename: fileData[0].name,
+                            status: 1
+                        }                     
+                    dispatch(allactions.dataLinkageActions.dataFileName({...fileList}))
+                    setErrors({...errors, dataFileName: ''})
+                }
+            })
+        }
+    }
+
+    const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
+        dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
+    }
+
 
     const sendEmail = (template, topic) => {
 
@@ -225,6 +259,14 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
+            if(dataLinkage.dataOnlineURL)
+                copy.dataOnlineURL = ''
+        }
+        if (dataLinkage.dataOnline === 0 && (!dataLinkage.dataFileName || dataLinkage.dataFileName.status === 0))
+            copy.dataFileName = 'Required field'
+        else
+            copy.dataFileName = ''
+/*
             if (!dataLinkage.dataOnlinePolicy && !dataLinkage.dataOnlineWebsite) { copy.dataOnlineSelected = 'Select at least one option' } else { copy.dataOnlineSelected = '' }
             if (dataLinkage.dataOnlineWebsite) {
 
@@ -242,7 +284,7 @@ const DataLinkageForm = ({ ...props }) => {
             copy.dataOnlineSelected = ''
             copy.dataOnlineURL = ''
         }
-
+*/
         //F.5
         if (!(dataLinkage.createdRepo in [0, 1])) { copy.createdRepo = radioError } else { copy.createdRepo = '' }
         if (dataLinkage.createdRepo === 1) {
@@ -844,6 +886,7 @@ const DataLinkageForm = ({ ...props }) => {
                                                             dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
                                                             dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
                                                             dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                                                            setErrors({...errors, dataOnlineURL: ''})
                                                             dispatch(setHasUnsavedChanges(true));
                                                         }
                                                     }}
@@ -864,9 +907,10 @@ const DataLinkageForm = ({ ...props }) => {
                                                 onClick={() => {
                                                     if (!isReadOnly) {
                                                         dispatch(allactions.dataLinkageActions.setDataOnline(0));
-                                                        dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
-                                                        dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
+                                                        //dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
+                                                        //dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
                                                         dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
+                                                        setErrors({...errors, dataOnlineURL: ''})
                                                         dispatch(setHasUnsavedChanges(true));
                                                     }
                                                 }}
@@ -890,6 +934,10 @@ const DataLinkageForm = ({ ...props }) => {
                                                         if (!isReadOnly) {
                                                             dispatch(allactions.dataLinkageActions.setDataOnline(1));
                                                             dispatch(setHasUnsavedChanges(true));
+                                                            if(!dataLinkage.dataOnlineURL)
+                                                                setErrors({...errors, dataOnlineURL: 'Please specify'})
+                                                            if(dataLinkage.dataFileName && dataLinkage.dataFileName.status > 0)
+                                                                dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
                                                         }
                                                     }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -908,6 +956,10 @@ const DataLinkageForm = ({ ...props }) => {
                                                     if (!isReadOnly) {
                                                         dispatch(allactions.dataLinkageActions.setDataOnline(1));
                                                         dispatch(setHasUnsavedChanges(true));
+                                                        if(!dataLinkage.dataOnlineURL)
+                                                            setErrors({...errors, dataOnlineURL: 'Please specify'})
+                                                        if(dataLinkage.dataFileName && dataLinkage.dataFileName.status > 0)
+                                                            dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
                                                     }
                                                 }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -920,8 +972,10 @@ const DataLinkageForm = ({ ...props }) => {
 
                             <Form.Group as={Row}>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
-                                    If yes, please select which repositories (Select all that apply):
-                                    {saved && errors.dataOnlineSelected && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                    If yes, please specify website:
+                                </Form.Label>
+                                <Col sm="12">
+     {/*                              {saved && errors.dataOnlineSelected && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Form.Label>
                                 <Col sm="12">
                                     <div key="checkbox" className="mb-3">
@@ -961,24 +1015,24 @@ const DataLinkageForm = ({ ...props }) => {
                                             </Form.Check.Label>
                                         </Form.Check>
                                     </div>
-
-                                    {saved && errors.dataOnlineURL ?
-                                        <Reminder message={errors.dataOnlineURL} disabled={!errors.dataOnlineURL} placement="right">
+*/}
+                                    {/* {saved && errors.dataOnlineURL ? */}
+                                        <Reminder message={errors.dataOnlineURL} disabled={!(errors.dataOnlineURL && saved)} placement="right">
                                             <Form.Control type='text'
-                                                style={{ border: '1px solid red' }}
+                                                style={errors.dataOnlineURL && saved ? { border: '1px solid red' } : {}}
                                                 name='dataOnlineURL'
                                                 className='form-control'
                                                 value={dataLinkage.dataOnlineURL}
                                                 readOnly={isReadOnly}
                                                 placeholder='Max of 200 characters'
-                                                disabled={!dataLinkage.dataOnlineWebsite}
+                                                disabled={!dataLinkage.dataOnline}
                                                 onChange={e => {
                                                     dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value));
                                                     dispatch(setHasUnsavedChanges(true));
                                                 }}
                                             />
-                                        </Reminder> :
-                                        <Form.Control type='text'
+                                      </Reminder>      
+                                       {/* <Form.Control type='text'
                                             name='dataOnlineURL'
                                             className='form-control'
                                             value={dataLinkage.dataOnlineURL}
@@ -989,8 +1043,112 @@ const DataLinkageForm = ({ ...props }) => {
                                                 dispatch(allactions.dataLinkageActions.setDataOnlineURL(e.target.value));
                                                 dispatch(setHasUnsavedChanges(true));
                                             }}
-                                        />}
+                                        />} */}
                                 </Col>
+                                <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
+                                    If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                </Form.Label>
+                                {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
+                                <Col sm="12" className="pr-0">
+                                    <Col sm="2" className="px-0">
+                                    {
+                                        !isReadOnly &&
+                                        <Form.Control
+                                            type="file"
+                                            name='cohortFile'
+                                            id="inputGroupFile02"
+                                            aria-describedby="inputGroupFileAddon02"
+                                            disabled={dataLinkage.dataOnline}
+                                            style={{ height: '27px', width: '100%'}}
+                                            onClick={e => e.target.value = null}
+                                            onChange={e => {
+                                                if (!isReadOnly) {
+                                                    setMfileLoading(true)
+                                                    handleUpload(e.target.files, 5)
+                                                }
+                                            }} />
+                                    }
+                                    </Col>
+                                    <Col sm="9" className="px-0">
+                                    {MfileLoading && (
+                                        <span>
+                                            Loading...
+                                        </span>
+                                    )
+                                    }
+                                    {!MfileLoading && dataLinkage.dataFileName.status < 1 && (
+                                            <span>
+                                                {dataLinkage.dataOnline ? '' : 'No file chosen'}
+                                            </span>
+                                        )
+                                    }
+
+                                    {dataLinkage.dataFileName.status > 0 && (
+                                        <span>
+                                            <a href={'../../../api/download/' + dataLinkage.dataFileName.filename} download={dataLinkage.dataFileName.filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{dataLinkage.dataFileName.filename}</a>
+                                            {!isReadOnly && dataLinkage.dataFileName.filename &&
+                                                <>
+                                                    {' '}(
+                                                    <span class="closer"
+                                                        onClick={() =>
+                                                            deleteFileFromList('mainFileName', dataLinkage.dataFileName.filename, dataLinkage.dataFileName.fileId)
+                                                        }>x</span>
+                                                    )
+                                                </>
+                                            }
+                                        </span>
+                                    )
+                                    }
+                                    </Col>
+                                </Col>
+                               {/* <Col sm="9" className="px-0">
+                                    {MfileLoading && (
+                                        <span>
+                                            Loading...
+                                        </span>
+                                    )
+                                    }
+                                    {!MfileLoading && !dataLinkage.dataFileName.filename && (
+                                        <span>
+                                            No file chosen
+                                        </span>
+                                    )
+                                    }
+                                    {console.dir(dataLinkage.dataFileName)}
+                                    {dataLinkage.dataFileName && (
+                                        <span>
+                                            <a href={'../../../api/download/' + dataLinkage.dataFileName.filename} download={dataLinkage.dataFileName.filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{dataLinkage.dataFileName.filename}</a>
+                                            {!isReadOnly && dataLinkage.dataFileName.filename &&
+                                                <>
+                                                    {' '}(
+                                                    <span class="closer"
+                                                        onClick={() =>
+                                                            deleteFileFromList('mainFileName', dataLinkage.dataFileName.filename, dataLinkage.dataFileName.fileId)
+                                                        }>x</span>
+                                                    )
+                                                </>
+                                            }
+                                        </span>
+                                    )
+                                    }
+                                    {dataLinkage.dataFileName.length > 1 && !MfileLoading && (
+                                        <>
+                                            <span classNamne="mx-1">
+                                                {' '}and{' '}
+                                            </span>
+                                            <span>
+                                                <a href='#'
+                                                    onClick={e => {
+                                                        e.preventDefault();
+                                                        showFileList('Main Cohort Documents', 'mainFileName', dataLinkage.dataFileName)
+                                                    }}>
+                                                    {dataLinkage.dataFileName.length - 1} more
+                                                        </a>
+                                            </span>
+                                        </>
+                                    )
+                                    } 
+                                </Col>*/}
                             </Form.Group>
 
                             <Form as={Row}>
