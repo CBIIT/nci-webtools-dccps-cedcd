@@ -920,53 +920,33 @@ const DataLinkageForm = ({ ...props }) => {
                                             </Form.Check.Label>
                                         </Form.Check>
                                     }
-                                    {saved && errors.dataOnline ?
-                                        <Reminder>
-                                            <Form.Check type='radio'
-                                                name='dataOnline'
-                                                inline
-                                                style={{ color: 'red' }} >
-                                                <Form.Check.Input
-                                                    type='radio'
-                                                    className="mr-2"
-                                                    checked={dataLinkage.dataOnline === 1}
-                                                    onClick={() => {
-                                                        if (!isReadOnly) {
-                                                            dispatch(allactions.dataLinkageActions.setDataOnline(1));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                            if(!dataLinkage.dataOnlineURL)
-                                                                setErrors({...errors, dataOnlineURL: 'Please specify'})
-                                                            if(dataLinkage.dataFileName && dataLinkage.dataFileName.status > 0)
-                                                                dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
-                                                        }
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Yes
-                                                </Form.Check.Label>
-                                            </Form.Check>
-                                        </Reminder> :
+                                    <Reminder disabled = {!(saved && errors.dataOnline)}>
                                         <Form.Check type='radio'
                                             name='dataOnline'
-                                            inline>
+                                            inline
+                                            style={(saved && errors.dataOnline) ? { color: 'red' }: {}} >
                                             <Form.Check.Input
                                                 type='radio'
                                                 className="mr-2"
                                                 checked={dataLinkage.dataOnline === 1}
                                                 onClick={() => {
                                                     if (!isReadOnly) {
+                                                        let clone = {...errors}
                                                         dispatch(allactions.dataLinkageActions.setDataOnline(1));
                                                         dispatch(setHasUnsavedChanges(true));
+                                                        clone.dataFileName = ''
                                                         if(!dataLinkage.dataOnlineURL)
-                                                            setErrors({...errors, dataOnlineURL: 'Please specify'})
+                                                            clone.dataOnlineURL = 'Please specify'
                                                         if(dataLinkage.dataFileName && dataLinkage.dataFileName.status > 0)
                                                             dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
+                                                        setErrors(clone)
                                                     }
                                                 }} />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Yes
                                             </Form.Check.Label>
                                         </Form.Check>
-                                    }
+                                    </Reminder>   
                                 </Col>
                             </Form>
 
@@ -1046,6 +1026,7 @@ const DataLinkageForm = ({ ...props }) => {
                                         />} */}
                                 </Col>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
+                                    {console.log(errors.dataFileName)}
                                     If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Form.Label>
                                 {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
