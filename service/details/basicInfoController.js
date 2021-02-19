@@ -230,7 +230,7 @@ exports.run = function (req, res) {
 			tmp.type = "data";
 			tmp.name = "Other Tools used for Exposure Data Collection Other Specified";
 			list.forEach(function (l) {
-				let v = l["other_tools_specify"];
+				let v = l["other_tools_specify"] || 'N/A';
 				if (v == "") {
 					if (l["other_tools"] == 0) {
 						v = "N/A";

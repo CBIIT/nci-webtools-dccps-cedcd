@@ -81,7 +81,7 @@ exports.run = function (req, res) {
 				}
 				else {
 					list.forEach(function (l) {
-						let v = l[vl.column];
+						let v = l[vl.column] || 'N/A';
 						if (vl.text) {
 						}
 						else if (v == -1 || v === null) {
