@@ -162,7 +162,7 @@ exports.run = function (req, res) {
 					}
 					else {
 						if (vl.values) {
-							v = vl.values[v];
+							v = vl.values[v] || 'N/A';
 						}
 						else {
 							v = v ? "Yes" : "No";
