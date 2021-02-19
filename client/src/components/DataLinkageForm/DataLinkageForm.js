@@ -116,11 +116,12 @@ const DataLinkageForm = ({ ...props }) => {
                             fileCategory: 5,
                             filename: fileData[0].name,
                             status: 1
-                        }                     
+                        }                                     
                     dispatch(allactions.dataLinkageActions.dataFileName({...fileList}))
                     setErrors({...errors, dataFileName: ''})
                 }
             })
+            
         }
     }
 
@@ -1050,8 +1051,10 @@ const DataLinkageForm = ({ ...props }) => {
                                             onClick={e => e.target.value = null}
                                             onChange={e => {
                                                 if (!isReadOnly) {
-                                                    setMfileLoading(true)
-                                                    handleUpload(e.target.files, 5)
+                                                    if(e.target.files[0].name.substr(-3) === 'pdf'){
+                                                        setMfileLoading(true)
+                                                        handleUpload(e.target.files, 5)
+                                                    }
                                                 }
                                             }} />
                                     }
