@@ -649,9 +649,14 @@ router.get('/:id', function (req, res) {
 				info.request_procedures_web_url = "";
 				if([0,1].includes(basic.request_procedures_none)){
 					if (basic.request_procedures_none == 1)
-						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website;
-					else 
-						info.procedure_files.push(results[1].find(f => f.attachment_type === 1 && f.category === 5 && f.status === 1).filename);
+						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1) ? results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website : '';
+					else {
+						results[1].forEach(f => {
+							if(f.attachment_type === 1 && f.category === 5 && f.status === 1 && f.filename) 
+								info.procedure_files.push(f.filename)
+						});
+					
+					}
 				}
 				info.attachments = {};
 				let attachs = results[1].filter(f => f.category !== 5)
