@@ -409,20 +409,24 @@ DROP PROCEDURE IF EXISTS `select_cohort_linkages_technology` //
 
 CREATE PROCEDURE `select_cohort_linkages_technology`(in cohort_info text)
 BEGIN
-	set @queryString = "";
-    
+	set @queryString = cohort_info;
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
+		set @query = concat(" select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id in (",   @queryString, " )  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc ") ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt  ;
+	   DEALLOCATE PREPARE stmt;
+    else
+        set @query = " select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc " ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt ;
+	    DEALLOCATE PREPARE stmt;
     end if;
-    
-    set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
-    
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* 
-	from cohort_basic cs, dlh cd, technology ct , cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
-    PREPARE stmt FROM @query;
-	EXECUTE stmt;
-	DEALLOCATE PREPARE stmt;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
