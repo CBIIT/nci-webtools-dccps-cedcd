@@ -65,7 +65,7 @@ const DataLinkageForm = ({ ...props }) => {
     })
 
     useEffect(() => {
-        if (!dataLinkage.hasLoaded) {
+        //if (!dataLinkage.hasLoaded) {
 
             fetch(`/api/questionnaire/dlh/${cohortId}`, {
                 method: 'POST',
@@ -75,7 +75,7 @@ const DataLinkageForm = ({ ...props }) => {
                         const data = result.data.info[0]
                         const files = result.data.files[0]
                         batch(() => {
-                            dispatch(allactions.dataLinkageActions.setHasLoaded(true))
+                            //dispatch(allactions.dataLinkageActions.setHasLoaded(true))
                             dispatch(allactions.dataLinkageActions.setHaveDataLink(data.dlh_linked_to_existing_databases))
                             dispatch(allactions.dataLinkageActions.setHaveDataLinkSpecify(data.dlh_linked_to_existing_databases_specify))
                             dispatch(allactions.dataLinkageActions.setHaveHarmonization(data.dlh_harmonization_projects))
@@ -87,15 +87,15 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
                             dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
                             dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
-                            if(files) dispatch(allactions.dataLinkageActions.dataFileName(files))
+                            dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 5, filename: '', status: 0}))
                             if (data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
                         })
                     }
                 })
-        }
-    }, [])
+        //}
+    }, [cohortId])
 
     const handleUpload = (fileData) => {
         if (fileData) {
@@ -882,11 +882,14 @@ const DataLinkageForm = ({ ...props }) => {
                                                     checked={dataLinkage.dataOnline === 0}
                                                     onClick={() => {
                                                         if (!isReadOnly) {
+                                                            let clone = {...errors}
                                                             dispatch(allactions.dataLinkageActions.setDataOnline(0));
                                                             dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
                                                             dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
                                                             dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
-                                                            setErrors({...errors, dataOnlineURL: ''})
+                                                            clone.dataOnlineURL= ''
+                                                            clone.dataFileName = 'Required field'
+                                                            setErrors(clone)
                                                             dispatch(setHasUnsavedChanges(true));
                                                         }
                                                     }}
@@ -906,11 +909,14 @@ const DataLinkageForm = ({ ...props }) => {
                                                 checked={dataLinkage.dataOnline === 0}
                                                 onClick={() => {
                                                     if (!isReadOnly) {
+                                                        let clone = {...errors}
                                                         dispatch(allactions.dataLinkageActions.setDataOnline(0));
                                                         //dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(0));
                                                         //dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(0));
                                                         dispatch(allactions.dataLinkageActions.setDataOnlineURL(''));
-                                                        setErrors({...errors, dataOnlineURL: ''})
+                                                        clone.dataOnlineURL= ''
+                                                        clone.dataFileName = 'Required field'
+                                                        setErrors(clone)
                                                         dispatch(setHasUnsavedChanges(true));
                                                     }
                                                 }}
