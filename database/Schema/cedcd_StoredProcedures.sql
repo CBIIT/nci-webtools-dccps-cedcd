@@ -373,8 +373,16 @@ BEGIN
       dlh_procedure_website as request_procedures_web,
       dlh_procedure_url as request_procedures_web_url,
       dlh_procedure_attached as request_procedures_pdf
-     from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
-    select * from cohort_document where cohort_id = c_id and status = 1;
+    from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
+	if exists ( select * from cohort_document where cohort_id = c_id and status = 1 and category= 5 and attachment_type = 0 ) then
+       select * from cohort_document where cohort_id = c_id and status = 1;
+    else 
+       select * from cohort_document where cohort_id = c_id and status = 1
+       union 
+	   select null,cohort_id , 0, 5, null, 
+       dlh_procedure_url as website, 1, null, null
+      f rom dlh where cohort_id = c_id and dlh_procedure_url is not null;
+    end if;
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
