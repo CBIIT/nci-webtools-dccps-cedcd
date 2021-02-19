@@ -2759,7 +2759,7 @@ BEGIN
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
 	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
-	select id as fileId, category as fileCategory, filename, status from cohort_document
+	select id as fileId, category as fileCategory,  coalesce(filename, '') as filename, status from cohort_document
     where cohort_id = targetID and category = 5;
 end//
 
