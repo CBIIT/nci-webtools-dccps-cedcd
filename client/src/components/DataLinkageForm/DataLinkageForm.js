@@ -1034,13 +1034,13 @@ const DataLinkageForm = ({ ...props }) => {
                                 </Col>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                                     {console.log(errors.dataFileName)}
-                                    If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
+                                    If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
                                 </Form.Label>
                                 {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
                                 <Col sm="12" className="pr-0">
-                                    <Col sm="2" className="px-0">
-                                    {
-                                        !isReadOnly &&
+                                   {
+                                        !isReadOnly && <Col sm="2" className="px-0">
+                                    
                                         <Form.Control
                                             type="file"
                                             name='cohortFile'
@@ -1057,8 +1057,8 @@ const DataLinkageForm = ({ ...props }) => {
                                                     }
                                                 }
                                             }} />
-                                    }
-                                    </Col>
+                                   
+                                    </Col> }
                                     <Col sm="9" className="px-0">
                                     {MfileLoading && (
                                         <span>
