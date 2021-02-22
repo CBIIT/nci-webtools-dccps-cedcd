@@ -1042,8 +1042,8 @@ const SpecimenForm = ({ ...props }) => {
 
                                 </Col>
                                 <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (select all that apply)
-                                    {+specimen.bioBloodBaseline === 1 && (specimen.bioBloodBaselineSerum === 0
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)<span style={{ color: 'red' }}>*</span>
+                                        {+specimen.bioBloodBaseline === 1 && (specimen.bioBloodBaselineSerum === 0
                                             && specimen.bioBloodBaselinePlasma === 0 && specimen.bioBloodBaselineBuffyCoat === 0 && specimen.bioBloodBaselineOtherDerivative === 0)
                                             && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>} </div>
                                     <CheckBoxInputs optionList={[
@@ -1069,8 +1069,8 @@ const SpecimenForm = ({ ...props }) => {
                                     {(errors.bioBloodOtherTime) && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>}
                                 </Col>
                                 <Col sm="12">
-                                    <div sm='12'>If collected, types of aliquots (select all that apply)
-                                    {+specimen.bioBloodOtherTime === 1 && (specimen.bioBloodOtherTimeSerum === 0 && specimen.bioBloodOtherTimePlasma === 0 && specimen.bioBloodOtherTimeBuffyCoat === 0 && specimen.bioBloodOtherTimeOtherDerivative === 0)
+                                    <div sm='12'>If collected, types of aliquots (select all that apply)<span style={{ color: 'red' }}>*</span>
+                                        {+specimen.bioBloodOtherTime === 1 && (specimen.bioBloodOtherTimeSerum === 0 && specimen.bioBloodOtherTimePlasma === 0 && specimen.bioBloodOtherTimeBuffyCoat === 0 && specimen.bioBloodOtherTimeOtherDerivative === 0)
                                             && saved && <span className="text-danger ml-3 font-weight-normal">Required Field</span>} </div>
                                     <CheckBoxInputs optionList={[
                                         { field_id: 'bioBloodOtherTimeSerum', label: 'Serum', disabled_id: 'bioBloodOtherTime' },
