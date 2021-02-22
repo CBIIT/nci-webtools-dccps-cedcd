@@ -1052,14 +1052,17 @@ const DataLinkageForm = ({ ...props }) => {
                                             onClick={e => e.target.value = null}
                                             onChange={e => {
                                                 if (!isReadOnly) {
-                                                    if(e.target.files[0].name.substr(-3) === 'pdf'){
+                                                    if(e.target.files[0].name.trim().endsWith('.pdf')){
                                                         setMfileLoading(true)
                                                         handleUpload(e.target.files, 5)
+                                                    }else{
+                                                        setErrors({...errors, dataFileName: 'Please upload a pdf file'})
                                                     }
                                                 }
                                             }} />
                                    
-                                    </Col> }
+                                    </Col> 
+                                    }
                                     <Col sm="9" className="px-0">
                                     {MfileLoading && (
                                         <span>
