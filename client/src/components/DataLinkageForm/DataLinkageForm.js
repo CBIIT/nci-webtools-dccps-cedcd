@@ -127,6 +127,7 @@ const DataLinkageForm = ({ ...props }) => {
 
     const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
         dispatch(allactions.dataLinkageActions.dataFileName({...dataLinkage.dataFileName, status: 0}))
+        setErrors({...errors, dataFileName: 'Required field'})
     }
 
 
