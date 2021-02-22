@@ -345,8 +345,10 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 3:
                         basic_info.specimenFileName.push(a)
                         break;
-                    default:
+                    case 4:
                         basic_info.publicationFileName.push(a)
+                        break;
+                    default:
                         break;
                 }
             }
