@@ -302,13 +302,12 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div className="w-100 text-sm-right text-center">
-                    <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
-                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save</Button>
+                    <Button variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
+                    <Button variant="primary" onClick={onConfirm}>Save</Button>
                 </div>
             })
         }
     }
-
     function handleSaveContinue() {
         let errors = getValidationErrors(form);
         let hasErrors = Object.entries(errors).length > 0;
@@ -327,8 +326,8 @@ const CancerInfoForm = ({ ...props }) => {
             updateModal({
                 show: true,
                 footer: <div className="w-100 text-sm-right text-center">
-                    <Button className="col-lg-2 col-md-6" variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
-                    <Button className="col-lg-2 col-md-6" variant="primary" onClick={onConfirm}>Save</Button>
+                    <Button variant="secondary" onClick={e => updateModal({ show: false })}>Cancel</Button>
+                    <Button variant="primary" onClick={onConfirm}>Save</Button>
                 </div>
             });
         }
