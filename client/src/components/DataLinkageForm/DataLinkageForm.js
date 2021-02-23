@@ -1050,6 +1050,7 @@ const DataLinkageForm = ({ ...props }) => {
                                     
                                         <Form.Control
                                             type="file"
+                                            accept=".pdf"
                                             name='cohortFile'
                                             id="inputGroupFile02"
                                             aria-describedby="inputGroupFileAddon02"
