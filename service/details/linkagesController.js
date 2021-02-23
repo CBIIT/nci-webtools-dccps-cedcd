@@ -153,7 +153,7 @@ exports.run = function (req, res) {
 					tmp.title = vl.title;
 				}
 				list.forEach(function (l) {
-					let v = l[vl.column] || 'N/A';
+					let v = l[vl.column];
 					if (vl.text) {
 						v = (v === "" || v === null ? "N/A" : v);
 					}
