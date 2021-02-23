@@ -1330,7 +1330,7 @@ const CohortForm = ({ ...props }) => {
                                         value={cohort.eligible_disease_cancer_specify}
                                         maxLength="100"
                                         placeholder="Max of 100 characters"
-                                        readOnly={!cohort.eligible_disease || isReadOnly}
+                                        readOnly={cohort.eligible_disease !==1 || isReadOnly}
                                         onChange={e =>
                                             dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
                                         } />

@@ -41,10 +41,12 @@ exports.run = function (req, res) {
 			list.forEach(function (l) {
 				let v = l["eligible_disease"];
 				if (v == 0) {
-					v = "Cancer Survivor";
+					//v = "Cancer Survivor";
+					v = "Generally Healthy";
 				}
 				else if (v == 1) {
-					v = "Generally Healthy";
+					//v = "Generally Healthy";
+					v = "Cancer Survivor";
 				}
 				else if (v == 2) {
 					v = "Other";
