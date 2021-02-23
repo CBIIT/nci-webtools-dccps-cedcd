@@ -75,9 +75,12 @@ var all = {
 	collected_specimen: {
 		"Blood": "bio_blood_baseline,bio_blood_other_time",
 		"Buccal/Saliva": "bio_buccal_saliva_baseline,bio_buccal_saliva_other_time",
+		"Feces": "bio_feces_baseline, bio_feces_other_time",
 		"Genetic Information": "bio_genotyping_data,bio_sequencing_data_exome,bio_sequencing_data_whole_genome,bio_epigenetic_or_metabolic_markers",
 		"Omics Data": "bio_other_omics_data",
-		"Tissue (includes tumor and/or normal)": "bio_tissue_baseline,bio_tissue_other_time"
+		"Others": "bio_other_baseline, bio_other_other_time",
+		"Tissue (includes tumor and/or normal)": "bio_tissue_baseline,bio_tissue_other_time",
+		"Urine": "bio_urine_baseline, bio_urine_other_time"
 	},
 	cancer: {
 		"Oropharyngeal": "oropharyngeal",
@@ -127,7 +130,7 @@ var all = {
 		"3": "Question for NCI CEDCD Researcher Team",
 		"4": "Other Issues"
 	},
-	mail:{
+	mail: {
 		"host": "mailfwd.nih.gov",
 		"port": 25,
 	}
