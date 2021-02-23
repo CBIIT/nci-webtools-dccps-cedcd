@@ -1037,7 +1037,7 @@ const DataLinkageForm = ({ ...props }) => {
                                 </Col>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                                     {console.log(errors.dataFileName)}
-                                    If no, please attach data sharing plan(PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
+                                    If no, please attach data sharing plan (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
                                 </Form.Label>
                                 {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
                                 <Col sm="12" className="pr-0">
