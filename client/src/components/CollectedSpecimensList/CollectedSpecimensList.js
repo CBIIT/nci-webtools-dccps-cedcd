@@ -8,9 +8,10 @@ class CollectedSpecimensList extends Component {
 			list: [
 				"Blood",
 				"Buccal/Saliva",
-				"Genetic Information",
-				"Omics Data",
-				"Tissue (includes tumor and/or normal)"
+				"Tissue (includes tumor and/or normal)",
+				"Urine",
+				"Feces",
+				"Others"
 			],
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
