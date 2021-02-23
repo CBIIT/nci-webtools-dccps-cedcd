@@ -216,7 +216,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         const cohort_errors = {}
         Object.assign(basic_info, {...results[0][0]}) //basic info
         Object.keys(basic_info).forEach(k => {
-            if(!['cohort_description', 'cohort_web_site', 'clarification_contact', 'eligible_disease',  'sameAsSomeone', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify','data_collected_in_person','data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other', 'enrollment_ongoing', 'enrollment_target', 'enrollment_year_complete','data_collected_other_specify', 'requireNone', 'requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther', 'strategy_routine', 'strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other', 'restrictions_other_specify', 'strategy_other_specify'].includes(k)){if(!basic_info[k]) cohort_errors[k] = "Required field"}
+            if(!['cohort_description', 'cohort_web_site', 'clarification_contact', 'eligible_disease',  'sameAsSomeone', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify','data_collected_in_person','data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other', 'enrollment_ongoing', 'enrollment_target', 'enrollment_year_complete', 'enrollment_year_end', 'data_collected_other_specify', 'requireNone', 'requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther', 'strategy_routine', 'strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other', 'restrictions_other_specify', 'strategy_other_specify'].includes(k)){if(!basic_info[k]) cohort_errors[k] = "Required field"}
             else{
                 switch(k){
                     case 'clarification_contact':
@@ -227,6 +227,10 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 'enrollment_year_complete':
                         if(basic_info.enrollment_ongoing || basic_info.enrollment_ongoing !== 0)
                             if(basic_info[k] === '') cohort_errors[k] = 'Required field'
+                        break;
+                    case 'enrollment_year_end':
+                        if(!basic_info.enrollment_ongoing)
+                            cohort_errors[k] = 'Required field'
                         break;
                     case 'data_collected_other_specify':
                         if(basic_info.data_collected_other && !basic_info[k]) cohort_errors[k]='Required field'
@@ -339,12 +343,14 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 1:
                         basic_info.mainFileName.push(a)
                         break;
-                    case 2:
+               
+                /*     case 2:
                         basic_info.dataFileName.push(a)
                         break;
                     case 3:
                         basic_info.specimenFileName.push(a)
                         break;
+                */                   
                     case 4:
                         basic_info.publicationFileName.push(a)
                         break;
@@ -370,15 +376,18 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 1:
                         basic_info.main_cohort_url.push(a.website)
                         break;
+                /*
                     case 2:
                         basic_info.data_url.push(a.website)
                         break;
                     case 3:
                         basic_info.specimen_url.push(a.website)
                         break;
+                */
                     case 4:
                         basic_info.publication_url.push(a.website)
                         break;
+                    default: break;
                 }
             }
         }
@@ -528,6 +537,7 @@ router.post('/dlh/:id', function (req, res) {
         dlh.info = result[0]
         dlh.completion = result[1]
         dlh.files = result[2]
+        dlh.website = result[3][0] ? result[3][0].website : ''
         logger.debug(dlh)
         if (Object.entries(dlh).length > 0)
             res.json({ status: 200, data: dlh })
@@ -771,7 +781,7 @@ router.post('/approve/:id', async function (request, response) {
     const { acronym } = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
     await mysql.query(
         `update cohort
-            set status = 'archived'
+            set status = 'archived', update_time = now()
             where 
                 acronym = ? and 
                 status = 'published'`,

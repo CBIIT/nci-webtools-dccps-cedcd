@@ -124,7 +124,8 @@ class Information extends Component {
 
 			// combination of  basic info request_procedures_web_url and attachments policies 
 			let has = false;  // has == true -> not provided 
-			let request_web_url = this.state.info.request_procedures_web_url;
+			let return_body = []
+/*			let request_web_url = this.state.info.request_procedures_web_url;
 			let return_body = []
 			// check if is a valid web url
 			if (!request_web_url.startsWith("http") && !request_web_url.startsWith("www") && !request_web_url.startsWith("wiki.")) {
@@ -137,14 +138,15 @@ class Information extends Component {
 					</li>
 				)
 			}
-
+*/
 			if (this.state.info.attachments && this.state.info.attachments.policies) {
 				// map return 
 				const links = this.state.info.attachments.policies.map((item, id) => {
 					const uid = "policy_" + id;
-					if (request_web_url !== "" && request_web_url.trim() == item.url.trim()) {
+			/*		if (request_web_url !== "" && request_web_url.trim() == item.url.trim()) {
 						return;
 					}
+			*/	
 					if (item.type === 1) {
 						has = true;
 						return_body.push(
@@ -184,6 +186,7 @@ class Information extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let info = result.data;
+				console.dir(info)
 				this.setState(prevState => (
 					{
 						hasMounted: true,
@@ -316,7 +319,7 @@ class Information extends Component {
 
 							{
 								(proceduresite || info.procedure_files.length > 0) && <div>
-									<h3>Data Requesting Procedure</h3>
+									<h3>Procedure For Requesting Data</h3>
 									<ul style={{ listStyle: 'none', paddingLeft: '0' }}>
 										{proceduresite}
 										{files}
@@ -348,7 +351,7 @@ class Information extends Component {
 						</CollapsiblePanel>
 						<CollapsiblePanel
 							condition={this.state.data}
-							panelTitle='Data, Biospecimen, and Authorship Policies'
+							panelTitle='Protocols and Authorship Policies'
 							onClick={this.dataClick}>
 							<div id="pol_attachments">
 								{this.renderLinks(2)}

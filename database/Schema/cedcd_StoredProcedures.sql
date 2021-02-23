@@ -369,20 +369,21 @@ DROP PROCEDURE IF EXISTS `select_cohort_description` //
 
 CREATE PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
-	select a.*,  dlh_procedure_online as request_procedures_none,
-      dlh_procedure_website as request_procedures_web,
-      dlh_procedure_url as request_procedures_web_url,
-      dlh_procedure_attached as request_procedures_pdf
+	select a.*,  dlh_procedure_online as request_procedures_none
+     -- dlh_procedure_website as request_procedures_web,
+      --  dlh_procedure_url as request_procedures_web_url,
+     --  dlh_procedure_attached as request_procedures_pdf
     from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
-	if exists ( select * from cohort_document where cohort_id = c_id and status = 1 and category= 5 and attachment_type = 0 ) then
-       select * from cohort_document where cohort_id = c_id and status = 1;
-    else 
+	-- if exists ( select * from cohort_document where cohort_id = c_id and status = 1 and category= 5 and attachment_type = 0 ) then
+       select * from cohort_document where cohort_id = c_id and status = 1 and category not in (2,3);
+    /*-- else 
        select * from cohort_document where cohort_id = c_id and status = 1
        union 
 	   select null,cohort_id , 0, 5, null, 
        dlh_procedure_url as website, 1, null, null
 	   from dlh where cohort_id = c_id and dlh_procedure_url is not null;
-    end if;
+       
+    end if; */
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
@@ -1399,14 +1400,14 @@ BEGIN
         
         set @questionnaireUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'));
         set @mainUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'));
-        set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
-        set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
+        -- set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
+        -- set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
         set @publicationUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'));
 		
         set @questionnaireFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
         set @mainFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainFileName'));
-        set @dataFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
-        set @specimenFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
+        -- set @dataFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
+        -- set @specimenFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
         set @publicationFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
         
         -- questionnaire/url-0
@@ -1429,7 +1430,7 @@ BEGIN
 
         -- data file/url-2
         SELECT 0 into i;
-
+/*
         WHILE i < JSON_LENGTH(@dataUrlEntry) DO
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
@@ -1443,7 +1444,7 @@ BEGIN
 		END WHILE;
         -- publication file/url-4
         SELECT 0 into i;
-
+*/
         WHILE i < JSON_LENGTH(@publicationUrlEntry) DO
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
@@ -1478,6 +1479,7 @@ BEGIN
 	else
 		update cohort_document set status = 0 where cohort_id = new_id and category = 1 and attachment_type = 1;
 	END IF;
+ /*   
 	IF JSON_LENGTH(@dataFiles) > 0 Then
 		call add_file_attachment(new_id, 2,JSON_OBJECT('filenames', @dataFiles )); 
 	 else
@@ -1488,6 +1490,7 @@ BEGIN
 	 else
 		update cohort_document set status = 0 where cohort_id = new_id and category = 3 and attachment_type = 1;
 	END IF;
+    */
 	IF JSON_LENGTH(@publicationFiles) > 0 Then
 		call add_file_attachment(new_id, 4,JSON_OBJECT('filenames', @publicationFiles ));
 	 else
@@ -1639,9 +1642,10 @@ BEGIN
     
     select `status` as cohort_status from cohort where id = targetID;
     
+    -- SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym, c.status FROM cohort_document cd
     SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, cd.status as status FROM cohort_document cd
      join cohort c on cd.cohort_id = c.id
-     WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
+     WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1 and category in (0, 1, 4);
 
 	select category as urlCategory, website from cohort_document where cohort_id=targetID and website not in('', 'null') and website is not null and status = 1 and attachment_type = 0;
 END //
@@ -2750,17 +2754,18 @@ BEGIN
 		,dlh_nih_biolincc
 		,dlh_nih_other
 		,dlh_procedure_online
-		,dlh_procedure_website
-		,dlh_procedure_url
-		,dlh_procedure_attached
+		-- ,dlh_procedure_website
+		-- ,dlh_procedure_url
+		-- ,dlh_procedure_attached
 		,dlh_procedure_enclave
 		,dlh_enclave_location
 		,create_time
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
 	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
-	select id as fileId, category as fileCategory,  coalesce(filename, '') as filename, status from cohort_document
-    where cohort_id = targetID and category = 5;
+    select id as fileId, category as fileCategory, coalesce(filename, '') as filename, status from cohort_document
+    where cohort_id = targetID and category = 5 and attachment_type = 1;
+    select website from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5;
 end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
@@ -2787,6 +2792,7 @@ BEGIN
     start transaction;
     set @dataFileName = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')));
     set @dataUrl = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')));
+    set @dataOnline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) in ('null',''), null , json_unquote(json_extract(info, '$.dataOnline'))); 
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2796,10 +2802,10 @@ BEGIN
 		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP'))) where cohort_id = `targetID`;
 		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC'))) where cohort_id = `targetID`;
 		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_online = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_online = @dataOnline where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
 		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) where cohort_id = `targetID`;
 		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
 		update dlh set update_time = NOW() where cohort_id = `targetID`;
@@ -2834,9 +2840,9 @@ BEGIN
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify')))
 			,NOW()

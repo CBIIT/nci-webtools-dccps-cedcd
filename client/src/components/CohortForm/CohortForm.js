@@ -2641,7 +2641,7 @@ const CohortForm = ({ ...props }) => {
                                                     </Table>
                                                 </td>
                                             </tr>
-                                            <tr>
+    {/*                                        <tr>
                                                 <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Data sharing policy</th>
                                                 <td className="p-0">
                                                     <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
@@ -2959,6 +2959,7 @@ const CohortForm = ({ ...props }) => {
                                                     </Table>
                                                 </td>
                                             </tr>
+*/}
                                             <tr>
                                                 <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Publication (authorship) policy</th>
                                                 <td className="p-0">
@@ -3436,7 +3437,7 @@ const CohortForm = ({ ...props }) => {
                                                 </td>
 
                                             </tr>
-                                            <tr>
+{/*                                            <tr>
                                                 <td className="bg-light-grey">Data sharing policy</td>
                                                 <td>
                                                     <Row className="w-100">
@@ -3733,6 +3734,7 @@ const CohortForm = ({ ...props }) => {
                                                     </Row>
                                                 </td>
                                             </tr>
+*/}
                                             <tr>
                                                 <td className="bg-light-grey">Publication(authorship) policy</td>
                                                 <td>

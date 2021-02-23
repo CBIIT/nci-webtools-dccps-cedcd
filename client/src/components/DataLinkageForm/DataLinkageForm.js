@@ -74,6 +74,7 @@ const DataLinkageForm = ({ ...props }) => {
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
                         const files = result.data.files[0]
+                        const website = result.data.website || ''
                         batch(() => {
                             //dispatch(allactions.dataLinkageActions.setHasLoaded(true))
                             dispatch(allactions.dataLinkageActions.setHaveDataLink(data.dlh_linked_to_existing_databases))
@@ -85,10 +86,15 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(allactions.dataLinkageActions.setbioLinCC(data.dlh_nih_biolincc))
                             dispatch(allactions.dataLinkageActions.setOtherRepo(data.dlh_nih_other))
                             dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
-                            dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
-                            dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
-                            dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 5, filename: '', status: 0}))
-                            if (data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
+                            //dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
+                            //dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
+                            if (data.dlh_procedure_online ===  0) dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 5, filename: '', status: 0}))
+                            //else dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 2, filename: '', status: 0}))
+                            else if (data.dlh_procedure_online === 1) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(website)) }
+                            else { 
+                                dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 5, filename: '', status: 0}))
+                                dispatch(allactions.dataLinkageActions.setDataOnlineURL(''))
+                             }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
                         })
@@ -332,7 +338,7 @@ const DataLinkageForm = ({ ...props }) => {
                             })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
-                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }else dispatch(fetchCohort(cohortId))
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
@@ -1035,7 +1041,7 @@ const DataLinkageForm = ({ ...props }) => {
                                 </Col>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                                     {console.log(errors.dataFileName)}
-                                    If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
+                                    If no, please attach data sharing plan (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
                                 </Form.Label>
                                 {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
                                 <Col sm="12" className="pr-0">
@@ -1044,6 +1050,7 @@ const DataLinkageForm = ({ ...props }) => {
                                     
                                         <Form.Control
                                             type="file"
+                                            accept=".pdf"
                                             name='cohortFile'
                                             id="inputGroupFile02"
                                             aria-describedby="inputGroupFileAddon02"
@@ -1080,22 +1087,12 @@ const DataLinkageForm = ({ ...props }) => {
                                     {dataLinkage.dataFileName.status > 0 && (
                                         <span>
                                             <a href={'../../../api/download/' + dataLinkage.dataFileName.filename} download={dataLinkage.dataFileName.filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{dataLinkage.dataFileName.filename}</a>
-                                            {!isReadOnly && dataLinkage.dataFileName.filename &&
-                                                <>
-                                                    {' '}(
-                                                    <span class="closer"
-                                                        onClick={() =>
-                                                            deleteFileFromList('mainFileName', dataLinkage.dataFileName.filename, dataLinkage.dataFileName.fileId)
-                                                        }>x</span>
-                                                    )
-                                                </>
-                                            }
                                         </span>
-                                    )
+                                        )
                                     }
                                     </Col>
                                 </Col>
-                               {/* <Col sm="9" className="px-0">
+                               {/* <Col sm="9" className="px-0"> code for multiple files
                                     {MfileLoading && (
                                         <span>
                                             Loading...
