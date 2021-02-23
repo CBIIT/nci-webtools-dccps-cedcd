@@ -648,18 +648,20 @@ router.get('/:id', function (req, res) {
 				info.cohort_description = basic.cohort_description;
 				info.request_procedures_web_url = "";
 				if([0,1].includes(basic.request_procedures_none)){
-					if (basic.request_procedures_none == 1)
-						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1) ? results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website : '';
+					if (basic.request_procedures_none === 1){
+						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 2 && f.status === 1) ? results[1].find(f => f.attachment_type === 0 && f.category === 2 && f.status === 1).website : '';
+					}
 					else {
 						results[1].forEach(f => {
-							if(f.attachment_type === 1 && f.category === 5 && f.status === 1 && f.filename) 
+							if(f.attachment_type === 1 && f.category === 2 && f.status === 1 && f.filename) 
 								info.procedure_files.push(f.filename)
 						});
 					
 					}
 				}
+				
 				info.attachments = {};
-				let attachs = results[1].filter(f => f.category !== 5)
+				let attachs = results[1].filter(f => f.category !== 2)
 				let tmp = [[], [], []];
 				attachs.forEach(function (attach) {
 					let idx = attach.category > 0 ? 1 : attach.category;
@@ -692,7 +694,7 @@ router.get('/:id', function (req, res) {
 							name: attach.filename
 						});
 					}*/
-					else {
+					else if([1, 4].includes(attach.category)){
 						//policies
 						if (info.attachments.policies == undefined) {
 							info.attachments.policies = [];

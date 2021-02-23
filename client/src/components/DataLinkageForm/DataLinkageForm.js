@@ -74,6 +74,7 @@ const DataLinkageForm = ({ ...props }) => {
                     if (result.data.info[0] !== undefined) {
                         const data = result.data.info[0]
                         const files = result.data.files[0]
+                        const website = result.data.website || ''
                         batch(() => {
                             //dispatch(allactions.dataLinkageActions.setHasLoaded(true))
                             dispatch(allactions.dataLinkageActions.setHaveDataLink(data.dlh_linked_to_existing_databases))
@@ -87,8 +88,9 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
                             dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
                             dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
-                            dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 5, filename: '', status: 0}))
-                            if (data.dlh_procedure_url) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(data.dlh_procedure_url)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
+                            if (data.dlh_procedure_online ===  0) dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 2, filename: '', status: 0}))
+                            else dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 2, filename: '', status: 0}))
+                            if (data.dlh_procedure_online === 1) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(website)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
                         })
@@ -332,7 +334,7 @@ const DataLinkageForm = ({ ...props }) => {
                             })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
-                            // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
+                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id))
                         }else dispatch(fetchCohort(cohortId))
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))

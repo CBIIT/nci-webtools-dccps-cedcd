@@ -316,7 +316,7 @@ class Information extends Component {
 
 							{
 								(proceduresite || info.procedure_files.length > 0) && <div>
-									<h3>Data Requesting Procedure</h3>
+									<h3>Procedure For Requesting Data</h3>
 									<ul style={{ listStyle: 'none', paddingLeft: '0' }}>
 										{proceduresite}
 										{files}
@@ -348,7 +348,7 @@ class Information extends Component {
 						</CollapsiblePanel>
 						<CollapsiblePanel
 							condition={this.state.data}
-							panelTitle='Data, Biospecimen, and Authorship Policies'
+							panelTitle='Protocals and Authorship Policies'
 							onClick={this.dataClick}>
 							<div id="pol_attachments">
 								{this.renderLinks(2)}
