@@ -79,7 +79,7 @@ var all = {
 		"Genetic Information": "bio_genotyping_data,bio_sequencing_data_exome,bio_sequencing_data_whole_genome,bio_epigenetic_or_metabolic_markers",
 		"Omics Data": "bio_other_omics_data",
 		"Others": "bio_other_baseline, bio_other_other_time",
-		"Tissue (includes tumor and/or normal)": "bio_tissue_baseline,bio_tissue_other_time",
+		"Tissue (include tumor and/or normal)": "bio_tissue_baseline,bio_tissue_other_time",
 		"Urine": "bio_urine_baseline, bio_urine_other_time"
 	},
 	cancer: {

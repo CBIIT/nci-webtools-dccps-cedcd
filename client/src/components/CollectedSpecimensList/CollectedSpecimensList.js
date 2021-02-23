@@ -8,7 +8,7 @@ class CollectedSpecimensList extends Component {
 			list: [
 				"Blood",
 				"Buccal/Saliva",
-				"Tissue (includes tumor and/or normal)",
+				"Tissue (include tumor and/or normal)",
 				"Urine",
 				"Feces",
 				"Others"
