@@ -376,15 +376,18 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 1:
                         basic_info.main_cohort_url.push(a.website)
                         break;
+                /*
                     case 2:
                         basic_info.data_url.push(a.website)
                         break;
                     case 3:
                         basic_info.specimen_url.push(a.website)
                         break;
+                */
                     case 4:
                         basic_info.publication_url.push(a.website)
                         break;
+                    default: break;
                 }
             }
         }

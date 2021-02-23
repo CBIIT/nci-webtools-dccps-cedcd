@@ -86,11 +86,15 @@ const DataLinkageForm = ({ ...props }) => {
                             dispatch(allactions.dataLinkageActions.setbioLinCC(data.dlh_nih_biolincc))
                             dispatch(allactions.dataLinkageActions.setOtherRepo(data.dlh_nih_other))
                             dispatch(allactions.dataLinkageActions.setDataOnline(data.dlh_procedure_online))
-                            dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
-                            dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
-                            if (data.dlh_procedure_online ===  0) dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 2, filename: '', status: 0}))
-                            else dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 2, filename: '', status: 0}))
-                            if (data.dlh_procedure_online === 1) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(website)) } else { dispatch(allactions.dataLinkageActions.setDataOnlineURL('')) }
+                            //dispatch(allactions.dataLinkageActions.setDataOnlinePolicy(Number(data.dlh_procedure_attached)))
+                            //dispatch(allactions.dataLinkageActions.setDataOnlineWebsite(Number(data.dlh_procedure_website)))
+                            if (data.dlh_procedure_online ===  0) dispatch(allactions.dataLinkageActions.dataFileName(files || {fileId: 0, fileCategory: 5, filename: '', status: 0}))
+                            //else dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 2, filename: '', status: 0}))
+                            else if (data.dlh_procedure_online === 1) { dispatch(allactions.dataLinkageActions.setDataOnlineURL(website)) }
+                            else { 
+                                dispatch(allactions.dataLinkageActions.dataFileName({fileId: 0, fileCategory: 5, filename: '', status: 0}))
+                                dispatch(allactions.dataLinkageActions.setDataOnlineURL(''))
+                             }
                             dispatch(allactions.dataLinkageActions.setCreatedRepo(data.dlh_procedure_enclave))
                             dispatch(allactions.dataLinkageActions.setCreatedRepoSpecify(data.dlh_enclave_location))
                         })
