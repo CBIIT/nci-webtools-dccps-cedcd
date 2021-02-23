@@ -1037,7 +1037,7 @@ const DataLinkageForm = ({ ...props }) => {
                                 </Col>
                                 <Form.Label column sm='12' style={{ fontWeight: 'normal' }}>
                                     {console.log(errors.dataFileName)}
-                                    If no, please attach data sharing (PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
+                                    If no, please attach data sharing plan(PDF): {saved && errors.dataFileName && <span className="text-danger ml-3 font-weight-normal">{errors.dataFileName}</span>}
                                 </Form.Label>
                                 {/*<Col sm={!isReadOnly ? "3" : "1"} className="pr-0"> */}
                                 <Col sm="12" className="pr-0">
@@ -1082,22 +1082,12 @@ const DataLinkageForm = ({ ...props }) => {
                                     {dataLinkage.dataFileName.status > 0 && (
                                         <span>
                                             <a href={'../../../api/download/' + dataLinkage.dataFileName.filename} download={dataLinkage.dataFileName.filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{dataLinkage.dataFileName.filename}</a>
-                                            {!isReadOnly && dataLinkage.dataFileName.filename &&
-                                                <>
-                                                    {' '}(
-                                                    <span class="closer"
-                                                        onClick={() =>
-                                                            deleteFileFromList('mainFileName', dataLinkage.dataFileName.filename, dataLinkage.dataFileName.fileId)
-                                                        }>x</span>
-                                                    )
-                                                </>
-                                            }
                                         </span>
-                                    )
+                                        )
                                     }
                                     </Col>
                                 </Col>
-                               {/* <Col sm="9" className="px-0">
+                               {/* <Col sm="9" className="px-0"> code for multiple files
                                     {MfileLoading && (
                                         <span>
                                             Loading...
