@@ -348,7 +348,7 @@ class Information extends Component {
 						</CollapsiblePanel>
 						<CollapsiblePanel
 							condition={this.state.data}
-							panelTitle='Protocals and Authorship Policies'
+							panelTitle='Protocols and Authorship Policies'
 							onClick={this.dataClick}>
 							<div id="pol_attachments">
 								{this.renderLinks(2)}
