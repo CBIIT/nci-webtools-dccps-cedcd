@@ -1499,7 +1499,7 @@ case when eligible_gender = 0 then 4
              when eligible_gender = 2 then 2
              else 3
              end,
-eligible_disease,
+case eligible_disease when 0 then 1 else 0 end as eligible_disease,
 eligible_disease_cancer_specify,
 eligible_disease_other_specify,
 enrollment_total,
