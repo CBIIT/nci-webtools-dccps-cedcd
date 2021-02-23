@@ -781,7 +781,7 @@ router.post('/approve/:id', async function (request, response) {
     const { acronym } = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
     await mysql.query(
         `update cohort
-            set status = 'archived'
+            set status = 'archived', update_time = now()
             where 
                 acronym = ? and 
                 status = 'published'`,

@@ -661,7 +661,9 @@ router.get('/:id', function (req, res) {
 				}
 				
 				info.attachments = {};
+				logger.debug(results[1])
 				let attachs = results[1].filter(f => f.category !== 5)
+				logger.debug(attachs)
 				let tmp = [[], [], []];
 				attachs.forEach(function (attach) {
 					let idx = attach.category > 0 ? 1 : attach.category;
