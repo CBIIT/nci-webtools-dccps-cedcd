@@ -229,7 +229,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                             if(basic_info[k] === '') cohort_errors[k] = 'Required field'
                         break;
                     case 'enrollment_year_end':
-                        if(!basic_info.enrollment_ongoing)
+                        if(!basic_info.enrollment_ongoing && !basic_info[k])
                             cohort_errors[k] = 'Required field'
                         break;
                     case 'data_collected_other_specify':
