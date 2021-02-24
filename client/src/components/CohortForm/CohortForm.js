@@ -542,11 +542,10 @@ const CohortForm = ({ ...props }) => {
                     {/* File list rows */}
                     <div className="mb-3">
                         {urls.map((url, index) =>{
-                            let maxLength = 40
-                            let domain = url.split('.').pop()
+                            let maxLength = 50
                             return <div className="my-1">
                                 <Col md="10" className="col-9" >
-                                    <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..."+domain : url}</a>
+                                    <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..." : url}</a>
                                 </Col>
                                 <Col md="2" className="col-2 text-center">
                                     <span>
