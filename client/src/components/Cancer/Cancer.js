@@ -178,7 +178,7 @@ class Cancer extends Component {
 		let content = "";
 		let exportTable = "";
 		if (this.state.result.list && this.state.result.list.length > 0) {
-			const topic = ["Cancer", "Gender"];
+			const topic = ["Cancer", "Sex"];
 			let cohorts = this.state.result.cohorts;
 			let data = Object.assign([], this.state.result.list);
 			const others = [];
