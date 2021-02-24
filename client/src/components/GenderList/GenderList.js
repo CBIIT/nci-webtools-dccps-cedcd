@@ -8,8 +8,7 @@ class GenderList extends Component {
 		super(props);
 
 		this.state = {
-			list: [
-			],
+			list: [],
 			lookup: {},
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
@@ -67,22 +66,21 @@ class GenderList extends Component {
 				let arr = [];
 				let dict = {};
 				genders.forEach(function (element) {
+					if (element.gender != 'All' && element.gender != 'Unknown')
+						element.gender = element.gender + 's';
+					if (element.gender === 'Unknown')
+						element.gender = 'Unknown/Not Reported';
 					arr.push({ gender: element.gender, id: element.id });
 					dict[element.id] = { gender: element.gender, id: element.id };
 				});
+
 				if (this._isMounted) {
 					this.setState({
 						list: arr,
 						lookup: dict
 					});
 				}
-				if (this.props.hasOnly) {
-					let allGenders = { ...this.state }
-					allGenders.list.sort((a, b) => b.id - a.id)
-					for (let k of allGenders.list)
-						if (k.gender != 'All' && k.gender != 'Unknown')
-							k.gender = k.gender + 's'
-				}
+
 			});
 	}
 
@@ -102,10 +100,10 @@ class GenderList extends Component {
 		let f_list = Object.assign([], this.state.list);
 
 		if (!hasUnknown) {
-			f_list = f_list.filter(r => r.gender != "Unknown");
+			f_list = f_list.filter(r => r.id != 3); // exclude 'Unknown/Not Reported'
 		}
 		if (!hasBoth) {
-			f_list = f_list.filter(r => r.gender != "All");
+			f_list = f_list.filter(r => r.id != 4); // exclude 'All'
 		}
 
 		/*f_list.forEach(alert(r => r.gender))*/
@@ -147,7 +145,7 @@ class GenderList extends Component {
 					const gender = lookup[item].gender;
 					return (
 						<li key={key}>
-							{this.props.hasOnly ? gender + "s" : gender}
+							{gender}
 						</li>
 					);
 				}
