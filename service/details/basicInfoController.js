@@ -26,7 +26,7 @@ exports.run = function (req, res) {
 			});
 			let tmp = {};
 			tmp.type = "data";
-			tmp.name = "Gender";
+			tmp.name = "Sex";
 			list.forEach(function (l) {
 				let v = l["gender"];
 				if (v == "") {
