@@ -543,7 +543,7 @@ const CohortForm = ({ ...props }) => {
                     <div className="mb-3">
                         {urls.map((url, index) =>
                             <div className="my-1">
-                                <Col md="10" className="col-xs-9">
+                                <Col md="10" className="col-xs-9" style={{overflow: 'scroll'}}>
                                     <a href={url} target="_blank">{url}</a>
                                 </Col>
                                 <Col md="2" className="col-xs-2 text-center">
