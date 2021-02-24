@@ -541,12 +541,13 @@ const CohortForm = ({ ...props }) => {
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {urls.map((url, index) =>
-                            <div className="my-1">
-                                <Col md="10" className="col-xs-9">
-                                    <a href={url} target="_blank">{url}</a>
+                        {urls.map((url, index) =>{
+                            let maxLength = 50
+                            return <div className="my-1">
+                                <Col md="10" className="col-9" >
+                                    <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..." : url}</a>
                                 </Col>
-                                <Col md="2" className="col-xs-2 text-center">
+                                <Col md="2" className="col-2 text-center">
                                     <span>
                                         {!isReadOnly &&
                                             <span className='closer'
@@ -575,7 +576,7 @@ const CohortForm = ({ ...props }) => {
                                         }
                                     </span>
                                 </Col>
-                            </div>
+                            </div>}
                         )}
                     </div>
                 </Col>
