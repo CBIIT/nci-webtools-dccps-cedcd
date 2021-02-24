@@ -224,7 +224,7 @@ class Enrollment extends Component {
 			}
 			content = sections.map((item, idx) => {
 				let key = "section_" + idx;
-				let label = item === "Unknown" ? item : item + "s";
+				let label = item === "Unknown" ? "Unknown/Not Reported" : item + "s";
 				return (
 					<div key={key}>
 						<label>
