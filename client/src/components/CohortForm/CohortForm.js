@@ -545,7 +545,9 @@ const CohortForm = ({ ...props }) => {
                             let maxLength = 50
                             return <div className="my-1">
                                 <Col md="10" className="col-9" >
-                                    <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..." : url}</a>
+                                    <Reminder message={url} info={true} disabled={url.length <= maxLength}>
+                                        <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..." : url}</a>
+                                    </Reminder>
                                 </Col>
                                 <Col md="2" className="col-2 text-center">
                                     <span>
