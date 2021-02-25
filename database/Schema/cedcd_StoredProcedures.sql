@@ -64,40 +64,65 @@ DROP PROCEDURE IF EXISTS `upsertEnrollment_count` //
 
 DROP PROCEDURE IF EXISTS `select_advanced_cohort` //
 
-CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population text,
-		in race text, in ethnicity text, 
-									in category text,in collected_specimen varchar(200),in cancer text,
-                                    in booleanOperationBetweenField text, in booleanOperationWithInField text,
-                                    in columnName varchar(40), in columnOrder varchar(10),
-									in pageIndex int, in pageSize int)
+CREATE PROCEDURE `select_advanced_cohort`(in gender text, in age_info varchar(100), in study_population varchar(2000),
+		in race varchar(2000), in ethnicity varchar(2000), 
+		in category varchar(2000),in collected_specimen varchar(2000),in cancer varchar(2000),
+		in booleanOperationBetweenField varchar(200), in booleanOperationWithInField varchar(200),
+		in columnName varchar(40), in columnOrder varchar(10),
+		in pageIndex int, in pageSize int)
 BEGIN
 	declare tmp text default '';
     declare v text default ''; 
 	declare i int default 0;
     declare tmp_count int default 0; 
+    declare len_gender int default 0;
+    declare len_age int default 0;
+    declare len_study int default 0;
+    declare len_race int default 0;
+    declare len_ethnicity int default 0;
+    declare len_category int default 0;
+    declare len_specimen int default 0;
+    declare len_cancer int default 0;
+    
+    set @gender_query="";
+    set @age_query="";
+	set @study_query="";
+    set @race_query="";
+    set @ethnicity_query="";
+    set @major_content_query="";
+	set @specimen_query="";
+    set @cancer_query="";
     
     set @and_query = "";
     set @or_query = "";
+  
+    set @globalANDOR = substring_index(booleanOperationBetweenField,',',1);
+    if @globalANDOR = "" then 
+     set @globalANDOR = " OR ";
+    end if;
+    set @condition_query ="";
     
-    set @gender_query = "";
     if gender != "" then
 		if locate("4", gender) <= 0 and (locate("1", gender) > 0 or locate("2", gender) > 0) then
 			set gender = concat(gender, ",4");
 		end if;
-		set @gender_query = concat("cs.eligible_gender_id in (",gender,") ");
-		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',1)),',',1));
+		set @gender_query = concat(" cs.cohort_id in (select distinct cohort_id from cohort_basic gendercs where gendercs.eligible_gender_id in (",gender,") ");
+		set tmp = substring_index(booleanOperationWithInField,',',1);
 		if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @gender_query);
-		else
-			set @or_query = concat(@or_query, " or ", @gender_query);
+            set @len_gender =  LENGTH(gender) - LENGTH(REPLACE(gender, ',', '')) + 1;
+			set @gender_query = concat( @gender_query, " group by cohort_id having sum(1) >= ", @len_gender, " ) ");
+            else
+            set @gender_query = concat( @gender_query, " ) ");
 		end if;
+       
 	end if;
 
     set i = 0;
-    set @age_query = "";
     if age_info != "" then
-		set tmp_count = 1+length(age_info) - length(replace(age_info,',','')); 
-		while i < tmp_count
+		set @len_age = 1+length(age_info) - length(replace(age_info,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',2)),',',1));
+        set @age_query = " cs.cohort_id in ( select distinct cohort_id from cohort_basic as cs where "; 
+     while i < @len_age
 		do
 			set i=i+1;
             set v = reverse(substring_index(reverse(substring_index(age_info,',',i)),',',1));
@@ -134,144 +159,113 @@ BEGIN
 			else
 				set @age_query = "";
             end if;
-			if i < tmp_count then
-				set @age_query = concat(@age_query," or ");
+			if i < @len_age then
+				set @age_query = concat(@age_query," ", @andor," ");
             end if;
 		end while;
-        
-		set @age_query = concat("(",@age_query,") ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',2)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @age_query);
-		else
-			set @or_query = concat(@or_query, " or ", @age_query);
-        end if;
-    end if;
+        set @age_query = concat(@age_query," ) ");
+	end if;
     
-    set @study_query = "";
     if study_population != "" then
-		set @study_query = concat("cs.eligible_disease in (",study_population,") ");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',3)),',',1));
+        set @len_study = 1+length(study_population) - length(replace(study_population,',','')); 
+        set @study_query = concat(" cs.cohort_id in ( select distinct cohort_id from cohort_basic stcs where stcs.eligible_disease in (",study_population,") ");
+        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',3)),',',1));
         if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @study_query);
+			set @study_query = concat(@study_query, " group by cohort_id having sum(1) >=",  @len_study, " ) " );
 		else
-			set @or_query = concat(@or_query, " or ", @study_query);
+            set @study_query = concat(@study_query, " ) ");
         end if;
     end if;
     
-    set @enrollment_race_query = "";
+    set @race_query = "";
     if race != "" then
-		set @enrollment_race_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where race_id in (",race,") and enrollment_counts > 0)");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',4)),',',1));
+        set @len_race = 1+length(race) - length(replace(race,',','')); 
+        set tmp =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',4)),',',1));
+		set @race_query = concat(" cs.cohort_id in ( select distinct cohort_id from enrollment_count where race_id in (",race,") and enrollment_counts > 0 ");
         if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @enrollment_race_query);
+			set @race_query = concat( @race_query, " group by cohort_id having sum(1) >= ", @len_race , ") ");
 		else
-			set @or_query = concat(@or_query, " or ", @enrollment_race_query);
+            set @race_query = concat(@race_query, " ) ");
         end if;
     end if;
     
-    set @enrollment_ethnicity_query = "";
+    set @ethnicity_query = "";
     if ethnicity != "" then
-		set @enrollment_ethnicity_query = concat("cs.cohort_id in (select distinct cohort_id from enrollment_count where ethnicity_id in (",ethnicity,") and enrollment_counts > 0)");
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',5)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @enrollment_ethnicity_query);
+        set @len_ethnicity = 1+length(ethnicity) - length(replace(ethnicity,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',5)),',',1));
+		set @ethnicity_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+        from enrollment_count where ethnicity_id in (",ethnicity,") and enrollment_counts > 0");
+        if @andor = "AND" then
+			set @ethnicity_query = concat(@ethnicity_query, " group by cohort_id having sum(1) >=  ", @len_ethnicity, " ) ");
 		else
-			set @or_query = concat(@or_query, " or ", @enrollment_ethnicity_query);
+            set @ethnicity_query = concat(@ethnicity_query, " ) ");
         end if;
     end if;
     
-    set @major_content_query = "";
     if category != "" then
-      if category = "99" then
-        set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
-      elseif locate("99", category) > 0 then
-        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
+		set @len_category = 1+length(category) - length(replace(category,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
+      if locate("99", category) > 0 then
+        set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1
+        union 
+        select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
-        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) 
-        union
-        select distinct cohort_id from cancer_info where ci_cancer_treatment_data=1 ");
+        where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       else
-		     set @major_content_query = concat(" cs.cohort_id in (select distinct cohort_id 
+		set @major_content_query = concat(" cs.cohort_id in ( select distinct cohort_id 
         from major_content where category_id in ( select ld.id from lu_data_category ld , v_lu_data_category vld 
         where ld.category=vld.data_category and vld.id in (",category,")) ", " and (baseline=1 or followup = 1) ");
       end if;
-	
-  
-       set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1));
-        if tmp = "AND" then
-			set @len = LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1;
-			set @major_content_query = concat(@major_content_query, " having sum(1) >= ", @len);
-        end if;
-        set @major_content_query = concat(@major_content_query, " )");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',6)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @major_content_query);
+
+        if @andor = "AND" then
+			set @major_content_query = concat(@major_content_query, " group by cohort_id having sum(1) >= ", @len_category, " ) ");
 		else
-			set @or_query = concat(@or_query, " or ", @major_content_query);
+            set @major_content_query = concat(@major_content_query, " ) ");
         end if;
+       
     end if;
     
     set @specimen_query = "";
     if collected_specimen != "" then
-    
-		set @operator = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1));
-        
-		set tmp_count = 1+length(collected_specimen) - length(replace(collected_specimen,',','')); 
-		while i < tmp_count
+        set @len_specimen = 1+length(collected_specimen) - length(replace(collected_specimen,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1));
+        set tmp="";
+		while i < @len_specimen
 		do
 			set i=i+1;
 			set tmp = concat(tmp,reverse(substring_index(reverse(substring_index(collected_specimen,',',i)),',',1)),"=1");
-            if i < tmp_count then
-				set tmp = concat(tmp," ", @operator, " ");
+            if i < @len_specimen then
+				set tmp = concat(tmp," ", @andor, " ");
             end if;
 		end while;
-
-		set @specimen_query = concat(" cs.cohort_id in (select cohort_id from v_specimen where 1=1 ", "and (",tmp,") )");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',7)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @specimen_query);
-		else
-			set @or_query = concat(@or_query, " or ", @specimen_query);
-        end if;
+		set @specimen_query = concat(" cs.cohort_id in ( select cohort_id from v_specimen where 1=1 ", "and (",tmp,")  )");
 	end if;
         
-        
-	set @cancer_query = "";
     if cancer != "" then
-		set tmp = reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1));
-        if tmp = "OR" then
-			set @cancer_query = concat("and cs.cohort_id in (select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ");
-		elseif tmp = "AND" then
-			set @len = LENGTH(cancer) - LENGTH(REPLACE(cancer, ',', '')) + 1;
-			set @cancer_query = concat("and cs.cohort_id in (select t.cohort_id from ( select cohort_id, cancer_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
-			set @cancer_query = concat(@cancer_query, " having sum(1) >= ", @len);
-        end if;
-		set @cancer_query = concat(@cancer_query,") ");
-        
-        set tmp = reverse(substring_index(reverse(substring_index(booleanOperationBetweenField,',',8)),',',1));
-        if tmp = "AND" then
-			set @and_query = concat(@and_query, " and ", @cancer_query);
-		else
-			set @or_query = concat(@or_query, " or ", @cancer_query);
+        set @len_cancer = 1+length(cancer) - length(replace(cancer,',','')); 
+        set @andor =  reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1));
+        if @andor  = "OR" then
+			set @cancer_query = concat(" cs.cohort_id in ( select distinct cohort_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 ) ");
+		elseif@andor = "AND" then
+			set @cancer_query = concat(" cs.cohort_id in ( select t.cohort_id from ( select cohort_id, cancer_id from cancer_count where cancer_id in (",cancer,") and cancer_counts > 0 group by cohort_id, cancer_id ) as t group by t.cohort_id ");
+			set @cancer_query = concat(@cancer_query, " having sum(1) >= ", @len_cancer, " ) ");
         end if;
     end if;
     
     set @query = "select sql_calc_found_rows cs.cohort_id as id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time,
 	sum(ec.enrollment_counts) as enrollment_total FROM cohort_basic cs, enrollment_count ec, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status) = 'published' and cs.cohort_id = ec.cohort_id  ";
-    
-    if @and_query = "" and @or_query = "" then
-		set @query = concat(@query, " ");
-    elseif @and_query != "" and @or_query = "" then
-		set @query = concat(@query, @and_query);
-    elseif @and_query = "" and @or_query != "" then
-		set @or_query = SUBSTRING(@or_query, 5);
-        set @query = concat(@query, " and (", @or_query, ")");
-    else
-		set @query = concat(@query, @and_query, @or_query);
+	select concat(case when @gender_query != "" then concat(@gender_query, @globalANDOR) else "" end,
+        case when @age_query != "" then  concat(@age_query, @globalANDOR) else "" end,
+         case when @study_query != "" then  concat(@study_query, @globalANDOR) else "" end,
+          case when @race_query != "" then  concat(@race_query, @globalANDOR) else "" end, 
+          case when @ethnicity_query != "" then  concat(@ethnicity_query, @globalANDOR) else "" end,
+          case when @major_content_query != "" then  concat(@major_content_query, @globalANDOR) else "" end,
+         case when @specimen_query != "" then concat(@specimen_query, @globalANDOR) else "" end,
+          @cancer_query ) into @condition_query;
+          set @condition_query = TRIM(trailing @globalANDOR from rtrim(@condition_query));
+	if(@condition_query != "") then  
+	   set @query = concat(@query, " and ( ", @condition_query, " ) ");
     end if;
     
     set @groupBy = " group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time ";
@@ -289,6 +283,7 @@ BEGIN
     end if;
     
     set @query = concat(@query, @groupBy, @orderBy, @paging);
+   -- select @query;
 	PREPARE stmt FROM @query;
 	EXECUTE stmt;
     select found_rows() as total;
@@ -374,12 +369,21 @@ DROP PROCEDURE IF EXISTS `select_cohort_description` //
 
 CREATE PROCEDURE `select_cohort_description`(in c_id int(11))
 BEGIN
-	select a.*,  dlh_procedure_online as request_procedures_none,
-      dlh_procedure_website as request_procedures_web,
-      dlh_procedure_url as request_procedures_web_url,
-      dlh_procedure_attached as request_procedures_pdf
-     from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
-    select * from cohort_document where cohort_id = c_id and status = 1;
+	select a.*,  dlh_procedure_online as request_procedures_none
+     -- dlh_procedure_website as request_procedures_web,
+      --  dlh_procedure_url as request_procedures_web_url,
+     --  dlh_procedure_attached as request_procedures_pdf
+    from cohort_basic a join dlh b on a.cohort_id=b.cohort_id where a.cohort_id = c_id;
+	-- if exists ( select * from cohort_document where cohort_id = c_id and status = 1 and category= 5 and attachment_type = 0 ) then
+       select * from cohort_document where cohort_id = c_id and status = 1 and category not in (2,3);
+    /*-- else 
+       select * from cohort_document where cohort_id = c_id and status = 1
+       union 
+	   select null,cohort_id , 0, 5, null, 
+       dlh_procedure_url as website, 1, null, null
+	   from dlh where cohort_id = c_id and dlh_procedure_url is not null;
+       
+    end if; */
     select * from person where cohort_id = c_id and category_id in (1,3,4);
 END //
 
@@ -414,20 +418,24 @@ DROP PROCEDURE IF EXISTS `select_cohort_linkages_technology` //
 
 CREATE PROCEDURE `select_cohort_linkages_technology`(in cohort_info text)
 BEGIN
-	set @queryString = "";
-    
+	set @queryString = cohort_info;
     if cohort_info != "" then
-		set @queryString = concat(@queryString, "and cs.cohort_id in (",cohort_info,") ");
+		set @query = concat(" select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id in (",   @queryString, " )  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc ") ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt  ;
+	   DEALLOCATE PREPARE stmt;
+    else
+        set @query = " select a.*, ct.* from ( select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.* 
+	from cohort_basic cs, dlh cd,  cohort ch
+	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id  ) as a 
+    left join technology ct on a.c_id = ct.cohort_id  order by a.cohort_acronym asc " ;
+       PREPARE stmt FROM @query;
+	   EXECUTE stmt ;
+	    DEALLOCATE PREPARE stmt;
     end if;
-    
-    set @queryString = concat(@queryString, concat(" order by cs.cohort_acronym asc"));
-    
-    set @query = concat("select cs.cohort_id as c_id,cs.cohort_name,cs.cohort_acronym,cd.*, ct.* 
-	from cohort_basic cs, dlh cd, technology ct , cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cs.cohort_id = cd.cohort_id and cs.cohort_id = ct.cohort_id ",@queryString);
-    PREPARE stmt FROM @query;
-	EXECUTE stmt;
-	DEALLOCATE PREPARE stmt;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -500,7 +508,7 @@ DROP PROCEDURE IF EXISTS `select_cohort_lookup` //
 CREATE PROCEDURE `select_cohort_lookup`()
 BEGIN
 	  select * from lu_gender;
-    select * from lu_cancer where id < 29 order by case when id=1 then 'zzz' else cancer end, cancer;
+    select * from lu_cancer where id <= 29 order by case when id=1 then 'zza' when id=29 then 'zzz' else cancer end, cancer;
     select * from v_lu_data_category;
     select * from lu_ethnicity;
     select * from lu_race order by case when id=7 then 'zzz' else race end, race;
@@ -537,9 +545,9 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cohort` //
 
-CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population text, 
-									in race text, in ethnicity text, 
-									in category text,in collected_specimen varchar(200),in cancer text,
+CREATE PROCEDURE `select_cohort`(in gender text,in age_info varchar(100), in study_population varchar(1000), 
+									in race varchar(1000), in ethnicity varchar(1000), 
+									in category varchar(1000),in collected_specimen varchar(2000),in cancer varchar(2000),
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
 BEGIN
@@ -1079,7 +1087,10 @@ BEGIN
     else
         select success;
     END IF;
-    
+    set @query1 = "SELECT page_code, status from cohort_edit_status where cohort_id = ? ";
+      PREPARE stmt1 FROM @query1;
+    EXECUTE stmt1 using @cohort_id;
+    DEALLOCATE PREPARE stmt1;
 END //
 
 
@@ -1087,11 +1098,11 @@ END //
 -- Stored Procedure: select_cancer_counts
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_cancer_counts` //
-CREATE PROCEDURE `select_cancer_counts`(in gender text, in cancer text,in cohort text)
-BEGIN
-    set @queryString = "select cc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, lg.gender, cc.cancer_id, lc.cancer, cc.cancer_counts 
-	from cancer_count cc, cohort_basic cs, lu_gender lg, lu_cancer lc, cohort ch
-	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and cc.cohort_id = cs.cohort_id and cc.gender_id = lg.id and cc.cancer_id = lc.id ";
+CREATE PROCEDURE `select_cancer_counts`(in gender varchar(200), in cancer varchar(1000),in cohort varchar(1000))
+BEGIN 
+    set @queryString = " ( select cc.cohort_id,concat(cc.gender_id,'_',cc.cancer_id) as u_id, cc.gender_id, cc.cancer_id, 
+    sum(case when IFNULL(cc.cancer_counts, 0) > 0 then cc.cancer_counts else 0 end) as cancer_counts 
+	from cancer_count cc , cohort ch WHERE lower(ch.status)='published' and ch.id = cc.cohort_id  ";
     
     if gender != "" then
 		set @queryString = concat(@queryString, "and cc.gender_id in (",gender,") ");
@@ -1102,23 +1113,35 @@ BEGIN
     end if;
     
     if cohort != "" then
-		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") ");
+		set @queryString = concat(@queryString, "and cc.cohort_id in (",cohort,") group by cc.cohort_id, u_id, cc.gender_id, cc.cancer_id ) as ac , ");
+    else
+        set @filterString = "";
+        select concat(
+        case when gender != "" then concat(" and tc.gender_id in (",gender,") " ) else "" end,
+        case when cancer != "" then  concat(" and tc.cancer_id in (",cancer,")  ") else "" end ) into @filterString;
+        set @queryString = concat(@queryString, " and cc.cohort_id in (select tc.cohort_id from cancer_count tc where abs(IFNULL(tc.cancer_counts, 0)) >=0  ", @filterString,
+        " group by tc.cohort_id having sum(case when IFNULL(tc.cancer_counts, 0) > 1  then tc.cancer_counts else 0 end)  )  group by cc.cohort_id, u_id, cc.gender_id, cc.cancer_id ) as ac ,");
     end if;
-    
-    set @query = concat(@queryString, " order by cc.cancer_id, cc.gender_id, cs.cohort_acronym");
+    set @query = '';
+    set @query = concat("select ac.cohort_id, cs.cohort_name, cs.cohort_acronym,ac.u_id, ac.gender_id, lg.gender, ac.cancer_id, lc.cancer, ac.cancer_counts 
+	    from ", @queryString, "  cohort_basic cs, lu_gender lg, lu_cancer lc 
+	    WHERE ac.cohort_id = cs.cohort_id and ac.gender_id = lg.id and ac.cancer_id = lc.id 
+        order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id, cs.cohort_acronym");
+  
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
-END //
+END//
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: select_enrollment_counts
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_enrollment_counts` //
 
-CREATE PROCEDURE `select_enrollment_counts`(in gender text, in race text,in ethnicity text,in cohort text)
+CREATE PROCEDURE `select_enrollment_counts`(in gender varchar(200), in race varchar(500),in ethnicity varchar(500),in cohort varchar(1000) )
 BEGIN
-    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, ec.enrollment_counts 
+    set @queryString = "select ec.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) as u_id, ec.gender_id, lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, 
+	(case when IFNULL(ec.enrollment_counts,0) > 0 then ec.enrollment_counts else 0 end ) as enrollment_counts  
 	from enrollment_count ec, cohort_basic cs, lu_gender lg, lu_ethnicity le, lu_race lr, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and ec.cohort_id = cs.cohort_id and ec.gender_id = lg.id and ec.ethnicity_id = le.id and ec.race_id = lr.id ";
     
@@ -1136,10 +1159,20 @@ BEGIN
     
     if cohort != "" then
 		set @queryString = concat(@queryString, "and ec.cohort_id in (",cohort,") ");
+    else
+        set @filterString = "";
+        select concat(
+        case when gender != "" then concat(" and tc.gender_id in (",gender,") " ) else "" end,
+        case when race != "" then  concat(" and tc.race_id in (",race,")  ") else "" end,
+		case when ethnicity != "" then  concat(" and tc.ethnicity_id in (",ethnicity,")  ") else "" end ) into @filterString;
+        set @queryString = concat(@queryString, "and ec.cohort_id in (select tc.cohort_id from enrollment_count tc where abs(IFNULL(tc.enrollment_counts, 0)) >=0  ", @filterString,
+        " group by tc.cohort_id having sum(case when IFNULL(tc.enrollment_counts, 0) > 1  then tc.enrollment_counts else 0 end)  ) ");
     end if;
     
     -- set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
-	set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, ec.race_id, cs.cohort_acronym");
+	set @query = concat(@queryString, " order by ec.gender_id, le.ethnicity, 
+    case when ec.race_id = 3 then 4.5 
+    when ec.race_id = 6 then 8 else ec.race_id end, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -1150,9 +1183,10 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `select_specimen_counts` //
 
-CREATE PROCEDURE `select_specimen_counts`(in specimen text, in cancer text,in cohort text)
+CREATE PROCEDURE `select_specimen_counts`(in specimen varchar(1000), in cancer varchar(1000),in cohort varchar(1000))
 BEGIN
-    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, sc.specimens_counts 
+    set @queryString = "select sc.cohort_id, cs.cohort_name, cs.cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) as u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, 
+		(case when IFNULL(sc.specimens_counts,0) > 0 then sc.specimens_counts else 0 end ) as specimens_counts    
 	from specimen_count sc, cohort_basic cs, lu_specimen ls, lu_cancer lc, cohort ch
 	WHERE ch.id = cs.cohort_id and lower(ch.status)='published' and sc.cohort_id = cs.cohort_id and sc.specimen_id = ls.id and sc.cancer_id = lc.id ";
     
@@ -1168,7 +1202,7 @@ BEGIN
 		set @queryString = concat(@queryString, "and sc.cohort_id in (",cohort,") ");
     end if;
     
-    set @query = concat(@queryString, " order by sc.specimen_id, sc.cancer_id, cs.cohort_acronym");
+    set @query = concat(@queryString, " order by ls.specimen, case when lc.cancer = 'All Other Cancers' then 'zza' when lc.cancer = 'No Cancer' then 'zzz' else lc.cancer end asc, cs.cohort_acronym");
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
 	DEALLOCATE PREPARE stmt;
@@ -1184,24 +1218,30 @@ BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
     DECLARE user_id INT DEFAULT 1;
-	
-    DECLARE flag INT DEFAULT 1;
 
+    DECLARE flag INT DEFAULT 1;
+ 	
     DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
-
+   
+	set @acronym = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_acronym')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_acronym')));
+    
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = `targetID`;
     set user_id = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')) in ('null', '') , 1, JSON_UNQUOTE(JSON_EXTRACT(info, '$.userID')));
 
-    IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id, user_id); 
+    IF @cohort_status = 'published' then
+	   IF exists (select acronym from cohort where acronym is not null and acronym = @acronym and status not in ('published', 'archived', 'submitted', 'in review')) Then
+			select id into new_id from cohort where acronym = @acronym and status not in ('published', 'archived', 'submitted', 'in review');
+	   ELSE 
+			call select_unpublished_cohort_id(targetID, new_id, user_id); 
+       END IF;
     else 
        set new_id = targetID;
     END IF;
-
+  
   START transaction;
   
 	drop table if exists temp_PI_IDS;
@@ -1211,7 +1251,6 @@ BEGIN
     
 	SELECT `status` INTO @cohort_status FROM cohort WHERE id = new_id;
 
-    SET @completionDate = JSON_UNQUOTE(JSON_EXTRACT(info, '$.completionDate'));
     SET @latest_cohort = new_id;
 	UPDATE `cohort_basic` 
 	SET 
@@ -1219,7 +1258,7 @@ BEGIN
 		-- date_completed =if(@completionDate is not null and @completionDate != '' and @completionDate in ('null', ''), replace(replace(@completionDate, 'T', ' '), 'Z', ''), NOW()),
 		clarification_contact = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.clarification_contact'))),
 		sameAsSomeone = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sameAsSomeone'))),
-		cohort_description = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description'))),
+		cohort_description = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description')) in ('null', ''), null, RTRIM(LTRIM(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_description'))))),
 		eligible_gender_id = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_gender_id'))),
 		eligible_disease = IF(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease'))),
 		eligible_disease_cancer_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.eligible_disease_cancer_specify'))),
@@ -1358,21 +1397,19 @@ BEGIN
 		
 		delete from person where cohort_id = new_id and category_id = 3 and id not in (select upToDatePIId from temp_PI_IDS);
 		TRUNCATE TABLE mapping_old_PI_Id_To_New;
-
-        -- END IF; */
-        -- attachment_type: 1 for files, 0 for websites
-        -- category: 1 for main website, 2 for questionnaire, 3 for main protocol, 4 for data policy, 5 for specimen, 6 for publication
-        -- set @questionnaireFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
-        -- set @mainFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainFileName'));
-        -- set @dataFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
-		-- set @specimenFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
-        -- set @publicationFileEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
         
         set @questionnaireUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaire_url'));
         set @mainUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.main_cohort_url'));
-        set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
-        set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
+        -- set @dataUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_url'));
+        -- set @specimenUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimen_url'));
         set @publicationUrlEntry = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publication_url'));
+		
+        set @questionnaireFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.questionnaireFileName'));
+        set @mainFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.mainFileName'));
+        -- set @dataFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName'));
+        -- set @specimenFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.specimenFileName'));
+        set @publicationFiles = JSON_UNQUOTE(JSON_EXTRACT(info, '$.publicationFileName'));
+        
         -- questionnaire/url-0
 		SELECT 0 into i;
 
@@ -1393,7 +1430,7 @@ BEGIN
 
         -- data file/url-2
         SELECT 0 into i;
-
+/*
         WHILE i < JSON_LENGTH(@dataUrlEntry) DO
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 2, '', JSON_UNQUOTE(JSON_EXTRACT(@dataUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
@@ -1407,11 +1444,12 @@ BEGIN
 		END WHILE;
         -- publication file/url-4
         SELECT 0 into i;
-
+*/
         WHILE i < JSON_LENGTH(@publicationUrlEntry) DO
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 4, '', JSON_UNQUOTE(JSON_EXTRACT(@publicationUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
 			SELECT i + 1 INTO i;
 		END WHILE;
+
  commit;
 	
     SELECT flag AS rowsAffacted;
@@ -1419,17 +1457,45 @@ BEGIN
 	`name`, `position`, institution, phone, country_code,
 	email, create_time, update_time from person
 	where cohort_id = new_id and category_id = 3;
-	SELECT new_id as duplicated_cohort_id;
+	 SELECT new_id as duplicated_cohort_id;
     if exists (select * from cohort where id = new_id and status = 'new') then
 		update cohort set status = 'draft',  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
         update cohort set  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 	end if;
-	SELECT `status` from cohort where id = new_id;
+	 SELECT `status` from cohort where id = new_id;
 
-	SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
-    
+	 SELECT page_code, status from cohort_edit_status where cohort_id = new_id;
+     
+	 IF JSON_LENGTH(@questionnaireFiles) > 0 Then
+		call add_file_attachment(new_id, 0,JSON_OBJECT('filenames', @questionnaireFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 0 and attachment_type = 1;
+	 END IF;
+
+	IF JSON_LENGTH(@mainFiles) > 0 Then
+		call add_file_attachment(new_id, 1,JSON_OBJECT('filenames', @mainFiles ));
+	else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 1 and attachment_type = 1;
+	END IF;
+ /*   
+	IF JSON_LENGTH(@dataFiles) > 0 Then
+		call add_file_attachment(new_id, 2,JSON_OBJECT('filenames', @dataFiles )); 
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 2 and attachment_type = 1;
+	END IF;
+	IF JSON_LENGTH(@specimenFiles) > 0 Then
+		call add_file_attachment(new_id, 3,JSON_OBJECT('filenames', @specimenFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 3 and attachment_type = 1;
+	END IF;
+    */
+	IF JSON_LENGTH(@publicationFiles) > 0 Then
+		call add_file_attachment(new_id, 4,JSON_OBJECT('filenames', @publicationFiles ));
+	 else
+		update cohort_document set status = 0 where cohort_id = new_id and category = 4 and attachment_type = 1;
+	END IF;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1460,7 +1526,7 @@ BEGIN
     
     
   if columnName != "" then
-		set @orderBy = concat(" order by ",columnName," ",columnOrder," ");
+		set @orderBy = concat(" order by ch.",columnName," ",columnOrder," ");
 	else
 		set @orderBy = "order by ch.id desc";
   end if;
@@ -1503,37 +1569,37 @@ BEGIN
 		-- cohort_id
         cohort_name
         ,cohort_acronym
-        ,cohort_web_site
+        ,coalesce(cohort_web_site, '') as cohort_web_site
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') as completionDate
         ,clarification_contact
         ,sameAsSomeone
-        ,cohort_description
+        ,coalesce(LTRIM(cohort_description), '') as cohort_description
         ,eligible_gender_id
         ,eligible_disease
-        ,eligible_disease_cancer_specify
-        ,eligible_disease_other_specify
-        ,enrollment_total
-        ,enrollment_year_start
-        ,enrollment_year_end
+        ,coalesce(eligible_disease_cancer_specify, '') as eligible_disease_cancer_specify
+        ,coalesce(eligible_disease_other_specify, '') as eligible_disease_other_specify
+        ,coalesce(enrollment_total, '') as enrollment_total
+        ,coalesce(enrollment_year_start, '') as enrollment_year_start
+        ,coalesce(enrollment_year_end, '') as enrollment_year_end
         ,enrollment_ongoing
-        ,enrollment_target
-        ,enrollment_year_complete
-        ,enrollment_age_min
-        ,enrollment_age_max
-        ,enrollment_age_median
-        ,enrollment_age_mean
-        ,current_age_min
-        ,current_age_max
-        ,current_age_median
-        ,current_age_mean
-        ,time_interval
-        ,most_recent_year
+        ,coalesce(enrollment_target, '') as enrollment_target
+        ,coalesce(enrollment_year_complete, '') as enrollment_year_complete
+        ,coalesce(enrollment_age_min, '') as enrollment_age_min
+        ,coalesce(enrollment_age_max, '') as enrollment_age_max
+        ,coalesce(enrollment_age_median, '') as enrollment_age_median
+        ,coalesce(enrollment_age_mean, '') as enrollment_age_mean
+        ,coalesce(current_age_min, '') as current_age_min
+        ,coalesce(current_age_max, '') as current_age_max
+        ,coalesce(current_age_median, '') as current_age_median
+        ,coalesce(current_age_mean, '') as current_age_mean
+        ,coalesce(time_interval, '') as time_interval
+        ,coalesce(most_recent_year, '') as most_recent_year
         ,data_collected_in_person
         ,data_collected_phone
         ,data_collected_paper
         ,data_collected_web
         ,data_collected_other
-        ,data_collected_other_specify
+        ,coalesce(data_collected_other_specify, '') as data_collected_other_specify
         ,cast(substring(restrictions, 1, 1) as signed) as requireNone
         ,cast(substring(restrictions, 3, 1) as signed) as requireCollab
         ,cast(substring(restrictions, 5, 1) as signed) as requireIrb
@@ -1542,7 +1608,7 @@ BEGIN
         ,cast(substring(restrictions, 11, 1) as signed) as restrictOtherDb
         ,cast(substring(restrictions, 13, 1) as signed) as restrictCommercial
         ,cast(substring(restrictions, 15, 1) as signed) as restrictOther
-        ,restrictions_other_specify
+        ,coalesce(restrictions_other_specify, '') as restrictions_other_specify
         ,strategy_routine 
         ,strategy_mailing 
         ,strategy_aggregate_study 
@@ -1554,27 +1620,34 @@ BEGIN
         ,strategy_other_specify        
 	FROM cohort_basic WHERE cohort_id = `targetID`;
     
-    select `name` as completerName, `position` as completerPosition, phone as completerPhone, country_code as completerCountry, email as completerEmail 
+    select coalesce(`name`, '') as completerName, coalesce(`position`, '') as completerPosition,
+    coalesce(phone, '') as completerPhone, coalesce(country_code, '') as completerCountry, 
+    coalesce(email, '') as completerEmail 
     from person where category_id = 1 and cohort_id = `targetID`;
     
-    select `name` as contacterName, `position` as contacterPosition, phone as contacterPhone, country_code as contacterCountry, email as contacterEmail 
+    select coalesce(`name`, '') as contacterName, coalesce(`position`, '') as contacterPosition,
+    coalesce(phone, '') as contacterPhone, coalesce(country_code, '') as contacterCountry,
+    coalesce(email, '') as contacterEmail 
     from person where category_id = 2 and cohort_id = `targetID`;
     
-    select id as personId, `name` as `name`, institution as institution, email as email
+    select id as personId, coalesce(`name`, '') as `name`, coalesce(institution, '') as institution, 
+    coalesce(email, '') as email
     from person where (`name` is not null and `name` <> '') and category_id = 3 and cohort_id = `targetID`;
     
-    select `name` as collaboratorName, `position` as collaboratorPosition, phone as collaboratorPhone, country_code as collaboratorCountry, email as collaboratorEmail 
+    select coalesce(`name`, '') as collaboratorName, coalesce(`position`, '') as collaboratorPosition,
+    coalesce(phone, '') as collaboratorPhone, coalesce(country_code, '') as collaboratorCountry, coalesce(email, '') as collaboratorEmail 
     from person where category_id = 4 and cohort_id = `targetID`;
     
     select page_code, `status` as section_status from cohort_edit_status where cohort_id = `targetID`;
     
     select `status` as cohort_status from cohort where id = targetID;
     
-    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
+    -- SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym, c.status FROM cohort_document cd
+    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, cd.status as status FROM cohort_document cd
      join cohort c on cd.cohort_id = c.id
-     WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1;
+     WHERE cohort_id = targetID and filename !='' and filename is not null and cd.status = 1 and attachment_type = 1 and category in (0, 1, 4);
 
-	select category as urlCategory, website from cohort_document where cohort_id=targetID and website !='' and website is not null and status = 1 and attachment_type = 0;
+	select category as urlCategory, website from cohort_document where cohort_id=targetID and website not in('', 'null') and website is not null and status = 1 and attachment_type = 0;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1814,42 +1887,42 @@ CREATE PROCEDURE `add_file_attachment`(in targetID int, in categoryType int, in 
 begin
 	DECLARE i INT default 0;
     DECLARE flag INT DEFAULT 1;
-	DECLARE new_id INT DEFAULT 0;
-	DECLARE user_id INT DEFAULT 1;
-   
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
       SET flag = 0; 
       ROLLBACK;
 	END;
 
-    SELECT `status` INTO @cohort_status FROM cohort WHERE id = targetID;
-
-    IF @cohort_status = 'published' then 
-	   call select_unpublished_cohort_id(targetID, new_id, user_id ); 
-    else 
-       set new_id = targetID;
-    END IF;
-    
-    IF new_id > 0 THEN
-    BEGIN
     START TRANSACTION;
+    set @inputFileNames = '';
+    set @fileCategory = categoryType;
+    set @cohort_id = targetID;
 	SET @filenames = JSON_UNQUOTE(JSON_EXTRACT(info, '$.filenames'));
+	select JSON_LENGTH(@filenames) as json_length;
+    IF JSON_LENGTH(@filenames) > 0 Then
 		WHILE i < JSON_LENGTH(@filenames) DO
 			SELECT JSON_EXTRACT(@filenames, concat('$[',i,']')) INTO @filename;
+            set @inputFileNames = concat(@inputFileNames, @filename, ",");
             set @filename = replace(@filename, '"', '');
-			insert into cohort_document (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
-			values (new_id, 1, categoryType, @fileName, '', 1, NOW(), NOW());
+            
+            IF NOT EXISTS (select * from cohort_document where cohort_id = targetID and category = categoryType and attachment_type = 1 and filename = @filename) THEN
+				insert into cohort_document (cohort_id, attachment_type, category, fileName, website, status, create_time, update_time)
+				values (targetID, 1, categoryType, @fileName, '', 1, NOW(), NOW());
+			ELSE 
+				update cohort_document set status = 1, update_time=now() where cohort_id = targetID and category = categoryType and attachment_type = 1 and filename = @filename;
+			END IF;
 			SELECT i + 1 INTO i;
 		END WHILE;
+
+		set @inputFileNames = substring(@inputFileNames, 1, length(@inputFileNames)-1);
+		set @sql = concat("update cohort_document set status = 0 where cohort_id = ? and attachment_type = 1 and category = ? and filename not in (", @inputFileNames, ")"); 
+	end if;
+        
+        PREPARE stmt FROM @sql;
+		EXECUTE stmt using @cohort_id, @fileCategory;
+		DEALLOCATE PREPARE stmt;
 	COMMIT;
-    END;
-    END IF;
-    SELECT flag as rowsAffacted;
-    SELECT new_id;
-    SELECT cd.id AS fileId, cd.category AS fileCategory, cd.filename, c.acronym FROM cohort_document cd
-    join cohort c on cd.cohort_id = c.id
-    WHERE cohort_id = new_id and category = categoryType and cd.status = 1 and cd.attachment_type = 1;
 end //
 
 DROP PROCEDURE IF EXISTS get_major_content //
@@ -2681,15 +2754,18 @@ BEGIN
 		,dlh_nih_biolincc
 		,dlh_nih_other
 		,dlh_procedure_online
-		,dlh_procedure_website
-		,dlh_procedure_url
-		,dlh_procedure_attached
+		-- ,dlh_procedure_website
+		-- ,dlh_procedure_url
+		-- ,dlh_procedure_attached
 		,dlh_procedure_enclave
 		,dlh_enclave_location
 		,create_time
 		,update_time
 	FROM dlh WHERE cohort_id = targetID;
 	SELECT status FROM cohort_edit_status WHERE cohort_id = targetID and page_code='F';
+    select id as fileId, category as fileCategory, coalesce(filename, '') as filename, status from cohort_document
+    where cohort_id = targetID and category = 5 and attachment_type = 1;
+    select website from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5;
 end//
 
 DROP PROCEDURE if EXISTS `update_dlh` //
@@ -2714,6 +2790,9 @@ BEGIN
     IF targetID > 0 then
     begin
     start transaction;
+    set @dataFileName = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')));
+    set @dataUrl = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')));
+    set @dataOnline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) in ('null',''), null , json_unquote(json_extract(info, '$.dataOnline'))); 
 	if exists (select * from dlh where cohort_id = `targetID`) then 
 		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) where cohort_id = `targetID`;
 		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) where cohort_id = `targetID`;
@@ -2723,10 +2802,10 @@ BEGIN
 		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP'))) where cohort_id = `targetID`;
 		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC'))) where cohort_id = `targetID`;
 		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_online = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
-		update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
+		update dlh set dlh_procedure_online = @dataOnline where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) where cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) where cohort_id = `targetID`;
 		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) where cohort_id = `targetID`;
 		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
 		update dlh set update_time = NOW() where cohort_id = `targetID`;
@@ -2761,9 +2840,9 @@ BEGIN
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo')))
 			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify')))
 			,NOW()
@@ -2771,6 +2850,22 @@ BEGIN
 		);
 		insert into cohort_edit_status (cohort_id, page_code, `status`)
 		values (targetID, 'F', JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')));
+	end if;
+    
+	if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 1 and category = 5;
+	end if;
+    if @dataFileName <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 1, 5, @dataFileName, null, 1, Now(), Now());
+	end if;
+    
+    if exists (select * from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5) then 
+		delete from cohort_document where cohort_id = targetID and attachment_type = 0 and category = 5;
+	end if;
+    if @dataUrl <> '' then
+		insert into cohort_document (cohort_id, attachment_type, category, filename, website, status, create_time, update_time)
+		values (targetID, 0, 5, null, @dataUrl, 1, Now(), Now());
 	end if;
     commit;
     
@@ -2891,7 +2986,7 @@ BEGIN
        or lower(email) like lower('%", cohortSearch, "%') or lower(IFNULL(user_name,'')) like lower('%", cohortSearch, "%') ) ", @status_query);
     end if;
     if columnName != "" && columnName !="action" then 
-      set @orderBy = concat(" order by ",columnName," ",columnOrder,", name asc ");
+	  set @orderBy = concat(" order by ",columnName," is NULL, ", columnName," ",columnOrder,", name asc ");
     else
 	  set @orderBy = "order by name asc";
 	end if;

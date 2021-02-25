@@ -35,6 +35,8 @@ const EnrollmentCountsForm = ({ ...props }) => {
     //const [displayStyle, setDisplay] = useState('0')
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState({ show: false, type: null, content: null })
+    const updateMessage = state => setMessage({ ...message, ...state });
     const [modalShow, setModalShow] = useState(false)
     const [reviewModalShow, setReviewModalShow] = useState(false)
     const [proceed, setProceed] = useState(false)
@@ -64,26 +66,18 @@ const EnrollmentCountsForm = ({ ...props }) => {
     }
     //var dates = ''
     useEffect(() => {
-        if (!enrollmentCount.hasLoaded) {
+        //if (!enrollmentCount.hasLoaded) {
             fetch(`/api/questionnaire/enrollment_counts/${cohortID}`, {
                 method: 'POST',
             }).then(res => res.json())
-                .then(result => {
-                    batch(() => {
-                        if (result.data.mostRecentDate.mostRecentDate) dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
-                        for (let i = 0; i < result.data.details.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateEnrollmentCounts(result.data.details[i].cellId, result.data.details[i].cellCount))
-                        for (let i = 0; i < result.data.rowTotals.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateTotals(result.data.rowTotals[i].rowId + '41', result.data.rowTotals[i].rowTotal))
-                        for (let i = 0; i < result.data.colTotals.length; i++)
-                            dispatch(allactions.enrollmentCountActions.updateTotals('8' + result.data.colTotals[i].colId, result.data.colTotals[i].colTotal))
-                        dispatch(allactions.enrollmentCountActions.updateTotals('841', result.data.grandTotal.grandTotal))
-                        dispatch(allactions.enrollmentCountActions.updateMostRecentDate(result.data.mostRecentDate.mostRecentDate))
-                        dispatch(allactions.enrollmentCountActions.setHasLoaded(true))
-                    })//end of batch
-                })// end of then
-        }
-    }, [])
+            .then(result => {
+                dispatch(allactions.enrollmentCountActions.renewEnrollmentCounts(result.data))
+                if(!result.data.mostRecentDate)
+                    dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(false, 'Required Data'))
+                else dispatch(allactions.enrollmentCountErrorActions.mostRecentDate(true))
+            })// end of then
+      //  }
+    }, [cohortID])
 
     const sendEmail = (template, topic) => {
 
@@ -148,7 +142,18 @@ const EnrollmentCountsForm = ({ ...props }) => {
                         dispatch(fetchCohort(cohortID))
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ');
-                            setReviewModalShow(false);
+                        setReviewModalShow(false);
+                        updateMessage({
+                            show: true,
+                            type: 'success',
+                            content: `The cohort has been submitted.`
+                        });
+                    } else {
+                        updateMessage({
+                            show: true,
+                            type: 'warning',
+                            content: `The cohort could not be submitted due to an internal error.`
+                        });
                     }
                 })
         }
@@ -262,7 +267,7 @@ const EnrollmentCountsForm = ({ ...props }) => {
         <Container>
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
-
+            {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
             <CenterModal show={modalShow} handleClose={() => setModalShow(false)} handleContentSave={proceed ? confirmSaveContinue : confirmSaveStay} />
             <ReviewModal show={reviewModalShow}
                 title={
@@ -458,13 +463,13 @@ const EnrollmentCountsForm = ({ ...props }) => {
                             </Form.Group>
 
                             {/* B.2 Most Recent Date Enrollment */}
-                            <Form.Group as={Row}>
+                         <Form.Group as={Row}>
                                 <Form.Label column sm="5">
                                     B.2 Most recent date enrollment counts were confirmed<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="3">
                                     {errors.mostRecentDate && saved ?
-                                        <Reminder message={errors.mostRecentDate}>
+                                        <Reminder message={errors.mostRecentDate} >
                                             <DatePicker className='form-control errorDate'
                                                 popperProps={{
                                                     positionFixed: true // fix overflow hidden
@@ -521,7 +526,6 @@ const EnrollmentCountsForm = ({ ...props }) => {
                                     }
                                 </Col>
                             </Form.Group>
-
                         </CollapsiblePanel>
                     </CollapsiblePanelContainer>
                 </Form>

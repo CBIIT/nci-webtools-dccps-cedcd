@@ -194,12 +194,13 @@ ul.results-nav li {
 }
 .links-list {
   list-style: none;
+  padding-left: 0px;
 }
 .links-list li {
   line-height: 125%;
-  margin-bottom: 18px;
+  margin-bottom: 8px;
 }
-#mainNavBar li .arrow.down {
+#mainNavBar li .arrow.down, ul#mainNav li .arrow.down {
   border-top:0px solid transparent;
   position: absolute;
   top:21px;
@@ -207,7 +208,7 @@ ul.results-nav li {
 }
 
 
-#mainNavBar li:hover .arrow.down, #mainNavBar li.active .arrow.down {
+#mainNavBar li:hover .arrow.down, #mainNavBar li.active .arrow.down, ul#mainNav li.valid .arrow.down{
   width: 0;
   height: 0;
   border-left: 10px solid transparent;
@@ -293,7 +294,7 @@ li#liLogin, a#user_profile, a#user_logout {
 /* End Lists */
 /* Paragraphs */
 p {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 20px;
 }
 p.welcome {
@@ -499,6 +500,7 @@ a:hover {
   font-size:13px;
 }
 .links-list li a {
+  font-size: 98%;
   color: #62269E;
   text-decoration: underline;
   background: none;
@@ -639,7 +641,7 @@ a:hover.expand-link {
   padding-left: 20px;
 }
 .link-pdf {
-  background: url(/assets/img/ico_PDF.png) no-repeat left 5px;
+  background: url(/assets/img/ico_PDF.png) no-repeat left 2px;
   padding-left: 25px !important;
 }
 .link-excel {

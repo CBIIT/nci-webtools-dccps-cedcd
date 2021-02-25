@@ -6,13 +6,13 @@ import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
 
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currTab: 0,
-      admin: 0,
-      showImage: window.innerWidth > 800
+      admin: 0
     };
   }
 
@@ -26,20 +26,11 @@ class App extends Component {
   }
   componentDidMount() {
     this.updateTab();
-    window.addEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
-    //window.onlocationchange = () => setTimeout(_ => this.updateTab(), 100); //results in memory leak
-    window.addEventListener('resize', () => {
-      if (window.innerWidth <= 800) this.setState({ showImage: false })
-      else this.setState({ showImage: true })
-    })
+    window.addEventListener('popstate', () => setTimeout(()=> this.updateTab(), 100), false)    
   }
 
   componentWillUnmount() {
-    window.removeEventListener('locationchange', () => setTimeout(_ => this.updateTab(), 100))
-    window.removeEventListener('resize', () => {
-      if (window.innerWidth <= 800) this.setState({ showImage: false })
-      else this.setState({ showImage: true })
-    })
+    window.removeEventListener('popstate', () => {alert(window.location.pathname)})
   }
 
   updateTab() {
@@ -102,7 +93,7 @@ class App extends Component {
     return (
       <div>
         <ScrollToTop />
-        {this.state.showImage && <Header />}
+        <Header />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
             <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />

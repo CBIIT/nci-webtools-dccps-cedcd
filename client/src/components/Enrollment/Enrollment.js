@@ -149,9 +149,9 @@ class Enrollment extends Component {
 			.then(result => {
 				let rst = result.data;
 				// move "More Than One Race" and "Unknown or Not Reported" to bottom list
-				let olist = rst.list.map(x => (x.c2 === "More Than One Race" || x.c2 === "Unknown or Not Reported") ? { ...x, c2: ('Z' + x.c2) } : x);
+				//	let olist = rst.list.map(x => (x.c2 === "More Than One Race" || x.c2 === "Unknown or Not Reported") ? { ...x, c2: ('Z' + x.c2) } : x);
 
-				rst.list = olist.sort((a, b) => a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZMore Than One Race" || x.c2 === "ZUnknown or Not Reported") ? { ...x, c2: x.c2.slice(1) } : x);;
+				//	rst.list = olist.sort((a, b) => a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZMore Than One Race" || x.c2 === "ZUnknown or Not Reported") ? { ...x, c2: x.c2.slice(1) } : x);;
 
 				this.setState(prevState => (
 					{
@@ -224,7 +224,7 @@ class Enrollment extends Component {
 			}
 			content = sections.map((item, idx) => {
 				let key = "section_" + idx;
-				let label = item === "Unknown" ? item : item + "s";
+				let label = item === "Unknown" ? "Unknown/Not Reported" : item + "s";
 				return (
 					<div key={key}>
 						<label>
@@ -258,7 +258,7 @@ class Enrollment extends Component {
 			<div id="cedcd-main-content">
 				<input id="tourable" type="hidden" />
 				<h1 className="welcome pg-title">Enrollment Counts</h1>
-				<p className="welcome">Specify the Gender, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by gender, race and ethnicity across the selected cohorts.
+				<p className="welcome">Specify the Sex, Race, Ethnicity, and Cohort(s) to see a table of the number of participants enrolled.  All fields are required.  A table will display the number of participants enrolled by sex, race and ethnicity across the selected cohorts.
       		</p>
 				<div id="filter-block" className="filter-block col-md-12">
 					<div id="filter-panel" className="panel panel-default">
@@ -269,7 +269,7 @@ class Enrollment extends Component {
 							<div className="filter row">
 								<div className="col-sm-3 filterCol">
 									<div id="gender" className="filter-component">
-										<h3>Gender</h3>
+										<h3>Sex</h3>
 										<GenderList hasUnknown={true} hasBoth={false} values={this.state.filter.gender} displayMax="3" onClick={this.handleGenderClick} />
 									</div>
 								</div>
@@ -306,7 +306,7 @@ class Enrollment extends Component {
 						<div className="table-inner col-md-12">
 							<div className="tableTopMatter row">
 								<div id="tableLegend" className="col-md-10">
-									<p>N/A: Not Applicable; N/P: Not Provided</p>
+									<p>{/* N/A: Not Applicable; N/P: Not Provided */} </p>
 								</div>
 								<div id="tableExport" className="col-md-2">
 									{exportTable}

@@ -151,7 +151,7 @@ exports.run = function (req, res) {
 				let baselines = dict[vl.category_id];
 
 				for (key in baselines) {
-					let v = baselines[key];
+					let v = baselines[key] || 'N/A';
 					tmp[key] = v;
 				}
 

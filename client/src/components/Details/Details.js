@@ -894,7 +894,7 @@ class Details extends Component {
 								<div className="col-sm-12">
 									<GenderList hasUnknown={false} hasBoth={true} hasOnly={false} values={this.state.filter.participant.gender} displayMax="3" onClick={this.handleGenderClick} />
 									<AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick} />
-									<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />
+									{/*<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />*/}
 								</div>
 							</div>
 						</div>
@@ -945,7 +945,8 @@ class Details extends Component {
 
 									<div className="col-sm-11" style={{ "width": "90%" }}>
 										<div style={{ "width": "92%", "float": "left" }}>
-											<GenderList hasUnknown={false} hasBoth={true} hasOnly={true} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick} />
+
+											<GenderList hasUnknown={false} hasBoth={true} hasOnly={false} rightBorderStyle="straight" values={this.state.advancedFilter.gender} displayMax="3" onClick={this.handleAdvancedGenderClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
 											<select className="btn btn-default" style={{ "borderColor": "#ccc", "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[0]} title="Boolean operation between options in gender filter" onChange={e => this.handleBooleanWithinChange(e, 0)}>
@@ -956,8 +957,8 @@ class Details extends Component {
 									</div>
 								</div>
 								<div className="row">
-									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" onChange={e => this.handleBooleanFilterChange(e)}>
+									<div className="col-sm-1" style={{ "width": "15%" }}>
+										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" style={{padding: '6px 6px'}} onChange={e => this.handleBooleanFilterChange(e)}>
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -974,9 +975,9 @@ class Details extends Component {
 										</div>
 									</div>
 								</div>
-								<div className="row">
+								{/*<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -991,8 +992,8 @@ class Details extends Component {
 												<option value="OR">OR</option>
 											</select>
 										</div>
-									</div>
-								</div>
+									</div> 
+								</div>*/}
 							</div>
 						</div>
 					</div>
@@ -1002,7 +1003,7 @@ class Details extends Component {
 								<div className="row" style={{ "marginLeft": "calc(10% + 2px)", "fontSize": "1.8rem", "marginBottom": "1rem" }}><b>Enrollments</b></div>
 								<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -1021,7 +1022,7 @@ class Details extends Component {
 								</div>
 								<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -1047,7 +1048,7 @@ class Details extends Component {
 								<div className="row" style={{ "marginLeft": "calc(10% + 2px)", "fontSize": "1.8rem", "marginBottom": "1rem" }}><b>Data and Specimens Collected</b></div>
 								<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -1066,7 +1067,7 @@ class Details extends Component {
 								</div>
 								<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -1085,7 +1086,7 @@ class Details extends Component {
 								</div>
 								<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
-										<select className="btn btn-default" value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
 										</select>
@@ -1191,7 +1192,7 @@ class Details extends Component {
 					<div className="table-description">
 						<p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
 					</div>
-					<div id="data-table" className="level2 col-md-12">
+					<div id="data-table" className="level2 col-md-12 container">
 						<div id="table-header" className="">
 							<div>
 								<div id="cohortDetailTabs">

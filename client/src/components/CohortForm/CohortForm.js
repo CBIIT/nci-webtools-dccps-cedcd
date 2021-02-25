@@ -44,6 +44,8 @@ const CohortForm = ({ ...props }) => {
 
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
+    const [message, setMessage] = useState({ show: false, type: null, content: null })
+    const updateMessage = state => setMessage({ ...message, ...state });
     const [modalShow, setModalShow] = useState(false)
     const [reviewModalShow, setReviewModalShow] = useState(false)
     const [fileModal, setFileModal] = useState(false)
@@ -66,189 +68,29 @@ const CohortForm = ({ ...props }) => {
     const history = useHistory();
 
     useEffect(() => {
-        if (!cohort.hasLoaded || tempId != cohortID) {
+        //if (!cohort.hasLoaded || tempId != cohortID) {
             dispatch(allactions.cohortIDAction.setCohortId(tempId))
             fetch(`/api/questionnaire/cohort_basic_info/${tempId}`, {
                 method: 'POST'
             }).then(res => res.json())
-                .then(result => {
-                    let currentCohort = result.data.cohort,
-                        investigators = result.data.investigators.length > 0 ? result.data.investigators : cohort.investigators,
-                        completer = result.data.completer, contacter = result.data.contacter, collaborator = result.data.collaborator,
-                        cohort_status = result.data.cohortStatus
-
+                .then(result => {                
+                    let currentCohort = result.data, cohort_status = result.data.cohortStatus, errors = result.error   
                     batch(() => {
                         dispatch(({ type: 'SET_COHORT_STATUS', value: cohort_status }))
-                        for (let i = 0; i < investigators.length; i++) { //first add errors dynamically, to be removed later
-                            dispatch(allactions.cohortErrorActions.investigatorName(i, false, errorMsg))
-                            dispatch(allactions.cohortErrorActions.investigatorInstitution(i, false, errorMsg))
-                            dispatch(allactions.cohortErrorActions.investigatorEmail(i, false, errorMsg))
-                        }
-                        for (let k of Object.keys(currentCohort)) {
-                            //if(k==='eligible_disease') console.log(currentCohort.eligible_disease)
-                            dispatch(allactions.cohortActions[k](currentCohort[k]))
-                        }
-                        if (completer)
-                            for (let k of Object.keys(completer)) {
-                                if (k != 'completerCountry')
-                                    dispatch(allactions.cohortActions[k](completer[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('completerCountry', completer.completerCountry))
-                            }
-                        if (currentCohort.clarification_contact === 1) {
-                            if(!isReadOnly){
-                                    dispatch(allactions.cohortActions.contacterName(''))
-                                    dispatch(allactions.cohortActions.contacterPosition(''))
-                                    dispatch(allactions.cohortActions.country_code(''))
-                                    dispatch(allactions.cohortActions.contacterPhone(''))
-                                    dispatch(allactions.cohortActions.contacterEmail(''))
-                                }else{
-                                    dispatch(allactions.cohortActions.contacterName(completer.completerName))
-                                    dispatch(allactions.cohortActions.contacterPosition(completer.completerPosition))
-                                    dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
-                                    dispatch(allactions.cohortActions.contacterPhone(completer.completerPhone))
-                                    dispatch(allactions.cohortActions.contacterEmail(completer.completerEmail))
-                                }
-                        }else if (contacter) { // 0 
-                                for (let k of Object.keys(contacter)) {
-                                    if (k != 'contacterCountry')
-                                        dispatch(allactions.cohortActions[k](contacter[k]))
-                                    else
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
-                                }
-                        }
-
-                        if([0,1].includes(currentCohort.sameAsSomeone)){
-                            if(!isReadOnly){
-                                dispatch(allactions.cohortActions.collaboratorName(''))
-                                dispatch(allactions.cohortActions.collaboratorPosition(''))
-                                dispatch(allactions.cohortActions.country_code(''))
-                                dispatch(allactions.cohortActions.collaboratorPhone(''))
-                                dispatch(allactions.cohortActions.collaboratorEmail(''))
-                            }else{
-                                if(currentCohort.sameAsSomeone === 0){
-                                    if(completer){
-                                        dispatch(allactions.cohortActions.collaboratorName(completer.completerName))
-                                        dispatch(allactions.cohortActions.collaboratorPosition(completer.completerPosition))
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', completer.completerCountry))
-                                        dispatch(allactions.cohortActions.collaboratorPhone(completer.completerPhone))
-                                        dispatch(allactions.cohortActions.collaboratorEmail(completer.completerEmail))
-                                    }
-                                }else{
-                                    if(contacter){
-                                        dispatch(allactions.cohortActions.collaboratorName(contacter.contacterName))
-                                        dispatch(allactions.cohortActions.collaboratorPosition(contacter.contacterPosition))
-                                        dispatch(allactions.cohortActions.country_code('contacterCountry', contacter.contacterCountry))
-                                        dispatch(allactions.cohortActions.collaboratorPhone(contacter.contacterPhone))
-                                        dispatch(allactions.cohortActions.collaboratorEmail(contacter.contacterEmail))
-                                    }
-                                }
-                            }
-                        }
-                        else if (collaborator) {
-                            for (let k of Object.keys(collaborator)) {
-                                if (k != 'collaboratorCountry')
-                                    dispatch(allactions.cohortActions[k](collaborator[k]))
-                                else
-                                    dispatch(allactions.cohortActions.country_code('collaboratorCountry', collaborator.collaboratorCountry))
-                            }
-
-                            dispatch(allactions.cohortActions.sameAsSomeone(currentCohort.sameAsSomeone))
-                        }
+                        dispatch(allactions.cohortActions.renewCohort(currentCohort))
+                     
                         if (result.data.sectionStatus)
                             for (let k of result.data.sectionStatus) {
                                 dispatch(allactions.sectionActions.setSectionStatus(k.page_code, k.section_status))
                             }
-                        if (investigators.length > 0) dispatch(allactions.cohortActions.setInvestigators(investigators))
-
-                        if (currentCohort.completionDate) { dispatch(allactions.cohortErrorActions.completionDate(true)) }
-                        if ([0, 1].includes(currentCohort.clarification_contact)) { dispatch(allactions.cohortErrorActions.clarification_contact(true)) }
-
-                        if (currentCohort.data_collected_other !== 1) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
-                        if (currentCohort.restrictOther !== 1) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
-                        if (currentCohort.enrollment_total) { dispatch(allactions.cohortErrorActions.enrollment_total(true)) }
-                        if (currentCohort.enrollment_year_start) { dispatch(allactions.cohortErrorActions.enrollment_year_start(true)) }
-
-                        if (currentCohort.enrollment_year_end && currentCohort.enrollment_year_end >= currentCohort.enrollment_year_start && currentCohort.enrollment_year_end <= (new Date()).getFullYear() && errors.enrollment_year_end) { dispatch(allactions.cohortErrorActions.enrollment_year_end(true)) }
-
-                        if ([0, 1].includes(currentCohort.enrollment_ongoing)) { dispatch(allactions.cohortErrorActions.enrollment_ongoing(true)) }
-                        if (currentCohort.enrollment_ongoing === 0) {
-                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                            if (!currentCohort.enrollment_year_end) dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Filed'))
-                        }
-                        if (currentCohort.enrollment_ongoing === 1) {
-                            if (currentCohort.enrollment_target && currentCohort.enrollment_target >= 0) { dispatch(allactions.cohortErrorActions.enrollment_target(true)) }
-                            if (currentCohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                        }
-                        if (currentCohort.enrollment_age_min) { dispatch(allactions.cohortErrorActions.enrollment_age_min(true)) }
-                        if (currentCohort.enrollment_age_max) { dispatch(allactions.cohortErrorActions.enrollment_age_max(true)) }
-                        if (currentCohort.enrollment_age_mean) { dispatch(allactions.cohortErrorActions.enrollment_age_mean(true)) }
-                        if (currentCohort.enrollment_age_median) { dispatch(allactions.cohortErrorActions.enrollment_age_median(true)) }
-                        if (currentCohort.current_age_min) { dispatch(allactions.cohortErrorActions.current_age_min(true)) }
-                        if (currentCohort.current_age_max) { dispatch(allactions.cohortErrorActions.current_age_max(true)) }
-                        if (currentCohort.current_age_mean) { dispatch(allactions.cohortErrorActions.current_age_mean(true)) }
-                        if (currentCohort.current_age_median) { dispatch(allactions.cohortErrorActions.current_age_median(true)) }
-                        if (currentCohort.time_interval) { dispatch(allactions.cohortErrorActions.time_interval(true)) }
-                        if (currentCohort.most_recent_year) {
-                            if (currentCohort.most_recent_year <= (new Date()).getFullYear()) { dispatch(allactions.cohortErrorActions.most_recent_year(true)) }
-                            else dispatch(allactions.cohortErrorActions.most_recent_year(false, 'expecting year in the past'))
-                        }
-                        if (currentCohort.strategy_other !== 1) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
-                        if ([4, 2, 1].includes(currentCohort.eligible_gender_id)) { dispatch(allactions.cohortErrorActions.eligible_gender_id(true)) }
-
-                        if (currentCohort.data_collected_in_person || currentCohort.data_collected_phone || currentCohort.data_collected_paper || currentCohort.data_collected_web || currentCohort.data_collected_other) { dispatch(allactions.cohortErrorActions.dataCollection(true)) }
-
-                        if (currentCohort.data_collected_other_specify || !currentCohort.data_collected_other) { dispatch(allactions.cohortErrorActions.data_collected_other_specify(true)) }
-
-                        if (currentCohort.requireNone || currentCohort.requirecollab || currentCohort.requireIrb || currentCohort.requireData || currentCohort.restrictGenoInfo || currentCohort.restrictOtherDb || currentCohort.restrictCommercial || currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.requirements(true)) }
-
-                        if (currentCohort.restrictions_other_specify || !currentCohort.restrictOther) { dispatch(allactions.cohortErrorActions.restrictions_other_specify(true)) }
-
-                        if (currentCohort.strategy_routine || currentCohort.strategy_mailing || currentCohort.strategy_aggregate_study || currentCohort.strategy_individual_study || currentCohort.strategy_committees || currentCohort.strategy_invitation || currentCohort.strategy_participant_input || currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy(true)) }
-
-                        if (currentCohort.strategy_other_specify || !currentCohort.strategy_other) { dispatch(allactions.cohortErrorActions.strategy_other_specify(true)) }
-
-                        //just need to remove the first investigator error on load, since only investigator 0 has errors initially
-                        if (completer && completer.completerName) { dispatch(allactions.cohortErrorActions.completerName(true)) }
-                        if (completer && completer.completerPosition) { dispatch(allactions.cohortErrorActions.completerPosition(true)) }
-                        if (completer && completer.completerEmail) { dispatch(allactions.cohortErrorActions.completerEmail(true)) }
-
-                        if (currentCohort.clarification_contact === 1) {
-                            dispatch(allactions.cohortErrorActions.contacterName(true))
-                            dispatch(allactions.cohortErrorActions.contacterPosition(true))
-                            dispatch(allactions.cohortErrorActions.contacterEmail(true))
-                        } else {
-                            if (contacter && contacter.contacterName) { dispatch(allactions.cohortErrorActions.contacterName(true)) }
-                            if (contacter && contacter.contacterPosition) { dispatch(allactions.cohortErrorActions.contacterPosition(true)) }
-                            if (contacter && contacter.contacterEmail) { dispatch(allactions.cohortErrorActions.contacterEmail(true)) }
-                        }
-
-
-                        if ([0, 1].includes(currentCohort.sameAsSomeone)) {
-                            dispatch(allactions.cohortErrorActions.collaboratorName(true))
-                            dispatch(allactions.cohortErrorActions.collaboratorPosition(true))
-                            dispatch(allactions.cohortErrorActions.collaboratorEmail(true))
-                        } else {
-                            if (collaborator && collaborator.collaboratorName) { dispatch(allactions.cohortErrorActions.collaboratorName(true)) }
-                            if (collaborator && collaborator.collaboratorPosition) { dispatch(allactions.cohortErrorActions.collaboratorPosition(true)) }
-                            if (collaborator && collaborator.collaboratorEmail) { dispatch(allactions.cohortErrorActions.collaboratorEmail(true)) }
-                        }
-
-                        for (let i = 0; i < investigators.length; i++) {
-                            if (investigators[i].name) { dispatch(allactions.cohortErrorActions.investigatorName(i, true)) }
-                            if (investigators[i].institution) { dispatch(allactions.cohortErrorActions.investigatorInstitution(i, true)) }
-                            if (investigators[i].email) { dispatch(allactions.cohortErrorActions.investigatorEmail(i, true)) }
-                        }
-                        dispatch(allactions.cohortActions.setHasLoaded(true))
+                        dispatch(allactions.cohortErrorActions.renewCohortErrors(errors))
                     })
 
                 })
-        }
+            
     }, [])
 
     const saveCohort = (id = cohortID, goNext = proceed || false) => {
-
         let userID = userSession.id
 
         let cohortBody = cohort
@@ -263,24 +105,27 @@ const CohortForm = ({ ...props }) => {
         })
             .then(res => res.json())
             .then(result => {
+                //if (result.status === 200) {}
                 if (result.status === 200) {
 
-                    if (Object.entries(errors).length === 0)
+                   if (Object.entries(errors).length === 0)
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'complete'))
                     else {
                         dispatch(allactions.sectionActions.setSectionStatus('A', 'incomplete'))
                     }
                     if (result.newCohortInfo.newCohortID && result.newCohortInfo.newCohortID != cohortID) {
                         dispatch(fetchCohort(result.newCohortInfo.newCohortID))
+                        //result.data.updatedStatus.forEach(item => dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status)))
                         // if cohort_id changed, refresh section status
                         let secStatusList = result.newCohortInfo.sectionStatusList
-                        if (secStatusList && secStatusList.length > 0) secStatusList.map((item, idx) => {
+                        
+                        if (secStatusList && secStatusList.length > 0) secStatusList.forEach((item, idx) => {
                             dispatch(allactions.sectionActions.setSectionStatus(item.page_code, item.status))
                         })
                         // context.cohorts.push({id: result.newCohortInfo.newCohortID})
                         dispatch(allactions.cohortIDAction.setCohortId(result.newCohortInfo.newCohortID))
                         history.push(window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
-                        // window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
+                        window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.newCohortInfo.newCohortID))
                     } else {
                         dispatch(fetchCohort(cohortID))
                     }
@@ -297,6 +142,7 @@ const CohortForm = ({ ...props }) => {
                 } else {
                     setFailureMsg(true)
                 }
+               
             })
     }
     const handleSave = () => {
@@ -397,7 +243,18 @@ const CohortForm = ({ ...props }) => {
 
                         if (nextStatus === 'submitted')
                             sendEmail('/templates/email-admin-review-template.html', 'CEDCD Cohort Submitted - ');
-                            setReviewModalShow(false);
+                        setReviewModalShow(false);
+                        updateMessage({
+                            show: true,
+                            type: 'success',
+                            content: `The cohort has been submitted.`
+                        });
+                    } else {
+                        updateMessage({
+                            show: true,
+                            type: 'warning',
+                            content: `The cohort could not be submitted due to an internal error.`
+                        });
                     }
                 })
         }
@@ -406,51 +263,7 @@ const CohortForm = ({ ...props }) => {
     const getMinAgeValidationResult = (value, requiredOrNot, maxAge, medianAge, meanAge) => validator.minAgeValidator(value, requiredOrNot, maxAge, medianAge, meanAge)
     const getMaxAgeValidationResult = (value, requiredOrNot, minAge, medianAge, meanAge) => validator.maxAgeValidator(value, requiredOrNot, minAge, medianAge, meanAge)
     const getMeanMedianAgeValidationResult = (value, requiredOrNot, minAge, maxAge) => validator.medianAgeValidator(value, requiredOrNot, minAge, maxAge)
-    const populateBaseLineMinAgeError = (value, requiredOrNot, maxAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(false, result))
-        } else {
-            dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
-        }
-    }
-
-    const populateBaseLineMaxAgeError = (value, requiredOrNot, minAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.enrollment_age_max(false, result))
-        } else {
-            dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
-        }
-    }
-
-    const populateCurrentMinAgeError = (value, requiredOrNot, maxAge) => {
-        const result = getMinAgeValidationResult(value, requiredOrNot, maxAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.current_age_min(false, result))
-        } else {
-            dispatch(allactions.cohortErrorActions.current_age_min(true))
-        }
-    }
-
-    const populateCurrentMaxAgeError = (value, requiredOrNot, minAge) => {
-        const result = getMaxAgeValidationResult(value, requiredOrNot, minAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions.current_age_max(false, result))
-        } else {
-            dispatch(allactions.cohortErrorActions.current_age_max(true))
-        }
-    }
-
-    const populateMeanMedianAgeError = (fieldName, value, requiredOrNot, minAge, maxAge) => {
-        const result = getMeanMedianAgeValidationResult(value, requiredOrNot, minAge, maxAge)
-        if (result) {
-            dispatch(allactions.cohortErrorActions[fieldName](false, result))
-        } else {
-            dispatch(allactions.cohortErrorActions[fieldName](true))
-        }
-    }
-
+    
     //general validation, will be removed from this file later
     const getValidationResult = (value, requiredOrNot, type) => {
         switch (type) {
@@ -572,13 +385,9 @@ const CohortForm = ({ ...props }) => {
         } else if (personType === 'contacter') {
             dispatch(allactions.cohortActions.clarification_contact(checkedValue))
             dispatch(allactions.cohortErrorActions.clarification_contact(true))
-            //if (cohort.clarification_contact == 1 || name) dispatch(allactions.cohortErrorActions.contacterName(true))
             dispatch(allactions.cohortActions.contacterName(name))
-            //if (cohort.clarification_contact == 1 || position) dispatch(allactions.cohortErrorActions.contacterPosition(true))
             dispatch(allactions.cohortActions.contacterPosition(position))
-            //if (cohort.clarification_contact == 1 || phone && !getValidationResult(phone, false, 'phone')) dispatch(allactions.cohortErrorActions.contacterPhone(true))
             dispatch(allactions.cohortActions.contacterPhone(phone))
-            //if (cohort.clarification_contact == 1 || email && !getValidationResult(email, true, 'email')) dispatch(allactions.cohortErrorActions.contacterEmail(true))
             dispatch(allactions.cohortActions.contacterEmail(email))
         }
     }
@@ -588,13 +397,13 @@ const CohortForm = ({ ...props }) => {
     const handleUpload = (fileData, category) => {
         if (fileData) {
             let fileList = []
+            if (fileData.length > 1) fileList = Array.from(fileData)
+            else fileList.push(fileData)
             const formData = new FormData();
-
             for (let i = 0; i < fileData.length; i++) {
                 formData.append('cohortFile', fileData[i], fileData[i].name)
-                fileList.push(fileData[i].name)
             }
-
+            
             fetch(`/api/questionnaire/upload/${cohortID}/${category}`, {
                 method: "POST",
                 body: formData
@@ -624,11 +433,20 @@ const CohortForm = ({ ...props }) => {
                                 setPfileLoading(false)
                                 break;
                         }
-                        if (dispatchName) dispatch(allactions.cohortActions[dispatchName](result.data.files))
-                        if (result.data.new_ID != cohortID) {
-                            dispatch(allactions.cohortIDAction.setCohortId(result.data.new_ID))
-                            window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', window.location.pathname.replace(/\d+$/, result.data.new_ID))
-                        }
+                        //console.dir(fileList)
+                        fileList = fileList.map(f => (
+                                {
+                                    fileId: 0,
+                                    fileCategory: category,
+                                    filename: fileList.length > 1 ? f.name : f[0].name,
+                                    status: 1
+                                })
+                            )                       
+                        let loadedFileList = []
+                        cohort[dispatchName].forEach(f => loadedFileList.push(f))
+                        fileList.forEach(f => loadedFileList.push(f))
+                        //console.dir(loadedFileList)
+                        if (dispatchName) dispatch(allactions.cohortActions[dispatchName](loadedFileList))
                     }
                 })
 
@@ -666,7 +484,7 @@ const CohortForm = ({ ...props }) => {
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {files.map(f =>
+                        {files.filter(f => f.status > 0).map(f =>
                             <div className="my-1">
                                 <Col md="10">
                                     <a href={'../../../api/download/' + f.filename} download target="_blank">{f.filename}</a>
@@ -723,12 +541,15 @@ const CohortForm = ({ ...props }) => {
                     </div>
                     {/* File list rows */}
                     <div className="mb-3">
-                        {urls.map((url, index) =>
-                            <div className="my-1">
-                                <Col md="10" className="col-xs-9">
-                                    <a href={url} target="_blank">{url}</a>
+                        {urls.map((url, index) =>{
+                            let maxLength = 50
+                            return <div className="my-1">
+                                <Col md="10" className="col-9" >
+                                    <Reminder message={url} info={true} disabled={url.length <= maxLength}>
+                                        <a href={url}  target="_blank">{url.length > maxLength ? url.substr(0, maxLength)+"..." : url}</a>
+                                    </Reminder>
                                 </Col>
-                                <Col md="2" className="col-xs-2 text-center">
+                                <Col md="2" className="col-2 text-center">
                                     <span>
                                         {!isReadOnly &&
                                             <span className='closer'
@@ -757,7 +578,7 @@ const CohortForm = ({ ...props }) => {
                                         }
                                     </span>
                                 </Col>
-                            </div>
+                            </div>}
                         )}
                     </div>
                 </Col>
@@ -767,27 +588,31 @@ const CohortForm = ({ ...props }) => {
 
     const add_url = () => {
         return (
-            <Col md="12" className="px-0">
+            <>
                 {/* Header */}
-                <div style={{
+                <Row className="mx-0" style={{
                     height: '40px',
                     backgroundColor: '#01857b',
                     color: 'white',
                 }}>
-                    <Col sm="10">
+                    <Col className="col-10">
                         <h4><b>{urlTitle}</b></h4>
                     </Col>
-                    <input type="button" style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em' }} value='x' onClick={() => setUrlModal(false)} />
-                </div>
-                <Col sm="12" className="my-3">
-                    <Form.Control
-                        type="text"
-                        placeholder="Max of 100 characters"
-                        maxLength="100"
-                        onChange={e => setUrlInput(e.target.value)}
-                    />
-                </Col>
-            </Col>
+                    <Col className="col-2">
+                        <input type="button" style={{ position: 'absolute', right: '10px', background: 'transparent', border: 'none', lineHeight: '2em' }} value='x' onClick={() => setUrlModal(false)} />
+                    </Col>
+                </Row>
+                <Row className="mx-0">
+                    <Col sm="12" className="my-3">
+                        <Form.Control
+                            type="text"
+                            placeholder="Max of 100 characters"
+                            maxLength="100"
+                            onChange={e => setUrlInput(e.target.value)}
+                        />
+                    </Col>
+                </Row>
+            </>
         )
     }
 
@@ -826,7 +651,7 @@ const CohortForm = ({ ...props }) => {
     }
 
     const deleteFileFromList = (fileListName, fileName, fileId, cohort_ID) => {
-        fetch(`/api/questionnaire/deleteFile`, {
+        /*fetch(`/api/questionnaire/deleteFile`, {
             method: "POST",
             body: JSON.stringify({ filename: fileName, id: fileId, cohortId: cohort_ID }),
             headers: {
@@ -853,6 +678,10 @@ const CohortForm = ({ ...props }) => {
                     })
                 }
             })
+            */
+        let uploadedFiles = [...cohort[fileListName]]
+        uploadedFiles.forEach(f => {if(f.filename === fileName) {f.status = 0}})
+        dispatch(allactions.cohortActions[fileListName](uploadedFiles.filter(f => f.status > 0)))
     }
 
     const confirmSaveStay = () => {
@@ -872,6 +701,7 @@ const CohortForm = ({ ...props }) => {
         <Container>
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
+            {message.show && <Messenger message={message.content} severity={message.type} open={true} changeMessage={_ => updateMessage({ show: false })} />}
             <CenterModal show={modalShow}
                 handleClose={() =>
                     setModalShow(false)
@@ -886,21 +716,21 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={
                     <span>
-                        This cohort questionnaire will be locked against further modifications 
-                        once you submit it for review. Are you sure you want to continue?                  
+                        This cohort questionnaire will be locked against further modifications
+                        once you submit it for review. Are you sure you want to continue?
                     </span>
                 }
                 footer={
                     <div>
-                        <Button 
-                            variant="secondary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="secondary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => setReviewModalShow(false)}>
                             Cancel
                         </Button>
-                        <Button 
-                            variant="primary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="primary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => resetCohortStatus(cohortID, 'submitted')}>
                             Submit
                         </Button>
@@ -914,7 +744,7 @@ const CohortForm = ({ ...props }) => {
                 }
                 body={add_url()}
                 footer={
-                    <div>
+                    <div className="d-flex">
                         <Button
                             variant="secondary"
                             onClick={() =>
@@ -1503,7 +1333,7 @@ const CohortForm = ({ ...props }) => {
                                         value={cohort.eligible_disease_cancer_specify}
                                         maxLength="100"
                                         placeholder="Max of 100 characters"
-                                        readOnly={!cohort.eligible_disease || isReadOnly}
+                                        readOnly={cohort.eligible_disease !==1 || isReadOnly}
                                         onChange={e =>
                                             dispatch(allactions.cohortActions.eligible_disease_cancer_specify(e.target.value))
                                         } />
@@ -1600,47 +1430,84 @@ const CohortForm = ({ ...props }) => {
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Ended in year<span style={{ color: 'red' }}>*</span>
+                                    Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
-                                <Col sm="2">
-                                    {errors.enrollment_year_end && saved ?
-                                        <Reminder message={errors.enrollment_year_end}>
-                                            <input style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                className='form-control'
-                                                name='enrollment_year_end'
-                                                placeholder='YYYY'
-                                                value={cohort.enrollment_year_end}
-                                                onChange={e => {
-                                                    if (!isReadOnly) {
-                                                        e.target.value.length <= 4 && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
-                                                        if (/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <= (new Date()).getFullYear()) {
-                                                            batch(() => {
-                                                                dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
-                                                            })
+                                <Col sm="2" className="mt-3" >
+                                    <div key="radio">
+                                        <Reminder message='Required Field' disabled={!(errors.enrollment_ongoing && saved)}>
+                                            <Form.Check type="radio"
+                                                id="enrollment-ongoing-radio-no"
+                                                inline
+                                                style={(errors.enrollment_ongoing && saved) ?  { color: 'red', borderBottom: '1px solid red' } : {}}
+                                                name='enrollment_ongoing'>
+                                                <Form.Check.Input bsPrefix
+                                                    type="radio"
+                                                    className="mr-2"
+                                                    // value='0' 
+                                                    checked={cohort.enrollment_ongoing === 0}
+                                                    onClick={() => {
+                                                        //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.cohortActions.enrollment_ongoing(0));
+                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
+                                                            dispatch(allactions.cohortErrorActions.enrollment_target(true));
+                                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
+                                                            dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required Field'))
+                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         }
                                                     }
-                                                }}
-                                                onBlur={e =>
-                                                    populateErrors('enrollment_year_end', e.target.value, true, 'endyear')
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                                    } />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    No
+                                                    </Form.Check.Label>
+                                            </Form.Check>
+                                        </Reminder> 
+                                        <Reminder message='Required Field' disabled={!(errors.enrollment_ongoing && saved)}>
+                                            <Form.Check type="radio"
+                                                id="enrollment-ongoing-radio-yes"
+                                                inline
+                                                style={(errors.enrollment_ongoing && saved) ? { color: 'red', borderBottom: '1px solid red'}: {}}
+                                                name='enrollment_ongoing'>
+                                                <Form.Check.Input bsPrefix
+                                                    type="radio"
+                                                    className="mr-2"
+                                                    checked={cohort.enrollment_ongoing === 1}
+                                                    onClick={() => {
+                                                        if (!isReadOnly) {
+                                                            dispatch(allactions.cohortActions.enrollment_ongoing(1))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
+                                                            cohort.enrollment_year_end && dispatch(allactions.cohortActions.enrollment_year_end(''))
+                                                            dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
+                                                            !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                            !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                        }
+                                                    }} />
+                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                    Yes
+                                                    </Form.Check.Label>
+                                            </Form.Check>
+                                        </Reminder> 
+                                    </div>
+                                </Col>
+                            </Col>
+                            <Col sm="12" className="p-0" className="mb-1">
+                                <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
+                                    Ended in year<span style={{ color: 'red' }}>*</span>
+                                </Form.Label>
+                                <Col sm="2">   
+                                    <Reminder message={errors.enrollment_year_end} disabled={!(errors.enrollment_year_end && saved)}>
+                                        <input style={(errors.enrollment_year_end && saved) ? { color: 'red', border: '1px solid red',minWidth: '100px', maxWidth: '100px' } : {minWidth: '100px', maxWidth: '100px' }}
                                             className='form-control'
                                             name='enrollment_year_end'
                                             placeholder='YYYY'
                                             value={cohort.enrollment_year_end}
-                                            onChange={e => { // if it is already ended turn off on going
+                                            onChange={e => {
                                                 if (!isReadOnly) {
                                                     e.target.value.length <= 4 && dispatch(allactions.cohortActions.enrollment_year_end(e.target.value))
                                                     if (/^\s*\d{4}\s*$/.test(e.target.value) && e.target.value <= (new Date()).getFullYear()) {
                                                         batch(() => {
-                                                            dispatch(allactions.cohortActions.enrollment_ongoing(0))
+                                                            //dispatch(allactions.cohortActions.enrollment_ongoing(0))
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
@@ -1651,126 +1518,12 @@ const CohortForm = ({ ...props }) => {
                                                 }
                                             }}
                                             onBlur={e =>
-                                                populateErrors('enrollment_year_end', e.target.value, cohort.enrollment_ongoing === 0, 'endyear')
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                                populateErrors('enrollment_year_end', e.target.value, true, 'endyear')
+                                            } disabled={cohort.enrollment_ongoing === 1}/>
+                                    </Reminder>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
-                                <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                    Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>
-                                </Form.Label>
-                                <Col sm="2" className="align-self-center">
-                                    <div key="radio">
-                                        {errors.enrollment_ongoing && saved ?
-                                            <Reminder message='Required Field'>
-                                                <Form.Check type="radio"
-                                                    id="enrollment-ongoing-radio-no"
-                                                    inline
-                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                    name='enrollment_ongoing'>
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio"
-                                                        className="mr-2"
-                                                        // value='0' 
-                                                        checked={cohort.enrollment_ongoing === 0}
-                                                        onClick={() => {
-                                                            //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                            if (!isReadOnly) {
-                                                                dispatch(allactions.cohortActions.enrollment_ongoing(0));
-                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
-                                                                dispatch(allactions.cohortErrorActions.enrollment_target(true));
-                                                                dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                                cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                                cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
-                                                            }
-                                                        }
-                                                        } />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        No
-                                                        </Form.Check.Label>
-                                                </Form.Check>
-                                            </Reminder> :
-                                            <Form.Check type="radio"
-                                                id="enrollment-ongoing-radio-no"
-                                                inline
-                                                name='enrollment_ongoing'>
-                                                <Form.Check.Input bsPrefix
-                                                    type="radio"
-                                                    className="mr-2"
-                                                    // value='0' 
-                                                    checked={cohort.enrollment_ongoing === 0}
-                                                    onClick={e => {
-                                                        //if (!isReadOnly && !cohort.enrollment_year_end && errors.enrollment_year_end !== 'undefined') {
-                                                        if (!isReadOnly) {
-                                                            dispatch(allactions.cohortActions.enrollment_ongoing(0))
-                                                            //dispatch(allactions.cohortErrorActions.enrollment_year_end(false, 'Required field'))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_target(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_year_complete(true))
-                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
-                                                        }
-                                                    }
-                                                    } />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    No
-                                                    </Form.Check.Label>
-                                            </Form.Check>
-                                        }
-                                        {errors.enrollment_ongoing && saved ?
-                                            <Reminder message='Required Field'>
-                                                <Form.Check type="radio"
-                                                    id="enrollment-ongoing-radio-yes"
-                                                    inline
-                                                    style={{ color: 'red', borderBottom: '1px solid red' }}
-                                                    name='enrollment_ongoing'>
-                                                    <Form.Check.Input bsPrefix
-                                                        type="radio"
-                                                        className="mr-2"
-                                                        // value='1' 
-                                                        checked={cohort.enrollment_ongoing === 1}
-                                                        onClick={() => {
-                                                            //if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                            if (!isReadOnly) {
-                                                                dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                                //errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                                dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                                !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                                !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
-                                                            }
-                                                        }} />
-                                                    <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                        Yes
-                                                        </Form.Check.Label>
-                                                </Form.Check>
-                                            </Reminder> :
-                                            <Form.Check type="radio"
-                                                id="enrollment-ongoing-radio-yes"
-                                                inline
-                                                name="enrollment_ongoing">
-                                                <Form.Check.Input type='radio'
-                                                    className="mr-2"
-                                                    checked={cohort.enrollment_ongoing === 1}
-                                                    onClick={e => {
-                                                        //if (!isReadOnly && !cohort.enrollment_year_end && !errors.enrollment_year_end !== 'undefined') {
-                                                        if (!isReadOnly) {
-                                                            dispatch(allactions.cohortActions.enrollment_ongoing(1))
-                                                            //errors.enrollment_year_end && dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                            dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
-                                                            !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                            !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Required Field'))
-                                                        }
-                                                    }} />
-                                                <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                    Yes
-                                                    </Form.Check.Label>
-                                            </Form.Check>
-                                        }
-                                    </div>
-                                </Col>
-                            </Col>
+                            
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
@@ -1849,59 +1602,40 @@ const CohortForm = ({ ...props }) => {
                                 </Form.Label>
                                 <Col sm="4">
                                     <InputGroup>
-                                        {errors.enrollment_age_min && saved ?
-                                            <Reminder message={errors.enrollment_age_min}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='enrollment_age_min'
-                                                    value={cohort.enrollment_age_min}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.enrollment_age_min} disabled={!(errors.enrollment_age_min && saved)}>
+                                            <Form.Control type="text"
+                                                style={!(errors.enrollment_age_min && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_min'
                                                 value={cohort.enrollment_age_min}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_min(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateBaseLineMinAgeError(e.target.value, true, cohort.enrollment_age_max, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                onBlur={e => {
+                                                    if (!isReadOnly) {
+                                                        if (!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_min(false, 'Required Filed'))
+                                                        else dispatch(allactions.cohortErrorActions.enrollment_age_min(true))
+                                                    }
+                                                }} />
+                                        </Reminder>
                                         <InputGroup.Append>
                                             <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
                                         </InputGroup.Append>
-                                        {errors.enrollment_age_max && saved ?
-                                            <Reminder message={errors.enrollment_age_max} >
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='enrollment_age_max'
-                                                    value={cohort.enrollment_age_max}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.enrollment_age_max} disabled={!(errors.enrollment_age_max && saved)}>
+                                            <Form.Control type="text"
+                                                style={!(errors.enrollment_age_max && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='enrollment_age_max'
                                                 value={cohort.enrollment_age_max}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_max(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateBaseLineMaxAgeError(e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_median, cohort.enrollment_age_mean)
+                                                onBlur={e => {
+                                                    if (!isReadOnly) {
+                                                        if (!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_max(false, 'Required Filed'))
+                                                        else dispatch(allactions.cohortErrorActions.enrollment_age_max(true))
+                                                    }
                                                 }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                } />
+                                        </Reminder>
                                     </InputGroup>
                                 </Col>
                             </Col>
@@ -1910,63 +1644,42 @@ const CohortForm = ({ ...props }) => {
                                     Baseline Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.enrollment_age_median && saved ?
-                                        <Reminder message={errors.enrollment_age_median}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='enrollment_age_median'
-                                                value={cohort.enrollment_age_median}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                    <Reminder message={errors.enrollment_age_median} disabled={!(errors.enrollment_age_median && saved)}>
+                                        <Form.Control type="text"
+                                            style={!(errors.enrollment_age_median && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='enrollment_age_median'
                                             value={cohort.enrollment_age_median}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_median(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('enrollment_age_median', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                            }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            onBlur={e => {
+                                                if (!isReadOnly) {
+                                                    if (!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_median(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.enrollment_age_median(true))
+                                                }
+                                            }} />
+                                    </Reminder>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                   Baseline Mean age<span style={{ color: 'red' }}>*</span>
+                                    Baseline Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.enrollment_age_mean && saved ?
-                                        <Reminder message={errors.enrollment_age_mean}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='enrollment_age_mean'
-                                                value={cohort.enrollment_age_mean}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                    <Reminder message={errors.enrollment_age_mean} disabled={!(errors.enrollment_age_mean && saved)}>
+                                        <Form.Control type="text"
+                                            style={!(errors.enrollment_age_mean && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='enrollment_age_mean'
                                             value={cohort.enrollment_age_mean}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.enrollment_age_mean(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('enrollment_age_mean', e.target.value, true, cohort.enrollment_age_min, cohort.enrollment_age_max)
+                                            onBlur={e => {
+                                                if (!e.target.value) dispatch(allactions.cohortErrorActions.enrollment_age_mean(false, 'Required Filed'))
+                                                else dispatch(allactions.cohortErrorActions.enrollment_age_mean(true))
                                             }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            } />
+                                    </Reminder>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
@@ -1975,92 +1688,59 @@ const CohortForm = ({ ...props }) => {
                                 </Form.Label>
                                 <Col sm="4">
                                     <InputGroup>
-                                        {errors.current_age_min && saved ?
-                                            <Reminder message={errors.current_age_min}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='current_age_min'
-                                                    value={cohort.current_age_min}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.current_age_min} disabled={!(errors.current_age_min && saved)}>
+                                            <Form.Control type="text"
+                                                style={!(errors.current_age_min && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='current_age_min'
                                                 value={cohort.current_age_min}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_min(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_min(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateCurrentMinAgeError(e.target.value, true, cohort.current_age_max, cohort.current_age_median, cohort.current_age_mean)
+                                                onBlur={e => {
+                                                    if (!e.target.value) dispatch(allactions.cohortErrorActions.current_age_min(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.current_age_min(true))
                                                 }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                } />
+                                        </Reminder>
                                         <InputGroup.Append>
                                             <InputGroup.Text style={{ fontSize: '16px' }}>to</InputGroup.Text>
                                         </InputGroup.Append>
-                                        {errors.current_age_max && saved ?
-                                            <Reminder message={errors.current_age_max}>
-                                                <Form.Control type="text" className='text-capitalize'
-                                                    style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                    name='current_age_max'
-                                                    value={cohort.current_age_max}
-                                                    onChange={e =>
-                                                        !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
-                                                    }
-                                                    onBlur={e =>
-                                                        populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
-                                                    } />
-                                            </Reminder> :
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        <Reminder message={errors.current_age_max} disabled={!(errors.current_age_max && saved)}>
+                                            <Form.Control type="text"
+                                                style={!(errors.current_age_max && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                                 name='current_age_max'
                                                 value={cohort.current_age_max}
                                                 onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_max(e.target.value))
+                                                    !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_max(e.target.value))
                                                 }
-                                                onBlur={e =>
-                                                    populateCurrentMaxAgeError(e.target.value, true, cohort.current_age_min, cohort.current_age_median, cohort.current_age_mean)
+                                                onBlur={e => {
+                                                    if (!e.target.value) dispatch(allactions.cohortErrorActions.current_age_max(false, 'Required Filed'))
+                                                    else dispatch(allactions.cohortErrorActions.current_age_max(true))
                                                 }
-                                                readOnly={isReadOnly} />
-                                        }
+                                                } />
+                                        </Reminder>
                                     </InputGroup>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
-                                   Current Median age<span style={{ color: 'red' }}>*</span>
+                                    Current Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.current_age_median && saved ?
-                                        <Reminder message={errors.current_age_median}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='current_age_median'
-                                                value={cohort.current_age_median}
-                                                onChange={e =>
-                                                    !isReadOnly && dispatch(allactions.cohortActions.current_age_median(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                } />
-                                        </Reminder> :
-                                        <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                    <Reminder message={errors.current_age_median} disabled={!(errors.current_age_median && saved)}>
+                                        <Form.Control type="text"
+                                            style={!(errors.current_age_median && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='current_age_median'
                                             value={cohort.current_age_median}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_median(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_median(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('current_age_median', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
+                                            onBlur={e => {
+                                                if (!e.target.value) dispatch(allactions.cohortErrorActions.current_age_median(false, 'Required Filed'))
+                                                else dispatch(allactions.cohortErrorActions.current_age_median(true))
                                             }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            } />
+                                    </Reminder>
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
@@ -2068,31 +1748,20 @@ const CohortForm = ({ ...props }) => {
                                     Current Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.current_age_mean && saved ?
-                                        <Reminder message={errors.current_age_mean}>
-                                            <Form.Control type="text" className='text-capitalize'
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='current_age_mean'
-                                                value={cohort.current_age_mean}
-                                                onChange={e =>
-                                                    !isReadOnly &&  dispatch(allactions.cohortActions.current_age_mean(e.target.value))
-                                                }
-                                                onBlur={e =>
-                                                    populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
-                                                } />
-                                        </Reminder> :
+                                    <Reminder message={errors.current_age_mean} disabled={!(errors.current_age_mean && saved)}>
                                         <Form.Control type="text" className='text-capitalize'
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                            style={!(errors.current_age_mean && saved) ? { minWidth: '100px', maxWidth: '100px' } : { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
                                             name='current_age_mean'
                                             value={cohort.current_age_mean}
                                             onChange={e =>
-                                                !isReadOnly && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
+                                                !isReadOnly && /^\s*\d*\s*$/.test(e.target.value) && dispatch(allactions.cohortActions.current_age_mean(e.target.value))
                                             }
-                                            onBlur={e =>
-                                                populateMeanMedianAgeError('current_age_mean', e.target.value, true, cohort.current_age_min, cohort.current_age_max)
+                                            onBlur={e => {
+                                                if (!e.target.value) dispatch(allactions.cohortErrorActions.current_age_mean(false, 'Required Filed'))
+                                                else dispatch(allactions.cohortErrorActions.current_age_mean(true))
                                             }
-                                            readOnly={isReadOnly} />
-                                    }
+                                            } />
+                                    </Reminder>
                                 </Col>
                             </Col>
                         </Form.Group>
@@ -2102,7 +1771,7 @@ const CohortForm = ({ ...props }) => {
                     <CollapsiblePanel
                         condition={activePanel === 'panelD'}
                         onClick={() => setActivePanel(activePanel === 'panelD' ? '' : 'panelD')}
-                        panelTitle="Requirements & Strategies">
+                        panelTitle="Recruitment">
 
                         {/* A.9 Specify the Frequency of Questionnaires */}
                         <Form.Group as={Row}>
@@ -2365,7 +2034,7 @@ const CohortForm = ({ ...props }) => {
                                                 !isReadOnly && updateErrors(e, 'requirements', ['requireCollab', 'requireIrb', 'requireNone', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther'], 'requireData')
                                             } />
                                         <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                            Require data use agreements and/or materrial transfer agreement
+                                            Require data use agreements and/or material transfer agreement
                                             </Form.Check.Label>
                                     </Form.Check>
                                     <Form.Check type="checkbox"
@@ -2675,6 +2344,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='questionnaire_url'
                                                                                     id="questionnaire_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px', borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Questionniare URL", "questionnaire_url")
@@ -2744,6 +2419,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     aria-describedby="inputGroupFileAddon01"
                                                                                     multiple
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{ height: '27px' }}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -2768,7 +2444,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download={cohort.questionnaireFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -2828,6 +2504,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='main_cohort_url'
                                                                                     id="main_cohort_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px', borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Main Cohort URL", "main_cohort_url")
@@ -2873,7 +2555,7 @@ const CohortForm = ({ ...props }) => {
                                                                                                 e.preventDefault();
                                                                                                 showUrlListModal('Main Cohort Url', 'main_cohort_url')
                                                                                             }}>
-                                                                                            {cohort.questionnaire_url.length - 1} more
+                                                                                            {cohort.main_cohort_url.length - 1} more
                                                                                             </a>
                                                                                     </span>
                                                                                 </>
@@ -2896,6 +2578,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile02"
                                                                                     aria-describedby="inputGroupFileAddon02"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{ height: '27px' }}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -2920,7 +2603,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.mainFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download={cohort.mainFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -2961,7 +2644,7 @@ const CohortForm = ({ ...props }) => {
                                                     </Table>
                                                 </td>
                                             </tr>
-                                            <tr>
+    {/*                                        <tr>
                                                 <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Data sharing policy</th>
                                                 <td className="p-0">
                                                     <Table style={{ width: '100%', height: '100%', marginBottom: '0' }} bordered condensed className="table-valign-middle">
@@ -2980,6 +2663,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='data_url'
                                                                                     id="data_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px', borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Data Sharing URL", "data_url")
@@ -3048,6 +2737,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile03"
                                                                                     aria-describedby="inputGroupFileAddon03"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{ height: '27px' }}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -3072,7 +2762,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download={cohort.dataFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3132,6 +2822,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='specimen_url'
                                                                                     id="specimen_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px', borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Biospecimen Sharing URL", "specimen_url")
@@ -3201,6 +2897,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     aria-describedby="inputGroupFileAddon04"
                                                                                     multiple readOnly={isReadOnly}
                                                                                     onClick={e => e.target.value = null}
+                                                                                    style={{ height: '27px' }}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
                                                                                             setSfileLoading(true)
@@ -3224,7 +2921,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download={cohort.specimenFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3265,6 +2962,7 @@ const CohortForm = ({ ...props }) => {
                                                     </Table>
                                                 </td>
                                             </tr>
+*/}
                                             <tr>
                                                 <th className="align-middle" style={{ backgroundColor: '#01857b', color: 'white' }}>Publication (authorship) policy</th>
                                                 <td className="p-0">
@@ -3284,6 +2982,12 @@ const CohortForm = ({ ...props }) => {
                                                                                     name='publication_url'
                                                                                     id="publication_url"
                                                                                     readOnly={isReadOnly}
+                                                                                    style={{
+                                                                                        whiteSpace: 'nowrap',
+                                                                                        border: '1px solid gray',
+                                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                                        height: '27px', borderRadius: '2px'
+                                                                                    }}
                                                                                     onClick={() => {
                                                                                         if (!isReadOnly) {
                                                                                             showUrlModal("Publication Policy URL", "publication_url")
@@ -3352,6 +3056,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     id="inputGroupFile05"
                                                                                     aria-describedby="inputGroupFileAddon05"
                                                                                     multiple readOnly={isReadOnly}
+                                                                                    style={{ height: '27px' }}
                                                                                     onClick={e => e.target.value = null}
                                                                                     onChange={e => {
                                                                                         if (!isReadOnly) {
@@ -3376,7 +3081,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.publicationFileName.length > 0 && (
                                                                                 <span>
-                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download={cohort.publicationFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
@@ -3425,20 +3130,21 @@ const CohortForm = ({ ...props }) => {
                                     <Table bordered condensed className="table-valign-middle">
                                         <thead>
                                             <tr>
-                                                <th className="text-center w-10">Document</th>
-                                                <th className="text-center w-40">Website URL (preferred)</th>
-                                                <th className="text-center w-50">Attached (if url not applicable)</th>
+                                                <th className="text-center col-sm-2">Document</th>
+                                                <th className="text-center col-sm-4">Website URL (preferred)</th>
+                                                <th className="text-center col-sm-6">Attached (if url not applicable)</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr>
                                                 <td className="bg-light-grey">Questionnaires</td>
 
-                                                <td style={{ verticalAlign: 'middle' }}>
-                                                    <Row className="w-100">
-
-                                                        <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
+                                                <td>
+                                                    
+                                                    <Row className="w-100" style={{ paddingRight: '0' }}>
+                                                        <Col style={{ paddingRight: '0', marginRight: '0' }} md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
+
                                                                 !isReadOnly &&
                                                                 <Button
                                                                     variant="primary"
@@ -3446,7 +3152,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='questionnaire_url'
                                                                     id="questionnaire_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        width: '80px',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px', borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Questionniare URL", "questionnaire_url")
@@ -3455,9 +3167,9 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.questionnaire_url.length === 0 && (
-                                                                <span>
+                                                                <span style={{ padding: '0' }}>
                                                                     No URL(s) entered
                                                                 </span>
                                                             )
@@ -3515,6 +3227,7 @@ const CohortForm = ({ ...props }) => {
                                                                     aria-describedby="inputGroupFileAddon01"
                                                                     multiple
                                                                     readOnly={isReadOnly}
+                                                                    style={{ height: '27px' }}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3539,14 +3252,14 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.questionnaireFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download target="_blank">{cohort.questionnaireFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.questionnaireFileName[0].filename} download={cohort.questionnaireFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.questionnaireFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
                                                                             <span class="closer"
-                                                                                onClick={() =>
-                                                                                    deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)
-                                                                                }>
+                                                                              onClick={() =>
+                                                                                    deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID) 
+                                                                                } > 
                                                                                 x
                                                                                 </span>)
                                                                         </>
@@ -3580,8 +3293,8 @@ const CohortForm = ({ ...props }) => {
                                             <tr>
                                                 <td className="bg-light-grey">Main cohort protocol</td>
                                                 <td>
-                                                    <Row className="w-100">
-                                                        <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
+                                                    <Row className="w-100" style={{ paddingRight: '0' }}>
+                                                        <Col style={{ paddingRight: '0', marginRight: '0' }} md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
 
                                                                 !isReadOnly &&
@@ -3591,7 +3304,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='main_cohort_url'
                                                                     id="main_cohort_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        width: '80px',
+                                                                        border: '1px solid gray',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px', borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Main Cohort URL", "main_cohort_url")
@@ -3600,7 +3319,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.main_cohort_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3658,6 +3377,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile02"
                                                                     aria-describedby="inputGroupFileAddon02"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{ height: '27px' }}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3682,7 +3402,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.mainFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download target="_blank">{cohort.mainFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.mainFileName[0].filename} download={cohort.mainFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.mainFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3720,7 +3440,7 @@ const CohortForm = ({ ...props }) => {
                                                 </td>
 
                                             </tr>
-                                            <tr>
+{/*                                            <tr>
                                                 <td className="bg-light-grey">Data sharing policy</td>
                                                 <td>
                                                     <Row className="w-100">
@@ -3734,7 +3454,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='data_url'
                                                                     id="data_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        width: '80px',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px', borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Data Sharing URL", "data_url")
@@ -3743,7 +3469,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.data_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3800,6 +3526,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile03"
                                                                     aria-describedby="inputGroupFileAddon03"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{ height: '27px' }}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3824,7 +3551,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download target="_blank">{cohort.dataFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.dataFileName[0].filename} download={cohort.dataFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.dataFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -3876,7 +3603,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='specimen_url'
                                                                     id="specimen_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        width: '80px',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px', borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Biospecimen Sharing URL", "specimen_url")
@@ -3885,7 +3618,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.specimen_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -3942,6 +3675,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile04"
                                                                     aria-describedby="inputGroupFileAddon04"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{ height: '27px' }}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -3966,7 +3700,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download target="_blank">{cohort.specimenFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.specimenFileName[0].filename} download={cohort.specimenFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.specimenFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
@@ -4003,13 +3737,13 @@ const CohortForm = ({ ...props }) => {
                                                     </Row>
                                                 </td>
                                             </tr>
+*/}
                                             <tr>
                                                 <td className="bg-light-grey">Publication(authorship) policy</td>
                                                 <td>
                                                     <Row className="w-100">
                                                         <Col md={!isReadOnly ? "12" : "1"} xl={!isReadOnly ? "4" : "1"} className="pr-0">
                                                             {
-
                                                                 !isReadOnly &&
                                                                 <Button
                                                                     variant="primary"
@@ -4017,7 +3751,13 @@ const CohortForm = ({ ...props }) => {
                                                                     name='publication_url'
                                                                     id="publication_url"
                                                                     readOnly={isReadOnly}
-                                                                    style={{ whiteSpace: "nowrap" }}
+                                                                    style={{
+                                                                        whiteSpace: 'nowrap',
+                                                                        border: '1px solid gray',
+                                                                        width: '80px',
+                                                                        backgroundColor: 'rgb(239, 239, 239)',
+                                                                        height: '27px', borderRadius: '2px'
+                                                                    }}
                                                                     onClick={() => {
                                                                         if (!isReadOnly) {
                                                                             showUrlModal("Publication Policy URL", "publication_url")
@@ -4026,7 +3766,7 @@ const CohortForm = ({ ...props }) => {
 
                                                             }
                                                         </Col>
-                                                        <Col style={{ lineHeight: '2em' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
+                                                        <Col style={{ lineHeight: '2em', paddingLeft: '0' }} md={!isReadOnly ? "12" : "11"} xl={!isReadOnly ? "7" : "11"}>
                                                             {cohort.publication_url.length === 0 && (
                                                                 <span>
                                                                     No URL(s) entered
@@ -4083,6 +3823,7 @@ const CohortForm = ({ ...props }) => {
                                                                     id="inputGroupFile05"
                                                                     aria-describedby="inputGroupFileAddon05"
                                                                     multiple readOnly={isReadOnly}
+                                                                    style={{ height: '27px' }}
                                                                     onClick={e => e.target.value = null}
                                                                     onChange={e => {
                                                                         if (!isReadOnly) {
@@ -4107,7 +3848,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.publicationFileName.length > 0 && (
                                                                 <span>
-                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download target="_blank">{cohort.publicationFileName[0].filename}</a>
+                                                                    <a href={'../../../api/download/' + cohort.publicationFileName[0].filename} download={cohort.publicationFileName[0].filename.split('.').pop() === 'pdf' ? false : true} target="_blank">{cohort.publicationFileName[0].filename}</a>
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(

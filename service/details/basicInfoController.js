@@ -26,7 +26,7 @@ exports.run = function (req, res) {
 			});
 			let tmp = {};
 			tmp.type = "data";
-			tmp.name = "Gender";
+			tmp.name = "Sex";
 			list.forEach(function (l) {
 				let v = l["gender"];
 				if (v == "") {
@@ -41,10 +41,12 @@ exports.run = function (req, res) {
 			list.forEach(function (l) {
 				let v = l["eligible_disease"];
 				if (v == 0) {
-					v = "Cancer Survivor";
+					//v = "Cancer Survivor";
+					v = "Generally Healthy";
 				}
 				else if (v == 1) {
-					v = "Generally Healthy";
+					//v = "Generally Healthy";
+					v = "Cancer Survivor";
 				}
 				else if (v == 2) {
 					v = "Other";
@@ -60,7 +62,7 @@ exports.run = function (req, res) {
 			tmp.name = "Cancer Survivors: Specified Cancer Site";
 			list.forEach(function (l) {
 				let v = l["eligible_disease_cancer_specify"];
-				if (v === "") {
+				if (v === "" || v === null) {
 					v = (l["eligible_disease_state"] == -1 ? "N/P" : "N/A");
 				}
 				tmp["c_" + l.id] = v;
@@ -71,7 +73,7 @@ exports.run = function (req, res) {
 			tmp.name = "Other Disease State, Specify";
 			list.forEach(function (l) {
 				let v = l["eligible_disease_other_specify"];
-				if (v === "") {
+				if (v === "" || v === null) {
 					v = (l["eligible_disease_state"] == -1 ? "N/P" : "N/A");
 				}
 				tmp["c_" + l.id] = v;
@@ -230,7 +232,7 @@ exports.run = function (req, res) {
 			tmp.type = "data";
 			tmp.name = "Other Tools used for Exposure Data Collection Other Specified";
 			list.forEach(function (l) {
-				let v = l["other_tools_specify"];
+				let v = l["other_tools_specify"] || 'N/A';
 				if (v == "") {
 					if (l["other_tools"] == 0) {
 						v = "N/A";

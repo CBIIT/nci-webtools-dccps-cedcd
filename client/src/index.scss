@@ -30,18 +30,6 @@ body {
   padding-right:0;
 }
 
-/* HEADER-NCI -------------------------------------------------------- */ 
-#header-nci-bg {
-  width: 100%;
-  background: #fff;
-  margin: 0;
-  padding: 1.5rem 0;
-}
-
-#header-nci img {
-  height: 50px;
-}
-
 /* HEADER-CEDCD -------------------------------------------------------- */ 
 #cedcd-bg-wrapper {
   width: 100%; /*updated 9/23/14 - 96% */
@@ -989,7 +977,7 @@ a.section-expand {
 }
 
 .table-header {
-  height: 53px;
+  height: 50px;
   background-color: #01857b;
   color: white;
   border-left: 1px #B7B5B0 solid;
@@ -1483,4 +1471,13 @@ input[type=number] {
 
 .resize-disabled {
   resize: none;
+}
+
+.form-check-label {
+  display: inline !important;
+}
+
+.modal-backdrop  {
+  width: 100%;
+  height: 100%;
 }

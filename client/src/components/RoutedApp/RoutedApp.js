@@ -15,33 +15,39 @@ export default function RoutedApp() {
 		</div>
 	});
 	const mergeModal = obj => setModal({...modal, ...obj});
-	
+
 	return <BrowserRouter 
 		getUserConfirmation={(message, callback) => {
-			mergeModal({
-				show: true,
-				body: message,
-				footer: <div>
-					<Button 
-						variant="secondary"
-						className="col-lg-2 col-md-6"
-						onClick={e => {
-							callback(false);
-							mergeModal({show: false});
-						}}>
-						Cancel
-					</Button>
-					<Button 
-						variant="primary"
-						className="col-lg-2 col-md-6"
-						onClick={e => {
-							callback(true);
-							mergeModal({show: false});
-						}}>
-						Confirm
-					</Button>
-				</div>
-			})
+			if (!message) {
+				callback(true);
+			}
+			
+			else {
+				mergeModal({
+					show: true,
+					body: message,
+					footer: <div>
+						<Button 
+							variant="secondary"
+							className="col-lg-2 col-md-6"
+							onClick={e => {
+								callback(false);
+								mergeModal({show: false});
+							}}>
+							Cancel
+						</Button>
+						<Button 
+							variant="primary"
+							className="col-lg-2 col-md-6"
+							onClick={e => {
+								callback(true);
+								mergeModal({show: false});
+							}}>
+							Confirm
+						</Button>
+					</div>
+				})
+			}
 		}}>
 		<Modal {...modal} />
 		<App />

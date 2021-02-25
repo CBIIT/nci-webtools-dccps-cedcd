@@ -1,3 +1,4 @@
+const logger = require('../../components/logger');
 var mysql = require('../../components/mysql');
 
 exports.run = function (req, res) {
@@ -42,10 +43,11 @@ exports.run = function (req, res) {
 				}
 				list.forEach(function (l) {
 					let v = l[vl.column];
+
 					if (vl.text) {
-						v = (v == "" ? "N/A" : v);
+						v = (v === "" || v === null ? "N/A" : v);
 					}
-					else if (v == -1) {
+					else if (v === -1) {
 						v = "N/P";
 					}
 					else {
@@ -106,7 +108,7 @@ exports.run = function (req, res) {
 				list.forEach(function (l) {
 					let v = l[vl.column];
 					if (vl.text) {
-						v = (v == "" ? "N/A" : v);
+						v = (v === "" || v === null ? "N/A" : v);
 					}
 					else if (v == -1) {
 						v = "N/P";
@@ -153,14 +155,14 @@ exports.run = function (req, res) {
 				list.forEach(function (l) {
 					let v = l[vl.column];
 					if (vl.text) {
-						v = (v == "" ? "N/A" : v);
+						v = (v === "" || v === null ? "N/A" : v);
 					}
-					else if (v == -1) {
+					else if (v === -1) {
 						v = "N/P";
 					}
 					else {
 						if (vl.values) {
-							v = vl.values[v];
+							v = vl.values[v] || 'N/A';
 						}
 						else {
 							v = v ? "Yes" : "No";

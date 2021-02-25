@@ -8,8 +8,7 @@ class GenderList extends Component {
 		super(props);
 
 		this.state = {
-			list: [
-			],
+			list: [],
 			lookup: {},
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
@@ -58,31 +57,32 @@ class GenderList extends Component {
 			.then(result => {
 				const customOrder = str => ({
 					all: 0,
-					unknonwn: 1,
-					male: 2,
-					female: 3,
+					male: 1,
+					female: 2,
+					unknown: 3
 				}[str.toLowerCase()] || 0)
-				let genders = result.data.list.sort((a, b) => 
+				let genders = [...result.data.list].sort((a, b) =>
 					customOrder(a.gender) - customOrder(b.gender));
+
 				let arr = [];
 				let dict = {};
+
 				genders.forEach(function (element) {
+					if (element.gender != 'All' && element.gender != 'Unknown')
+						element.gender = element.gender + 's';
+					if (element.gender === 'Unknown')
+						element.gender = 'Unknown/Not Reported';
 					arr.push({ gender: element.gender, id: element.id });
 					dict[element.id] = { gender: element.gender, id: element.id };
 				});
+
 				if (this._isMounted) {
 					this.setState({
 						list: arr,
 						lookup: dict
 					});
 				}
-				if(this.props.hasOnly){
-					let allGenders = {...this.state}
-					allGenders.list.sort((a,b) => b.id - a.id)
-					for(let k of allGenders.list)
-						if(k.gender != 'All' && k.gender != 'Unknown')
-							k.gender = k.gender+'s only'
-				}
+
 			});
 	}
 
@@ -102,18 +102,17 @@ class GenderList extends Component {
 		let f_list = Object.assign([], this.state.list);
 
 		if (!hasUnknown) {
-			f_list = f_list.filter(r => r.gender != "Unknown");
+			f_list = f_list.filter(r => r.id != 3); // exclude 'Unknown/Not Reported'
 		}
 		if (!hasBoth) {
-			f_list = f_list.filter(r => r.gender != "All");
+			f_list = f_list.filter(r => r.id != 4); // exclude 'All'
 		}
-	
+
 		/*f_list.forEach(alert(r => r.gender))*/
 		const list = f_list.map((item, idx) => {
 			const key = "gender_" + item.id;
 			let checked = (values.indexOf(item.id) > -1);
 			let genderId = 'gender_checkbox_' + item.id;
-			//console.log('gender_Id: ' + genderId);
 
 			return (
 				<li key={key}>

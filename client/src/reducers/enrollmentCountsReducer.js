@@ -3,6 +3,8 @@ import t from '../actionTypes'
 import InitialStates from '../states'
 const enrollmentCountsReducer = (state=InitialStates.enrollmentCount, action={}) => {
     switch(action.type){
+        case t.renewEnrollmentCounts:
+            return {...action.value}
         case t.updateEnrollmentCount:
             let shallow = {...state}
             if(/^\d*$/.test(action.value.trim()))

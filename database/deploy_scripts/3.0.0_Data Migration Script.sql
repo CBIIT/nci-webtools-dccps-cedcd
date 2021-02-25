@@ -1499,7 +1499,7 @@ case when eligible_gender = 0 then 4
              when eligible_gender = 2 then 2
              else 3
              end,
-eligible_disease,
+case eligible_disease when 0 then 1 else 0 end as eligible_disease,
 eligible_disease_cancer_specify,
 eligible_disease_other_specify,
 enrollment_total,
@@ -1682,17 +1682,25 @@ create_time,
 update_time
 from cedcd_old.cohort_dlh;
 
-/*  update dlh request_proecedure data from cohort_basic */
+/*  update dlh request_proecedure data from cohort_basic
+*  only valid web site set to 1 
+*  questionnaire v 8.1
+ */
 
 UPDATE dlh a
 INNER JOIN cedcd_old.cohort_basic b ON a.cohort_id = b.cohort_id
-SET a.dlh_procedure_online = IF(b.request_procedures_pdf = 1 OR request_procedures_web =1 , 1 ,0),
-a.dlh_procedure_website = b.request_procedures_web,
-a.dlh_procedure_url = b.request_procedures_web_url,
-a.dlh_procedure_attached = b.request_procedures_pdf
+SET a.dlh_procedure_online = IF(b.request_procedures_web_url is not null and b.request_procedures_web_url != "" , 1 ,0)
 where a.cohort_id > 1;
 
+/*
+*  copy request_proecedure website data from cohort_basic to cohort_document
+*  category 5 (request_procedures), status 1 (active) type website
+*  questionnaire v 8.1
+*/
 
+insert into cohort_document (cohort_id, attachment_type , category, website, status, create_time, update_time)
+select cohort_id,0, 5, request_procedures_web_url, 1, create_time, update_time 
+from cedcd_old.cohort_basic where request_procedures_web_url is not null and request_procedures_web_url!="";
 /*
 Migrate data from table cohort_enrollment to cohort_enrollment_counts
 */

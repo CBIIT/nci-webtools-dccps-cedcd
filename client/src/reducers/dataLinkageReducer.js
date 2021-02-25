@@ -17,7 +17,7 @@ actions[t.setDataOnlineURL] = (state, action) => ({ ...state, dataOnlineURL: act
 actions[t.setCreatedRepo] = (state, action) => ({ ...state, createdRepo: action.value })
 actions[t.setCreatedRepoSpecify] = (state, action) => ({ ...state, createdRepoSpecify: action.value })
 actions[t.setSectionFStatus] = (state, action) => ({ ...state, sectionFStatus: action.value })
-
+actions[t.setUploadFileName] = (state, action) => ({...state, dataFileName: action.value})
 const getResult = feedState => feedAction => actions[feedAction.type] && actions[feedAction.type](feedState, feedAction) || feedState
 const dataLinkageReducer = (state=InitialStates.dataLinkage, action={}) => getResult(state)(action)
 

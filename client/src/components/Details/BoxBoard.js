@@ -48,7 +48,7 @@ class BoxBoard extends Component {
   			<Specimen cohorts={this.props.cohorts} saveHistory={this.props.saveHistory}/>
   		);
   	}
-    return content;
+    return <div className="container">{content}</div>;
   }
 }
 

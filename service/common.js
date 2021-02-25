@@ -10,6 +10,7 @@ var path = require('path');
 var moment = require('moment');
 var mail = require('../components/mail');
 const XlsxPopulate = require('xlsx-populate');
+const logger = require('../components/logger');
 
 router.get('/', function (req, res, next) {
 	res.json({ status: 200, data: 'Welcome to CEDCD API Center.' });
@@ -81,12 +82,12 @@ router.get('/download/:filename', function (req, res, next) {
 		dir: config.file_path,
 		base: filename
 	});
-
+	logger.debug(filePath)
 	const fileType = filename.split('.').pop()
 
 	fs.readFile(filePath, function (err, data) {
-
-		switch(fileType){
+		logger.debug(data)
+		switch (fileType) {
 
 			case 'doc':
 				res.contentType("application/msword");
@@ -908,7 +909,7 @@ router.post('/export/cancer', function (req, res) {
 				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
 				}
-				let tmp = cache[l.u_id];
+				let tmp = lcache[l.u_id];
 				if (l.cancer_counts == -1) {
 					tmp[l.cohort_acronym] = "N/P";
 				}
@@ -1031,7 +1032,7 @@ router.post('/export/biospecimen', function (req, res) {
 				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
 				}
-				let tmp = cache[l.u_id];
+				let tmp = lcache[l.u_id];
 				if (l.specimens_counts == -1) {
 					tmp[l.cohort_acronym] = "N/P";
 				}

@@ -204,7 +204,7 @@ class Home extends Component {
   		}
   		
       return (
-		<div>
+		<div className="conatiner p-0 m-0 mw-100">
 			<img src="./assets/img/HomeHeader.jpeg" alt="Header" style={{width:"100%",  padding: "0 1.5rem", marginBottom:"2rem"}}></img>
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
 			<div className="row-for-home-grid" style={{"margin-bottom":"50px"}}>
@@ -217,7 +217,7 @@ class Home extends Component {
 
 							</div>
 							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
-							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., gender, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
+							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
 						</div>
 					</Link>
 				</div>
@@ -229,7 +229,7 @@ class Home extends Component {
 
 							</div>
 							<h2 class="card-header" align = "center">Enrollment Counts</h2>
-							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific gender, race, and ethnicity terms.</p>
+							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity terms.</p>
 						</div>
 					</Link>
 				</div>
@@ -241,7 +241,7 @@ class Home extends Component {
 
 						</div>
 						<h2 class="card-header" align = "center">Cancer Counts</h2>
-						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by gender.</p>
+						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by sex.</p>
 					</div>
 					</Link>
 				</div>

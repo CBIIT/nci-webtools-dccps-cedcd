@@ -86,12 +86,13 @@ const EditUser = ({ ...props }) => {
                         const list = data.cohort_list.split(',').map((item, idx) => ({ value: item, label: item }))
                         const toAdd = []
 
-                        list.map((cohort) => {
-
-                            const object = allCohorts.find(item => item.value === cohort.value)
-                            initialAcronym.push(object.value)
-                            toAdd.push(object)
-                        })
+                        if (data.user_role !== 'Admin') {
+                            list.map((cohort) => {
+                                const object = allCohorts.find(item => item.value === cohort.value)
+                                initialAcronym.push(object.value)
+                                toAdd.push(object)
+                            })
+                        }
 
                         setCohortList(toAdd)
                     }
@@ -107,8 +108,6 @@ const EditUser = ({ ...props }) => {
                         active_status: data.active_status,
                         cohort_list: initialAcronym.sort()
                     })
-
-                    console.log(JSON.stringify(initial))
                 }
             } else {
                 setNonExistUser(true)
@@ -210,8 +209,6 @@ const EditUser = ({ ...props }) => {
         }
 
         userInfo.cohort_list.sort()
-        console.log(initial)
-        console.log(userInfo)
 
         if (validateInput()) {
             let uid = isNew ? 0 : userId
@@ -343,18 +340,7 @@ const EditUser = ({ ...props }) => {
                                 <Form.Group id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
                                     <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userRole_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userRole_error}</Form.Label>}
-                                    <Col sm="6" className="align-self-center">
-                                        <Form.Check type='radio' inline>
-                                            <Form.Check.Input
-                                                type='radio'
-                                                value="Admin"
-                                                checked={userRole === 'Admin'}
-                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
-                                            />
-                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
-                                                Admin
-                                            </Form.Check.Label>
-                                        </Form.Check>
+                                    <Col sm="6" className="d-flex justify-content-between align-self-center">
 
                                         <Form.Check type='radio' inline>
                                             <Form.Check.Input
@@ -370,6 +356,19 @@ const EditUser = ({ ...props }) => {
                                                 Cohort Owner
                                             </Form.Check.Label>
                                         </Form.Check>
+
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="Admin"
+                                                checked={userRole === 'Admin'}
+                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Admin
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
                                     </Col>
                                 </Form.Group>
 
@@ -394,7 +393,7 @@ const EditUser = ({ ...props }) => {
                                 </Form.Group>
                                 <Form.Group className="pl-0 my-3 col-md-12 col-sm-12 col-12" style={{ paddingLeft: '0' }}>
                                     <div className="pl-0 col-md-12 col-12">
-                                        <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus === 'Y'}
+                                        <span className="col-md-12 col-12" style={{ paddingLeft: '0', paddingRight: '10' }}><input type='checkbox' name='active_status' checked={activeStatus ? activeStatus === 'Y' : true}
                                             onChange={(e) => { activeStatus === 'Y' ? setActiveStatus('N') : setActiveStatus('Y') }} />{' '} Active
                                         </span>
                                     </div>

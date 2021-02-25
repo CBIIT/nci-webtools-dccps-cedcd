@@ -49,6 +49,14 @@ CREATE TABLE IF NOT  EXISTS `lu_case_type` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `lu_cohort_document_category` (
+  `id` int(4) NOT NULL,
+  `document_category` varchar(50) NOT NULL,
+  status varchar(10),
+  PRIMARY KEY (`id`)
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -319,9 +327,6 @@ CREATE TABLE IF NOT  EXISTS `dlh` (
   `dlh_nih_biolincc` int(1) DEFAULT NULL,
   `dlh_nih_other` int(1) DEFAULT NULL,
   `dlh_procedure_online` int(1) DEFAULT NULL,
-  `dlh_procedure_website` int(1) DEFAULT NULL,
-  `dlh_procedure_url` varchar(200) DEFAULT NULL,
-  `dlh_procedure_attached` varchar(200) DEFAULT NULL,
   `dlh_procedure_enclave` int(1) DEFAULT NULL,
   `dlh_enclave_location` varchar(200) DEFAULT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -569,6 +574,18 @@ insert into cohort_page_mapping values('D', 'cancer info');
 insert into cohort_page_mapping values('E', 'mortality');
 insert into cohort_page_mapping values('F', 'data linkage and harmonization');
 insert into cohort_page_mapping values('G', 'specimens collected');
+
+/*
+ Generate data for lookup table lu_cohort_document_category
+ in questionnaire v8.1 "Data Sharing" and "BioSpecimen" not being active
+ */
+insert into lu_cohort_document_category
+values (0, "Questionnaires", "Y"),
+(1, "Main cohort protocol", "Y"),
+(2, "Data Sharing", "N"),
+(3, "BioSpecimen", "N"),
+(4, "Publication(authorship) policy", "Y"),
+(5, "Request Procedures", "Y");
 
 /*
 Generate data for lookup table lu_cohort_status
