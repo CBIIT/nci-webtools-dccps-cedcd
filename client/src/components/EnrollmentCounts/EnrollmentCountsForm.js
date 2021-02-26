@@ -333,14 +333,14 @@ const EnrollmentCountsForm = ({ ...props }) => {
                                                     <th colSpan='3' style={{ textAlign: 'center' }}>Unknown/Not Reported Ethnicity</th>
                                                 </tr>
                                                 <tr>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Female</th>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Male</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Females</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Males</th>
                                                     <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Unknown/Not Reported</th>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Female</th>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Male</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Females</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Males</th>
                                                     <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Unknown/Not Reported</th>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Female</th>
-                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Male</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Females</th>
+                                                    <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Males</th>
                                                     <th style={{ fontSize: '1.4rem', textAlign: 'center' }}>Unknown/Not Reported</th>
                                                 </tr>
                                             </thead>
