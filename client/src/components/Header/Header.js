@@ -28,7 +28,7 @@ export default function Header(props) {
                         </a>
         
                         <div style={{ marginLeft: '10%', marginTop: '20px' }}>
-                            {userSession && <>
+                            {userSession && Object.keys(userSession.length) && <>
                                 <a
                                     className="login-button"
                                     href="#"
