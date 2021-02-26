@@ -1128,7 +1128,7 @@ BEGIN
 		ac.cancer_id, lc.cancer, ac.cancer_counts 
 	    from ", @queryString, "  cohort_basic cs, lu_gender lg, lu_cancer lc 
 	    WHERE ac.cohort_id = cs.cohort_id and ac.gender_id = lg.id and ac.cancer_id = lc.id 
-        order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id, cs.cohort_acronym");
+        order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id desc, cs.cohort_acronym");
   
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
