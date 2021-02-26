@@ -173,6 +173,7 @@ const MajorContentForm = ({ ...props }) => {
                 
                          loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure','residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
                          'cognitiveDecline'], content, 19)
+                         dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(content[18].baseline == 0 || content[18].other_specify_baseline))
                          dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
                        
                         if (content[40]) {
