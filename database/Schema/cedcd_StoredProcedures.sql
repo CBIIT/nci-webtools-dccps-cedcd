@@ -1123,7 +1123,9 @@ BEGIN
         " group by tc.cohort_id having sum(case when IFNULL(tc.cancer_counts, 0) > 1  then tc.cancer_counts else 0 end)  )  group by cc.cohort_id, u_id, cc.gender_id, cc.cancer_id ) as ac ,");
     end if;
     set @query = '';
-    set @query = concat("select ac.cohort_id, cs.cohort_name, cs.cohort_acronym,ac.u_id, ac.gender_id, lg.gender, ac.cancer_id, lc.cancer, ac.cancer_counts 
+    set @query = concat("select ac.cohort_id, cs.cohort_name, cs.cohort_acronym,ac.u_id, ac.gender_id, 
+	    (case when lg.id in (1,2) then concat(lg.gender,'s') else lg.gender end) gender, 
+		ac.cancer_id, lc.cancer, ac.cancer_counts 
 	    from ", @queryString, "  cohort_basic cs, lu_gender lg, lu_cancer lc 
 	    WHERE ac.cohort_id = cs.cohort_id and ac.gender_id = lg.id and ac.cancer_id = lc.id 
         order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id, cs.cohort_acronym");
