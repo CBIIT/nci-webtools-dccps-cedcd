@@ -202,7 +202,7 @@ class Information extends Component {
 
 	render() {
 		if (!this.state.hasMounted) {
-			return (<div id="prof-main"></div>);
+			return (<div id="prof-main" className="container"></div>);
 		}
 		else {
 			const info = this.state.info;
@@ -287,7 +287,7 @@ class Information extends Component {
 				style: { display: this.state.data ? "block" : "none" }
 			};
 			return (
-				<div id="prof-main">
+				<div id="prof-main" className="container">
 					<div id="prof-header">
 						<a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to previous page</span></a>
 						<h2 className="pg-title"><span id="cd_name">{info.cohort_name}</span> (<span id="cd_acronym">{info.cohort_acronym}</span>)</h2>
