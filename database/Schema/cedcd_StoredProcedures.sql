@@ -1128,7 +1128,7 @@ BEGIN
 		ac.cancer_id, lc.cancer, ac.cancer_counts 
 	    from ", @queryString, "  cohort_basic cs, lu_gender lg, lu_cancer lc 
 	    WHERE ac.cohort_id = cs.cohort_id and ac.gender_id = lg.id and ac.cancer_id = lc.id 
-        order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id, cs.cohort_acronym");
+        order by case when lc.cancer = 'All Other Cancers' then 'zzz' else lc.cancer end asc, ac.gender_id desc, cs.cohort_acronym");
   
     PREPARE stmt FROM @query;
 	EXECUTE stmt;
@@ -1308,10 +1308,15 @@ BEGIN
 		update_time = NOW()
 		WHERE cohort_id = new_id;
 		-- update section status
-		IF ROW_COUNT() > 0 THEN
+		
+        IF ROW_COUNT() > 0 THEN
+        BEGIN
 			UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
 			WHERE cohort_id = new_id AND page_code = 'A';
-		END IF;
+            IF @cohort_status = 'rejected' THEN
+				update cohort set status = 'draft' where id = new_id;
+            END IF;
+		END;
 		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 1) THEN
 			UPDATE person 
 			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
@@ -1825,6 +1830,10 @@ BEGIN
         
         update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')) where 
         cohort_id = new_id and page_code = 'B';
+        
+        IF @cohort_status = 'rejected' THEN
+			update cohort set status = 'draft' where id = new_id;
+		END IF;	
 	
     END IF;
     
