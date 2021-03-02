@@ -1830,6 +1830,10 @@ BEGIN
         
         update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')) where 
         cohort_id = new_id and page_code = 'B';
+        
+        IF @cohort_status = 'rejected' THEN
+			update cohort set status = 'draft' where id = new_id;
+		END IF;	
 	
     END IF;
     
