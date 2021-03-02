@@ -1320,6 +1320,7 @@ BEGIN
 				update cohort set status = 'draft' where id = new_id;
             END IF;
 		END;
+        END IF;
 		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 1) THEN
 			UPDATE person 
 			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
