@@ -2409,6 +2409,9 @@ begin
 
   update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
         cohort_id = `cohortID` and page_code = 'G';
+  IF @cohort_status = 'rejected' THEN
+	update cohort set status = 'draft' where id = cohortID;
+  END IF;
 	
   commit;
   	select flag as rowsAffacted;
@@ -2740,6 +2743,9 @@ BEGIN
 		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers'))) where cohort_id = `targetID`;
 		update mortality set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
+        IF @cohort_status = 'rejected' THEN
+			update cohort set status = 'draft' where id = targetID;
+		END IF;	
 	end if;
     commit;
 	select flag as rowAffacted;
@@ -2828,6 +2834,9 @@ BEGIN
 		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
 		update dlh set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')) where cohort_id = `targetID` and page_code = 'F';
+		IF @cohort_status = 'rejected' THEN
+			update cohort set status = 'draft' where id = targetID;
+		END IF;	
 	else
 		insert into dlh (
 			cohort_id
