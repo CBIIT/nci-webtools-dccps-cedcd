@@ -1071,6 +1071,9 @@ BEGIN
 	EXECUTE stmt using @cohort_id, @params;
 	DEALLOCATE PREPARE stmt;
 
+	IF @cohort_status = 'rejected' THEN
+		update cohort set status = 'draft' where id = new_id;
+	END IF;	
 	
     COMMIT;
 	
@@ -2068,6 +2071,10 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
         
         where 
         cohort_id = targetID and page_code = 'C';
+        
+        IF @cohort_status = 'rejected' THEN
+			update cohort set status = 'draft' where id = targetID;
+		END IF;	
     end;
 
     end if;
