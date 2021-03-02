@@ -770,9 +770,9 @@ const CancerInfoForm = ({ ...props }) => {
                             {submitted && errors.ci_histologically_confirmed && <span className="ml-3 text-danger">Required Field</span>}
 
                             <CheckedInputs options={[
-                                { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'No' },
+                                { value: 0, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
                                 { value: 1, name: 'ci_histologically_confirmed', type: 'radio', label: 'Some' },
-                                { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'All' },
+                                { value: 2, name: 'ci_histologically_confirmed', type: 'radio', label: 'None' },
                             ]} />
                         </Form.Group>
 
