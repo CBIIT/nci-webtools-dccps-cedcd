@@ -1308,10 +1308,15 @@ BEGIN
 		update_time = NOW()
 		WHERE cohort_id = new_id;
 		-- update section status
-		IF ROW_COUNT() > 0 THEN
+		
+        IF ROW_COUNT() > 0 THEN
+        BEGIN
 			UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
 			WHERE cohort_id = new_id AND page_code = 'A';
-		END IF;
+            IF @cohort_status = 'rejected' THEN
+				update cohort set status = 'draft' where id = new_id;
+            END IF;
+		END;
 		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 1) THEN
 			UPDATE person 
 			SET `name` = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.completerName'))),
