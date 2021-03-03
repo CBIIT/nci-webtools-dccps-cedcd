@@ -1291,7 +1291,7 @@ BEGIN
 		data_collected_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other')) in ('null', ''), null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other'))),
 		data_collected_other_specify = IF(data_collected_other = 1, if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other_specify'))='null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.data_collected_other_specify'))), ''),
 		restrictions = IF (JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) = 1, '1_0_0_0_0_0_0_0',
-						   CONCAT('0_', if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) in ('null', ''), '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireNone')) as CHAR)), '_',
+						   CONCAT('0_', if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireCollab')) in ('null', ''), '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireCollab')) as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) in ('null', ''), '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireIrb')) as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData')) in ('null', ''), '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.requireData'))  as CHAR)), '_',
 										if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo')) in ('null', ''), '0', CAST(JSON_UNQUOTE(JSON_EXTRACT(info, '$.restrictGenoInfo'))  as CHAR)), '_',
