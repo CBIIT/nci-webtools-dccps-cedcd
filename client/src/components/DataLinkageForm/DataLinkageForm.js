@@ -267,9 +267,17 @@ const DataLinkageForm = ({ ...props }) => {
         //F.4
         if (!(dataLinkage.dataOnline in [0, 1])) { copy.dataOnline = radioError } else { copy.dataOnline = '' }
         if (dataLinkage.dataOnline === 1) {
-            if(dataLinkage.dataOnlineURL)
-                copy.dataOnlineURL = ''
+            if(!dataLinkage.dataOnlineURL){
+                copy.dataOnlineURL = 'Please specify'
+            }
+            else{
+                if(dataLinkage.dataOnlineURL.length > 200)
+                    copy.dataOnlineURL = 'Cannot exceed 200 characters'
+                else
+                    copy.dataOnlineURL = ''
+            }
         }
+        
         if (dataLinkage.dataOnline === 0 && (!dataLinkage.dataFileName || dataLinkage.dataFileName.status === 0))
             copy.dataFileName = 'Required field'
         else
