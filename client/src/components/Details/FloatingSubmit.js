@@ -39,13 +39,13 @@ class FloatingSubmit extends Component {
    if(this.props.align ===undefined){
       return (
           <div align="center" className="submit-button">
-            <input id="compareButton" type="submit" name="submitBtn" value="Go to Cohort Description for Selected Studies" className="btn btn-primary btn-filter btn-cohort-des-coloring" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
+            <input id="compareButton" type="submit" name="submitBtn" value="View Cohort Data" className="btn btn-primary" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
           </div>);
     }
     else{
       return (
         <div align="" className="submit-button">
-          <input id="compareButton" type="submit" name="submitBtn" value="Go to Cohort Description for Selected Studies" className="btn btn-primary btn-filter btn-cohort-des-coloring" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
+          <input id="compareButton" type="submit" name="submitBtn" value="View Cohort Data" className="btn btn-primary" onClick={this.props.onClick} disabled={this.props.values.length == 0}/>
         </div>);
     }
   }

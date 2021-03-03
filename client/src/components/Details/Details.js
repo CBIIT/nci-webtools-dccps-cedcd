@@ -19,7 +19,7 @@ import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
 import Workbook from '../Workbook/Workbook';
-
+import Button from 'react-bootstrap/Button';
 
 class Details extends Component {
 
@@ -924,10 +924,16 @@ class Details extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="row" style={{ "display": "flex" }}>
+					<div className="row" style={{ "display": "flex"}}>
 						<a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
 						<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-						<input type="submit" id="filterEngage" name="filterEngage" style={{ "marginRight": "1rem" }} value="Search Cohorts" className="btn btn-primary btn-filter" onClick={this.toFilter} />
+						{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	<Button 
+							className="col-12 col-md-2 mr-3" 
+							style={{width: '90%'}}
+							variant="primary"
+							onClick={this.toFilter}>
+							Search Cohorts
+						</Button>	
 					</div>
 				</div>
 			)
@@ -1110,7 +1116,13 @@ class Details extends Component {
 					<div className="row" style={{ "display": "flex" }}>
 						<a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
 						<a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{ "marginLeft": "auto" }} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
-						<input type="submit" id="filterEngage" name="filterEngage" value="Search Cohorts" className="btn btn-primary btn-filter" style={{ "marginRight": "1rem" }} onClick={this.toAdvancedFilter} />
+						{/*<input type="submit"  name="filterEngage" value="Search Cohorts" className="btn btn-primary " style={{ "marginRight": "1rem" }} onClick={this.toAdvancedFilter} />*/}
+						<Button 
+							className="col-lg-2 col-md-1 mr-3 p-0" 
+							variant="primary" 
+							onClick={this.toFilter}>
+							Search Cohorts
+						</Button>	
 					</div>
 				</div>
 			)
