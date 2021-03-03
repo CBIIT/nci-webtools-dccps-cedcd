@@ -138,15 +138,16 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <span className={classNames(
                         status === 'published' && 'text-success',
                         status === 'rejected' && 'text-danger',
-                    )}>
+                    )} style={{position: 'relative'}}>
                         {asTitleCase(status) || 'N/A'}
-                    </span>
-                    {/*{status === 'rejected' && <button */}
-                    {latestReviewComment && status !== 'published' && <button
-                        className="btn btn-link text-decoration-underline"
+                        {latestReviewComment && status !== 'published' && <button
+                        className="btn btn-link text-decoration-underline my-0 py-0" style={{position: 'absolute', top: '-1px'}}
                         onClick={_ => setReviewModal({ show: true })}>
                         Review Comments
                     </button>}
+                    </span>
+                    {/*{status === 'rejected' && <button */}
+                    
 
                     <Modal
                         show={reviewModal.show}
