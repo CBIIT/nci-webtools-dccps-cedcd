@@ -142,7 +142,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                         {asTitleCase(status) || 'N/A'}
                     </span>
                     {/*{status === 'rejected' && <button */}
-                    {latestReviewComment && <button
+                    {latestReviewComment && status !== 'published' && <button
                         className="btn btn-link text-decoration-underline"
                         onClick={_ => setReviewModal({ show: true })}>
                         Review Comments
