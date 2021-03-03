@@ -1838,7 +1838,7 @@ BEGIN
     SELECT flag AS rowsAffacted;
     
 	SELECT new_id as duplicated_cohort_id;
-    if exists (select * from cohort where id = new_id and lower(status) in  ('new', 'rejected') then
+    if exists (select * from cohort where id = new_id and lower(status) in  ('new', 'rejected')) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
