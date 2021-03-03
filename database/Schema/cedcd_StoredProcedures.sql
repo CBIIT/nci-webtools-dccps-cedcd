@@ -1070,16 +1070,12 @@ BEGIN
     PREPARE stmt FROM @query;
 	EXECUTE stmt using @cohort_id, @params;
 	DEALLOCATE PREPARE stmt;
-
-	IF @cohort_status = 'rejected' THEN
-		update cohort set status = 'draft' where id = new_id;
-	END IF;	
 	
     COMMIT;
 	
 	IF success = 1 then
     begin
-	  if exists (select * from cohort where id = new_id and status = 'new') then
+	  if exists (select * from cohort where id = new_id and lower(status) in ('new', 'rejected') ) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	  else
@@ -1316,9 +1312,6 @@ BEGIN
         BEGIN
 			UPDATE cohort_edit_status SET `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionAStatus')) 
 			WHERE cohort_id = new_id AND page_code = 'A';
-            IF @cohort_status = 'rejected' THEN
-				update cohort set status = 'draft' where id = new_id;
-            END IF;
 		END;
         END IF;
 		IF EXISTS (SELECT * FROM person WHERE cohort_id = new_id AND category_id = 1) THEN
@@ -1469,7 +1462,7 @@ BEGIN
 	email, create_time, update_time from person
 	where cohort_id = new_id and category_id = 3;
 	 SELECT new_id as duplicated_cohort_id;
-    if exists (select * from cohort where id = new_id and status = 'new') then
+    if exists (select * from cohort where id = new_id and lower(status) in ('new', 'rejected') ) then
 		update cohort set status = 'draft',  cohort_last_update_date = now(), update_time = NOW() where id = new_id;
         insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
@@ -1834,10 +1827,6 @@ BEGIN
         
         update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionBStatus')) where 
         cohort_id = new_id and page_code = 'B';
-        
-        IF @cohort_status = 'rejected' THEN
-			update cohort set status = 'draft' where id = new_id;
-		END IF;	
 	
     END IF;
     
@@ -1849,7 +1838,7 @@ BEGIN
     SELECT flag AS rowsAffacted;
     
 	SELECT new_id as duplicated_cohort_id;
-    if exists (select * from cohort where id = new_id and status = 'new') then
+    if exists (select * from cohort where id = new_id and lower(status) in  ('new', 'rejected') then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = new_id;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (new_id, user_id, 'draft', null);
 	else
@@ -2072,10 +2061,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
         
         where 
         cohort_id = targetID and page_code = 'C';
-        
-        IF @cohort_status = 'rejected' THEN
-			update cohort set status = 'draft' where id = targetID;
-		END IF;	
+     
     end;
 
     end if;
@@ -2084,7 +2070,7 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
     SELECT flag as rowAffacted;
     
     SELECT targetID as duplicated_cohort_id;
-    if exists (select * from cohort where id = targetID and status = 'new') then
+    if exists (select * from cohort where id = targetID and lower(status) in ('new', 'rejected') ) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
 	else
@@ -2094,19 +2080,6 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
 	SELECT page_code, status from cohort_edit_status where cohort_id = targetID;
     end;
     end if;
-end //
-
-DROP PROCEDURE if EXISTS `get_specimen_counts` //
-
-CREATE PROCEDURE `get_specimen_counts`(in targetID int)
-begin
-	select c.cancer, ls.specimen,
-	concat(cast(c.id as char), '-', cast(s.specimen_id as char)) as cellId,
-	s.specimens_counts as counts
-	from specimen_count s
-	join lu_cancer c on s.cancer_id = c.id
-	join lu_specimen ls on s.specimen_id = ls.id
-	where cohort_id = targetID order by cancer_id, specimen_id;
 end //
 
 DROP PROCEDURE if EXISTS `update_specimen_section_data` //
@@ -2410,14 +2383,11 @@ begin
 
   update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionGStatus')) where 
         cohort_id = `cohortID` and page_code = 'G';
-  IF @cohort_status = 'rejected' THEN
-	update cohort set status = 'draft' where id = cohortID;
-  END IF;
 	
   commit;
   	select flag as rowsAffacted;
   	SELECT cohortID as duplicated_cohort_id;
-  	if exists (select * from cohort where id = cohortID and status = 'new') then
+  	if exists (select * from cohort where id = cohortID and lower(status) in ('new', 'rejected')) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = cohortID;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (cohortID, user_id, 'draft', null);
 	else
@@ -2744,15 +2714,12 @@ BEGIN
 		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers'))) where cohort_id = `targetID`;
 		update mortality set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) where cohort_id = `targetID` and page_code = 'E';
-        IF @cohort_status = 'rejected' THEN
-			update cohort set status = 'draft' where id = targetID;
-		END IF;	
 	end if;
     commit;
 	select flag as rowAffacted;
     
 	SELECT targetID as duplicated_cohort_id;
-    if exists (select * from cohort where id = targetID and status = 'new') then
+    if exists (select * from cohort where id = targetID and lower(status) in ('new', 'rejected') ) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
 	else
@@ -2835,9 +2802,7 @@ BEGIN
 		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) where cohort_id = `targetID`;
 		update dlh set update_time = NOW() where cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')) where cohort_id = `targetID` and page_code = 'F';
-		IF @cohort_status = 'rejected' THEN
-			update cohort set status = 'draft' where id = targetID;
-		END IF;	
+		
 	else
 		insert into dlh (
 			cohort_id
@@ -2899,7 +2864,7 @@ BEGIN
     
 	SELECT flag as rowAffacted;
     SELECT targetID as duplicated_cohort_id;
-    if exists (select * from cohort where id = targetID and status = 'new') then
+    if exists (select * from cohort where id = targetID and lower(status) in ( 'new', 'rejected') ) then
 		update cohort set status = 'draft', cohort_last_update_date = now(), update_time = NOW() where id = targetID;
 		insert into cohort_activity_log (cohort_id, user_id, activity, notes ) values (targetID, user_id, 'draft', null);
 	else
