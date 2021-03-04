@@ -928,9 +928,9 @@ class Details extends Component {
 						<a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
 						<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 						{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	<Button 
-							className="col-12 col-md-2 mr-3" 
-							style={{width: '90%'}}
+							className="mr-4" 
 							variant="primary"
+							disabled={this.state.filter.participant.gender.length === 0 && this.state.filter.participant.age.length === 0 && this.state.filter.participant.race.length === 0 && this.state.filter.participant.ethnicity.length === 0 && this.state.filter.collect.data.length === 0 && this.state.filter.collect.specimen.length === 0 && this.state.filter.collect.cancer.length === 0}
 							onClick={this.toFilter}>
 							Search Cohorts
 						</Button>	
@@ -1118,8 +1118,9 @@ class Details extends Component {
 						<a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{ "marginLeft": "auto" }} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
 						{/*<input type="submit"  name="filterEngage" value="Search Cohorts" className="btn btn-primary " style={{ "marginRight": "1rem" }} onClick={this.toAdvancedFilter} />*/}
 						<Button 
-							className="col-lg-2 col-md-1 mr-3 p-0" 
+							className="mr-4" 
 							variant="primary" 
+							disabled={this.state.advancedFilter.gender.length === 0 && this.state.advancedFilter.age.length === 0 && this.state.advancedFilter.race.length === 0 && this.state.advancedFilter.ethnicity.length === 0 && this.state.advancedFilter.data.length === 0 && this.state.advancedFilter.specimen.length === 0 && this.state.advancedFilter.cancer.length === 0}
 							onClick={this.toFilter}>
 							Search Cohorts
 						</Button>	

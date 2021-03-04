@@ -5,7 +5,7 @@ import CohortList from '../CohortList/CohortList';
 import CountsTable from '../CountsTable/CountsTable';
 import CollectedCancersList from '../CollectedCancersList/CollectedCancersList';
 import Workbook from '../Workbook/Workbook';
-
+import Button from 'react-bootstrap/Button';
 class Biospecimen extends Component {
 
 	constructor(props) {
@@ -255,12 +255,24 @@ class Biospecimen extends Component {
 									<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts} />
 								</div>
 							</div>
-							<div className="row">
+							{/*<div className="row">
 								<div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
 									<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 									<input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 && this.state.filter.cancer.length === 0 && this.state.filter.cohort.length === 0} />
 								</div>
-							</div>
+							</div> */}
+							<div className="row">
+								<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
+								{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	
+								<Button 
+									id="submitBtn" 
+									className="mr-3" 
+									variant="primary"
+									disabled={this.state.filter.specimen.length === 0 && this.state.filter.cancer.length === 0 && this.state.filter.cohort.length === 0}
+									onClick={this.toFilter}>
+									Submit
+								</Button>	
+							</div>	
 						</div>
 					</div>
 				</div>
