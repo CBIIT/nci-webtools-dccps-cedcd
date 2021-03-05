@@ -5,12 +5,15 @@ import CohortList from '../CohortList/CohortList';
 import CountsTable from '../CountsTable/CountsTable';
 import CollectedCancersList from '../CollectedCancersList/CollectedCancersList';
 import Workbook from '../Workbook/Workbook';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 class Biospecimen extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
+			originalResult: {},
 			result: {},
 			filter: {
 				allTyps: false,
@@ -119,8 +122,9 @@ class Biospecimen extends Component {
 			cancer: [],
 			cohort: []
 		};
+		let resultCopy = {...this.state.originalResult}
 		this.setState({
-			result: {},
+			result: resultCopy,
 			filter: filter
 		});
 		sessionStorage.removeItem('informationHistory_specimen');
@@ -153,12 +157,16 @@ class Biospecimen extends Component {
 				let olist = rst.list.map(x => (x.c2 === "All Other Cancers" || x.c2 === "No Cancer") ? { ...x, c2: ('Z' + x.c2) } : x);
 
 				rst.list = olist.sort((a, b) => a.c1.localeCompare(b.c1) || a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZAll Other Cancers" || x.c2 === "ZNo Cancer") ? { ...x, c2: x.c2.slice(1) } : x);;
-				this.setState(prevState => (
+				let previousState = sessionStorage.getItem('informationHistory_specimen');
+				if(!previousState) {reqBody.filter.cohort = []; reqBody.filter.allCohorts = false}
+				Object.keys(this.state.originalResult).length > 0 ? 
+					this.setState({result: rst, filter: reqBody.filter}) : this.setState({originalResult: rst, result: rst, filter: reqBody.filter})
+				/*this.setState(prevState => (
 					{
 						result: rst,
 						filter: reqBody.filter
 					}
-				));
+				));*/
 			});
 	}
 
@@ -167,6 +175,8 @@ class Biospecimen extends Component {
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			this.filterData(state.filter);
+		}else{
+			this.filterData(this.state.filter)
 		}
 	}
 
@@ -261,18 +271,17 @@ class Biospecimen extends Component {
 									<input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.specimen.length === 0 && this.state.filter.cancer.length === 0 && this.state.filter.cohort.length === 0} />
 								</div>
 							</div> */}
-							<div className="row">
-								<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-								{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	
-								<Button 
-									id="submitBtn" 
-									className="mr-3" 
-									variant="primary"
-									disabled={this.state.filter.specimen.length === 0 && this.state.filter.cancer.length === 0 && this.state.filter.cohort.length === 0}
-									onClick={this.toFilter}>
-									Submit
-								</Button>	
-							</div>	
+							<Row xs={12} className="mr-0 pr-0">
+								<Col className="mr-0 pr-0">
+									<Button 
+										className="pull-right"
+										variant="primary"
+										onClick={this.toFilter}>
+										Submit
+									</Button>
+									<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+								</Col>
+							</Row>		
 						</div>
 					</div>
 				</div>

@@ -19,6 +19,8 @@ import FloatingSubmit from './FloatingSubmit';
 import TabBoard from './TabBoard';
 import BoxBoard from './BoxBoard';
 import Workbook from '../Workbook/Workbook';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
 class Details extends Component {
@@ -924,17 +926,30 @@ class Details extends Component {
 							</div>
 						</div>
 					</div>
-					<div className="row" style={{ "display": "flex"}}>
-						<a id="switchSearchButton" className="switchSearchButtonToAdvanced col-sm-3 col-sm-offset-0" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
-						<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-						{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	<Button 
-							className="mr-4" 
-							variant="primary"
-							disabled={this.state.filter.participant.gender.length === 0 && this.state.filter.participant.age.length === 0 && this.state.filter.participant.race.length === 0 && this.state.filter.participant.ethnicity.length === 0 && this.state.filter.collect.data.length === 0 && this.state.filter.collect.specimen.length === 0 && this.state.filter.collect.cancer.length === 0}
-							onClick={this.toFilter}>
-							Search Cohorts
-						</Button>	
-					</div>
+					{/*<div className="col-12 px-0">
+						<span className="col-3 px-0"><a id="switchSearchButton" className="switchSearchButtonToAdvanced" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a></span>
+						<span className="col-6 px-0"><a id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a></span>
+						{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> 	<span className="col-3">
+							<Button 
+								variant="primary"
+								onClick={this.toFilter}>
+								Search Cohorts
+							</Button></span>	
+					</div> */}
+					<Row xs={12}>
+						<Col xs={3}>
+							<a id="switchSearchButton" className="switchSearchButtonToAdvanced" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Advanced Search</a>
+						</Col>
+						<Col xs={5} sm={9} className="mr-0">
+							<Button 
+								className="pull-right"
+								variant="primary"
+								onClick={this.toFilter}>
+								Search Cohorts
+							</Button>
+							<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+						</Col>
+					</Row>
 				</div>
 			)
 		}
@@ -1113,10 +1128,10 @@ class Details extends Component {
 						</div>
 					</div>
 
-					<div className="row" style={{ "display": "flex" }}>
+					{/*<div className="row" style={{ "display": "flex" }}>
 						<a id="switchSearchButton" className="switchSearchButtonToBasic col-sm-3 col-sm-offset-0" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
 						<a id="filterClear" className="btn-filter" href="javascript:void(0);" style={{ "marginLeft": "auto" }} onClick={this.clearAdvancedFilter}><i className="fas fa-times"></i> Clear All</a>
-						{/*<input type="submit"  name="filterEngage" value="Search Cohorts" className="btn btn-primary " style={{ "marginRight": "1rem" }} onClick={this.toAdvancedFilter} />*/}
+						{/*<input type="submit"  name="filterEngage" value="Search Cohorts" className="btn btn-primary " style={{ "marginRight": "1rem" }} onClick={this.toAdvancedFilter} />
 						<Button 
 							className="mr-4" 
 							variant="primary" 
@@ -1124,7 +1139,21 @@ class Details extends Component {
 							onClick={this.toFilter}>
 							Search Cohorts
 						</Button>	
-					</div>
+					</div> */}
+					<Row xs={12}>
+						<Col xs={3} className="pt-2">
+							<a id="switchSearchButton" className="switchSearchButtonToAdvanced" style={{ "marginTop": "2rem" }} href="javascript:void(0);" onClick={this.switchSearchType}>Basic Search</a>
+						</Col>
+						<Col xs={5} sm={9} className="mr-0">
+							<Button 
+								className="pull-right"
+								variant="primary"
+								onClick={this.toAdvancedFilter}>
+								Search Cohorts
+							</Button>
+							<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+						</Col>
+					</Row>
 				</div>
 			)
 		}

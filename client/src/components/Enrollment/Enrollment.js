@@ -6,12 +6,15 @@ import EthnicityList from '../EthnicityList/EthnicityList';
 import CohortList from '../CohortList/CohortList';
 import CountsTable from '../CountsTable/CountsTable';
 import Workbook from '../Workbook/Workbook';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 class Enrollment extends Component {
 
 	constructor(props) {
 		super(props);
 		this.state = {
+			originalResult: {},
 			result: {},
 			filter: {
 				gender: [],
@@ -116,9 +119,9 @@ class Enrollment extends Component {
 			cohort: [],
 			allCohorts: false
 		};
-
+		let resultCopy = {...this.state.originalResult}
 		this.setState({
-			result: {},
+			result: resultCopy,
 			filter: filter
 		});
 
@@ -152,21 +155,28 @@ class Enrollment extends Component {
 				//	let olist = rst.list.map(x => (x.c2 === "More Than One Race" || x.c2 === "Unknown or Not Reported") ? { ...x, c2: ('Z' + x.c2) } : x);
 
 				//	rst.list = olist.sort((a, b) => a.c2.localeCompare(b.c2)).map(x => (x.c2 === "ZMore Than One Race" || x.c2 === "ZUnknown or Not Reported") ? { ...x, c2: x.c2.slice(1) } : x);;
-
-				this.setState(prevState => (
+				//console.dir(rst)
+				/*this.setState(prevState => (
 					{
 						result: rst,
 						filter: reqBody.filter
 					}
-				));
+				)); */
+				let previousState = sessionStorage.getItem('informationHistory_enrollment');
+				if(!previousState) {reqBody.filter.cohort = []; reqBody.filter.allCohorts = false}
+				Object.keys(this.state.originalResult).length > 0 ? 
+					this.setState({result: rst, filter: reqBody.filter}) : this.setState({originalResult: rst, result: rst, filter: reqBody.filter})
 			});
 	}
 
+
 	componentDidMount() {
-		const previousState = sessionStorage.getItem('informationHistory_enrollment');
+		let previousState = sessionStorage.getItem('informationHistory_enrollment');
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			this.filterData(state.filter);
+		}else{
+			this.filterData(this.state.filter)
 		}
 	}
 
@@ -291,15 +301,8 @@ class Enrollment extends Component {
 								</div>
 							</div>
 							{/*<div className="row">
-								<div id="submitButtonContainer" className="col-sm-3 col-sm-offset-9">
-									<a id="filterClear" className="btn-filter" href="javascript:void(0);" onClick={this.clearFilter}>
-										<i className="fas fa-times"></i> Clear All</a>
-									<input type="submit" name="submitBtn" value="Submit" id="submitBtn" className="btn btn-primary" onClick={this.toFilter} disabled={this.state.filter.gender.length === 0 && this.state.filter.race.length === 0 && this.state.filter.ethnicity.length === 0 && this.state.filter.cohort.length === 0} />
-								</div>
-							</div> */}
-							<div className="row">
 								<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
-								{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> */}	
+								{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} /> 
 								<Button 
 									id="submitBtn" 
 									className="mr-3" 
@@ -308,7 +311,18 @@ class Enrollment extends Component {
 									onClick={this.toFilter}>
 									Submit
 								</Button>	
-							</div>
+							</div> */}
+							<Row xs={12} className="mr-0 pr-0">
+								<Col className="mr-0 pr-0">
+									<Button 
+										className="pull-right"
+										variant="primary"
+										onClick={this.toFilter}>
+										Submit
+									</Button>
+									<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+								</Col>
+							</Row>
 						</div>
 					</div>
 				</div>
