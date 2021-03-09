@@ -115,6 +115,7 @@ class Linkage extends Component {
     let width = document.getElementById('cedcd-main-content').clientWidth;
     let params = {};
   	params.values = this.state.list;
+	console.dir(params.values)
   	params.cohorts = this.state.cohorts;
   	params.config = {};
   	params.config.width = width - 90;
@@ -161,7 +162,7 @@ class Linkage extends Component {
     <div>
       	<div id="table-intro" className="col-md-12">
 		  <h2 className="table-title">
-		  	<span id="tabLabel" className="subtitle">Linkages and Technology</span>
+		  	<span id="tabLabel" className="subtitle">Linkages and Harmonization</span>
 		  </h2>
 		</div>
 		<div id="cedcd-cohorts-inner" className="col-md-12 activeArea">

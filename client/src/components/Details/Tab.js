@@ -26,7 +26,7 @@ class Tab extends Component {
       name="Mortality";
     }
     else if(this.props.value === 5){
-      name="Linkages and Technology";
+      name="Linkages and Harmonization";
     }
     else{
       name="Specimen Overview";

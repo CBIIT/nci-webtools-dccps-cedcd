@@ -6,6 +6,7 @@ class DetailsTable extends Component {
  render() {
   	const params = this.props.params;
     const values = params.values;
+    //console.dir(values)
   	const cohorts = params.cohorts;
   	const config = params.config;
     const sideHeader = config.sideHeader;
@@ -30,13 +31,13 @@ class DetailsTable extends Component {
         let style = {
           height:(sideHeader[idx])+"px"
         };
-        return (
+        return (          
           <tr key={key} style={style}>
             <th className="compareGroup-header" colSpan={column_count} onClick={() => this.props.expand(idx+1,item.rows)}>{item.name}
               <a className={cls} ></a>
             </th>
-          </tr>
-        );
+          </tr> 
+        )
       }
       else if(item.type === "array"){
           let row = (

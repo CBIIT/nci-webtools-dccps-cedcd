@@ -121,7 +121,7 @@ exports.run = function (req, res) {
 
 				dt.list.push(tmp);
 			});
-			dt.list.push({
+			/*dt.list.push({
 				type: "block",
 				name: "Technology Use",
 				rows: 4
@@ -172,7 +172,7 @@ exports.run = function (req, res) {
 				});
 
 				dt.list.push(tmp);
-			});
+			}); */
 			list.forEach(function (l) {
 				dt.cohorts.push({
 					cohort_id: l.c_id,
