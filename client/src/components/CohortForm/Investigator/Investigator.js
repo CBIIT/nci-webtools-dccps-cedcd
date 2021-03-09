@@ -47,7 +47,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                         <Col sm="6">
                             {errors[name] && displayStyle ? 
                                 <Reminder message={errors[name]}>
-                                    <Form.Control type="text" className='text-capitalize'
+                                    <Form.Control type="text" 
                                         style={{ border: '1px solid red' }} 
                                         placeholder="Max of 100 characters"
                                         maxLength="100" 
@@ -61,7 +61,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                             populateErrors(idx, 'investigatorName', e.target.value, true, 'string')
                                         } />
                                 </Reminder> : 
-                                <Form.Control type="text" className='text-capitalize'
+                                <Form.Control type="text" 
                                     placeholder='Max of 100 characters' 
                                     maxLength='100' 
                                     name={name} 
@@ -84,7 +84,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                         <Col sm="6">
                             {errors[institution] && displayStyle ? 
                             <Reminder message={errors[institution]}>
-                                <Form.Control type="text" className='text-capitalize'
+                                <Form.Control type="text" 
                                     style={{ border: '1px solid red' }} 
                                     placeholder="Max of 100 characters" 
                                     maxLength='100' 
@@ -98,7 +98,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                                         populateErrors(idx, 'investigatorInstitution', e.target.value, true, 'string')
                                     } />
                             </Reminder> : 
-                            <Form.Control type="text" className='text-capitalize'
+                            <Form.Control type="text" 
                                 placeholder="Max of 100 characters"
                                 maxLength="100" 
                                 name={institution} 

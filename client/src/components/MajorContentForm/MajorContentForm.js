@@ -490,7 +490,7 @@ const MajorContentForm = ({ ...props }) => {
                             <input
                                 placeholder='Max of 200 characters'
                                 maxLength='200' name='noncigarBaseLineSpecify'
-                                style={majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                                style={majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved && { border: '1px solid red' } || {}} className='form-control'
                                 value={majorContent.noncigarBaseLineSpecify}
                                 onChange={e => { dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }}
                                 onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))} disabled={!majorContent.noncigarOtherBaseLine || isReadOnly} />
@@ -512,7 +512,7 @@ const MajorContentForm = ({ ...props }) => {
                             <input
                                 placeholder='Max of 200 characters'
                                 maxLength='200' name='noncigarFollowUpSpecify'
-                                style={majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved && { border: '1px solid red' } || {}} className='form-control text-capitalize'
+                                style={majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved && { border: '1px solid red' } || {}} className='form-control'
                                 value={majorContent.noncigarFollowUpSpecify}
                                 onChange={e => { dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }}
                                 onBlur={() => dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))} disabled={!majorContent.noncigarOtherFollowUp || isReadOnly} />
@@ -557,7 +557,7 @@ const MajorContentForm = ({ ...props }) => {
                     placeholder='Max of 200 characters'
                     maxLength='200' name='cancerOtherSpecify'
                     style={(majorContent.cancerOther === 1 && errors.cancerOtherSpecify && saved) && { border: '1px solid red' } || {}}
-                    className='form-control text-capitalize'
+                    className='form-control'
                     value={majorContent.cancerOtherSpecify}
                     onChange={e => { dispatch(allactions.majorContentActions.cancerOtherSpecify(e.target.value)); dispatch(setHasUnsavedChanges(true)); }}
                     onBlur={() => dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))} disabled={!majorContent.cancerOther || isReadOnly} />
