@@ -291,6 +291,8 @@ const CohortForm = ({ ...props }) => {
     //will be removed from this file later
     const populateErrors = (fieldName, value, requiredOrNot, valueType) => {
         var result = getValidationResult(value, requiredOrNot, valueType)
+        
+        console.log(result)
         if (!result) {
             if (valueType === 'startyear' && value && cohort.enrollment_year_end > 0 && value > cohort.enrollment_year_end)
                 result = 'start year after end year'
@@ -1543,7 +1545,10 @@ const CohortForm = ({ ...props }) => {
                                                 }
                                                 onBlur={e => {
                                                     //if (!isReadOnly && !(cohort.enrollment_year_end && !errors.enrollment_year_end)) 
-                                                    if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    if (!isReadOnly && cohort.enrollment_ongoing !== 0){
+                                                        console.log('about to dispatch....')
+                                                        populateErrors('enrollment_target', e.target.value, true, 'number')
+                                                    }
                                                 }
                                                 }
                                                 disabled={cohort.enrollment_ongoing == 0} />
