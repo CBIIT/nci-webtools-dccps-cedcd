@@ -4,6 +4,8 @@ const yearValidator = (value, isRequired, canBeFuture=true) =>{
     if(!pattern.test(value)) return 'Invalid year'
     if(!canBeFuture && +value > (new Date()).getFullYear()) 
         return 'Expecting year in the past'
+    else if(canBeFuture && +value < (new Date()).getFullYear())
+        return 'Enrollment should not complete in the past'
 
 }
 

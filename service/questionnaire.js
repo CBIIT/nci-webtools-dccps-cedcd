@@ -216,6 +216,7 @@ router.post('/cohort_basic_info/:id', function (req, res) {
         const basic_info = {}
         const cohort_errors = {}
         Object.assign(basic_info, {...results[0][0]}) //basic info
+
         Object.keys(basic_info).forEach(k => {
             if(!['cohort_description', 'cohort_web_site', 'clarification_contact', 'eligible_disease',  'sameAsSomeone', 'eligible_disease_cancer_specify', 'eligible_disease_other_specify','data_collected_in_person','data_collected_phone', 'data_collected_paper', 'data_collected_web', 'data_collected_other', 'enrollment_ongoing', 'enrollment_target', 'enrollment_year_complete', 'enrollment_year_end', 'data_collected_other_specify', 'requireNone', 'requireCollab', 'requireIrb', 'requireData', 'restrictGenoInfo', 'restrictOtherDb', 'restrictCommercial', 'restrictOther', 'strategy_routine', 'strategy_mailing', 'strategy_aggregate_study', 'strategy_individual_study', 'strategy_committees', 'strategy_invitation', 'strategy_participant_input', 'strategy_other', 'restrictions_other_specify', 'strategy_other_specify'].includes(k)){if(!basic_info[k]) cohort_errors[k] = "Required field"}
             else{
@@ -227,7 +228,10 @@ router.post('/cohort_basic_info/:id', function (req, res) {
                     case 'enrollment_target':
                     case 'enrollment_year_complete':
                         if(basic_info.enrollment_ongoing || basic_info.enrollment_ongoing !== 0)
-                            if(basic_info[k] === '') cohort_errors[k] = 'Required field'
+                            if(!basic_info[k]) cohort_errors[k] = 'Required field'
+                            else if(basic_info[k] < 0) cohort_errors[k] = 'Invalid value'
+                            else if(k === 'enrollment_year_complete' && basic_info[k] < (new Date()).getFullYear())
+                                cohort_errors[k] = 'Enrollment should not complete in the past'
                         break;
                     case 'enrollment_year_end':
                         if(!basic_info.enrollment_ongoing && !basic_info[k])

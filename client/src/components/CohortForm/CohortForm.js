@@ -278,7 +278,8 @@ const CohortForm = ({ ...props }) => {
             case 'startyear':
             case 'endyear':
             case 'most_recent_year':
-                return validator.yearValidator(value, requiredOrNot, false)
+            case 'enrollment_year_complete':
+                return validator.yearValidator(value, requiredOrNot, type==='enrollment_year_complete')
             case 'url':
                 return validator.urlValidator(value)
             case 'email':
@@ -1390,7 +1391,7 @@ const CohortForm = ({ ...props }) => {
                                             onBlur={e =>
                                                 populateErrors('enrollment_total', e.target.value, true, 'number')
                                             }
-                                            readOnly={isReadOnly} />
+                                            disabled={isReadOnly} />
                                     }
                                 </Col>
                             </Col>
@@ -1424,7 +1425,7 @@ const CohortForm = ({ ...props }) => {
                                             onBlur={e =>
                                                 populateErrors('enrollment_year_start', e.target.value, true, 'startyear')
                                             }
-                                            readOnly={isReadOnly} />
+                                            disabled={isReadOnly} />
                                     }
                                 </Col>
                             </Col>
@@ -1479,8 +1480,10 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true))
                                                             cohort.enrollment_year_end && dispatch(allactions.cohortActions.enrollment_year_end(''))
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_end(true))
-                                                            !cohort.enrollment_target && dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
-                                                            !cohort.enrollment_year_complete && dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                            if(!cohort.enrollment_target) dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Required Field'))
+                                                            else if(cohort.enrollment_target < 0)dispatch(allactions.cohortErrorActions.enrollment_target(false, 'Invalid value'))
+                                                            if(!cohort.enrollment_year_complete) dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Requred Filed'))
+                                                            else if(cohort.enrollment_year_complete < 999) dispatch(allactions.cohortErrorActions.enrollment_year_complete(false, 'Invalid value'))
                                                         }
                                                     }} />
                                                 <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -1511,8 +1514,8 @@ const CohortForm = ({ ...props }) => {
                                                             dispatch(allactions.cohortErrorActions.enrollment_ongoing(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_target(true));
                                                             dispatch(allactions.cohortErrorActions.enrollment_year_complete(true));
-                                                            cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
-                                                            cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
+                                                            //cohort.enrollment_target && dispatch(allactions.cohortActions.enrollment_target(''))
+                                                            //cohort.enrollment_year_complete && dispatch(allactions.cohortActions.enrollment_year_complete(''))
                                                         })
                                                     }
                                                 }
@@ -1557,7 +1560,7 @@ const CohortForm = ({ ...props }) => {
                                                 if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_target', e.target.value, true, 'number')
                                             }
                                             }
-                                            readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
+                                            disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
                                     }
                                 </Col>
                             </Col>
@@ -1566,23 +1569,9 @@ const CohortForm = ({ ...props }) => {
                                     If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
                                 <Col sm="2">
-                                    {errors.enrollment_year_complete && saved ?
-                                        <Reminder message={errors.enrollment_year_complete}>
-                                            <Form.Control type="text"
-                                                style={{ color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' }}
-                                                name='enrollment_year_complete'
-                                                placeholder='YYYY'
-                                                value={cohort.enrollment_year_complete}
-                                                onChange={e =>
-                                                    !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
-                                                }
-                                                onBlur={e => {
-                                                    if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
-                                                }}
-                                                disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
-                                        </Reminder> :
+                                    <Reminder message={errors.enrollment_year_complete} disabled={!(errors.enrollment_year_complete && saved)}>
                                         <Form.Control type="text"
-                                            style={{ minWidth: '100px', maxWidth: '100px' }}
+                                            style={errors.enrollment_year_complete && saved ? { color: 'red', border: '1px solid red', minWidth: '100px', maxWidth: '100px' } : {minWidth: '100px', maxWidth: '100px'}}
                                             name='enrollment_year_complete'
                                             placeholder='YYYY'
                                             value={cohort.enrollment_year_complete}
@@ -1592,8 +1581,21 @@ const CohortForm = ({ ...props }) => {
                                             onBlur={e => {
                                                 if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
                                             }}
-                                            readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} />
-                                    }
+                                            disabled={cohort.enrollment_ongoing == 0 || isReadOnly} />
+                                    </Reminder> {/*}:
+                                    <Form.Control type="text"
+                                        style={{ minWidth: '100px', maxWidth: '100px' }}
+                                        name='enrollment_year_complete'
+                                        placeholder='YYYY'
+                                        value={cohort.enrollment_year_complete}
+                                        onChange={e =>
+                                            !isReadOnly && e.target.value.length <= 4 && dispatch(allactions.cohortActions.enrollment_year_complete(e.target.value))
+                                        }
+                                        onBlur={e => {
+                                            if (!isReadOnly && cohort.enrollment_ongoing !== 0) populateErrors('enrollment_year_complete', e.target.value, true, 'year')
+                                        }}
+                                        readOnly={cohort.enrollment_ongoing == 0 || isReadOnly} /> */}
+                                    
                                 </Col>
                             </Col>
                             <Col sm="12" className="p-0" className="mb-1">
