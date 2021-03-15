@@ -1417,7 +1417,7 @@ BEGIN
         -- questionnaire/url-0
 		SELECT 0 into i;
 
-		delete from cohort_document where cohort_id=@latest_cohort and attachment_type=0;
+		delete from cohort_document where cohort_id=@latest_cohort and attachment_type=0 and category <> 5;
 
 		WHILE i < JSON_LENGTH(@questionnaireUrlEntry) DO
 			INSERT INTO cohort_document (cohort_id, attachment_type, category, filename, website, `status`, create_time, update_time) VALUES (@latest_cohort, 0, 0, '', JSON_UNQUOTE(JSON_EXTRACT(@questionnaireUrlEntry,concat('$[',i,']'))), 1, NOW(), NOW());
