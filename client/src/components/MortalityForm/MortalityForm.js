@@ -188,7 +188,7 @@ const MortalityForm = ({ ...props }) => {
             copy.mortalityYear = 'Please enter a 4 digit year'
         else if (+mortality.mortalityYear > (new Date()).getFullYear())
             copy.mortalityYear = 'No future year is allowed'
-        else copy.mortalityYear = ''
+        //else copy.mortalityYear = ''
 
         if (!mortality.deathIndex && !mortality.deathCertificate && !mortality.otherDeath) {
             copy.deathConfirm = 'Required Field'
@@ -242,7 +242,7 @@ const MortalityForm = ({ ...props }) => {
         else
             copy.deathNumbers = validator.numberValidator(mortality.deathNumbers, true, false)
 
-
+        
         setErrors(copy);
 
         return !Object.values(copy).some(x => (x !== undefined && x !== ''));
@@ -253,7 +253,6 @@ const MortalityForm = ({ ...props }) => {
         let user_id = userSession.id
         const copy = { ...mortality, sectionEStatus: complete, 'userID': user_id }
 
-        // console.log(JSON.stringify(copy))
         fetch(`/api/questionnaire/update_mortality/${id}`, {
             method: "POST",
             body: JSON.stringify(copy),
@@ -393,6 +392,7 @@ const MortalityForm = ({ ...props }) => {
                                             name='mortalityYear'
                                             type="number"
                                             min="1900"
+                                            style={saved && errors.mortalityYear ? {border: '1px solid red'} : {} }
                                             value={mortality.mortalityYear}
                                             readOnly={isReadOnly}
                                             onChange={e => { dispatch(allactions.mortalityActions.setMortalityYear(e.target.value)); dispatch(setHasUnsavedChanges(true)); }}
