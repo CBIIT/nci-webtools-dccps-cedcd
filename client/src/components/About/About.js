@@ -25,7 +25,7 @@ class About extends Component {
             <li><a href="https://epi.grants.cancer.gov/cohorts.html" target="_blank">EGRP Cancer Epidemiology Cohorts</a></li>
             <li><a href="https://epi.grants.cancer.gov/Consortia/cohort.html" target="_blank">NCI Cohort Consortium</a></li>
             <li><a href="http://epi.grants.cancer.gov/funding/" target="_blank">EGRP Funding &amp; Grants</a></li>
-            <li><a href="https://www.ncbi.nlm.nih.gov/gap/" target="_blank">dbGap</a></li>
+            <li><a href="https://www.ncbi.nlm.nih.gov/gap/" target="_blank">Database of Genotypes and Phenotypes (dbGaP)</a></li>
             <li><a href="https://biolincc.nhlbi.nih.gov/home/ " target="_blank">NHLBI BioLINCC</a></li>
             <li><a href="https://www.maelstrom-research.org/" target="_blank">Maelstrom</a></li>
             <li><a href="https://www.phenxtoolkit.org/index.php" target="_blank">PhenX Toolkit</a></li>
