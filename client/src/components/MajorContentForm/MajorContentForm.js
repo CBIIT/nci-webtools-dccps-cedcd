@@ -52,142 +52,142 @@ const MajorContentForm = ({ ...props }) => {
         'g. Cognitive Decline', ''
     ]
 
-    const loadErrorPart = (keylist, content, start=0) => keylist.map((key, idx) => {
-        if(start != 14){
-            dispatch(allactions.majorContentErrorActions[key+'BaseLine']([0,1].includes(content[start+idx].baseline)))
-            dispatch(allactions.majorContentErrorActions[key+'FollowUp']([0,1].includes(content[start+idx].followup)))
-        }else{
-            dispatch(allactions.majorContentErrorActions[key+'BaseLine'](content[start+idx].baseline === 1))
-            dispatch(allactions.majorContentErrorActions[key+'FollowUp'](content[start+idx].followup === 1))
+    const loadErrorPart = (keylist, content, start = 0) => keylist.map((key, idx) => {
+        if (start != 14) {
+            dispatch(allactions.majorContentErrorActions[key + 'BaseLine']([0, 1].includes(content[start + idx].baseline)))
+            dispatch(allactions.majorContentErrorActions[key + 'FollowUp']([0, 1].includes(content[start + idx].followup)))
+        } else {
+            dispatch(allactions.majorContentErrorActions[key + 'BaseLine'](content[start + idx].baseline === 1))
+            dispatch(allactions.majorContentErrorActions[key + 'FollowUp'](content[start + idx].followup === 1))
         }
-    }) 
+    })
     useEffect(() => {
         //let id = 118
         //window.history.pushState(null, 'Cancer Epidemiology Descriptive Cohort Database (CEDCD)', `/cohort/questionnaire/${id}`)
         //if (!majorContent.hasLoaded) {
-            fetch(`/api/questionnaire/major_content/${cohortId}`, {
-                method: 'POST'
-            }).then(res => res.json())
-                .then(result => {
+        fetch(`/api/questionnaire/major_content/${cohortId}`, {
+            method: 'POST'
+        }).then(res => res.json())
+            .then(result => {
 
-                    let content = result.data.counts
-                    let cancerInfo = result.data.cancerInfo
+                let content = result.data.counts
+                let cancerInfo = result.data.cancerInfo
 
-                    batch(() => {
-                        dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
-                        dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
-                        dispatch(allactions.majorContentActions.educationBaseLine(content[1].baseline))
-                        dispatch(allactions.majorContentActions.educationFollowUp(content[1].followup))
-                        dispatch(allactions.majorContentActions.maritalStatusBaseLine(content[2].baseline))
-                        dispatch(allactions.majorContentActions.maritalStatusFollowUp(content[2].followup))
-                        dispatch(allactions.majorContentActions.originBaseLine(content[3].baseline))
-                        dispatch(allactions.majorContentActions.originFollowUp(content[3].followup))
-                        dispatch(allactions.majorContentActions.empStatusBaseLine(content[4].baseline))
-                        dispatch(allactions.majorContentActions.empStatusFollowUp(content[4].followup))
-                        dispatch(allactions.majorContentActions.insuranceStatusBaseLine(content[5].baseline))
-                        dispatch(allactions.majorContentActions.insuranceStatusFollowUp(content[5].followup))
-                        dispatch(allactions.majorContentActions.anthropometryBaseLine(content[6].baseline))
-                        dispatch(allactions.majorContentActions.anthropometryFollowUp(content[6].followup))
-                        dispatch(allactions.majorContentActions.dietaryBaseLine(content[7].baseline))
-                        dispatch(allactions.majorContentActions.dietaryFollowUp(content[7].followup))
-                        dispatch(allactions.majorContentActions.supplementBaseLine(content[8].baseline))
-                        dispatch(allactions.majorContentActions.supplementFollowUp(content[8].followup))
-                        dispatch(allactions.majorContentActions.medicineBaseLine(content[9].baseline))
-                        dispatch(allactions.majorContentActions.medicineFollowUp(content[9].followup))
-                        dispatch(allactions.majorContentActions.prescriptionBaseLine(content[10].baseline))
-                        dispatch(allactions.majorContentActions.prescriptionFollowUp(content[10].followup))
-                        dispatch(allactions.majorContentActions.nonprescriptionBaseLine(content[11].baseline))
-                        dispatch(allactions.majorContentActions.nonprescriptionFollowUp(content[11].followup))
-                        dispatch(allactions.majorContentActions.alcoholBaseLine(content[12].baseline))
-                        dispatch(allactions.majorContentActions.alcoholFollowUp(content[12].followup))
-                        dispatch(allactions.majorContentActions.cigaretteBaseLine(content[13].baseline))
-                        dispatch(allactions.majorContentActions.cigaretteFollowUp(content[13].followup))
-                        dispatch(allactions.majorContentActions.cigarBaseLine(content[14].baseline))
-                        dispatch(allactions.majorContentActions.cigarFollowUp(content[14].followup))
-                        dispatch(allactions.majorContentActions.pipeBaseLine(content[15].baseline))
-                        dispatch(allactions.majorContentActions.pipeFollowUp(content[15].followup))
-                        dispatch(allactions.majorContentActions.tobaccoBaseLine(content[16].baseline))
-                        dispatch(allactions.majorContentActions.tobaccoFollowUp(content[16].followup))
-                        dispatch(allactions.majorContentActions.ecigarBaseLine(content[17].baseline))
-                        dispatch(allactions.majorContentActions.ecigarFollowUp(content[17].followup))
-                        dispatch(allactions.majorContentActions.noncigarOtherBaseLine(content[18].baseline))
-                        dispatch(allactions.majorContentActions.noncigarOtherFollowUp(content[18].followup))
-                        dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(content[18].other_specify_baseline || ''))
-                        dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(content[18].other_specify_followup || ''))
-                        dispatch(allactions.majorContentActions.physicalBaseLine(content[19].baseline))
-                        dispatch(allactions.majorContentActions.physicalFollowUp(content[19].followup))
+                batch(() => {
+                    dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
+                    dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
+                    dispatch(allactions.majorContentActions.educationBaseLine(content[1].baseline))
+                    dispatch(allactions.majorContentActions.educationFollowUp(content[1].followup))
+                    dispatch(allactions.majorContentActions.maritalStatusBaseLine(content[2].baseline))
+                    dispatch(allactions.majorContentActions.maritalStatusFollowUp(content[2].followup))
+                    dispatch(allactions.majorContentActions.originBaseLine(content[3].baseline))
+                    dispatch(allactions.majorContentActions.originFollowUp(content[3].followup))
+                    dispatch(allactions.majorContentActions.empStatusBaseLine(content[4].baseline))
+                    dispatch(allactions.majorContentActions.empStatusFollowUp(content[4].followup))
+                    dispatch(allactions.majorContentActions.insuranceStatusBaseLine(content[5].baseline))
+                    dispatch(allactions.majorContentActions.insuranceStatusFollowUp(content[5].followup))
+                    dispatch(allactions.majorContentActions.anthropometryBaseLine(content[6].baseline))
+                    dispatch(allactions.majorContentActions.anthropometryFollowUp(content[6].followup))
+                    dispatch(allactions.majorContentActions.dietaryBaseLine(content[7].baseline))
+                    dispatch(allactions.majorContentActions.dietaryFollowUp(content[7].followup))
+                    dispatch(allactions.majorContentActions.supplementBaseLine(content[8].baseline))
+                    dispatch(allactions.majorContentActions.supplementFollowUp(content[8].followup))
+                    dispatch(allactions.majorContentActions.medicineBaseLine(content[9].baseline))
+                    dispatch(allactions.majorContentActions.medicineFollowUp(content[9].followup))
+                    dispatch(allactions.majorContentActions.prescriptionBaseLine(content[10].baseline))
+                    dispatch(allactions.majorContentActions.prescriptionFollowUp(content[10].followup))
+                    dispatch(allactions.majorContentActions.nonprescriptionBaseLine(content[11].baseline))
+                    dispatch(allactions.majorContentActions.nonprescriptionFollowUp(content[11].followup))
+                    dispatch(allactions.majorContentActions.alcoholBaseLine(content[12].baseline))
+                    dispatch(allactions.majorContentActions.alcoholFollowUp(content[12].followup))
+                    dispatch(allactions.majorContentActions.cigaretteBaseLine(content[13].baseline))
+                    dispatch(allactions.majorContentActions.cigaretteFollowUp(content[13].followup))
+                    dispatch(allactions.majorContentActions.cigarBaseLine(content[14].baseline))
+                    dispatch(allactions.majorContentActions.cigarFollowUp(content[14].followup))
+                    dispatch(allactions.majorContentActions.pipeBaseLine(content[15].baseline))
+                    dispatch(allactions.majorContentActions.pipeFollowUp(content[15].followup))
+                    dispatch(allactions.majorContentActions.tobaccoBaseLine(content[16].baseline))
+                    dispatch(allactions.majorContentActions.tobaccoFollowUp(content[16].followup))
+                    dispatch(allactions.majorContentActions.ecigarBaseLine(content[17].baseline))
+                    dispatch(allactions.majorContentActions.ecigarFollowUp(content[17].followup))
+                    dispatch(allactions.majorContentActions.noncigarOtherBaseLine(content[18].baseline))
+                    dispatch(allactions.majorContentActions.noncigarOtherFollowUp(content[18].followup))
+                    dispatch(allactions.majorContentActions.noncigarBaseLineSpecify(content[18].other_specify_baseline || ''))
+                    dispatch(allactions.majorContentActions.noncigarFollowUpSpecify(content[18].other_specify_followup || ''))
+                    dispatch(allactions.majorContentActions.physicalBaseLine(content[19].baseline))
+                    dispatch(allactions.majorContentActions.physicalFollowUp(content[19].followup))
 
-                        dispatch(allactions.majorContentActions.sleepBaseLine(content[20].baseline))
-                        dispatch(allactions.majorContentActions.sleepFollowUp(content[20].followup))
-                        dispatch(allactions.majorContentActions.reproduceBaseLine(content[21].baseline))
-                        dispatch(allactions.majorContentActions.reproduceFollowUp(content[21].followup))
-                        dispatch(allactions.majorContentActions.reportedHealthBaseLine(content[22].baseline))
-                        dispatch(allactions.majorContentActions.reportedHealthFollowUp(content[22].followup))
-                        dispatch(allactions.majorContentActions.lifeBaseLine(content[23].baseline))
-                        dispatch(allactions.majorContentActions.lifeFollowUp(content[23].followup))
-                        dispatch(allactions.majorContentActions.socialSupportBaseLine(content[24].baseline))
-                        dispatch(allactions.majorContentActions.socialSupportFollowUp(content[24].followup))
-                        dispatch(allactions.majorContentActions.cognitionBaseLine(content[25].baseline))
-                        dispatch(allactions.majorContentActions.cognitionFollowUp(content[25].followup))
-                        dispatch(allactions.majorContentActions.depressionBaseLine(content[26].baseline))
-                        dispatch(allactions.majorContentActions.depressionFollowUp(content[26].followup))
-                        dispatch(allactions.majorContentActions.psychosocialBaseLine(content[27].baseline))
-                        dispatch(allactions.majorContentActions.psychosocialFollowUp(content[27].followup))
-                        dispatch(allactions.majorContentActions.fatigueBaseLine(content[28].baseline))
-                        dispatch(allactions.majorContentActions.fatigueFollowUp(content[28].followup))
-                        dispatch(allactions.majorContentActions.cancerHistoryBaseLine(content[29].baseline))
-                        dispatch(allactions.majorContentActions.cancerHistoryFollowUp(content[29].followup))
-                        dispatch(allactions.majorContentActions.cancerPedigreeBaseLine(content[30].baseline))
-                        dispatch(allactions.majorContentActions.cancerPedigreeFollowUp(content[30].followup))
+                    dispatch(allactions.majorContentActions.sleepBaseLine(content[20].baseline))
+                    dispatch(allactions.majorContentActions.sleepFollowUp(content[20].followup))
+                    dispatch(allactions.majorContentActions.reproduceBaseLine(content[21].baseline))
+                    dispatch(allactions.majorContentActions.reproduceFollowUp(content[21].followup))
+                    dispatch(allactions.majorContentActions.reportedHealthBaseLine(content[22].baseline))
+                    dispatch(allactions.majorContentActions.reportedHealthFollowUp(content[22].followup))
+                    dispatch(allactions.majorContentActions.lifeBaseLine(content[23].baseline))
+                    dispatch(allactions.majorContentActions.lifeFollowUp(content[23].followup))
+                    dispatch(allactions.majorContentActions.socialSupportBaseLine(content[24].baseline))
+                    dispatch(allactions.majorContentActions.socialSupportFollowUp(content[24].followup))
+                    dispatch(allactions.majorContentActions.cognitionBaseLine(content[25].baseline))
+                    dispatch(allactions.majorContentActions.cognitionFollowUp(content[25].followup))
+                    dispatch(allactions.majorContentActions.depressionBaseLine(content[26].baseline))
+                    dispatch(allactions.majorContentActions.depressionFollowUp(content[26].followup))
+                    dispatch(allactions.majorContentActions.psychosocialBaseLine(content[27].baseline))
+                    dispatch(allactions.majorContentActions.psychosocialFollowUp(content[27].followup))
+                    dispatch(allactions.majorContentActions.fatigueBaseLine(content[28].baseline))
+                    dispatch(allactions.majorContentActions.fatigueFollowUp(content[28].followup))
+                    dispatch(allactions.majorContentActions.cancerHistoryBaseLine(content[29].baseline))
+                    dispatch(allactions.majorContentActions.cancerHistoryFollowUp(content[29].followup))
+                    dispatch(allactions.majorContentActions.cancerPedigreeBaseLine(content[30].baseline))
+                    dispatch(allactions.majorContentActions.cancerPedigreeFollowUp(content[30].followup))
 
-                        dispatch(allactions.majorContentActions.exposureBaseLine(content[31].baseline))
-                        dispatch(allactions.majorContentActions.exposureFollowUp(content[31].followup))
-                        dispatch(allactions.majorContentActions.residenceBaseLine(content[32].baseline))
-                        dispatch(allactions.majorContentActions.residenceFollowUp(content[32].followup))
-                        dispatch(allactions.majorContentActions.diabetesBaseLine(content[33].baseline))
-                        dispatch(allactions.majorContentActions.diabetesFollowUp(content[33].followup))
-                        dispatch(allactions.majorContentActions.strokeBaseLine(content[34].baseline))
-                        dispatch(allactions.majorContentActions.strokeFollowUp(content[34].followup))
-                        dispatch(allactions.majorContentActions.copdBaseLine(content[35].baseline))
-                        dispatch(allactions.majorContentActions.copdFollowUp(content[35].followup))
-                        dispatch(allactions.majorContentActions.cardiovascularBaseLine(content[36].baseline))
-                        dispatch(allactions.majorContentActions.cardiovascularFollowUp(content[36].followup))
-                        dispatch(allactions.majorContentActions.osteoporosisBaseLine(content[37].baseline))
-                        dispatch(allactions.majorContentActions.osteoporosisFollowUp(content[37].followup))
-                        dispatch(allactions.majorContentActions.mentalBaseLine(content[38].baseline))
-                        dispatch(allactions.majorContentActions.mentalFollowUp(content[38].followup))
-                        dispatch(allactions.majorContentActions.cognitiveDeclineBaseLine(content[39].baseline))
-                        dispatch(allactions.majorContentActions.cognitiveDeclineFollowUp(content[39].followup))
-                        if (content[40]) {
-                            dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[40].baseline))
-                            dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[40].followup))
-                        }
-                        dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
-                        dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
-                        dispatch(allactions.majorContentActions.cancerSymptom(cancerInfo.cancerSymptom))
-                        dispatch(allactions.majorContentActions.cancerOther(cancerInfo.cancerOther))
-                        dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify || ''))
-                        loadErrorPart(['seStatus', 'education', 'maritalStatus', 'origin', 'empStatus', 'insuranceStatus', 'anthropometry', 'dietary', 'supplement', 'medicine', 'prescription', 'nonprescription', 'alcohol', 'cigarette'], content)
-                        
-                       loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content, 14)
-                
-                         loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure','residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
-                         'cognitiveDecline'], content, 19)
-                         dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(content[18].baseline == 0 || content[18].other_specify_baseline))
-                         dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
-                       
-                        if (content[40]) {
-                            dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine([0, 1].includes(content[40].baseline))) 
-                            dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp([0, 1].includes(content[40].followup))) 
-                        }
-                        dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1)) 
-                        dispatch(allactions.majorContentErrorActions.cancerLateEffects(cancerInfo.cancerLateEffects == 1)) 
-                        dispatch(allactions.majorContentErrorActions.cancerSymptom(cancerInfo.cancerSymptom == 1)) 
-                        dispatch(allactions.majorContentErrorActions.cancerOther(cancerInfo.cancerOther == 1))                         
-                        dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(!cancerInfo.cancerOther || cancerInfo.cancerOtherSpecify))
-                    })
+                    dispatch(allactions.majorContentActions.exposureBaseLine(content[31].baseline))
+                    dispatch(allactions.majorContentActions.exposureFollowUp(content[31].followup))
+                    dispatch(allactions.majorContentActions.residenceBaseLine(content[32].baseline))
+                    dispatch(allactions.majorContentActions.residenceFollowUp(content[32].followup))
+                    dispatch(allactions.majorContentActions.diabetesBaseLine(content[33].baseline))
+                    dispatch(allactions.majorContentActions.diabetesFollowUp(content[33].followup))
+                    dispatch(allactions.majorContentActions.strokeBaseLine(content[34].baseline))
+                    dispatch(allactions.majorContentActions.strokeFollowUp(content[34].followup))
+                    dispatch(allactions.majorContentActions.copdBaseLine(content[35].baseline))
+                    dispatch(allactions.majorContentActions.copdFollowUp(content[35].followup))
+                    dispatch(allactions.majorContentActions.cardiovascularBaseLine(content[36].baseline))
+                    dispatch(allactions.majorContentActions.cardiovascularFollowUp(content[36].followup))
+                    dispatch(allactions.majorContentActions.osteoporosisBaseLine(content[37].baseline))
+                    dispatch(allactions.majorContentActions.osteoporosisFollowUp(content[37].followup))
+                    dispatch(allactions.majorContentActions.mentalBaseLine(content[38].baseline))
+                    dispatch(allactions.majorContentActions.mentalFollowUp(content[38].followup))
+                    dispatch(allactions.majorContentActions.cognitiveDeclineBaseLine(content[39].baseline))
+                    dispatch(allactions.majorContentActions.cognitiveDeclineFollowUp(content[39].followup))
+                    if (content[40]) {
+                        dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[40].baseline))
+                        dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[40].followup))
+                    }
+                    dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
+                    dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
+                    dispatch(allactions.majorContentActions.cancerSymptom(cancerInfo.cancerSymptom))
+                    dispatch(allactions.majorContentActions.cancerOther(cancerInfo.cancerOther))
+                    dispatch(allactions.majorContentActions.cancerOtherSpecify(cancerInfo.cancerOtherSpecify || ''))
+                    loadErrorPart(['seStatus', 'education', 'maritalStatus', 'origin', 'empStatus', 'insuranceStatus', 'anthropometry', 'dietary', 'supplement', 'medicine', 'prescription', 'nonprescription', 'alcohol', 'cigarette'], content)
 
-                })//end of then
+                    loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content, 14)
+
+                    loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure', 'residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
+                        'cognitiveDecline'], content, 19)
+                    dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(content[18].baseline == 0 || content[18].other_specify_baseline))
+                    dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
+
+                    if (content[40]) {
+                        dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine([0, 1].includes(content[40].baseline)))
+                        dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp([0, 1].includes(content[40].followup)))
+                    }
+                    dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1))
+                    dispatch(allactions.majorContentErrorActions.cancerLateEffects(cancerInfo.cancerLateEffects == 1))
+                    dispatch(allactions.majorContentErrorActions.cancerSymptom(cancerInfo.cancerSymptom == 1))
+                    dispatch(allactions.majorContentErrorActions.cancerOther(cancerInfo.cancerOther == 1))
+                    dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(!cancerInfo.cancerOther || cancerInfo.cancerOtherSpecify))
+                })
+
+            })//end of then
         //}//end of if
     }, [cohortId])
 
@@ -314,12 +314,12 @@ const MajorContentForm = ({ ...props }) => {
                             })
                             dispatch(allactions.cohortIDAction.setCohortId(result.data.duplicated_cohort_id))
                             history.push(window.location.pathname.replace(/\d+$/, result.data.duplicated_cohort_id));
-                        }else{
+                        } else {
                             dispatch(fetchCohort(cohortId))
                         }
                         if (result.data.status && result.data.status != cohortStatus) {
                             dispatch(({ type: 'SET_COHORT_STATUS', value: result.data.status }))
-                            
+
                         }
                     }
                     if (!goNext)
@@ -474,7 +474,7 @@ const MajorContentForm = ({ ...props }) => {
                         C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
                     <Col sm='12' className='mb-1'>
-                        <span>If data was collected at baseline, please specify all tobacco products that apply</span>
+                        <span>If data were collected at baseline, please specify all tobacco products that apply</span>
                         {(errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
@@ -497,7 +497,7 @@ const MajorContentForm = ({ ...props }) => {
                         </Reminder>
                     </Col>
                     <Col sm='12' className='mb-1'>
-                        <span>If data was collected during follow-up, please specify all tobacco products that apply</span>
+                        <span>If data were collected during follow-up, please specify all tobacco products that apply</span>
                         {(errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
@@ -580,67 +580,67 @@ const MajorContentForm = ({ ...props }) => {
                 }
                 body={
                     <span>
-                        This cohort questionnaire will be locked against further modifications 
-                        once you submit it for review. Are you sure you want to continue?                  
+                        This cohort questionnaire will be locked against further modifications
+                        once you submit it for review. Are you sure you want to continue?
                     </span>
                 }
                 footer={
                     <div>
-                        <Button 
-                            variant="secondary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="secondary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => setReviewModalShow(false)}>
                             Cancel
                         </Button>
-                        <Button 
-                            variant="primary" 
-                            className="col-lg-2 col-md-6" 
+                        <Button
+                            variant="primary"
+                            className="col-lg-2 col-md-6"
                             onClick={_ => resetCohortStatus(cohortId, 'submitted')}>
                             Submit
                         </Button>
                     </div>
                 }
-            />    
-                <Form>
-                    <CollapsiblePanelContainer>
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelA'}
-                            onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
-                            panelTitle="Major Content Domains">
-                            <Form.Group as={Row} className="mb-1">
-                                <Form.Label column sm="12">
-                                    Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
+            />
+            <Form>
+                <CollapsiblePanelContainer>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelA'}
+                        onClick={() => setActivePanel(activePanel === 'panelA' ? '' : 'panelA')}
+                        panelTitle="Major Content Domains">
+                        <Form.Group as={Row} className="mb-1">
+                            <Form.Label column sm="12">
+                                Please specify whether you collected data within these major content domains. Baseline refers to data collected at or near enrollment into the cohort
                                 </Form.Label>
-                            </Form.Group>
-                            {getFirstContent()}
-                        </CollapsiblePanel>
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelB'}
-                            onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
-                            panelTitle="Other Medical Conditions">
-                            <Form.Label as={Row} sm='12' className='pl-4' >
-                                C.31 Do you have information on the following medical conditions?
+                        </Form.Group>
+                        {getFirstContent()}
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelB'}
+                        onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
+                        panelTitle="Other Medical Conditions">
+                        <Form.Label as={Row} sm='12' className='pl-4' >
+                            C.31 Do you have information on the following medical conditions?
                             </Form.Label>
-                            {getSecondContent()}
-                        </CollapsiblePanel>
-                        <CollapsiblePanel
-                            condition={activePanel === 'panelC'}
-                            onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
-                            panelTitle="Cancer Related Conditions">
-                            {getThirdContent()}
-                        </CollapsiblePanel>
-                    </CollapsiblePanelContainer>
-                </Form>
+                        {getSecondContent()}
+                    </CollapsiblePanel>
+                    <CollapsiblePanel
+                        condition={activePanel === 'panelC'}
+                        onClick={() => setActivePanel(activePanel === 'panelC' ? '' : 'panelC')}
+                        panelTitle="Cancer Related Conditions">
+                        {getThirdContent()}
+                    </CollapsiblePanel>
+                </CollapsiblePanelContainer>
+            </Form>
 
-                <QuestionnaireFooter
-                    isAdmin={isReadOnly}
-                    handlePrevious={_ => props.sectionPicker('B')}
-                    handleNext={_ => props.sectionPicker('D')}
-                    handleSave={handleSave}
-                    handleSaveContinue={handleSaveContinue}
-                    handleSubmitForReview={handleSubmitForReview}
-                    handleApprove={false}
-                    handleReject={false} />
+            <QuestionnaireFooter
+                isAdmin={isReadOnly}
+                handlePrevious={_ => props.sectionPicker('B')}
+                handleNext={_ => props.sectionPicker('D')}
+                handleSave={handleSave}
+                handleSaveContinue={handleSaveContinue}
+                handleSubmitForReview={handleSubmitForReview}
+                handleApprove={false}
+                handleReject={false} />
 
         </Container>
     )
