@@ -42,10 +42,10 @@ class FloatingSubmit extends Component {
         <div align="center" >
           <Reminder info={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
-              <button id="compareButton" type="submit" name="submitBtn" value="View Cohort Data"
+              <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Cohort Data <i className="fas fa-file-alt"></i>
+                View Selected Cohort Data <i className="fas fa-file-alt"></i>
               </button>
             </span>
           </Reminder>
@@ -57,10 +57,10 @@ class FloatingSubmit extends Component {
         <div align="" >
           <Reminder info={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
-              <button id="compareButton" type="submit" name="submitBtn" value="View Cohort Data"
+              <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Cohort Data <i className="fas fa-file-alt"></i>
+                View Selected Cohort Data <i className="fas fa-file-alt"></i>
               </button>
             </span>
           </Reminder>

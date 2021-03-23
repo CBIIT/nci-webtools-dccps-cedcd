@@ -14,6 +14,8 @@
 
   .tooltip .tooltip-inner {
     background-color: #01857b;
+    font-size: 11px;
+    min-width: 220px;
   }
   
   .tooltip .arrow::before {
