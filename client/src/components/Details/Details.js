@@ -1285,7 +1285,7 @@ class Details extends Component {
 			if (content.length === 0) {
 				content = (
 					<tr>
-						<td colSpan="3">Nothing to display</td>
+						<td colSpan="6">Nothing to display</td>
 					</tr>
 				);
 			}
@@ -1300,7 +1300,6 @@ class Details extends Component {
 						<div id="filter-panel" className="panel panel-default">
 							<div className="panel-heading" onClick={this.toggle}>
 								<h2 className="panel-title">Variables Collected in Cohort Study</h2>
-
 								<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
 									<i className="fas fa-chevron-up" id="toggle-switch"></i>
 								</span>
@@ -1341,26 +1340,26 @@ class Details extends Component {
 					</div>
 					<div className="table-inner col-md-12">
 						<div className="cedcd-table home">
-							<div>
-								<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
-									<thead>
-										<tr id="summaryHeader" className="col-header">
-											{this.renderSelectHeader("5%")}
-											{this.renderTableHeader("cohort_name", "30%")}
-											{this.renderTableHeader("cohort_acronym", "10%")}
-											{this.renderTableHeaderMiddle("enrollment_total", "20%")}
-											<th className="sortable" width="20%" scope="col">
-												<a href="javascript:void(0);" style={{ cursor: 'default' }}>Website
+
+							<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
+								<thead>
+									<tr id="summaryHeader" className="col-header">
+										{this.renderSelectHeader("5%")}
+										{this.renderTableHeader("cohort_name", "30%")}
+										{this.renderTableHeader("cohort_acronym", "10%")}
+										{this.renderTableHeaderMiddle("enrollment_total", "20%")}
+										<th className="sortable" width="20%" scope="col">
+											<a href="javascript:void(0);" style={{ cursor: 'default' }}>Website
 												</a>
-											</th>
-											{this.renderTableHeader("update_time", "15%")}
-										</tr>
-									</thead>
-									<tbody>
-										{content}
-									</tbody>
-								</table>
-							</div>
+										</th>
+										{this.renderTableHeader("update_time", "15%")}
+									</tr>
+								</thead>
+								<tbody>
+									{content}
+								</tbody>
+							</table>
+
 						</div>
 					</div>
 					<div className="filter-block home col-md-12">

@@ -7,6 +7,19 @@
     background-color:#62269e;
     border-color: #62269e;
 }
+.btn-link.compare-button {
+    font-size: 16px;
+    padding-top: 4px;
+  }
+
+  .tooltip .tooltip-inner {
+    background-color: #01857b;
+  }
+  
+  .tooltip .arrow::before {
+    border-left-color: #01857b;
+  }
+ 
 /*
 .btn-cohort-des-coloring:disabled{
     background-color: purple;
