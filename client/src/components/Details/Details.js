@@ -87,7 +87,8 @@ class Details extends Component {
 			advancedFilter: state.advancedFilter,
 			orderBy: state.orderBy,
 			selected: state.selected,
-			comparasion: state.comparasion
+			comparasion: state.comparasion,
+			currTab: state.currTab
 		};
 		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
@@ -253,13 +254,17 @@ class Details extends Component {
 				state: []
 			}
 		};
+
 		const previousState = sessionStorage.getItem('informationHistory_select');
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			let item = {
 				filter: filter,
 				advancedFilter: state.advancedFilter,
-				orderBy: orderBy
+				orderBy: orderBy,
+				comparasion: false,
+				selected: [],
+				currTab: 0
 			};
 			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 		}
@@ -1190,22 +1195,32 @@ class Details extends Component {
 
 		if (previousState) {
 			let state = JSON.parse(previousState);
-			if (this._isMounted) {
+
+			if (state.comparasion === true) {
 				this.setState({
-					filter: state.filter,
-					advancedFilter: state.advancedFilter,
-					orderBy: state.orderBy,
 					selected: state.selected,
-					comparasion: state.comparasion
+					currTab: state.currTab,
+					comparasion: true,
 				});
 			}
-
-			if (this.state.searchState == true) {
-				this.filterData(1, state.orderBy, state.filter);
-			}
 			else {
+				if (this._isMounted) {
+					this.setState({
+						filter: state.filter,
+						advancedFilter: state.advancedFilter,
+						orderBy: state.orderBy,
+						selected: state.selected,
+						currTab: state.currTab,
+						comparasion: state.comparasion,
+					});
+				}
 
-				this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+				if (this.state.searchState == true) {
+					this.filterData(1, state.orderBy, state.filter);
+				}
+				else {
+					this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+				}
 			}
 		}
 		else {

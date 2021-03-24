@@ -2,11 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 class DetailsTable extends Component {
-  constructor(props) {
-    super(props);
 
-    console.dir(props);
-  }
   render() {
     const params = this.props.params;
     const values = params.values;
