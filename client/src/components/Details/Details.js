@@ -1311,10 +1311,10 @@ class Details extends Component {
 						</div>
 					</div>
 					<div className="filter-block home col-md-12">
-						<div className="row" style={{ "display": "flex" }}>
+						<div className="row" style={{ "display": "flex", height: '35px' }}>
 							<div id="tableControls" className="" style={{ "paddingLeft": "15px" }}>
 								<ul className="table-controls">
-									<FloatingSubmit onClick={this.handleComparasion} align="true" values={this.state.selected} />
+									<FloatingSubmit onClick={this.handleComparasion} align="true" placement="top" values={this.state.selected} />
 								</ul>
 							</div>
 							<div id="tableExport" style={{ "paddingLeft": "1rem", "paddingTop": "7px" }}>
@@ -1339,8 +1339,7 @@ class Details extends Component {
 						</div>
 					</div>
 					<div className="table-inner col-md-12">
-						<div className="cedcd-table home">
-
+						<div className="cedcd-table home" style={{ marginBottom: '2px', paddingBottom: '2px' }}>
 							<table cellSpacing="0" cellPadding="5" useaccessibleheaders="true" showheaders="true" id="cohortGridView" >
 								<thead>
 									<tr id="summaryHeader" className="col-header">
@@ -1359,14 +1358,13 @@ class Details extends Component {
 									{content}
 								</tbody>
 							</table>
-
 						</div>
 					</div>
 					<div className="filter-block home col-md-12">
 						<div className="row" style={{ "display": "flex" }}>
-							<div id="tableControls" className="" style={{ "paddingLeft": "15px" }}>
+							<div id="tableControls" className="" style={{ "paddingLeft": "10px" }}>
 								<ul className="table-controls">
-									<FloatingSubmit onClick={this.handleComparasion} align="true" values={this.state.selected} />
+									<FloatingSubmit onClick={this.handleComparasion} align="true" placement="bottom" values={this.state.selected} />
 								</ul>
 							</div>
 							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>

@@ -45,7 +45,8 @@ class FloatingSubmit extends Component {
               <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Selected Cohort Data <i className="fas fa-file-alt"></i>
+                View Selected Cohort Data <img className="mw-100" height="50" src="/assets/img/ViewDetails.png" alt="View Cohort Data" />
+
               </button>
             </span>
           </Reminder>
@@ -60,7 +61,8 @@ class FloatingSubmit extends Component {
               <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Selected Cohort Data <i className="fas fa-file-alt"></i>
+                View Selected Cohort Data <img className="mw-100" width="15" src="/assets/img/ViewDetails.png"
+                  style={{ marginBottom: '0', paddingBottom: '4px' }} alt="View Cohort Data" />
               </button>
             </span>
           </Reminder>

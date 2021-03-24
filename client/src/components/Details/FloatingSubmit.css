@@ -13,13 +13,14 @@
   }
 
   .tooltip .tooltip-inner {
-    background-color: #01857b;
-    font-size: 11px;
+    background-color: white;
+    color: black;
+    font-size: 12px;
     min-width: 220px;
   }
   
   .tooltip .arrow::before {
-    border-left-color: #01857b;
+    border-left-color:white;
   }
  
 /*
