@@ -196,7 +196,6 @@ class Information extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let info = result.data;
-				console.dir(info)
 				this.setState(prevState => (
 					{
 						hasMounted: true,
@@ -219,10 +218,10 @@ class Information extends Component {
 				return (
 					<div>
 						<div className="content-nav" style={{ marginLeft: '2rem' }}>
-							<Link className="back" href="javascript:void(0);" onClick={this.handleViewCohortClick} >
+							<a className="back" href="javascript:void(0);" onClick={this.handleViewCohortClick} >
 								<i className="fas fa-chevron-left"></i>&nbsp;
 								<span>Back to Previous Page</span>
-							</Link>
+							</a>
 						</div>
 						<div>
 							<ViewCohortData id={this.state.cohort_id} />
@@ -361,7 +360,7 @@ class Information extends Component {
 							</div>
 						</div>
 						<div className="row" style={{ marginLeft: '1rem', paddingLeft: '0' }}>
-							<Reminder info={true} message="Click to view submitted Cohort data.">
+							<Reminder viewCohort={true} message="Click to view submitted Cohort data.">
 								<span >
 									<button id="viewButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
 										className="btn btn-link view-button" onClick={this.handleViewCohortClick}  >

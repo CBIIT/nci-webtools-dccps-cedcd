@@ -81,10 +81,13 @@ class Details extends Component {
 
 	saveHistory = () => {
 		const state = Object.assign({}, this.state);
+
 		let item = {
 			filter: state.filter,
 			advancedFilter: state.advancedFilter,
-			orderBy: state.orderBy
+			orderBy: state.orderBy,
+			selected: state.selected,
+			comparasion: state.comparasion
 		};
 		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
@@ -265,6 +268,10 @@ class Details extends Component {
 	}
 
 	goBack2Filter = () => {
+
+		this.setState({
+			comparasion: !this.state.comparasion
+		});
 		if (this.state.searchState) {
 			this.filterData(this.state.pageInfo.page);
 
@@ -290,9 +297,7 @@ class Details extends Component {
 
 		const previousState = sessionStorage.getItem('informationHistory_select');
 		if (previousState) {
-
 			let state = JSON.parse(previousState);
-			console.log(this.state.searchState);
 			if (this.state.searchState == false) {
 				this.filterData(1, state.orderBy, state.filter);
 			}
@@ -357,7 +362,7 @@ class Details extends Component {
 							pageInfo: reqBody.paging,
 							lastPage: (i > -1 ? lastPage : i),
 							selected: selected ? selected : prevState.selected,
-							comparasion: false
+							comparasion: prevState.comparasion
 						}
 					));
 				}
@@ -1182,13 +1187,16 @@ class Details extends Component {
 	componentDidMount() {
 		this._isMounted = true;
 		const previousState = sessionStorage.getItem('informationHistory_select');
+
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			if (this._isMounted) {
 				this.setState({
 					filter: state.filter,
 					advancedFilter: state.advancedFilter,
-					orderBy: state.orderBy
+					orderBy: state.orderBy,
+					selected: state.selected,
+					comparasion: state.comparasion
 				});
 			}
 

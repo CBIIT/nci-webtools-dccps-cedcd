@@ -12,17 +12,6 @@
     padding-top: 4px;
   }
 
-  .tooltip .tooltip-inner {
-    background-color: white;
-    color: black;
-    font-size: 12px;
-    min-width: 220px;
-  }
-  
-  .tooltip .arrow::before {
-    border-left-color:white;
-  }
- 
 /*
 .btn-cohort-des-coloring:disabled{
     background-color: purple;

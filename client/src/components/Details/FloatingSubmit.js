@@ -40,7 +40,7 @@ class FloatingSubmit extends Component {
     if (this.props.align === undefined) {
       return (
         <div align="center" >
-          <Reminder info={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
+          <Reminder viewCohort={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
               <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
@@ -56,7 +56,7 @@ class FloatingSubmit extends Component {
     else {
       return (
         <div align="" >
-          <Reminder info={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
+          <Reminder viewCohort={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
               <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
                 className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
