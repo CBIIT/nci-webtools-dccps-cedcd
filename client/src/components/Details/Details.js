@@ -270,7 +270,7 @@ class Details extends Component {
 	goBack2Filter = () => {
 
 		this.setState({
-			comparasion: !this.state.comparasion
+			comparasion: false
 		});
 		if (this.state.searchState) {
 			this.filterData(this.state.pageInfo.page);
@@ -362,7 +362,7 @@ class Details extends Component {
 							pageInfo: reqBody.paging,
 							lastPage: (i > -1 ? lastPage : i),
 							selected: selected ? selected : prevState.selected,
-							comparasion: prevState.comparasion
+							comparasion: false
 						}
 					));
 				}
