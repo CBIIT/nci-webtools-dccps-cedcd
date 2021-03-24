@@ -81,7 +81,6 @@ class Details extends Component {
 
 	saveHistory = () => {
 		const state = Object.assign({}, this.state);
-
 		let item = {
 			filter: state.filter,
 			advancedFilter: state.advancedFilter,
@@ -273,17 +272,23 @@ class Details extends Component {
 	}
 
 	goBack2Filter = () => {
-
-		this.setState({
-			comparasion: false
-		});
 		if (this.state.searchState) {
 			this.filterData(this.state.pageInfo.page);
-
 		}
 		else {
 			this.advancedFilterData(this.state.pageInfo.page);
 		}
+		const state = Object.assign({}, this.state);
+
+		let item = {
+			filter: state.filter,
+			advancedFilter: state.advancedFilter,
+			orderBy: state.orderBy,
+			selected: state.selected,
+			comparasion: false,
+			currTab: state.currTab
+		};
+		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
 
 	//Handles when the filter button for the basic search is hit
@@ -318,9 +323,6 @@ class Details extends Component {
 				this.advancedFilterData(this.state.pageInfo.page);
 			}
 		}
-
-
-
 	}
 
 	filterData(i, orderBy, filter, selected) {
@@ -1195,13 +1197,10 @@ class Details extends Component {
 
 		if (previousState) {
 			let state = JSON.parse(previousState);
+			localStorage.removeItem('informationHistory_select');
 
 			if (state.comparasion === true) {
-				this.setState({
-					selected: state.selected,
-					currTab: state.currTab,
-					comparasion: true,
-				});
+				this.setState(state);
 			}
 			else {
 				if (this._isMounted) {
