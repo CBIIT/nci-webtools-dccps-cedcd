@@ -314,7 +314,8 @@ class Information extends Component {
 				return (
 					<div className="col-12" id="prof-main">
 						<div id="prof-header">
-							<a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to previous page</span></a>
+							<a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;
+							<span>Back to previous page</span></a>
 							<h2 className="pg-title"><span id="cd_name">{info.cohort_name}</span> (<span id="cd_acronym">{info.cohort_acronym}</span>)</h2>
 							<div className="rightLink"> <span className="lastUpdated">Last Updated: <span id="cd_lastupdate"><Moment format="MM/DD/YYYY">{info.update_time}</Moment></span></span> </div>
 							<div id="cd_errorMsg" className="errorText"></div>
@@ -364,7 +365,8 @@ class Information extends Component {
 								<span >
 									<button id="viewButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
 										className="btn btn-link view-button" onClick={this.handleViewCohortClick}  >
-										View Cohort Data <i className="fas fa-file-alt"></i>
+										View Cohort Data <img className="mw-100" width="15" src="/assets/img/ViewDetails.png"
+											style={{ marginBottom: '0', paddingBottom: '4px' }} alt="View Cohort Data" />
 									</button>
 								</span>
 							</Reminder>
