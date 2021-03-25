@@ -217,7 +217,7 @@ class Information extends Component {
 			if (this.state.viewCohortData) {
 				return (
 					<div>
-						<div className="content-nav" style={{ marginLeft: '2rem' }}>
+						<div className="content-nav" style={{ marginLeft: '3rem' }}>
 							<a className="back" href="javascript:void(0);" onClick={this.handleViewCohortClick} >
 								<i className="fas fa-chevron-left"></i>&nbsp;
 								<span>Back to Previous Page</span>

@@ -126,14 +126,19 @@ class Linkage extends Component {
 		if (width > 200 * len) {
 			let w = Math.floor(width / len);
 			let mod = width % len;
-			for (let i = 0; i < len; i++) {
-				if (i == len - 1) {
-					params.config.header.push(w + mod);
-					params.config.f_header.push(w + mod);
-				}
-				else {
-					params.config.header.push(w);
-					params.config.f_header.push(w + 1);
+			if (len === 1) {
+				params.config.header.push(width - 0.5);
+				params.config.f_header.push(width - 0.5);
+			} else {
+				for (let i = 0; i < len; i++) {
+					if (i == len - 1) {
+						params.config.header.push(w + mod);
+						params.config.f_header.push(w + mod);
+					}
+					else {
+						params.config.header.push(w);
+						params.config.f_header.push(w + 1);
+					}
 				}
 			}
 		}

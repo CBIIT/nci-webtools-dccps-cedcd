@@ -119,20 +119,25 @@ class Baseline extends Component {
 		params.config.width = width - 90;
 		params.config.header = [];
 		params.config.f_header = [];
-		params.config.first_column_width = 400;
+		params.config.first_column_width = 360;
 		let len = params.cohorts.length;
 		width = width - 150 - params.config.first_column_width;
 		if (width > 200 * len) {
 			let w = Math.floor(width / len);
 			let mod = width % len;
-			for (let i = 0; i < len; i++) {
-				if (i == len - 1) {
-					params.config.header.push(w + mod);
-					params.config.f_header.push(w + mod);
-				}
-				else {
-					params.config.header.push(w);
-					params.config.f_header.push(w + 1);
+			if (len === 1) {
+				params.config.header.push(width - 0.5);
+				params.config.f_header.push(width - 0.5);
+			} else {
+				for (let i = 0; i < len; i++) {
+					if (i == len - 1) {
+						params.config.header.push(w + mod);
+						params.config.f_header.push(w + mod);
+					}
+					else {
+						params.config.header.push(w);
+						params.config.f_header.push(w + 1);
+					}
 				}
 			}
 		}

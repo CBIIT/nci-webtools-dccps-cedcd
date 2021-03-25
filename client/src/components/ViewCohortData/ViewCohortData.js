@@ -9,18 +9,20 @@ const ViewCohortData = ({ ...props }) => {
 
     return (
         <div>
-            <div className="table-description">
+            <div className="container">
                 <p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
             </div>
             <div id="data-table" className="level2 col-md-12 container">
-                <div id="table-header" className="">
+                <div id="table-header" className="container">
                     <div>
                         <div id="cohortDetailTabs">
                             <TabBoard currTab={currTab} onClick={(i) => setCurrtab(i)} />
                         </div>
                     </div>
                 </div>
-                <BoxBoard cohorts={cohortId} currTab={currTab} />
+                <div className="container">
+                    <BoxBoard cohorts={cohortId} currTab={currTab} />
+                </div>
             </div>
         </div>
     );
