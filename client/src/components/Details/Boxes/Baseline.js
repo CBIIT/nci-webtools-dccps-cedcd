@@ -121,7 +121,7 @@ class Baseline extends Component {
 		params.config.f_header = [];
 		params.config.first_column_width = 400;
 		let len = params.cohorts.length;
-		width = width - 92 - params.config.first_column_width;
+		width = width - 150 - params.config.first_column_width;
 		if (width > 200 * len) {
 			let w = Math.floor(width / len);
 			let mod = width % len;

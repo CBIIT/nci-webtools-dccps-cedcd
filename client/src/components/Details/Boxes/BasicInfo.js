@@ -130,7 +130,7 @@ class BasicInfo extends Component {
 		params.config.f_header = [];
 		params.config.first_column_width = 360;
 		let len = params.cohorts.length;
-		width = width - 89 - params.config.first_column_width;
+		width = width - 152 - params.config.first_column_width;
 		if (width > 200 * len) {
 			let w = Math.floor(width / len);
 			let mod = width % len;
@@ -176,8 +176,7 @@ class BasicInfo extends Component {
 					<div className="clearFix"></div>
 					<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
 						<DetailsTable expand={this.handleExpand} saveHistory={this.props.saveHistory} params={params} />
-						<FloatingSideHeader expand={this.handleExpand} params={params} />
-						{/* <FloatingHeader saveHistory={this.props.saveHistory} params={params}/> */}
+						<FloatingHeader saveHistory={this.props.saveHistory} params={params} />
 					</div>
 				</div>
 

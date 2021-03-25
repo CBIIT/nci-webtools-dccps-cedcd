@@ -1268,24 +1268,28 @@ class Details extends Component {
 			return (
 				<div>
 					<div id="filterLabels" className="filter-block col-md-12 lockedFilter">
-						<div className="content-nav">
+						<div className="content-nav" style={{ paddingLeft: '2rem' }}>
 							<a className="back" href="javascript:void(0);" onClick={this.goBack2Filter}><i className="fas fa-chevron-left"></i>&nbsp;<span>Back to filter</span></a>
 						</div>
 					</div>
-					<div className="table-description">
+					<div className="container">
 						<p>The Cohort Overview compares the cohort design and the types of data and specimens collected across the cohorts you selected. To view more information about a specific cohort, select the acronym of the cohort at the top of the table.</p>
 					</div>
+
 					<div id="data-table" className="level2 col-md-12 container">
-						<div id="table-header" className="">
+						<div id="table-header" className="container">
 							<div>
-								<div id="cohortDetailTabs">
+								<div id="cohortDetailTabs" >
 									<TabBoard currTab={this.state.currTab} onClick={(i) => this.handleTabClick(i)} />
 								</div>
 							</div>
 						</div>
-						<BoxBoard saveHistory={this.saveHistory} cohorts={this.state.selected} currTab={this.state.currTab} />
+						<div className="container" style={{ overflow: 'hidden' }}>
+							<BoxBoard saveHistory={this.saveHistory} cohorts={this.state.selected} currTab={this.state.currTab} />
+						</div>
+
 					</div>
-				</div>
+				</div >
 			);
 		}
 		else {
