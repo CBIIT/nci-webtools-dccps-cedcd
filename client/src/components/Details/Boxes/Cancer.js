@@ -158,26 +158,21 @@ class Cancer extends Component {
 				</Workbook.Sheet>
 			</Workbook>);
 		return (
-			<div>
-				<div id="table-intro" className="col-md-12">
-					<h2 className="table-title">
-						<span id="tabLabel" className="subtitle">Cancer Information</span>
-					</h2>
-				</div>
-				<div id="cedcd-cohorts-inner" className="col-md-12 activeArea">
-					<div className="table-inner col-md-12">
-						<div className="table-legend col-sm-9"> <span className="">N/A: Not Applicable; N/P: Not Provided</span> </div>
-						<div className="table-export col-sm-3">
-							{exportTable}
-						</div>
-						<div className="clearFix"></div>
-						<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
-							<DetailsTable expand={this.handleExpand} saveHistory={this.props.saveHistory} params={params} />
-							<FloatingSideHeader expand={this.handleExpand} params={params} />
-							{/* <FloatingHeader saveHistory={this.props.saveHistory} params={params}/> */}
-						</div>
+
+			<div id="cedcd-cohorts-inner" className="col-md-12 activeArea">
+				<div className="table-inner col-md-12">
+					<div className="table-legend col-sm-9"> <span className="">N/A: Not Applicable; N/P: Not Provided</span> </div>
+					<div className="table-export col-sm-3">
+						{exportTable}
+					</div>
+					<div className="clearFix"></div>
+					<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
+						<DetailsTable expand={this.handleExpand} saveHistory={this.props.saveHistory} params={params} />
+						<FloatingSideHeader expand={this.handleExpand} params={params} />
+						{/* <FloatingHeader saveHistory={this.props.saveHistory} params={params}/> */}
 					</div>
 				</div>
+
 			</div>);
 	}
 }
