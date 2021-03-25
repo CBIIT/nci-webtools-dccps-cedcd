@@ -176,7 +176,8 @@ class BasicInfo extends Component {
 					<div className="clearFix"></div>
 					<div className="cedcd-table" onScroll={(e) => this.handleScroll(e)}>
 						<DetailsTable expand={this.handleExpand} saveHistory={this.props.saveHistory} params={params} />
-						<FloatingHeader saveHistory={this.props.saveHistory} params={params} />
+						<FloatingSideHeader expand={this.handleExpand} params={params} />
+						{/* <FloatingHeader saveHistory={this.props.saveHistory} params={params}/> */}
 					</div>
 				</div>
 
