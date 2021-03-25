@@ -278,17 +278,7 @@ class Details extends Component {
 		else {
 			this.advancedFilterData(this.state.pageInfo.page);
 		}
-		const state = Object.assign({}, this.state);
-
-		let item = {
-			filter: state.filter,
-			advancedFilter: state.advancedFilter,
-			orderBy: state.orderBy,
-			selected: state.selected,
-			comparasion: false,
-			currTab: state.currTab
-		};
-		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
+		this.updateHistory(false);
 	}
 
 	//Handles when the filter button for the basic search is hit
@@ -870,10 +860,24 @@ class Details extends Component {
 		});
 	}
 
+	updateHistory = (status) => {
+		const state = Object.assign({}, this.state);
+		let item = {
+			filter: state.filter,
+			advancedFilter: state.advancedFilter,
+			orderBy: state.orderBy,
+			selected: state.selected,
+			comparasion: status,
+			currTab: state.currTab
+		};
+		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
+	}
+
 	handleComparasion = () => {
 		this.setState({
 			comparasion: true
 		});
+		this.updateHistory(true);
 	}
 
 	handleBooleanChange(e, index) {
@@ -1193,14 +1197,14 @@ class Details extends Component {
 
 	componentDidMount() {
 		this._isMounted = true;
-		const previousState = sessionStorage.getItem('informationHistory_select');
 
+		const previousState = sessionStorage.getItem('informationHistory_select');
 		if (previousState) {
 			let state = JSON.parse(previousState);
-			localStorage.removeItem('informationHistory_select');
 
 			if (state.comparasion === true) {
 				this.setState(state);
+				// sessionStorage.removeItem('informationHistory_select');
 			}
 			else {
 				if (this._isMounted) {
@@ -1233,6 +1237,21 @@ class Details extends Component {
 	}
 
 	componentWillUnmount() {
+		if (this.state.comparasion) {
+			this.saveHistory();
+		} else {
+			// sessionStorage.removeItem('informationHistory_select');
+			const state = Object.assign({}, this.state);
+			let item = {
+				filter: state.filter,
+				advancedFilter: state.advancedFilter,
+				orderBy: state.orderBy,
+				selected: [],
+				comparasion: false,
+				currTab: 0
+			};
+			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
+		}
 		this._isMounted = false;
 	}
 

@@ -115,7 +115,6 @@ class Linkage extends Component {
 		let width = document.getElementById('cedcd-main-content').clientWidth;
 		let params = {};
 		params.values = this.state.list;
-		console.dir(params.values)
 		params.cohorts = this.state.cohorts;
 		params.config = {};
 		params.config.width = width - 90;
