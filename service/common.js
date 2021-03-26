@@ -204,7 +204,7 @@ router.post('/export/select', function (req, res) {
 	let filter = body.filter || {};
 	let orderBy = body.orderBy || {};
 	let paging = body.paging || {};
-	let func = "cohort_select";
+	let func = "select_cohort";
 	let params = [];
 	//form filter into Strings
 
