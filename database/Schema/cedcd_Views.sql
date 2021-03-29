@@ -9,22 +9,37 @@
 -- -----------------------------------------------------------------------------------------------------------
 use cedcd;
 DROP VIEW IF EXISTS `cohort_summary` ;
-DROP VIEW IF EXISTS `v_lu_data_collected_category` ;
+
 -- -----------------------------------------------------------------------------------------------------------
--- View: v_lu_data_collected_category
+-- View: v_lu_data_category
 -- -----------------------------------------------------------------------------------------------------------
 DROP VIEW IF EXISTS `v_lu_data_category` ;
 
 CREATE VIEW v_lu_data_category AS
- select min(id) as id , category as data_category from lu_data_category group by category order by id;
+ SELECT min(id) AS id , category AS data_category FROM lu_data_category group by category order by id;
+
+-- -----------------------------------------------------------------------------------------------------------
+-- View: v_lu_collected_specimen
+-- -----------------------------------------------------------------------------------------------------------
+DROP VIEW IF EXISTS `v_lu_collected_specimen` ; 
+CREATE VIEW v_lu_collected_specimen AS
+    SELECT 
+        MIN(lu_specimen.id) AS id, lu_specimen.specimen AS specimen
+    FROM lu_specimen
+    WHERE sub_category IS NOT NULL
+        AND specimen IN ('Blood' , 'Buccal/Saliva',
+            'Tissue (includes tumor and/or normal)',
+            'Urine', 'Feces','Other')
+    GROUP BY specimen
+    ORDER BY id;
 
 -- -----------------------------------------------------------------------------------------------------------
 -- View: v_specimen
 -- -----------------------------------------------------------------------------------------------------------
 DROP VIEW IF EXISTS `v_specimen` ;
 
-CREATE VIEW v_specimen as 
-select sc.cohort_id,
+CREATE VIEW v_specimen AS 
+SELECT sc.cohort_id,
 MAX(IF(lu.sub_category="bio_blood_baseline", collected_yn, null)) bio_blood_baseline,
 MAX(IF(lu.sub_category="bio_blood_baseline_serum", collected_yn, null)) bio_blood_baseline_serum,
 MAX(IF(lu.sub_category="bio_blood_baseline_plasma", collected_yn, null)) bio_blood_baseline_plasma,
@@ -62,9 +77,9 @@ MAX(IF(lu.sub_category="bio_meta_outcomes_in_other_study", collected_yn, null)) 
 MAX(IF(lu.sub_category="bio_member_of_metabolomics_studies", collected_yn, null)) bio_member_of_metabolomics_studies,
 bio_other_baseline_specify,bio_other_other_time_specify,bio_meta_outcomes_other_study_specify,bio_member_in_study,
 bio_labs_used_for_analysis,bio_analytical_platform,bio_separation_platform,bio_number_metabolites_measured,bio_year_samples_sent
-from specimen_collected_type sc, lu_specimen lu, specimen sp
-where sc.specimen_id = lu.id and sp.cohort_id=sc.cohort_id
-group by sc.cohort_id, bio_other_baseline_specify,bio_other_other_time_specify,bio_meta_outcomes_other_study_specify,bio_member_in_study,
+FROM specimen_collected_type sc, lu_specimen lu, specimen sp
+WHERE sc.specimen_id = lu.id and sp.cohort_id=sc.cohort_id
+GROUP BY sc.cohort_id, bio_other_baseline_specify,bio_other_other_time_specify,bio_meta_outcomes_other_study_specify,bio_member_in_study,
 bio_labs_used_for_analysis,bio_analytical_platform,bio_separation_platform,bio_number_metabolites_measured,bio_year_samples_sent;
 
 
