@@ -89,6 +89,7 @@ class Enrollment extends Component {
 		let filter = Object.assign(this.state.filter);
 		if (v) {
 			let idx = filter.cohort.indexOf(v.id);
+			if (filter.allCohorts) filter.allCohorts = false;
 			if (idx > -1) {
 				//remove element
 				filter.cohort.splice(idx, 1);
@@ -100,7 +101,7 @@ class Enrollment extends Component {
 		}
 		else {
 			//click on the "all cohort"
-			filter.allCohorts = !this.state.filter.allCohorts;
+			filter.allCohorts = !filter.allCohorts;
 			filter.cohort = [];
 			if (e.target.checked) {
 				filter.cohort = allIds;
@@ -119,7 +120,7 @@ class Enrollment extends Component {
 			cohort: [],
 			allCohorts: false
 		};
-		let resultCopy = {...this.state.originalResult}
+		let resultCopy = { ...this.state.originalResult }
 		this.setState({
 			result: resultCopy,
 			filter: filter
@@ -163,9 +164,9 @@ class Enrollment extends Component {
 					}
 				)); */
 				let previousState = sessionStorage.getItem('informationHistory_enrollment');
-				if(!previousState) {reqBody.filter.cohort = []; reqBody.filter.allCohorts = false}
-				Object.keys(this.state.originalResult).length > 0 ? 
-					this.setState({result: rst, filter: reqBody.filter}) : this.setState({originalResult: rst, result: rst, filter: reqBody.filter})
+				if (!previousState) { reqBody.filter.cohort = []; reqBody.filter.allCohorts = false }
+				Object.keys(this.state.originalResult).length > 0 ?
+					this.setState({ result: rst, filter: reqBody.filter }) : this.setState({ originalResult: rst, result: rst, filter: reqBody.filter })
 			});
 	}
 
@@ -175,7 +176,7 @@ class Enrollment extends Component {
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			this.filterData(state.filter);
-		}else{
+		} else {
 			this.filterData(this.state.filter)
 		}
 	}
@@ -297,7 +298,7 @@ class Enrollment extends Component {
 								</div>
 								<div className="col-sm-3 filterCol last">
 									<h3>Cohorts</h3>
-									<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts} />
+									<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} hasSelectAll={this.state.filter.allCohorts} />
 								</div>
 							</div>
 							{/*<div className="row">
@@ -314,13 +315,13 @@ class Enrollment extends Component {
 							</div> */}
 							<Row xs={12} className="mr-0 pr-0">
 								<Col className="mr-0 pr-0">
-									<Button 
+									<Button
 										className="pull-right"
 										variant="primary"
 										onClick={this.toFilter}>
 										Submit
 									</Button>
-									<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+									<a className="pull-right pt-0" id="filterClear" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 								</Col>
 							</Row>
 						</div>

@@ -131,7 +131,7 @@ class CohortList extends Component {
 							<li>
 								<label>
 									<span className="filter-component-input">
-										<input type="checkbox" onClick={(e) => this.props.onClick(null, allIds, e)} checked={this.props.all_cohorts} />
+										<input type="checkbox" onClick={(e) => this.props.onClick(null, allIds, e)} checked={this.props.hasSelectAll} />
 									</span>
 								All Cohorts
 							</label>
@@ -140,9 +140,10 @@ class CohortList extends Component {
 						</ul>
 					</div>
 				</div>
-				<ul className="picked-options">
-					{selectedList}
-				</ul>
+				{this.props.hasSelectAll ? <span style={{ paddingLeft: '2rem' }}>{' '} All Cohorts</span> :
+					<ul className="picked-options">
+						{selectedList}
+					</ul>}
 			</div>
 		);
 	}

@@ -54,6 +54,7 @@ class Cancer extends Component {
 		let filter = Object.assign({}, this.state.filter);
 		if (v) {
 			let idx = filter.cancer.indexOf(v.id);
+			filter.allCancers = false;
 			if (idx > -1) {
 				//remove element
 				filter.cancer.splice(idx, 1);
@@ -65,7 +66,7 @@ class Cancer extends Component {
 		}
 		else {
 			//click on the "all cohort"
-			filter.allCancers = !this.state.filter.allCancers;
+			filter.allCancers = !filter.allCancers;
 			filter.cancer = [];
 			if (e.target.checked) {
 				filter.cancer = allIds;
@@ -80,6 +81,7 @@ class Cancer extends Component {
 		let filter = Object.assign({}, this.state.filter);
 		if (v) {
 			let idx = filter.cohort.indexOf(v.id);
+			if (filter.allCohorts) filter.allCohorts = false;
 			if (idx > -1) {
 				//remove element
 				filter.cohort.splice(idx, 1);
@@ -91,7 +93,7 @@ class Cancer extends Component {
 		}
 		else {
 			//click on the "all cohort"
-			filter.allCohorts = !this.state.filter.allCohorts;
+			filter.allCohorts = !filter.allCohorts;
 			filter.cohort = [];
 			if (e.target.checked) {
 				filter.cohort = allIds;
@@ -110,7 +112,7 @@ class Cancer extends Component {
 			allCancers: false,
 			allCohorts: false
 		};
-		let resultCopy = {...this.state.originalResult}
+		let resultCopy = { ...this.state.originalResult }
 		this.setState({
 			result: resultCopy,
 			filter: filter
@@ -143,9 +145,9 @@ class Cancer extends Component {
 			.then(result => {
 				let rst = result.data;
 				let previousState = sessionStorage.getItem('informationHistory_cancer');
-				if(!previousState) {reqBody.filter.cohort = []; reqBody.filter.allCohorts = false}
-				Object.keys(this.state.originalResult).length > 0 ? 
-					this.setState({result: rst, filter: reqBody.filter}) : this.setState({originalResult: rst, result: rst, filter: reqBody.filter})
+				if (!previousState) { reqBody.filter.cohort = []; reqBody.filter.allCohorts = false }
+				Object.keys(this.state.originalResult).length > 0 ?
+					this.setState({ result: rst, filter: reqBody.filter }) : this.setState({ originalResult: rst, result: rst, filter: reqBody.filter })
 				/*this.setState(prevState => (
 					{
 						result: rst,
@@ -160,7 +162,7 @@ class Cancer extends Component {
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			this.filterData(state.filter);
-		}else{
+		} else {
 			this.filterData(this.state.filter)
 		}
 	}
@@ -243,14 +245,15 @@ class Cancer extends Component {
 								</div>
 								<div className="col-sm-4 filterCol">
 									<h3>Cancer Type</h3>
-									<CollectedCancersList hasNoCancer={false} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={true} values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick} all_cancers={this.state.filter.allCancers} />
+									<CollectedCancersList hasNoCancer={false} title="Cancer Type" innertitle="Select Cancer(s)" hasSelectAll={this.state.filter.allCancers}
+										values={this.state.filter.cancer} displayMax="5" onClick={this.handleCancerClick} />
 								</div>
 								<div className="col-sm-4 filterCol last">
 									<h3>Cohorts</h3>
-									<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} all_cohorts={this.state.filter.allCohorts} />
+									<CohortList values={this.state.filter.cohort} displayMax="4" onClick={this.handleCohortClick} hasSelectAll={this.state.filter.allCohorts} />
 								</div>
 							</div>
-						{/*}	<div className="row">
+							{/*}	<div className="row">
 								<a id="filterClear" className="btn-filter" style={{ "marginLeft": "auto" }} href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 								{/*<input type="submit" name="filterEngage"  value="Search Cohorts" className="btn btn-primary mr-3" onClick={this.toFilter} />	
 								<Button 
@@ -261,18 +264,18 @@ class Cancer extends Component {
 									onClick={this.toFilter}>
 									Submit
 								</Button>	
-							</div>	*/}	
+							</div>	*/}
 							<Row xs={12} className="mr-0 pr-0">
 								<Col className="mr-0 pr-0">
-									<Button 
+									<Button
 										className="pull-right"
 										variant="primary"
 										onClick={this.toFilter}>
 										Submit
 									</Button>
-									<a className="pull-right pt-0" id="filterClear"  href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>	
+									<a className="pull-right pt-0" id="filterClear" href="javascript:void(0);" onClick={this.clearFilter}><i className="fas fa-times"></i> Clear All</a>
 								</Col>
-							</Row>					
+							</Row>
 						</div>
 					</div>
 				</div>

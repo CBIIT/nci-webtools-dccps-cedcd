@@ -1,25 +1,19 @@
 import React, { Component } from 'react';
 
 class CollectedSpecimensList extends Component {
-
+	_isMounted = false;
 	constructor(props) {
 		super(props);
 		this.state = {
-			list: [
-				"Blood",
-				"Buccal/Saliva",
-				"Tissue (include tumor and/or normal)",
-				"Urine",
-				"Feces",
-				"Others"
-			],
+			list: [],
+			lookup: {},
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
 		};
 		this.handleBlur = this.handleBlur.bind(this);
 	}
 
-	handleClick = (e) => {
+	handleClick = () => {
 		this.setState({
 			open: !this.state.open
 		});
@@ -40,20 +34,53 @@ class CollectedSpecimensList extends Component {
 		}, 0);
 	}
 
+	componentDidMount() {
+		this._isMounted = true;
+		let reqBody = {
+			category: "collected_specimen"
+		};
+		fetch('./api/cohort/lookup', {
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+			.then(res => res.json())
+			.then(result => {
+				let specimenList = result.data.list;
+				let arr = [];
+				let dict = {};
+				specimenList.forEach(function (element) {
+					arr.push({ specimen: element.specimen, id: element.id });
+					dict[element.id] = { specimen: element.specimen, id: element.id };
+				});
+				if (this._isMounted) {
+					this.setState({
+						list: arr,
+						lookup: dict
+					});
+				}
+			});
+	}
+	componentWillUnmount() {
+		this._isMounted = false;
+	}
+
 	render() {
 
 		const values = this.props.values;
+		let lookup = Object.assign({}, this.state.lookup);
 		const list = this.state.list.map((item, idx) => {
-			const key = "specimen_" + idx;
-			let checked = (values.indexOf(item) > -1);
-
+			const key = "specimen_" + item.id;
+			let checked = (values.indexOf(item.id) > -1);
 			return (
 				<li key={key}>
 					<label>
 						<span className="filter-component-input">
 							<input type="checkbox" onClick={() => this.props.onClick(item)} checked={checked} />
 						</span>
-						{item}
+						{item.specimen}
 					</label>
 				</li>
 			);
@@ -75,11 +102,17 @@ class CollectedSpecimensList extends Component {
 				}
 			}
 			else {
-				return (
-					<li key={key}>
-						{item}
-					</li>
-				);
+				if (lookup[item]) {
+					const specimen = lookup[item].specimen;
+					return (
+						<li key={key}>
+							{specimen}
+						</li>
+					);
+				}
+				else {
+					return "";
+				}
 			}
 
 		});
@@ -105,7 +138,8 @@ class CollectedSpecimensList extends Component {
 		return (
 			<div className="filter-component-block">
 				<div className={cls} tabIndex="0" onBlur={this.handleBlur}>
-					<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId} data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
+					<button className="btn btn-default dropdown-toggle" style={borderStyle} id={buttonId}
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded={expanded} type="button" onClick={this.handleClick}>
 						Types of Biospecimens Collected&nbsp;
 				<span className="badge">{values.length}</span>
 					</button>

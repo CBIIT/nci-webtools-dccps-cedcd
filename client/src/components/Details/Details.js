@@ -42,7 +42,8 @@ class Details extends Component {
 				collect: {
 					cancer: [],
 					data: [],
-					specimen: []
+					specimen: [],
+					allCancer: false
 				},
 				study: {
 					state: []
@@ -58,7 +59,8 @@ class Details extends Component {
 				data: [],
 				specimen: [],
 				booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
-				booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"]
+				booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
+				allCancer: false
 			},
 			orderBy: {
 				column: "cohort_name",
@@ -247,7 +249,8 @@ class Details extends Component {
 			collect: {
 				cancer: [],
 				data: [],
-				specimen: []
+				specimen: [],
+				allCancer: false
 			},
 			study: {
 				state: []
@@ -382,7 +385,8 @@ class Details extends Component {
 			data: [],
 			specimen: [],
 			booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
-			booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"]
+			booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
+			allCancer: false
 		};
 		const previousState = sessionStorage.getItem('informationHistory_select');
 		if (previousState) {
@@ -655,7 +659,7 @@ class Details extends Component {
 
 	handleSpecimenClick = (v) => {
 		const filter = Object.assign({}, this.state.filter);
-		let idx = filter.collect.specimen.indexOf(v);
+		let idx = filter.collect.specimen.indexOf(v.id);
 
 		if (idx > -1) {
 			//remove element
@@ -663,7 +667,7 @@ class Details extends Component {
 		}
 		else {
 			//add element
-			filter.collect.specimen.push(v);
+			filter.collect.specimen.push(v.id);
 		}
 		this.setState({
 			filter: filter
@@ -674,6 +678,7 @@ class Details extends Component {
 		const filter = Object.assign({}, this.state.filter);
 		if (v) {
 			let idx = filter.collect.cancer.indexOf(v.id);
+			if (filter.collect.allCancer) filter.collect.allCancer = false;
 
 			if (idx > -1) {
 				//remove element
@@ -690,6 +695,7 @@ class Details extends Component {
 			if (e.target.checked) {
 				filter.collect.cancer = allIds;
 			}
+			filter.collect.allCancer = !filter.collect.allCancer;
 		}
 		this.setState({
 			filter: filter
@@ -801,7 +807,7 @@ class Details extends Component {
 
 	handleAdvancedSpecimenClick = (v) => {
 		const advancedFilter = Object.assign({}, this.state.advancedFilter);
-		let idx = advancedFilter.specimen.indexOf(v);
+		let idx = advancedFilter.specimen.indexOf(v.id);
 
 		if (idx > -1) {
 			//remove element
@@ -809,7 +815,7 @@ class Details extends Component {
 		}
 		else {
 			//add element
-			advancedFilter.specimen.push(v);
+			advancedFilter.specimen.push(v.id);
 		}
 		this.setState({
 			advancedFilter: advancedFilter
@@ -820,7 +826,7 @@ class Details extends Component {
 		const advancedFilter = Object.assign({}, this.state.advancedFilter);
 		if (v) {
 			let idx = advancedFilter.cancer.indexOf(v.id);
-
+			if (advancedFilter.allCancer) advancedFilter.allCancer = false;
 			if (idx > -1) {
 				//remove element
 				advancedFilter.cancer.splice(idx, 1);
@@ -836,6 +842,7 @@ class Details extends Component {
 			if (e.target.checked) {
 				advancedFilter.cancer = allIds;
 			}
+			advancedFilter.allCancer = !advancedFilter.allCancer;
 		}
 		this.setState({
 			advancedFilter: advancedFilter
@@ -936,7 +943,8 @@ class Details extends Component {
 										<CollectedSpecimensList values={this.state.filter.collect.specimen} displayMax="5" onClick={this.handleSpecimenClick} />
 									</div>
 									<div className="col-sm-12">
-										<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected" hasSelectAll={true} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick} />
+										<CollectedCancersList hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"
+											hasSelectAll={this.state.filter.collect.allCancer} values={this.state.filter.collect.cancer} displayMax="5" onClick={this.handleCancerClick} />
 									</div>
 								</div>
 							</div>
@@ -1130,7 +1138,8 @@ class Details extends Component {
 									</div>
 									<div className="col-sm-11" style={{ "width": "90%" }}>
 										<div style={{ "width": "92%", "float": "left" }}>
-											<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected" hasSelectAll={true} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick} />
+											<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"
+												hasSelectAll={this.state.filter.collect.allCancer} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
 											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e, 7)}>

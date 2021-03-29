@@ -7,8 +7,7 @@ class CollectedDataList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			list: [
-			],
+			list: [],
 			lookup: {},
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
@@ -51,11 +50,11 @@ class CollectedDataList extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				let ethnicities = result.data.list;
+				let categoryList = result.data.list;
 				let arr = [];
 				let dict = {};
 
-				ethnicities.forEach(function (element) {
+				categoryList.forEach(function (element) {
 					arr.push({ data_category: element.data_category, id: element.id });
 					dict[element.id] = { data_category: element.data_category, id: element.id };
 				});

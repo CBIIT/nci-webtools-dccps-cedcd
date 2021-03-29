@@ -183,12 +183,13 @@ router.post('/select', function (req, res) {
 	}
 
 	if (filter.collect.specimen.length > 0) {
-
-		let specimen_columns = [];
-		filter.collect.specimen.forEach(function (cs) {
-			specimen_columns.push(config.collected_specimen[cs]);
-		});
-		params.push(specimen_columns.toString());
+		/*  changed in 2021 use dtabase view to match selections
+				let specimen_columns = [];
+				filter.collect.specimen.forEach(function (cs) {
+					specimen_columns.push(config.collected_specimen[cs]);
+				});
+		*/
+		params.push(filter.collect.specimen.toString());
 	}
 	else {
 		params.push("");
@@ -289,12 +290,7 @@ router.post('/advancedSelect', function (req, res) {
 	}
 
 	if (advancedFilter.specimen.length > 0) {
-
-		let specimen_columns = [];
-		advancedFilter.specimen.forEach(function (cs) {
-			specimen_columns.push(config.collected_specimen[cs]);
-		});
-		params.push(specimen_columns.toString());
+		params.push(advancedFilter.specimen.toString());
 	}
 	else {
 		params.push("");
@@ -592,126 +588,126 @@ router.get('/:id', function (req, res) {
 	let id = req.params.id;
 	let info = cache.getValue("cohort:" + id);
 	//if (info == undefined) {
-		let func = "select_cohort_description";
-		let params = [id];
-		mysql.callProcedure(func, params, function (results) {
-			if (results && results[0] && results[0].length > 0) {
-				let basic = results[0][0];
-				info = {};
-				info.cohort_id = id;
-				info.cohort_name = basic.cohort_name;
-				info.cohort_acronym = basic.cohort_acronym;
-				info.update_time = basic.update_time;
-				info.procedure_files = [];
-				let persons = results[2];
-				info.pis = [];
-				persons.forEach(function (p) {
-					if (p.name) {
-						if (p.category_id == 3) {
-							let tmp = {};
-							tmp.id = p.id;
-							tmp.name = p.name;
-							tmp.institution = p.institution;
-							info.pis.push(tmp);
-						}
-						else if (p.category_id in [1, 4]) {
-							info.collab_name = p.name;
-							info.collab_position = p.position;
-							info.collab_phone = p.phone;
-							info.collab_email = p.email;
-						}
+	let func = "select_cohort_description";
+	let params = [id];
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			let basic = results[0][0];
+			info = {};
+			info.cohort_id = id;
+			info.cohort_name = basic.cohort_name;
+			info.cohort_acronym = basic.cohort_acronym;
+			info.update_time = basic.update_time;
+			info.procedure_files = [];
+			let persons = results[2];
+			info.pis = [];
+			persons.forEach(function (p) {
+				if (p.name) {
+					if (p.category_id == 3) {
+						let tmp = {};
+						tmp.id = p.id;
+						tmp.name = p.name;
+						tmp.institution = p.institution;
+						info.pis.push(tmp);
 					}
-				});
+					else if (p.category_id in [1, 4]) {
+						info.collab_name = p.name;
+						info.collab_position = p.position;
+						info.collab_phone = p.phone;
+						info.collab_email = p.email;
+					}
+				}
+			});
 
-				/*
-				if(basic.same_as_a3a == 1){
-					info.collab_name = basic.completed_by_name;
-					info.collab_position = basic.completed_by_position;
-					info.collab_phone = basic.completed_by_phone;
-					info.collab_email = basic.completed_by_email;
-				}
-				else if(basic.same_as_a3b == 1){
-					info.collab_name = basic.contact_name;
-					info.collab_position = basic.contact_position;
-					info.collab_phone = basic.contact_phone;
-					info.collab_email = basic.contact_email;
-				}
-				else{
-					info.collab_name = basic.collab_contact_name;
-					info.collab_position = basic.collab_contact_position;
-					info.collab_phone = basic.collab_contact_phone;
-					info.collab_email = basic.collab_contact_email;
-				}
-				*/
-
-				info.cohort_web_site = basic.cohort_web_site;
-				info.cohort_description = basic.cohort_description;
-				info.request_procedures_web_url = "";
-				if([0,1].includes(basic.request_procedures_none)){
-					if (basic.request_procedures_none === 1){
-						info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1) ? results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website : '';
-					}
-					else {
-						results[1].forEach(f => {
-							if(f.attachment_type === 1 && f.category === 5 && f.status === 1 && f.filename) 
-								info.procedure_files.push(f.filename)
-						});
-					
-					}
-				}
-				
-				info.attachments = {};
-				logger.debug(results[1])
-				let attachs = results[1].filter(f => f.category !== 5)
-				logger.debug(attachs)
-				let tmp = [[], [], []];
-				attachs.forEach(function (attach) {
-					let idx = attach.category > 0 ? 1 : attach.category;
-					let content = attach.attachment_type == 1 ? attach.filename.trim() : attach.website.trim();
-					if (tmp[idx].indexOf(content) > -1) {
-						return;
-					}
-					else {
-						tmp[idx].push(content);
-					}
-					if (attach.category == 0) {
-						//cohort questionnaires
-						if (info.attachments.questionnaires == undefined) {
-							info.attachments.questionnaires = [];
-						}
-						info.attachments.questionnaires.push({
-							type: attach.attachment_type,
-							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
-							name: attach.filename
-						});
-					}
-					/*else if (attach.category == 0) {
-						//study protocol
-						if (info.attachments.protocols == undefined) {
-							info.attachments.protocols = [];
-						}
-						info.attachments.protocols.push({
-							type: attach.attachment_type,
-							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
-							name: attach.filename
-						});
-					}*/
-					else{
-						//policies
-						if (info.attachments.policies == undefined) {
-							info.attachments.policies = [];
-						}
-						info.attachments.policies.push({
-							type: attach.attachment_type,
-							url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
-							name: attach.filename
-						});
-					}
-				});
-				//cache.setValue("cohort:" + id, info, config.cohort_ttl);
+			/*
+			if(basic.same_as_a3a == 1){
+				info.collab_name = basic.completed_by_name;
+				info.collab_position = basic.completed_by_position;
+				info.collab_phone = basic.completed_by_phone;
+				info.collab_email = basic.completed_by_email;
 			}
-			res.json({ status: 200, data: info });
-		});
+			else if(basic.same_as_a3b == 1){
+				info.collab_name = basic.contact_name;
+				info.collab_position = basic.contact_position;
+				info.collab_phone = basic.contact_phone;
+				info.collab_email = basic.contact_email;
+			}
+			else{
+				info.collab_name = basic.collab_contact_name;
+				info.collab_position = basic.collab_contact_position;
+				info.collab_phone = basic.collab_contact_phone;
+				info.collab_email = basic.collab_contact_email;
+			}
+			*/
+
+			info.cohort_web_site = basic.cohort_web_site;
+			info.cohort_description = basic.cohort_description;
+			info.request_procedures_web_url = "";
+			if ([0, 1].includes(basic.request_procedures_none)) {
+				if (basic.request_procedures_none === 1) {
+					info.request_procedures_web_url = results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1) ? results[1].find(f => f.attachment_type === 0 && f.category === 5 && f.status === 1).website : '';
+				}
+				else {
+					results[1].forEach(f => {
+						if (f.attachment_type === 1 && f.category === 5 && f.status === 1 && f.filename)
+							info.procedure_files.push(f.filename)
+					});
+
+				}
+			}
+
+			info.attachments = {};
+			logger.debug(results[1])
+			let attachs = results[1].filter(f => f.category !== 5)
+			logger.debug(attachs)
+			let tmp = [[], [], []];
+			attachs.forEach(function (attach) {
+				let idx = attach.category > 0 ? 1 : attach.category;
+				let content = attach.attachment_type == 1 ? attach.filename.trim() : attach.website.trim();
+				if (tmp[idx].indexOf(content) > -1) {
+					return;
+				}
+				else {
+					tmp[idx].push(content);
+				}
+				if (attach.category == 0) {
+					//cohort questionnaires
+					if (info.attachments.questionnaires == undefined) {
+						info.attachments.questionnaires = [];
+					}
+					info.attachments.questionnaires.push({
+						type: attach.attachment_type,
+						url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
+						name: attach.filename
+					});
+				}
+				/*else if (attach.category == 0) {
+					//study protocol
+					if (info.attachments.protocols == undefined) {
+						info.attachments.protocols = [];
+					}
+					info.attachments.protocols.push({
+						type: attach.attachment_type,
+						url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
+						name: attach.filename
+					});
+				}*/
+				else {
+					//policies
+					if (info.attachments.policies == undefined) {
+						info.attachments.policies = [];
+					}
+					info.attachments.policies.push({
+						type: attach.attachment_type,
+						url: attach.attachment_type == 1 ? './api/download/' + attach.filename : attach.website,
+						name: attach.filename
+					});
+				}
+			});
+			//cache.setValue("cohort:" + id, info, config.cohort_ttl);
+		}
+		res.json({ status: 200, data: info });
+	});
 	/*}
 	else {
 		logger.debug("get from cache <cohort:" + id + ">");

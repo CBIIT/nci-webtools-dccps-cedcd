@@ -7,8 +7,7 @@ class CollectedCancersList extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			list: [
-			],
+			list: [],
 			lookup: {},
 			open: props.startOpen === undefined ? false : true,
 			focusThis: this.props.focusThis === undefined ? false : this.props.focusThis == "true" ? true : false,
@@ -101,7 +100,7 @@ class CollectedCancersList extends Component {
 		});
 
 		const displayMax = parseInt(this.props.displayMax);
-		const selectedList = values.map((item, idx) => {
+		const selectedList = this.props.hasSelectAll ? "All Cancers" : values.map((item, idx) => {
 			const key = "s_cancer_" + idx;
 			if (idx >= displayMax) {
 				if (idx === values.length - 1 && displayMax < values.length) {
@@ -164,7 +163,7 @@ class CollectedCancersList extends Component {
 							<li>
 								<label>
 									<span className="filter-component-input">
-										<input type="checkbox" id="cancerAll" onClick={(e) => this.props.onClick(null, allIds, e)} checked={this.props.all_cancers} />
+										<input type="checkbox" id="cancerAll" onClick={(e) => this.props.onClick(null, allIds, e)} checked={this.props.hasSelectAll} />
 									</span>
 								All Cancers
 							</label>
@@ -173,9 +172,10 @@ class CollectedCancersList extends Component {
 						</ul>
 					</div>
 				</div>
-				<ul className="picked-options">
-					{selectedList}
-				</ul>
+				{this.props.hasSelectAll ? <span style={{ paddingLeft: '2rem' }}>{' '} All Cancers</span> :
+					<ul className="picked-options">
+						{selectedList}
+					</ul>}
 			</div>
 		);
 	}

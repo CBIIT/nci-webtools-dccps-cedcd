@@ -29,6 +29,7 @@ mysql.deferUntilConnected(connection).then(function (connection) {
 			let race = results[4];
 			let specimen = results[5];
 			let cohortstatus = results[6];
+			let collected_specimen = results[7];
 			cache.setValue("lookup:gender", gender, -1);
 			cache.setValue("lookup:cancer", cancer, -1);
 			cache.setValue("lookup:data_category", data_category, -1);
@@ -36,6 +37,7 @@ mysql.deferUntilConnected(connection).then(function (connection) {
 			cache.setValue("lookup:race", race, -1);
 			cache.setValue("lookup:specimen", specimen, -1);
 			cache.setValue("lookup:cohortstatus", cohortstatus, -1);
+			cache.setValue("lookup:collected_specimen", collected_specimen, -1);
 
 			app.listen(config.port, function () {
 				console.log(`Project CEDCD listening on port: ${config.port}`);
