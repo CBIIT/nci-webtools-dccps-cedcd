@@ -15,7 +15,7 @@ class DetailsTable extends Component {
     const cohort_columns = cohorts.map((item, idx) => {
       const key = "th_cohort_" + item.cohort_id;
       data_columns.push("c_" + item.cohort_id);
-      let style = { width: config.header[idx] + "px", height: "36px" };
+      let style = { width: config.header[idx] + "px", height: "37px" };
       let url = "./cohort?id=" + item.cohort_id;
       return (
         <th style={style} key={key}>

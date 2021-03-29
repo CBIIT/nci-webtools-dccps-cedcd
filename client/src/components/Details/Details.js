@@ -1139,7 +1139,7 @@ class Details extends Component {
 									<div className="col-sm-11" style={{ "width": "90%" }}>
 										<div style={{ "width": "92%", "float": "left" }}>
 											<CollectedCancersList rightBorderStyle="straight" hasNoCancer={false} title="Cancers Collected" innertitle="Cancers Collected"
-												hasSelectAll={this.state.filter.collect.allCancer} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick} />
+												hasSelectAll={this.state.advancedFilter.allCancer} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
 											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e, 7)}>
