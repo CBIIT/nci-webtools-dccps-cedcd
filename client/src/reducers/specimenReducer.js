@@ -98,7 +98,7 @@ actions[t.setBioNumberMetabolitesMeasured] = (state, action) => {
 }
 actions[t.setBioYearSamplesSent] = (state, action) => {
     if ((/^\d*$/.test(action.value))) {
-        if (action.value.length < 4 || +action.value <= (new Date()).getFullYear()) {
+        if (action.value.length <= 4) {
             return { ...state, bioYearSamplesSent: action.value }
         }
     }
