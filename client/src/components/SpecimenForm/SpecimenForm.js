@@ -49,7 +49,7 @@ const SpecimenForm = ({ ...props }) => {
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
-    const [g15yearErr, setG15yearErr] = useState('');
+    const [g15yearErrMsg, setG15yearErrMsg] = useState('');
     const [g1to6Flag, setG1to6Flag] = useState(false)
     const [g1to6FlagList, setG1to6FlagList] = useState({
         bioBloodBaseline: 1, bioBloodOtherTime: 1, bioBuccalSalivaBaseline: 1, bioBuccalSalivaOtherTime: 1,
@@ -226,10 +226,10 @@ const SpecimenForm = ({ ...props }) => {
         const result = getValidationResult(value, requiredOrNot, valueType)
         if (result) {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(false))
-            setG15yearErr(result)
+            setG15yearErrMsg(result)
         } else {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
-            setG15yearErr('');
+            setG15yearErrMsg('');
         }
     }
 
@@ -1333,7 +1333,7 @@ const SpecimenForm = ({ ...props }) => {
                                 G.15i What year were samples analyzed?<span style={{ color: 'red' }}>*</span>
                             </Form.Label>
                             <Col sm='2'  >
-                                <Reminder message={g15yearErr || 'Required Field'} disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
+                                <Reminder message={g15yearErrMsg || 'Required Field'} disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
                                     <Form.Control type="text"
                                         style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
                                         name='bioYearSamplesSent'
