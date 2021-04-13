@@ -49,6 +49,7 @@ const SpecimenForm = ({ ...props }) => {
     const [saved, setSaved] = useState(false)
     const [successMsg, setSuccessMsg] = useState(false)
     const [userEmails, setEmails] = useState('')
+    const [g15yearErrMsg, setG15yearErrMsg] = useState('');
     const [g1to6Flag, setG1to6Flag] = useState(false)
     const [g1to6FlagList, setG1to6FlagList] = useState({
         bioBloodBaseline: 1, bioBloodOtherTime: 1, bioBuccalSalivaBaseline: 1, bioBuccalSalivaOtherTime: 1,
@@ -214,7 +215,7 @@ const SpecimenForm = ({ ...props }) => {
             case 'number':
                 return validator.numberValidator(value, requiredOrNot, false)
             case 'year':
-                return validator.yearValidator(value, requiredOrNot)
+                return validator.yearValidator(value, requiredOrNot, false)
             default:
                 return validator.stringValidator(value, requiredOrNot)
         }
@@ -225,8 +226,10 @@ const SpecimenForm = ({ ...props }) => {
         const result = getValidationResult(value, requiredOrNot, valueType)
         if (result) {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(false))
+            setG15yearErrMsg(result)
         } else {
             dispatch(allactions.specimenErrorActions.bioYearSamplesSent(true))
+            setG15yearErrMsg('');
         }
     }
 
@@ -1330,15 +1333,17 @@ const SpecimenForm = ({ ...props }) => {
                                 G.15i What year were samples analyzed?<span style={{ color: 'red' }}>*</span>
                             </Form.Label>
                             <Col sm='2'  >
-                                <Reminder message='Required Field' disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
+                                <Reminder message={g15yearErrMsg || 'Required Field'} disabled={!(+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved)} addspan={true}>
                                     <Form.Control type="text"
                                         style={+specimen.bioMetabolomicData === 1 && errors.bioYearSamplesSent && saved && { border: '1px solid red' } || {}}
                                         name='bioYearSamplesSent'
                                         maxLength={4}
                                         disabled={+specimen.bioMetabolomicData !== 1 || isReadOnly || +g1to6Flag === 1}
                                         value={specimen.bioYearSamplesSent} readOnly={isReadOnly}
-                                        onChange={e =>
-                                            !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value))
+                                        onChange={e => {
+                                            !isReadOnly && dispatch(allactions.specimenActions.bioYearSamplesSent(e.target.value));
+                                            dispatch(allactions.specimenErrorActions.bioYearSamplesSent(!isNull(e.target.value)))
+                                        }
                                         }
                                         placeholder='YYYY'
                                         onBlur={e =>
