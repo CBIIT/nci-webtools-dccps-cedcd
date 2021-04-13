@@ -546,9 +546,9 @@ BEGIN
     JOIN dlh b ON a.cohort_id=b.cohort_id 
     WHERE a.cohort_id = @cohort_id;
 	
-    SELECT * FROM cohort_document WHERE cohort_id = @cohort_id and status = 1 and category not in (2,3) ;
+    SELECT a.* FROM cohort_document a WHERE a.cohort_id = @cohort_id and status = 1 and category not in (2,3) ;
    
-    SELECT * FROM person WHERE cohort_id = @cohort_id and category_id in (1,3,4);
+    SELECT p.* FROM person p WHERE p.cohort_id = @cohort_id and category_id in (1,3,4);
 
 END //
 
@@ -1061,7 +1061,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cancer_count` //
 CREATE PROCEDURE `SELECT_cancer_count`(in cohort_id integer)
 BEGIN
 	set @cohort_id = cohort_id;
-  	SELECT * FROM cancer_count WHERE cohort_id =  @cohort_id;
+  	SELECT a.* FROM cancer_count a WHERE a.cohort_id = @cohort_id;
 	
 END //
 
@@ -1073,7 +1073,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cancer_info` //
 CREATE PROCEDURE `SELECT_cancer_info`(in cohort_id integer)
 BEGIN
     set @cohort_id = cohort_id;
-    SELECT * FROM cancer_info WHERE cohort_id = @cohort_id;
+    SELECT a.* FROM cancer_info a WHERE a.cohort_id = @cohort_id;
 	
 END //
 
@@ -2245,7 +2245,7 @@ BEGIN
 		IF @inputFileNames != "" THEN 
         -- call ConvertIntToTable(@inputFileNames) to convert str values into tempStrTable
 			call ConvertStrToTable(@inputFileNames);
-			update cohort_document set status = 0 WHERE cohort_id = @cohort_id and attachment_type = 1 and category = @fileCategory  and filename not in (SELECT replace(val, '"', '') FROM tempStrTable ); 
+			update cohort_document c set c.status = 0 WHERE c.cohort_id = @cohort_id and c.attachment_type = 1 and c.category = @fileCategory  and filename not in (SELECT replace(val, '"', '') FROM tempStrTable ); 
 		END IF; 
 	END IF;
        
@@ -2752,14 +2752,14 @@ BEGIN
 	FROM specimen_count s
 	JOIN lu_cancer c ON s.cancer_id = c.id
 	JOIN lu_specimen ls ON s.specimen_id = ls.id
-	WHERE cohort_id = @cohort_id ORDER BY cancer_id, specimen_id;
+	WHERE s.cohort_id = @cohort_id ORDER BY cancer_id, specimen_id;
     
     SELECT cohort_id, specimen_id, sub_category, collected_yn 
 	FROM specimen_collected_type a 
 	JOIN lu_specimen b ON a.specimen_id = b.id 
-	WHERE cohort_id = @cohort_id;
+	WHERE a.cohort_id = @cohort_id;
     
-    SELECT * FROM specimen WHERE cohort_id = @cohort_id;
+    SELECT a.* FROM specimen a WHERE a.cohort_id = @cohort_id;
    
    	SELECT u.email FROM cohort c 
   	JOIN cohort_user_mapping um ON c.acronym = um.cohort_acronym 
@@ -3556,6 +3556,8 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: ConvertIntToTable
 -- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `ConvertIntToTable` //
+
 CREATE PROCEDURE `ConvertIntToTable`( IN `@input` LONGTEXT )
 BEGIN
 
@@ -3576,6 +3578,8 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: ConvertStrToTable
 -- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `ConvertStrToTable` //
+
 CREATE PROCEDURE `ConvertStrToTable`( IN `@input` LONGTEXT )
 BEGIN
 	DECLARE `@sql` LONGTEXT DEFAULT '';
