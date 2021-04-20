@@ -319,9 +319,9 @@ BEGIN
 					FROM major_content WHERE category_id in ( SELECT val FROM temp_category_id) and (baseline=1 or followup = 1)
                     GROUP BY cohort_id having sum(1) >= @len_category;
                 END IF;
-            END IF;  -- end and/or
+            END IF;  --  END and/or
 		END IF;  -- END IF only 99
-    END IF; -- end catgegory
+    END IF; --  END catgegory
     
     IF `@collected_specimen` != "" AND `@collected_specimen` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
         set @specimen_null = 0;
@@ -391,27 +391,27 @@ BEGIN
 		and ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) )
 		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
-			case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-			end ASC,
-			case when lower(columnOrder) = 'asc' then
-			case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-			end ASC,
-			case when lower(columnOrder) = 'desc' then
-				case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-			end DESC,
-			case when lower(columnOrder) = 'desc' then
-				case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-			end DESC,
+			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+			 END ASC,
+			 CASE  WHEN lower(columnOrder) = 'asc' then
+			 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+			 END ASC,
+			 CASE  WHEN lower(columnOrder) = 'desc' then
+				 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+			 END DESC,
+			 CASE  WHEN lower(columnOrder) = 'desc' then
+				 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+			 END DESC,
         cs.cohort_name
     limit page_index, page_size;
     ELSE 
@@ -430,27 +430,27 @@ BEGIN
 			OR ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) ) )
 		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
-			case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-			end ASC,
-			case when lower(columnOrder) = 'asc' then
-				case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-			end ASC,
-			case when lower(columnOrder) = 'desc' then
-			case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-			end DESC,
-			case when lower(columnOrder) = 'desc' then
-			case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-			end DESC,
+			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+			 END ASC,
+			 CASE  WHEN lower(columnOrder) = 'asc' then
+				 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+			 END ASC,
+			 CASE  WHEN lower(columnOrder) = 'desc' then
+			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+			 END DESC,
+			 CASE  WHEN lower(columnOrder) = 'desc' then
+			 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+			 END DESC,
 			cs.cohort_name
 		limit page_index, page_size;
     END IF;
@@ -678,7 +678,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cohort_lookup` //
 CREATE PROCEDURE `SELECT_cohort_lookup`()
 BEGIN
 	SELECT * FROM lu_gender;
-    SELECT * FROM lu_cancer WHERE id <= 29 ORDER BY CASE WHEN id=1 THEN 'zza' when id=29 THEN 'zzz' ELSE cancer end, cancer;
+    SELECT * FROM lu_cancer WHERE id <= 29 ORDER BY CASE WHEN id=1 THEN 'zza' WHEN id=29 THEN 'zzz' ELSE cancer end, cancer;
     SELECT * FROM v_lu_data_category;
     SELECT * FROM lu_ethnicity;
     SELECT * FROM lu_race ORDER BY CASE WHEN id=7 THEN 'zzz' ELSE race end, race;
@@ -903,27 +903,27 @@ BEGIN
     and ( @cancer_null = 1 OR cs.cohort_id in (SELECT cohort_id FROM cancer_count WHERE cancer_id in (SELECT val FROM temp_cancer ) and cancer_counts > 0 ) )
 	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,cs.update_time 
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
-			case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-			end ASC,
-		case when lower(columnOrder) = 'asc' then
-			case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-		end ASC,
+			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+			 END ASC,
+		 CASE  WHEN lower(columnOrder) = 'asc' then
+			 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+		 END ASC,
         CASE WHEN lower(columnOrder) = 'desc' then
-			case when columnName = 'cohort_name' THEN  cs.cohort_name
-				when columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				when columnName = 'update_time' THEN  cs.update_time
-				when columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
-				ELSE cs.cohort_name end 
-		end DESC,
+			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
+				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'update_time' THEN  cs.update_time
+				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
+				ELSE cs.cohort_name  END 
+		 END DESC,
         CASE WHEN lower(columnOrder) = 'desc' then
-			case when columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
-				end 
-		end DESC,
+			 CASE  WHEN columnName = 'enrollment_total' THEN sum(ec.enrollment_counts)
+				 END 
+		 END DESC,
         cs.cohort_name
     limit page_index, page_size;
    
@@ -1362,12 +1362,12 @@ BEGIN
         WHERE abs(IFNULL(tc.cancer_counts, 0)) >=0  
         and ( @gender_null = 1 OR tc.gender_id in ( SELECT val FROM temp_gender ) )
         and ( @cancer_null = 1 OR tc.cancer_id in ( SELECT val FROM temp_cancer ) )
-        GROUP BY tc.cohort_id having sum(case when IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
+        GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
     END IF;
    
     SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(cc.gender_id,'_',cc.cancer_id) AS u_id, cc.gender_id, 
-		(case when lg.id in (1,2) THEN concat(lg.gender,'s') ELSE lg.gender end) gender, 
-		cc.cancer_id, lc.cancer, sum(case when IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
+		( CASE  WHEN lg.id in (1,2) THEN concat(lg.gender,'s') ELSE lg.gender end) gender, 
+		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count cc 
     JOIN cohort ch ON ch.id = cc.cohort_id 
     JOIN lu_gender lg ON cc.gender_id = lg.id 
@@ -1377,7 +1377,7 @@ BEGIN
 		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer ) )
 		and cc.cohort_id in ( SELECT val FROM temp_cohort ) 
     GROUP BY cc.cohort_id, ch.name, ch.acronym, u_id, gender, cc.gender_id, cc.cancer_id , cancer
-	ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer end asc, cc.gender_id desc, ch.acronym;
+	ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer  END asc, cc.gender_id desc, ch.acronym;
   
 END//
 
@@ -1439,12 +1439,12 @@ BEGIN
             and (@gender_null = 1 OR tc.gender_id in (SELECT val FROM temp_gender) )
 			and (@race_null = 1 OR tc.race_id in (SELECT val FROM temp_race) )
 			and (@ethnicity_null = 1 OR tc.ethnicity_id in (SELECT val FROM temp_ethnicity) )
-		group by tc.cohort_id having sum(case when IFNULL(tc.enrollment_counts, 0) > 0  THEN tc.enrollment_counts ELSE 0 end) > 0 ;
+		group by tc.cohort_id having sum( CASE  WHEN IFNULL(tc.enrollment_counts, 0) > 0  THEN tc.enrollment_counts ELSE 0 end) > 0 ;
     END IF;
    
     SELECT ec.cohort_id, ch.name AS cohort_name, ch.acronym AS cohort_acronym,concat(ec.gender_id,'_',ec.ethnicity_id,'_',ec.race_id) AS u_id, ec.gender_id, 
 		lg.gender, ec.ethnicity_id, le.ethnicity, ec.race_id, lr.race, 
-		(case when IFNULL(ec.enrollment_counts,0) > 0 THEN ec.enrollment_counts ELSE 0 end ) AS enrollment_counts  
+		( CASE  WHEN IFNULL(ec.enrollment_counts,0) > 0 THEN ec.enrollment_counts ELSE 0  END ) AS enrollment_counts  
 	FROM enrollment_count ec
 	JOIN cohort ch ON ch.id = ec.cohort_id
     JOIN ( SELECT * FROM lu_gender a WHERE  @gender_null = 1 OR a.id in (SELECT val FROM temp_gender) ) lg ON ec.gender_id = lg.id 
@@ -1452,7 +1452,7 @@ BEGIN
     JOIN ( SELECT * FROM lu_race c WHERE @race_null = 1 OR c.id in (SELECT val FROM temp_race) ) lr ON ec.race_id = lr.id 
 	WHERE lower(ch.status)='published' and  ec.cohort_id in (SELECT val FROM temp_cohort) 
 	ORDER BY ec.gender_id, le.ethnicity, 
-		case when ec.race_id = 3 THEN 4.5 when ec.race_id = 6 THEN 8 ELSE ec.race_id end, 
+		 CASE  WHEN ec.race_id = 3 THEN 4.5 WHEN ec.race_id = 6 THEN 8 ELSE ec.race_id end, 
         ch.acronym;
 
 END //
@@ -1499,11 +1499,11 @@ BEGIN
         WHERE abs(IFNULL(tc.specimens_counts, 0)) >=0  
         and ( @specimen_null = 1 OR tc.specimen_id in ( SELECT val FROM temp_specimen ) )
         and ( @cancer_null = 1 OR tc.cancer_id in ( SELECT val FROM temp_cancer ) )
-        GROUP BY tc.cohort_id having sum(case when IFNULL(tc.specimens_counts, 0) > 0  THEN tc.specimens_counts ELSE 0 end) > 0 ;
+        GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.specimens_counts, 0) > 0  THEN tc.specimens_counts ELSE 0 end) > 0 ;
     END IF;
     
    	SELECT sc.cohort_id, ch.name AS cohort_name, ch.acronym AS cohort_acronym,concat(sc.specimen_id,'_',sc.cancer_id) AS u_id, sc.specimen_id, ls.specimen, sc.cancer_id, lc.cancer, 
-		(case when IFNULL(sc.specimens_counts,0) > 0 THEN sc.specimens_counts ELSE 0 end ) AS specimens_counts    
+		( CASE  WHEN IFNULL(sc.specimens_counts,0) > 0 THEN sc.specimens_counts ELSE 0  END ) AS specimens_counts    
 	FROM specimen_count sc 
 	JOIN cohort ch ON ch.id = sc.cohort_id
     JOIN lu_specimen ls ON sc.specimen_id = ls.id
@@ -1512,7 +1512,7 @@ BEGIN
 		and ( @specimen_null = 1 OR sc.specimen_id in ( SELECT val FROM temp_specimen ) )
 		and ( @cancer_null = 1 OR sc.cancer_id in ( SELECT val FROM temp_cancer ) )
 		and sc.cohort_id in ( SELECT val FROM temp_cohort ) 
-	ORDER BY ls.specimen, CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zza' when lc.cancer = 'No Cancer' THEN 'zzz' ELSE lc.cancer end asc, ch.acronym;
+	ORDER BY ls.specimen, CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zza' WHEN lc.cancer = 'No Cancer' THEN 'zzz' ELSE lc.cancer  END asc, ch.acronym;
 
 END //
 
@@ -1841,38 +1841,47 @@ BEGIN
         set page_index = 0;
     END IF;
     
-	SELECT sql_calc_found_rows ch.id, ch.name, ch.acronym,ch.status,l_status.id AS status_id, 
+	SELECT sql_calc_found_rows r.* FROM (
+    SELECT ch.id, ch.name, ch.acronym,ch.status,l_status.id AS status_id, 
 		concat(u1.first_name, ' ', u1.last_name) create_by, 
 		(	case
-			when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
-			when lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by is not null THEN  (SELECT concat(u2.first_name, ' ', u2.last_name) FROM user u2 WHERE u2.id=ch.submit_by) 
+			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
+			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by is not null THEN  (SELECT concat(u2.first_name, ' ', u2.last_name) FROM user u2 WHERE u2.id=ch.submit_by) 
 			ELSE 'N/A' end) submit_by,
-		(	case when lower(ch.status) in ('submitted','draft', 'in review','published', 'rejected') and ch.update_time is not null THEN DATE_FORMAT(ch.update_time, '%m/%d/%Y') 
+		(	 CASE  WHEN lower(ch.status) in ('submitted','draft', 'in review','published', 'rejected') and ch.update_time is not null THEN DATE_FORMAT(ch.update_time, '%m/%d/%Y') 
 			ELSE 'N/A' end) AS update_time,
-		(	case when lower(ch.status) in ('submitted', 'in review') THEN 'review' ELSE 'view' end) action
+		(	 CASE  WHEN lower(ch.status) in ('submitted', 'in review') THEN 'review' ELSE 'view' end) action
 	FROM cohort ch 
     JOIN user u1 ON IFNULL(ch.create_by, 1)=u1.id
     JOIN lu_cohort_status l_status  ON lower(ch.status)=lower(l_status.cohortstatus) 
     WHERE ( @status_null = 1 OR lower(ch.status) in ( SELECT lower(cohortstatus) FROM lu_cohort_status WHERE  id in (SELECT val FROM temp_status) ) )
 		and (locate( @cohortSearch , ch.acronym ) > 0  or locate(@cohortSearch ,ch.name ) > 0 ) 
+        ) AS r
 	ORDER BY
-		case when lower(columnOrder) = 'asc' then
-			case when columnName = 'name' THEN  ch.name
-				when columnName = 'acronym' THEN ch.acronym
-				when columnName = 'status' THEN  ch.status
-				when columnName = 'publish_by' THEN publish_by
-                when columnName = 'update_time' THEN ch.update_time
-				ELSE ch.name end 
-			end ASC,
-       CASE WHEN lower(columnOrder) = 'desc' then
-			case when columnName = 'name' THEN  ch.name
-				when columnName = 'acronym' THEN ch.acronym
-				when columnName = 'status' THEN  ch.status
-				when columnName = 'publish_by' THEN publish_by
-                when columnName = 'update_time' THEN ch.update_time
-				ELSE ch.name end 
-		end DESC,
-        ch.name, ch.status
+    CASE WHEN columnName = 'update_time' THEN  r.update_time='N/A'
+    	WHEN columnName = 'publish_by' THEN  r.submit_by='N/A'
+    END desc,
+	CASE WHEN lower(columnOrder) = 'asc' then
+		CASE WHEN columnName = 'name' THEN  r.name
+			 WHEN columnName = 'acronym' THEN r.acronym
+			 WHEN columnName = 'status' THEN  r.status
+			 WHEN columnName = 'publish_by' THEN r.submit_by
+             WHEN columnName = 'update_time' THEN r.update_time
+			 WHEN columnName = 'action' THEN r.action
+			ELSE r.name 
+		END 
+	END ASC,
+    CASE WHEN lower(columnOrder) = 'desc' then
+		CASE WHEN columnName = 'name' THEN  r.name
+			 WHEN columnName = 'acronym' THEN r.acronym
+			 WHEN columnName = 'status' THEN  r.status
+			 WHEN columnName = 'publish_by' THEN r.submit_by
+             WHEN columnName = 'update_time' THEN r.update_time
+             WHEN columnName = 'action' THEN r.action
+			ELSE r.name 
+		END 
+	END DESC,
+        r.name, r.status 
 	LIMIT page_index, page_size;
 	
     SELECT found_rows() AS total;
@@ -2732,7 +2741,7 @@ BEGIN
   	SELECT `status` FROM cohort WHERE id = cohortID;
 
  	SELECT page_code, status FROM cohort_edit_status WHERE cohort_id = cohortID;
-  end ;
+   END ;
   END IF ;
   
 END //
@@ -2904,8 +2913,8 @@ INSERT into cancer_info SELECT null, a.* FROM cohort_temp a;
 -- INSERT into major_count
 INSERT into major_content (cohort_id,category_id,baseline, followup, other_specify_baseline,other_specify_followup, create_time, update_time)
 SELECT new_cohort_id, lu.id AS category_id,baseline, followup, other_specify_baseline,other_specify_followup, 
-(case when mdc.create_time is null THEN now() ELSE mdc.create_time end) AS create_time, 
-(case when mdc.update_time is null THEN now() ELSE mdc.update_time end) AS update_time
+( CASE  WHEN mdc.create_time is null THEN now() ELSE mdc.create_time end) AS create_time, 
+( CASE  WHEN mdc.update_time is null THEN now() ELSE mdc.update_time end) AS update_time
 FROM major_content AS mdc right join  
 (SELECT * FROM lu_data_category WHERE category <> 'Cancer Treatment') AS lu 
 on mdc.cohort_id = old_cohort_id and mdc.category_id = lu.id ;
@@ -2934,8 +2943,8 @@ FROM specimen_count AS old WHERE old.cohort_id =old_cohort_id;
 
 INSERT into specimen_collected_type
 SELECT null, new_cohort_id, c.id AS specimen_id, b.collected_yn,
-(case when b.create_time is null THEN now() ELSE b.create_time end ) AS create_time,
-(case when b.update_time is null THEN now() ELSE b.create_time end ) AS update_time
+( CASE  WHEN b.create_time is null THEN now() ELSE b.create_time  END ) AS create_time,
+( CASE  WHEN b.update_time is null THEN now() ELSE b.create_time  END ) AS update_time
 FROM specimen_collected_type b right join (SELECT * FROM lu_specimen WHERE id > 10) c
 on b.specimen_id = c.id and b.cohort_id = old_cohort_id;
 
@@ -3308,7 +3317,7 @@ BEGIN
 			WHILE i < JSON_LENGTH(@owners) DO
 				INSERT into cohort_user_mapping (cohort_acronym, user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
 				SELECT i + 1 INTO i;	
-			end WHILE;
+			 END WHILE;
 		END;
     COMMIT;
     
@@ -3345,9 +3354,34 @@ BEGIN
 				GROUP BY user_id ) 
 			end) AS cohort_list, 
        IFNULL(u.active_status, 'Y') AS active_status,
-       (case when last_login is null THEN 'Never' ELSE DATE_FORMAT(last_login, '%m/%d/%Y') end) AS last_login   
+       ( CASE  WHEN last_login is null THEN 'Never' ELSE DATE_FORMAT(last_login, '%m/%d/%Y') end) AS last_login   
 	FROM user u WHERE u.id > 1 and ( locate( @nameSearch, first_name ) > 0 or locate( @nameSearch, last_name) > 0
        or locate( @nameSearch, email) > 0  or locate( @nameSearch, IFNULL(user_name,'')) > 0 )
+	ORDER BY
+        CASE WHEN columnName = 'last_login' THEN  last_login is NULL
+			WHEN columnName = 'cohort_list' THEN cohort_list is NULL
+        END,
+        CASE WHEN lower(columnOrder) = 'asc' THEN
+			CASE WHEN columnName = 'name' THEN  name
+				WHEN columnName = 'user_name' THEN user_name
+				WHEN columnName = 'email' THEN  u.email
+				WHEN columnName = 'user_role' THEN user_role
+                WHEN columnName = 'cohort_list' THEN cohort_list
+				WHEN columnName = 'last_login' THEN DATE_FORMAT(last_login, '%m/%d/%Y') 
+				ELSE name 
+			END 
+		END ASC,
+        CASE WHEN lower(columnOrder) = 'desc' THEN
+			CASE WHEN columnName = 'name' THEN  name
+				WHEN columnName = 'user_name' THEN user_name
+				WHEN columnName = 'email' THEN  u.email
+				WHEN columnName = 'user_role' THEN user_role
+                WHEN columnName = 'cohort_list' THEN cohort_list
+				WHEN columnName = 'last_login' THEN DATE_FORMAT(last_login, '%m/%d/%Y') 
+				ELSE name 
+			END 
+		END DESC,
+        name
 	LIMIT page_index, page_size;
        
     SELECT found_rows() AS total;
