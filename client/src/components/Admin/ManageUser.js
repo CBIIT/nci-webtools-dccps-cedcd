@@ -5,6 +5,7 @@ import Paging from '../Paging/Paging';
 import TableHeaderManageUser from './TableHeaderManageUser';
 import RequireAuthorization from '../RequireAuthorization/RequireAuthorization'
 import './ManageCohort.css';
+import { isNull } from 'lodash';
 
 class ManageUser extends Component {
 
@@ -18,6 +19,7 @@ class ManageUser extends Component {
 			filter: {
 				userRole: [],
 				userNameSearch: '',
+				userStatus: 'Y',
 			},
 			orderBy: {
 				column: "name",
@@ -30,17 +32,19 @@ class ManageUser extends Component {
 		this.toFocus = React.createRef()
 	}
 
-
-
 	handleuserNameSearchChange(changeEvent) {
+		this.refreshDataList(null, changeEvent.target.value, null, null, null);
+	}
+
+	refreshDataList(pageIndex, userNameSearch, userStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
 		let filter = state.filter;
-		let list = state.dataList;
-		let paging = state.pageInfo;
+		if (!isNull(userStatus)) filter.userStatus = userStatus;
+		if (!isNull(userNameSearch)) filter.userNameSearch = userNameSearch;
 
-		filter.userNameSearch = changeEvent.target.value;
+		let list = filter.userStatus === 'Y' ? state.dataList.filter(item => item.active_status === 'Y') : state.dataList;
 
-		if (!['', "", undefined, null].includes(changeEvent.target.value))
+		if (!['', "", undefined, null].includes(filter.userNameSearch))
 			list = list.filter(function (item) {
 				if ((item.name).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
 				if ((item.email).toLowerCase().includes((filter.userNameSearch).toLowerCase())) return true;
@@ -48,71 +52,99 @@ class ManageUser extends Component {
 			}
 			);
 
-		paging.total = list.length;
+		if (!isNull(orderByColumn)) {
+			let orderBy = state.orderBy;
+			if (orderByColumn == orderBy.column) {
+				orderBy.order = orderBy.order === "asc" ? "desc" : "asc";
+			}
+			else {
+				orderBy.column = orderByColumn;
+				orderBy.order = "asc";
+			}
+			state.orderBy = orderBy;
+
+			if (['name', 'action'].includes(orderByColumn)) {
+				list = list.sort((a, b) => {
+					return orderBy.order === 'asc'
+						? a.name.localeCompare(b.name)
+						: a.name.localeCompare(b.name)
+				});
+			} else if ('last_login'.includes(orderByColumn)) {
+				list = list.sort((a, b) => {
+					let [aValue, bValue] = [a[orderByColumn], b[orderByColumn]]
+						.map(e => e || '');
+
+					if (aValue == bValue) {
+						return orderBy.order === 'asc'
+							? a.name.localeCompare(b.name)
+							: a.name.localeCompare(b.name)
+					} else {
+
+						return orderBy.order === 'asc'
+							? (aValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(aValue).getTime()) - (bValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(bValue).getTime())
+							: (bValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(bValue).getTime()) - (aValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(aValue).getTime())
+					}
+				});
+			} else {
+				list = list.sort((a, b) => {
+					let [aValue, bValue] = [a[orderByColumn], b[orderByColumn]].map(e => e || '');
+
+					if (aValue == bValue) {
+						return orderBy.order === 'asc'
+							? a.name.localeCompare(b.name)
+							: a.name.localeCompare(b.name)
+					} else {
+						return orderBy.order === 'asc'
+							? aValue.localeCompare(bValue)
+							: bValue.localeCompare(aValue)
+					}
+				}
+				);
+			}
+
+
+		}
+
+		let paging = state.pageInfo;
+		if (!isNull(pageIndex)) paging.page = pageIndex;
+		if (!isNull(pageSize)) {
+			paging.pageSize = pageSize;
+			paging.page = 1;
+		}
+		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
+		let startIndex = 0;
+		let endIndex = pageIndex === 0 ? list.length : paging.pageSize;
+		if (pageIndex > 0) {
+			startIndex = (pageIndex - 1) * paging.pageSize;
+			endIndex = pageIndex * paging.pageSize;
+		}
+		if (list.length > 0) {
+			paging.total = list.length;
+		}
+		if (startIndex >= paging.total) {
+			startIndex = 0;
+			endIndex = list.length;
+		}
+
+		paging.page = pageIndex === 0 ? 0 : pageIndex === -1 ? state.lastPage : paging.page;
+
 		this.setState({
 			filter: filter,
-			list: list.slice(0, paging.pageSize),
-			pageInfo: paging
+			viewAllFlag: pageIndex === 0,
+			list: list.slice(startIndex, endIndex),
+			pageInfo: paging,
+			lastPage: (pageIndex > -1 ? lastPage : pageIndex)
 		});
 
 	}
 
 	handleUserPageSizeChange = (e) => {
-		this.pageData(1, null, null, e.target.value);
-	}
-
-
-	filterData(i, orderBy, filter) {
-		const state = Object.assign({}, this.state);
-		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
-		let reqBody = {
-			filter: state.filter,
-			orderBy: state.orderBy,
-			paging: state.pageInfo
-		};
-		if (i == -1) {
-			reqBody.paging.page = state.lastPage;
-		}
-		else {
-			reqBody.paging.page = i;
-		}
-		if (orderBy) {
-			reqBody.orderBy = orderBy;
-		}
-		if (filter) {
-			reqBody.filter = filter;
-		}
-
-		fetch('/api/managecohort/adminuserlist', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				if (this._isMounted) {
-					this.setState(prevState => (
-						{
-							list: list,
-							filter: reqBody.filter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i)
-						}
-					));
-				}
-			});
+		this.refreshDataList(1, null, null, e.target.value, null)
 	}
 
 	componentDidMount() {
 		this._isMounted = true;
-
 		this.loadingData();
-
 	}
 
 	componentWillUnmount() {
@@ -120,58 +152,8 @@ class ManageUser extends Component {
 	}
 
 	gotoPage(i) {
-		this.pageData(i);
-		if (i === 0) {
-			this.setState({ viewAllFlag: true })
-		} else {
-			this.setState({ viewAllFlag: false })
-		}
+		this.refreshDataList(i, null, null, null, null);
 	}
-
-	pageData(i, orderBy, filter, pagesize = -1) {
-
-		const state = Object.assign({}, this.state);
-		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
-		let reqBody = {
-			filter: state.filter,
-			orderBy: state.orderBy,
-			paging: state.pageInfo
-		};
-
-		if (pagesize != -1) {
-			reqBody.paging.pageSize = pagesize;
-		}
-
-		if (i == -1) {
-			reqBody.paging.page = state.lastPage;
-		}
-		else {
-			reqBody.paging.page = i;
-		}
-		fetch('/api/managecohort/adminuserlist', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				this.setState(prevState => (
-					{
-						list: list,
-						filter: reqBody.filter,
-						orderBy: reqBody.orderBy,
-						pageInfo: reqBody.paging,
-						lastPage: (i > -1 ? lastPage : i)
-					}
-				));
-			});
-
-	}
-
 
 	loadingData = (next) => {
 		const state = Object.assign({}, this.state);
@@ -191,14 +173,15 @@ class ManageUser extends Component {
 		})
 			.then(res => res.json())
 			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
+				let allDataList = result.data.list;
+				let list = state.filter.userStatus === 'Y' ? allDataList.filter(item => item.active_status === 'Y') : allDataList;
+				reqBody.paging.total = list.length;
 				reqBody.paging.page = 1;
 				if (this._isMounted) {
 					this.setState(prevState => (
 						{
 							list: list.slice(0, reqBody.paging.pageSize),
-							dataList: list,
+							dataList: allDataList,
 							filter: reqBody.filter,
 							pageInfo: reqBody.paging
 						}
@@ -209,18 +192,13 @@ class ManageUser extends Component {
 
 
 	handleOrderBy(column) {
-		let orderBy = Object.assign({}, this.state.orderBy);
-		if (column == orderBy.column) {
-			orderBy.order = orderBy.order == "asc" ? "desc" : "asc";
-		}
-		else {
-			orderBy.column = column;
-			orderBy.order = "asc";
-		}
-		let pageInfo = Object.assign({}, this.state.pageInfo);
-		this.filterData(pageInfo.page, orderBy);
+		this.refreshDataList(null, null, null, null, column)
 	}
 
+	userStatusClick(e) {
+		let userStatus = e.target.checked ? 'Y' : 'N';
+		this.refreshDataList(null, null, userStatus, null, null);
+	}
 
 	renderTableHeader(title, width) {
 		return (
@@ -270,7 +248,7 @@ class ManageUser extends Component {
 				<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
 				<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
-					<div className="col-sm-4 col-6 pl-0" style={{ "paddingBottom": "0px" }}>
+					<div className="col-sm-8 col-md-3 col-6 pl-0" style={{ "paddingBottom": "0px" }}>
 
 						<div className="input-group">
 							<div className="input-group-prepend">
@@ -283,13 +261,17 @@ class ManageUser extends Component {
 						</div>
 
 					</div>
-					<div className="col-sm-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
+					<div className="col-sm-5 col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
 						<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 					</div>
+					<div className="col-sm-5 col-md-2 col-6" style={{ "paddingLeft": "0", "verticalAlign": "bottom", "paddingTop": "10px", "paddingRight": "0", "paddingBottom": "0px" }}>
+						<input type="checkbox" className="custom-control-input" id="userActiveStatus"
+							checked={this.state.filter.userStatus === 'Y'} onChange={e => this.userStatusClick(e)} />
+						<label className="custom-control-label" htmlFor="userActiveStatus">Show Active Users Only</label>
+					</div>
+					<div className="col-sm-12 col-md-5 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
 
-					<div className="col-sm-6 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
-
-						<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "7px", "paddingBottom": "0px", "marginBottom": "0px" }}>
+						<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "10px", "paddingBottom": "0px", "marginBottom": "0px" }}>
 							<PageSummary pageInfo={this.state.pageInfo} mid="true" />
 						</div>
 						<div style={{ "paddingRight": "1px", "paddingTop": "5px", "position": "relative", "paddingBottom": "0px", "marginBottom": "0px" }}>
