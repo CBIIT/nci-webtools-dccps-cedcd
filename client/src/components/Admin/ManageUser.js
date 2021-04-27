@@ -67,7 +67,7 @@ class ManageUser extends Component {
 				list = list.sort((a, b) => {
 					return orderBy.order === 'asc'
 						? a.name.localeCompare(b.name)
-						: a.name.localeCompare(b.name)
+						: b.name.localeCompare(a.name)
 				});
 			} else if ('last_login'.includes(orderByColumn)) {
 				list = list.sort((a, b) => {
@@ -75,9 +75,8 @@ class ManageUser extends Component {
 						.map(e => e || '');
 
 					if (aValue == bValue) {
-						return orderBy.order === 'asc'
-							? a.name.localeCompare(b.name)
-							: a.name.localeCompare(b.name)
+						return a.name.localeCompare(b.name)
+
 					} else {
 
 						return orderBy.order === 'asc'
@@ -90,9 +89,8 @@ class ManageUser extends Component {
 					let [aValue, bValue] = [a[orderByColumn], b[orderByColumn]].map(e => e || '');
 
 					if (aValue == bValue) {
-						return orderBy.order === 'asc'
-							? a.name.localeCompare(b.name)
-							: a.name.localeCompare(b.name)
+						return a.name.localeCompare(b.name)
+
 					} else {
 						return orderBy.order === 'asc'
 							? aValue.localeCompare(bValue)
