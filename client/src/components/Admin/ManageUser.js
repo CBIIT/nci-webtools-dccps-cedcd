@@ -38,6 +38,7 @@ class ManageUser extends Component {
 
 	refreshDataList(pageIndex, userNameSearch, userStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
+		console.dir(state)
 		let filter = state.filter;
 		if (!isNull(userStatus)) filter.userStatus = userStatus;
 		if (!isNull(userNameSearch)) filter.userNameSearch = userNameSearch;
@@ -99,8 +100,6 @@ class ManageUser extends Component {
 				}
 				);
 			}
-
-
 		}
 
 		let paging = state.pageInfo;
@@ -190,12 +189,12 @@ class ManageUser extends Component {
 
 
 	handleOrderBy(column) {
-		this.refreshDataList(null, null, null, null, column)
+		this.refreshDataList(this.state.pageInfo.page, null, null, null, column)
 	}
 
 	userStatusClick(e) {
 		let userStatus = e.target.checked ? 'Y' : 'N';
-		this.refreshDataList(null, null, userStatus, null, null);
+		this.refreshDataList(this.state.pageInfo.page, null, userStatus, null, null);
 	}
 
 	renderTableHeader(title, width) {
