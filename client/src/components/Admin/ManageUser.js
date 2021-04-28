@@ -244,7 +244,7 @@ class ManageUser extends Component {
 				<p className="welcome">The list below contains all users registered on the CEDCD website.
       		    </p><p></p>
 				<div className="col-md-12 col-12" style={{ "verticalAlign": "middle", "marginBottom": "-15px", "paddingBottom": "0px" }}>
-					<div className="col-sm-8 col-md-3 col-6 pl-0" style={{ "paddingBottom": "0px" }}>
+					<div className="col-lg-3 col-md-6 col-sm-5 col-8 pl-0" style={{ "paddingBottom": "0px" }}>
 
 						<div className="input-group">
 							<div className="input-group-prepend">
@@ -257,15 +257,15 @@ class ManageUser extends Component {
 						</div>
 
 					</div>
-					<div className="col-sm-5 col-md-2 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
+					<div className="col-md-2 col-sm-5 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
 						<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 					</div>
-					<div className="col-sm-5 col-md-2 col-6" style={{ "paddingLeft": "0", "verticalAlign": "bottom", "paddingTop": "10px", "paddingRight": "0", "paddingBottom": "0px" }}>
+					<div className="col-lg-2 col-md-4 col-sm-7 col-6" style={{ "paddingLeft": "15px ", "verticalAlign": "bottom", "paddingTop": "10px", "paddingRight": "0", "paddingBottom": "0px" }}>
 						<input type="checkbox" className="custom-control-input" id="userActiveStatus"
 							checked={this.state.filter.userStatus === 'Y'} onChange={e => this.userStatusClick(e)} />
 						<label className="custom-control-label" htmlFor="userActiveStatus">Show Active Users Only</label>
 					</div>
-					<div className="col-sm-12 col-md-5 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
+					<div className="col-lg-5 col-sm-12 col-12" style={{ "display": "flex", "paddingRight": "0px", float: "right", "paddingBottom": "0px", "marginBottom": "0px" }}>
 
 						<div style={{ "marginLeft": "auto", "paddingLeft": "3px", "paddingRight": "1rem", "position": "relative", "paddingTop": "10px", "paddingBottom": "0px", "marginBottom": "0px" }}>
 							<PageSummary pageInfo={this.state.pageInfo} mid="true" />
