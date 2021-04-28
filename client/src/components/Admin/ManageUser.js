@@ -38,7 +38,6 @@ class ManageUser extends Component {
 
 	refreshDataList(pageIndex, userNameSearch, userStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
-		console.dir(state)
 		let filter = state.filter;
 		if (!isNull(userStatus)) filter.userStatus = userStatus;
 		if (!isNull(userNameSearch)) filter.userNameSearch = userNameSearch;
