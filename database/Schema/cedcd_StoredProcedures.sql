@@ -1866,7 +1866,7 @@ BEGIN
 			 WHEN columnName = 'acronym' THEN r.acronym
 			 WHEN columnName = 'status' THEN  r.status
 			 WHEN columnName = 'publish_by' THEN r.submit_by
-             WHEN columnName = 'update_time' THEN r.update_time
+             WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
 			 WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -1876,7 +1876,7 @@ BEGIN
 			 WHEN columnName = 'acronym' THEN r.acronym
 			 WHEN columnName = 'status' THEN  r.status
 			 WHEN columnName = 'publish_by' THEN r.submit_by
-             WHEN columnName = 'update_time' THEN r.update_time
+             WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
              WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -3366,6 +3366,7 @@ BEGIN
 				WHEN columnName = 'user_name' THEN user_name
 				WHEN columnName = 'email' THEN  u.email
 				WHEN columnName = 'user_role' THEN user_role
+				WHEN columnName = 'active_status' THEN active_status
                 WHEN columnName = 'cohort_list' THEN cohort_list
 				WHEN columnName = 'last_login' THEN DATE_FORMAT(last_login, '%m/%d/%Y') 
 				ELSE name 
@@ -3376,6 +3377,7 @@ BEGIN
 				WHEN columnName = 'user_name' THEN user_name
 				WHEN columnName = 'email' THEN  u.email
 				WHEN columnName = 'user_role' THEN user_role
+				WHEN columnName = 'active_status' THEN active_status
                 WHEN columnName = 'cohort_list' THEN cohort_list
 				WHEN columnName = 'last_login' THEN DATE_FORMAT(last_login, '%m/%d/%Y') 
 				ELSE name 

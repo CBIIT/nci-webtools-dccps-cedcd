@@ -260,7 +260,7 @@ class ManageUser extends Component {
 					<div className="col-md-2 col-sm-5 col-4" style={{ "paddingLeft": "0", "verticalAlign": "middle", "paddingTop": "7px", "paddingRight": "0", "paddingBottom": "0px" }}>
 						<Link style={{ color: 'blue', textDecorationLine: 'underline' }} to={`/admin/newuser`} onClick={this.saveHistory}>Add New User</Link>
 					</div>
-					<div className="col-lg-2 col-md-4 col-sm-7 col-6" style={{ "paddingLeft": "15px ", "verticalAlign": "bottom", "paddingTop": "10px", "paddingRight": "0", "paddingBottom": "0px" }}>
+					<div className="col-lg-2 col-md-4 col-sm-7 col-6" style={{ "paddingLeft": "15px ", "verticalAlign": "bottom", "paddingTop": "10px", "paddingRight": "0", "paddingBottom": "0px", "whiteSpace": "nowrap" }}>
 						<input type="checkbox" className="custom-control-input" id="userActiveStatus"
 							checked={this.state.filter.userStatus === 'Y'} onChange={e => this.userStatusClick(e)} />
 						<label className="custom-control-label" htmlFor="userActiveStatus">Show Active Users Only</label>
