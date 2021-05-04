@@ -1,0 +1,15 @@
+.git
+*.md
+.gitignore
+**/node_modules/*
+**/logs/
+**/apache_logs/
+**/docker
+**/temp/
+**.gz.tbi
+**/deploy
+**/database
+client/build
+**data.zip
+config/cedcd.settings
+
