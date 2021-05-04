@@ -1,0 +1,35 @@
+#docker-compose.yml ( test)
+# in cedcd project directory
+# build image  : docker build -t cedcd_frontend:latest docker/frontend.dockerfile .
+# build image  : docker build -t cedcd_backend:latest docker/backend.dockerfile .
+
+services:
+  backend:
+    container_name: cedcd-backend
+    image: cedcd_backend:latest
+    volumes: 
+      - /Users/zhangchao/projects/docker_projects/cedcd/logs/:/deploy/logs/
+      - /Users/zhangchao/projects/docker_projects/cedcd/data/:/deploy/data/
+      - /Users/zhangchao/projects/docker_projects/cedcd/temp/:/deploy/temp/
+      - /Users/zhangchao/projects/docker_projects/cedcd/client/build/:/deploy/server/client/www/
+      - /Users/zhangchao/projects/docker_projects/cedcd/server/config/cedcd.settings:/deploy/server/config/cedcd.settings
+    ports:
+      - "8000:8221"
+    restart: always
+
+  
+  frontend:
+    container_name: cedcd-frontend
+    image: cedcd_frontend:latest
+    volumes: 
+      - /Users/zhangchao/projects/docker_projects/cedcd/apache_logs/:/var/log/httpd/
+      - /Users/zhangchao/projects/docker_projects/cedcd/data/:/deploy/data/
+      - /Users/zhangchao/projects/docker_projects/cedcd/docker/cedcd_frontend.conf:/etc/httpd/conf.d/cedcd.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+    environment:
+      - API_HOST=backend:8221
+  
