@@ -1,4 +1,4 @@
-#docker-compose.yml ( test)
+#docker-compose.yml (for develop test)
 # in cedcd project directory
 # build image  : docker build --no-cache -t cedcd_frontend:latest -f docker/frontend.dockerfile .
 # build image  : docker build --no-cache -t cedcd_backend:latest -f docker/backend.dockerfile .
