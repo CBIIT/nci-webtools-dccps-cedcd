@@ -1,18 +1,20 @@
 #docker-compose.yml ( test)
 # in cedcd project directory
-# build image  : docker build -t cedcd_frontend:latest docker/frontend.dockerfile .
-# build image  : docker build -t cedcd_backend:latest docker/backend.dockerfile .
+# build image  : docker build --no-cache -t cedcd_frontend:latest -f docker/frontend.dockerfile .
+# build image  : docker build --no-cache -t cedcd_backend:latest -f docker/backend.dockerfile .
+# after contaier (frontend) is created
+# --- docker cp cedcd-frontend:/var/www/html/cedcd/. client/build
 
 services:
   backend:
     container_name: cedcd-backend
     image: cedcd_backend:latest
     volumes: 
-      - /Users/zhangchao/projects/docker_projects/cedcd/logs/:/deploy/logs/
-      - /Users/zhangchao/projects/docker_projects/cedcd/data/:/deploy/data/
-      - /Users/zhangchao/projects/docker_projects/cedcd/temp/:/deploy/temp/
-      - /Users/zhangchao/projects/docker_projects/cedcd/client/build/:/deploy/server/client/www/
-      - /Users/zhangchao/projects/docker_projects/cedcd/server/config/cedcd.settings:/deploy/server/config/cedcd.settings
+      - ./logs/:/deploy/logs/
+      - ./data/:/deploy/data/
+      - ./temp/:/deploy/temp/
+      - ./client/build/:/deploy/server/client/www/
+      - ./server/config/cedcd.settings:/deploy/server/config/cedcd.settings
     ports:
       - "8000:8221"
     restart: always
@@ -22,11 +24,11 @@ services:
     container_name: cedcd-frontend
     image: cedcd_frontend:latest
     volumes: 
-      - /Users/zhangchao/projects/docker_projects/cedcd/apache_logs/:/var/log/httpd/
-      - /Users/zhangchao/projects/docker_projects/cedcd/data/:/deploy/data/
-      - /Users/zhangchao/projects/docker_projects/cedcd/docker/cedcd_frontend.conf:/etc/httpd/conf.d/cedcd.conf
+      - ./apache_logs/:/var/log/httpd/
+      - ./data/:/deploy/data/
+      - ./docker/cedcd_frontend.conf:/etc/httpd/conf.d/cedcd.conf
     ports:
-      - "80:80"
+      - "8010:80"
     depends_on:
       - backend
     restart: always

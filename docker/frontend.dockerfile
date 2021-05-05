@@ -12,7 +12,7 @@ RUN dnf -y update \
     && dnf clean all
 
 # Add custom httpd configuration
-# COPY docker/cedcd_frontend.conf /etc/httpd/conf.d/cedcd.conf
+COPY docker/cedcd_frontend.conf /etc/httpd/conf.d/cedcd.conf
 
 RUN mkdir /client
 

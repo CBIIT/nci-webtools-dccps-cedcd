@@ -13,7 +13,8 @@ node_modules*
 .DS_Store
 npm-debug.log
 yarn-error.log*
-cedcd.settings
+/server/config/cedcd.settings
 /log/*
+apache_logs
 .gitignore
 
