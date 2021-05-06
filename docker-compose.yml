@@ -33,5 +33,5 @@ services:
       - backend
     restart: always
     environment:
-      - API_HOST=backend:8221
+      - API_HOST=http://backend:8221
   
