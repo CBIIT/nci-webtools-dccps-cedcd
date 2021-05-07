@@ -3,11 +3,9 @@
 FROM centos:8.3.2011
 
 RUN dnf -y update \
-    && dnf -y module enable mod_auth_openidc \
     && dnf -y module enable nodejs:14 \
     && dnf -y install \
     httpd \
-    mod_auth_openidc \
     nodejs \
     && dnf clean all
 
