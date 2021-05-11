@@ -13,7 +13,7 @@ services:
       - ./logs/:/deploy/logs/
       - ./data/:/deploy/data/
       - ./temp/:/deploy/temp/
-      - ./client/build/:/deploy/server/client/www/
+     # - ./client/build/:/deploy/server/client/www/
       - ./server/config/cedcd.settings:/deploy/server/config/cedcd.settings
     ports:
       - "8000:8221"
