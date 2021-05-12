@@ -41,4 +41,4 @@ COPY server .
 # ========== test ===========
 WORKDIR /deploy/server
 
-CMD export NODE_ENV=development && npm run start:dev
+CMD export NODE_ENV=production && npm run start
