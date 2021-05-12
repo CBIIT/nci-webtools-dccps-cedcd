@@ -8,6 +8,3 @@
 
 use cedcd;
 
-insert into cohort_user_mapping (cohort_acronym,user_id,active)
-Values ('ATBC', 1,'Y'),
-('BCSC',1,'Y');
