@@ -25,20 +25,4 @@ RUN npm install
 # copy the rest of the application
 COPY server .
 
-# ========== test ===========
-
-
-# COPY docker/cedcd_frontend.conf /etc/httpd/conf.d/cedcd.conf
-# RUN mkdir /client
-# WORKDIR /client
-# COPY client/package*.json /client/
-# RUN npm install
-# COPY client /client/
-# RUN npm run build \
-#    && mv /client/build/* /deploy/server/client/www/
-
-
-# ========== test ===========
-WORKDIR /deploy/server
-
-CMD export NODE_ENV=production && npm run start
+CMD npm run start
