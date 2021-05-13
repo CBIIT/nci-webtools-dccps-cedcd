@@ -40,7 +40,7 @@ module.exports = function (app) {
 	app.use('/api/update-session', updateSession);
 
 	// healthcheck route
-	app.get('/ping', (request, response) => {
+	app.get('/api/ping', (request, response) => {
 		response.status(200).json('true');
 	});
 
