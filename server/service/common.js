@@ -83,7 +83,7 @@ router.get('/download/:filename', function (req, res, next) {
 		base: filename
 	});
 	logger.debug(filePath)
-	const fileType = filename.split('.').pop()
+	const fileType = filename.replace('%20', ' ').split('.').pop()
 
 	fs.readFile(filePath, function (err, data) {
 		logger.debug(data)
