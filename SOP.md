@@ -3,7 +3,9 @@ Cancer Epidemiology Descriptive Cohort Database
 
 # CEDCD Dev Startup
 
-Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + Shift + V.
+Run the following commands in Terminal.  Go to the desired folder for new project.
+
+Copy and paste with Ctrl + C and Ctrl + Shift + V.
 
 1)  Clone the git repository
     1.1.    Navigate terminal to where you want to save the project and run the following command (If you are using Windows, git bash works fine)
@@ -12,28 +14,82 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     git clone https://github.com/CBIIT/nci-webtools-dccps-cedcd.git
     ```
     
-2)  Go to the root directory
+2)  Go to the project root directory
     
     ```console
     cd nci-webtools-dccps-cedcd/
     ```
+3) Create the configuration file.
+    From nci-webtools-dccps-cedcd folder
 
-3)  Install the packages needed for the project
-    
     ```console
-    npm install
+    cd server
     ```
 
-4)  Go to the client directory
-    
+    We need to go into the config folder and add a configuration file
+
     ```console
-    cd client
+    cd config
+    nano cedcd.settings
     ```
 
-5)  Install the packages needed for the client
+    Copy and paste the following into the file
+
+        ```console
+        'use strict';
+
+        module.exports = {
+
+        mysql:{
+            connectionLimit: 100,
+            host: 'host.docker.internal',
+            port: 3306,
+            user: 'username',
+            password: 'password',
+            db: 'cedcd'
+        },
+
+        logDir: '/deploy/log',
+        file_path: '/deploy/data',
+
+        mail:{
+
+            host:'',
+            port:8000,
+            from:'',
+            to:''
+        },
+
+        env: 'dev'
+        };
+        ```
+
+    Make sure that the username and password are replaced by the username and password you used earlier
+    Use the following commands to save and exit if you are using nano
+
+    ```console
+    Ctrl-x
+    y
+    Enter
+    ```
+
+3) Build backend image if needed. Assume Docker engine is installed and started .
     
     ```console
-    npm install
+    docker build -t cedcd_backend:latest -f docker/backend.dockerfile .
+    ```
+
+4) Build frontend image if needed. Assume Docker engine is installed and started.
+    
+    ```console
+    docker build -t cedcd_frontend:latest -f docker/frontend.dockerfile .
+    ```
+
+5)  Start the application with docker compose, the application would be accessed with
+    http://localhost:8000 . The port number 8000 could be updated in docker-compose file.
+    
+    ```console
+    docker compose up -d
     ```
 
 6)  Now we need to do some setup in the backend side!
@@ -141,105 +197,9 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     ```console
     \q
     ```
-16) Now, we need to create the configuration file.
-    Go back into nci-webtools-dccps-cedcd folder
 
-    ```console
-    cd ..
-    cd nci-webtools-dccps-cedcd
-    ```
 
-    We need to go into the config folder and add a configuration file
-
-    ```console
-    cd config
-    nano cedcd.settings
-    ```
-
-    Copy and paste the following into the file
-
-        ```console
-        'use strict';
-
-        module.exports = {
-
-        mysql:{
-            connectionLimit: 100,
-            host: 'localhost',
-            port: 3306,
-            user: 'username',
-            password: 'password',
-            db: 'cedcd'
-        },
-
-        logDir: 'Logs',
-        file_path: 'Uploads',
-
-        mail:{
-
-            host:'',
-            port:8000,
-            from:'',
-            to:''
-        },
-
-        env: 'dev'
-        };
-        ```
-
-    Make sure that the username and password are replaced by the username and password you used earlier
-    Use the following commands to save and exit if you are using nano
-
-    ```console
-    Ctrl-x
-    y
-    Enter
-    ```
-
-17) You're almost there!
-    Now we have to build the client. First, we go to client folder.
-
-    ```console
-    cd ..
-    cd client
-    ```
-
-    To build, run the following command.
-
-    ```console
-    npm start-script build
-    ```
-
-    We need to copy the build files into a www folder, so do this by using the following commands
-
-    ```console
-    mkdir www
-    cp -r build/* www/
-    ```
-
-18) Now, we can run the client.
-    Use the following commands to go to the webtool's root folder and run index.js.
-
-    ```console
-    cd ..
-    cd ..
-    node index.js
-    ```
-
-    The terminal should display something along the lines of the following
-
-    ```console
-    $ cd ..
-    
-    $ cd ..
-
-    $ node index.js
-    Project CEDCD listening on port:9221
-    ```
-
-19) Everything should be working now, and you can just open up your browser of choice and go to the following link
-
-    http://localhost:9221/
+=======
 
 
     
