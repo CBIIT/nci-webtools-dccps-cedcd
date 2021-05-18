@@ -73,10 +73,6 @@ const MajorContentForm = ({ ...props }) => {
                 let content = result.data.counts
                 let cancerInfo = result.data.cancerInfo
 
-                console.log(content)
-
-                console.log(cancerInfo)
-
                 batch(() => {
                     dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
                     dispatch(allactions.majorContentActions.seStatusFollowUp(content[0].followup))
@@ -414,7 +410,7 @@ const MajorContentForm = ({ ...props }) => {
         ];
 
         return (
-            <Row>
+            <Row key={idx}>
                 {showQuestionLabel && <Col sm="12">
                     <Form.Label className="mt-3">
                         {subtitles[idx]}
@@ -430,6 +426,7 @@ const MajorContentForm = ({ ...props }) => {
                             inline
                             type="radio"
                             name={key}
+                            key={`${key}_${value}`}
                             checked={majorContent[key] === value}
                             readOnly={isReadOnly}
                             label={label}
@@ -458,6 +455,7 @@ const MajorContentForm = ({ ...props }) => {
                     className={keys[idx].includes('cancer') ? "ml-4" : "ml-4 pl-0"}
                     id={keys[idx]}
                     name={keys[idx]}
+                    key={keys[idx]}
                     readOnly={isReadOnly}
                     disabled={
                         (keys[idx].includes('cancer')
@@ -505,8 +503,7 @@ const MajorContentForm = ({ ...props }) => {
                     return getQuestionEntry('FollowUp', key, idx)
                 }
             } else if (idx === 29) {
-                console.log(key)
-                return <Form.Group as={Row} sm='12' className='mb-0' style={{ marginTop: '10px' }} >
+                return <Form.Group as={Row} sm='12' key={idx} className='mb-0' style={{ marginTop: '10px' }} >
                     <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
                         C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
@@ -522,7 +519,7 @@ const MajorContentForm = ({ ...props }) => {
                             ['tobaccoUseBaseLine', 'cigarBaseLine', 'pipeBaseLine', 'tobaccoBaseLine', 'ecigarBaseLine', 'noncigarOtherBaseLine']
                         )
                     }
-                    <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
+                    <Col sm='12' className='pl-4' style={{ marginBottom: '8px' }}>
                         <Reminder message='Required Field' disabled={!(majorContent.noncigarOtherBaseLine === 1 && errors.noncigarBaseLineSpecify && saved)}>
                             <input
                                 placeholder='Max of 200 characters'
@@ -544,7 +541,7 @@ const MajorContentForm = ({ ...props }) => {
                             ['tobaccoUseFollowUp', 'cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
                         )
                     }
-                    <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
+                    <Col sm='12' className='pl-4' style={{ marginBottom: '8px' }}>
                         <Reminder message='Required Field' disabled={!(majorContent.noncigarOtherFollowUp === 1 && errors.noncigarFollowUpSpecify && saved)}>
                             <input
                                 placeholder='Max of 200 characters'
