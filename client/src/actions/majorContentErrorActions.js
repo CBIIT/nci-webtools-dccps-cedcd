@@ -29,6 +29,8 @@ const alcoholBaseLine = (disabled) => ({ type: t.alcoholBaseLine, toDisable: dis
 const alcoholFollowUp = (disabled) => ({ type: t.alcoholFollowUp, toDisable: disabled })
 const cigaretteBaseLine = (disabled) => ({ type: t.cigaretteBaseLine, toDisable: disabled })
 const cigaretteFollowUp = (disabled) => ({ type: t.cigaretteFollowUp, toDisable: disabled })
+const tobaccoUseBaseLine = (disabled) => ({ type: t.tobaccoUseBaseLine, toDisable: disabled })
+const tobaccoUseFollowUp = (disabled) => ({ type: t.tobaccoUseFollowUp, toDisable: disabled })
 const cigarBaseLine = (disabled) => ({ type: t.cigarBaseLine, toDisable: disabled })
 const cigarFollowUp = (disabled) => ({ type: t.cigarFollowUp, toDisable: disabled })
 const pipeBaseLine = (disabled) => ({ type: t.pipeBaseLine, toDisable: disabled })
@@ -85,6 +87,7 @@ const mentalBaseLine = (disabled) => ({ type: t.mentalBaseLine, toDisable: disab
 const mentalFollowUp = (disabled) => ({ type: t.mentalFollowUp, toDisable: disabled })
 const cognitiveDeclineBaseLine = (disabled) => ({ type: t.cognitiveDeclineBaseLine, toDisable: disabled })
 const cognitiveDeclineFollowUp = (disabled) => ({ type: t.cognitiveDeclineFollowUp, toDisable: disabled })
+const cancerRelatedConditionsNA = (disabled) => ({ type: t.cancerRelatedConditionsNA, toDisable: disabled })
 const cancerToxicity = (disabled) => ({ type: t.cancerToxicity, toDisable: disabled })
 const cancerLateEffects = (disabled) => ({ type: t.cancerLateEffects, toDisable: disabled })
 const cancerSymptom = (disabled) => ({ type: t.cancerSymptom, toDisable: disabled })
@@ -120,6 +123,8 @@ export default {
     alcoholFollowUp,
     cigaretteBaseLine,
     cigaretteFollowUp,
+    tobaccoUseBaseLine,
+    tobaccoUseFollowUp,
     cigarBaseLine,
     cigarFollowUp,
     pipeBaseLine,
@@ -176,6 +181,7 @@ export default {
     mentalFollowUp,
     cognitiveDeclineBaseLine,
     cognitiveDeclineFollowUp,
+    cancerRelatedConditionsNA,
     cancerToxicity,
     cancerLateEffects,
     cancerSymptom,

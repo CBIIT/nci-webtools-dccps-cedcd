@@ -46,7 +46,7 @@ const MajorContentForm = ({ ...props }) => {
         '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use (not related to cancer treatment)', '', 'C.12 Non-prescription Medication Use (not related to cancer treatment)', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
         // remove to keep it sync with the object, 'C.15 Use of Tobacco Products Other than Cigarettes', '',
         'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '',
-        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self_Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function meassures (e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
+        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function measures (e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
         //removed to snyc with majorContent index 'C.31 Other Medical Conditions', '',
         'a. Diabetes', '', 'b. Stroke', '', 'c. COPD and/or Emphysema', '', 'd. Cardiovascular Disease', '', 'e. Osteoporosis', '', 'f. Mental Health', '',
         'g. Cognitive Decline', ''
@@ -72,6 +72,10 @@ const MajorContentForm = ({ ...props }) => {
 
                 let content = result.data.counts
                 let cancerInfo = result.data.cancerInfo
+
+                console.log(content)
+
+                console.log(cancerInfo)
 
                 batch(() => {
                     dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
@@ -162,6 +166,11 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.physicalMeasureBaseLine(content[40].baseline))
                         dispatch(allactions.majorContentActions.physicalMeasureFollowUp(content[40].followup))
                     }
+                    if (content[41]) {
+                        dispatch(allactions.majorContentActions.tobaccoUseBaseLine(content[41].baseline))
+                        dispatch(allactions.majorContentActions.tobaccoUseFollowUp(content[41].followup))
+                    }
+                    dispatch(allactions.majorContentActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA))
                     dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
                     dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
                     dispatch(allactions.majorContentActions.cancerSymptom(cancerInfo.cancerSymptom))
@@ -171,8 +180,10 @@ const MajorContentForm = ({ ...props }) => {
 
                     loadErrorPart(['cigar', 'pipe', 'tobacco', 'ecigar', 'noncigarOther'], content, 14)
 
-                    loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport', 'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree', 'exposure', 'residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis', 'mental',
-                        'cognitiveDecline'], content, 19)
+                    loadErrorPart(['physical', 'sleep', 'reproduce', 'reportedHealth', 'life', 'socialSupport',
+                        'cognition', 'depression', 'psychosocial', 'fatigue', 'cancerHistory', 'cancerPedigree',
+                        'exposure', 'residence', 'diabetes', 'stroke', 'copd', 'cardiovascular', 'osteoporosis',
+                        'mental', 'cognitiveDecline'], content, 19)
                     dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(content[18].baseline == 0 || content[18].other_specify_baseline))
                     dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(content[18].followup == 0 || content[18].other_specify_followup))
 
@@ -180,6 +191,11 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentErrorActions.physicalMeasureBaseLine([0, 1].includes(content[40].baseline)))
                         dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp([0, 1].includes(content[40].followup)))
                     }
+                    if (content[41]) {
+                        dispatch(allactions.majorContentErrorActions.tobaccoUseBaseLine([0, 1].includes(content[40].baseline)))
+                        dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp([0, 1].includes(content[40].followup)))
+                    }
+                    dispatch(allactions.majorContentErrorActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA == 1))
                     dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1))
                     dispatch(allactions.majorContentErrorActions.cancerLateEffects(cancerInfo.cancerLateEffects == 1))
                     dispatch(allactions.majorContentErrorActions.cancerSymptom(cancerInfo.cancerSymptom == 1))
@@ -196,7 +212,9 @@ const MajorContentForm = ({ ...props }) => {
 
     const refreshErrors = () => {
         for (let k of Object.keys(errors)) {
-            if (!['cancerOther', 'cancerToxicity', 'cancerSymptom', 'cancerLateEffects', 'cancerOtherSpecify', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'noncigarBaseLineSpecify', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarFollowUpSpecify'].includes(k) && errors[k]) {
+            if (!['cancerRelatedConditionsNA', 'cancerOther', 'cancerToxicity', 'cancerSymptom', 'cancerLateEffects', 'cancerOtherSpecify',
+                'tobaccoUseBaseLine', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'noncigarBaseLineSpecify',
+                'tobaccoUseFollowUp', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarFollowUpSpecify'].includes(k) && errors[k]) {
                 return true
             }
         }
@@ -338,7 +356,7 @@ const MajorContentForm = ({ ...props }) => {
         setSaved(true)
         let errorsRemain = refreshErrors()
         //console.log('errorRemainsSoFar: '+errorsRemain)
-        if (!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        if (!errorsRemain) errorsRemain |= (errors.tobaccoUseBaseLine && errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.tobaccoUseFollowUp && errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerRelatedConditionsNA && errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
         //console.dir(errors)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
@@ -355,7 +373,7 @@ const MajorContentForm = ({ ...props }) => {
         setSaved(true)
         let errorsRemain = refreshErrors()
 
-        if (!errorsRemain) errorsRemain |= (errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
+        if (!errorsRemain) errorsRemain |= (errors.tobaccoUseBaseLine && errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) || (errors.tobaccoUseFollowUp && errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) || (!errors.noncigarOtherBaseLine && errors.noncigarBaseLineSpecify) || (!errors.noncigarOtherFollowUp && errors.noncigarFollowUpSpecify) || (errors.cancerRelatedConditionsNA && errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) || (!errors.cancerOther && errors.cancerOtherSpecify)
         if (!errorsRemain) {
             majorContent.sectionCStatus = 'complete'
             dispatch(allactions.majorContentActions.setSectionCStatus('complete'))
@@ -432,6 +450,7 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getMultiSelectList = (questions = [], keys = []) => {
+
         return <div className="ml-4">
             {questions.map((item, idx) =>
                 <Form.Check
@@ -440,6 +459,23 @@ const MajorContentForm = ({ ...props }) => {
                     id={keys[idx]}
                     name={keys[idx]}
                     readOnly={isReadOnly}
+                    disabled={
+                        (keys[idx].includes('cancer')
+                            && ((keys[idx] !== 'cancerRelatedConditionsNA' && majorContent.cancerRelatedConditionsNA === 1)
+                                || (keys[idx] === 'cancerRelatedConditionsNA' &&
+                                    (majorContent.cancerToxicity === 1 || majorContent.cancerLateEffects || majorContent.cancerSymptom === 1 || majorContent.cancerOther === 1)
+                                )))
+                        || (keys[idx].includes('BaseLine')
+                            && ((keys[idx] !== 'tobaccoUseBaseLine' && majorContent.tobaccoUseBaseLine === 1)
+                                || (keys[idx] === 'tobaccoUseBaseLine' &&
+                                    (majorContent.cigarBaseLine === 1 || majorContent.pipeBaseLine || majorContent.tobaccoBaseLine === 1 || majorContent.ecigarBaseLine === 1 || majorContent.noncigarOtherBaseLine === 1)
+                                )))
+                        || (keys[idx].includes('FollowUp')
+                            && ((keys[idx] !== 'tobaccoUseFollowUp' && majorContent.tobaccoUseFollowUp === 1)
+                                || (keys[idx] === 'tobaccoUseFollowUp' &&
+                                    (majorContent.cigarFollowUp === 1 || majorContent.pipeFollowUp || majorContent.tobaccoFollowUp === 1 || majorContent.ecigarFollowUp === 1 || majorContent.noncigarOtherFollowUp === 1)
+                                )))
+                    }
                     checked={majorContent[keys[idx]] === 1}
                     label={item}
                     onChange={(e) => {
@@ -469,20 +505,21 @@ const MajorContentForm = ({ ...props }) => {
                     return getQuestionEntry('FollowUp', key, idx)
                 }
             } else if (idx === 29) {
+                console.log(key)
                 return <Form.Group as={Row} sm='12' className='mb-0' style={{ marginTop: '10px' }} >
                     <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
                         C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
                     <Col sm='12' className='mb-1'>
                         <span>If data were collected at baseline, please specify all tobacco products that apply</span>
-                        {(errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved &&
+                        {(errors.tobaccoUseBaseLine && errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
 
                     {
                         getMultiSelectList(
-                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
-                            ['cigarBaseLine', 'pipeBaseLine', 'tobaccoBaseLine', 'ecigarBaseLine', 'noncigarOtherBaseLine']
+                            ['N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
+                            ['tobaccoUseBaseLine', 'cigarBaseLine', 'pipeBaseLine', 'tobaccoBaseLine', 'ecigarBaseLine', 'noncigarOtherBaseLine']
                         )
                     }
                     <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
@@ -498,13 +535,13 @@ const MajorContentForm = ({ ...props }) => {
                     </Col>
                     <Col sm='12' className='mb-1'>
                         <span>If data were collected during follow-up, please specify all tobacco products that apply</span>
-                        {(errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved &&
+                        {(errors.tobaccoUseFollowUp && errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
                     {
                         getMultiSelectList(
-                            ['Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
-                            ['cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
+                            ['N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other'],
+                            ['tobaccoUseFollowUp', 'cigarFollowUp', 'pipeFollowUp', 'tobaccoFollowUp', 'ecigarFollowUp', 'noncigarOtherFollowUp']
                         )
                     }
                     <Col sm='12' column className='pl-4' style={{ marginBottom: '8px' }}>
@@ -537,18 +574,19 @@ const MajorContentForm = ({ ...props }) => {
             <Form.Label style={{ marginBottom: '8px' }}>
                 C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal">{' '}(Select all that apply)</span>
 
-                {(errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
+                {(errors.cancerRelatedConditionsNA && errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
                     <span className="font-weight-normal text-danger ml-3">Required Field</span>}
             </Form.Label>
             <div style={{ marginLeft: '-3rem' }} className="mb-3">{
                 getMultiSelectList(
                     [
+                        'N/A',
                         'Acute treatment-related toxicity (e.g., diarrhea, nephrotoxicity)',
                         'Late effects of treatment (e.g., cardiotoxicity, lymphedema)',
                         'Symptom management (e.g., fatigue, pain, sexual dysfunction)',
                         'Other'
                     ],
-                    ['cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
+                    ['cancerRelatedConditionsNA', 'cancerToxicity', 'cancerLateEffects', 'cancerSymptom', 'cancerOther']
                 )
             }</div>
 
