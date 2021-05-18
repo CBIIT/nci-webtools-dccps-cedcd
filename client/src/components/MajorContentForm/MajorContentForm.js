@@ -505,10 +505,10 @@ const MajorContentForm = ({ ...props }) => {
             } else if (idx === 29) {
                 return <Form.Group as={Row} sm='12' key={idx} className='mb-0' style={{ marginTop: '10px' }} >
                     <Form.Label as={Row} sm='12' className='pl-5' style={{ marginBottom: '8px' }}>
-                        C.15 Use of tobacco products other than cigarettes<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
+                        C.15 Use of tobacco products other than cigarettes <span className="font-weight-normal ml-1">{' '}(Select all that apply)</span>
                     </Form.Label>
                     <Col sm='12' className='mb-1'>
-                        <span>If data were collected at baseline, please specify all tobacco products that apply</span>
+                        <span>If data were collected at baseline, please specify all tobacco products that apply</span><span style={{ color: 'red' }}>*</span>
                         {(errors.tobaccoUseBaseLine && errors.cigarBaseLine && errors.pipeBaseLine && errors.tobaccoBaseLine && errors.ecigarBaseLine && errors.noncigarOtherBaseLine) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
@@ -531,7 +531,7 @@ const MajorContentForm = ({ ...props }) => {
                         </Reminder>
                     </Col>
                     <Col sm='12' className='mb-1'>
-                        <span>If data were collected during follow-up, please specify all tobacco products that apply</span>
+                        <span>If data were collected during follow-up, please specify all tobacco products that apply</span><span style={{ color: 'red' }}>*</span>
                         {(errors.tobaccoUseFollowUp && errors.cigarFollowUp && errors.pipeFollowUp && errors.tobaccoFollowUp && errors.ecigarFollowUp && errors.noncigarOtherFollowUp) && saved &&
                             <span className="text-danger ml-3">Required Field</span>}
                     </Col>
