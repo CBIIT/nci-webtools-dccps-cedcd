@@ -11,11 +11,14 @@ async function login(request, response) {
     const { headers, session, app, params, query } = request;
     const { loginType } = params;
     const { mysql } = app.locals;
-    const { 
+    let { 
         user_auth_type: userAuthType, 
         user_email: userEmail, 
-        sm_user: smUser
+        sm_user: smUser,
     } = headers;
+
+    let match = smUser.match(/CN=([^,]+)/i);
+    if (match) smUser = match[1];
 
     if (!['internal', 'external'].includes(loginType)) {
         return response.status(301).redirect('/');
