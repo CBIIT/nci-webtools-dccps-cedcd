@@ -188,8 +188,8 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentErrorActions.physicalMeasureFollowUp([0, 1].includes(content[40].followup)))
                     }
                     if (content[41]) {
-                        dispatch(allactions.majorContentErrorActions.tobaccoUseBaseLine(content[40].baseline == 1))
-                        dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp(content[40].followup == 1))
+                        dispatch(allactions.majorContentErrorActions.tobaccoUseBaseLine(content[41].baseline == 1))
+                        dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp(content[41].followup == 1))
                     }
                     dispatch(allactions.majorContentErrorActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA == 1))
                     dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1))
