@@ -48,7 +48,7 @@ actions[t.setTobaccoUseFollowUp] = (state, action) => ({
     ...state,
     tobaccoUseFollowUp: action.value,
     cigarFollowUp: !action.value ? state.cigarFollowUp || 0 : 0,
-    pipeFollowUp: !action.value ? state.pipeBFollowUp || 0 : 0,
+    pipeFollowUp: !action.value ? state.pipeFollowUp || 0 : 0,
     tobaccoFollowUp: !action.value ? state.tobaccoFollowUp || 0 : 0,
     ecigarFollowUp: !action.value ? state.ecigarFollowUp || 0 : 0,
     noncigarOtherFollowUp: !action.value ? state.noncigarOtherFollowUp || 0 : 0,
