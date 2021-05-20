@@ -49,12 +49,12 @@ class MainContent extends Component {
         <Route exact path={match + '/about'} component={About} />
         <Route exact path={match + '/contact'} component={Contact} />
         <Route exact path={match + '/cohort/questionnaire'} render={() => 
-          <RequireAuthorization>
+          <RequireAuthorization role={["SystemAdmin", "CohortAdmin"]}>
             <SelectCohort />
           </RequireAuthorization>
         } />
         <Route exact path={match + '/cohort/questionnaire/:id'} render={() => 
-          <RequireAuthorization>
+          <RequireAuthorization role={["SystemAdmin", "CohortAdmin"]}>
             <Questionnaire />
           </RequireAuthorization>
         } />
@@ -88,7 +88,7 @@ class MainContent extends Component {
             <EditUser isNew={false} />
           </RequireAuthorization>
         } />
-        <Route exact path={match + '/admin/activitylog/:abbreviation'} ender={() => 
+        <Route exact path={match + '/admin/activitylog/:abbreviation'} render={() => 
           <RequireAuthorization role="SystemAdmin">
             <CohortActivity />
           </RequireAuthorization>
