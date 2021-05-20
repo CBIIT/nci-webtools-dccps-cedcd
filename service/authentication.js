@@ -1,5 +1,5 @@
 const settings = require('../config/cedcd.settings')
-const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 120);
+const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 15);
 const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
 
 module.exports = {
@@ -141,6 +141,10 @@ async function login(request, response) {
 }
 
 async function updateSession(request, response) {
+    if (!request.session || !request.session.user) {
+        response.json(null);
+    }
+
     const { mysql } = request.app.locals;
     const user = request.session.user;
     const userId = user.id;

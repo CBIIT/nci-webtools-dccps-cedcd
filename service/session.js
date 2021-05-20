@@ -1,7 +1,7 @@
 const settings = require('../config/cedcd.settings')
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
-const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 120);
+const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 15);
 const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
 const production = process.env.NODE_ENV !== 'development';
 
