@@ -277,7 +277,7 @@ class AddNewCohort extends Component {
 
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
-    return <RequireAuthorization role="SystemAdmin">
+    return <>
       {this.state.successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={this.setSuccessMsg} />}
       {this.state.failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={this.setFailureMsg} />}
       <div className='col-md-12'>
@@ -350,7 +350,7 @@ class AddNewCohort extends Component {
           </div>
         </div>
       </div>
-    </RequireAuthorization>;
+    </>;
   }
 }
 

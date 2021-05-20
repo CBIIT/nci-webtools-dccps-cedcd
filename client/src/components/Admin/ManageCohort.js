@@ -333,7 +333,7 @@ class ManageCohort extends Component {
 			);
 		}
 
-		return <RequireAuthorization role="SystemAdmin" >
+		return (
 			<div>
 				<h1 className="welcome pg-title">Manage Cohorts</h1>
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
@@ -425,7 +425,7 @@ class ManageCohort extends Component {
 					</div>
 				</div>
 			</div>
-		</RequireAuthorization >;
+		);
 	}
 }
 

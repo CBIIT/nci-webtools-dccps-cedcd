@@ -265,7 +265,7 @@ const EditUser = ({ ...props }) => {
     }
 
 
-    return <RequireAuthorization role="SystemAdmin">
+    return (
         <div id='editUserContainer' className='col-md-12'>
             {successMsg && <Messenger message='Your changes were saved.' severity='success' open={true} changeMessage={setSuccessMsg} />}
             {failureMsg && <Messenger message='Your changes could not be saved.' severity='warning' open={true} changeMessage={setFailureMsg} />}
@@ -435,7 +435,7 @@ const EditUser = ({ ...props }) => {
                 </div>
             </div>
         </div>
-    </RequireAuthorization>
+    );
 }
 
 export default EditUser;
