@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { ReactReduxContext, useDispatch, useSelector } from 'react-redux';
 import { updateUserSession, fetchUser } from '../../reducers/user';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -71,6 +71,18 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
         window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
     }
 
+    function formatTime(seconds) {
+        const parts = [
+            seconds / 60,
+            seconds % 60
+        ];
+
+        return parts
+            .map(n => Math.floor(n))
+            .map(e => String(e).padStart(2, '0'))
+            .join(':');
+    }
+
     return (
         <Modal show={isLoggedIn && showWarning} backdrop="static" keyboard={false}>
             <Modal.Header>
@@ -78,7 +90,7 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
             </Modal.Header>
             <Modal.Body>
                 <div class="p-5">
-                    Your session is about to expire. Please select an option below.
+                    Your session wil expire in {formatTime(remainingTime)}. Please select an option below.
                 </div>
             </Modal.Body>
             <Modal.Footer>
