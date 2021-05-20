@@ -1,4 +1,6 @@
 const settings = require('../config/cedcd.settings')
+const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 120);
+const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
 
 module.exports = {
     login,
@@ -23,6 +25,7 @@ async function login(request, response) {
     if (!['internal', 'external'].includes(loginType)) {
         return response.status(301).redirect('/');
     }
+    const expires = new Date().getTime() + maxSessionAge;
 
     if (query.refresh && session.user) {
         session.user.refresh = query.refresh;
@@ -96,6 +99,7 @@ async function login(request, response) {
                 cohorts: cohorts,
                 active: user.activeStatus === 'Y',
                 loginType,
+                expires,
                 // headers,
             };
         } else {
@@ -107,6 +111,7 @@ async function login(request, response) {
                 cohorts: [],
                 active: false,
                 loginType,
+                expires,
                 // headers,
             };
         }
@@ -159,6 +164,7 @@ async function updateSession(request, response) {
     }
 
     user.cohorts = cohorts;
+    user.expires = new Date().getTime() + maxSessionAge;
     request.session.user = { ...user };
     response.json(user || null);
 }
