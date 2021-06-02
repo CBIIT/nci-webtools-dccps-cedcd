@@ -4,7 +4,6 @@ import { useLocation, useParams } from 'react-router-dom';
 import QuestionnaireHeader from '../QuestionnaireHeader/QuestionnaireHeader'
 import Unauthorized from '../Unauthorized/Unauthorized';
 import { fetchCohort } from '../../reducers/cohort';
-import { updateUserSession } from '../../reducers/user';
 import { initializeLookup } from '../../reducers/lookupReducer';
 import SelectCohort from '../SelectCohort/SelectCohort';
 import CohortForm from '../CohortForm/CohortForm'
@@ -40,7 +39,6 @@ const Questionnaire = ({ ...props }) => {
         if (id) {
             if (!cohort || !cohort.id || +cohort.id !== +id) {
                 dispatch(fetchCohort(+id));
-                dispatch(updateUserSession());
             }
             dispatch(initializeLookup());
             dispatch(allactions.cohortIDAction.setCohortId(+id))
