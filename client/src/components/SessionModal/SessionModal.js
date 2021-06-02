@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ReactReduxContext, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUserSession, fetchUser } from '../../reducers/user';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -7,19 +7,24 @@ import Button from 'react-bootstrap/Button';
 
 // note: the warning threshold should be a value under the default session timeout
 // otherwise, you will always see the warning
-export default function SessionModal({showWarningThreshold = 300, checkInterval = 60}) {
+export default function SessionModal({warningThresholds = [300, 180, 60], checkInterval = 60}) {
     const userSession = useSelector(state => state.user);
     const isLoggedIn = Object.keys(userSession).length > 0;
     const [remainingTime, setRemainingTime] = useState(getRemainingTime());
-    const [showWarning, setShowWarning] = useState();
+    const [showWarning, setShowWarning] = useState(false);
     const dispatch = useDispatch();
 
     useEffect(() => {
         // todo: use websockets instead
         const userTimerInterval = setInterval(updateRemainingTime, 100);
-        const sessionCheckInterval = setInterval(checkUserSession, 1000 * checkInterval);
+        const sessionCheckInterval = setInterval(fetchUserSession, 1000 * checkInterval);
         window.addEventListener('storage', syncRemainingTime);
         window.localStorage.setItem('cedcd.remainingTime', remainingTime);
+
+        // log out if session has expired
+        if (userSession && userSession.expires < new Date().getTime()) {
+            logout();
+        }
 
         return () => {
             clearInterval(userTimerInterval);
@@ -29,10 +34,10 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
     }, [userSession, checkInterval]);
 
     function syncRemainingTime(event) {
-        if (event.storageArea != localStorage) return;
-        if (event.key === 'cedcd.remainingTime') {
+        if (event.storageArea === localStorage &&
+            event.key === 'cedcd.remainingTime') {
             setRemainingTime(Number(event.newValue));
-            checkUserSession();
+            fetchUserSession();
         }
     }
 
@@ -40,9 +45,13 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
         const remaining = getRemainingTime();
 
         if (isLoggedIn) {
-            setShowWarning(remaining >= 0 && remaining < showWarningThreshold);
-            if (remaining < 0) 
-                checkUserSession();
+            if (warningThresholds.includes(Math.floor(remaining))) {
+                setShowWarning(remaining >= 0);
+            }
+
+            if (remaining < 0) {
+                fetchUserSession();
+            }
         }
 
         setRemainingTime(remaining);
@@ -54,18 +63,19 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
             : 0;
     }
 
-    function checkUserSession() {
+    function fetchUserSession() {
         dispatch(fetchUser());
     }
 
     function refreshUserSession() {
-        setShowWarning(isLoggedIn && remainingTime < showWarningThreshold);
+        setShowWarning(false);
         dispatch(updateUserSession());
     }
 
-    // console.dir('in header: ',userSession)
     async function logout(e) {
-        e.preventDefault();
+        if (e) {
+            e.preventDefault();
+        }
         // can not use normal 301 response, since session is not properly cleared
         const response = await fetch('/api/logout');
         window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
@@ -83,7 +93,8 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
             .join(':');
     }
 
-    return (
+    return <>
+        {/* {remainingTime} */}
         <Modal show={isLoggedIn && showWarning} backdrop="static" keyboard={false}>
             <Modal.Header>
                 <Modal.Title>Warning: Session Timeout</Modal.Title>
@@ -94,13 +105,13 @@ export default function SessionModal({showWarningThreshold = 300, checkInterval 
                 </div>
             </Modal.Body>
             <Modal.Footer>
-            <Button variant="secondary" onClick={logout}>
-                Log Out
+            <Button variant="secondary" onClick={_ => setShowWarning(false)}>
+                Dismiss
             </Button>
             <Button variant="primary" onClick={refreshUserSession}>
                 Extend My Session
             </Button>
             </Modal.Footer>
         </Modal>
-    );
+    </>;
 }
