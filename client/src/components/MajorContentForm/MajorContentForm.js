@@ -541,7 +541,7 @@ const MajorContentForm = ({ ...props }) => {
     const getThirdContent = () => {
         return <Form.Group className='mb-0' style={{ marginTop: '10px' }} >
             <Form.Label style={{ marginBottom: '8px' }}>
-                C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal">{' '}(Select all that apply)</span>
+                C.32 Do you have information on the following cancer related conditions? <span className="font-weight-normal">{' '}(Select all that apply)</span>
 
                 {/* (errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
                     <span className="font-weight-normal text-danger ml-3">Required Field</span> */}
