@@ -101,12 +101,12 @@ export default function SessionModal({warningThresholds = [300, 180, 60], checkI
             </Modal.Header>
             <Modal.Body>
                 <div class="p-5">
-                    Your session wil expire in {formatTime(remainingTime)}. Please select an option below.
+                    Your session will expire in {formatTime(remainingTime)}. Please select an option below.
                 </div>
             </Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={_ => setShowWarning(false)}>
-                Dismiss
+                Close
             </Button>
             <Button variant="primary" onClick={refreshUserSession}>
                 Extend My Session
