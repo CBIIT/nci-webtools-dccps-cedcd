@@ -116,7 +116,7 @@ const QuestionnaireHeader = ({ ...props }) => {
                 message={location => {
                     console.log(location);
                     const showPrompt = !/\/cohort\/questionnaire\/\d+/.test(location.pathname);
-                    return showPrompt && `You may have unsaved changes. Please confirm that you wish to navigate away from the current page.`
+                    return showPrompt && `Make sure all the changes were saved before leaving the page. Please confirm that you wish to navigate away from the current page.`
                 }}
             />
 
@@ -138,16 +138,16 @@ const QuestionnaireHeader = ({ ...props }) => {
                     <span className={classNames(
                         status === 'published' && 'text-success',
                         status === 'rejected' && 'text-danger',
-                    )} style={{position: 'relative'}}>
+                    )} style={{ position: 'relative' }}>
                         {asTitleCase(status) || 'N/A'}
                         {latestReviewComment && status !== 'published' && <button
-                        className="btn btn-link text-decoration-underline my-0 py-0" style={{position: 'absolute', top: '-1px'}}
-                        onClick={_ => setReviewModal({ show: true })}>
-                        Review Comments
+                            className="btn btn-link text-decoration-underline my-0 py-0" style={{ position: 'absolute', top: '-1px' }}
+                            onClick={_ => setReviewModal({ show: true })}>
+                            Review Comments
                     </button>}
                     </span>
                     {/*{status === 'rejected' && <button */}
-                    
+
 
                     <Modal
                         show={reviewModal.show}
