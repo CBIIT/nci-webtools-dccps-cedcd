@@ -220,6 +220,40 @@ const MajorContentForm = ({ ...props }) => {
             || (!errors.cancerOther && errors.cancerOtherSpecify)
     }
 
+    const updateFieldsErrorStatus = (filedGroup = "", naStatus = false) => {
+        // update related fields error status 
+        // once na filed is selected, reset all related error statuses
+
+        if ("c32".includes(filedGroup.toLowerCase())) {
+            batch(() => {
+                dispatch(allactions.majorContentErrorActions.cancerToxicity(false))
+                dispatch(allactions.majorContentErrorActions.cancerLateEffects(false))
+                dispatch(allactions.majorContentErrorActions.cancerSymptom(false))
+                dispatch(allactions.majorContentErrorActions.cancerOther(false))
+                dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(false))
+            })
+        } else if ("c15baseline".includes(filedGroup.toLowerCase())) {
+            batch(() => {
+                dispatch(allactions.majorContentErrorActions.cigarBaseLine(false))
+                dispatch(allactions.majorContentErrorActions.pipeBaseLine(false))
+                dispatch(allactions.majorContentErrorActions.tobaccoBaseLine(false))
+                dispatch(allactions.majorContentErrorActions.ecigarBaseLine(false))
+                dispatch(allactions.majorContentErrorActions.noncigarOtherBaseLine(false))
+                dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(false))
+            })
+        } else if ("c15followup".includes(filedGroup.toLowerCase())) {
+
+            batch(() => {
+                dispatch(allactions.majorContentErrorActions.cigarFollowUp(false))
+                dispatch(allactions.majorContentErrorActions.pipeFollowUp(false))
+                dispatch(allactions.majorContentErrorActions.tobaccoFollowUp(false))
+                dispatch(allactions.majorContentErrorActions.ecigarFollowUp(false))
+                dispatch(allactions.majorContentErrorActions.noncigarOtherFollowUp(false))
+                dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(false))
+            })
+        }
+    }
+
     const sendEmail = (template, topic) => {
 
         fetch('/api/questionnaire/select_admin_info', {
@@ -459,20 +493,14 @@ const MajorContentForm = ({ ...props }) => {
                     readOnly={isReadOnly}
                     disabled={
                         (keys[idx].includes('cancer')
-                            && ((keys[idx] !== 'cancerRelatedConditionsNA' && majorContent.cancerRelatedConditionsNA === 1)
-                                || (keys[idx] === 'cancerRelatedConditionsNA' &&
-                                    (majorContent.cancerToxicity === 1 || majorContent.cancerLateEffects || majorContent.cancerSymptom === 1 || majorContent.cancerOther === 1)
-                                )))
+                            && (keys[idx] !== 'cancerRelatedConditionsNA' && majorContent.cancerRelatedConditionsNA === 1)
+                        )
                         || (keys[idx].includes('BaseLine')
-                            && ((keys[idx] !== 'tobaccoUseBaseLine' && majorContent.tobaccoUseBaseLine === 1)
-                                || (keys[idx] === 'tobaccoUseBaseLine' &&
-                                    (majorContent.cigarBaseLine === 1 || majorContent.pipeBaseLine || majorContent.tobaccoBaseLine === 1 || majorContent.ecigarBaseLine === 1 || majorContent.noncigarOtherBaseLine === 1)
-                                )))
+                            && (keys[idx] !== 'tobaccoUseBaseLine' && majorContent.tobaccoUseBaseLine === 1)
+                        )
                         || (keys[idx].includes('FollowUp')
-                            && ((keys[idx] !== 'tobaccoUseFollowUp' && majorContent.tobaccoUseFollowUp === 1)
-                                || (keys[idx] === 'tobaccoUseFollowUp' &&
-                                    (majorContent.cigarFollowUp === 1 || majorContent.pipeFollowUp || majorContent.tobaccoFollowUp === 1 || majorContent.ecigarFollowUp === 1 || majorContent.noncigarOtherFollowUp === 1)
-                                )))
+                            && (keys[idx] !== 'tobaccoUseFollowUp' && majorContent.tobaccoUseFollowUp === 1)
+                        )
                     }
                     checked={majorContent[keys[idx]] === 1}
                     label={item}
@@ -480,13 +508,22 @@ const MajorContentForm = ({ ...props }) => {
                         if (!isReadOnly) {
                             dispatch(setHasUnsavedChanges(true));
                             dispatch(allactions.majorContentActions[keys[idx]](+e.target.checked));
-                            dispatch(allactions.majorContentErrorActions[keys[idx]](e.target.checked));
+                            dispatch(allactions.majorContentErrorActions[keys[idx]](+e.target.checked));
                             if (keys[idx] === 'cancerOther')
                                 dispatch(allactions.majorContentErrorActions.cancerOtherSpecify(majorContent.cancerOtherSpecify))
                             else if (keys[idx] === 'noncigarOtherBaseLine')
                                 dispatch(allactions.majorContentErrorActions.noncigarBaseLineSpecify(majorContent.noncigarBaseLineSpecify))
                             else if (keys[idx] === 'noncigarOtherFollowUp')
                                 dispatch(allactions.majorContentErrorActions.noncigarFollowUpSpecify(majorContent.noncigarFollowUpSpecify))
+                            else if (keys[idx] === 'cancerRelatedConditionsNA' && +e.target.checked === 1) {
+                                updateFieldsErrorStatus('c32')
+                            }
+                            else if (keys[idx] === 'tobaccoUseBaseLine' && +e.target.checked === 1) {
+                                updateFieldsErrorStatus('c15BaseLine')
+                            }
+                            else if (keys[idx] === 'tobaccoUseFollowUp' && +e.target.checked === 1) {
+                                updateFieldsErrorStatus('c15Followup')
+                            }
                         }
                     }}
                 />
