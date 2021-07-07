@@ -35,6 +35,7 @@ class App extends Component {
 
   updateTab() {
     let path = window.location.pathname;
+
     if (path.indexOf("/home") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 0 });
@@ -102,7 +103,7 @@ class App extends Component {
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          <MainContent />
+          <MainContent onClickLink={(i) => this.handleClick(i)}/>
           <div className="clearFix"></div>
         </div>
       </div>

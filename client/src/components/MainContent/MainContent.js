@@ -36,9 +36,12 @@ class MainContent extends Component {
     }
     return (
       <Switch>
-        <Route exact path={match + '/'} component={Home} />
+        <Route exact path={match + '/'} component={(props) => 
+          <Home onClickLink={this.props.onClickLink} {...props} />
+        }/>
+
         <Route path={match + '/home'} component={(props) => (
-          <Home timestamp={new Date().toString()} {...props} />
+          <Home timestamp={new Date().toString()} onClickLink={this.props.onClickLink}  {...props} />
         )} />
         <Route path={match + '/select'} component={(props) => (
           <Details timestamp={new Date().toString()} {...props} />
