@@ -1,4 +1,6 @@
 const settings = require('../config/cedcd.settings')
+const timeoutMinutes = Number(settings.sessionTimeoutMinutes || 15);
+const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
 
 module.exports = {
     login,
@@ -11,15 +13,19 @@ async function login(request, response) {
     const { headers, session, app, params, query } = request;
     const { loginType } = params;
     const { mysql } = app.locals;
-    const { 
-        user_auth_type: userAuthType, 
-        user_email: userEmail, 
-        sm_user: smUser
+    let {
+        user_auth_type: userAuthType,
+        user_email: userEmail,
+        sm_user: smUser,
     } = headers;
-
+    if (smUser) {
+        let match = smUser.match(/CN=([^,]+)/i);
+        if (match) smUser = match[1];
+    }
     if (!['internal', 'external'].includes(loginType)) {
         return response.status(301).redirect('/');
     }
+    const expires = new Date().getTime() + maxSessionAge;
 
     if (query.refresh && session.user) {
         session.user.refresh = query.refresh;
@@ -33,7 +39,7 @@ async function login(request, response) {
             userName = 'admin';
             userType = loginType;
             userRole = userType === 'internal'
-                ? 'SystemAdmin' 
+                ? 'SystemAdmin'
                 : 'CohortAdmin'
         } else {
             // otherwise, update user-session variable when hitting authRoutes
@@ -66,7 +72,7 @@ async function login(request, response) {
                 where user_name = ?`,
                 [userName]
             );
-    
+
             const cohortAcronyms = await mysql.query(
                 `SELECT DISTINCT cohort_acronym as acronym
                 FROM cohort_user_mapping 
@@ -74,17 +80,17 @@ async function login(request, response) {
                 ORDER BY acronym ASC`,
                 [userId]
             );
-    
+
             let cohorts = [];
-    
-            for (const {acronym} of cohortAcronyms) {
+
+            for (const { acronym } of cohortAcronyms) {
                 const [editableCohorts] = await mysql.query(
                     `call select_editable_cohort_by_acronym(?)`,
                     [acronym]
                 );
                 cohorts.push(...editableCohorts);
             }
-            
+
             session.user = {
                 id: userId,
                 type: userType,
@@ -93,6 +99,7 @@ async function login(request, response) {
                 cohorts: cohorts,
                 active: user.activeStatus === 'Y',
                 loginType,
+                expires,
                 // headers,
             };
         } else {
@@ -104,6 +111,7 @@ async function login(request, response) {
                 cohorts: [],
                 active: false,
                 loginType,
+                expires,
                 // headers,
             };
         }
@@ -123,7 +131,7 @@ async function login(request, response) {
         }
 
         response.status(301).redirect(redirectUrl);
-    
+
     } catch (e) {
         console.error('authentication error', e);
         request.session.destroy(error => {
@@ -133,6 +141,10 @@ async function login(request, response) {
 }
 
 async function updateSession(request, response) {
+    if (!request.session || !request.session.user) {
+        response.json(null);
+    }
+
     const { mysql } = request.app.locals;
     const user = request.session.user;
     const userId = user.id;
@@ -147,7 +159,7 @@ async function updateSession(request, response) {
 
     let cohorts = [];
 
-    for (const {acronym} of cohortAcronyms) {
+    for (const { acronym } of cohortAcronyms) {
         const [editableCohorts] = await mysql.query(
             `call select_editable_cohort_by_acronym(?)`,
             [acronym]
@@ -156,7 +168,8 @@ async function updateSession(request, response) {
     }
 
     user.cohorts = cohorts;
-    request.session.user = {...user};
+    user.expires = new Date().getTime() + maxSessionAge;
+    request.session.user = { ...user };
     response.json(user || null);
 }
 

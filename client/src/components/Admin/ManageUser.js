@@ -238,7 +238,7 @@ class ManageUser extends Component {
 			);
 		}
 
-		return <RequireAuthorization role="SystemAdmin">
+		return (
 			<div className="col-md-12 col-12">
 				<h1 className="welcome pg-title">Manage Users</h1>
 				<p className="welcome">The list below contains all users registered on the CEDCD website.
@@ -327,7 +327,7 @@ class ManageUser extends Component {
 					</div>
 				</div>
 			</div>
-		</RequireAuthorization>;
+		);
 	}
 }
 

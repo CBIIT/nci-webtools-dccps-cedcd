@@ -782,7 +782,7 @@ const SpecimenForm = ({ ...props }) => {
 
     function CheckBoxInputs({ optionList }) {
         return optionList.map((option, i) =>
-            <CheckBoxInput  {...option} />
+            <CheckBoxInput key={i} {...option} />
         )
     }
 

@@ -49,7 +49,7 @@ export default function CohortActivity() {
             ? <img src="/assets/img/arrow-up.png" className="tableArrow ml-1" alt="change the sort order to [Z-A] "></img>
             : <img src="/assets/img/arrow-down.png" className="tableArrow ml-1" alt="change the sort order to [Z-A] "></img>;
 
-    return <RequireAuthorization role="SystemAdmin">
+    return (
         <div className="w-100">
             <h1 class="welcome pg-title">{abbreviation} Activities</h1>
             <p className="welcome mb-4">
@@ -124,7 +124,7 @@ export default function CohortActivity() {
 
             </div>
         </div>
-    </RequireAuthorization>
+    );
  
  
 }

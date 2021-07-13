@@ -1,0 +1,16 @@
+case ${Tier} in
+    dev)
+        common_instance=nciws-d931-c
+        ;;
+    qa)
+        
+        common_instance=nciws-q936-c
+        ;;
+    stage)
+  
+           common_instance=nciws-s949-c
+        ;;
+    prod)
+        
+        common_instance=nciws-p950-c
+        ;;

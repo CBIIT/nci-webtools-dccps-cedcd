@@ -283,6 +283,7 @@ CREATE TABLE IF NOT  EXISTS `cancer_info` (
   `ci_histologically_confirmed` int(1) DEFAULT NULL,
   `ci_cancer_subtype_histological` int(1) DEFAULT NULL,
   `ci_cancer_subtype_molecular` int(1) DEFAULT NULL,
+  `mdc_cancer_related_conditions_na` int(1) DEFAULT NULL,
   `mdc_acute_treatment_toxicity` int(1) DEFAULT NULL,
   `mdc_late_effects_of_treatment` int(1) DEFAULT NULL,
   `mdc_symptoms_management` int(1) DEFAULT NULL,
@@ -689,6 +690,7 @@ insert into lu_data_category(id, category, sub_category) values (38, "Other Medi
 insert into lu_data_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
 insert into lu_data_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
 insert into lu_data_category(id, category, sub_category) values (41, "Physical function measures","");
+insert into lu_data_category(id, category, sub_category) values (42,'Other Tobacco Products','Not Applicable');
 insert into lu_data_category(id, category, sub_category) values (99, "Cancer Treatment","");
 
 /*
