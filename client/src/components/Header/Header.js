@@ -5,6 +5,7 @@ import './login-button.css'
 
 export default function Header(props) {
     const userSession = useSelector(state => state.user);
+    const isLoggedIn = Object.keys(userSession).length > 0;
     // console.dir('in header: ',userSession)
     const logout = async e => {
         e.preventDefault();
@@ -28,7 +29,7 @@ export default function Header(props) {
                         </a>
         
                         <div style={{ marginLeft: '10%', marginTop: '20px' }}>
-                            {userSession && Object.keys(userSession || {}).length && <>
+                            {isLoggedIn && <>
                                 <a
                                     className="login-button"
                                     href="#"
@@ -59,7 +60,7 @@ export default function Header(props) {
             </div>
             <div className="d-block d-md-none">
                 <div className="row">
-                    {userSession && userSession.role && 
+                    {isLoggedIn && 
                         <div className="col-12">
                             <a
                                 className="login-button float-right"

@@ -5,7 +5,7 @@ import NavBar from '../NavBar/NavBar';
 import ContactBox from '../ContactBox/ContactBox';
 import MainContent from '../MainContent/MainContent';
 import ScrollToTop from '../ScrollToTop/ScrollToTop';
-
+import SessionModal from '../SessionModal/SessionModal';
 
 class App extends Component {
   constructor(props) {
@@ -35,6 +35,7 @@ class App extends Component {
 
   updateTab() {
     let path = window.location.pathname;
+
     if (path.indexOf("/home") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 0 });
@@ -94,6 +95,7 @@ class App extends Component {
       <div>
         <ScrollToTop />
         <Header />
+        <SessionModal />
         <div id="mainNavBar">
           <div id="mainNavBar-inner">
             <NavBar currTab={this.state.currTab} showHelp={this.handleHelp} onClick={(i) => this.handleClick(i)} />
@@ -101,7 +103,7 @@ class App extends Component {
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          <MainContent />
+          <MainContent onClickLink={(i) => this.handleClick(i)}/>
           <div className="clearFix"></div>
         </div>
       </div>

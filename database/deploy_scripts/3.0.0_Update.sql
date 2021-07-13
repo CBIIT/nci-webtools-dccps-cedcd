@@ -9,4 +9,3 @@
 use cedcd;
 
 
-DELIMITER //

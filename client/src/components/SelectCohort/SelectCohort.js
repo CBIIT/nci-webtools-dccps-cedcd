@@ -19,7 +19,7 @@ export default function SelectCohort() {
             dispatch(allactions.specimenActions.setSpecimenLoaded(false));
             })
     }, []) */
-    return <RequireAuthorization role="CohortAdmin">
+    return (
         <div>
             <h1 className="welcome pg-title">Select a Cohort</h1>
             <p className="welcome">
@@ -36,6 +36,6 @@ export default function SelectCohort() {
                 />
             </div>
         </div>
-    </RequireAuthorization>
+    );
 }
 

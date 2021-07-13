@@ -124,7 +124,6 @@ class Cancer extends Component {
 	}
 
 	filterData(filter) {
-		console.dir(filter)
 		const state = Object.assign({}, this.state);
 		let reqBody = {
 			filter: state.filter

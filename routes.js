@@ -39,6 +39,11 @@ module.exports = function (app) {
 	app.use('/api/user-session', getUserSession);
 	app.use('/api/update-session', updateSession);
 
+	// healthcheck route
+	app.get('/api/ping', (request, response) => {
+		response.status(200).json('true');
+	});
+
 	// All other routes should redirect to error page
 	app.get('/*', function (req, res) {
 		res.sendFile(path.join(config.root, 'client/www', 'index.html'));
