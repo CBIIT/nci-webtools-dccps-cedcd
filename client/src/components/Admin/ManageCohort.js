@@ -5,10 +5,9 @@ import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import CohortStatusList from './CohortStatusList';
 import TableHeaderManageCohort from './TableHeaderManageCohort';
-import RequireAuthorization from '../RequireAuthorization/RequireAuthorization';
+import { isNull } from 'lodash';
 
 import './ManageCohort.css';
-import { filter, size } from 'lodash';
 
 class ManageCohort extends Component {
 
@@ -20,7 +19,7 @@ class ManageCohort extends Component {
 			list: [],
 			dataList: [],
 			filter: {
-				cohortstatus: [],
+				cohortStatus: [],
 				cohortSearch: '',
 			},
 			orderBy: {
@@ -33,70 +32,128 @@ class ManageCohort extends Component {
 		};
 		this.toFocus = React.createRef()
 	}
-
-
-	handleCohortStatusClick = (v) => {
+    
+	refreshDataList(pageIndex, cohortSearch, cohortStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
 		let filter = state.filter;
+		let orderBy = state.orderBy;
 		let list = state.dataList;
-		let paging = state.pageInfo;
-		let idx = filter.cohortstatus.indexOf(v.id);
 
-		if (idx > -1) {
-			//remove element
-			filter.cohortstatus.splice(idx, 1);
+		//update CohortSearch Value
+		if (!isNull(cohortSearch)) filter.cohortSearch = cohortSearch;
+
+		//Refresh cohort statuses array
+		if (!isNull(cohortStatus)) {
+			let idx = filter.cohortStatus.indexOf(cohortStatus);
+			if (idx > -1) {
+				//remove element
+				filter.cohortStatus.splice(idx, 1);
+			}
+			else {
+				//add element
+				filter.cohortStatus.push(cohortStatus);
+			}
 		}
-		else {
-			//add element
-			filter.cohortstatus.push(v.id);
-		}
 
-		list = list.filter(function (item) {
-			if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
-			if (!filter.cohortSearch || (item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			if (!filter.cohortSearch || (item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
-			return false;
-		}
-		);
-
-		paging.total = list.length;
-
-		this.setState({
-			filter: filter,
-			list: list.slice(0, paging.pageSize),
-			pageInfo: paging
-		});
-
-	}
-
-	handleCohortSearchChange(changeEvent) {
-		const state = Object.assign({}, this.state);
-		let filter = state.filter;
-		let list = state.dataList;
-		let paging = state.pageInfo;
-
-		filter.cohortSearch = changeEvent.target.value;
-		if (changeEvent.target.value)
+		if (!['', "", undefined, null].includes(filter.cohortSearch)) {
 			list = list.filter(function (item) {
-				if (filter.cohortstatus.length > 0 && !filter.cohortstatus.includes(item.status_id)) return false;
+				if (filter.cohortStatus.length > 0 && !filter.cohortStatus.includes(item.status_id)) return false;
 				if ((item.name).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
 				if ((item.acronym).toLowerCase().includes((filter.cohortSearch).toLowerCase())) return true;
 				return false;
 			}
 			);
+		} else {
+			list = list.filter(function (item) {
+				if (filter.cohortStatus.length > 0 && !filter.cohortStatus.includes(item.status_id)) return false;
+				return true;
+			});
+		}
 
-		paging.total = list.length;
+		if (!isNull(orderByColumn)) {
+			if (orderByColumn == orderBy.column) {
+				orderBy.order = orderBy.order === "asc" ? "desc" : "asc";
+			}
+			else {
+				orderBy.column = orderByColumn;
+				orderBy.order = "asc";
+			}
+		}
+
+		if ('update_time'.includes(orderBy.column)) {
+			list = list.sort((a, b) => {
+				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]]
+					.map(e => e || '');
+
+				if (aValue == bValue) {
+					return a.name.localeCompare(b.name)
+
+				} else {
+
+					return orderBy.order === 'asc'
+						? (aValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(aValue).getTime()) - (bValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(bValue).getTime())
+						: (bValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(bValue).getTime()) - (aValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(aValue).getTime())
+				}
+			});
+		} else {
+			list = list.sort((a, b) => {
+				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]].map(e => e || '');
+
+				if (aValue == bValue) {
+					return a.name.localeCompare(b.name)
+
+				} else {
+					return orderBy.order === 'asc'
+						? aValue.localeCompare(bValue)
+						: bValue.localeCompare(aValue)
+				}
+			}
+			);
+		}
+
+		let paging = state.pageInfo;
+		if (!isNull(pageIndex) && pageIndex > 0) paging.page = pageIndex;
+		if (!isNull(pageSize)) {
+			paging.pageSize = pageSize;
+			paging.page = 1;
+		}
+		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
+		let startIndex = 0;
+		let endIndex = pageIndex === 0 ? list.length : paging.pageSize;
+		if (pageIndex > 0) {
+			startIndex = (pageIndex - 1) * paging.pageSize;
+			endIndex = pageIndex * paging.pageSize;
+		}
+		if (list.length > 0) {
+			paging.total = list.length;
+		}
+		if (startIndex >= paging.total) {
+			startIndex = 0;
+			endIndex = list.length;
+		}
+
+		paging.page = pageIndex === 0 ? 0 : pageIndex === -1 ? state.lastPage : paging.page;
 
 		this.setState({
 			filter: filter,
-			list: list.slice(0, paging.pageSize),
-			pageInfo: paging
+			viewAllFlag: pageIndex === 0,
+			list: list.slice(startIndex, endIndex),
+			orderBy: orderBy,
+			pageInfo: paging,
+			lastPage: (pageIndex > -1 ? lastPage : pageIndex)
 		});
+	}
 
+	handleCohortStatusClick = (v) => {
+		this.refreshDataList(null, null, v.id, null, null);
+
+	}
+	handleCohortSearchChange(changeEvent) {
+		this.refreshDataList(null, changeEvent.target.value, null, null, null);
 	}
 
 	handleCohortPageSizeChange = (e) => {
-		this.pageData(1, null, null, e.target.value);
+		this.refreshDataList(1, null, null, +e.target.value, null)
 	}
 
 	clearFilter = () => {
@@ -104,7 +161,7 @@ class ManageCohort extends Component {
 
 		let list = state.dataList;
 		let filter = {
-			cohortstatus: [],
+			cohortStatus: [],
 			cohortSearch: ''
 		};
 		let paging = state.pageInfo;
@@ -117,58 +174,9 @@ class ManageCohort extends Component {
 		});
 	}
 
-
-	filterData(i, orderBy, filter) {
-		const state = Object.assign({}, this.state);
-		const lastPage = state.pageInfo.page === 0 ? state.lastPage : state.pageInfo.page;
-		let reqBody = {
-			filter: state.filter,
-			orderBy: state.orderBy,
-			paging: state.pageInfo
-		};
-		if (i === -1) {
-			reqBody.paging.page = state.lastPage;
-		}
-		else {
-			reqBody.paging.page = i;
-		}
-		if (orderBy) {
-			reqBody.orderBy = orderBy;
-		}
-		if (filter) {
-			reqBody.filter = filter;
-		}
-
-		fetch('/api/managecohort/admincohortlist', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				if (this._isMounted) {
-					this.setState(prevState => (
-						{
-							list: list,
-							filter: reqBody.filter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i)
-						}
-					));
-				}
-			});
-	}
-
 	componentDidMount() {
 		this._isMounted = true;
-
 		this.loadingData();
-
 	}
 
 	componentWillUnmount() {
@@ -176,59 +184,8 @@ class ManageCohort extends Component {
 	}
 
 	gotoPage(i) {
-		this.pageData(i);
-		if (i === 0) {
-			this.setState({ viewAllFlag: true })
-		} else {
-			this.setState({ viewAllFlag: false })
-		}
+		this.refreshDataList(i, null, null, null, null);
 	}
-
-	pageData(i, orderBy, filter, pagesize = -1) {
-
-		const state = Object.assign({}, this.state);
-		const lastPage = state.pageInfo.page === 0 ? state.lastPage : state.pageInfo.page;
-		let reqBody = {
-			filter: state.filter,
-			orderBy: state.orderBy,
-			paging: state.pageInfo
-		};
-
-		if (pagesize != -1) {
-			reqBody.paging.pageSize = pagesize;
-		}
-
-		if (i === -1) {
-			reqBody.paging.page = state.lastPage;
-		}
-		else {
-			reqBody.paging.page = i;
-		}
-		fetch('/api/managecohort/admincohortlist', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				this.setState(prevState => (
-					{
-						list: list,
-						filter: reqBody.filter,
-						orderBy: reqBody.orderBy,
-						pageInfo: reqBody.paging,
-						lastPage: (i > -1 ? lastPage : i)
-					}
-				));
-			});
-
-	}
-
 
 	loadingData = (next) => {
 		const state = Object.assign({}, this.state);
@@ -267,16 +224,7 @@ class ManageCohort extends Component {
 
 
 	handleOrderBy(column) {
-		let orderBy = Object.assign({}, this.state.orderBy);
-		if (column === orderBy.column) {
-			orderBy.order = orderBy.order === "asc" ? "desc" : "asc";
-		}
-		else {
-			orderBy.column = column;
-			orderBy.order = "asc";
-		}
-		let pageInfo = Object.assign({}, this.state.pageInfo);
-		this.filterData(pageInfo.page, orderBy);
+		this.refreshDataList(this.state.pageInfo.page, null, null, null, column)
 	}
 
 	resetCohortStatus = (cohortID, currStatus) => {
@@ -347,8 +295,8 @@ class ManageCohort extends Component {
 							<i className="fa fa-search" style={{ width: '100%', pointerEvents: 'none', position: 'absolute', bottom: '45%', right: '-45%', borderRadius: '5px' }}></i>
 						</div>
 
-						<div id="cohortstatus" className="filter-component mr-2" style={{ minWidth: '125px' }}>
-							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortstatus} displayMax="0" onClick={this.handleCohortStatusClick} />
+						<div id="cohortStatus" className="filter-component mr-2" style={{ minWidth: '125px' }}>
+							<CohortStatusList hasUnknown={true} values={this.state.filter.cohortStatus} displayMax="0" onClick={this.handleCohortStatusClick} />
 						</div>
 						<div>
 							<Link className="linkButton" href="javascript:void(0);" onClick={this.clearFilter} style={{ color: '#23527c', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>

@@ -24,7 +24,7 @@ router.post('/admincohortlist', function (req, res) {
 	let params = [];
 	//form filter into Strings
 
-	if (filter.cohortstatus.length > 0) {
+	if (filter.cohortStatus.length > 0) {
 		params.push(filter.cohortstatus.toString());
 	}
 	else {

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import PageSummary from '../PageSummary/PageSummary';
 import Paging from '../Paging/Paging';
 import TableHeaderManageUser from './TableHeaderManageUser';
-import RequireAuthorization from '../RequireAuthorization/RequireAuthorization'
 import './ManageCohort.css';
 import { isNull } from 'lodash';
 
@@ -39,6 +38,7 @@ class ManageUser extends Component {
 	refreshDataList(pageIndex, userNameSearch, userStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
 		let filter = state.filter;
+		let orderBy = state.orderBy;
 		if (!isNull(userStatus)) filter.userStatus = userStatus;
 		if (!isNull(userNameSearch)) filter.userNameSearch = userNameSearch;
 
@@ -53,7 +53,6 @@ class ManageUser extends Component {
 			);
 
 		if (!isNull(orderByColumn)) {
-			let orderBy = state.orderBy;
 			if (orderByColumn == orderBy.column) {
 				orderBy.order = orderBy.order === "asc" ? "desc" : "asc";
 			}
@@ -61,48 +60,49 @@ class ManageUser extends Component {
 				orderBy.column = orderByColumn;
 				orderBy.order = "asc";
 			}
-			state.orderBy = orderBy;
 
-			if (['name', 'action'].includes(orderByColumn)) {
-				list = list.sort((a, b) => {
-					return orderBy.order === 'asc'
-						? a.name.localeCompare(b.name)
-						: b.name.localeCompare(a.name)
-				});
-			} else if ('last_login'.includes(orderByColumn)) {
-				list = list.sort((a, b) => {
-					let [aValue, bValue] = [a[orderByColumn], b[orderByColumn]]
-						.map(e => e || '');
-
-					if (aValue == bValue) {
-						return a.name.localeCompare(b.name)
-
-					} else {
-
-						return orderBy.order === 'asc'
-							? (aValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(aValue).getTime()) - (bValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(bValue).getTime())
-							: (bValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(bValue).getTime()) - (aValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(aValue).getTime())
-					}
-				});
-			} else {
-				list = list.sort((a, b) => {
-					let [aValue, bValue] = [a[orderByColumn], b[orderByColumn]].map(e => e || '');
-
-					if (aValue == bValue) {
-						return a.name.localeCompare(b.name)
-
-					} else {
-						return orderBy.order === 'asc'
-							? aValue.localeCompare(bValue)
-							: bValue.localeCompare(aValue)
-					}
-				}
-				);
-			}
 		}
 
+		if (['name', 'action'].includes(orderBy.column)) {
+			list = list.sort((a, b) => {
+				return orderBy.order === 'asc'
+					? a.name.localeCompare(b.name)
+					: b.name.localeCompare(a.name)
+			});
+		} else if ('last_login'.includes(orderBy.column)) {
+			list = list.sort((a, b) => {
+				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]]
+					.map(e => e || '');
+
+				if (aValue == bValue) {
+					return a.name.localeCompare(b.name)
+
+				} else {
+
+					return orderBy.order === 'asc'
+						? (aValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(aValue).getTime()) - (bValue === 'Never' ? new Date('01/01/3000').getTime() : new Date(bValue).getTime())
+						: (bValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(bValue).getTime()) - (aValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(aValue).getTime())
+				}
+			});
+		} else {
+			list = list.sort((a, b) => {
+				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]].map(e => e || '');
+
+				if (aValue == bValue) {
+					return a.name.localeCompare(b.name)
+
+				} else {
+					return orderBy.order === 'asc'
+						? aValue.localeCompare(bValue)
+						: bValue.localeCompare(aValue)
+				}
+			}
+			);
+		}
+
+		// pageIndex===0 means ViewAll
 		let paging = state.pageInfo;
-		if (!isNull(pageIndex)) paging.page = pageIndex;
+		if (!isNull(pageIndex) && pageIndex > 0) paging.page = pageIndex;
 		if (!isNull(pageSize)) {
 			paging.pageSize = pageSize;
 			paging.page = 1;
@@ -128,6 +128,7 @@ class ManageUser extends Component {
 			filter: filter,
 			viewAllFlag: pageIndex === 0,
 			list: list.slice(startIndex, endIndex),
+			orderBy: orderBy,
 			pageInfo: paging,
 			lastPage: (pageIndex > -1 ? lastPage : pageIndex)
 		});
