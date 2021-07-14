@@ -1849,7 +1849,7 @@ BEGIN
 			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by is not null THEN  (SELECT concat(u2.first_name, ' ', u2.last_name) FROM user u2 WHERE u2.id=ch.submit_by) 
 			ELSE 'N/A' end) submit_by,
 		(	 CASE  WHEN lower(ch.status) in ('submitted','draft', 'in review','published', 'rejected') and ch.update_time is not null THEN DATE_FORMAT(ch.update_time, '%m/%d/%Y') 
-			ELSE 'N/A' end) AS update_time,
+			ELSE 'Never' end) AS update_time,
 		(	 CASE  WHEN lower(ch.status) in ('submitted', 'in review') THEN 'review' ELSE 'view' end) action
 	FROM cohort ch 
     JOIN user u1 ON IFNULL(ch.create_by, 1)=u1.id
@@ -1858,7 +1858,7 @@ BEGIN
 		and (locate( @cohortSearch , ch.acronym ) > 0  or locate(@cohortSearch ,ch.name ) > 0 ) 
         ) AS r
 	ORDER BY
-    CASE WHEN columnName = 'update_time' THEN  r.update_time='N/A'
+    CASE WHEN columnName = 'update_time' THEN  r.update_time='Never'
     	WHEN columnName = 'publish_by' THEN  r.submit_by='N/A'
     END desc,
 	CASE WHEN lower(columnOrder) = 'asc' then
