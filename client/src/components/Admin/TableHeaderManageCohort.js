@@ -17,7 +17,7 @@ class TableHeaderManageCohort extends Component {
     else if (this.props.value === "status") {
       name = "Status";
     }
-    else if (this.props.value === "publish_by") {
+    else if (this.props.value === "submit_by") {
       name = "Submitted By";
     }
     else if (this.props.value === "update_time") {

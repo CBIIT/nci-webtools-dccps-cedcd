@@ -95,6 +95,20 @@ class ManageCohort extends Component {
 						: (bValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(bValue).getTime()) - (aValue === 'Never' ? new Date('01/01/2000').getTime() : new Date(aValue).getTime())
 				}
 			});
+		} else if ('submit_by'.includes(orderBy.column)) {
+			list = list.sort((a, b) => {
+				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]]
+					.map(e => e || '');
+
+				if (aValue == bValue) {
+					return a.name.localeCompare(b.name)
+
+				} else {
+					return orderBy.order === 'asc'
+						? (aValue === 'N/A' ? 'ZZZ':aValue).localeCompare(bValue === 'N/A' ? 'ZZZ' : bValue )
+						: (bValue === 'N/A' ? 'aaa':bValue).localeCompare(aValue === 'N/A' ? 'aaa' : aValue )
+				}
+			});
 		} else {
 			list = list.sort((a, b) => {
 				let [aValue, bValue] = [a[orderBy.column], b[orderBy.column]].map(e => e || '');
@@ -111,18 +125,23 @@ class ManageCohort extends Component {
 			);
 		}
 
+		// pageIndex=== 0 means ViewAll
+		// pageIndex=== -1 means ViewLess (disable ViewAll)
 		let paging = state.pageInfo;
 		if (!isNull(pageIndex) && pageIndex > 0) paging.page = pageIndex;
 		if (!isNull(pageSize)) {
 			paging.pageSize = pageSize;
 			paging.page = 1;
 		}
-		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
+		const lastPage = paging.page == 0 ? state.lastPage : paging.page;
 		let startIndex = 0;
-		let endIndex = pageIndex === 0 ? list.length : paging.pageSize;
+		let endIndex = pageIndex === 0 ? list.length : +paging.pageSize;
 		if (pageIndex > 0) {
-			startIndex = (pageIndex - 1) * paging.pageSize;
-			endIndex = pageIndex * paging.pageSize;
+			startIndex = (paging.page - 1) * paging.pageSize;
+			endIndex = paging.page * paging.pageSize;
+		}else if (pageIndex === -1){
+			startIndex = (lastPage - 1) * paging.pageSize;
+			endIndex = lastPage * paging.pageSize;
 		}
 		if (list.length > 0) {
 			paging.total = list.length;
@@ -333,7 +352,7 @@ class ManageCohort extends Component {
 										{this.renderTableHeader("name", "30%")}
 										{this.renderTableHeader("acronym", "10%")}
 										{this.renderTableHeader("status", "15%")}
-										{this.renderTableHeader("publish_by", "20%")}
+										{this.renderTableHeader("submit_by", "20%")}
 										{this.renderTableHeader("update_time", "15%")}
 										{this.renderTableHeader("action", "10%")}
 									</tr>

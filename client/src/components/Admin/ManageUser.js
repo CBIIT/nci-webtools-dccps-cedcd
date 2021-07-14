@@ -100,19 +100,23 @@ class ManageUser extends Component {
 			);
 		}
 
-		// pageIndex===0 means ViewAll
+		// pageIndex=== 0 means ViewAll
+		// pageIndex=== -1 means ViewLess (disable ViewAll)
 		let paging = state.pageInfo;
 		if (!isNull(pageIndex) && pageIndex > 0) paging.page = pageIndex;
 		if (!isNull(pageSize)) {
 			paging.pageSize = pageSize;
 			paging.page = 1;
 		}
-		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
+		const lastPage = paging.page == 0 ? state.lastPage : paging.page;
 		let startIndex = 0;
-		let endIndex = pageIndex === 0 ? list.length : paging.pageSize;
+		let endIndex = pageIndex === 0 ? list.length : +paging.pageSize;
 		if (pageIndex > 0) {
-			startIndex = (pageIndex - 1) * paging.pageSize;
-			endIndex = pageIndex * paging.pageSize;
+			startIndex = (paging.page - 1) * paging.pageSize;
+			endIndex = paging.page * paging.pageSize;
+		}else if (pageIndex === -1){
+			startIndex = (lastPage - 1) * paging.pageSize;
+			endIndex = lastPage * paging.pageSize;
 		}
 		if (list.length > 0) {
 			paging.total = list.length;
