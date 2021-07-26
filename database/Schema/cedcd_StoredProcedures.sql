@@ -656,7 +656,7 @@ BEGIN
     SELECT distinct first_name, last_name, email, name, acronym 
 	FROM user x
     JOIN cohort y 
-    WHERE access_level='SystemAdmin' and y.id= @cohort_id and x.id >1 ;
+    WHERE access_level='SystemAdmin' and x.active_status='Y' and y.id= @cohort_id and x.id >1 ;
 
 END //
 -- -----------------------------------------------------------------------------------------------------------
@@ -667,7 +667,7 @@ DROP PROCEDURE IF EXISTS SELECT_cohort_owner //
 CREATE PROCEDURE `SELECT_cohort_owner`()
 BEGIN
 	SELECT id, first_name, last_name, email FROM user
-	WHERE access_level='CohortAdmin' ORDER BY last_name, first_name;
+	WHERE access_level='CohortAdmin' and active_status='Y' ORDER BY last_name, first_name;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
