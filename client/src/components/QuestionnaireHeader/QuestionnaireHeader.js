@@ -112,9 +112,8 @@ const QuestionnaireHeader = ({ ...props }) => {
             }
             <h1 className='pg-title'>{cohort.acronym} Questionnaire</h1>
             <Prompt
-                when={true}
+                when={!isReadOnly}
                 message={location => {
-                    console.log(location);
                     const showPrompt = !/\/cohort\/questionnaire\/\d+/.test(location.pathname);
                     return showPrompt && `Make sure all the changes were saved before leaving the page. Please confirm that you wish to navigate away from the current page.`
                 }}
