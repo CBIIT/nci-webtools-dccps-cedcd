@@ -225,7 +225,9 @@ const EditUser = ({ ...props }) => {
                     }).then(res => res.json());
                     if (result.status === 200) {
                         setSuccessMsg(true)
-                        sendEmail()
+                        if(activeStatus === 'Y') {
+                            sendEmail()
+                        }
                         if (isNew) resetState()
                     } else {
                         setFailureMsg(true)
