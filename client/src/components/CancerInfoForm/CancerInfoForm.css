@@ -1,3 +1,19 @@
 .form-check-label {
     margin-left: 0.5rem;
 }
+.btn-cancer-form {
+    color: black !important;
+    background-color:white !important;
+    border-color: black !important;
+}
+
+.btn-cancer-form:hover,
+.btn-cancer-form:focus,
+.btn-cancer-form.focus,
+.btn-cancer-form:active,
+.btn-cancer-form.active,
+.open > .dropdown-toggle.btn-cancer-form {
+    color: #fff !important;
+    background-color: #01857b !important;
+    border-color: #01857b !important;
+}

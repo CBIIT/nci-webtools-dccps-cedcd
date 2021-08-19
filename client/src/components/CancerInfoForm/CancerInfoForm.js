@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { postJSON } from '../../services/query';
 import allactions from '../../actions';
 import { fetchCohort } from '../../reducers/cohort';
@@ -29,6 +30,16 @@ const {
     mergeCancerInfoFormValues,
 } = allactions.cancerInfoActions;
 
+const inputTypes = [
+    { sex: 'female', ethnicityType: 'hispanic' },
+    { sex: 'male', ethnicityType: 'hispanic' },
+    { sex: 'female', ethnicityType: 'nothispanic' },
+    { sex: 'male', ethnicityType: 'nothispanic' },
+    { sex: 'female', ethnicityType: 'unkonwnEthnicity' },
+    { sex: 'male', ethnicityType: 'unkonwnEthnicity' },
+  
+]
+
 const CancerInfoForm = ({ ...props }) => {
     const dispatch = useDispatch();
     const cohort = useSelector(state => state.cohort)
@@ -42,6 +53,8 @@ const CancerInfoForm = ({ ...props }) => {
 
     const [activePanel, setActivePanel] = useState('panelA')
     const [errors, setErrors] = useState({});
+    const [cancerSelected, setCancerSelected] = useState(21);
+    const [subTotals,setSubTotals] = useState({});
     const [submitted, setSubmitted] = useState(false);
     const [successMsg, setSuccessMsg] = useState(false)
     const [failureMsg, setFailureMsg] = useState(false)
@@ -61,6 +74,16 @@ const CancerInfoForm = ({ ...props }) => {
     const lookupMap = {
         female: lookup && lookup.gender.find(e => e.gender === 'Female'),
         male: lookup && lookup.gender.find(e => e.gender === 'Male'),
+        hispanic: lookup && lookup.ethnicity.find(e => e.ethnicity === 'Hispanic or Latino'),
+        nothispanic: lookup && lookup.ethnicity.find(e => e.ethnicity === 'Not Hispanic or Latino'),
+        unkonwnEthnicity: lookup && lookup.ethnicity.find(e => e.ethnicity === 'Unknown/Not Reported Ethnicity'),
+        race_american: lookup && lookup.race.find(e => e.race === 'American Indian/Alaska Native'),
+        race_asian: lookup && lookup.race.find(e => e.race === 'Asian'),
+        race_black: lookup && lookup.race.find(e => e.race === 'Black or African American'),
+        race_morerace: lookup && lookup.race.find(e => e.race === 'More Than One Race'),
+        race_native: lookup && lookup.race.find(e => e.race === 'Native Hawaiian or Other Pacific Islander'),
+        race_white: lookup && lookup.race.find(e => e.race === 'White'),
+        race_unknown: lookup && lookup.race.find(e => e.race === 'Unknown or Not Reported'),
         incident: lookup && lookup.case_type.find(e => e.case_type === 'incident'),
         prevalent: lookup && lookup.case_type.find(e => e.case_type === 'prevalent'),
     }
@@ -77,22 +100,23 @@ const CancerInfoForm = ({ ...props }) => {
 
         // populate counts
         const counts = {};
+        const totals ={};
 
-        for (let cancer of lookup.cancer) {
-            for (let gender of [lookupMap.male, lookupMap.female]) {
-                for (let caseType of [lookupMap.prevalent, lookupMap.incident]) {
-                    const entry = cancerCount.find(count =>
-                        +count.cohort_id === +cohortId &&
-                        count.cancer_id === cancer.id &&
-                        count.gender_id === gender.id &&
-                        count.case_type_id === caseType.id
-                    );
-                    const key = [cohortId, cancer.id, gender.id, caseType.id].join('_');
-                    const value = entry ? parseInt(entry.cancer_counts || 0) : 0;
-                    counts[key] = value < 0 ? 0 : value;
-                }
-            }
-        }
+        // key : cohort-id_cancer-id_race-id_ethnicity-id_gender-id_case-type
+
+        cancerCount.map((item) => {
+            let key = [item.cohort_id, item.cancer_id, item.race_id, item.ethnicity_id, item.gender_id, item.case_type_id].join('_');
+            let cancer_key = [item.cohort_id, item.cancer_id].join('_');
+            let cancer_race_key = [item.cohort_id, item.cancer_id, item.race_id].join('_');
+            let cancer_eth_sex_key = [item.cohort_id, item.cancer_id, item.ethnicity_id, item.gender_id].join('_');
+            let value =  parseInt(item.cancer_counts || 0) < 0 ? 0: parseInt(item.cancer_counts || 0);
+            counts[key] = value;
+            totals[cancer_key] = value + (totals[cancer_key]||0);
+            totals[cancer_race_key] = value + (totals[cancer_race_key]||0);
+            totals[cancer_eth_sex_key] = value + (totals[cancer_eth_sex_key]||0);
+        });
+
+        setSubTotals(totals);
 
         // process form data
         const formValues = getUpdatedFormValues({ ...cancerInfo[0] });
@@ -102,6 +126,31 @@ const CancerInfoForm = ({ ...props }) => {
         dispatch(mergeCancerInfoFormValues(formValues));
 
     }, [cohort, lookup]);
+
+    const updateSelectedCancerCounts = (ev) => {
+        let key= ev.target.name;
+        let deltaVal = Math.abs(parseInt(ev.target.value) || 0 ) - (counts[key]||0);
+        counts[key] = Math.abs(parseInt(ev.target.value) || 0 );
+        setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0));
+        dispatch(setHasUnsavedChanges(true));
+       
+        refreshTotals(key, deltaVal);
+    }
+
+    const refreshTotals = (key, deltaVal) =>{
+        let totals = subTotals;
+        let keyArr = key.split('_');
+        let cancer_key = [keyArr[0], keyArr[1]].join('_');
+        let cancer_race_key = [keyArr[0], keyArr[1], keyArr[2]].join('_');
+        let cancer_eth_sex_key = [keyArr[0], keyArr[1], keyArr[3], keyArr[4]].join('_');
+       
+        totals[cancer_key] = deltaVal + (totals[cancer_key]||0);
+        totals[cancer_race_key] = deltaVal + (totals[cancer_race_key]||0);
+        totals[cancer_eth_sex_key] = deltaVal + (totals[cancer_eth_sex_key]||0);
+
+        setSubTotals(totals);
+
+    }
 
     const sendEmail = (template, topic) => {
 
@@ -357,9 +406,9 @@ const CancerInfoForm = ({ ...props }) => {
             }
 
             const cancerCounts = Object.entries(counts).map(([key, value]) => {
-                let [cohort_id, cancer_id, gender_id, case_type_id] = key.split('_');
+                let [cohort_id, cancer_id, race_id, ethnicity_id, gender_id, case_type_id] = key.split('_');
                 let cancer_counts = value;
-                return { cohort_id, cancer_id, gender_id, case_type_id, cancer_counts }
+                return { cohort_id, cancer_id, race_id, ethnicity_id,gender_id, case_type_id, cancer_counts }
             })
 
             const result = await postJSON(`/api/questionnaire/update_cancer_info/${id}`, [info]);
@@ -455,63 +504,96 @@ const CancerInfoForm = ({ ...props }) => {
                         panelTitle="Cancer Counts">
                         <div className="my-3">
                             <Form.Label>D.1 Cancer Counts</Form.Label>
-                            <div>Please enter the number of participants with these cancers by sex.</div>
+                            <div>Please enter the number of participants with these cancers by Ethnicity, Race and Sex.</div>
+                        </div>
+                        <div className="mb-4 ml-1">
+                            <ButtonGroup>
+                                {
+                                    lookup.cancer.filter(i => i.cancer !== 'No Cancer').sort((a, b) => (a.cancer ==="All Other Cancers"? "ZAll Other Cancers": a.cancer).localeCompare(b.cancer ==="All Other Cancers"? "ZAll Other Cancers": b.cancer)).map((c) => {
+                                        let preKey =  `${cohortId}_${c.id}`;
+                                        let subtotal = `${subTotals[preKey]||0}`;
+                                        let cancerName = c.cancer.length < 17 ? c.cancer : c.cancer.slice(0,10)+'...';
+                                        let message = <p  style={{fontSize:"12"}}>{c.cancer} <br></br> ICD-9: {c.icd9}<br></br> ICD-10: {c.icd10} <br></br> Total: {subtotal}</p>;         
+                                       return parseInt(`${subtotal}`)> 0 ? <Reminder viewCohort={true} message={message}  key={preKey}>
+                                        <Button className="col-lg-2 col-md-6 btn-cancer-form"  key={preKey} onClick={() => setCancerSelected(c.id)} active={c.id === cancerSelected}> <b>{cancerName}{"  "} ( {subtotal} )</b></Button></Reminder> :  
+                                          <Reminder viewCohort={true} message={message} key={preKey} >
+                                               <Button className="col-lg-2 col-md-6 text-nowrap btn-cancer-form" key={preKey}  active={c.id === cancerSelected } onClick={() => setCancerSelected(c.id)}>{cancerName}{"  "} ( {subtotal} ) </Button>
+                                        </Reminder>
+                                    })
+                                }
+                            </ButtonGroup>
                         </div>
                         <div className="table-responsive mb-4">
                             <Table bordered condensed className="table-valign-middle">
                                 <thead>
                                     <tr>
-                                        <th className="text-center" rowSpan={2}>ICD-9</th>
-                                        <th className="text-center" rowSpan={2}>ICD-10</th>
-                                        <th className="text-center" rowSpan={2}>Cancer Site/Type</th>
-                                        <th className="text-center" colSpan={2}>Males</th>
-                                        <th className="text-center" colSpan={2}>Females</th>
+                                        <th rowSpan='3' style={{ fontSize: '1.5rem', paddingRight: '0', width: '15%' }}>Racial Categories</th>
+                                        {
+                                            lookup.cancer.filter(i => i.cancer !== 'No Cancer').map((i) => {
+                                                if (i.id === parseInt(`${cancerSelected}`)) {
+                                                    return <th colSpan='6' className="text-center" key={i.id}> <b> {i.cancer} ( ICD-9: {i.icd9} / ICD-10: {i.icd10} ) </b>
+                                                    </th>
+                                                }
+                                            })
+                                        }
+                                        <th rowSpan='3' style={{ width: '10%', textAlign: 'center' }}>Total</th>
                                     </tr>
-                                    <tr>
-                                        <th className="text-center">Prevalent Cases</th>
-                                        <th className="text-center">Incident Cases</th>
-                                        <th className="text-center">Prevalent Cases</th>
-                                        <th className="text-center">Incident Cases</th>
+                                    <tr>{
+                                        inputTypes.map(({ ethnicityType }, i) => {
+                                            if (i % 2 === 0)
+                                                return <th colSpan='2' className="text-center" key={i}>{lookupMap[ethnicityType].ethnicity}</th>
+                                            })
+                                        }
+                                    </tr>
+                                    <tr>{
+                                        inputTypes.map(({ sex },i) => {
+                                            return <th className="text-center" key={i}>{lookupMap[sex].gender}s</th>
+                                        })
+                                    }
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {lookup.cancer.filter(i => i.cancer !== 'No Cancer').map(c => {
-                                        const keyPrefix = `${cohortId}_${c.id}`;
-                                        const inputTypes = [
-                                            { sex: 'male', caseType: 'prevalent' },
-                                            { sex: 'male', caseType: 'incident' },
-                                            { sex: 'female', caseType: 'prevalent' },
-                                            { sex: 'female', caseType: 'incident' },
-                                        ]
-
-                                        const inputKeys = inputTypes.map(({ sex, caseType }) =>
-                                            `${keyPrefix}_${lookupMap[sex].id}_${lookupMap[caseType].id}`
+                                    {lookup.race.map(c => {
+                                        const keyPrefix = `${cohortId}_${cancerSelected}_${c.id}`;
+                                        const inputKeys = inputTypes.map(({ sex, caseType='prevalent', ethnicityType = 'unkonwnEthnicity'}) =>
+                                            `${keyPrefix}_${lookupMap[ethnicityType].id}_${lookupMap[sex].id}_${lookupMap[caseType].id}`
                                         );
-
+                                   
                                         return <tr key={keyPrefix}>
-                                            <td className={classNames("text-nowrap", c.icd9 ? "bg-light-grey" : "bg-grey")}>{c.icd9}</td>
-                                            <td className={classNames("text-nowrap", c.icd10 ? "bg-light-grey" : "bg-grey")}>{c.icd10}</td>
-                                            <td className="text-nowrap bg-light-grey">{c.cancer}</td>
+
+                                            <td className="text-nowrap bg-light-grey">{c.race}</td>
                                             {inputKeys.map((key, i) =>
                                                 <td key={key} className={classNames("p-0", submitted && errors[key] && "has-error")}>
                                                     <Form.Control
                                                         className="input-number"
-                                                        title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
-                                                        aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].caseType} ${inputTypes[i].sex} cases `}
+                                                        title={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].ethnicityType} ${inputTypes[i].sex} cases `}
+                                                        aria-label={`Cancer Site/Type: ${c.cancer} - ${inputTypes[i].ethnicityType} ${inputTypes[i].sex} cases `}
                                                         type="number"
                                                         min="0"
                                                         name={key}
                                                         value={counts[key] || 0}
-                                                        onChange={ev => {
-                                                            setCount(ev.target.name, Math.abs(parseInt(ev.target.value) || 0));
-                                                            dispatch(setHasUnsavedChanges(true));
-                                                        }}
+                                                        onChange={ev => updateSelectedCancerCounts(ev)}
                                                         readOnly={isReadOnly}
                                                     />
                                                 </td>
+                                               
                                             )}
+                                             <td className="text-right bg-light-grey">{subTotals[keyPrefix]||0}</td>
                                         </tr>
                                     })}
+                                    <tr>
+                                        <td className="text-nowrap bg-light-grey"><b>Total</b></td>
+                                        {
+                                           inputTypes.map(({ sex, ethnicityType },i) => {
+                                                let subTotalPre = `${cohortId}_${cancerSelected}`;
+                                                let subtotal_key = `${subTotalPre}_${lookupMap[ethnicityType].id}_${lookupMap[sex].id}`
+                                                
+                                              return  <td className="text-right bg-light-grey" key={i}>{subTotals[subtotal_key] || 0}</td>
+                                            })
+                                        }
+
+                                        <td className="text-right bg-light-grey">{subTotals[`${cohortId}_${cancerSelected}`] || 0}</td>
+                                    </tr>
                                 </tbody>
                             </Table>
                         </div>
