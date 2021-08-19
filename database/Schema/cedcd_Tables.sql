@@ -230,21 +230,27 @@ CREATE TABLE IF NOT  EXISTS `cancer_count` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cohort_id` int(11) NOT NULL,
   `cancer_id` int(11) NOT NULL,
+  `race_id` int NOT NULL DEFAULT '7',
+  `ethnicity_id` int NOT NULL DEFAULT '3',
   `gender_id` int(11) NOT NULL COMMENT '0-Both 1-Female 2-Male 3-Unknown',
   `case_type_id` int(4),
   `cancer_counts` int(10) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `cancer_count_pk` (`cohort_id`,`cancer_id`,`gender_id`,`case_type_id`),
+  UNIQUE KEY `cancer_count_pk` (`cohort_id`,`cancer_id`,`gender_id`,`ethnicity_id`,`race_id`,`case_type_id`),
   KEY `cancer_count_cancer_id_idx` (`cancer_id`),
   KEY `cancer_count_gender_id_idx` (`gender_id`),
   KEY `cancer_count_cohort_id` (`cohort_id`),
+  KEY `cc_eth_type_id` (`ethnicity_id`),
+  KEY `cc_race_type_id` (`race_id`),
   KEY `cc_case_type_id` (`case_type_id`),
-  CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `cancer_count_cancer_id` FOREIGN KEY (`cancer_id`) REFERENCES `lu_cancer` (`id`),
+  CONSTRAINT `cc_case_type_id` FOREIGN KEY (`case_type_id`) REFERENCES `lu_case_type` (`id`),
+  CONSTRAINT `cc_cohort_id` FOREIGN KEY (`cohort_id`) REFERENCES `cohort` (`id`),
+  CONSTRAINT `cc_eth_type_id` FOREIGN KEY (`ethnicity_id`) REFERENCES `lu_ethnicity` (`id`),
+  CONSTRAINT `cc_gender_id` FOREIGN KEY (`gender_id`) REFERENCES `lu_gender` (`id`),
+  CONSTRAINT `cc_race_type_id` FOREIGN KEY (`race_id`) REFERENCES `lu_race` (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
