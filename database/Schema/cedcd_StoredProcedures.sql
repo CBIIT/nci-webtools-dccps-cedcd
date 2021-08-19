@@ -1095,9 +1095,10 @@ BEGIN
     set @cohort_id = cohort_id;
     set @params = params;
     set @query = "
-        INSERT into cancer_count (
+            INSERT into cancer_count (
             cohort_id,
             cancer_id,
+            race_id, ethnicity_id,
             gender_id,
             case_type_id,
             cancer_counts
@@ -1105,6 +1106,7 @@ BEGIN
         SELECT
             ?,
             cancer_id,
+            race_id, ethnicity_id,
             gender_id,
             case_type_id,
             cancer_counts
@@ -1112,10 +1114,11 @@ BEGIN
             ?,
             '$[*]' columns(
                 cancer_id integer path '$.cancer_id',
+                race_id integer path '$.race_id', 
+                ethnicity_id integer path '$.ethnicity_id',
                 gender_id integer path '$.gender_id',
                 case_type_id integer path '$.case_type_id',
-                cancer_counts integer path '$.cancer_counts'
-            )
+                cancer_counts integer path '$.cancer_counts'    )
         ) AS json_params
         on duplicate key update
             cancer_counts = values(cancer_counts)";
