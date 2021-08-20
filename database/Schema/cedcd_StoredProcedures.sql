@@ -1368,6 +1368,16 @@ BEGIN
         GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
     END IF;
    
+    drop temporary table IF exists temp_cancer1;
+    create temporary table IF not exists temp_cancer1( val int );
+	drop temporary table IF exists temp_cohort1;
+    create temporary table IF not exists temp_cohort1( val int );
+    
+    insert into temp_cancer1 select * from temp_cancer;
+    
+    insert into temp_cohort1 select * from temp_cohort;
+    
+    SELECT * from (
     SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(cc.gender_id,'_',cc.cancer_id) AS u_id, cc.gender_id, 
 		( CASE  WHEN lg.id in (1,2) THEN concat(lg.gender,'s') ELSE lg.gender end) gender, 
 		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
@@ -1380,7 +1390,20 @@ BEGIN
 		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer ) )
 		and cc.cohort_id in ( SELECT val FROM temp_cohort ) 
     GROUP BY cc.cohort_id, ch.name, ch.acronym, u_id, gender, cc.gender_id, cc.cancer_id , cancer
-	ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer  END asc, cc.gender_id desc, ch.acronym;
+	-- ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer  END asc, cc.gender_id desc, ch.acronym
+    union 
+    SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(0,'_',cc.cancer_id) AS u_id, 0, 
+		'Total' as gender, 
+		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
+	FROM cancer_count cc 
+    JOIN cohort ch ON ch.id = cc.cohort_id 
+    JOIN lu_cancer lc ON cc.cancer_id = lc.id 
+    WHERE lower(ch.status)='published' 
+		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer1 ) )
+		and cc.cohort_id in ( SELECT val FROM temp_cohort1 ) 
+    GROUP BY cc.cohort_id, ch.name, ch.acronym,u_id, gender, cc.cancer_id , cancer ) as A
+	ORDER BY CASE WHEN a.cancer = 'All Other Cancers' THEN 'zzz' ELSE a.cancer  END asc, a.gender_id desc, a.cohort_acronym;
+  
   
 END//
 

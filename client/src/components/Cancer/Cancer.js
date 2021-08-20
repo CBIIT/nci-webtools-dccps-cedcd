@@ -190,9 +190,16 @@ class Cancer extends Component {
 		let content = "";
 		let exportTable = "";
 		if (this.state.result.list && this.state.result.list.length > 0) {
-			const topic = ["Cancer", "Sex"];
+			let topic = ["Cancer" , "Sex"];
 			let cohorts = this.state.result.cohorts;
-			let data = Object.assign([], this.state.result.list);
+			let alldata = Object.assign([], this.state.result.list);
+			let data = {};
+
+			if( this.state.filter.gender && this.state.filter.gender.length > 0 ) {
+				data= alldata.filter((item)=>item.c2 !='Total');
+			}else{
+				data = alldata.filter((item)=>item.c2==='Total');
+			}
 			const others = [];
 			const config = {
 				blockWidth: 200,
@@ -228,7 +235,7 @@ class Cancer extends Component {
 				<input id="tourable" type="hidden" />
 				<h1 className="welcome pg-title">Cancer Counts</h1>
 				<p className="welcome">To display cancer counts across cohorts, specify Sex, Cancer Type(s), and Cohort(s) and then select the submit button.  All fields are required.  A table will display the number of cohort participants with the selected cancers.
-        </p>
+				</p>
 				<div id="filter-block" className="filter-block col-md-12">
 					<div id="filter-panel" className="panel panel-default">
 						<div className="panel-heading">
