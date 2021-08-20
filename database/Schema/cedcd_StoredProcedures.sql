@@ -1385,8 +1385,8 @@ BEGIN
     JOIN cohort ch ON ch.id = cc.cohort_id 
     JOIN lu_gender lg ON cc.gender_id = lg.id 
     JOIN lu_cancer lc ON cc.cancer_id = lc.id 
-    WHERE lower(ch.status)='published' 
-		and ( @gender_null = 1 OR cc.gender_id in ( SELECT val FROM temp_gender ) )
+    WHERE lower(ch.status)='published' and lc.id !=29		
+	    and ( @gender_null = 1 OR cc.gender_id in ( SELECT val FROM temp_gender ) )
 		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer ) )
 		and cc.cohort_id in ( SELECT val FROM temp_cohort ) 
     GROUP BY cc.cohort_id, ch.name, ch.acronym, u_id, gender, cc.gender_id, cc.cancer_id , cancer
