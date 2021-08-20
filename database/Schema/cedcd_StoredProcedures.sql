@@ -1397,7 +1397,7 @@ BEGIN
 	FROM cancer_count cc 
     JOIN cohort ch ON ch.id = cc.cohort_id 
     JOIN lu_cancer lc ON cc.cancer_id = lc.id 
-    WHERE lower(ch.status)='published' 
+    WHERE lower(ch.status)='published' and lc.id !=29
 		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer1 ) )
 		and cc.cohort_id in ( SELECT val FROM temp_cohort1 ) 
     GROUP BY cc.cohort_id, ch.name, ch.acronym,u_id, gender, cc.cancer_id , cancer ) as a
