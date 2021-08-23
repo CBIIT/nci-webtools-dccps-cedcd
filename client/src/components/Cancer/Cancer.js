@@ -190,15 +190,29 @@ class Cancer extends Component {
 		let content = "";
 		let exportTable = "";
 		if (this.state.result.list && this.state.result.list.length > 0) {
-			let topic = ["Cancer" , "Sex"];
+			let topic = ["Cancer", "Sex"];
 			let cohorts = this.state.result.cohorts;
 			let alldata = Object.assign([], this.state.result.list);
 			let data = {};
-
-			if( this.state.filter.gender && this.state.filter.gender.length > 0 ) {
-				data= alldata.filter((item)=>(this.state.filter.gender.includes(item.c2==='Males'?2:(item.c2==='Females'?1:-1))));
+			let resultSex = [...new Set(alldata.filter(item=>item.c2!=='All').map(item => item.c2))];
+			let isDataIncluded = true;
+			if (this.state.filter.gender && this.state.filter.gender.length > 0) {
+				for (const item of this.state.filter.gender) {
+					if (!resultSex.includes(item === 2 ? 'Males' : (item === 1 ? 'Females' : 1))) isDataIncluded = false;
+				}
 			}else{
-				data = alldata.filter((item)=>item.c2==='All');
+				if(resultSex.length<2) isDataIncluded = false;
+			}
+
+			if (isDataIncluded) {
+
+				if (this.state.filter.gender && this.state.filter.gender.length > 0) {
+					data = alldata.filter((item) => (this.state.filter.gender.includes(item.c2 === 'Males' ? 2 : (item.c2 === 'Females' ? 1 : -1))));
+				} else {
+					data = alldata.filter((item) => item.c2 === 'All');
+				}
+			}else{
+				data =[];
 			}
 			const others = [];
 			const config = {
