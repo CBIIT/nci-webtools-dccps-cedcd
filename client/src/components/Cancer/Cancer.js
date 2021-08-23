@@ -212,7 +212,7 @@ class Cancer extends Component {
 					data = alldata.filter((item) => item.c2 === 'All');
 				}
 			}else{
-				data =[];
+				data = alldata.filter((item) => item.c2 !== 'All');
 			}
 			const others = [];
 			const config = {
