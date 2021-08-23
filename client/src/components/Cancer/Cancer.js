@@ -196,9 +196,9 @@ class Cancer extends Component {
 			let data = {};
 
 			if( this.state.filter.gender && this.state.filter.gender.length > 0 ) {
-				data= alldata.filter((item)=>item.c2 !='Total');
+				data= alldata.filter((item)=>(this.state.filter.gender.includes(item.c2==='Males'?2:(item.c2==='Females'?1:-1))));
 			}else{
-				data = alldata.filter((item)=>item.c2==='Total');
+				data = alldata.filter((item)=>item.c2==='All');
 			}
 			const others = [];
 			const config = {

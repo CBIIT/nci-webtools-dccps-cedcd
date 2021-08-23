@@ -1331,18 +1331,11 @@ BEGIN
   	set @gender = gender;
   	set @cancer = cancer;
   	set @cohort = cohort;
-	drop temporary table IF exists temp_gender;
-    create temporary table IF not exists temp_gender( val int );
+	
 	drop temporary table IF exists temp_cancer;
     create temporary table IF not exists temp_cancer( val int );
 	drop temporary table IF exists temp_cohort;
     create temporary table IF not exists temp_cohort( val int );
-    
-    IF (@gender != "" AND @gender REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
-        set @gender_null = 0 ;
-		call ConvertIntToTable(@gender);
-		INSERT into temp_gender SELECT distinct val FROM tempIntTable;
-    END IF;
     
     IF ( @cancer != "" AND @cancer REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
         set @cancer_null = 0 ;
@@ -1386,13 +1379,13 @@ BEGIN
     JOIN lu_gender lg ON cc.gender_id = lg.id 
     JOIN lu_cancer lc ON cc.cancer_id = lc.id 
     WHERE lower(ch.status)='published' and lc.id !=29		
-	    and ( @gender_null = 1 OR cc.gender_id in ( SELECT val FROM temp_gender ) )
+	    and ( @gender_null = 1 OR cc.gender_id in (1,2) )
 		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer ) )
 		and cc.cohort_id in ( SELECT val FROM temp_cohort ) 
     GROUP BY cc.cohort_id, ch.name, ch.acronym, u_id, gender, cc.gender_id, cc.cancer_id , cancer
     union 
     SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(0,'_',cc.cancer_id) AS u_id, 0, 
-		'Total' as gender, 
+		'All' as gender, 
 		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count cc 
     JOIN cohort ch ON ch.id = cc.cohort_id 
