@@ -504,7 +504,7 @@ const CancerInfoForm = ({ ...props }) => {
                         panelTitle="Cancer Counts">
                         <div className="my-3">
                             <Form.Label>D.1 Cancer Counts</Form.Label>
-                            <div > Please select a cancer type below and enter its participant counts by ethnicity, race and sex.</div>
+                            <div > Please select each cancer type below and enter its participant counts by ethnicity, race and sex.</div>
                         </div>
                         <div className="mb-4 ml-1">
                             <ButtonGroup className="ml-0 p-1">
@@ -513,17 +513,17 @@ const CancerInfoForm = ({ ...props }) => {
                                         a.cancer).localeCompare(b.cancer === "All Other Cancers" ? "ZAll Other Cancers" : b.cancer)).map((c) => {
                                             let preKey = `${cohortId}_${c.id}`;
                                             let subtotal = `${subTotals[preKey] || 0}`;
-                                            let cancerName = c.cancer.length < 15 ? c.cancer : c.cancer.slice(0, 11) + '...';
+                                            let cancerName = c.cancer.length < 19 ? c.cancer : c.cancer.slice(0, 16) + '...';
                                             let message = <h5 style={{fontSize: '1rem',textAlign:'left'}}>{c.cancer} <br></br>
                                                 ICD-9: {c.icd9 || 'n/a'}<br></br>
                                                 ICD-10: {c.icd10 || 'n/a'} <br></br>
                                                 Total cancer counts: {subtotal}</h5>;
 
-                                            return <span className="col-lg-2 col-md-4 col-sm-6 m-0 p-0" style={{ flex: 1}}  >
+                                            return <span className="col-lg-2 col-md-4 col-sm-6 m-0 p-0" style={{ flex: 1, height:"34px"}}  >
                                             <Reminder cancerCounts={true} message={message} key={preKey}>
-                                                <Button className="btn btn-cancer-form " style={{ width:"95%" }}  key={preKey} onClick={() => setCancerSelected(c.id)}
+                                                <Button className="btn btn-cancer-form " style={{ width:"95%", height:"95%" }}  key={preKey} onClick={() => setCancerSelected(c.id)}
                                                     active={c.id === cancerSelected}>
-                                                        {cancerName} ({parseInt(subtotal)===0?(c.id === cancerSelected ? 0 : <span style={{color:"Red"}}>0</span>):subtotal})
+                                                        {cancerName} ({parseInt(subtotal)===0?(c.id === cancerSelected ? 0 : <span style={{color:"lightgray"}}>0</span>):subtotal})
                                                 </Button>
                                             </Reminder> 
                                             </span>

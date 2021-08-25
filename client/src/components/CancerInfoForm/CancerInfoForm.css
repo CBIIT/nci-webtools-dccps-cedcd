@@ -10,8 +10,10 @@
     text-align: left !important;
     border-radius: 8px !important;
     margin: .25rem !important;
+    height: 30px !important;
+    font-size: small !important;
     white-space: nowrap;
-    align-self: stretch;
+    display:flex !important;
    /* min-width: max-content; */
 }
 
@@ -33,8 +35,7 @@
 .btn-cancer-form:hover,
 .open > .dropdown-toggle.btn-cancer-form {
     color: black !important;
-    font-weight: bold !important;
-    background-color: lightseagreen !important;
-    border-color: #01857b !important;
+    background-color: #B6DCC5 !important;
+    border-color: #B6DCC5 !important;
 }
 
