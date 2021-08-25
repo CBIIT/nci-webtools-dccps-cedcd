@@ -507,19 +507,27 @@ const CancerInfoForm = ({ ...props }) => {
                             <div>Please enter the number of participants with these cancers by Ethnicity, Race and Sex.</div>
                         </div>
                         <div className="mb-4 ml-1">
-                            <ButtonGroup>
+                            <ButtonGroup className="ml-0 p-1">
                                 {
-                                    lookup.cancer.filter(i => i.cancer !== 'No Cancer').sort((a, b) => (a.cancer ==="All Other Cancers"? "ZAll Other Cancers": a.cancer).localeCompare(b.cancer ==="All Other Cancers"? "ZAll Other Cancers": b.cancer)).map((c) => {
-                                        let preKey =  `${cohortId}_${c.id}`;
-                                        let subtotal = `${subTotals[preKey]||0}`;
-                                        let cancerName = c.cancer.length < 17 ? c.cancer : c.cancer.slice(0,10)+'...';
-                                        let message = <p  style={{fontSize:"12"}}>{c.cancer} <br></br> ICD-9: {c.icd9}<br></br> ICD-10: {c.icd10} <br></br> Total: {subtotal}</p>;         
-                                       return parseInt(`${subtotal}`)> 0 ? <Reminder viewCohort={true} message={message}  key={preKey}>
-                                        <Button className="col-lg-2 col-md-6 btn-cancer-form"  key={preKey} onClick={() => setCancerSelected(c.id)} active={c.id === cancerSelected}> <b>{cancerName}{"  "} ( {subtotal} )</b></Button></Reminder> :  
-                                          <Reminder viewCohort={true} message={message} key={preKey} >
-                                               <Button className="col-lg-2 col-md-6 text-nowrap btn-cancer-form" key={preKey}  active={c.id === cancerSelected } onClick={() => setCancerSelected(c.id)}>{cancerName}{"  "} ( {subtotal} ) </Button>
-                                        </Reminder>
-                                    })
+                                    lookup.cancer.filter(i => i.cancer !== 'No Cancer').sort((a, b) => (a.cancer === "All Other Cancers" ? "ZAll Other Cancers" :
+                                        a.cancer).localeCompare(b.cancer === "All Other Cancers" ? "ZAll Other Cancers" : b.cancer)).map((c) => {
+                                            let preKey = `${cohortId}_${c.id}`;
+                                            let subtotal = `${subTotals[preKey] || 0}`;
+                                            let cancerName = c.cancer.length < 25 ? c.cancer : c.cancer.slice(0, 21) + '...';
+                                            let message = <h5 style={{fontSize: '1rem',textAlign:'left'}}>{c.cancer} <br></br>
+                                                ICD-9: {c.icd9 || 'n/a'}<br></br>
+                                                ICD-10: {c.icd10 || 'n/a'} <br></br>
+                                                Total cancer counts: {subtotal}</h5>;
+
+                                            return <>
+                                            <Reminder cancerCounts={true} message={message} key={preKey}>
+                                                <Button className="col-lg-3 col-md-4 col-sm-6 btn-cancer-form text-nowrap flex" key={preKey} onClick={() => setCancerSelected(c.id)}
+                                                    active={c.id === cancerSelected}>
+                                                        {cancerName} ({parseInt(subtotal)===0?(<span style={{color:"Brown"}}>0</span>):subtotal})
+                                                </Button>
+                                            </Reminder> 
+                                            </>
+                                        })
                                 }
                             </ButtonGroup>
                         </div>

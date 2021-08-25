@@ -10,7 +10,7 @@ export default function Reminder(props) {
         trigger={props.trigger}
         overlay={
             <Tooltip
-                className={classNames(!props.info && "tooltip-danger", props.viewCohort && "tooltip-viewcohort", props.disabled && "tooltip-disabled", props.info && 'tooltip-info')}
+                className={classNames(!props.info && "tooltip-danger", props.viewCohort && "tooltip-viewcohort",props.cancerCounts && "tooltip-cancercounts", props.disabled && "tooltip-disabled", props.info && 'tooltip-info')}
                 id="tooltip"
                 placement={props.placement || 'top'}>
                 {props.message}

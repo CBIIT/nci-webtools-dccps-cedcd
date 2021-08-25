@@ -4,16 +4,32 @@
 .btn-cancer-form {
     color: black !important;
     background-color:white !important;
-    border-color: black !important;
+    border-color: lightgray !important;
+    text-align: left !important;
+    border-radius: 0 !important;
+    margin: 0px !important;
+    white-space: nowrap;
+    display: flex;
+   /* min-width: max-content; */
 }
 
+/* .btn-cancer-form {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  } */
 .btn-cancer-form:hover,
 .btn-cancer-form:focus,
-.btn-cancer-form.focus,
-.btn-cancer-form:active,
 .btn-cancer-form.active,
 .open > .dropdown-toggle.btn-cancer-form {
     color: #fff !important;
-    background-color: #01857b !important;
+    background-color: lightseagreen !important;
+    border-color: #01857b !important;
+}
+
+.btn-cancer-form:hover,
+.open > .dropdown-toggle.btn-cancer-form {
+    color: black !important;
+    background-color: #c7d1d0 !important;
     border-color: #01857b !important;
 }

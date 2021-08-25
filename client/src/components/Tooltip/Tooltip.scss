@@ -41,4 +41,17 @@
     }
   }
   
+
+  .tooltip-cancercounts {
+    .arrow::before{
+        border-top-color: black !important;
+    }    
+    .tooltip-inner {
+        background-color: white;
+        width: 200px;
+        font-size: 12px;
+        color: black;
+        border:1px solid lightgray;
+    }
+  }
   
