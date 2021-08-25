@@ -5,6 +5,8 @@
     color: black !important;
     background-color:white !important;
     border-color: lightgray !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
     text-align: left !important;
     border-radius: 0 !important;
     margin: 0px !important;
