@@ -22,6 +22,7 @@ import Reminder from '../Tooltip/Tooltip';
 import { CollapsiblePanelContainer, CollapsiblePanel } from '../controls/collapsable-panels/collapsable-panels';
 import { setHasUnsavedChanges } from '../../reducers/unsavedChangesReducer';
 import './CancerInfoForm.css';
+import { locale } from 'moment';
 
 
 const {
@@ -512,18 +513,19 @@ const CancerInfoForm = ({ ...props }) => {
                                     lookup.cancer.filter(i => i.cancer !== 'No Cancer').sort((a, b) => (a.cancer === "All Other Cancers" ? "ZAll Other Cancers" :
                                         a.cancer).localeCompare(b.cancer === "All Other Cancers" ? "ZAll Other Cancers" : b.cancer)).map((c) => {
                                             let preKey = `${cohortId}_${c.id}`;
-                                            let subtotal = `${subTotals[preKey] || 0}`;
+                                            let subtotal = `${subTotals[preKey]|| 0}`;
+                                            let subtotalStr = parseInt(subtotal).toLocaleString();
                                             let cancerName = c.cancer.length < 19 ? c.cancer : c.cancer.slice(0, 16) + '...';
                                             let message = <h5 style={{fontSize: '1rem',textAlign:'left'}}>{c.cancer} <br></br>
                                                 ICD-9: {c.icd9 || 'n/a'}<br></br>
                                                 ICD-10: {c.icd10 || 'n/a'} <br></br>
-                                                Total cancer counts: {subtotal}</h5>;
+                                                Total cancer counts: {subtotalStr}</h5>;
 
                                             return <span className="col-lg-2 col-md-4 col-sm-6 m-0 p-0" style={{ flex: 1, height:"34px"}}  >
                                             <Reminder cancerCounts={true} message={message} key={preKey}>
                                                 <Button className="btn btn-cancer-form " style={{ width:"95%", height:"95%" }}  key={preKey} onClick={() => setCancerSelected(c.id)}
                                                     active={c.id === cancerSelected}>
-                                                        {cancerName} ({parseInt(subtotal)===0?(c.id === cancerSelected ? 0 : <span style={{color:"lightgray"}}>0</span>):subtotal})
+                                                        {cancerName} ({parseInt(subtotal)===0?(c.id === cancerSelected ? 0 : <span style={{color:"#9E9E9E"}}>0</span>):subtotalStr})
                                                 </Button>
                                             </Reminder> 
                                             </span>
@@ -586,7 +588,7 @@ const CancerInfoForm = ({ ...props }) => {
                                                 </td>
                                                
                                             )}
-                                             <td className="text-right bg-light-grey">{subTotals[keyPrefix]||0}</td>
+                                             <td className="text-right bg-light-grey">{subTotals[keyPrefix]? subTotals[keyPrefix].toLocaleString(): 0}</td>
                                         </tr>
                                     })}
                                     <tr>
@@ -595,12 +597,12 @@ const CancerInfoForm = ({ ...props }) => {
                                            inputTypes.map(({ sex, ethnicityType },i) => {
                                                 let subTotalPre = `${cohortId}_${cancerSelected}`;
                                                 let subtotal_key = `${subTotalPre}_${lookupMap[ethnicityType].id}_${lookupMap[sex].id}`
-                                                
-                                              return  <td className="text-right bg-light-grey" key={i}>{subTotals[subtotal_key] || 0}</td>
+                                            
+                                              return  <td className="text-right bg-light-grey" key={i}>{subTotals[subtotal_key] ? subTotals[subtotal_key].toLocaleString(): 0}</td>
                                             })
                                         }
 
-                                        <td className="text-right bg-light-grey">{subTotals[`${cohortId}_${cancerSelected}`] || 0}</td>
+                                        <td className="text-right bg-light-grey">{subTotals[`${cohortId}_${cancerSelected}`]? subTotals[`${cohortId}_${cancerSelected}`].toLocaleString() : 0}</td>
                                     </tr>
                                 </tbody>
                             </Table>
