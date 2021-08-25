@@ -523,7 +523,7 @@ const CancerInfoForm = ({ ...props }) => {
                                             <Reminder cancerCounts={true} message={message} key={preKey}>
                                                 <Button className="col-lg-3 col-md-4 col-sm-6 btn-cancer-form text-nowrap flex" key={preKey} onClick={() => setCancerSelected(c.id)}
                                                     active={c.id === cancerSelected}>
-                                                        {cancerName} ({parseInt(subtotal)===0?(<span style={{color:"Brown"}}>0</span>):subtotal})
+                                                        {cancerName} ({parseInt(subtotal)===0?(c.id === cancerSelected ? 0 : <span style={{color:"Brown"}}>0</span>):subtotal})
                                                 </Button>
                                             </Reminder> 
                                             </>
