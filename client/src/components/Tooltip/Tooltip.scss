@@ -48,8 +48,10 @@
     }    
     .tooltip-inner {
         background-color: white;
-        width: 200px;
-        font-size: 12px;
+        font-size: 11px;
+        text-align: left;
+        white-space: nowrap;
+        min-width: max-content; 
         color: black;
         border:1px solid lightgray;
     }
