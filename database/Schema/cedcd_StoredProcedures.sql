@@ -2921,8 +2921,8 @@ alter table cohort_temp drop column id;
 INSERT into dlh SELECT null, a.* FROM cohort_temp a; 
 
 -- INSERT into cancer_count
-INSERT into cancer_count (cohort_id,cancer_id,gender_id, case_type_id,cancer_counts, create_time, update_time)
-SELECT new_cohort_id, old.cancer_id,old.gender_id, old.case_type_id,old.cancer_counts, now() AS col1, now() AS col2
+INSERT into cancer_count (cohort_id,cancer_id,gender_id,ethnicity_id, race_id, case_type_id,cancer_counts, create_time, update_time)
+SELECT new_cohort_id, old.cancer_id,old.gender_id,old.ethnicity_id, old.race_id, old.case_type_id,old.cancer_counts, now() AS col1, now() AS col2
 FROM cancer_count AS old WHERE old.cohort_id =old_cohort_id;
 
 drop table IF exists cohort_temp;
