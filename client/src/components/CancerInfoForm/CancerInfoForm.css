@@ -1,6 +1,14 @@
 .form-check-label {
     margin-left: 0.5rem;
 }
+
+.cancer-table-head {
+    text-align: center;
+    color: rgba(140, 255, 220, 1);
+    opacity: 1;
+    font-size: 2rem !important;
+  }
+
 .btn-cancer-form {
     color: black !important;
     background-color:white !important;

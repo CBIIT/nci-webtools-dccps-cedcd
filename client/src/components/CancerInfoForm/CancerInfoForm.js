@@ -541,7 +541,7 @@ const CancerInfoForm = ({ ...props }) => {
                                         {
                                             lookup.cancer.filter(i => i.cancer !== 'No Cancer').map((i) => {
                                                 if (i.id === parseInt(`${cancerSelected}`)) {
-                                                    return <th colSpan='6' className="text-center" key={i.id}> <b> {i.cancer} ( ICD-9: {i.icd9} / ICD-10: {i.icd10} ) </b>
+                                                    return <th colSpan='6' className="cancer-table-head " key={i.id}> <b> {i.cancer} ( ICD-9: {i.icd9} / ICD-10: {i.icd10} ) </b>
                                                     </th>
                                                 }
                                             })
