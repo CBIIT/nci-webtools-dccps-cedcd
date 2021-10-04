@@ -1403,7 +1403,7 @@ BEGIN
     select cohort_id, concat(cc.gender_id,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
     from cancer_count cc  GROUP BY cc.cohort_id,  u_id
     union
-    select cohort_id, concat(0,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
+    select cohort_id, concat(4,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
     from cancer_count cc  GROUP BY cc.cohort_id,  u_id;
     
     select a.*, IFNULL(b.cancer_counts, 0) as cancer_counts 
