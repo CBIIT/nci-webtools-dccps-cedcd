@@ -1412,7 +1412,7 @@ BEGIN
     from temp_result a 
     LEFT join temp_sum b USE INDEX (u_id) ON a.cohort_id=b.cohort_id and a.u_id=b.u_id
     ORDER BY CASE WHEN a.cancer = 'All Other Cancers' THEN 'zzz' ELSE a.cancer  END asc, a.gender_id desc, a.ethnicity,  
-    CASE  WHEN a.race_id = 3 THEN 4.5 WHEN a.race_id = 6 THEN 8 ELSE a.race_id end, a.cohort_acronym ;
+    CASE  WHEN a.race_id = 3 THEN 4.5 ELSE a.race_id end, a.cohort_acronym ;
 END//
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -1486,7 +1486,7 @@ BEGIN
     JOIN ( SELECT * FROM lu_race c WHERE @race_null = 1 OR c.id in (SELECT val FROM temp_race) ) lr ON ec.race_id = lr.id 
 	WHERE lower(ch.status)='published' and  ec.cohort_id in (SELECT val FROM temp_cohort) 
 	ORDER BY ec.gender_id, le.ethnicity, 
-		 CASE  WHEN ec.race_id = 3 THEN 4.5 WHEN ec.race_id = 6 THEN 8 ELSE ec.race_id end, 
+		 CASE  WHEN ec.race_id = 3 THEN 4.5 ELSE ec.race_id end, 
         ch.acronym;
 
 END //
