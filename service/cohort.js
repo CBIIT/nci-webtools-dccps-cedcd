@@ -450,7 +450,19 @@ router.post('/cancer', function (req, res) {
 		params.push("");
 	}
 
+	if (filter.race.length > 0) {
+		params.push(filter.race.toString());
+	}
+	else {
+		params.push("");
+	}
 
+	if (filter.ethnicity.length > 0) {
+		params.push(filter.ethnicity.toString());
+	}
+	else {
+		params.push("");
+	}
 
 	if (filter.cancer.length > 0) {
 		params.push(filter.cancer.toString());
@@ -472,14 +484,24 @@ router.post('/cancer', function (req, res) {
 			let cache = {};
 			dt.list = [];
 			dt.cohorts = [];
+			dt.cancers = [];
 			let cohorts = [];
+			let cancers = [];
 			let list = results[0];
 			list.forEach(function (l) {
 
+				if (cancers.indexOf(l.cancer_id) == -1) {
+					cancers.push(l.cancer_id);
+					dt.cancers.push(l.cancer);
+				}
+
 				if (cache[l.u_id] == null) {
 					cache[l.u_id] = {};
-					cache[l.u_id].c1 = l.cancer;
-					cache[l.u_id].c2 = l.gender;
+					cache[l.u_id].cancer = l.cancer;
+					cache[l.u_id].c0 = l.gender;
+					cache[l.u_id].c1 = l.ethnicity;
+					cache[l.u_id].c2 = l.race;
+					cache[l.u_id].total = 0;
 				}
 				if (cohorts.indexOf(l.cohort_id) == -1) {
 					cohorts.push(l.cohort_id);
@@ -491,12 +513,17 @@ router.post('/cancer', function (req, res) {
 
 				}
 				let tmp = cache[l.u_id];
+				let count = 0;
 				if (l.cancer_counts == -1) {
 					tmp["c_" + l.cohort_id] = "N/P";
+					count = 0;
 				}
 				else {
 					tmp["c_" + l.cohort_id] = l.cancer_counts;
+					count = l.cancer_counts;
 				}
+
+				tmp.total += count;
 			});
 
 			for (key in cache) {

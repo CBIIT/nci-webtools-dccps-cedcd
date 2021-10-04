@@ -869,6 +869,20 @@ router.post('/export/cancer', function (req, res) {
 		params.push("");
 	}
 
+	if (filter.race.length > 0) {
+		params.push(filter.race.toString());
+	}
+	else {
+		params.push("");
+	}
+
+	if (filter.ethnicity.length > 0) {
+		params.push(filter.ethnicity.toString());
+	}
+	else {
+		params.push("");
+	}
+
 	if (filter.cancer.length > 0) {
 		params.push(filter.cancer.toString());
 	}
@@ -899,12 +913,22 @@ router.post('/export/cancer', function (req, res) {
 			let list = results[0];
 			let lcache = {};
 			let cohorts = [];
-			list.forEach(function (l) {
+			let sexList = [];
+			if(filter.gender.length !== 0){
+				filter.gender.forEach(function (g) {
+					sexList.push(g);
+				});
+			}else {
+				sexList.push(0)
+			}
+			list.filter(e => sexList.includes(e.gender_id)).forEach(function (l) {
 
 				if (lcache[l.u_id] == null) {
 					lcache[l.u_id] = {};
 					lcache[l.u_id].Cancer = l.cancer;
 					lcache[l.u_id].Gender = l.gender;
+					lcache[l.u_id].Ethnicity = l.ethnicity;
+					lcache[l.u_id].Race = l.race;					
 				}
 				if (cohorts.indexOf(l.cohort_acronym) == -1) {
 					cohorts.push(l.cohort_acronym);
@@ -926,6 +950,8 @@ router.post('/export/cancer', function (req, res) {
 
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
+			data.list["Cancer_Counts"].header.push([]);
+			data.list["Cancer_Counts"].header.push([]);
 			data.list["Criteria"].header = [];
 			if (filter.gender.length !== 0) {
 				let genders = cache.getValue("lookup:gender");
@@ -933,9 +959,31 @@ router.post('/export/cancer', function (req, res) {
 				genders.forEach(function (g) {
 					dict[g.id] = g.gender;
 				});
-				data.list["Criteria"].header.push(["Gender:"]);
+				data.list["Criteria"].header.push(["Gender:"]);	
 				filter.gender.forEach(function (g) {
-					data.list["Criteria"].header.push([" - " + g]);
+					data.list["Criteria"].header.push([" - " + (dict[g]+"s")]);
+				});
+			}
+			if (filter.race.length !== 0) {
+				let races = cache.getValue("lookup:race");
+				let dict = {};
+				races.forEach(function (r) {
+					dict[r.id] = r.race;
+				});
+				data.list["Criteria"].header.push(["Race:"]);
+				filter.race.forEach(function (r) {
+					data.list["Criteria"].header.push([" - " + dict[r]]);
+				});
+			}
+			if (filter.ethnicity.length !== 0) {
+				let ethnicities = cache.getValue("lookup:ethnicity");
+				let dict = {};
+				ethnicities.forEach(function (e) {
+					dict[e.id] = e.ethnicity;
+				});
+				data.list["Criteria"].header.push(["Ethnicity:"]);
+				filter.ethnicity.forEach(function (e) {
+					data.list["Criteria"].header.push([" - " + dict[e]]);
 				});
 			}
 			if (filter.cancer.length !== 0) {
@@ -958,6 +1006,8 @@ router.post('/export/cancer', function (req, res) {
 		}
 		else {
 			data.list["Cancer_Counts"].rows = [];
+			data.list["Cancer_Counts"].header.push([]);
+			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Cancer_Counts"].header.push([]);
 			data.list["Criteria"].header = [["Gender:"],
