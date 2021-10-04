@@ -1323,16 +1323,24 @@ END //
 -- Stored Procedure: SELECT_cancer_counts
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `SELECT_cancer_counts` //
-CREATE PROCEDURE `SELECT_cancer_counts`(in gender varchar(200), in cancer varchar(1000),in cohort varchar(1000))
+CREATE PROCEDURE `SELECT_cancer_counts`(in gender varchar(200),in race varchar(500),in ethnicity varchar(500), in cancer varchar(1000),in cohort varchar(1000))
 BEGIN 
-  set @gender_null = 1;
+	set @gender_null = 1;
+    set @race_null = 1;
+    set @ethnicity_null = 1;
     set @cancer_null = 1;
 	set @cohort_null = 1;
   	set @gender = gender;
+    set @race = race;
+  	set @ethnicity = ethnicity;
   	set @cancer = cancer;
   	set @cohort = cohort;
 	drop temporary table IF exists temp_gender;
     create temporary table IF not exists temp_gender( val int );
+    drop temporary table IF exists temp_race;
+    create temporary table IF not exists temp_race( val int );
+    drop temporary table IF exists temp_ethnicity;
+    create temporary table IF not exists temp_ethnicity( val int );
 	drop temporary table IF exists temp_cancer;
     create temporary table IF not exists temp_cancer( val int );
 	drop temporary table IF exists temp_cohort;
@@ -1342,6 +1350,18 @@ BEGIN
         set @gender_null = 0 ;
 		call ConvertIntToTable(@gender);
 		INSERT into temp_gender SELECT distinct val FROM tempIntTable;
+    END IF;
+    
+     IF ( @race != "" AND @race REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'    ) then
+        set @race_null = 0 ;
+		call ConvertIntToTable(@race);
+		INSERT into temp_race SELECT distinct val FROM tempIntTable;
+    END IF;
+    
+    IF ( @ethnicity != "" AND  @ethnicity REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
+        set @ethnicity_null = 0 ;
+		call ConvertIntToTable(@ethnicity);
+		INSERT into temp_ethnicity SELECT distinct val FROM tempIntTable;
     END IF;
     
     IF ( @cancer != "" AND @cancer REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
@@ -1367,43 +1387,32 @@ BEGIN
         and ( @cancer_null = 1 OR tc.cancer_id in ( SELECT val FROM temp_cancer ) )
         GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
     END IF;
-   
-    drop temporary table IF exists temp_cancer1;
-    create temporary table IF not exists temp_cancer1( val int );
-	drop temporary table IF exists temp_cohort1;
-    create temporary table IF not exists temp_cohort1( val int );
     
-    insert into temp_cancer1 select * from temp_cancer;
+	drop temporary table IF exists temp_result;
+    create temporary table temp_result as 
+    select concat(lg.id,'_',le.id, '_',lr.id,'_',lc.id) AS u_id, c.cohort_id, c.cohort_name, c.cohort_acronym, lc.id as cancer_id, lc.cancer, 
+    le.id as ethnicity_id, le.ethnicity, lr.id as race_id, lr.race, lg.id as gender_id, lg.gender
+    from (select * from lu_cancer where id !=29 and  (@cancer_null = 1 OR id in ( SELECT val FROM temp_cancer ))) as lc 
+    join (select id as cohort_id, ch.name AS cohort_name, ch.acronym AS cohort_acronym from cohort ch where lower(ch.status)='published' and ch.id in ( SELECT val FROM temp_cohort)  ) c 
+    join (select id, concat(g.gender,'s') as gender from lu_gender g where g.id in (1,2) union select 0, 'All' from dual) as lg 
+    join ( SELECT * FROM lu_race c WHERE @race_null = 1 OR c.id in (SELECT val FROM temp_race)) lr 
+    join (SELECT * FROM lu_ethnicity b WHERE @ethnicity_null = 1 OR b.id in (SELECT val FROM temp_ethnicity)) le 
+    ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer  END asc, lg.id desc, le.ethnicity,  
+    CASE  WHEN lr.id = 3 THEN 4.5 WHEN lr.id = 6 THEN 8 ELSE lr.id end, c.cohort_acronym ;
     
-    insert into temp_cohort1 select * from temp_cohort;
+    drop temporary table IF exists temp_sum;
+    create temporary table temp_sum  (INDEX(u_id)) as 
+    select cohort_id, concat(cc.gender_id,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
+    from cancer_count cc  GROUP BY cc.cohort_id,  u_id
+    union
+    select cohort_id, concat(0,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
+    from cancer_count cc  GROUP BY cc.cohort_id,  u_id;
     
-    SELECT * from (
-    SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(cc.gender_id,'_',cc.cancer_id) AS u_id, cc.gender_id, 
-		( CASE  WHEN lg.id in (1,2) THEN concat(lg.gender,'s') ELSE lg.gender end) gender, 
-		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
-	FROM cancer_count cc 
-    JOIN cohort ch ON ch.id = cc.cohort_id 
-    JOIN lu_gender lg ON cc.gender_id = lg.id 
-    JOIN lu_cancer lc ON cc.cancer_id = lc.id 
-    WHERE lower(ch.status)='published' and lc.id !=29		
-	    and ( @gender_null = 1 OR cc.gender_id in ( SELECT val FROM temp_gender ) )
-		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer ) )
-		and cc.cohort_id in ( SELECT val FROM temp_cohort ) 
-    GROUP BY cc.cohort_id, ch.name, ch.acronym, u_id, gender, cc.gender_id, cc.cancer_id , cancer
-    union 
-    SELECT cc.cohort_id,ch.name AS cohort_name, ch.acronym AS cohort_acronym, concat(0,'_',cc.cancer_id) AS u_id, 0, 
-		'All' as gender, 
-		cc.cancer_id, lc.cancer, sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
-	FROM cancer_count cc 
-    JOIN cohort ch ON ch.id = cc.cohort_id 
-    JOIN lu_cancer lc ON cc.cancer_id = lc.id 
-    WHERE lower(ch.status)='published' and lc.id !=29
-		and ( @cancer_null = 1 OR cc.cancer_id in ( SELECT val FROM temp_cancer1 ) )
-		and cc.cohort_id in ( SELECT val FROM temp_cohort1 ) 
-    GROUP BY cc.cohort_id, ch.name, ch.acronym,u_id, gender, cc.cancer_id , cancer ) as a
-	ORDER BY CASE WHEN a.cancer = 'All Other Cancers' THEN 'zzz' ELSE a.cancer  END asc, a.gender_id desc, a.cohort_acronym;
-  
-  
+    select a.*, IFNULL(b.cancer_counts, 0) as cancer_counts 
+    from temp_result a 
+    LEFT join temp_sum b USE INDEX (u_id) ON a.cohort_id=b.cohort_id and a.u_id=b.u_id
+    ORDER BY CASE WHEN a.cancer = 'All Other Cancers' THEN 'zzz' ELSE a.cancer  END asc, a.gender_id desc, a.ethnicity,  
+    CASE  WHEN a.race_id = 3 THEN 4.5 WHEN a.race_id = 6 THEN 8 ELSE a.race_id end, a.cohort_acronym ;
 END//
 
 -- -----------------------------------------------------------------------------------------------------------
