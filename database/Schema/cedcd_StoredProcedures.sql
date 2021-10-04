@@ -1394,11 +1394,9 @@ BEGIN
     le.id as ethnicity_id, le.ethnicity, lr.id as race_id, lr.race, lg.id as gender_id, lg.gender
     from (select * from lu_cancer where id !=29 and  (@cancer_null = 1 OR id in ( SELECT val FROM temp_cancer ))) as lc 
     join (select id as cohort_id, ch.name AS cohort_name, ch.acronym AS cohort_acronym from cohort ch where lower(ch.status)='published' and ch.id in ( SELECT val FROM temp_cohort)  ) c 
-    join (select id, concat(g.gender,'s') as gender from lu_gender g where g.id in (1,2) union select 0, 'All' from dual) as lg 
+    join (select id, g.gender from lu_gender g where g.id in (1,2,4) ) as lg 
     join ( SELECT * FROM lu_race c WHERE @race_null = 1 OR c.id in (SELECT val FROM temp_race)) lr 
-    join (SELECT * FROM lu_ethnicity b WHERE @ethnicity_null = 1 OR b.id in (SELECT val FROM temp_ethnicity)) le 
-    ORDER BY CASE WHEN lc.cancer = 'All Other Cancers' THEN 'zzz' ELSE lc.cancer  END asc, lg.id desc, le.ethnicity,  
-    CASE  WHEN lr.id = 3 THEN 4.5 WHEN lr.id = 6 THEN 8 ELSE lr.id end, c.cohort_acronym ;
+    join (SELECT * FROM lu_ethnicity b WHERE @ethnicity_null = 1 OR b.id in (SELECT val FROM temp_ethnicity)) le;
     
     drop temporary table IF exists temp_sum;
     create temporary table temp_sum  (INDEX(u_id)) as 
