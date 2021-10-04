@@ -271,19 +271,20 @@ class Cancer extends Component {
 				const cancerdata = alldata.filter(item => item.cancer == element);
 				const { cancer, ...data_no_cancer } = cancerdata
 				data_per_cancer = Object.assign([], data_no_cancer);
-				
+				let panelTitle= 'Cancer Type: '+ element
 				let data = {};
 				if (isDataIncluded) {
 					if (this.state.filter.gender && this.state.filter.gender.length === 2) {
+						
 						return (
 							<CollapsiblePanel
 								condition={this.state.activePanel === element}
 								onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
-								panelTitle={element}>
+								panelTitle={panelTitle}>
 								<div>
 									<div key={`{element}+"-F"`}>
 										<label className="mt-4 mb-1">
-											Females - Cancer: {element}
+											Females - Cancer Type: {element}
 										</label>
 										<div className="interiorTable" style={{ position: "relative" }}>
 											<CountsTable saveHistory={this.saveHistory} values={data_per_cancer.filter((item) => item.c0 === 'Females')} topic={topic} cohorts={cohorts} others={others} config={config} />
@@ -291,7 +292,7 @@ class Cancer extends Component {
 									</div>
 									<div key={`{element}+"-M"`}>
 										<label className="mt-4 mb-1">
-											Males - Cancer: {element}
+											Males - Cancer Type: {element}
 										</label>
 										<div className="interiorTable" style={{ position: "relative" }}>
 											<CountsTable saveHistory={this.saveHistory} values={data_per_cancer.filter((item) => item.c0 === 'Males')} topic={topic} cohorts={cohorts} others={others} config={config} />
@@ -308,10 +309,10 @@ class Cancer extends Component {
 							<CollapsiblePanel
 								condition={this.state.activePanel === element}
 								onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
-								panelTitle={element}>
+								panelTitle={panelTitle}>
 								<div key={element}>
 									<label>
-										{sex} - Cancer: {element}
+										{sex} - Cancer Type: {element}
 									</label>
 
 									<div className="interiorTable" style={{ position: "relative" }}>
@@ -327,10 +328,10 @@ class Cancer extends Component {
 							<CollapsiblePanel
 								condition={this.state.activePanel === element}
 								onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
-								panelTitle={element}>
+								panelTitle={panelTitle}>
 								<div key={element}>
 									<label>
-										All Sexes - Cancer: {element}
+										All Sexes - Cancer Type: {element}
 									</label>
 
 									<div className="interiorTable" style={{ position: "relative" }}>
@@ -347,10 +348,10 @@ class Cancer extends Component {
 						<CollapsiblePanel
 							condition={this.state.activePanel === element}
 							onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
-							panelTitle={element}>
+							panelTitle={panelTitle}>
 							<div key={element}>
 								<label>
-									{sex} - Cancer:  {element}
+									{sex} - Cancer Type:  {element}
 								</label>
 
 								<div className="interiorTable" style={{ position: "relative" }}>
