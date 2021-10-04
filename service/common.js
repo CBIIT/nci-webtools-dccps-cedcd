@@ -919,7 +919,7 @@ router.post('/export/cancer', function (req, res) {
 					sexList.push(g);
 				});
 			}else {
-				sexList.push(0)
+				sexList.push(4)
 			}
 			list.filter(e => sexList.includes(e.gender_id)).forEach(function (l) {
 
