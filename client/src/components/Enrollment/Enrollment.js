@@ -274,7 +274,7 @@ class Enrollment extends Component {
 				<div id="filter-block" className="filter-block col-md-12">
 					<div id="filter-panel" className="panel panel-default">
 						<div className="panel-heading">
-							<h2 className="panel-title">Specify</h2>
+							<h2 className="panel-title">Search</h2>
 						</div>
 						<div className="panel-body">
 							<div className="filter row">
