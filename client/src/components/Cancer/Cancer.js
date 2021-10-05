@@ -331,7 +331,7 @@ class Cancer extends Component {
 								panelTitle={panelTitle}>
 								<div key={element}>
 									<span className="mt-4 mb-1 cancerTableTitle">
-											<b> All sexes Cancer Counts </b>
+											<b> All Sexes Cancer Counts </b>
 										</span>
 
 									<div className="interiorTable" style={{ position: "relative" }}>
