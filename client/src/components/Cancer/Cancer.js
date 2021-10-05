@@ -271,7 +271,7 @@ class Cancer extends Component {
 				const cancerdata = alldata.filter(item => item.cancer == element);
 				const { cancer, ...data_no_cancer } = cancerdata
 				data_per_cancer = Object.assign([], data_no_cancer);
-				let panelTitle= 'Cancer Type: '+ element
+				let panelTitle=  element
 				let data = {};
 				if (isDataIncluded) {
 					if (this.state.filter.gender && this.state.filter.gender.length === 2) {
@@ -283,17 +283,17 @@ class Cancer extends Component {
 								panelTitle={panelTitle}>
 								<div>
 									<div key={`{element}+"-F"`}>
-										<label className="mt-4 mb-1">
-											Females - Cancer Type: {element}
-										</label>
+										<span className="mt-4 mb-1 cancerTableTitle">
+											<b> Females Cancer Counts </b>
+										</span>
 										<div className="interiorTable" style={{ position: "relative" }}>
 											<CountsTable saveHistory={this.saveHistory} values={data_per_cancer.filter((item) => item.c0 === 'Females')} topic={topic} cohorts={cohorts} others={others} config={config} />
 										</div>
 									</div>
-									<div key={`{element}+"-M"`}>
-										<label className="mt-4 mb-1">
-											Males - Cancer Type: {element}
-										</label>
+									<div className='mt-4' key={`{element}+"-M"`}>
+										<span className="mt-4 mb-1 cancerTableTitle">
+											<b> Males Cancer Counts </b>
+										</span>
 										<div className="interiorTable" style={{ position: "relative" }}>
 											<CountsTable saveHistory={this.saveHistory} values={data_per_cancer.filter((item) => item.c0 === 'Males')} topic={topic} cohorts={cohorts} others={others} config={config} />
 										</div>
@@ -311,9 +311,9 @@ class Cancer extends Component {
 								onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
 								panelTitle={panelTitle}>
 								<div key={element}>
-									<label>
-										{sex} - Cancer Type: {element}
-									</label>
+									<span className="mt-4 mb-1 cancerTableTitle">
+											<b> {sex} Cancer Counts </b>
+										</span>
 
 									<div className="interiorTable" style={{ position: "relative" }}>
 										<CountsTable saveHistory={this.saveHistory} values={data_per_cancer.filter((item) => item.c0 ==  sex )} topic={topic} cohorts={cohorts} others={others} config={config} />
@@ -330,9 +330,9 @@ class Cancer extends Component {
 								onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
 								panelTitle={panelTitle}>
 								<div key={element}>
-									<label>
-										All Sexes - Cancer Type: {element}
-									</label>
+									<span className="mt-4 mb-1 cancerTableTitle">
+											<b> All sexes Cancer Counts </b>
+										</span>
 
 									<div className="interiorTable" style={{ position: "relative" }}>
 										<CountsTable saveHistory={this.saveHistory} values={data} topic={topic} cohorts={cohorts} others={others} config={config} />
@@ -350,9 +350,9 @@ class Cancer extends Component {
 							onClick={() => this.handleActivePanleChange(this.state.activePanel === element ? '' : element)}
 							panelTitle={panelTitle}>
 							<div key={element}>
-								<label>
-									{sex} - Cancer Type:  {element}
-								</label>
+								<span className="mt-4 mb-1 cancerTableTitle">
+											<b> {sex} Cancer Counts </b>
+										</span>
 
 								<div className="interiorTable" style={{ position: "relative" }}>
 									<CountsTable saveHistory={this.saveHistory} values={data} topic={topic} cohorts={cohorts} others={others} config={config} />
