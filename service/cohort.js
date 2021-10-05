@@ -481,13 +481,48 @@ router.post('/cancer', function (req, res) {
 	mysql.callProcedure(func, params, function (results) {
 		if (results && results[0] && results[0].length > 0) {
 			let dt = {};
-			let cache = {};
+			let tempcache = {};
 			dt.list = [];
 			dt.cohorts = [];
 			dt.cancers = [];
 			let cohorts = [];
 			let cancers = [];
 			let list = results[0];
+			let genders = cache.getValue("lookup:gender").filter((e) =>e.id !=3);
+			let races = cache.getValue("lookup:race");
+			let ethnicities = cache.getValue("lookup:ethnicity");
+			let allcancers = cache.getValue("lookup:cancer").filter((e) => e.id !=29);
+	
+			genders.map((e) => {
+				if(e.id != 4) e.gender+='s'
+			})
+			races = races.map(x => (x.race === "More Than One Race" || x.race === "Unknown or Not Reported") ? 
+			{ ...x, race: ('Z' + x.race) } : x).sort((a, b) => a.race.localeCompare(b.race))
+			.map(x => (x.race === "ZMore Than One Race" || x.race === "ZUnknown or Not Reported") ? 
+			{ ...x, race: x.race.slice(1) } : x);
+
+			allcancers = allcancers.map(x => (x.cancer === "All Other Cancers") ? 
+			{ ...x, cancer: ('Z' + x.cancer) } : x).sort((a, b) => a.cancer.localeCompare(b.cancer))
+			.map(x => (x.cancer === "ZAll Other Cancers") ? { ...x, cancer: x.cancer.slice(1) } : x);
+
+			allcancers.filter((e) => filter.cancer.length === 0 || filter.cancer.includes(e.id)).forEach(function (ac) {
+				genders.filter((e) => filter.gender.length !== 1 || filter.gender.includes(e.id)).forEach(function (ge) {
+					ethnicities.filter((e) => filter.ethnicity.length === 0 || filter.ethnicity.includes(e.id)).forEach(function (et) {
+						races.filter((e) => filter.race.length === 0 || filter.race.includes(e.id)).forEach(function (ra) {
+							let u_id = ge.id + '_' + et.id + '_' + ra.id + '_' + ac.id
+							if (tempcache[u_id] == null) {
+								tempcache[u_id] = {};
+								tempcache[u_id].cancer = ac.cancer;
+								tempcache[u_id].c0 = ge.gender;
+								tempcache[u_id].c1 = et.ethnicity;
+								tempcache[u_id].c2 = ra.race;
+								tempcache[u_id].total = 0;
+							}
+						})
+					})
+				})
+			})
+
 			list.forEach(function (l) {
 
 				if (cancers.indexOf(l.cancer_id) == -1) {
@@ -495,13 +530,13 @@ router.post('/cancer', function (req, res) {
 					dt.cancers.push(l.cancer);
 				}
 
-				if (cache[l.u_id] == null) {
-					cache[l.u_id] = {};
-					cache[l.u_id].cancer = l.cancer;
-					cache[l.u_id].c0 = l.gender;
-					cache[l.u_id].c1 = l.ethnicity;
-					cache[l.u_id].c2 = l.race;
-					cache[l.u_id].total = 0;
+				if (tempcache[l.u_id] == null) {
+					tempcache[l.u_id] = {};
+					tempcache[l.u_id].cancer = l.cancer;
+					tempcache[l.u_id].c0 = l.gender;
+					tempcache[l.u_id].c1 = l.ethnicity;
+					tempcache[l.u_id].c2 = l.race;
+					tempcache[l.u_id].total = 0;
 				}
 				if (cohorts.indexOf(l.cohort_id) == -1) {
 					cohorts.push(l.cohort_id);
@@ -512,7 +547,7 @@ router.post('/cancer', function (req, res) {
 					});
 
 				}
-				let tmp = cache[l.u_id];
+				let tmp = tempcache[l.u_id];
 				let count = 0;
 				if (l.cancer_counts == -1) {
 					tmp["c_" + l.cohort_id] = "N/P";
@@ -526,8 +561,8 @@ router.post('/cancer', function (req, res) {
 				tmp.total += count;
 			});
 
-			for (key in cache) {
-				dt.list.push(cache[key]);
+			for (key in tempcache) {
+				dt.list.push(tempcache[key]);
 			}
 
 			res.json({ status: 200, data: dt });
