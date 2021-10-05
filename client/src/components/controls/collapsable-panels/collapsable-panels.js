@@ -28,7 +28,7 @@ export const CollapsiblePanel = ({
                         window.scrollTo(0, offsetTop);
                     }, 100);
                 }}>
-                <span className="triangle"></span><b>{ panelTitle }</b> 
+                <span className="triangle"></span><b>{panelTitle}</b> 
             </button>
             <div className="px-5 py-4" 
                 id="more" 
