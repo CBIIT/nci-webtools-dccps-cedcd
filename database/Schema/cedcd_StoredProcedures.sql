@@ -1423,7 +1423,7 @@ BEGIN
 		and ( @cancer_null = 1 OR c0.cancer_id in ( SELECT val FROM temp_cancer ) )
         and ( @race_null = 1 OR c0.race_id in (SELECT val FROM temp_race) )
         and ( @ethnicity_null = 1 OR c0.ethnicity_id in (SELECT val FROM temp_ethnicity) )
-		and ( @cohort_null =1 OR c0.cohort_id in ( SELECT val FROM temp_cohort ) )
+		and ( c0.cohort_id in ( SELECT val FROM temp_cohort ) )
     GROUP BY c0.cohort_id, c0.gender_id, c0.ethnicity_id, c0.race_id, c0.cancer_id
     UNION
     SELECT c1.cohort_id, 4 as gender_id, c1.ethnicity_id, c1.race_id,c1.cancer_id, 
@@ -1433,7 +1433,7 @@ BEGIN
 		and ( @cancer_null = 1 OR c1.cancer_id in ( SELECT val FROM temp_cancer1 ) )
         and ( @race_null = 1 OR c1.race_id in (SELECT val FROM temp_race1) )
         and ( @ethnicity_null = 1 OR c1.ethnicity_id in (SELECT val FROM temp_ethnicity1) )
-		and ( @cohort_null =1 OR c1.cohort_id in ( SELECT val FROM temp_cohort1 ) )
+		and ( c1.cohort_id in ( SELECT val FROM temp_cohort1 ) )
     GROUP BY c1.cohort_id, c1.ethnicity_id, c1.race_id, c1.cancer_id
     ) as cc
 	JOIN cohort ch ON ch.id = cc.cohort_id 
