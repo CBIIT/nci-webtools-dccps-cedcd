@@ -382,8 +382,6 @@ class Cancer extends Component {
 					</Workbook.Sheet>
 					
 				</Workbook>);
-		}else{
-			content =<h4> No data is available for selected cases.</h4>
 		}
 		return (
 			<div id="cedcd-main-content" className="row">
