@@ -1388,29 +1388,63 @@ BEGIN
         GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
     END IF;
     
-	drop temporary table IF exists temp_result;
-    create temporary table temp_result as 
-    select concat(lg.id,'_',le.id, '_',lr.id,'_',lc.id) AS u_id, c.cohort_id, c.cohort_name, c.cohort_acronym, lc.id as cancer_id, lc.cancer, 
-    le.id as ethnicity_id, le.ethnicity, lr.id as race_id, lr.race, lg.id as gender_id, lg.gender
-    from (select * from lu_cancer where id !=29 and  (@cancer_null = 1 OR id in ( SELECT val FROM temp_cancer ))) as lc 
-    join (select id as cohort_id, ch.name AS cohort_name, ch.acronym AS cohort_acronym from cohort ch where lower(ch.status)='published' and ch.id in ( SELECT val FROM temp_cohort)  ) c 
-    join (select id, (case when g.id=4 then g.gender else concat(g.gender,'s') end ) as gender from lu_gender g where g.id in (1,2,4) ) as lg 
-    join ( SELECT * FROM lu_race c WHERE @race_null = 1 OR c.id in (SELECT val FROM temp_race)) lr 
-    join (SELECT * FROM lu_ethnicity b WHERE @ethnicity_null = 1 OR b.id in (SELECT val FROM temp_ethnicity)) le;
+	drop temporary table IF exists temp_cancer1;
+    create temporary table IF not exists temp_cancer1( val int );
+    insert into temp_cancer1 select * from temp_cancer;
     
-    drop temporary table IF exists temp_sum;
-    create temporary table temp_sum  (INDEX(u_id)) as 
-    select cohort_id, concat(cc.gender_id,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
-    from cancer_count cc  GROUP BY cc.cohort_id,  u_id
-    union
-    select cohort_id, concat(4,'_',cc.ethnicity_id, '_',cc.race_id,'_',cc.cancer_id) AS u_id,sum( CASE  WHEN IFNULL(cc.cancer_counts, 0) > 0 THEN cc.cancer_counts ELSE 0 end) AS cancer_counts 
-    from cancer_count cc  GROUP BY cc.cohort_id,  u_id;
+    drop temporary table IF exists temp_cohort1;
+    create temporary table IF not exists temp_cohort1( val int );
+    insert into temp_cohort1 select * from temp_cohort;
     
-    select a.*, IFNULL(b.cancer_counts, 0) as cancer_counts 
-    from temp_result a 
-    LEFT join temp_sum b USE INDEX (u_id) ON a.cohort_id=b.cohort_id and a.u_id=b.u_id
+    drop temporary table IF exists temp_ethnicity1;
+    create temporary table IF not exists temp_ethnicity1( val int );
+	insert into temp_ethnicity1 select * from temp_ethnicity;
+    
+    drop temporary table IF exists temp_gender1;
+    create temporary table IF not exists temp_gender1( val int );
+    insert into temp_gender1 select * from temp_gender;
+   
+    
+	drop temporary table IF exists temp_race1;
+	create temporary table IF not exists temp_race1( val int );
+    insert into temp_race1 select * from temp_race;
+    
+   	SELECT * FROM (
+    SELECT concat(cc.gender_id,'_',cc.ethnicity_id, '_', cc.race_id,'_',cc.cancer_id) AS u_id, cc.cohort_id, 
+		ch.name as cohort_name, ch.acronym as cohort_acronym, 
+     (case when lg.id=4 then lg.gender else concat(lg.gender,'s') end ) as gender, cc.gender_id,
+     le.ethnicity, cc.ethnicity_id, lr.race, cc.race_id, cc.cancer_id , lc.cancer, cancer_counts 
+    FROM 
+    ( SELECT c0.cohort_id, c0.gender_id,c0.ethnicity_id, c0.race_id,c0.cancer_id, 
+		sum( CASE  WHEN IFNULL(c0.cancer_counts, 0) > 0 THEN c0.cancer_counts ELSE 0 end) AS cancer_counts 
+	FROM cancer_count c0
+    WHERE c0.gender_id in (1,2) and c0.cancer_id !=29
+		and ( @gender_null = 1 OR c0.gender_id in ( SELECT val FROM temp_gender ) )
+		and ( @cancer_null = 1 OR c0.cancer_id in ( SELECT val FROM temp_cancer ) )
+        and ( @race_null = 1 OR c0.race_id in (SELECT val FROM temp_race) )
+        and ( @ethnicity_null = 1 OR c0.ethnicity_id in (SELECT val FROM temp_ethnicity))
+		and c0.cohort_id in ( SELECT val FROM temp_cohort ) 
+    GROUP BY c0.cohort_id, c0.gender_id, c0.ethnicity_id, c0.race_id, c0.cancer_id
+    UNION
+    SELECT c1.cohort_id, 4 as gender_id, c1.ethnicity_id, c1.race_id,c1.cancer_id, 
+		sum( CASE  WHEN IFNULL(c1.cancer_counts, 0) > 0 THEN c1.cancer_counts ELSE 0 end) AS cancer_counts 
+	FROM cancer_count c1 
+    WHERE c1.gender_id in (1,2) and c1.cancer_id !=29
+		and ( @cancer_null = 1 OR c1.cancer_id in ( SELECT val FROM temp_cancer1 ) )
+        and ( @race_null = 1 OR c1.race_id in (SELECT val FROM temp_race1) )
+        and ( @ethnicity_null = 1 OR c1.ethnicity_id in (SELECT val FROM temp_ethnicity1))
+		and c1.cohort_id in ( SELECT val FROM temp_cohort1 ) 
+    GROUP BY c1.cohort_id, c1.ethnicity_id, c1.race_id, c1.cancer_id
+    ) as cc
+	JOIN cohort ch ON ch.id = cc.cohort_id 
+    JOIN lu_gender lg ON cc.gender_id = lg.id 
+    JOIN lu_cancer lc ON cc.cancer_id = lc.id 
+	JOIN lu_race lr ON cc.race_id = lr.id 
+    JOIN lu_ethnicity le ON cc.ethnicity_id = le.id 
+    where lower(ch.status)='published' ) as a
     ORDER BY CASE WHEN a.cancer = 'All Other Cancers' THEN 'zzz' ELSE a.cancer  END asc, a.gender_id desc, a.ethnicity,  
     CASE  WHEN a.race_id = 3 THEN 4.5 ELSE a.race_id end, a.cohort_acronym ;
+
 END//
 
 -- -----------------------------------------------------------------------------------------------------------
