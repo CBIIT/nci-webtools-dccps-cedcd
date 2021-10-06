@@ -244,6 +244,10 @@ class Cancer extends Component {
 
 			let alldata = Object.assign([], this.state.result.list);
 
+			if(!alldata){
+				
+			}
+
 			let data_per_cancer = {};
 			const others = [];
 			const config = {
@@ -382,6 +386,8 @@ class Cancer extends Component {
 					</Workbook.Sheet>
 					
 				</Workbook>);
+		}else if(this.state.result.list && this.state.result.list.length < 1){
+			content =<h4> No data is available for selected search criteria.</h4>
 		}
 		return (
 			<div id="cedcd-main-content" className="row">
