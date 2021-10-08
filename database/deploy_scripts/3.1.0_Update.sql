@@ -18,7 +18,7 @@ begin
 
     start transaction;
 
-    # check if unique index exists on cancer_count(race_id, ethnicity_id)
+    -- check if unique index exists on cancer_count(race_id, ethnicity_id)
     if (select COUNT(*) != 2
         from information_schema.STATISTICS
         where
@@ -26,7 +26,7 @@ begin
             TABLE_NAME = 'cancer_count' and
             COLUMN_NAME IN ('race_id', 'ethnicity_id') and NON_UNIQUE = 0
     ) then
-        # add unique index on cancer_count(cohort_id, cancer_id, gender_id, case_type_id)
+        -- add unique index on cancer_count(cohort_id, cancer_id, gender_id, case_type_id)
 		ALTER TABLE cancer_count add race_id int default 7 after cancer_id,
         ADD FOREIGN KEY cc_race_type_id(race_id) REFERENCES lu_race (id);
       
@@ -34,6 +34,38 @@ begin
         ADD FOREIGN KEY cc_eth_type_id(ethnicity_id) REFERENCES lu_ethnicity (id) ;
         ALTER TABLE cancer_count DROP INDEX cancer_count_pk, 
         ADD UNIQUE KEY cancer_count_pk (cohort_id,cancer_id,gender_id,ethnicity_id,race_id,case_type_id);
+
+        -- case_type_id =1 will be not in use, keep only (2 prevalent), merge existing (1 incident) 
+        SET SQL_SAFE_UPDATES = 0;
+        DROP TEMPORARY TABLE IF EXISTS T_CANCER_COUNTS_UID;
+        CREATE TEMPORARY TABLE IF NOT EXISTS T_CANCER_COUNTS_UID AS 
+        ( select concat(cohort_id,'_',cancer_id,'_',gender_id, '_', ethnicity_id, '_', race_id) as u_id 
+        from cancer_count 
+        where case_type_id=1 and cancer_counts > 0 
+        group by cohort_id, cancer_id, gender_id, ethnicity_id, race_id );
+    
+        DROP TEMPORARY TABLE IF exists T_CANCER_COUNTS_UID2;
+        CREATE TEMPORARY TABLE IF NOT EXISTS T_CANCER_COUNTS_UID2 as 
+        select * from T_CANCER_COUNTS_UID;
+    
+        With T_SUB as (
+	    select t2.u_id, sum(cancer_counts) as subtotal from cancer_count as t1 
+	    join  T_CANCER_COUNTS_UID as t2 ON concat(t1.cohort_id,'_',t1.cancer_id,'_',t1.gender_id, '_', t1.ethnicity_id, '_', t1.race_id) = t2.u_id
+        group by cohort_id, cancer_id, gender_id, ethnicity_id, race_id )
+        update cancer_count as t_src set t_src.cancer_counts = 
+            (select t.subtotal from T_SUB as t where concat(t_src.cohort_id,'_',t_src.cancer_id,'_',t_src.gender_id, '_', t_src.ethnicity_id, '_', t_src.race_id) = t.u_id)
+        where concat(t_src.cohort_id,'_',t_src.cancer_id,'_',t_src.gender_id, '_', t_src.ethnicity_id, '_', t_src.race_id) in 
+            ( select  t_dst.u_id from T_CANCER_COUNTS_UID2 as t_dst) 
+        and t_src.case_type_id =2;
+    
+        update cancer_count as t_src set t_src.cancer_counts = 0  
+        where concat(t_src.cohort_id,'_',t_src.cancer_id,'_',t_src.gender_id, '_', t_src.ethnicity_id, '_', t_src.race_id) in 
+        ( select  t_dst.u_id from T_CANCER_COUNTS_UID2 as t_dst) 
+        and t_src.case_type_id =1;
+    
+        DROP TEMPORARY TABLE IF EXISTS T_CANCER_COUNTS_UID;
+        DROP TEMPORARY TABLE IF EXISTS T_CANCER_COUNTS_UID2; 
+
     end if;
 
     commit;
