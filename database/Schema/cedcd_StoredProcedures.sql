@@ -1414,7 +1414,10 @@ BEGIN
         and ( @cancer_null = 1 OR tc.cancer_id in (select val from temp_cancer) )
         and find_in_set (tc.cohort_id, @cohort_list )
 	GROUP BY tc.cancer_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
-	select GROUP_CONCAT(val SEPARATOR ',') into @cancer_list from temp_cancer_nozero;
+	SELECT GROUP_CONCAT(val SEPARATOR ',') into @cancer_list FROM temp_cancer_nozero;
+
+	set @cancerlist_cnt = 0 ;
+    SELECT count(val) into @cancerlist_cnt FROM temp_cancer_nozero;
   
    SELECT * FROM (
     SELECT concat(cc.gender_id,'_',cc.ethnicity_id, '_', cc.race_id,'_',cc.cancer_id) AS u_id, cc.cohort_id, 
@@ -1447,7 +1450,7 @@ BEGIN
     SELECT c2.cohort_id, c2.gender_id, c2.ethnicity_id, c2.race_id,0 as cancer_id, 
 		sum( CASE  WHEN IFNULL(c2.cancer_counts, 0) > 0 THEN c2.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count c2 
-    WHERE c2.gender_id in (1,2) and c2.cancer_id !=29
+    WHERE c2.gender_id in (1,2) and c2.cancer_id !=29 and @cancerlist_cnt > 1
 		and find_in_set (c2.cancer_id, @cancer_list )
         and ( @gender_null = 1 OR find_in_set(c2.gender_id, @gender_list ) )
         and ( @race_null = 1 OR find_in_set(c2.race_id, @race_list ) )
@@ -1458,7 +1461,7 @@ BEGIN
     SELECT c3.cohort_id, 4 as gender_id, c3.ethnicity_id, c3.race_id,0 as cancer_id, 
 		sum( CASE  WHEN IFNULL(c3.cancer_counts, 0) > 0 THEN c3.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count c3 
-    WHERE c3.gender_id in (1,2) and c3.cancer_id !=29
+    WHERE c3.gender_id in (1,2) and c3.cancer_id !=29 and @cancerlist_cnt > 1
 		and find_in_set (c3.cancer_id, @cancer_list )
         and ( @race_null = 1 OR find_in_set(c3.race_id , @race_list ) )
         and ( @ethnicity_null = 1 OR find_in_set(c3.ethnicity_id , @ethnicity_list ) )
