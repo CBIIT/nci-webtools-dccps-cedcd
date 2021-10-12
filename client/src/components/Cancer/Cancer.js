@@ -19,7 +19,7 @@ class Cancer extends Component {
 		this.state = {
 			originalResult: {},
 			result: {},
-			activePanel: "Bladder",
+			activePanel: "All Cancer Types",
 			filter: {
 				gender: [],
 				race: [],
@@ -241,12 +241,9 @@ class Cancer extends Component {
 			let topic = ["Ethnicity", "Race"];
 			let cohorts = this.state.result.cohorts;
 			let cancers = Object.assign([], this.state.result.cancers);
+			cohorts.sort((a,b)=>a.cohort_acronym.localeCompare(b.cohort_acronym))
 
 			let alldata = Object.assign([], this.state.result.list);
-
-			if(!alldata){
-				
-			}
 
 			let data_per_cancer = {};
 			const others = [];

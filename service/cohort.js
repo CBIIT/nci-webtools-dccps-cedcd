@@ -501,11 +501,14 @@ router.post('/cancer', function (req, res) {
 			.map(x => (x.race === "ZMore Than One Race" || x.race === "ZUnknown or Not Reported") ? 
 			{ ...x, race: x.race.slice(1) } : x);
 
+			allcancers.push({id: 0, cancer: "All Cancer Types"})
+
 			allcancers = allcancers.map(x => (x.cancer === "All Other Cancers") ? 
 			{ ...x, cancer: ('Z' + x.cancer) } : x).sort((a, b) => a.cancer.localeCompare(b.cancer))
 			.map(x => (x.cancer === "ZAll Other Cancers") ? { ...x, cancer: x.cancer.slice(1) } : x);
 
-			allcancers.filter((e) => filter.cancer.length === 0 || filter.cancer.includes(e.id)).forEach(function (ac) {
+			allcancers.filter((e) => filter.cancer.length === 0 ||
+			filter.cancer.length === allcancers.length -1 || filter.cancer.includes(e.id)).forEach(function (ac) {
 				genders.filter((e) => filter.gender.length !== 1 || filter.gender.includes(e.id)).forEach(function (ge) {
 					ethnicities.filter((e) => filter.ethnicity.length === 0 || filter.ethnicity.includes(e.id)).forEach(function (et) {
 						races.filter((e) => filter.race.length === 0 || filter.race.includes(e.id)).forEach(function (ra) {
@@ -524,10 +527,10 @@ router.post('/cancer', function (req, res) {
 			})
 
 			list.forEach(function (l) {
-
+				
 				if (cancers.indexOf(l.cancer_id) == -1) {
 					cancers.push(l.cancer_id);
-					dt.cancers.push(l.cancer);
+					dt.cancers.push(l.cancer);				
 				}
 
 				if (tempcache[l.u_id] == null) {
