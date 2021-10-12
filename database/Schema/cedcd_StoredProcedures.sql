@@ -1409,10 +1409,8 @@ BEGIN
 	SELECT tc.cancer_id FROM cancer_count tc 
 	WHERE abs(IFNULL(tc.cancer_counts, 0)) >=0  
         and ( @gender_null = 1 OR find_in_set(tc.gender_id , @gender_list ))
-       -- and ( @race_null = 1 OR find_in_set(tc.race_id , @race_list ) )
-       -- and ( @ethnicity_null = 1 OR find_in_set(tc.ethnicity_id , @ethnicity_list ) )
-        and ( @race_null = 1 OR tc.race_id in (select val from  temp_race ) )
-        and ( @ethnicity_null = 1 OR tc.ethnicity_id in (select val from temp_ethnicity ) )
+        and ( @race_null = 1 OR find_in_set(tc.race_id , @race_list ) )
+        and ( @ethnicity_null = 1 OR find_in_set(tc.ethnicity_id , @ethnicity_list ) )
         and ( @cancer_null = 1 OR tc.cancer_id in (select val from temp_cancer) )
         and find_in_set (tc.cohort_id, @cohort_list )
 	GROUP BY tc.cancer_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
