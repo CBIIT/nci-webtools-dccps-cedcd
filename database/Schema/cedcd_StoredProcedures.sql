@@ -1335,6 +1335,11 @@ BEGIN
   	set @ethnicity = ethnicity;
   	set @cancer = cancer;
   	set @cohort = cohort;
+	set @gender_list = '';
+    set @race_list = '';
+  	set @ethnicity_list = '';
+  	set @cancer_list = '';
+  	set @cohort_list = '';
 	drop temporary table IF exists temp_gender;
     create temporary table IF not exists temp_gender( val int );
     drop temporary table IF exists temp_race;
@@ -1345,29 +1350,40 @@ BEGIN
     create temporary table IF not exists temp_cancer( val int );
 	drop temporary table IF exists temp_cohort;
     create temporary table IF not exists temp_cohort( val int );
+	drop temporary table IF exists temp_cancer_nozero;
+    create temporary table IF not exists temp_cancer_nozero( val int );
     
     IF (@gender != "" AND @gender REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
         set @gender_null = 0 ;
 		call ConvertIntToTable(@gender);
 		INSERT into temp_gender SELECT distinct val FROM tempIntTable;
+		SELECT GROUP_CONCAT(val SEPARATOR ',') into @gender_list FROM temp_gender;
     END IF;
     
      IF ( @race != "" AND @race REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'    ) then
         set @race_null = 0 ;
 		call ConvertIntToTable(@race);
 		INSERT into temp_race SELECT distinct val FROM tempIntTable;
+		SELECT GROUP_CONCAT(val ORDER BY val  SEPARATOR ',') into @race_list FROM temp_race;
     END IF;
     
     IF ( @ethnicity != "" AND  @ethnicity REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
         set @ethnicity_null = 0 ;
 		call ConvertIntToTable(@ethnicity);
 		INSERT into temp_ethnicity SELECT distinct val FROM tempIntTable;
+		SELECT GROUP_CONCAT(val SEPARATOR ',') into @ethnicity_list FROM temp_ethnicity;
     END IF;
     
     IF ( @cancer != "" AND @cancer REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   ) then
-        set @cancer_null = 0 ;
 		call ConvertIntToTable(@cancer);
-		INSERT into temp_cancer SELECT distinct val FROM tempIntTable;
+		INSERT into temp_cancer 
+        SELECT distinct val FROM tempIntTable;
+        set @temp_compare = 0;
+        SELECT count(*) into @temp_compare FROM 
+         ( select distinct id from lu_cancer as lu where lu.id !=29 and lu.id NOT in (select val from temp_cancer)) as t;
+        IF ( @temp_compare >  0) THEN
+         set @cancer_null = 0 ;
+		END IF;
     END IF;
     
     /*
@@ -1387,58 +1403,73 @@ BEGIN
         and ( @cancer_null = 1 OR tc.cancer_id in ( SELECT val FROM temp_cancer ) )
         GROUP BY tc.cohort_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
     END IF;
+	SELECT GROUP_CONCAT(val SEPARATOR ',') into @cohort_list FROM temp_cohort;
     
-	drop temporary table IF exists temp_cancer1;
-    create temporary table IF not exists temp_cancer1( val int );
-    insert into temp_cancer1 select * from temp_cancer;
-    
-    drop temporary table IF exists temp_cohort1;
-    create temporary table IF not exists temp_cohort1( val int );
-    insert into temp_cohort1 select * from temp_cohort;
-    
-    drop temporary table IF exists temp_ethnicity1;
-    create temporary table IF not exists temp_ethnicity1( val int );
-	insert into temp_ethnicity1 select * from temp_ethnicity;
-    
-    drop temporary table IF exists temp_gender1;
-    create temporary table IF not exists temp_gender1( val int );
-    insert into temp_gender1 select * from temp_gender;
-   
-    
-	drop temporary table IF exists temp_race1;
-	create temporary table IF not exists temp_race1( val int );
-    insert into temp_race1 select * from temp_race;
-    
-   	SELECT * FROM (
+	INSERT into temp_cancer_nozero
+	SELECT tc.cancer_id FROM cancer_count tc 
+	WHERE abs(IFNULL(tc.cancer_counts, 0)) >=0  
+        and ( @gender_null = 1 OR find_in_set(tc.gender_id , @gender_list ))
+       -- and ( @race_null = 1 OR find_in_set(tc.race_id , @race_list ) )
+       -- and ( @ethnicity_null = 1 OR find_in_set(tc.ethnicity_id , @ethnicity_list ) )
+        and ( @race_null = 1 OR tc.race_id in (select val from  temp_race ) )
+        and ( @ethnicity_null = 1 OR tc.ethnicity_id in (select val from temp_ethnicity ) )
+        and ( @cancer_null = 1 OR tc.cancer_id in (select val from temp_cancer) )
+        and find_in_set (tc.cohort_id, @cohort_list )
+	GROUP BY tc.cancer_id having sum( CASE  WHEN IFNULL(tc.cancer_counts, 0) > 0  THEN tc.cancer_counts ELSE 0 end) > 0 ;
+	select GROUP_CONCAT(val SEPARATOR ',') into @cancer_list from temp_cancer_nozero;
+  
+   SELECT * FROM (
     SELECT concat(cc.gender_id,'_',cc.ethnicity_id, '_', cc.race_id,'_',cc.cancer_id) AS u_id, cc.cohort_id, 
 		ch.name as cohort_name, ch.acronym as cohort_acronym, 
      (case when lg.id=4 then lg.gender else concat(lg.gender,'s') end ) as gender, cc.gender_id,
-     le.ethnicity, cc.ethnicity_id, lr.race, cc.race_id, cc.cancer_id , lc.cancer, cancer_counts 
+     le.ethnicity, cc.ethnicity_id, lr.race, cc.race_id, cc.cancer_id , 
+      (case when cc.cancer_id=0 then 'All Cancer Types' else lc.cancer end ) as cancer, cancer_counts 
     FROM 
     ( SELECT c0.cohort_id, c0.gender_id,c0.ethnicity_id, c0.race_id,c0.cancer_id, 
 		sum( CASE  WHEN IFNULL(c0.cancer_counts, 0) > 0 THEN c0.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count c0
     WHERE c0.gender_id in (1,2) and c0.cancer_id !=29
-		and ( @gender_null = 1 OR c0.gender_id in ( SELECT val FROM temp_gender ) )
-		and ( @cancer_null = 1 OR c0.cancer_id in ( SELECT val FROM temp_cancer ) )
-        and ( @race_null = 1 OR c0.race_id in (SELECT val FROM temp_race) )
-        and ( @ethnicity_null = 1 OR c0.ethnicity_id in (SELECT val FROM temp_ethnicity) )
-		and ( c0.cohort_id in ( SELECT val FROM temp_cohort ) )
+		and ( @gender_null = 1 OR find_in_set(c0.gender_id, @gender_list ) )
+		and find_in_set (c0.cancer_id, @cancer_list )
+        and ( @race_null = 1 OR find_in_set(c0.race_id , @race_list ) )
+        and ( @ethnicity_null = 1 OR find_in_set(c0.ethnicity_id , @ethnicity_list ) )
+		and find_in_set (c0.cohort_id, @cohort_list )
     GROUP BY c0.cohort_id, c0.gender_id, c0.ethnicity_id, c0.race_id, c0.cancer_id
     UNION
     SELECT c1.cohort_id, 4 as gender_id, c1.ethnicity_id, c1.race_id,c1.cancer_id, 
 		sum( CASE  WHEN IFNULL(c1.cancer_counts, 0) > 0 THEN c1.cancer_counts ELSE 0 end) AS cancer_counts 
 	FROM cancer_count c1 
     WHERE c1.gender_id in (1,2) and c1.cancer_id !=29
-		and ( @cancer_null = 1 OR c1.cancer_id in ( SELECT val FROM temp_cancer1 ) )
-        and ( @race_null = 1 OR c1.race_id in (SELECT val FROM temp_race1) )
-        and ( @ethnicity_null = 1 OR c1.ethnicity_id in (SELECT val FROM temp_ethnicity1) )
-		and ( c1.cohort_id in ( SELECT val FROM temp_cohort1 ) )
+		and find_in_set (c1.cancer_id, @cancer_list )
+        and ( @race_null = 1 OR find_in_set(c1.race_id , @race_list ) )
+        and ( @ethnicity_null = 1 OR find_in_set(c1.ethnicity_id , @ethnicity_list ) )
+		and find_in_set(c1.cohort_id, @cohort_list ) 
     GROUP BY c1.cohort_id, c1.ethnicity_id, c1.race_id, c1.cancer_id
+    UNION
+    SELECT c2.cohort_id, c2.gender_id, c2.ethnicity_id, c2.race_id,0 as cancer_id, 
+		sum( CASE  WHEN IFNULL(c2.cancer_counts, 0) > 0 THEN c2.cancer_counts ELSE 0 end) AS cancer_counts 
+	FROM cancer_count c2 
+    WHERE c2.gender_id in (1,2) and c2.cancer_id !=29
+		and find_in_set (c2.cancer_id, @cancer_list )
+        and ( @gender_null = 1 OR find_in_set(c2.gender_id, @gender_list ) )
+        and ( @race_null = 1 OR find_in_set(c2.race_id, @race_list ) )
+        and ( @ethnicity_null = 1 OR find_in_set(c2.ethnicity_id , @ethnicity_list ) )
+		and find_in_set(c2.cohort_id, @cohort_list )
+    GROUP BY c2.cohort_id, c2.gender_id, c2.ethnicity_id, c2.race_id
+    UNION
+    SELECT c3.cohort_id, 4 as gender_id, c3.ethnicity_id, c3.race_id,0 as cancer_id, 
+		sum( CASE  WHEN IFNULL(c3.cancer_counts, 0) > 0 THEN c3.cancer_counts ELSE 0 end) AS cancer_counts 
+	FROM cancer_count c3 
+    WHERE c3.gender_id in (1,2) and c3.cancer_id !=29
+		and find_in_set (c3.cancer_id, @cancer_list )
+        and ( @race_null = 1 OR find_in_set(c3.race_id , @race_list ) )
+        and ( @ethnicity_null = 1 OR find_in_set(c3.ethnicity_id , @ethnicity_list ) )
+		and find_in_set(c3.cohort_id, @cohort_list )
+    GROUP BY c3.cohort_id,  c3.ethnicity_id, c3.race_id
     ) as cc
 	JOIN cohort ch ON ch.id = cc.cohort_id 
     JOIN lu_gender lg ON cc.gender_id = lg.id 
-    JOIN lu_cancer lc ON cc.cancer_id = lc.id 
+    LEFT JOIN lu_cancer lc ON cc.cancer_id = lc.id 
 	JOIN lu_race lr ON cc.race_id = lr.id 
     JOIN lu_ethnicity le ON cc.ethnicity_id = le.id 
     where lower(ch.status)='published' ) as a
