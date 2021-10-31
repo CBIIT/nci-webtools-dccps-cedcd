@@ -696,7 +696,8 @@ insert into lu_data_category(id, category, sub_category) values (38, "Other Medi
 insert into lu_data_category(id, category, sub_category) values (39, "Other Medical Conditions","Mental Health");
 insert into lu_data_category(id, category, sub_category) values (40, "Other Medical Conditions","Cognitive Decline");
 insert into lu_data_category(id, category, sub_category) values (41, "Physical function measures","");
-insert into lu_data_category(id, category, sub_category) values (42,'Other Tobacco Products','Not Applicable');
+insert into lu_data_category(id, category, sub_category) values (42, "Other Tobacco Products","Not Applicable");
+insert into lu_data_category(id, category, sub_category) values (43, "Sexual Orientation and Gender Identity","");
 insert into lu_data_category(id, category, sub_category) values (99, "Cancer Treatment","");
 
 /*
