@@ -2489,6 +2489,8 @@ update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.physic
 
 update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoUseBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoUseBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoUseFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.tobaccoUseFollowUp'))) WHERE cohort_id = targetID and category_id = 42 ;
 
+update major_content set baseline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sexgenderIdentityBaseLine')) = 'null', null,JSON_UNQUOTE(JSON_EXTRACT(info, '$.sexgenderIdentityBaseLine'))), followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.sexgenderIdentityFollowUp')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.sexgenderIdentityFollowUp'))) WHERE cohort_id = targetID and category_id = 43 ;
+
         update cancer_info set mdc_cancer_related_conditions_na = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerRelatedConditionsNA')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerRelatedConditionsNA'))),
         					   mdc_acute_treatment_toxicity = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerToxicity'))),
 							   mdc_late_effects_of_treatment = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects')) = 'null', null, JSON_UNQUOTE(JSON_EXTRACT(info, '$.cancerLateEffects'))),
