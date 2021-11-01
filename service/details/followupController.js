@@ -35,7 +35,7 @@ exports.run = function (req, res) {
 				}
 				let tmp = dict[l.category_id];
 				let v = l.followup;
-				if (v == -1 || v === null) {
+				if (v == -1 ) {
 					v = "N/P";
 				}
 				else {
@@ -82,6 +82,9 @@ exports.run = function (req, res) {
 			}, {
 				name: "Health Insurance Status",
 				category_id: 6
+			}, {
+				name: "Sexual Orientation and Gender Identity",
+				category_id: 43
 			}];
 			values.forEach(function (vl) {
 				let tmp = {};
