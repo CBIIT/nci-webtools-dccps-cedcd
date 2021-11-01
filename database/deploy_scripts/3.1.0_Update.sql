@@ -24,9 +24,6 @@ insert major_content  (cohort_id, category_id)
 select distinct b.cohort_id, 43 
 from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=43);
 
--- add new field to keep cancer condition N/A status
-alter table cancer_info add column IF NOT EXISTS (mdc_cancer_related_conditions_na int);
-
 /*
 *  update cancer_count table to include race and ethnicity 
 */
@@ -38,14 +35,25 @@ begin
 
     start transaction;
 
+    -- add new field to keep cancer condition N/A status
+    IF NOT EXISTS( SELECT NULL
+            FROM INFORMATION_SCHEMA.COLUMNS
+             WHERE table_name = 'cancer_info'
+             AND table_schema = 'cedcd'
+             AND column_name = 'mdc_cancer_related_conditions_na')  THEN
+
+        ALTER TABLE `cancer_info` ADD `mdc_cancer_related_conditions_na` int(1);
+
+    END IF;
+
     -- check if unique index exists on cancer_count(race_id, ethnicity_id)
-    if (select COUNT(*) != 2
+    IF (select COUNT(*) != 2
         from information_schema.STATISTICS
         where
             TABLE_SCHEMA = database() and
             TABLE_NAME = 'cancer_count' and
             COLUMN_NAME IN ('race_id', 'ethnicity_id') and NON_UNIQUE = 0
-    ) then
+    ) THEN
         -- add unique index on cancer_count(cohort_id, cancer_id, gender_id, case_type_id)
 		ALTER TABLE cancer_count add race_id int default 7 after cancer_id,
         ADD FOREIGN KEY cc_race_type_id(race_id) REFERENCES lu_race (id);
@@ -86,10 +94,10 @@ begin
         DROP TEMPORARY TABLE IF EXISTS T_CANCER_COUNTS_UID;
         DROP TEMPORARY TABLE IF EXISTS T_CANCER_COUNTS_UID2; 
 
-    end if;
+    END IF;
 
     commit;
-end //
+END //
 
 DELIMITER ;
 
