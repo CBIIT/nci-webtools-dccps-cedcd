@@ -82,6 +82,9 @@ exports.run = function (req, res) {
 			}, {
 				name: "Health Insurance Status",
 				category_id: 6
+			}, {
+				name: "Sexual Orientation and Gender Identity",
+				category_id: 43
 			}];
 			values.forEach(function (vl) {
 				let tmp = {};

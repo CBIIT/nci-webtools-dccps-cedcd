@@ -73,6 +73,8 @@ const exposureBaseLine = (disabled) => ({ type: t.exposureBaseLine, toDisable: d
 const exposureFollowUp = (disabled) => ({ type: t.exposureFollowUp, toDisable: disabled })
 const residenceBaseLine = (disabled) => ({ type: t.residenceBaseLine, toDisable: disabled })
 const residenceFollowUp = (disabled) => ({ type: t.residenceFollowUp, toDisable: disabled })
+const sexgenderIdentityBaseLine = (disabled) => ({ type: t.sexgenderIdentityBaseLine, toDisable: disabled })
+const sexgenderIdentityFollowUp = (disabled) => ({ type: t.sexgenderIdentityFollowUp, toDisable: disabled })
 const diabetesBaseLine = (disabled) => ({ type: t.diabetesBaseLine, toDisable: disabled })
 const diabetesFollowUp = (disabled) => ({ type: t.diabetesFollowUp, toDisable: disabled })
 const strokeBaseLine = (disabled) => ({ type: t.strokeBaseLine, toDisable: disabled })
@@ -167,6 +169,8 @@ export default {
     exposureFollowUp,
     residenceBaseLine,
     residenceFollowUp,
+    sexgenderIdentityBaseLine,
+    sexgenderIdentityFollowUp,
     diabetesBaseLine,
     diabetesFollowUp,
     strokeBaseLine,

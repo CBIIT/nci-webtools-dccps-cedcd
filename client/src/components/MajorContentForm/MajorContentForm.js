@@ -43,10 +43,20 @@ const MajorContentForm = ({ ...props }) => {
     const subtitles = [
         'hasLoded', 'C.1 Socio-economic Status', '', 'C.2 Education Level', '', 'C.3 Marital Status', '', 'C.4 Language/Country of Origin', '',
         'C.5 Employment Status', '', 'C.6 Health Insurance Status', '', 'C.7 Anthropometry (e.g., weight, height, waist circumference)',
-        '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 'C.11 Prescription Medication Use (not related to cancer treatment)', '', 'C.12 Non-prescription Medication Use (not related to cancer treatment)', '', 'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
+        '', 'C.8 Dietary Intake', '', 'C.9 Dietary Supplement Use', '', 'C.10 Complementary and Alternative Medicine', '', 
+        'C.11 Prescription Medication Use (not related to cancer treatment)', '', 
+        'C.12 Non-prescription Medication Use (not related to cancer treatment)', '', 
+        'C.13 Alcohol Consumption', '', 'C.14 Cigarette Smoking', '',
         // remove to keep it sync with the object, 'C.15 Use of Tobacco Products Other than Cigarettes', '',
-        'N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '', 'N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '',
-        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self-Reported Health', '', 'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function measures (e.g. grip strength, gait speed, etc.)', '', 'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 'C.30 Residential history Information (zip code, GIS) over time?', '',
+        'N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '', 
+        'N/A', 'Cigars', 'Pipes', 'Chewing tobacco', 'E-Cigarettes', 'Other', '',
+        'C.16 Physical Activity', '', 'C.17 Sleep Habits', '', 'C.18 Reproductive History', '', 'C.19 Self-Reported Health', '', 
+        'C.20 Quality of Life', '', 'C.21 Social Support', '', 'C.22 Cognitive Function', '', 'C.23 Depression', '', 
+        'C.24 Other Psychosocial Variables', '', 'C.25 Fatigue', '', 'C.26 Family History of Cancer', '', 
+        'C.27 Family History of Cancer with Pedigrees', '', 'C.28 Physical function measures (e.g. grip strength, gait speed, etc.)', '', 
+        'C.29 Environmental or Occupational Exposures (e.g. air contaminants/quality, occupational exposures and history, water source)', '', 
+        'C.30 Residential history Information (zip code, GIS) over time?', '',
+        'C.31 Sexual Orientation and Gender Identity (Beyond Male and Female Only)', '',
         //removed to snyc with majorContent index 'C.31 Other Medical Conditions', '',
         'a. Diabetes', '', 'b. Stroke', '', 'c. COPD and/or Emphysema', '', 'd. Cardiovascular Disease', '', 'e. Osteoporosis', '', 'f. Mental Health', '',
         'g. Cognitive Decline', ''
@@ -70,6 +80,7 @@ const MajorContentForm = ({ ...props }) => {
 
                 let content = result.data.counts
                 let cancerInfo = result.data.cancerInfo
+                console.log(content)
 
                 batch(() => {
                     dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))
@@ -164,6 +175,10 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentActions.tobaccoUseBaseLine(content[41].baseline))
                         dispatch(allactions.majorContentActions.tobaccoUseFollowUp(content[41].followup))
                     }
+                    if (content[42]) {
+                        dispatch(allactions.majorContentActions.sexgenderIdentityBaseLine(content[42].baseline))
+                        dispatch(allactions.majorContentActions.sexgenderIdentityFollowUp(content[42].followup))
+                    }
                     dispatch(allactions.majorContentActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA))
                     dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity))
                     dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects))
@@ -188,6 +203,10 @@ const MajorContentForm = ({ ...props }) => {
                     if (content[41]) {
                         dispatch(allactions.majorContentErrorActions.tobaccoUseBaseLine(content[41].baseline == 1))
                         dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp(content[41].followup == 1))
+                    }
+                    if (content[42]) {
+                        dispatch(allactions.majorContentErrorActions.sexgenderIdentityBaseLine(content[42].baseline == 1))
+                        dispatch(allactions.majorContentErrorActions.sexgenderIdentityFollowUp(content[42].followup == 1))
                     }
                     dispatch(allactions.majorContentErrorActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA == 1))
                     dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1))
@@ -224,7 +243,7 @@ const MajorContentForm = ({ ...props }) => {
         // update related fields error status 
         // once na filed is selected, reset all related error statuses
 
-        if ("c32".includes(filedGroup.toLowerCase())) {
+        if ("c33".includes(filedGroup.toLowerCase())) {
             batch(() => {
                 dispatch(allactions.majorContentErrorActions.cancerToxicity(false))
                 dispatch(allactions.majorContentErrorActions.cancerLateEffects(false))
@@ -531,7 +550,7 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getFirstContent = () => {
-        return Object.keys(majorContent).slice(0, 73).map((key, idx) => {
+        return Object.keys(majorContent).slice(0, 75).map((key, idx) => {
             if (idx <= 28 || idx > 42) {//skip questions first
                 if (key.includes('BaseLine')) {
                     return getQuestionEntry('BaseLine', key, idx)
@@ -595,18 +614,18 @@ const MajorContentForm = ({ ...props }) => {
     }
 
     const getSecondContent = () => {
-        return Object.keys(majorContent).slice(73).map((key, idx) => {
+        return Object.keys(majorContent).slice(75).map((key, idx) => {
             if (key.includes('BaseLine'))
-                return getQuestionEntry('BaseLine', key, idx + 73)
+                return getQuestionEntry('BaseLine', key, idx + 75)
             else if (key.includes('FollowUp'))
-                return getQuestionEntry('FollowUp', key, idx + 73)
+                return getQuestionEntry('FollowUp', key, idx + 75)
         })
     }
 
     const getThirdContent = () => {
         return <Form.Group className='mb-0' style={{ marginTop: '10px' }} >
             <Form.Label style={{ marginBottom: '8px' }}>
-                C.32 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal">{' '}(Select all that apply)</span>
+                C.33 Do you have information on the following cancer related conditions?<span style={{ color: 'red' }}>*</span> <span className="font-weight-normal">{' '}(Select all that apply)</span>
 
                 {(errors.cancerRelatedConditionsNA && errors.cancerToxicity && errors.cancerLateEffects && errors.cancerSymptom && errors.cancerOther) && saved &&
                     <span className="font-weight-normal text-danger ml-3">Required Field</span>}
@@ -691,7 +710,7 @@ const MajorContentForm = ({ ...props }) => {
                         onClick={() => setActivePanel(activePanel === 'panelB' ? '' : 'panelB')}
                         panelTitle="Other Medical Conditions">
                         <Form.Label as={Row} sm='12' className='pl-4' >
-                            C.31 Do you have information on the following medical conditions?
+                            C.32 Do you have information on the following medical conditions?
                         </Form.Label>
                         {getSecondContent()}
                     </CollapsiblePanel>

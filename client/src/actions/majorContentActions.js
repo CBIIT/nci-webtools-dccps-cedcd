@@ -74,6 +74,8 @@ const exposureBaseLine = (v) => ({ type: t.setExposureBaseLine, value: v })
 const exposureFollowUp = (v) => ({ type: t.setExposureFollowUp, value: v })
 const residenceBaseLine = (v) => ({ type: t.setResidenceBaseLine, value: v })
 const residenceFollowUp = (v) => ({ type: t.setResidenceFollowUp, value: v })
+const sexgenderIdentityBaseLine = (v) => ({ type: t.setSexGenderIdentityBaseLine, value: v })
+const sexgenderIdentityFollowUp = (v) => ({ type: t.setSexGenderIdentityFollowUp, value: v })
 const diabetesBaseLine = (v) => ({ type: t.setDiabetesBaseLine, value: v })
 const diabetesFollowUp = (v) => ({ type: t.setDiabetesFollowUp, value: v })
 const strokeBaseLine = (v) => ({ type: t.setStrokeBaseLine, value: v })
@@ -169,6 +171,8 @@ export default {
     exposureFollowUp,
     residenceBaseLine,
     residenceFollowUp,
+    sexgenderIdentityBaseLine,
+    sexgenderIdentityFollowUp,
     diabetesBaseLine,
     diabetesFollowUp,
     strokeBaseLine,

@@ -96,6 +96,8 @@ actions[t.setExposureBaseLine] = (state, action) => ({ ...state, exposureBaseLin
 actions[t.setExposureFollowUp] = (state, action) => ({ ...state, exposureFollowUp: action.value })
 actions[t.setResidenceBaseLine] = (state, action) => ({ ...state, residenceBaseLine: action.value })
 actions[t.setResidenceFollowUp] = (state, action) => ({ ...state, residenceFollowUp: action.value })
+actions[t.setSexGenderIdentityBaseLine] = (state, action) => ({ ...state, sexgenderIdentityBaseLine: action.value })
+actions[t.setSexGenderIdentityFollowUp] = (state, action) => ({ ...state, sexgenderIdentityFollowUp: action.value })
 actions[t.setDiabetesBaseLine] = (state, action) => ({ ...state, diabetesBaseLine: action.value })
 actions[t.setDiabetesFollowUp] = (state, action) => ({ ...state, diabetesFollowUp: action.value })
 actions[t.setStrokeBaseLine] = (state, action) => ({ ...state, strokeBaseLine: action.value })

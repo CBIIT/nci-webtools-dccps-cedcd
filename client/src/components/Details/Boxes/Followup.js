@@ -147,7 +147,7 @@ class Followup extends Component {
 				params.config.f_header.push(200 + 1);
 			}
 		}
-		params.config.sideHeader = [48, 40, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40];
+		params.config.sideHeader = [48, 40, 40, 40, 40, 40,40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40];
 		let cohorts_export = params.cohorts.map((item, idx) => {
 			const key = "export_c_" + idx;
 			return (
