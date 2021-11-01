@@ -6,24 +6,27 @@
 *
 */
 
-use cedcd;
+/*
+*  Merged into 3.1.0_Update.sql
+*/
+-- use cedcd;
 
--- add new category as N/A type
+-- -- add new category as N/A type
 
-insert ignore into lu_data_category (id, category, sub_category) 
-values (42,'Other Tobacco Products','Not Applicable'); 
+-- insert ignore into lu_data_category (id, category, sub_category) 
+-- values (42,'Other Tobacco Products','Not Applicable'); 
 
-insert major_content  (cohort_id, category_id) 
-select distinct b.cohort_id, 42 
-from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=42);
+-- insert major_content  (cohort_id, category_id) 
+-- select distinct b.cohort_id, 42 
+-- from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=42);
 
--- add new field to keep cancer condition N/A status
-alter table cancer_info add column (mdc_cancer_related_conditions_na int);
+-- -- add new field to keep cancer condition N/A status
+-- alter table cancer_info add column (mdc_cancer_related_conditions_na int);
 
--- add new category as Sexual Orientation and Gender Identity
-insert ignore into lu_data_category (id, category, sub_category) 
-values (43,'Sexual Orientation and Gender Identity', ''); 
+-- -- add new category as Sexual Orientation and Gender Identity
+-- insert ignore into lu_data_category (id, category, sub_category) 
+-- values (43,'Sexual Orientation and Gender Identity', ''); 
 
-insert major_content  (cohort_id, category_id) 
-select distinct b.cohort_id, 43 
-from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=43);
+-- insert major_content  (cohort_id, category_id) 
+-- select distinct b.cohort_id, 43 
+-- from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=43);
