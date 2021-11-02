@@ -2891,8 +2891,10 @@ BEGIN
         IF exists (SELECT * FROM cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID and a.status != 'archived') THEN -- find its copy
             SELECT a.id into new_id FROM cohort a join cohort b on a.acronym = b.acronym and a.status <> b.status and b.id = targetID;
         ELSE -- IF copy not exists, create a new one
+		   SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
+        	IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
            INSERT cohort (name, acronym, status, publish_by, document_ver,create_by, create_time, update_time, cohort_last_update_date, publish_time) 
-           SELECT name, acronym, 'draft', null,'8.1',user_id, now(), now(),now(),  publish_time FROM cohort
+           SELECT name, acronym, 'draft', null,@latest_ver,user_id, now(), now(),now(),  publish_time FROM cohort
            WHERE id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
@@ -3075,7 +3077,11 @@ FROM technology AS old WHERE old.cohort_id =old_cohort_id;
 
 SELECT document_ver INTO @cohort_ver FROM cohort WHERE id = old_cohort_id;
 
-IF @cohort_ver = '8.1' THEN set @new_status = 'complete' ;
+SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
+ 
+IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
+
+IF @cohort_ver = @latest_ver THEN set @new_status = 'complete' ;
 ELSE set @new_status = 'incomplete' ;
 END IF;
 
@@ -3373,6 +3379,43 @@ BEGIN
     SELECT flag AS rowAffacted;
  END //
 
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: reject_cohort_status
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS reject_cohort_status //
+
+CREATE PROCEDURE `reject_cohort_status`(in targetID int, in userID int, in notes varchar(2000))
+BEGIN
+	DECLARE rowAffacted int default 0;
+    DECLARE flag INT DEFAULT 1;
+ 
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0; 
+      ROLLBACK;
+	END;
+    
+    select status, document_ver into @cohort_status, @cohort_ver from cohort where id = targetID LIMIT 1;
+    
+    IF (@cohort_status = 'in review' ) THEN 
+		START TRANSACTION;
+		BEGIN
+			 SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
+             IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
+			 IF( @latest_ver != @cohort_ver) THEN 
+                UPDATE cohort set `status` = 'rejected' , document_ver = @latest_ver, cohort_last_update_date = now(), update_time = now() WHERE id = targetID;
+                UPDATE cohort_edit_status set status ='incomplete' where id > 1 and cohort_id =targetID;
+			  ELSE 
+               UPDATE cohort set `status` = 'rejected' , cohort_last_update_date = now(), update_time = now() WHERE id = targetID;
+			  END IF;
+			
+			INSERT INTO cohort_activity_log (cohort_id, user_id, activity, notes ) 
+			values (targetID, IFNULL(userID,1),  'rejected', notes);
+		END;
+		commit;
+		SELECT flag AS rowAffacted;
+    END IF;
+ END //
 
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: insert_new_cohort
@@ -3399,8 +3442,12 @@ BEGIN
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+
+			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
 			
-			INSERT into cohort (name,acronym,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,"new",'8.1', @createBy,now());
+			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
+			
+			INSERT into cohort (name,acronym,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,"new",@latest_ver, @createBy,now());
             set new_id = last_insert_id();
 			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
             

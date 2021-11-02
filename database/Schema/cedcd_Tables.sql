@@ -118,6 +118,15 @@ CREATE TABLE IF NOT  EXISTS `lu_specimen` (
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8;
 
+CREATE TABLE IF NOT EXISTS `lu_config` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `type` varchar(50) NOT NULL,
+    `value` varchar(50) NOT NULL,
+    `active` int DEFAULT 0,
+    `notes` varchar(200),
+    PRIMARY KEY (`id`)
+);
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT  EXISTS `cohort` (
@@ -778,6 +787,19 @@ insert into lu_person_category(id, category) values (1, "Person who completed th
 insert into lu_person_category(id, category) values (2, "Contact Person for clarification of the form");
 insert into lu_person_category(id, category) values (3, "Cohort Principal Investigator");
 insert into lu_person_category(id, category) values (4, "Person to contact if an investigator is interested");
+
+/*
+ Generate data for lookup table lu_config
+ */
+insert ignore into lu_config (id, type, value, active, notes) 
+values (1, 'questionnaire ver','4.0', 0, 'initial version'); 
+
+insert ignore into lu_config (id, type, value, active, notes) 
+values (2, 'questionnaire ver','8.1', 0, 'CEDCD 3.0, revised new questionnaire in Oct 2020 '); 
+
+insert ignore into lu_config (id, type, value, active, notes) 
+values (3,'questionnaire ver','8.2', 1, 'CEDCD 3.1, updated collected data types and cancer types on ver 8.1 in Oct 2021 '); 
+
 
 /*
 Generate default users 

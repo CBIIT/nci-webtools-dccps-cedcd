@@ -807,28 +807,37 @@ router.post('/approve/:id', async function (request, response) {
     response.json(true);
 })
 
-router.post('/reject/:id', async function (request, response) {
+router.post('/reject/:id', function (request, response) {
     const { app, params, body, session } = request;
-    const { mysql } = app.locals;
     const id = params ? params.id : undefined; // can be undefined (for new cohorts)
     const userId = session.user.id;
 
     if (!/SystemAdmin/.test(session.user.role)) {
         return response.status(400).json('Unauthorized').end();
     }
-
     const { notes } = body;
-    const updates = {
-        status: 'rejected',
-        cohort_activity_log: [{
-            user_id: userId,
-            activity: 'rejected',
-            notes,
-        }]
-    }
+    // const updates = {
+    //     status: 'rejected',
+    //     cohort_activity_log: [{
+    //         user_id: userId,
+    //         activity: 'rejected',
+    //         notes,
+    //     }]
+    // }
 
-    await saveCohort(mysql, updates, id, session.user);
-    response.json(true);
+    // await saveCohort(mysql, updates, id, session.user);
+    // response.json(true);
+
+    let func = 'reject_cohort_status'
+    let params1 = []
+    params1.push(id, userId, notes)
+    mysql.callProcedure(func, params1, function (result) {
+        if (result && result[0] && result[0][0].rowAffacted > 0)
+            response.json(true)
+        else
+            response.json(false)
+    });
+    
 })
 
 module.exports = router

@@ -8,6 +8,26 @@
 
 use cedcd;
 
+-- create LU_config table
+CREATE TABLE IF NOT EXISTS lu_config(
+    id int NOT NULL AUTO_INCREMENT,
+    type varchar(50) NOT NULL,
+    value varchar(50) NOT NULL,
+    active int DEFAULT 0,
+    notes varchar(200),
+    PRIMARY KEY (`id`)
+);
+
+insert ignore into lu_config (id, type, value, active, notes) 
+values (1, 'questionnaire ver','4.0', 0, 'initial version'); 
+
+insert ignore into lu_config (id, type, value, active, notes) 
+values (2, 'questionnaire ver','8.1', 0, 'CEDCD 3.0, revised new questionnaire in Oct 2020 '); 
+
+insert ignore into lu_config (id, type, value, active, notes) 
+values (3,'questionnaire ver','8.2', 1, 'CEDCD 3.1, updated collected data types and cancer types on ver 8.1 in Oct 2021 '); 
+
+
 -- add new category as N/A type
 insert ignore into lu_data_category (id, category, sub_category) 
 values (42,'Other Tobacco Products','Not Applicable'); 
@@ -23,6 +43,12 @@ values (43,'Sexual Orientation and Gender Identity', '');
 insert major_content  (cohort_id, category_id) 
 select distinct b.cohort_id, 43 
 from major_content b where b.cohort_id not in (select distinct c.cohort_id from major_content c where c.category_id=43);
+
+-- update current unpublished cohort document ver (8.2) and edit status for changed part (C & D )
+update cohort_edit_status es set es.status = 'incomplete' where es.cohort_id in (select id from cohort where status in ('draft','rejected') and document_ver !='8.2') and es.page_code in ('C', 'D')
+and es.status = 'complete';
+
+update cohort c set c.document_ver='8.2' where c.id > 0 and c.status in ('new', 'draft', 'rejected') and c.document_ver !='8.2';
 
 /*
 *  update cancer_count table to include race and ethnicity 
