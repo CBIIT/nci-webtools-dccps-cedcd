@@ -3404,9 +3404,11 @@ BEGIN
              IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
 			 IF( @latest_ver != @cohort_ver) THEN 
                 UPDATE cohort set `status` = 'rejected' , document_ver = @latest_ver, cohort_last_update_date = now(), update_time = now() WHERE id = targetID;
-                UPDATE cohort_edit_status set status ='incomplete' where id > 1 and cohort_id =targetID;
+                UPDATE cohort_edit_status src set src.status ='incomplete' 
+                where src.id > 1 and src.cohort_id = targetID 
+                and src.page_code in (select section_code_updated from lu_questionnaire_version where base_ver = @cohort_ver) ;
 			  ELSE 
-               UPDATE cohort set `status` = 'rejected' , cohort_last_update_date = now(), update_time = now() WHERE id = targetID;
+                UPDATE cohort set `status` = 'rejected' , cohort_last_update_date = now(), update_time = now() WHERE id = targetID;
 			  END IF;
 			
 			INSERT INTO cohort_activity_log (cohort_id, user_id, activity, notes ) 

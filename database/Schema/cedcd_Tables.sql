@@ -127,6 +127,14 @@ CREATE TABLE IF NOT EXISTS `lu_config` (
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE IF NOT EXISTS lu_questionnaire_version(
+    id int NOT NULL AUTO_INCREMENT,
+    base_ver varchar(10) NOT NULL,
+    section_code_updated varchar(50) NOT NULL,
+    notes varchar(50) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT  EXISTS `cohort` (
@@ -603,6 +611,7 @@ values (0, "Questionnaires", "Y"),
 (4, "Publication(authorship) policy", "Y"),
 (5, "Request Procedures", "Y");
 
+
 /*
 Generate data for lookup table lu_cohort_status
 */
@@ -800,6 +809,21 @@ values (2, 'questionnaire ver','8.1', 0, 'CEDCD 3.0, revised new questionnaire i
 insert ignore into lu_config (id, type, value, active, notes) 
 values (3,'questionnaire ver','8.2', 1, 'CEDCD 3.1, updated collected data types and cancer types on ver 8.1 in Oct 2021 '); 
 
+/*
+ Generate data for lookup table lu_questionnaire_version
+  updated sections per questionnaire base ver
+ */
+
+insert ignore into lu_questionnaire_version (id, base_ver, section_code_updated, notes) values 
+(1,'4.0', 'A', 'Basic Information'),
+(2,'4.0', 'B', 'Enrollment Counts'),
+(3,'4.0', 'C', 'Data Collection'),
+(4,'4.0', 'D', 'Cancer Information'),
+(5,'4.0', 'E', 'Mortality'),
+(6,'4.0', 'F', 'Data Linkage Harmonization'),
+(7,'4.0', 'G', 'Mortality'),
+(8,'8.1', 'C', 'Data Collection'),
+(9,'8.1', 'D', 'Cancer Information') ; 
 
 /*
 Generate default users 
