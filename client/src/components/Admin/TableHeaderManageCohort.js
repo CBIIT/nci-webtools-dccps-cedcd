@@ -42,7 +42,7 @@ class TableHeaderManageCohort extends Component {
       cls = "";
     }
     return (
-      <th className="sortable text-nowrap" width={this.props.width} scope="col">
+      <th className="sortable" width={this.props.width} scope="col">
         <a href="javascript:void(0);" onClick={this.props.onClick}>{name}
           {cls}
         </a>
