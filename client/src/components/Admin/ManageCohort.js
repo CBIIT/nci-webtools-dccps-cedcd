@@ -284,6 +284,7 @@ class ManageCohort extends Component {
 					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.name}</Link></td>
 					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.acronym}</Link></td>
 					<td className="text-capitalize">{item.status}</td>
+					<td>{item.ver}</td>
 					<td>{item.submit_by}</td>
 					<td>{item.update_time}</td>
 					<td>
@@ -352,7 +353,8 @@ class ManageCohort extends Component {
 										{this.renderTableHeader("name", "30%")}
 										{this.renderTableHeader("acronym", "10%")}
 										{this.renderTableHeader("status", "15%")}
-										{this.renderTableHeader("submit_by", "20%")}
+										{this.renderTableHeader("ver", "5%")}
+										{this.renderTableHeader("submit_by", "15%")}
 										{this.renderTableHeader("update_time", "15%")}
 										{this.renderTableHeader("action", "10%")}
 									</tr>

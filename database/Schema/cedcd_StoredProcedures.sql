@@ -1937,7 +1937,7 @@ BEGIN
     END IF;
     
 	SELECT sql_calc_found_rows r.* FROM (
-    SELECT ch.id, ch.name, ch.acronym,ch.status,l_status.id AS status_id, 
+    SELECT ch.id, ch.name, ch.acronym,ch.status,l_status.id AS status_id, ch.document_ver as ver,
 		concat(u1.first_name, ' ', u1.last_name) create_by, 
 		(	case
 			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
@@ -1960,6 +1960,7 @@ BEGIN
 		CASE WHEN columnName = 'name' THEN  r.name
 			 WHEN columnName = 'acronym' THEN r.acronym
 			 WHEN columnName = 'status' THEN  r.status
+			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
 			 WHEN columnName = 'action' THEN r.action
@@ -1970,6 +1971,7 @@ BEGIN
 		CASE WHEN columnName = 'name' THEN  r.name
 			 WHEN columnName = 'acronym' THEN r.acronym
 			 WHEN columnName = 'status' THEN  r.status
+			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
              WHEN columnName = 'action' THEN r.action
