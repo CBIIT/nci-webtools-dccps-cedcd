@@ -204,10 +204,10 @@ const MajorContentForm = ({ ...props }) => {
                         dispatch(allactions.majorContentErrorActions.tobaccoUseBaseLine(content[41].baseline == 1))
                         dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp(content[41].followup == 1))
                     }
-                    if (content[42]) {
-                        dispatch(allactions.majorContentErrorActions.sexgenderIdentityBaseLine(content[42].baseline == 1))
-                        dispatch(allactions.majorContentErrorActions.sexgenderIdentityFollowUp(content[42].followup == 1))
-                    }
+                    
+                    dispatch(allactions.majorContentErrorActions.sexgenderIdentityBaseLine([0, 1].includes(content[42].baseline)))
+                    dispatch(allactions.majorContentErrorActions.sexgenderIdentityFollowUp([0, 1].includes(content[42].followup)))
+                
                     dispatch(allactions.majorContentErrorActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA == 1))
                     dispatch(allactions.majorContentErrorActions.cancerToxicity(cancerInfo.cancerToxicity == 1))
                     dispatch(allactions.majorContentErrorActions.cancerLateEffects(cancerInfo.cancerLateEffects == 1))
@@ -223,7 +223,8 @@ const MajorContentForm = ({ ...props }) => {
     const refreshErrors = () => {
         for (let k of Object.keys(errors)) {
             if (!['cancerRelatedConditionsNA', 'cancerOther', 'cancerToxicity', 'cancerSymptom', 'cancerLateEffects', 'cancerOtherSpecify',
-                'tobaccoUseBaseLine', 'tobaccoUseFollowUp', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 'tobaccoBaseLine', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp',
+                'tobaccoUseBaseLine', 'tobaccoUseFollowUp', 'cigarBaseLine', 'cigarFollowUp', 'pipeBaseLine', 'pipeFollowUp', 
+                'tobaccoBaseLine', 'tobaccoFollowUp', 'ecigarBaseLine', 'ecigarFollowUp',
                 'noncigarBaseLineSpecify', 'noncigarOtherBaseLine', 'noncigarOtherFollowUp', 'noncigarFollowUpSpecify'].includes(k) && errors[k]) {
                 return true
             }
