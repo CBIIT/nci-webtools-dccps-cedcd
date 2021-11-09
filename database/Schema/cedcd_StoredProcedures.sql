@@ -3082,20 +3082,20 @@ SELECT document_ver INTO @cohort_ver FROM cohort WHERE id = old_cohort_id;
 SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
  
 IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
+set @new_status = 'complete' ;
+ INSERT into cohort_edit_status (cohort_id, page_code, status)
+    values ( new_cohort_id, 'A', @new_status),
+    ( new_cohort_id, 'B', @new_status ),
+    ( new_cohort_id, 'C', @new_status ),
+    ( new_cohort_id, 'D', @new_status ),
+    ( new_cohort_id, 'E', @new_status ),
+    ( new_cohort_id, 'F', @new_status ),
+    ( new_cohort_id, 'G', @new_status );
 
-IF @cohort_ver = @latest_ver THEN set @new_status = 'complete' ;
-ELSE set @new_status = 'incomplete' ;
+IF @cohort_ver != @latest_ver THEN 
+   UPDATE cohort_edit_status src set src.status ='incomplete' 
+   where src.id > 1 and src.cohort_id = new_cohort_id and src.page_code in (select section_code_updated from lu_questionnaire_version where base_ver = @cohort_ver) ;
 END IF;
-
-INSERT into cohort_edit_status (cohort_id, page_code, status)
-values ( new_cohort_id, 'A', @new_status),
-( new_cohort_id, 'B', @new_status ),
-( new_cohort_id, 'C', @new_status ),
-( new_cohort_id, 'D', @new_status ),
-( new_cohort_id, 'E', @new_status ),
-( new_cohort_id, 'F', @new_status ),
-( new_cohort_id, 'G', @new_status );
-
 /* update log table 
 INSERT into cohort_activity_log (cohort_id, user_id, activity, notes, create_time)
 values ( new_cohort_id,  3, 'init new cohort FROM published cohort new_cohort_id', null, now());
