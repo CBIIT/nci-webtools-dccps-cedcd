@@ -120,7 +120,7 @@ const Investigator = ({id, name, institution, email, handleRemove, errors, disab
                         <Col sm="6">
                             {errors[email] && displayStyle ? 
                                 <Reminder message={errors[email]}>
-                                    <Form.Control type="email"
+                                    <Form.Control 
                                         style={{ border: '1px solid red' }} 
                                         placeholder="Max of 100 characters" 
                                         maxLength="100" 

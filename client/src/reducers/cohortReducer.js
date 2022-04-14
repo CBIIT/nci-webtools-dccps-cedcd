@@ -74,7 +74,7 @@ actions[t.setInvestigatorEmail] = (state, action) => {
     return clone
 }
 
-actions[t.addInvestigator] = (state) => ({...state, investigators: state.investigators.length < 6 ? [...state.investigators, {personId: 0, name:'', institution: '', email: ''}]: state.investigators})
+actions[t.addInvestigator] = (state) => ({...state, investigators: [...state.investigators, {personId: 0, name:'', institution: '', email: ''}]})
 actions[t.removeInvestigator] = (state, action) => ({...state, investigators: state.investigators.filter((r, idx) => idx != action.value)})
 actions[t.setSameAsSomeone] = (state, action) => ({...state, sameAsSomeone: action.value})
 actions[t.setCollaboratorName] = (state, action) => ({...state, collaboratorName: action.collaboratorName})
