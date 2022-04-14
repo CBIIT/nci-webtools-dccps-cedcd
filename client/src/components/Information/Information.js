@@ -294,7 +294,7 @@ class Information extends Component {
 				<p className="py-4">
 							<button className="btn btn-primary" onClick={this.showMorePi}>
 							  {this.state.piShowMoreFlag ? (
-								 <span>Show less PIs </span>
+								 <span>Show Less PIs </span>
 							   ) : (
 								 <span>Show All PIs</span>
 							   )
