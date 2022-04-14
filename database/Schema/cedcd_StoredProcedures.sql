@@ -550,6 +550,11 @@ BEGIN
    
     SELECT p.* FROM person p WHERE p.cohort_id = @cohort_id and category_id in (1,3,4);
 
+	SELECT ori.id as id, ori.status, ori.acronym, coalesce(pub.id,0) as pub_id 
+    FROM cohort ori 
+    LEFT JOIN (SELECT id, acronym, status FROM cohort WHERE status="published") pub ON ori.acronym=pub.acronym 
+    WHERE ori.id= @cohort_id ;
+
 END //
 
 -- -----------------------------------------------------------------------------------------------------------

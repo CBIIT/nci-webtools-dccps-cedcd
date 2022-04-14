@@ -20,7 +20,18 @@ class Information extends Component {
 			protocol: false,
 			data: false,
 			viewCohortData: false,
+			piShowMoreFlag: false,
+			piShowCnt: 2
 		};
+		this.showMorePi = this.showMorePi.bind(this);
+	}
+
+	showMorePi = () => {
+		this.state.piShowCnt === 2 ? (
+			this.setState({ piShowCnt: 10, piShowMoreFlag: true })
+		):(
+			this.setState({ piShowCnt: 2, piShowMoreFlag: false })
+		)
 	}
 
 	goBack = () => {
@@ -210,10 +221,22 @@ class Information extends Component {
 	}
 
 	render() {
-		if (!this.state.hasMounted) {
-			return (<div id="prof-main" className="col-12"></div>);
+		if (!this.state.hasMounted || !this.state.info) {
+			return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is Not a valid Cohort Id. </p> </div>);
+		} else if (this.state.info.pubCohort && this.state.info.pubCohort.id !== this.state.info.pubCohort.pub_id) {
+			if(this.state.info.pubCohort.pub_id > 0){
+				return (<><div  className="col-12"> <p className="welcome"> 
+			Cohort {this.state.info.pubCohort.acronym} has a latest published cohort-id <a href={"cohort?id="+this.state.info.pubCohort.pub_id}>{this.state.info.pubCohort.pub_id}</a>. 
+			</p></div></>);
+			} else{
+				return (<><div  className="col-12"> <p className="welcome"> 
+			Cohort Id  {this.state.info.pubCohort.id} is not a published Cohort. 
+			</p></div></>);
+			}
+			
 		}
 		else {
+		
 			if (this.state.viewCohortData) {
 				return (
 					<div>
@@ -231,7 +254,27 @@ class Information extends Component {
 			} else {
 				const info = this.state.info;
 				const mailto = "mailto:" + info.collab_email;
-				let pis = info.pis.map((item, idx) => {
+				let pis="";
+				if(info.pis.length < 4){
+					 pis = info.pis.map((item, idx) => {
+						let result;
+						let prop_1 = item.name;
+						let prop_2 = item.institution;
+						if (prop_1 && prop_1.trim() !== "") {
+							result = (
+								<li key={"pi_" + item.id}>
+									{prop_1} ({prop_2})
+								</li>
+							);
+						}
+						else {
+							result = "";
+						}
+						return result;
+					});
+
+				}else{
+				 pis = info.pis.slice(0, this.state.piShowCnt).map((item, idx) => {
 					let result;
 					let prop_1 = item.name;
 					let prop_2 = item.institution;
@@ -247,6 +290,19 @@ class Information extends Component {
 					}
 					return result;
 				});
+				pis =  (<>{pis}
+				<p className="py-4">
+							<button className="btn btn-primary" onClick={this.showMorePi}>
+							  {this.state.piShowMoreFlag ? (
+								 <span>Show less PIs </span>
+							   ) : (
+								 <span>Show All PIs</span>
+							   )
+							  }
+							</button>
+						  </p>
+						  </>);
+				}
 				/*
 				let pis = [1,2,3,4,5,6].map((item, idx) => {
 					let result;
@@ -270,7 +326,8 @@ class Information extends Component {
 				if (info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available" && info.cohort_web_site.trim() !== "") {
 					website = (
 						//<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a>
-						<a href={info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>
+						info.cohort_web_site.startsWith("http")?<a href={info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>:
+						<a href={"https://"+info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>
 					);
 
 				}
@@ -280,7 +337,10 @@ class Information extends Component {
 
 				if (info.request_procedures_web_url && info.request_procedures_web_url.trim() !== "Not Available" && info.request_procedures_web_url.trim() !== "") {
 					proceduresite = (
-						<li><a href={info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a></li>
+						info.request_procedures_web_url.startsWith("http")?
+						<li>
+							<a href={info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a> </li>
+						:<li> <a href={"https:"+ info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a></li>
 					);
 
 				}
