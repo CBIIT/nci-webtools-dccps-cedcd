@@ -1,16 +1,24 @@
-/* COHORT INFO -------------------------------------------------------- */ 
+/* COHORT INFO -------------------------------------------------------- */
 
 .lastUpdated {
-    vertical-align: text-top;
+  vertical-align: text-top;
 }
-.btn-link.view-button {
-    font-size: 16px;
-    color: #135B5D;
-    padding-top: 4px;
-    padding-left: 0px;
-  }
-  
-#cd_contact, #piList{
-    list-style: none;
-    padding-left: 0;
-  }
+
+#prof-main .pi-link {
+  font-size: 16px;
+  border: none;
+  background-color: transparent;
+  color: #337ab7;
+  padding: 2px 0px;
+  text-decoration: none;
+}
+
+#prof-main .pi-link:hover {
+  text-decoration: underline;
+}
+
+#cd_contact,
+#piList {
+  list-style: none;
+  padding-left: 0;
+}
