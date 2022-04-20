@@ -540,6 +540,11 @@ DROP PROCEDURE IF EXISTS `SELECT_cohort_description` //
 CREATE PROCEDURE `SELECT_cohort_description`(in c_id int(11))
 BEGIN
 	set @cohort_id = c_id;
+
+	SELECT coalesce(pub.id,0) into @cohort_id 
+    FROM cohort ori 
+    LEFT JOIN (SELECT id, acronym, status FROM cohort WHERE status="published") pub ON ori.acronym=pub.acronym 
+    WHERE ori.id= c_id ;
     
     SELECT a.*,  dlh_procedure_online AS request_procedures_none 
     FROM cohort_basic a 
@@ -549,11 +554,6 @@ BEGIN
     SELECT a.* FROM cohort_document a WHERE a.cohort_id = @cohort_id and status = 1 and category not in (2,3) ;
    
     SELECT p.* FROM person p WHERE p.cohort_id = @cohort_id and category_id in (1,3,4);
-
-	SELECT ori.id as id, ori.status, ori.acronym, coalesce(pub.id,0) as pub_id 
-    FROM cohort ori 
-    LEFT JOIN (SELECT id, acronym, status FROM cohort WHERE status="published") pub ON ori.acronym=pub.acronym 
-    WHERE ori.id= @cohort_id ;
 
 END //
 

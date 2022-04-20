@@ -24,6 +24,7 @@ class Information extends Component {
 			piShowCnt: 2
 		};
 		this.showMorePi = this.showMorePi.bind(this);
+		this.handleViewCohortClick = this.handleViewCohortClick.bind(this);
 	}
 
 	showMorePi = () => {
@@ -222,21 +223,10 @@ class Information extends Component {
 
 	render() {
 		if (!this.state.hasMounted || !this.state.info) {
-			return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is Not a valid Cohort Id. </p> </div>);
-		} else if (this.state.info.pubCohort && this.state.info.pubCohort.id !== this.state.info.pubCohort.pub_id) {
-			if (this.state.info.pubCohort.pub_id > 0) {
-				return (<><div className="col-12"> <p className="welcome">
-					Cohort {this.state.info.pubCohort.acronym} has a latest published cohort-id <a href={"cohort?id=" + this.state.info.pubCohort.pub_id}>{this.state.info.pubCohort.pub_id}</a>.
-				</p></div></>);
-			} else {
-				return (<><div className="col-12"> <p className="welcome">
-					Cohort Id  {this.state.info.pubCohort.id} is not a published Cohort.
-				</p></div></>);
-			}
-
+			return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is an invalid Cohort ID. </p> </div>);
 		}
 		else {
-
+			
 			if (this.state.viewCohortData) {
 				return (
 					<div>
@@ -247,13 +237,14 @@ class Information extends Component {
 							</a>
 						</div>
 						<div>
-							<ViewCohortData id={this.state.cohort_id} />
+							<ViewCohortData id={this.state.info.cohort_id.toString()} />
 						</div>
 					</div>
 				);
 			} else {
 				const info = this.state.info;
 				const mailto = "mailto:" + info.collab_email;
+			
 				let pis = "";
 				if (info.pis.length < 4) {
 					pis = info.pis.map((item, idx) => {
@@ -275,7 +266,7 @@ class Information extends Component {
 
 				} else {
 
-					let addPicnt = info.pis.length - this.state.piShowCnt;
+					let addtPIcnt = info.pis.length - this.state.piShowCnt;
 					pis = info.pis.slice(0, this.state.piShowCnt).map((item, idx) => {
 						let result;
 						let prop_1 = item.name;
@@ -298,7 +289,7 @@ class Information extends Component {
 								{this.state.piShowMoreFlag ? (
 									<span>See Less... </span>
 								) : (
-									<span>See {addPicnt} More...</span>
+									<span>See {addtPIcnt} More...</span>
 								)
 								}
 							</a>

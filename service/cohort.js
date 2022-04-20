@@ -658,13 +658,11 @@ router.get('/:id', function (req, res) {
 	mysql.callProcedure(func, params, function (results) {
 		if (results && results[0] && results[0].length > 0) {
 			let basic = results[0][0];
-			let pubCohort = results[3][0];
 			info = {};
-			info.cohort_id = id;
+			info.cohort_id = basic.cohort_id;
 			info.cohort_name = basic.cohort_name;
 			info.cohort_acronym = basic.cohort_acronym;
 			info.update_time = basic.update_time;
-			info.pubCohort = pubCohort;
 			info.procedure_files = [];
 			let persons = results[2];
 			info.pis = [];

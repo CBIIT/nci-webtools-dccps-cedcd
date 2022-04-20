@@ -17,6 +17,13 @@
   text-decoration: underline;
 }
 
+.btn-link.view-button {
+  font-size: 16px;
+  color: #135B5D;
+  padding-top: 4px;
+  padding-left: 0px;
+}
+
 #cd_contact,
 #piList {
   list-style: none;
