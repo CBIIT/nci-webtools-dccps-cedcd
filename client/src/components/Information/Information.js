@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Link } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom';
 import './Information.css';
 import Moment from 'react-moment';
 import qs from 'query-string';
@@ -12,6 +12,7 @@ class Information extends Component {
 	constructor(props) {
 		super(props);
 		const id = qs.parse(this.props.location.search).id;
+		
 		this.state = {
 			hasMounted: false,
 			cohort_id: id,
@@ -24,7 +25,6 @@ class Information extends Component {
 			piShowCnt: 2
 		};
 		this.showMorePi = this.showMorePi.bind(this);
-		this.handleViewCohortClick = this.handleViewCohortClick.bind(this);
 	}
 
 	showMorePi = () => {
@@ -62,6 +62,16 @@ class Information extends Component {
 		this.setState({
 			viewCohortData: !this.state.viewCohortData
 		});
+	}
+
+	updateUrl = (newCohortID) =>{
+
+		if(newCohortID){
+			this.props.history.push({
+				pathname: '/cohort',
+				search: new URLSearchParams({id:newCohortID}).toString()
+			});
+		}
 	}
 
 	renderLinks = (idx) => {
@@ -208,6 +218,9 @@ class Information extends Component {
 			.then(res => res.json())
 			.then(result => {
 				let info = result.data;
+				if( info && info.cohort_id.toString() !== this.state.cohort_id){
+					this.updateUrl(info.cohort_id.toString());
+				}
 				this.setState(prevState => (
 					{
 						hasMounted: true,
