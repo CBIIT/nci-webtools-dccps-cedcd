@@ -235,7 +235,7 @@ class Information extends Component {
 	}
 
 	render() {
-		if (!this.state.hasMounted || !this.state.info) {
+		if (!this.state.hasMounted || (this.state.hasMounted && !this.state.info) ) {
 			return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is an invalid Cohort ID. </p> </div>);
 		}
 		else {
