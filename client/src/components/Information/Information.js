@@ -235,242 +235,246 @@ class Information extends Component {
 	}
 
 	render() {
-		if (!this.state.hasMounted || (this.state.hasMounted && !this.state.info) ) {
-			return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is an invalid Cohort ID. </p> </div>);
+		if (!this.state.hasMounted ) {
+			return (<div id="prof-main" className="col-12"></div>);
 		}
 		else {
-			
-			if (this.state.viewCohortData) {
-				return (
-					<div>
-						<div className="content-nav" style={{ marginLeft: '3rem' }}>
-							<a className="back" href="javascript:void(0);" onClick={this.handleViewCohortClick} >
-								<i className="fas fa-chevron-left"></i>&nbsp;
-								<span>Back to Previous Page</span>
-							</a>
-						</div>
-						<div>
-							<ViewCohortData id={this.state.info.cohort_id.toString()} />
-						</div>
-					</div>
-				);
+			if (!this.state.info) {
+				return (<div id="prof-main" className="col-12"> <p className="welcome"> {this.state.cohort_id} is an invalid Cohort ID. </p> </div>);
 			} else {
-				const info = this.state.info;
-				const mailto = "mailto:" + info.collab_email;
-			
-				let pis = "";
-				if (info.pis.length < 4) {
-					pis = info.pis.map((item, idx) => {
-						let result;
-						let prop_1 = item.name;
-						let prop_2 = item.institution;
-						if (prop_1 && prop_1.trim() !== "") {
-							result = (
-								<li key={"pi_" + item.id}>
-									{prop_1} ({prop_2})
-								</li>
-							);
-						}
-						else {
-							result = "";
-						}
-						return result;
-					});
-
-				} else {
-
-					let addtPIcnt = info.pis.length - this.state.piShowCnt;
-					pis = info.pis.slice(0, this.state.piShowCnt).map((item, idx) => {
-						let result;
-						let prop_1 = item.name;
-						let prop_2 = item.institution;
-						if (prop_1 && prop_1.trim() !== "") {
-							result = (
-								<li key={"pi_" + item.id}>
-									{prop_1} ({prop_2})
-								</li>
-							);
-						}
-						else {
-							result = "";
-						}
-						return result;
-					});
-					pis = (<>{pis}
-						<p className="py-2">
-							<a className="pi-link" href="javascript:void(0);" onClick={this.showMorePi} >
-								{this.state.piShowMoreFlag ? (
-									<span>See Less... </span>
-								) : (
-									<span>See {addtPIcnt} More...</span>
-								)
-								}
-							</a>
-
-						</p>
-					</>);
-				}
-				/*
-				let pis = [1,2,3,4,5,6].map((item, idx) => {
-					let result;
-					let prop_1 = "pi_name_"+item;
-					let prop_2 = "pi_institution_"+item;
-					if(info[prop_1] && info[prop_1].trim() !== ""){
-						result = (
-							<li key={item}>
-								{info[prop_1]} ({info[prop_2]})
-							</li>
-						);
-					}
-					else{
-						result = "";
-					}
-					return result;
-				});
-				*/
-
-				let website, proceduresite, files;
-				if (info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available" && info.cohort_web_site.trim() !== "") {
-					website = (
-						//<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a>
-						info.cohort_web_site.startsWith("http") ? <a href={info.cohort_web_site} target="_blank">{info.cohort_web_site}</a> :
-							<a href={"https://" + info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>
-					);
-
-				}
-				/*else {
-					website = <a href="#" id="cd_website" className="link-url">Cohort Website (Not Provided)</a>;
-				} */
-
-				if (info.request_procedures_web_url && info.request_procedures_web_url.trim() !== "Not Available" && info.request_procedures_web_url.trim() !== "") {
-					proceduresite = (
-						info.request_procedures_web_url.startsWith("http") ?
-							<li>
-								<a href={info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a> </li>
-							: <li> <a href={"https:" + info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a></li>
-					);
-
-				}
-
-				if (info.procedure_files.length > 0) {
-					files = info.procedure_files.map((item, idx) => <li i key={idx} className="link-pdf"><a
-						style={{ lineHeight: '2rem' }} href={`/api/download/${item}`} download={false} target="_blank">{item}</a></li>)
-				}
-
-				let desc = "<p>" + info.cohort_description + "</p>";
-				desc = desc.replace(/\\n/g, '\n').replace(/\n/g, '<br/>');
-				let description = {
-					className: "cedcd-btn " + (this.state.description ? "active" : ""),
-					expanded: this.state.description ? "true" : "false",
-					hidden: this.state.description ? "false" : "true",
-					style: { display: this.state.description ? "block" : "none" }
-				};
-				let protocol = {
-					className: "cedcd-btn " + (this.state.protocol ? "active" : ""),
-					expanded: this.state.protocol ? "true" : "false",
-					hidden: this.state.protocol ? "false" : "true",
-					style: { display: this.state.protocol ? "block" : "none" }
-				};
-				let data = {
-					className: "cedcd-btn " + (this.state.data ? "active" : ""),
-					expanded: this.state.data ? "true" : "false",
-					hidden: this.state.data ? "false" : "true",
-					style: { display: this.state.data ? "block" : "none" }
-				};
-				return (
-					<div className="col-12" id="prof-main">
-						<div id="prof-header">
-							<a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;
-								<span>Back to previous page</span></a>
-							<h2 className="pg-title"><span id="cd_name">{info.cohort_name}</span> (<span id="cd_acronym">{info.cohort_acronym}</span>)</h2>
-							<div className="rightLink"> <span className="lastUpdated">Last Updated: <span id="cd_lastupdate"><Moment format="MM/DD/YYYY">{info.update_time}</Moment></span></span> </div>
-							<div id="cd_errorMsg" className="errorText"></div>
-						</div>
-
-						<div className="row" style={{ marginBottom: '0' }}>
-							<div className="col-md-6 xs-12" style={{ borderRight: '1px solid #000', position: 'relative' }}>
-								<h3>Cohort Collaboration Contact</h3>
-								<p className="profile-contact-intro" style={{ fontStyle: 'italic', fontSize: '.80em' }}>If interested in collaborating with the cohort on a project, please contact:</p>
-								<ul id="cd_contact">
-									<li>{info.collab_name} ({info.collab_position})</li>
-									<li className="link-email">
-										<a href={mailto}>
-											<i className="far fa-envelope"></i> {info.collab_email}
-										</a>
-									</li>
-									<li><i className="fas fa-phone"></i> {info.collab_phone}
-									</li>
-								</ul>
+				if (this.state.viewCohortData) {
+					return (
+						<div>
+							<div className="content-nav" style={{ marginLeft: '3rem' }}>
+								<a className="back" href="javascript:void(0);" onClick={this.handleViewCohortClick} >
+									<i className="fas fa-chevron-left"></i>&nbsp;
+									<span>Back to Previous Page</span>
+								</a>
 							</div>
-							<div className="col-md-6 xs-12" style={{ paddingLeft: '4rem' }}>
-								<h3>Principal Investigators</h3>
-								<ul id="piList">{pis}</ul>
-								{
-									website && <div style={{ marginBottom: '12px' }}>
-										<h3>Cohort Website</h3>
-										{website}
-									</div>
-								}
-								{/*<p>{proceduresite}</p>
+							<div>
+								<ViewCohortData id={this.state.info.cohort_id.toString()} />
+							</div>
+						</div>
+					);
+				} else {
+					const info = this.state.info;
+					const mailto = "mailto:" + info.collab_email;
+
+					let pis = "";
+					if (info.pis.length < 4) {
+						pis = info.pis.map((item, idx) => {
+							let result;
+							let prop_1 = item.name;
+							let prop_2 = item.institution;
+							if (prop_1 && prop_1.trim() !== "") {
+								result = (
+									<li key={"pi_" + item.id}>
+										{prop_1} ({prop_2})
+									</li>
+								);
+							}
+							else {
+								result = "";
+							}
+							return result;
+						});
+
+					} else {
+
+						let addtPIcnt = info.pis.length - this.state.piShowCnt;
+						pis = info.pis.slice(0, this.state.piShowCnt).map((item, idx) => {
+							let result;
+							let prop_1 = item.name;
+							let prop_2 = item.institution;
+							if (prop_1 && prop_1.trim() !== "") {
+								result = (
+									<li key={"pi_" + item.id}>
+										{prop_1} ({prop_2})
+									</li>
+								);
+							}
+							else {
+								result = "";
+							}
+							return result;
+						});
+						pis = (<>{pis}
+							<p className="py-2">
+								<a className="pi-link" href="javascript:void(0);" onClick={this.showMorePi} >
+									{this.state.piShowMoreFlag ? (
+										<span>See Less... </span>
+									) : (
+										<span>See {addtPIcnt} More...</span>
+									)
+									}
+								</a>
+
+							</p>
+						</>);
+					}
+					/*
+					let pis = [1,2,3,4,5,6].map((item, idx) => {
+						let result;
+						let prop_1 = "pi_name_"+item;
+						let prop_2 = "pi_institution_"+item;
+						if(info[prop_1] && info[prop_1].trim() !== ""){
+							result = (
+								<li key={item}>
+									{info[prop_1]} ({info[prop_2]})
+								</li>
+							);
+						}
+						else{
+							result = "";
+						}
+						return result;
+					});
+					*/
+
+					let website, proceduresite, files;
+					if (info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available" && info.cohort_web_site.trim() !== "") {
+						website = (
+							//<a href={info.cohort_web_site} id="cd_website" className="link-url" target="_blank">Cohort Website</a>
+							info.cohort_web_site.startsWith("http") ? <a href={info.cohort_web_site} target="_blank">{info.cohort_web_site}</a> :
+								<a href={"https://" + info.cohort_web_site} target="_blank">{info.cohort_web_site}</a>
+						);
+
+					}
+					/*else {
+						website = <a href="#" id="cd_website" className="link-url">Cohort Website (Not Provided)</a>;
+					} */
+
+					if (info.request_procedures_web_url && info.request_procedures_web_url.trim() !== "Not Available" && info.request_procedures_web_url.trim() !== "") {
+						proceduresite = (
+							info.request_procedures_web_url.startsWith("http") ?
+								<li>
+									<a href={info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a> </li>
+								: <li> <a href={"https:" + info.request_procedures_web_url} target="_blank">{info.request_procedures_web_url}</a></li>
+						);
+
+					}
+
+					if (info.procedure_files.length > 0) {
+						files = info.procedure_files.map((item, idx) => <li i key={idx} className="link-pdf"><a
+							style={{ lineHeight: '2rem' }} href={`/api/download/${item}`} download={false} target="_blank">{item}</a></li>)
+					}
+
+					let desc = "<p>" + info.cohort_description + "</p>";
+					desc = desc.replace(/\\n/g, '\n').replace(/\n/g, '<br/>');
+					let description = {
+						className: "cedcd-btn " + (this.state.description ? "active" : ""),
+						expanded: this.state.description ? "true" : "false",
+						hidden: this.state.description ? "false" : "true",
+						style: { display: this.state.description ? "block" : "none" }
+					};
+					let protocol = {
+						className: "cedcd-btn " + (this.state.protocol ? "active" : ""),
+						expanded: this.state.protocol ? "true" : "false",
+						hidden: this.state.protocol ? "false" : "true",
+						style: { display: this.state.protocol ? "block" : "none" }
+					};
+					let data = {
+						className: "cedcd-btn " + (this.state.data ? "active" : ""),
+						expanded: this.state.data ? "true" : "false",
+						hidden: this.state.data ? "false" : "true",
+						style: { display: this.state.data ? "block" : "none" }
+					};
+					return (
+						<div className="col-12" id="prof-main">
+							<div id="prof-header">
+								<a className="back" href="javascript:void(0);" onClick={this.goBack}><i className="fas fa-chevron-left"></i>&nbsp;
+									<span>Back to previous page</span></a>
+								<h2 className="pg-title"><span id="cd_name">{info.cohort_name}</span> (<span id="cd_acronym">{info.cohort_acronym}</span>)</h2>
+								<div className="rightLink"> <span className="lastUpdated">Last Updated: <span id="cd_lastupdate"><Moment format="MM/DD/YYYY">{info.update_time}</Moment></span></span> </div>
+								<div id="cd_errorMsg" className="errorText"></div>
+							</div>
+
+							<div className="row" style={{ marginBottom: '0' }}>
+								<div className="col-md-6 xs-12" style={{ borderRight: '1px solid #000', position: 'relative' }}>
+									<h3>Cohort Collaboration Contact</h3>
+									<p className="profile-contact-intro" style={{ fontStyle: 'italic', fontSize: '.80em' }}>If interested in collaborating with the cohort on a project, please contact:</p>
+									<ul id="cd_contact">
+										<li>{info.collab_name} ({info.collab_position})</li>
+										<li className="link-email">
+											<a href={mailto}>
+												<i className="far fa-envelope"></i> {info.collab_email}
+											</a>
+										</li>
+										<li><i className="fas fa-phone"></i> {info.collab_phone}
+										</li>
+									</ul>
+								</div>
+								<div className="col-md-6 xs-12" style={{ paddingLeft: '4rem' }}>
+									<h3>Principal Investigators</h3>
+									<ul id="piList">{pis}</ul>
+									{
+										website && <div style={{ marginBottom: '12px' }}>
+											<h3>Cohort Website</h3>
+											{website}
+										</div>
+									}
+									{/*<p>{proceduresite}</p>
 							<ol>{files}</ol>*/}
 
-								{
-									(proceduresite || info.procedure_files.length > 0)
-									&& <div>
-										<h3>Procedure For Requesting Data</h3>
-										<ul style={{ listStyle: 'none', paddingLeft: '0' }}>
-											{proceduresite}
-											{files}
-										</ul>
-									</div>
-								}
+									{
+										(proceduresite || info.procedure_files.length > 0)
+										&& <div>
+											<h3>Procedure For Requesting Data</h3>
+											<ul style={{ listStyle: 'none', paddingLeft: '0' }}>
+												{proceduresite}
+												{files}
+											</ul>
+										</div>
+									}
+								</div>
 							</div>
-						</div>
-						<div className="row" style={{ marginLeft: '1rem', paddingLeft: '0' }}>
-							<Reminder viewCohort={true} message="Click to view submitted Cohort data.">
-								<span >
-									<button id="viewButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
-										className="btn btn-link view-button" onClick={this.handleViewCohortClick}  >
-										View Cohort Data <img className="mw-100" width="15" src="/assets/img/ViewDetails.png"
-											style={{ marginBottom: '0', paddingBottom: '4px' }} alt="View Cohort Data" />
-									</button>
-								</span>
-							</Reminder>
-						</div>
-						<CollapsiblePanelContainer>
-							<CollapsiblePanel
-								condition={this.state.description}
-								panelTitle='Cohort Description'
-								onClick={this.descriptionClick}>
-								<div id="cd_description" dangerouslySetInnerHTML={{ __html: desc }} />
-							</CollapsiblePanel>
-							<CollapsiblePanel
-								condition={this.state.protocol}
-								panelTitle='Questionnaires'
-								onClick={this.protocolClick}>
-								{/*}	<h3 >Study Protocol</h3>
+							<div className="row" style={{ marginLeft: '1rem', paddingLeft: '0' }}>
+								<Reminder viewCohort={true} message="Click to view submitted Cohort data.">
+									<span >
+										<button id="viewButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
+											className="btn btn-link view-button" onClick={this.handleViewCohortClick}  >
+											View Cohort Data <img className="mw-100" width="15" src="/assets/img/ViewDetails.png"
+												style={{ marginBottom: '0', paddingBottom: '4px' }} alt="View Cohort Data" />
+										</button>
+									</span>
+								</Reminder>
+							</div>
+							<CollapsiblePanelContainer>
+								<CollapsiblePanel
+									condition={this.state.description}
+									panelTitle='Cohort Description'
+									onClick={this.descriptionClick}>
+									<div id="cd_description" dangerouslySetInnerHTML={{ __html: desc }} />
+								</CollapsiblePanel>
+								<CollapsiblePanel
+									condition={this.state.protocol}
+									panelTitle='Questionnaires'
+									onClick={this.protocolClick}>
+									{/*}	<h3 >Study Protocol</h3>
 	                <div id="prot_attachments">
 	                	{this.renderLinks(0)}
 	                </div>*/}
-								<h3>Cohort Questionnaires</h3>
-								<div id="quest_attachments">
-									{this.renderLinks(0)}
-								</div>
-							</CollapsiblePanel>
-							<CollapsiblePanel
-								condition={this.state.data}
-								panelTitle='Protocols and Authorship Policies'
-								onClick={this.dataClick}>
-								<div id="pol_attachments">
-									{this.renderLinks(2)}
-								</div>
-							</CollapsiblePanel>
-						</CollapsiblePanelContainer>
-					</div>
-				);
+									<h3>Cohort Questionnaires</h3>
+									<div id="quest_attachments">
+										{this.renderLinks(0)}
+									</div>
+								</CollapsiblePanel>
+								<CollapsiblePanel
+									condition={this.state.data}
+									panelTitle='Protocols and Authorship Policies'
+									onClick={this.dataClick}>
+									<div id="pol_attachments">
+										{this.renderLinks(2)}
+									</div>
+								</CollapsiblePanel>
+							</CollapsiblePanelContainer>
+						</div>
+					);
+				}
 			}
-		}
 
+
+		}
 	}
 }
 
