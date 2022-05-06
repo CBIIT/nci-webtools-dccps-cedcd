@@ -76,7 +76,8 @@ class Details extends Component {
 			searchState: true,
 			prevBasicParams: {},
 			prevAdvancedParam: {},
-			advancedCondition: "AND"
+			advancedCondition: "AND",
+			loadingDataStatus: false,
 		};
 		this.toFocus = React.createRef();
 	}
@@ -89,7 +90,9 @@ class Details extends Component {
 			orderBy: state.orderBy,
 			selected: state.selected,
 			comparasion: state.comparasion,
-			currTab: state.currTab
+			currTab: state.currTab,
+			pageInfo: state.pageInfo,
+			searchState: state.searchState,
 		};
 		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
@@ -157,7 +160,10 @@ class Details extends Component {
 		}
 	}
 
-	pageData(i, orderBy, filter, selected) {
+	async pageData(i, orderBy, filter, selected) {
+
+		this.setState({ loadingDataStatus: true });
+
 		if (this.state.searchState == true) {
 			const state = Object.assign({}, this.state);
 			const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
@@ -168,29 +174,47 @@ class Details extends Component {
 			else {
 				reqBody.paging.page = i;
 			}
-			fetch('./api/cohort/select', {
-				method: "POST",
-				body: JSON.stringify(reqBody),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-				.then(res => res.json())
-				.then(result => {
-					let list = result.data.list;
-					reqBody.paging.total = result.data.total;
-					this.setState(prevState => (
-						{
-							list: list,
-							filter: reqBody.filter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i),
-							selected: selected ? selected : prevState.selected,
-							comparasion: false
-						}
-					));
-				});
+			const result = await
+				fetch('./api/cohort/select', {
+					method: "POST",
+					body: JSON.stringify(reqBody),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then(res => res.json());
+
+			if (result) {
+				let list = result.data.list;
+				reqBody.paging.total = result.data.total;
+				this.setState(prevState => (
+					{
+						list: list,
+						filter: reqBody.filter,
+						orderBy: reqBody.orderBy,
+						pageInfo: reqBody.paging,
+						lastPage: (i > -1 ? lastPage : i),
+						selected: selected ? selected : prevState.selected,
+						comparasion: false,
+						loadingDataStatus: false,
+						searchState: state.searchState,
+					}
+				));
+
+			} else {
+				this.setState(prevState => (
+					{
+						list: [],
+						filter: reqBody.filter,
+						orderBy: reqBody.orderBy,
+						pageInfo: reqBody.paging,
+						lastPage: (i > -1 ? lastPage : i),
+						selected: selected ? selected : prevState.selected,
+						comparasion: false,
+						loadingDataStatus: false,
+						searchState: state.searchState,
+					}
+				));
+			}
 		}
 		else {
 			const state = Object.assign({}, this.state);
@@ -203,34 +227,52 @@ class Details extends Component {
 				reqBody.paging.page = i;
 			}
 
-			fetch('./api/cohort/advancedSelect', {
+			const response = await fetch('./api/cohort/advancedSelect', {
 				method: "POST",
 				body: JSON.stringify(reqBody),
 				headers: {
 					'Content-Type': 'application/json'
 				}
-			})
-				.then(res => res.json())
-				.then(result => {
-					let list = result.data.list;
-					reqBody.paging.total = result.data.total;
-					this.setState(prevState => (
-						{
-							list: list,
-							advancedFilter: reqBody.advancedFilter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i),
-							selected: selected ? selected : prevState.selected,
-							comparasion: false
-						}
-					));
-				});
+			});
+			const result = await response.json();
+
+			if (result) {
+				let list = result.data.list;
+				reqBody.paging.total = result.data.total;
+				this.setState(prevState => (
+					{
+						list: list,
+						advancedFilter: reqBody.advancedFilter,
+						orderBy: reqBody.orderBy,
+						pageInfo: reqBody.paging,
+						lastPage: (i > -1 ? lastPage : i),
+						selected: selected ? selected : prevState.selected,
+						comparasion: false,
+						loadingDataStatus: false,
+						searchState: state.searchState,
+					}
+				));
+			} else {
+				this.setState(prevState => (
+					{
+						list: [],
+						advancedFilter: reqBody.advancedFilter,
+						orderBy: reqBody.orderBy,
+						pageInfo: reqBody.paging,
+						lastPage: (i > -1 ? lastPage : i),
+						selected: selected ? selected : prevState.selected,
+						comparasion: false,
+						loadingDataStatus: false,
+						searchState: state.searchState,
+					}
+				));
+
+			}
 		}
 	}
 
 	clearFilter = () => {
-		let i = 1;
+
 		this.setAllToFalse();
 		if (document.getElementById("cancerAll") !== null) {
 			document.getElementById("cancerAll").checked = false;
@@ -266,11 +308,13 @@ class Details extends Component {
 				orderBy: orderBy,
 				comparasion: false,
 				selected: [],
-				currTab: 0
+				currTab: 0,
+				pageInfo: state.pageInfo,
+				searchState: state.searchState,
 			};
 			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 		}
-		this.filterData(i, orderBy, filter, []);
+		this.filterData(1, orderBy, filter, []);
 
 	}
 
@@ -302,10 +346,10 @@ class Details extends Component {
 		if (previousState) {
 			let state = JSON.parse(previousState);
 			if (this.state.searchState == false) {
-				this.filterData(1, state.orderBy, state.filter);
+				this.filterData(state.pageInfo.page, state.orderBy, state.filter);
 			}
 			else {
-				this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+				this.advancedFilterData(state.pageInfo.page, state.orderBy, state.advancedFilter);
 			}
 		}
 		else {
@@ -318,7 +362,51 @@ class Details extends Component {
 		}
 	}
 
+	async loadFilterData(reqBody, i, selected, lastPage) {
+		const response = await fetch('./api/cohort/select', {
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const result = await response.json();
+		if (result) {
+			let list = result.data.list;
+			reqBody.paging.total = result.data.total;
+			this.setState(prevState => (
+				{
+					list: list,
+					filter: reqBody.filter,
+					orderBy: reqBody.orderBy,
+					pageInfo: reqBody.paging,
+					lastPage: (i > -1 ? lastPage : i),
+					selected: selected ? selected : prevState.selected,
+					comparasion: false,
+					loadingDataStatus: false,
+				}
+			));
+
+		}else{
+			this.setState(prevState => (
+				{
+					list: [],
+					filter: reqBody.filter,
+					orderBy: reqBody.orderBy,
+					pageInfo: reqBody.paging,
+					lastPage: (i > -1 ? lastPage : i),
+					selected: selected ? selected : prevState.selected,
+					comparasion: false,
+					loadingDataStatus: false,
+				}
+			));
+		};
+	
+	}
+
 	filterData(i, orderBy, filter, selected) {
+		
+		this.setState({loadingDataStatus:true});
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
 		let reqBody = {
@@ -340,33 +428,9 @@ class Details extends Component {
 		}
 		this.setState({
 			prevBasicParams: JSON.parse(JSON.stringify(reqBody)),
-		})
+		});
 
-		fetch('./api/cohort/select', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				if (this._isMounted) {
-					this.setState(prevState => (
-						{
-							list: list,
-							filter: reqBody.filter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i),
-							selected: selected ? selected : prevState.selected,
-							comparasion: false
-						}
-					));
-				}
-			});
+		this.loadFilterData(reqBody, i, selected, lastPage);
 	}
 
 	clearAdvancedFilter = () => {
@@ -394,7 +458,9 @@ class Details extends Component {
 			let item = {
 				filter: state.filter,
 				advancedFilter: advancedFilter,
-				orderBy: orderBy
+				orderBy: orderBy,
+				pageInfo: state.pageInfo,
+				searchState: state.searchState,
 			};
 			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 		}
@@ -407,8 +473,49 @@ class Details extends Component {
 		this.saveHistory();
 		this.advancedFilterData(1, null, null, []);
 	}
+	async loadAdvFilterData (reqBody, i, selected, lastPage){
+		const response = await fetch('./api/cohort/advancedSelect', {
+			method: "POST",
+			body: JSON.stringify(reqBody),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		const result = await response.json();
+		if(result){
+			let list = result.data.list;
+				reqBody.paging.total = result.data.total;
 
+				this.setState(prevState => (
+						{
+							list: list,
+							advancedFilter: reqBody.advancedFilter,
+							orderBy: reqBody.orderBy,
+							pageInfo: reqBody.paging,
+							lastPage: (i > -1 ? lastPage : i),
+							selected: selected ? selected : prevState.selected,
+							comparasion: false,
+							loadingDataStatus: false,
+						}
+				));
+				
+		}else{
+			this.setState(prevState => (
+				{
+					list: [],
+					advancedFilter: reqBody.advancedFilter,
+					orderBy: reqBody.orderBy,
+					pageInfo: reqBody.paging,
+					lastPage: (i > -1 ? lastPage : i),
+					selected: selected ? selected : prevState.selected,
+					comparasion: false,
+					loadingDataStatus: false,
+				}
+		));
+		}
+	}
 	advancedFilterData(i, orderBy, advancedFilter, selected) {
+		this.setState({loadingDataStatus:true});
 		const state = Object.assign({}, this.state);
 		const lastPage = state.pageInfo.page == 0 ? state.lastPage : state.pageInfo.page;
 		let reqBody = {
@@ -432,31 +539,8 @@ class Details extends Component {
 		this.setState({
 			prevAdvancedParam: JSON.parse(JSON.stringify(reqBody)),
 		})
-		fetch('./api/cohort/advancedSelect', {
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
-			.then(res => res.json())
-			.then(result => {
-				let list = result.data.list;
-				reqBody.paging.total = result.data.total;
-				if (this._isMounted) {
-					this.setState(prevState => (
-						{
-							list: list,
-							advancedFilter: reqBody.advancedFilter,
-							orderBy: reqBody.orderBy,
-							pageInfo: reqBody.paging,
-							lastPage: (i > -1 ? lastPage : i),
-							selected: selected ? selected : prevState.selected,
-							comparasion: false
-						}
-					));
-				}
-			});
+		this.loadAdvFilterData(reqBody, i, selected, lastPage);
+	
 	}
 
 	handleOrderBy(column) {
@@ -875,7 +959,9 @@ class Details extends Component {
 			orderBy: state.orderBy,
 			selected: state.selected,
 			comparasion: status,
-			currTab: state.currTab
+			currTab: state.currTab,
+			pageInfo: state.pageInfo,
+			searchState: state.searchState,
 		};
 		sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 	}
@@ -1205,12 +1291,12 @@ class Details extends Component {
 	}
 
 	componentDidMount() {
+		if(!this._isMounted ){
 		this._isMounted = true;
-
 		const previousState = sessionStorage.getItem('informationHistory_select');
 		if (previousState) {
 			let state = JSON.parse(previousState);
-
+		
 			if (state.comparasion === true) {
 				this.setState(state);
 				// sessionStorage.removeItem('informationHistory_select');
@@ -1224,14 +1310,17 @@ class Details extends Component {
 						selected: state.selected,
 						currTab: state.currTab,
 						comparasion: state.comparasion,
+						pageInfo: state.pageInfo,
 					});
 				}
 
+				let pageId = state.pageInfo.page?state.pageInfo.page:1;
+
 				if (this.state.searchState == true) {
-					this.filterData(1, state.orderBy, state.filter);
+					this.filterData(pageId, state.orderBy, state.filter);
 				}
 				else {
-					this.advancedFilterData(1, state.orderBy, state.advancedFilter);
+					this.advancedFilterData(pageId, state.orderBy, state.advancedFilter);
 				}
 			}
 		}
@@ -1243,6 +1332,7 @@ class Details extends Component {
 				this.advancedFilterData(this.state.pageInfo.page);
 			}
 		}
+	}
 	}
 
 	componentWillUnmount() {
@@ -1257,7 +1347,9 @@ class Details extends Component {
 				orderBy: state.orderBy,
 				selected: [],
 				comparasion: false,
-				currTab: 0
+				currTab: 0,
+				pageInfo: state.pageInfo,
+				searchState: state.searchState,
 			};
 			sessionStorage.setItem('informationHistory_select', JSON.stringify(item));
 		}
@@ -1303,6 +1395,7 @@ class Details extends Component {
 		}
 		else {
 			const list = this.state.list;
+			//let loadstatus = this.state.list
 			let content = list.map((item, index) => {
 				let id = item.id;
 				let url = './cohort?id=' + id;
@@ -1337,11 +1430,22 @@ class Details extends Component {
 				);
 			});
 			if (content.length === 0) {
-				content = (
-					<tr>
-						<td colSpan="6">Nothing to display</td>
-					</tr>
-				);
+				if(this.state.loadingDataStatus){
+					content = (
+						<tr>
+							<td colSpan="6">Loading data ...</td>
+						</tr>
+					);
+
+				}else{
+					content = (
+						<tr>
+							<td colSpan="6">No data is available for selected search criteria.</td>
+						</tr>
+					);
+
+				}
+				
 			}
 
 			return (

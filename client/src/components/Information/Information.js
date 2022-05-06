@@ -75,45 +75,6 @@ class Information extends Component {
 	}
 
 	renderLinks = (idx) => {
-		/*	if(idx === 0){
-				if(this.state.info.attachments && this.state.info.attachments.protocols){
-					const links = this.state.info.attachments.protocols.map((item, id) => {
-						const uid = "protocol_"+id;
-						if(item.type === 1){
-							return (
-								<li key={uid} className="link-pdf">
-									<a href={item.url}  target="_blank">{item.name}</a>
-								</li>
-							);
-						}
-						else{
-							let url = item.url;
-							if(!url.startsWith("http")){
-								url = "http://"+url;
-							}
-							return (
-								<li key={uid} className="link-url">
-									<a href={url} target="_blank">{item.url}</a>
-								</li>
-							);
-						}
-						
-					});
-					return (
-						<ul className="links-list">
-							{links}
-						</ul>
-					);
-				}
-				else{
-					return (
-						<ul>
-							<li>Not Provided</li>
-						</ul>
-					);
-				}
-			}
-			else */
 		if (idx === 0) {
 			if (this.state.info.attachments && this.state.info.attachments.questionnaires) {
 				const links = this.state.info.attachments.questionnaires.map((item, id) => {
@@ -153,24 +114,9 @@ class Information extends Component {
 			}
 		}// end idx ==1 
 		else {
-
 			// combination of  basic info request_procedures_web_url and attachments policies 
 			let has = false;  // has == true -> not provided 
 			let return_body = []
-			/*			let request_web_url = this.state.info.request_procedures_web_url;
-						let return_body = []
-						// check if is a valid web url
-						if (!request_web_url.startsWith("http") && !request_web_url.startsWith("www") && !request_web_url.startsWith("wiki.")) {
-							// nothing to do 
-						} else {
-							has = true
-							return_body.push(
-								<li className="link-url" key="request_procedures_web_url_key">
-									<a href={request_web_url} target="_blank">{request_web_url}</a>
-								</li>
-							)
-						}
-			*/
 			if (this.state.info.attachments && this.state.info.attachments.policies) {
 				// map return 
 				const links = this.state.info.attachments.policies.map((item, id) => {
@@ -213,30 +159,46 @@ class Information extends Component {
 		}// end else 
 	}
 
-	componentDidMount() {
-		fetch('./api/cohort/' + this.state.cohort_id)
-			.then(res => res.json())
-			.then(result => {
-				let info = result.data;
-				if( info && info.cohort_id.toString() !== this.state.cohort_id){
-					this.updateUrl(info.cohort_id.toString());
+	async loadData() {
+		const response = await fetch('./api/cohort/' + this.state.cohort_id);
+		const result = await response.json();
+		if (result) {
+			let info = result.data;
+			if (info && info.cohort_id.toString() !== this.state.cohort_id) {
+				this.updateUrl(info.cohort_id.toString());
+			}
+			this.setState(prevState => (
+				{
+					hasMounted: true,
+					cohort_id: prevState.cohort_id,
+					info: info,
+					description: true,
+					protocol: false,
+					data: false
 				}
-				this.setState(prevState => (
-					{
-						hasMounted: true,
-						cohort_id: prevState.cohort_id,
-						info: info,
-						description: true,
-						protocol: false,
-						data: false
-					}
-				));
-			});
+			));
+		}else{
+			this.setState(prevState => (
+				{
+					hasMounted: true,
+					info: {},
+					description: true,
+					protocol: false,
+					data: false,
+					loadingStatus: false
+				}
+			));
+		}
+
+	}
+
+	componentDidMount() {
+		this.loadData();
 	}
 
 	render() {
 		if (!this.state.hasMounted ) {
-			return (<div id="prof-main" className="col-12"></div>);
+			return (<div id="prof-main" className="col-12"> Loading data ... </div>);
 		}
 		else {
 			if (!this.state.info) {
@@ -259,7 +221,6 @@ class Information extends Component {
 				} else {
 					const info = this.state.info;
 					const mailto = "mailto:" + info.collab_email;
-
 					let pis = "";
 					if (info.pis.length < 4) {
 						pis = info.pis.map((item, idx) => {
@@ -312,25 +273,7 @@ class Information extends Component {
 							</p>
 						</>);
 					}
-					/*
-					let pis = [1,2,3,4,5,6].map((item, idx) => {
-						let result;
-						let prop_1 = "pi_name_"+item;
-						let prop_2 = "pi_institution_"+item;
-						if(info[prop_1] && info[prop_1].trim() !== ""){
-							result = (
-								<li key={item}>
-									{info[prop_1]} ({info[prop_2]})
-								</li>
-							);
-						}
-						else{
-							result = "";
-						}
-						return result;
-					});
-					*/
-
+				
 					let website, proceduresite, files;
 					if (info.cohort_web_site && info.cohort_web_site.trim() !== "Not Available" && info.cohort_web_site.trim() !== "") {
 						website = (
@@ -340,10 +283,7 @@ class Information extends Component {
 						);
 
 					}
-					/*else {
-						website = <a href="#" id="cd_website" className="link-url">Cohort Website (Not Provided)</a>;
-					} */
-
+				
 					if (info.request_procedures_web_url && info.request_procedures_web_url.trim() !== "Not Available" && info.request_procedures_web_url.trim() !== "") {
 						proceduresite = (
 							info.request_procedures_web_url.startsWith("http") ?
