@@ -25,17 +25,17 @@ var getConnectionPool = function(config){
 	});
 
 	pool.on('connection', function (connection) {
-		console.log('mysql Connection %d is connected', connection.threadId);
+		console.log('mysql Connection %d is connected ', connection.threadId);
 	   });
 	   
     pool.on('acquire', function (connection) {
-		console.log('mysql Connection %d acquired', connection.threadId);
+		console.log('mysql Connection %d acquired ', connection.threadId, " state ", connection.state);
 	  });
 
 	  pool.on('enqueue', function () {
 		console.log('mysql Waiting for available connection slot');
 	  });  
-	  
+
 	return pool;
 };
 
