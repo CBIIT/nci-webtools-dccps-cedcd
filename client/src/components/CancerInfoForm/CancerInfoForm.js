@@ -328,7 +328,7 @@ const CancerInfoForm = ({ ...props }) => {
             ci_histologically_confirmed: isNull(form.ci_histologically_confirmed),
         };
 
-        for (let key in errors)
+        for (const key in errors)
             if (!errors[key])
                 delete errors[key];
 
