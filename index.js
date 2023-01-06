@@ -18,7 +18,8 @@ import morgan from "morgan";
 import fs from "fs";
 import rfs from "rotating-file-stream";
 import fileUpload from "express-fileupload";
-import session from "./server/service/session.js"
+import session from "./server/service/session.js";
+import UserManager from "./server/service/auth/userManager.js";
 
 import config from "./server/config/index.js";
 import * as mysql from "./server/components/mysql.js";
@@ -90,6 +91,9 @@ export async function createApp() {
 		query: promisify(connection.query).bind(connection),
 		upsert: mysql.upsert,
 	}
+	const userManager = new UserManager(app.locals.mysql);
+
+	app.locals.userManager = userManager;
 
 	app.use(compression());
 	app.use(bodyParser.urlencoded({
@@ -109,7 +113,7 @@ export async function createApp() {
 	// configure passport
 	logger.debug("Configuring passport");
 	passport.serializeUser(createUserSerializer());
-	passport.deserializeUser(createUserDeserializer());
+	passport.deserializeUser(createUserDeserializer(userManager));
 	passport.use("default", await createDefaultAuthStrategy(config));
 
 	// configure session
@@ -121,25 +125,25 @@ export async function createApp() {
 	// register api routes
 	app.use("/", routes);
 
-	if ('dev' === env) {
-		app.use(morgan('dev'));
-	}
-	else if ('prod' === env || 'qa' === env || 'stage' === env) {
-		let logDirectory = config.logDir;
+	// if ('dev' === env) {
+	// 	app.use(morgan('dev'));
+	// }
+	// else if ('prod' === env || 'qa' === env || 'stage' === env) {
+	// 	let logDirectory = config.logDir;
 
-		// ensure log directory exists
-		fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+	// 	// ensure log directory exists
+	// 	fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
 
-		// create a rotating write stream
-		var accessLogStream = rfs('access.log', {
-			interval: '1d', // rotate daily
-			path: logDirectory
-		})
+	// 	// create a rotating write stream
+	// 	var accessLogStream = rfs('access.log', {
+	// 		interval: '1d', // rotate daily
+	// 		path: logDirectory
+	// 	})
 
-		morgan.format('log-format', ':remote-addr - - [:date[clf]] ":method :url HTTP/:http-version" :status ":referrer" ":user-agent"');
+		//morgan.format('log-format', ':remote-addr - - [:date[clf]] ":method :url HTTP/:http-version" :status ":referrer" ":user-agent"');
 		// setup the logger
-		app.use(morgan('log-format', { stream: accessLogStream }));
-	}
+		//app.use(morgan('log-format', { stream: accessLogStream }));
+	// }
 
 	return app;
 

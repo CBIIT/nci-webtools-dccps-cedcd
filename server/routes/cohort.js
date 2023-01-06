@@ -1,4 +1,13 @@
-
+// the API routes for Cohorts related functions in published pages
+// API /api/cohort/-
+// POST:
+// - sendUserEmail, list, published_list, owners, add
+// - lookup, select, advancedSelect
+// - enrollment, cancer, specimen,
+// - details/?
+// GET:
+// - :id
+//
 import Router from "express-promise-router";
 import * as mysql  from "../components/mysql.js";
 import * as cache  from "../components/cache.js";

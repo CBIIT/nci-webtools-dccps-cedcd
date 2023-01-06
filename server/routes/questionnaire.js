@@ -1,3 +1,4 @@
+// The API routes for Cohort admin functions (protected for logged in Cohort owners only)
 import express  from "express";
 import Router from "express-promise-router";
 import * as mysql  from "../components/mysql.js";

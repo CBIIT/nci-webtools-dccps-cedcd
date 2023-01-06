@@ -3,20 +3,21 @@ import config from "../../config/index.js"
 
 export function getAccountType({ preferred_username }) {
   const loginDomain = (preferred_username || "").split("@").pop();
-  return loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
+  return loginDomain.endsWith("login.gov") ? "CohortAdmin" : "SystemAdmin";
 }
 
 export function createUserSerializer() {
   return (user, done) => done(null, user);
 }
 
-export function createUserDeserializer() {
+export function createUserDeserializer(userManager) {
   return async ({ email, preferred_username }, done) => {
     const accountType = getAccountType({ preferred_username });
-    console.log(" accountType " + accountType);
-   // const user = await userManager.getUserForLogin(email, accountType);
-   // done(null, user || {});
-   done(null,  {});
+    console.log("==== accountType ==== " + accountType);
+    console.log("==== preferred_username ==== " + preferred_username);
+    const user = await userManager.getUserForLogin(email, accountType);
+    done(null, user || {});
+   
   };
 }
 

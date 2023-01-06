@@ -1,4 +1,4 @@
-import cedcd_settings from  "../config/cedcd_settings.js";
+import cedcd_settings from  "../../config/cedcd_settings.js";
 const timeoutMinutes = Number(cedcd_settings.sessionTimeoutMinutes || 15);
 const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
 

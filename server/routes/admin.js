@@ -1,4 +1,14 @@
-
+// the API routes for Chorhot Admin functions { manage cohorts, users}
+// protected for logged in Admins only
+// APIS /api/managecohort/-
+// POST:
+//  - admincohortlist 
+//  - adminuserlist 
+//  - getUserProfile/:id, 
+//  - updateUserProfile/:id 
+// GET:
+//  - cohortActivityLog/:abbreviation 
+//
 import Router from "express-promise-router";
 import * as mysql from "../components/mysql.js";
 import logger from "../components/logger.js";

@@ -75,18 +75,18 @@ export default function Header(props) {
                         <div className="col-12">
                             <a
                                 className="login-button float-right"
-                                href="/private/internal"
+                                href="/api/login"
                                 style={{ margin: '5px' }}
                                 target="_self">
-                                NIH Login
+                                Login
                             </a>
-                            <a
+                            {/* <a
                                 className="login-button float-right"
                                 href="/private/external"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 External Login
-                            </a>
+                            </a> */}
                         </div>
                     }
                 </div>

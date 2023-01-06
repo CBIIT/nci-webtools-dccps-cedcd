@@ -1,3 +1,5 @@
+// define the API routes for the root page
+// and the general functions { export /download file, add contact } in published cohort page
 import Router from "express-promise-router";
 import fs from "fs";
 import ejs from "ejs";
@@ -108,8 +110,6 @@ router.get('/download/:filename', function (req, res, next) {
 		res.send(data);
 	});
 });
-
-
 
 router.post('/export/home', function (req, res) {
 	const ds = moment().format('YYYYMMDD');

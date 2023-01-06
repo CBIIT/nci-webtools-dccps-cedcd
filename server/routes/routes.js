@@ -4,12 +4,13 @@
 
 'use strict';
 import Router from "express-promise-router";
-import m_cohort from "./cohort.js";
-import m_common from "./common.js";
-import m_user from "./user.js";
-import m_questionnaire from "./questionnaire.js";
-import m_admin from "./admin.js";
-import { login, logout, getUserSession, updateSession } from "../service/authentication.js";
+import cohortRouter from "./cohort.js";
+import commonRouter from "./common.js";
+import userRouter from "./user.js";
+import questionnaireRouter from "./questionnaire.js";
+import adminRouter from "./admin.js";
+import sessionRouter from "./session.js";
+import { login, logout, getUserSession, updateSession } from "../service/auth/authentication.js";
 import config from "../config/index.js";
 import path from "path";
 
@@ -26,16 +27,21 @@ routes.use(function (req, res, next) {
 	}
 });
 
-routes.use('/api/', m_common);
+// public cohorts 
+routes.use('/api/', commonRouter);
+
+// login, logout , session data
+routes.use(sessionRouter);
+// routes.use('/private/:loginType', login);
+//routes.use('/api/logout', logout);
 
 // note: remember to check user authentication state in the following routes
 // eg: if (request.session.user.role !== 'SystemAdmin') return response.status(400).json('Unauthorized');
-routes.use('/api/cohort', m_cohort);
-routes.use('/api/user', m_user);
-routes.use('/api/questionnaire', m_questionnaire);
-routes.use('/api/managecohort', m_admin);
-routes.use('/private/:loginType', login);
-routes.use('/api/logout', logout);
+routes.use('/api/cohort', cohortRouter);
+routes.use('/api/user', userRouter);
+routes.use('/api/questionnaire', questionnaireRouter);
+routes.use('/api/managecohort', adminRouter);
+
 routes.use('/api/user-session', getUserSession);
 routes.use('/api/update-session', updateSession);
 
