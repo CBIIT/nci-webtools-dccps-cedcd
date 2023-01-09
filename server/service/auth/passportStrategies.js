@@ -24,8 +24,10 @@ export async function createOAuthStrategy({ baseUrl, clientId, clientSecret, red
   });
 
   return new Strategy({ client, params }, async (tokenSet, done) => {
+    console.log(tokenSet);
     const user = await client.userinfo(tokenSet);
     await logoutOAuthToolkitSession({ baseUrl, clientId, clientSecret, tokenSet });
+    console.log(user)
     done(null, user);
   });
 }

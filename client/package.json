@@ -29,7 +29,7 @@
     "xlsx": "^0.12.9"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "sudo react-scripts start",
     "build": "react-scripts build",
     "build:prod": "react-scripts build && cp -rf build www",
     "test": "react-scripts test --env=jsdom",

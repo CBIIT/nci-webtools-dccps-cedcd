@@ -11,7 +11,7 @@ import nodeMailer from "nodemailer";
 
 export function sendMail(from, to, subject, text, html, next){
 	const transporter = nodeMailer.createTransport(config.mail);
-	logger.debug(html)
+	// logger.debug(html)
 	let mailOptions = {
 	  from: from, // sender address
 	  to: to, // list of receivers
