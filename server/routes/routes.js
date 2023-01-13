@@ -42,8 +42,8 @@ routes.use('/api/user', userRouter);
 routes.use('/api/questionnaire', questionnaireRouter);
 routes.use('/api/managecohort', adminRouter);
 
-routes.use('/api/user-session', getUserSession);
-routes.use('/api/update-session', updateSession);
+//routes.use('/api/user-session', getUserSession);
+//routes.use('/api/update-session', updateSession);
 
 
 

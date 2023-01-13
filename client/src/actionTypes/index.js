@@ -111,7 +111,6 @@ const actionTypes = {
     investigatorInsitution: 'investigatorInsitution',
     investigatorEmail: 'investigatorEmail',
     eligible_gender_id: 'eligible_gender_id',
-    enrollment_ongoing: 'enrollment_ongoing',
     enrollment_total: 'enrollment_total',
     enrollment_year_start: 'enrollment_year_start',
     enrollment_year_end: 'enrollment_year_end',

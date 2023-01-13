@@ -208,53 +208,53 @@ class Home extends Component {
 		<div className="conatiner p-0 m-0 mw-100">
 			<img src="./assets/img/HomeHeader.jpeg" alt="Header" style={{width:"100%",  padding: "0 1.5rem", marginBottom:"2rem"}}></img>
             <p className="welcome">The Cancer Epidemiology Descriptive Cohort Database (CEDCD) contains descriptive information about cohort studies that follow groups of persons over time for cancer incidence, mortality, and other health outcomes.   The CEDCD is a searchable database that contains general study information (e.g., eligibility criteria and size), the type of data collected at baseline, cancer sites, number of participants diagnosed with cancer, and biospecimen information. All data included in this database are aggregated for each cohort; there are no individual level data. The goal of the CEDCD is to facilitate collaboration and highlight the opportunities for research within existing cohort studies.</p>
-			<div className="row-for-home-grid" style={{"margin-bottom":"50px"}}>
-				<div className="column-for-home-grid" style={{ "padding-left":"0px"}}>
+			<div className="row-for-home-grid" style={{"marginBottom":"50px"}}>
+				<div className="column-for-home-grid" style={{ "paddingLeft":"0px"}}>
 					<Link to={"select"} onClick= {()=>{ this.props.onClickLink(2)}} className="link-text" >
-						<div className="animation-card" style={{"background-color":"#2868af"}} align="center">
-							<div className="card-top-coloring" style={{"background-color":"#5da9d3"}}>
+						<div className="animation-card" style={{"backgroundColor":"#2868af"}} align="center">
+							<div className="card-top-coloring" style={{"backgroundColor":"#5da9d3"}}>
 								{/*<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"100%"}}></img>*/}
 								<img src="./assets/img/Search_Cohorts_Icon.png" alt="Header" style={{width:"60%", paddingTop:"20px"}}></img>
 
 							</div>
-							<h2 class="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
-							<p class="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
+							<h2 className="card-header" align = "center" id = "ToolName1">Search Cohorts</h2>
+							<p className="card-text" align = "center">Browse the full list of cohorts or search for cohorts based on eligibility requirements (e.g., sex, race, age) and/or types of data collected (e.g., smoking, diet, serum).</p>
 						</div>
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"enrollment"} onClick={() => { this.props.onClickLink(3) }} className="link-text">
-						<div className="animation-card" style={{"background-color":"#c1270e"}} align="center">
-							<div className="card-top-coloring" style={{"background-color":"#cf5848"}}>
-							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"60%", "padding-top":"30px" }}></img>
+						<div className="animation-card" style={{"backgroundColor":"#c1270e"}} align="center">
+							<div className="card-top-coloring" style={{"backgroundColor":"#cf5848"}}>
+							<img src="./assets/img/Enrollment_Counts_Icon.png" alt="Header" style={{width:"60%", "paddingTop":"30px" }}></img>
 
 							</div>
-							<h2 class="card-header" align = "center">Enrollment Counts</h2>
-							<p class="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity terms.</p>
+							<h2 className="card-header" align = "center">Enrollment Counts</h2>
+							<p className="card-text" align = "center">Display enrollment counts across cohorts with the option search for specific sex, race, and ethnicity terms.</p>
 						</div>
 					</Link>
 				</div>
 				<div className="column-for-home-grid">
 					<Link to={"cancer"}  onClick={() => { this.props.onClickLink(4) }} className="link-text">
-					<div className="animation-card" style={{"background-color":"#c27600"}} align="center">
-						<div className="card-top-coloring" style={{"background-color":"#ffbf58"}}>
+					<div className="animation-card" style={{"backgroundColor":"#c27600"}} align="center">
+						<div className="card-top-coloring" style={{"backgroundColor":"#ffbf58"}}>
 						<img src="./assets/img/Cancer_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
 
 						</div>
-						<h2 class="card-header" align = "center">Cancer Counts</h2>
-						<p class="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by sex.</p>
+						<h2 className="card-header" align = "center">Cancer Counts</h2>
+						<p className="card-text" align = "center">Display cancer counts across cohorts with the option to search for specific cancer sites and also by sex.</p>
 					</div>
 					</Link>
 				</div>
-				<div className="column-for-home-grid" style={{ "padding-right":"0px"}}>
+				<div className="column-for-home-grid" style={{ "paddingRight":"0px"}}>
 					<Link to={"biospecimen"} onClick={() => { this.props.onClickLink(5) }} className="link-text">
-						<div className="animation-card" style={{"background-color":"#588c35"}} align="center">
-							<div className="card-top-coloring" style={{"background-color":"#99b883"}}>
+						<div className="animation-card" style={{"backgroundColor":"#588c35"}} align="center">
+							<div className="card-top-coloring" style={{"backgroundColor":"#99b883"}}>
 							<img src="./assets/img/Biospecimen_Counts_Icon.png" alt="Header" style={{width:"100%"}}></img>
 
 							</div>
-							<h2 class="card-header" align = "center">Biospecimen Counts</h2>
-							<p class="card-text"align = "center">Search biospecimens across cohorts with the option to specify the type of biospecimen and find specimens in participants diagnosed with specific cancer sites.</p>
+							<h2 className="card-header" align = "center">Biospecimen Counts</h2>
+							<p className="card-text"align = "center">Search biospecimens across cohorts with the option to specify the type of biospecimen and find specimens in participants diagnosed with specific cancer sites.</p>
 						</div>
 					</Link>
 				</div>

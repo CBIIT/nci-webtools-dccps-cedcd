@@ -25,11 +25,11 @@ export function getConnectionPool(config){
 	});
 
 	pool.on('connection', function (connection) {
-		console.log('mysql Connection %d is connected ', connection.threadId);
+		//console.log('mysql Connection %d is connected ', connection.threadId);
 	   });
 	   
     pool.on('acquire', function (connection) {
-		console.log('mysql Connection %d acquired ', connection.threadId, " state ", connection.state);
+		//console.log('mysql Connection %d acquired ', connection.threadId, " state ", connection.state);
 	  });
 
 	 // pool.on('enqueue', function () {

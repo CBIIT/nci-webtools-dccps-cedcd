@@ -15,8 +15,9 @@ const { lang } = require('moment'); */
 const router = Router();
 
 router.use((request, response, next) => {
-    const { session } = request;
-    if (!session.user || !/CohortAdmin|SystemAdmin/.test(session.user.role)) {
+    const { user } = request;
+    //console.log(" session user ", user);
+    if ( !user || !/CohortAdmin|SystemAdmin/.test(user.role)) {
         response.status(400).json('Unauthorized').end();
     } else {
         next();
@@ -694,12 +695,12 @@ router.get('/cohort/:id(\\d+)', async (request, response) => {
 });
 
 router.post('/cohort(/:id(\\d+))?', async (request, response) => {
-    const { app, params, body, session } = request;
+    const { app, params, body, user } = request;
     const { mysql } = app.locals;
     let id = params ? params.id : undefined; // can be undefined (for new cohorts)
 
     try {
-        response.json(await saveCohort(mysql, body, id, session.user));
+        response.json(await saveCohort(mysql, body, id, user));
     } catch (e) {
         logger.error(e);
         response.status(500).json({ message: 'Could not update cohort' });
@@ -776,12 +777,12 @@ router.post('/reset_cohort_status/:id/:status/:uid?', function (req, res) {
 })
 
 router.post('/approve/:id', async function (request, response) {
-    const { app, params, body, session } = request;
+    const { app, params, body, user } = request;
     const { mysql } = app.locals;
     const id = params ? params.id : undefined; // can be undefined (for new cohorts)
-    const userId = session.user.id;
+    const userId = user.id;
 
-    if (!/SystemAdmin/.test(session.user.role)) {
+    if (!/SystemAdmin/.test(user.role)) {
         return response.status(400).json('Unauthorized').end();
     }
 
@@ -805,16 +806,16 @@ router.post('/approve/:id', async function (request, response) {
         }]
     }
 
-    await saveCohort(mysql, updates, id, session.user);
+    await saveCohort(mysql, updates, id, user);
     response.json(true);
 })
 
 router.post('/reject/:id', function (request, response) {
-    const { app, params, body, session } = request;
+    const { app, params, body, user } = request;
     const id = params ? params.id : undefined; // can be undefined (for new cohorts)
-    const userId = session.user.id;
+    const userId = user.id;
 
-    if (!/SystemAdmin/.test(session.user.role)) {
+    if (!/SystemAdmin/.test(user.role)) {
         return response.status(400).json('Unauthorized').end();
     }
     const { notes } = body;

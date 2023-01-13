@@ -16,8 +16,9 @@ import logger from "../components/logger.js";
 
 const router = Router();
 router.use((request, response, next) => {
-	const { session } = request;
-	if (!session.user || !/SystemAdmin/.test(session.user.role)) {
+	const { user } = request;
+	// console.log(" session user in admin  ", user);
+	if ( !user || !/SystemAdmin/.test(user.role)) {
 		response.status(400).json('Unauthorized').end();
 	} else {
 		next();

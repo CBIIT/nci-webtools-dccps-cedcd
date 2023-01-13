@@ -1,5 +1,6 @@
 import Router from "express-promise-router";
 import passport from "passport";
+import cedcd_settings from "../config/cedcd_settings.js";
 
 const router = Router();
 
@@ -7,35 +8,26 @@ router.get(
   "/api/login",
   (request, response, next) => {
     const destination = request.query.destination || "/";
+    console.log("======== line 10  dest", destination);
     passport.authenticate("default", {
       failureRedirect: "/api/login",
       state: destination,
     })(request, response, next);
   },
-  (request, response) => {
+  async (request, response) => {
     request.session.expires = request.session.cookie.expires;
-    const destination = request.query.state || "/";
+    const destination = await getDestLink(request);
+    console.log("%%%%%%%%% line 20  dest", destination);
     response.redirect(destination);
   }
 );
 
-// if (!user || !session.user.active) {
-//   redirectUrl = '/unauthorized';
-// } else if (/SystemAdmin/.test(session.user.role)) {
-//   redirectUrl = '/admin/managecohort';
-// } else if (/CohortAdmin/.test(session.user.role)) {
-//   if (session.user.cohorts.length === 1) {
-//       redirectUrl = `/cohort/questionnaire/${session.user.cohorts[0].id}`;
-//   } else {
-//       redirectUrl = `/cohort/questionnaire`;
-//   }
-// }
 
 router.get("/api/logout", (request, response) => {
   request.logout(() => response.redirect("/"));
 });
 
-router.get("api/session", (request, response) => {
+router.get("/api/session", (request, response) => {
   const { session } = request;
   if (session.passport?.user) {
     response.json({
@@ -62,5 +54,55 @@ router.post("/api/session", (request, response) => {
     response.json({ authenticated: false });
   }
 });
+
+router.get("/api/user-session", (request, response) => {
+  const { session } = request;
+  console.log(" user-session API");
+
+  if (session.passport?.user) {
+    response.json(request?.user
+    );
+  } else {
+    response.json(null);
+  }
+});
+
+router.get("/api/update-session", async (request, response) => {
+
+  if (request?.user == undefined || request?.user == null) {
+    console.log(" undefined user ");
+    response.json(null);
+  } else {
+    const { userManager } = request.app.locals;
+    const user = await userManager.updateUserSession(request.user);
+    user.expires = new Date().getTime() + cedcd_settings.maxSessionAge;
+    request.user = { ...user };
+    response.json(user || null);
+  }
+});
+
+export async function getDestLink(request) {
+  let destination = request.query.state || "/";
+
+  if (!request.user || !request.user.email) {
+    destination = '/unauthorized';
+  } else {
+    const loginDomain = (request.user.preferred_username || "").split("@").pop();
+    const accountType = loginDomain.endsWith("login.gov") ? "CohortAdmin" : "SystemAdmin";
+    const { userManager } = request.app.locals;
+    let userobj = await userManager.getUserForLogin(request.user.email, accountType);
+    if (/SystemAdmin/.test(userobj.role)) {
+      destination = '/admin/managecohort';
+
+    } else if (/CohortAdmin/.test(userobj.role)) {
+      if (userobj.cohorts.length === 1) {
+        destination = `/cohort/questionnaire/${userobj.cohorts[0].id}`;
+      } else {
+        destination = `/cohort/questionnaire`;
+      }
+    }
+  }
+  return destination;
+}
 
 export default router;
