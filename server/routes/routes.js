@@ -10,7 +10,6 @@ import userRouter from "./user.js";
 import questionnaireRouter from "./questionnaire.js";
 import adminRouter from "./admin.js";
 import sessionRouter from "./session.js";
-import { login, logout, getUserSession, updateSession } from "../service/auth/authentication.js";
 import config from "../config/index.js";
 import path from "path";
 
@@ -41,11 +40,6 @@ routes.use('/api/cohort', cohortRouter);
 routes.use('/api/user', userRouter);
 routes.use('/api/questionnaire', questionnaireRouter);
 routes.use('/api/managecohort', adminRouter);
-
-//routes.use('/api/user-session', getUserSession);
-//routes.use('/api/update-session', updateSession);
-
-
 
 // healthcheck route
 routes.get('/api/ping', (request, response) => {

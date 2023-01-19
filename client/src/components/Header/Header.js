@@ -7,13 +7,15 @@ export default function Header(props) {
     const userSession = useSelector(state => state.user);
     const isLoggedIn = Object.keys(userSession).length > 0;
     // console.dir('in header: ',userSession)
-    const logout = async e => {
-        e.preventDefault();
-        // can not use normal 301 response, since session is not properly cleared
-        const response = await fetch('/api/logout');
-        console.log()
-        window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
-    }
+    // const logout = async e => {
+    //     e.preventDefault();
+    //     // can not use normal 301 response, since session is not properly cleared
+    //     const response = await fetch('/api/logout');
+    //     console.log("  logout function ");
+    //     console.dir(response.json());
+    //     console.log(`${window.location.origin}`);
+    //     window.location.href = `${await response.json()}?TARGET=${window.location.origin}`;
+    // }
 
     return (
         <div>
@@ -33,8 +35,7 @@ export default function Header(props) {
                             {isLoggedIn && <>
                                 <a
                                     className="login-button"
-                                    href="#"
-                                    onClick={logout}
+                                    href="/api/logout"
                                     style={{ margin: '5px' }}
                                     target="_self">
                                     Logout
@@ -58,8 +59,7 @@ export default function Header(props) {
                         <div className="col-12">
                             <a
                                 className="login-button float-right"
-                                href="#"
-                                onClick={logout}
+                                href="/api/logout"
                                 style={{ margin: '5px' }}
                                 target="_self">
                                 Logout

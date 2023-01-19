@@ -17,7 +17,7 @@ const NavBar = (props) => {
   const [miniDropdownContent, setContent] = useState('none')
 
   const toggleSubMenu = () => {
-    console.log(showSubMenu);
+    //console.log(showSubMenu);
     setSubMenuShow(!showSubMenu)
   }
   let urlparts = window.location.pathname.split('/')

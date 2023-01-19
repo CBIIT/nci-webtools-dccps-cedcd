@@ -1,6 +1,6 @@
 const maxAgeValidator = (value, isRequired, minAge, median, mean) => {
-    console.log(value)
-    console.log(/^\s*[0-9][0-9]?[0-9]?\s*$/.test(value))
+    // console.log(value)
+    // console.log(/^\s*[0-9][0-9]?[0-9]?\s*$/.test(value))
     if(isRequired && value === '')
         return 'Required Filed'
     else if(+value< 0 || +value >= 1000){

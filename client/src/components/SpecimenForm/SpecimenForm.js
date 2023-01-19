@@ -692,7 +692,6 @@ const SpecimenForm = ({ ...props }) => {
         setG1to6Flag(tempStatus);
 
         if (tempStatus === true) {
-            console.log("line 688 G1-6 all Nos updates" + specimen.bioBloodBaseline + " G1 " + specimen.bioBloodOtherTime)
             g7to15FieldsUpdate()
         }
 

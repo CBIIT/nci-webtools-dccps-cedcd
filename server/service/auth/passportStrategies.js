@@ -24,11 +24,9 @@ export async function createOAuthStrategy({ baseUrl, clientId, clientSecret, red
   });
 
   return new Strategy({ client, params }, async (tokenSet, done) => {
-   // console.log(tokenSet);
+ 
     const user = await client.userinfo(tokenSet);
-   // console.log("before:" + user);
     await logoutOAuthToolkitSession({ baseUrl, clientId, clientSecret, tokenSet });
-   // console.log("afer :" + user);
     done(null, user);
   });
 }
@@ -51,7 +49,6 @@ export async function createPkceStrategy({ baseUrl, clientId, redirectUris, para
   };
 
   return new Strategy({ client, params }, async (tokenSet, done) => {
-    console.log(tokenSet);
     const user = await client.userinfo(tokenSet);
     done(null, user);
   });

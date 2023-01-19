@@ -7,29 +7,21 @@ export function getAccountType({ preferred_username }) {
 }
 
 export function createUserSerializer() {
-  console.log("****** createUserSerializer****** " );
   return (user, done) => done(null, user);
 }
 
 export function createUserDeserializer(userManager) {
   return async ({ email, preferred_username }, done) => {
     const accountType = getAccountType({ preferred_username });
-    console.log("==== accountType ==== " + accountType);
-    console.log("==== preferred_username ==== " + preferred_username);
     const user = await userManager.getUserForLogin(email, accountType);
     const expires = new Date().getTime() + cedcd_settings.maxSessionAge;
     user.expires = expires;
-    console.log("==== passport ==== " + user.role);
     done(null, user || {});
    
   };
 }
 
-export async function createDefaultAuthStrategy(config = config) {
-  //console.log("passport config ", config);
- // console.dir(config);
- // console.log(" end passport config ");
-   
+export async function createDefaultAuthStrategy(config = config) {   
   return await createOAuthStrategy({
     name: "default",
     clientId: config.oauth2_client_id,

@@ -80,7 +80,7 @@ const MajorContentForm = ({ ...props }) => {
 
                 let content = result.data.counts
                 let cancerInfo = result.data.cancerInfo
-                console.log(content)
+                //console.log(content)
 
                 batch(() => {
                     dispatch(allactions.majorContentActions.seStatusBaseLine(content[0].baseline))

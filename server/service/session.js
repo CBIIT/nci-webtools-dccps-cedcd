@@ -2,17 +2,15 @@ import cedcd_settings from "../config/cedcd_settings.js";
 import session from "express-session";
 import memorystore from "memorystore";
 const MemoryStore = memorystore(session);
-const timeoutMinutes = Number(cedcd_settings.sessionTimeoutMinutes || 15);
-const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
-const production = process.env.NODE_ENV||'dev' !== 'dev';
+const production = (process.env.ENV||'dev') !== 'dev';
 
 export default session({
     cookie: { 
-      maxAge: maxSessionAge,
+      maxAge: +cedcd_settings.maxSessionAge,
       secure: production,
     },
     store: new MemoryStore({
-      checkPeriod: maxSessionAge / 10
+      checkPeriod: +cedcd_settings.maxSessionAge / 10
     }),
     resave: false,
     rolling: false,

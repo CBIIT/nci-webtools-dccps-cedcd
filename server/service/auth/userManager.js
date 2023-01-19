@@ -6,7 +6,6 @@ export default class UserManager {
   }
   async getUserForLogin(email, accountType) {
 
-    console.log(" user manager line 9  ");
     const [userRow] = await this.mysql.query(
       `SELECT 
           id, user_name,
@@ -75,14 +74,11 @@ export default class UserManager {
 
   async updateUserSession(user) {
 
-    console.log("User manger - update userSession")
     const updateduser = user;
     if(!updateduser) {
       return null;
     }
     const userId = updateduser.id;
-
-    console.log(" user id ", userId);
 
     const cohortAcronyms = await this.mysql.query(
       `SELECT DISTINCT cohort_acronym as acronym
@@ -103,9 +99,6 @@ export default class UserManager {
     }
 
     updateduser.cohorts = cohorts;
-
-    console.log("updated user");
-    // console.dir(updateduser);
 
     return updateduser;
 

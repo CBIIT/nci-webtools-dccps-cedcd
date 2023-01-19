@@ -8,7 +8,6 @@ router.get(
   "/api/login",
   (request, response, next) => {
     const destination = request.query.destination || "/";
-    console.log("======== line 10  dest", destination);
     passport.authenticate("default", {
       failureRedirect: "/api/login",
       state: destination,
@@ -17,7 +16,6 @@ router.get(
   async (request, response) => {
     request.session.expires = request.session.cookie.expires;
     const destination = await getDestLink(request);
-    console.log("%%%%%%%%% line 20  dest", destination);
     response.redirect(destination);
   }
 );
@@ -57,7 +55,6 @@ router.post("/api/session", (request, response) => {
 
 router.get("/api/user-session", (request, response) => {
   const { session } = request;
-  console.log(" user-session API");
 
   if (session.passport?.user) {
     response.json(request?.user
