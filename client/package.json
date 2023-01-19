@@ -29,8 +29,9 @@
     "xlsx": "^0.12.9"
   },
   "scripts": {
-    "start": "sudo react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts --openssl-legacy-provider  build",
+    "start:dev": "sudo react-scripts start",
+    "start": "sudo react-scripts start",
+    "build": "react-scripts build",
     "build:prod": "react-scripts build && cp -rf build www",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
