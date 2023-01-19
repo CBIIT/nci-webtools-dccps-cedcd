@@ -35,7 +35,7 @@ const cedcd_settings = {
         logger:true,
         debug:true
     },
-    env: process.env.ENV||'dev'
+    env: process.env.NODE_ENV||'dev'
 };
 
 export default cedcd_settings;

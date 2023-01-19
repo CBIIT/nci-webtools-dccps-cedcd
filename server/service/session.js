@@ -4,7 +4,7 @@ import memorystore from "memorystore";
 const MemoryStore = memorystore(session);
 const timeoutMinutes = Number(cedcd_settings.sessionTimeoutMinutes || 15);
 const maxSessionAge = timeoutMinutes * 60 * 1000; // convert minutes to ms
-const production = process.env.NODE_ENV !== 'development';
+const production = process.env.NODE_ENV||'dev' !== 'dev';
 
 export default session({
     cookie: { 

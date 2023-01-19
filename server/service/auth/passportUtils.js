@@ -14,7 +14,7 @@ export function createUserSerializer() {
 export function createUserDeserializer(userManager) {
   return async ({ email, preferred_username }, done) => {
     const accountType = getAccountType({ preferred_username });
-   // console.log("==== accountType ==== " + accountType);
+    console.log("==== accountType ==== " + accountType);
     console.log("==== preferred_username ==== " + preferred_username);
     const user = await userManager.getUserForLogin(email, accountType);
     const expires = new Date().getTime() + cedcd_settings.maxSessionAge;

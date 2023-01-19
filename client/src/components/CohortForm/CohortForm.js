@@ -2375,7 +2375,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() => {
                                                                                                     const copy = [...cohort.questionnaire_url];
                                                                                                     copy.splice(0, 1)
@@ -2452,7 +2452,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() =>
                                                                                                     deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID)
                                                                                                 }>
@@ -2535,7 +2535,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() => {
                                                                                                     const copy = [...cohort.main_cohort_url];
                                                                                                     copy.splice(0, 1)
@@ -2611,7 +2611,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() =>
                                                                                                     deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)
                                                                                                 }>
@@ -2694,7 +2694,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() => {
                                                                                                     const copy = [...cohort.data_url];
                                                                                                     copy.splice(0, 1)
@@ -2770,7 +2770,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() =>
                                                                                                     deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)
                                                                                                 }>
@@ -2853,7 +2853,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() => {
                                                                                                     const copy = [...cohort.specimen_url];
                                                                                                     copy.splice(0, 1)
@@ -2929,7 +2929,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() =>
                                                                                                     deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)
                                                                                                 }>
@@ -3013,7 +3013,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() => {
                                                                                                     const copy = [...cohort.publication_url];
                                                                                                     copy.splice(0, 1)
@@ -3089,7 +3089,7 @@ const CohortForm = ({ ...props }) => {
                                                                                     {!isReadOnly &&
                                                                                         <>
                                                                                             {' '}(
-                                                                                            <span class="closer"
+                                                                                            <span className="closer"
                                                                                                 onClick={() =>
                                                                                                     deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)
                                                                                                 }>
@@ -3184,7 +3184,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() => {
                                                                                     const copy = [...cohort.questionnaire_url];
                                                                                     copy.splice(0, 1)
@@ -3260,7 +3260,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                               onClick={() =>
                                                                                     deleteFileFromList('questionnaireFileName', cohort.questionnaireFileName[0].filename, cohort.questionnaireFileName[0].fileId, cohortID) 
                                                                                 } > 
@@ -3336,7 +3336,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() => {
                                                                                     const copy = [...cohort.main_cohort_url];
                                                                                     copy.splice(0, 1)
@@ -3410,7 +3410,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() =>
                                                                                     deleteFileFromList('mainFileName', cohort.mainFileName[0].filename, cohort.mainFileName[0].fileId, cohortID)
                                                                                 }>
@@ -3486,7 +3486,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() => {
                                                                                     const copy = [...cohort.data_url];
                                                                                     copy.splice(0, 1)
@@ -3559,7 +3559,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() =>
                                                                                     deleteFileFromList('dataFileName', cohort.dataFileName[0].filename, cohort.dataFileName[0].fileId, cohortID)
                                                                                 }>
@@ -3635,7 +3635,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() => {
                                                                                     const copy = [...cohort.specimen_url];
                                                                                     copy.splice(0, 1)
@@ -3708,7 +3708,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() =>
                                                                                     deleteFileFromList('specimenFileName', cohort.specimenFileName[0].filename, cohort.specimenFileName[0].fileId, cohortID)
                                                                                 }>
@@ -3783,7 +3783,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() => {
                                                                                     const copy = [...cohort.publication_url];
                                                                                     copy.splice(0, 1)
@@ -3856,7 +3856,7 @@ const CohortForm = ({ ...props }) => {
                                                                     {!isReadOnly &&
                                                                         <>
                                                                             {' '}(
-                                                                            <span class="closer"
+                                                                            <span className="closer"
                                                                                 onClick={() =>
                                                                                     deleteFileFromList('publicationFileName', cohort.publicationFileName[0].filename, cohort.publicationFileName[0].fileId, cohortID)
                                                                                 }>

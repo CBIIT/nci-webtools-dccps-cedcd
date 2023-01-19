@@ -76,8 +76,6 @@ export async function startApp() {
 
 export async function createApp() {
 
-	const env = config.env ? config.env : "dev";
-
 	const app = express();
 
 	app.set('trust proxy', 1);
