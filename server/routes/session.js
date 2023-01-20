@@ -72,7 +72,7 @@ router.get("/api/update-session", async (request, response) => {
   } else {
     const { userManager } = request.app.locals;
     const user = await userManager.updateUserSession(request.user);
-    user.expires = new Date().getTime() + cedcd_settings.maxSessionAge;
+    user.expires = new Date().getTime() + cedcd_settings.maxSessionAge * 1;
     request.user = { ...user };
     response.json(user || null);
   }
