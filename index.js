@@ -106,7 +106,7 @@ export async function createApp() {
 	app.use(cookieParser());
 	app.use(session);
 
-	app.use(express.static(path.join(config.root, 'client/www')));
+	app.use(express.static(path.join(config.root, '../client/www')));
 
 	// configure passport
 	logger.debug("Configuring passport");
