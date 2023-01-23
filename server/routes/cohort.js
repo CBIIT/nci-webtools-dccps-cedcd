@@ -38,6 +38,8 @@ async function readTemplate(filePath, data) {
 }
 
 router.post('/sendUserEmail', async function (req, res, next) {
+   // get template path 
+   const dirname = path.normalize(config.root + '/service');
 
 	try {
 		await mail.sendMail(
@@ -45,7 +47,7 @@ router.post('/sendUserEmail', async function (req, res, next) {
 			req.body.email,
 			req.body.topic,
 			'',
-			await readTemplate(__dirname + req.body.template, req.body.templateData),
+			await readTemplate(dirname + req.body.template, req.body.templateData),
 		);
 		res.json({ status: 200, data: 'sent' });
 	} catch (e) {

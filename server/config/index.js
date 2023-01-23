@@ -12,15 +12,15 @@ import template from "./template.js";
 import cedcd_settings from "./cedcd_settings.js";
 
 const argv = minimist(process.argv.slice(2));
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 const all = {
 
 	// Root path of server
 	
 
-	root: path.normalize(__dirname + '/..'),
+	root: path.normalize(dirname + '/..'),
 
 	//cookie max age in millseconds
 	maxAge: 3600000,

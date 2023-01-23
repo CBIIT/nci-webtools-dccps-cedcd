@@ -1363,7 +1363,7 @@ const CohortForm = ({ ...props }) => {
                             <Form.Label column sm="12">
                                 A.8 Enrollment Information
                                 </Form.Label>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Total number of subjects enrolled to date<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1395,7 +1395,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Started in year<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1429,7 +1429,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Is enrollment ongoing?<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1494,7 +1494,7 @@ const CohortForm = ({ ...props }) => {
                                     </div>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Ended in year<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1527,7 +1527,7 @@ const CohortForm = ({ ...props }) => {
                                 </Col>
                             </Col>
                             
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     If still enrolling, please specify the target number of plan to enroll<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1566,7 +1566,7 @@ const CohortForm = ({ ...props }) => {
                                     }
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     If still enrolling, please specify when you plan to complete enrollment<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1600,7 +1600,7 @@ const CohortForm = ({ ...props }) => {
                                     
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Baseline age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1643,7 +1643,7 @@ const CohortForm = ({ ...props }) => {
                                     </InputGroup>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Baseline Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1665,7 +1665,7 @@ const CohortForm = ({ ...props }) => {
                                     </Reminder>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Baseline Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1686,7 +1686,7 @@ const CohortForm = ({ ...props }) => {
                                     </Reminder>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Current age range of enrolled subjects<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1726,7 +1726,7 @@ const CohortForm = ({ ...props }) => {
                                     </InputGroup>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Current Median age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>
@@ -1747,7 +1747,7 @@ const CohortForm = ({ ...props }) => {
                                     </Reminder>
                                 </Col>
                             </Col>
-                            <Col sm="12" className="p-0" className="mb-1">
+                            <Col sm="12" className="p-0 mb-1">
                                 <Form.Label className="pl-0" column sm="6" style={{ fontWeight: 'normal' }}>
                                     Current Mean age<span style={{ color: 'red' }}>*</span>
                                 </Form.Label>

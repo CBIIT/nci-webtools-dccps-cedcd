@@ -9,7 +9,7 @@ import logger from "./logger.js" ;
 import nodeMailer from "nodemailer";
 
 
-export function sendMail(from, to, subject, text, html, next){
+export async function sendMail(from, to, subject, text, html, next)  {
 	const transporter = nodeMailer.createTransport(config.mail);
 	// logger.debug(html)
 	let mailOptions = {

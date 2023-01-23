@@ -12,7 +12,9 @@ import crypto from "crypto";
 import MD5 from "md5";
 
 function file(name) {
-	return fs.createWriteStream(__dirname + '/' + name);
+	const filename = fileURLToPath(import.meta.url);
+    const dirname = path.dirname(filename);
+	return fs.createWriteStream(dirname + '/' + name);
 }
 
 /**
