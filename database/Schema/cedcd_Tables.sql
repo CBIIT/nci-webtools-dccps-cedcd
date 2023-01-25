@@ -12,19 +12,18 @@
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE IF NOT  EXISTS `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(200) NOT NULL,
+  `user_name` varchar(200) NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
   `access_level` varchar(20) NOT NULL COMMENT 'SystemAdmin, CohortAdmin, CohortOwner',
-  `session_id` varchar(50) DEFAULT NULL,
+  `login_type` varchar(50) DEFAULT NULL,
   `active_status` varchar(5) DEFAULT NULL COMMENT 'Y, N',
   `last_login` datetime DEFAULT NULL,
   `lock_date` datetime DEFAULT NULL,
   `email` varchar(250) NOT NULL,
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-   PRIMARY KEY (`id`),
-   UNIQUE KEY `user_user_name_uindex` (`user_name`)
+   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
 

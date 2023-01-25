@@ -72,7 +72,11 @@ router.get("/api/update-session", async (request, response) => {
   } else {
     const { userManager } = request.app.locals;
     const user = await userManager.updateUserSession(request.user);
-    user.expires = new Date().getTime() + cedcd_settings.maxSessionAge * 1;
+    user.expires = new Date().getTime() + parseInt(cedcd_settings.maxSessionAge);
+
+    const { session } = request;
+    session.touch();
+    session.expires = user.expires;
     request.user = { ...user };
     response.json(user || null);
   }
@@ -85,7 +89,7 @@ export async function getDestLink(request) {
     destination = '/unauthorized';
   } else {
     const loginDomain = (request.user.preferred_username || "").split("@").pop();
-    const accountType = loginDomain.endsWith("login.gov") ? "CohortAdmin" : "SystemAdmin";
+    const accountType = loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
     const { userManager } = request.app.locals;
     let userobj = await userManager.getUserForLogin(request.user.email, accountType);
     if (/SystemAdmin/.test(userobj.role)) {

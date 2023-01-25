@@ -11,7 +11,7 @@ export default class UserManager {
           id, user_name,
           access_level as accessLevel, 
           active_status as activeStatus
-      FROM user where email = ? and access_level = ? `,
+      FROM user where email = ? and login_type = ? `,
       [email, accountType]
     );
     // console.dir(userRow);
@@ -21,61 +21,60 @@ export default class UserManager {
       const userId = userRow.id;
       const userName = userRow.user_name;
       const userActiveStatus = userRow.activeStatus;
-      const isAdmin = accountType === 'SystemAdmin';
+      const userRole = userRow.accessLevel;
+      const isAdmin = userRole === 'SystemAdmin';
       const userType = isAdmin ? 'internal' : 'external';
-      if (!accountType) {
-        accountType = userRow.activeStatus === 'Y'
-          ? userRow.accessLevel
-          : null
-      }
+      if (userRow.activeStatus === 'Y') {
 
-      // update last login date
-      await this.mysql.query(
-        `update user set last_login = now() 
-          where email = ? and access_level = ? and id > 0`,
-        [email, accountType]
-      );
+        // update last login date
+        await this.mysql.query(
+          `update user set last_login = now() 
+          where email = ? and login_type = ? and id > 0`,
+          [email, accountType]
+        );
 
-      const cohortAcronyms = await this.mysql.query(
-        `SELECT DISTINCT cohort_acronym as acronym
+        const cohortAcronyms = await this.mysql.query(
+          `SELECT DISTINCT cohort_acronym as acronym
           FROM cohort_user_mapping 
           WHERE user_id = ? AND active = 'Y'
           ORDER BY acronym ASC`,
-        [userId]
-      );
-
-      let cohorts = [];
-
-      for (const { acronym } of cohortAcronyms) {
-        const [editableCohorts] = await this.mysql.query(
-          `call select_editable_cohort_by_acronym(?)`,
-          [acronym]
+          [userId]
         );
-        cohorts.push(...editableCohorts);
+
+        let cohorts = [];
+
+        for (const { acronym } of cohortAcronyms) {
+          const [editableCohorts] = await this.mysql.query(
+            `call select_editable_cohort_by_acronym(?)`,
+            [acronym]
+          );
+          cohorts.push(...editableCohorts);
+        }
+        const expires = new Date().getTime();
+        const user = {
+          id: userId,
+          type: userType,
+          name: userName,
+          role: userRole,
+          cohorts: cohorts,
+          active: userActiveStatus === 'Y',
+          expires,
+
+        };
+        return user;
+      } else {
+        return null; // inactive user
       }
-      const expires = new Date().getTime();
-      const user = {
-        id: userId,
-        type: userType,
-        name: userName,
-        role: accountType,
-        cohorts: cohorts,
-        active: userActiveStatus === 'Y',
-        expires,
-
-      };
-      return user;
-
     }
     else {
-      return null;
+      return null; // no exist user
     }
   }
 
   async updateUserSession(user) {
 
     const updateduser = user;
-    if(!updateduser) {
+    if (!updateduser) {
       return null;
     }
     const userId = updateduser.id;

@@ -83,11 +83,7 @@ DROP PROCEDURE IF EXISTS `cohort_SELECT` //
 DROP PROCEDURE IF EXISTS `cohort_specimen_overview` //
 DROP PROCEDURE IF EXISTS `updateCohort_basic` //
 DROP PROCEDURE IF EXISTS `contact_us` //
-
 DROP PROCEDURE IF EXISTS `upsertEnrollment_count` //
-
-
-
 DROP PROCEDURE IF EXISTS `SELECT_advanced_cohort` //
 
 CREATE PROCEDURE `SELECT_advanced_cohort`(
@@ -142,7 +138,7 @@ BEGIN
     set @or_query = "";
 	-- default booleanOperationBetweenField is AND
     set @globalANDOR = substring_index(booleanOperationBetweenField,',',1);
-    IF @globalANDOR = "" || (locate("AND", @globalANDOR) > 0) THEN 
+    IF @globalANDOR = "" OR (locate("AND", @globalANDOR) > 0) THEN 
 		set @globalANDOR = "AND";
 	else
 		set @globalANDOR = "OR";
@@ -537,7 +533,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `SELECT_cohort_description` //
 
-CREATE PROCEDURE `SELECT_cohort_description`(in c_id int(11))
+CREATE PROCEDURE `SELECT_cohort_description`(in c_id int)
 BEGIN
 	set @cohort_id = c_id;
 
@@ -761,7 +757,7 @@ BEGIN
    
     -- expected input is '' or looks like '1,2,3' (foreign key id)
     -- call ConvertIntToTable to INSERT values into tempIntTable (val)
-    IF `@gender` != "" && `@gender` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   then
+    IF `@gender` != "" AND `@gender` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   then
 		set @gender_null = 0;
         call ConvertIntToTable(`@gender`);
         INSERT into temp_gender SELECT distinct val FROM tempIntTable;
@@ -793,7 +789,7 @@ BEGIN
         INSERT into temp_studypop SELECT distinct val FROM tempIntTable;
 	END IF;
     
-	IF `@category` != ""  && `@category` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
+	IF `@category` != ""  AND `@category` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
 		set @category_null = 0;
 		IF `@category` = "99" then
 			set @cancer_info_null = 0;
@@ -807,7 +803,7 @@ BEGIN
 	END IF;
     
     set @specimen_query = "";
-    IF `@collected_specimen` != "" && `@collected_specimen` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
+    IF `@collected_specimen` != "" AND `@collected_specimen` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
 		set @specimen_null = 0;
         call ConvertIntToTable(`@collected_specimen`);
 		INSERT into temp_specimen 
@@ -821,7 +817,7 @@ BEGIN
         
     set tmp = '';
     set i = 0;
-    IF `@age_info` != "" && `@age_info` REGEXP '^[[:space:]]*[0-9[[:space:]]-]+(?:[[:space:]]?,[[:space:]]?[0-9[[:space:]]-]+)*?[[:space:]]*$'  then
+    IF `@age_info` != "" AND `@age_info` REGEXP '^[[:space:]]*[0-9[[:space:]]-]+(?:[[:space:]]?,[[:space:]]?[0-9[[:space:]]-]+)*?[[:space:]]*$'  then
 		set @ageinfo_null = 0;
 		set tmp_count = 1+length(`@age_info`) - length(replace(`@age_info`,',','')); 
 		WHILE i < tmp_count
@@ -967,7 +963,7 @@ END //
 DROP PROCEDURE IF EXISTS `insert_contact_us` //
 
 CREATE PROCEDURE `insert_contact_us`(in firstname varchar(50), in lastname varchar(50), in organization varchar(100), 
-														in phone varchar(20), in email varchar(50), in topic int(3), in message text)
+														in phone varchar(20), in email varchar(50), in topic int, in message text)
 BEGIN
 	set @fistName = firstname;
     set @lastName = lastname;
@@ -1622,7 +1618,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `update_cohort_basic` //
 
-CREATE  PROCEDURE `update_cohort_basic`(in targetID int(11), in info JSON)
+CREATE  PROCEDURE `update_cohort_basic`(in targetID int, in info JSON)
 BEGIN
 	DECLARE i INT DEFAULT 0;
 	DECLARE new_id INT DEFAULT targetID;
@@ -1928,7 +1924,7 @@ BEGIN
    
     -- expected status input is '' or looks like '1, 2, 3 ' (foreign key id)
     -- call ConvertIntToTable to INSERT values into tempIntTable (val)
-  	IF status != "" &&  status REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   then
+  	IF status != "" AND status REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'   then
 		set @status_null = 0 ;
 		call ConvertIntToTable(status);
 		INSERT into temp_status SELECT distinct val FROM tempIntTable;
@@ -2091,7 +2087,7 @@ END //
 
 DROP PROCEDURE IF EXISTS update_enrollment_count //
 
-CREATE PROCEDURE `update_enrollment_count`(in targetID int(11), in info JSON)
+CREATE PROCEDURE `update_enrollment_count`(in targetID int, in info JSON)
 BEGIN
 	DECLARE new_id INT DEFAULT 0;
 	DECLARE user_id INT DEFAULT 1;
@@ -3163,19 +3159,19 @@ BEGIN
     BEGIN
     start transaction;
 	IF exists (SELECT * FROM mortality WHERE cohort_id = `targetID`) THEN 
-		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , json_unquote(json_extract(info, '$.mortalityYear'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , json_unquote(json_extract(info, '$.deathIndex'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_confirmed_by_death_certificate = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , json_unquote(json_extract(info, '$.deathCertificate'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_confirmed_by_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , json_unquote(json_extract(info, '$.otherDeath'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_confirmed_by_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , json_unquote(json_extract(info, '$.otherDeathSpecify'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_have_date_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , json_unquote(json_extract(info, '$.haveDeathDate'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_have_cause_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , json_unquote(json_extract(info, '$.haveDeathCause'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_code_used_icd9 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , json_unquote(json_extract(info, '$.icd9'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_code_used_icd10 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , json_unquote(json_extract(info, '$.icd10'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_not_coded = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , json_unquote(json_extract(info, '$.notCoded'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_code_used_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , json_unquote(json_extract(info, '$.otherCode'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_death_code_used_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , json_unquote(json_extract(info, '$.otherCodeSpecify'))) WHERE cohort_id = `targetID`;
-		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , json_unquote(json_extract(info, '$.deathNumbers'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_year_mortality_followup = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.mortalityYear'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_ndi_linkage = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathIndex'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_death_certificate = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathCertificate'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeath'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_confirmed_by_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherDeathSpecify'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_have_date_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathDate'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_have_cause_of_death = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeathCause'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd9 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd9'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_code_used_icd10 = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.icd10'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_not_coded = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.notCoded'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCode'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_death_code_used_other_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherCodeSpecify'))) WHERE cohort_id = `targetID`;
+		update mortality set mort_number_of_deaths = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.deathNumbers'))) WHERE cohort_id = `targetID`;
 		update mortality set update_time = NOW() WHERE cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionEStatus')) WHERE cohort_id = `targetID` and page_code = 'E';
 	END IF;
@@ -3256,22 +3252,22 @@ BEGIN
     start transaction;
     set @dataFileName = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataFileName')));
     set @dataUrl = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) in ('null', ''), '', JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')));
-    set @dataOnline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) in ('null',''), null , json_unquote(json_extract(info, '$.dataOnline'))); 
+    set @dataOnline = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) in ('null',''), null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline'))); 
 	IF exists (SELECT * FROM dlh WHERE cohort_id = `targetID`) THEN 
-		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_harmonization_projects = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_harmonization_projects_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_nih_repository = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_linked_to_existing_databases = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_linked_to_existing_databases_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_harmonization_projects_specify = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_nih_repository = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_nih_dbgap = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_nih_biolincc = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_nih_other = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo'))) WHERE cohort_id = `targetID`;
 		update dlh set dlh_procedure_online = @dataOnline WHERE cohort_id = `targetID`;
-		-- update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite'))) WHERE cohort_id = `targetID`;
-		-- update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL'))) WHERE cohort_id = `targetID`;
-		-- update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo'))) WHERE cohort_id = `targetID`;
-		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify'))) WHERE cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_website = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite'))) WHERE cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_url = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL'))) WHERE cohort_id = `targetID`;
+		-- update dlh set dlh_procedure_attached = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_procedure_enclave = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo'))) WHERE cohort_id = `targetID`;
+		update dlh set dlh_enclave_location = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify'))) WHERE cohort_id = `targetID`;
 		update dlh set update_time = NOW() WHERE cohort_id = `targetID`;
 		update cohort_edit_status set `status` = JSON_UNQUOTE(JSON_EXTRACT(info, '$.sectionFStatus')) WHERE cohort_id = `targetID` and page_code = 'F';
 		
@@ -3296,20 +3292,20 @@ BEGIN
 			,update_time
 		) values(
 			targetID
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , json_unquote(json_extract(info, '$.haveDataLink')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , json_unquote(json_extract(info, '$.haveDataLinkSpecify')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , json_unquote(json_extract(info, '$.haveHarmonization')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , json_unquote(json_extract(info, '$.haveHarmonizationSpecify')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , json_unquote(json_extract(info, '$.haveDeposited')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , json_unquote(json_extract(info, '$.dbGaP')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , json_unquote(json_extract(info, '$.BioLINCC')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , json_unquote(json_extract(info, '$.otherRepo')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , json_unquote(json_extract(info, '$.dataOnline')))
-			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , json_unquote(json_extract(info, '$.dataOnlineWebsite')))
-			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , json_unquote(json_extract(info, '$.dataOnlineURL')))
-			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , json_unquote(json_extract(info, '$.dataOnlinePolicy')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , json_unquote(json_extract(info, '$.createdRepo')))
-			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , json_unquote(json_extract(info, '$.createdRepoSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLink')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDataLinkSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonization')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveHarmonizationSpecify')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.haveDeposited')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dbGaP')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.BioLINCC')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.otherRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnline')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineWebsite')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlineURL')))
+			-- ,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.dataOnlinePolicy')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepo')))
+			,if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.createdRepoSpecify')))
 			,NOW()
 			,NOW()
 		);
@@ -3503,7 +3499,7 @@ BEGIN
         set page_index = 0;
     END IF;
    
-    SELECT sql_calc_found_rows id, concat(u.last_name,', ', u.first_name) AS name, user_name, u.email,
+    SELECT sql_calc_found_rows id, concat(u.last_name,', ', u.first_name) AS name,u.login_type, user_name, u.email,
        ( CASE WHEN access_level like '%SystemAdmin' THEN 'Admin' ELSE 'Cohort Owner' end) AS user_role,
 	   ( CASE WHEN access_level like '%SystemAdmin' THEN 'All' 
 			ELSE (SELECT GROUP_CONCAT(cohort_acronym SEPARATOR ', ') AS cohort_list 
@@ -3523,6 +3519,7 @@ BEGIN
 			CASE WHEN columnName = 'name' THEN  name
 				WHEN columnName = 'user_name' THEN user_name
 				WHEN columnName = 'email' THEN  u.email
+				WHEN columnName = 'login_type' THEN  u.login_type
 				WHEN columnName = 'user_role' THEN user_role
 				WHEN columnName = 'active_status' THEN active_status
                 WHEN columnName = 'cohort_list' THEN cohort_list
@@ -3534,6 +3531,7 @@ BEGIN
 			CASE WHEN columnName = 'name' THEN  name
 				WHEN columnName = 'user_name' THEN user_name
 				WHEN columnName = 'email' THEN  u.email
+				WHEN columnName = 'login_type' THEN  u.login_type
 				WHEN columnName = 'user_role' THEN user_role
 				WHEN columnName = 'active_status' THEN active_status
                 WHEN columnName = 'cohort_list' THEN cohort_list
@@ -3559,7 +3557,7 @@ BEGIN
  
    	set @usid = usid;
     
-	SELECT u.user_name, u.last_name, u.first_name, u.email,
+	SELECT u.user_name, u.last_name, u.first_name, u.email,u.login_type,
        ( CASE WHEN access_level like '%SystemAdmin' THEN 'Admin' ELSE 'Cohort Owner' end) AS user_role,
 	   ( CASE WHEN access_level like '%SystemAdmin' THEN 'All' ELSE (SELECT GROUP_CONCAT(cohort_acronym SEPARATOR ',') AS cohort_list 
 	FROM cohort_user_mapping WHERE IFNULL(upper(active),'Y')='Y' and user_id = @usid
@@ -3569,7 +3567,7 @@ BEGIN
    
     SELECT found_rows() AS total;
 	
-	SELECT distinct email, user_name FROM  user ORDER BY email; 
+	SELECT distinct email, login_type FROM  user ORDER BY email; 
 
 	SELECT distinct name, acronym FROM cohort ORDER BY acronym;
     
@@ -3594,31 +3592,33 @@ BEGIN
     
      START transaction;
      if(`userID` = 0 ) then
-        INSERT into  user ( user_name, email,last_name, first_name, access_level, active_status, create_time) values (  
-        if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , json_unquote(json_extract(info, '$.user_name'))),
-		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
-		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , json_unquote(json_extract(info, '$.last_name'))),
-		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , json_unquote(json_extract(info, '$.first_name'))),
-		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
-		  if(json_unquote(json_extract(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
-		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , json_unquote(json_extract(info, '$.active_status'))) ,
+        INSERT into  user ( user_name, login_type, email,last_name, first_name, access_level, active_status, create_time) values (  
+        if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name'))),
+		if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.email'))) ,
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name'))),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
+		  if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status'))) ,
 		  now());
         
         set new_id = last_insert_id();
      ELSE     
-        update user set email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , json_unquote(json_extract(info, '$.email'))) ,
-					user_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , json_unquote(json_extract(info, '$.user_name'))),
-                    last_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , json_unquote(json_extract(info, '$.last_name'))),
-                    first_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , json_unquote(json_extract(info, '$.first_name'))),
-                      access_level = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
-					 if(json_unquote(json_extract(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
-                     active_status = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null'OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , json_unquote(json_extract(info, '$.active_status'))) ,
+        update user set email = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.email')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.email'))) ,
+					login_type = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.login_type'))),
+		 			user_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_name'))),
+                    last_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.last_name'))),
+                    first_name = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name')) ='',null , JSON_UNQUOTE(JSON_EXTRACT(info, '$.first_name'))),
+                      access_level = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) ='',null , 
+					 if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role'))='Admin', 'SystemAdmin', 'CohortAdmin' )),
+                     active_status = if(JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='null' OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status')) ='','Y' , JSON_UNQUOTE(JSON_EXTRACT(info, '$.active_status'))) ,
                      update_time= now()
                  WHERE id = `userID`;
    END IF;
    
  	SET @cohortList = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohort_list'));
-    if(JSON_LENGTH(@cohortList) > 0 || JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) <> 'Admin') then
+    if(JSON_LENGTH(@cohortList) > 0 OR JSON_UNQUOTE(JSON_EXTRACT(info, '$.user_role')) <> 'Admin') then
       update cohort_user_mapping set active='N' WHERE user_id = `userID`;
 		WHILE i < JSON_LENGTH(@cohortList) DO
 			SELECT JSON_EXTRACT(@cohortList, concat('$[',i,']')) INTO @cohortAcronym;

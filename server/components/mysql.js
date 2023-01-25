@@ -96,7 +96,7 @@ export function queryWithLimit(sql, sql_count, paging, next){
           next([]);
         }
 
-        logger.debug('sql_count:' + sql_count);
+        //logger.debug('sql_count:' + sql_count);
         connection.query(sql_count, function(err_0, results_0, fields_0){
         	if(err_0){
         		logger.error(err_0);
@@ -111,7 +111,7 @@ export function queryWithLimit(sql, sql_count, paging, next){
         			let start = (paging.page - 1) * paging.pageSize;
 	        		let offset = paging.pageSize;
 	        		sql = sql + " limit " + start + "," + offset;
-	        		logger.debug('sql:' + sql);
+	        		//logger.debug('sql:' + sql);
 	        		connection.query(sql,function(err_1, results_1, fields_1){
 			            connection.release();
 			            if(err_1){

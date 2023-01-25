@@ -3,7 +3,7 @@ import cedcd_settings from  "../../config/cedcd_settings.js";
 
 export function getAccountType({ preferred_username }) {
   const loginDomain = (preferred_username || "").split("@").pop();
-  return loginDomain.endsWith("login.gov") ? "CohortAdmin" : "SystemAdmin";
+  return loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
 }
 
 export function createUserSerializer() {

@@ -18,7 +18,7 @@ const EditUser = ({ ...props }) => {
     const [cohortList, setCohortList] = useState([]);
     const [currentUser, setCurrentUser] = useState({
         email: '',
-        user_name: ''
+        login_type: ''
     });
     const [existingList, setExistingList] = useState([]);
     const [failureMsg, setFailureMsg] = useState(false);
@@ -31,6 +31,7 @@ const EditUser = ({ ...props }) => {
     const [userEmail, setUserEmail] = useState('');
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState('');
+    const [loginType, setLoginType] = useState('');
     const [initial, setInitial] = useState({});
 
     const isNew = props.isNew;
@@ -46,9 +47,10 @@ const EditUser = ({ ...props }) => {
         email_error: '',
         firstName_error: '',
         lastName_error: '',
-        userName_error: '',
+       // userName_error: '',
         userRole_error: '',
-        cohortList_error: ''
+        cohortList_error: '',
+        loginType_error: '',
     })
 
     useEffect(() => {
@@ -75,6 +77,7 @@ const EditUser = ({ ...props }) => {
 
                 if (+resultStatus === 1) {
                     setUserEmail(data.email)
+                    setLoginType(data.login_type)
                     setFirstName(data.first_name)
                     setLastName(data.last_name)
                     setUserName(data.user_name || '')
@@ -96,10 +99,11 @@ const EditUser = ({ ...props }) => {
 
                         setCohortList(toAdd)
                     }
-                    setCurrentUser({ email: data.email, user_name: data.user_name })
+                    setCurrentUser({ email: data.email, login_type: data.login_type })
 
                     setInitial({
                         email: data.email,
+                        login_type: data.login_type,
                         first_name: data.first_name,
                         last_name: data.last_name,
                         user_name: data.user_name,
@@ -142,8 +146,8 @@ const EditUser = ({ ...props }) => {
     }
 
     const resetState = () => {
-        setUserName('')
         setUserEmail('')
+        setLoginType('')
         setFirstName('')
         setLastName('')
         setUserName('')
@@ -200,9 +204,10 @@ const EditUser = ({ ...props }) => {
 
         const userInfo = {
             email: userEmail,
+            login_type: loginType,
             first_name: firstName,
             last_name: lastName,
-            user_name: userName,
+            user_name: userName ? userName: loginType ==='NIH'? firstName||lastName : userEmail,
             user_role: userRole,
             active_status: activeStatus,
             cohort_list: cohortList ? Object.values(cohortList).map((item, idx) => item.label) : [],
@@ -247,15 +252,23 @@ const EditUser = ({ ...props }) => {
     const validateInput = () => {
         let copy = { ...errors }
 
-        copy.email_error = validator.emailValidator(userEmail, true, false)
+        copy.email_error = validator.emailValidator(userEmail)
+        copy.loginType_error = isNull(loginType) ? 'Missing required field' : ''
         copy.firstName_error = isNull(firstName) ? 'Missing required field' : ''
         copy.lastName_error = isNull(lastName) ? 'Missing required field' : ''
-        copy.userName_error = isNull(userName) ? 'Missing required field' : ''
+       // copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
 
-        if (isNull(copy.userName_error) && currentUser.user_name !== userName || isNew) {
-            if (existingList.some(item => item.user_name === userName)) copy.userName_error = 'Existing user name'
+        if ((isNull(copy.loginType_error) && currentUser.login_type !== loginType || isNew) ||
+            (isNull(copy.email_error) && currentUser.email !== userEmail || isNew)) {
+            if (existingList.some(item => item.login_type === loginType)) {
+                if (existingList.some(item => item.email === userEmail)) {
+                    copy.email_error = 'Existing user email & login type'
+                    copy.loginType_error = 'Existing user email & login type'
+                }
+            }
         }
+
 
         setErrors(copy);
 
@@ -302,7 +315,7 @@ const EditUser = ({ ...props }) => {
                         <div id="edituser-col-1" className="col-md-6 col-6">
                             <Form>
                                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
-                                <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
+                                {/* <Form.Group id="ctl11_div_userName" className="px-0 my-3 col-md-12 col-12">
                                     <Form.Label className="col-md-12 col-12" htmlFor="user_name" style={{ paddingLeft: '0' }}>User Account Name<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userName_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userName_error}</Form.Label>}
                                     <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}>
@@ -310,7 +323,7 @@ const EditUser = ({ ...props }) => {
                                             id="user_userName" value={userName} maxLength="100"
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                     </span>
-                                </Form.Group>
+                                </Form.Group> */}
                                 <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
                                     <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.email_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.email_error}</Form.Label>}
@@ -321,6 +334,42 @@ const EditUser = ({ ...props }) => {
                                             if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
                                         }} />
                                     </span>
+                                </Form.Group>
+
+                                <Form.Group id="ctl11_div_loginType" className="pl-0 my-3 col-md-12 col-12" >
+                                    <Form.Label className="col-md-12 col-12" htmlFor="login_type" style={{ paddingLeft: '0' }}>Login Type<span style={{ color: 'red' }}>*</span></Form.Label>
+                                    {errors.loginType_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.loginType_error}</Form.Label>}
+                                    <Col sm="6" className="d-flex justify-content-between align-self-center">
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="Login.gov"
+                                                checked={loginType === 'Login.gov'}
+                                                onChange={(e) => {
+                                                    setLoginType(e.target.value); 
+                                                    if (errors.loginType_error !== '') setErrors({ ...errors, loginType_error: '' })
+                                                }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                Login.gov
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
+                                        <Form.Check type='radio' inline>
+                                            <Form.Check.Input
+                                                type='radio'
+                                                value="NIH"
+                                                checked={loginType === 'NIH'}
+                                                onChange={(e) => { 
+                                                    setLoginType(e.target.value); 
+                                                    if (errors.loginType_error !== '') setErrors({ ...errors, loginType_error: '' }) }}
+                                            />
+                                            <Form.Check.Label style={{ fontWeight: 'normal' }}>
+                                                NIH &nbsp; &nbsp;
+                                            </Form.Check.Label>
+                                        </Form.Check>
+
+                                    </Col>
                                 </Form.Group>
 
                                 <Form.Group id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">
@@ -339,7 +388,7 @@ const EditUser = ({ ...props }) => {
                                         onChange={(e) => { setFirstName(e.target.value); if (errors.firstName_error !== '') setErrors({ ...errors, firstName_error: '' }) }} />
                                     </span>
                                 </Form.Group>
-                                <Form.Group id="ctl11_div_firstName" className="pl-0 my-3 col-md-12 col-12" >
+                                <Form.Group id="ctl11_div_userRole" className="pl-0 my-3 col-md-12 col-12" >
                                     <Form.Label className="col-md-12 col-12" htmlFor="user_role" style={{ paddingLeft: '0' }}>Role<span style={{ color: 'red' }}>*</span></Form.Label>
                                     {errors.userRole_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.userRole_error}</Form.Label>}
                                     <Col sm="6" className="d-flex justify-content-between align-self-center">
@@ -364,7 +413,9 @@ const EditUser = ({ ...props }) => {
                                                 type='radio'
                                                 value="Admin"
                                                 checked={userRole === 'Admin'}
-                                                onChange={(e) => { setUserRole(e.target.value); if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
+                                                onChange={(e) => { 
+                                                    setUserRole(e.target.value); 
+                                                    if (errors.userRole_error !== '') setErrors({ ...errors, userRole_error: '' }) }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 Admin

@@ -18,7 +18,7 @@ router.use((request, response, next) => {
     const { user } = request;
     //console.log(" session user ", user);
     if ( !user || !/CohortAdmin|SystemAdmin/.test(user.role)) {
-        response.status(400).json('Unauthorized').end();
+        response.status(401).json('Unauthorized').end();
     } else {
         next();
     }
@@ -783,7 +783,7 @@ router.post('/approve/:id', async function (request, response) {
     const userId = user.id;
 
     if (!/SystemAdmin/.test(user.role)) {
-        return response.status(400).json('Unauthorized').end();
+        return response.status(401).json('Unauthorized').end();
     }
 
     const { acronym } = (await mysql.query(`SELECT acronym from cohort where id = ?`, id))[0];
@@ -816,7 +816,7 @@ router.post('/reject/:id', function (request, response) {
     const userId = user.id;
 
     if (!/SystemAdmin/.test(user.role)) {
-        return response.status(400).json('Unauthorized').end();
+        return response.status(401).json('Unauthorized').end();
     }
     const { notes } = body;
     // const updates = {

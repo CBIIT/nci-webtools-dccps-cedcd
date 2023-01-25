@@ -19,7 +19,7 @@ router.use((request, response, next) => {
 	const { user } = request;
 	// console.log(" session user in admin  ", user);
 	if ( !user || !/SystemAdmin/.test(user.role)) {
-		response.status(400).json('Unauthorized').end();
+		response.status(401).json('Unauthorized').end();
 	} else {
 		next();
 	}
@@ -154,10 +154,10 @@ router.post('/updateUserProfile/:id', function (req, res) {
 	let params = []
 	params.push(req.params.id)
 	params.push(body)
-	logger.debug(body)
+	//logger.debug(body)
 
 	mysql.callJsonProcedure(func, params, function (result) {
-		logger.debug(result)
+		//logger.debug(result)
 		if (result && result[0] && result[0][0].rowAffacted > 0) {
 
 			res.json({ status: 200, message: 'update successful' })

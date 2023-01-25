@@ -220,8 +220,9 @@ class ManageUser extends Component {
 			return (
 				<tr key={id}>
 					<td className="text-capitalize">{item.name}</td>
-					<td> {item.user_name}</td>
+					{/* <td> {item.user_name}</td> */}
 					<td>{item.email}</td>
+					<td>{item.login_type}</td>
 					<td>{item.user_role}</td>
 
 					<td>{item.cohort_list}</td>
@@ -289,10 +290,11 @@ class ManageUser extends Component {
 								<thead>
 									<tr id="summaryHeader" className="col-header">
 										{this.renderTableHeader("name", "15%")}
-										{this.renderTableHeader("user_name", "15%")}
+										{/* {this.renderTableHeader("user_name", "15%")} */}
 										{this.renderTableHeader("email", "15%")}
+										{this.renderTableHeader("login_type", "10%")}
 										{this.renderTableHeader("user_role", "13%")}
-										{this.renderTableHeader("cohort_list", "20%")}
+										{this.renderTableHeader("cohort_list", "25%")}
 										{this.renderTableHeader("active_status", "5%")}
 										{this.renderTableHeader("last_login", "12%")}
 										{this.renderTableHeader("action", "5%")}

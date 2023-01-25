@@ -21,14 +21,6 @@ export default function SessionModal({warningThresholds = [300, 180, 60], checkI
         window.addEventListener('storage', syncRemainingTime);
         window.localStorage.setItem('cedcd.remainingTime', remainingTime);
 
-        console.log( Object.keys(userSession));
-
-        console.dir(userSession);
-
-        console.log (" #### 24 session modal isLoggedin ", isLoggedIn);
-
-        console.log (" #### 25 session modal  showWarning", showWarning);
-
         // log out if session has expired
         if (userSession && userSession.expires < new Date().getTime()) {
             logout();
@@ -52,8 +44,6 @@ export default function SessionModal({warningThresholds = [300, 180, 60], checkI
     function updateRemainingTime() {
         const remaining = getRemainingTime();
 
-       // console.log(" #### 47 session modal remaining time ", remaining);
-
         if (isLoggedIn) {
             if (warningThresholds.includes(Math.floor(remaining))) {
                 setShowWarning(remaining >= 0);
@@ -68,7 +58,6 @@ export default function SessionModal({warningThresholds = [300, 180, 60], checkI
     }
 
     function getRemainingTime() {
-
         return isLoggedIn
             ? (userSession.expires - new Date().getTime()) / 1000
             : 0;
