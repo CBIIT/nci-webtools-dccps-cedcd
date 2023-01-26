@@ -324,17 +324,6 @@ const EditUser = ({ ...props }) => {
                                             onChange={(e) => { setUserName(e.target.value); if (errors.userName_error !== '') setErrors({ ...errors, userName_error: '' }) }} />
                                     </span>
                                 </Form.Group> */}
-                                <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
-                                    <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Email<span style={{ color: 'red' }}>*</span></Form.Label>
-                                    {errors.email_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.email_error}</Form.Label>}
-                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
-                                        placeholder='Valid email address' maxLength="100"
-                                        onChange={(e) => {
-                                            setUserEmail(e.target.value);
-                                            if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
-                                        }} />
-                                    </span>
-                                </Form.Group>
 
                                 <Form.Group id="ctl11_div_loginType" className="pl-0 my-3 col-md-12 col-12" >
                                     <Form.Label className="col-md-12 col-12" htmlFor="login_type" style={{ paddingLeft: '0' }}>Login Type<span style={{ color: 'red' }}>*</span></Form.Label>
@@ -370,6 +359,18 @@ const EditUser = ({ ...props }) => {
                                         </Form.Check>
 
                                     </Col>
+                                </Form.Group>
+
+                                <Form.Group id="ctl11_div_userEmail" className="px-0 my-3 col-md-12 col-12">
+                                    <Form.Label className="col-md-12 col-12" htmlFor="user_email" style={{ paddingLeft: '0' }}>Account Email<span style={{ color: 'red' }}>*</span></Form.Label>
+                                    {errors.email_error !== '' && <Form.Label style={{ color: 'red' }}>{errors.email_error}</Form.Label>}
+                                    <span className="col-md-12 col-12" style={{ paddingLeft: '0' }}><input className="form-control" name="user_email" type="email" id="user_email" value={userEmail}
+                                        placeholder='Valid email address' maxLength="100"
+                                        onChange={(e) => {
+                                            setUserEmail(e.target.value);
+                                            if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
+                                        }} />
+                                    </span>
                                 </Form.Group>
 
                                 <Form.Group id="ctl11_div_lastName" className="px-0 my-3 col-md-12 col-12">

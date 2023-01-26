@@ -15,7 +15,7 @@ class TableHeaderManageUser extends Component {
     //   name = "User Account";
     // }
     else if (this.props.value === "email") {
-      name = "Email";
+      name = "Account Email";
     }
     else if (this.props.value === "login_type") {
       name = "Login Type";
