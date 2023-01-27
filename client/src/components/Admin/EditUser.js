@@ -260,8 +260,8 @@ const EditUser = ({ ...props }) => {
        // copy.userName_error = isNull(userName) ? 'Missing required field' : ''
         copy.userRole_error = isNull(userRole) ? 'Missing required field' : ''
 
-        if ((isNull(copy.loginType_error) && currentUser.login_type !== loginType || isNew) ||
-            (isNull(copy.email_error) && currentUser.email !== userEmail || isNew)) {
+        if ((isNull(copy.loginType_error) && currentUser.login_type !== loginType) ||
+        (isNull(copy.email_error) && currentUser.email !== userEmail) || isNew) {
             if (existingList.some(item => item.login_type === loginType && item.email === userEmail)) {
                // if (existingList.some(item => item.email === userEmail)) {
                     copy.email_error = LOGIN_EMAIL_ERR_MSG

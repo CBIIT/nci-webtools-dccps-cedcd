@@ -33,9 +33,10 @@ const cedcd_settings = {
             "rejectUnauthorized": false
         },
         logger:true,
-        debug:true
+        debug:true,
     },
-    env: process.env.ENV||'dev'
+    log_level:process.env.LOGGER_LEVEL||'dev',
+    env: process.env.ENV||'dev',
 };
 
 export default cedcd_settings;
