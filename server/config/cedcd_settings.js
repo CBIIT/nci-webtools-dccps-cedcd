@@ -35,7 +35,7 @@ const cedcd_settings = {
         logger:true,
         debug:true,
     },
-    log_level:process.env.LOGGER_LEVEL||'dev',
+    log_level:process.env.LOGGER_LEVEL||'debug',
     env: process.env.ENV||'dev',
 };
 
