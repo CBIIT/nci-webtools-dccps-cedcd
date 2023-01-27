@@ -35,6 +35,7 @@ const EditUser = ({ ...props }) => {
     const [initial, setInitial] = useState({});
 
     const isNew = props.isNew;
+    const LOGIN_EMAIL_ERR_MSG = "Existing user email & login type";
 
     const userId = window.location.pathname.split('/').pop();
 
@@ -261,11 +262,11 @@ const EditUser = ({ ...props }) => {
 
         if ((isNull(copy.loginType_error) && currentUser.login_type !== loginType || isNew) ||
             (isNull(copy.email_error) && currentUser.email !== userEmail || isNew)) {
-            if (existingList.some(item => item.login_type === loginType)) {
-                if (existingList.some(item => item.email === userEmail)) {
-                    copy.email_error = 'Existing user email & login type'
-                    copy.loginType_error = 'Existing user email & login type'
-                }
+            if (existingList.some(item => item.login_type === loginType && item.email === userEmail)) {
+               // if (existingList.some(item => item.email === userEmail)) {
+                    copy.email_error = LOGIN_EMAIL_ERR_MSG
+                    copy.loginType_error = LOGIN_EMAIL_ERR_MSG
+              //  }
             }
         }
 
@@ -336,7 +337,13 @@ const EditUser = ({ ...props }) => {
                                                 checked={loginType === 'Login.gov'}
                                                 onChange={(e) => {
                                                     setLoginType(e.target.value); 
-                                                    if (errors.loginType_error !== '') setErrors({ ...errors, loginType_error: '' })
+                                                    if (errors.loginType_error !== ''){
+                                                        if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error){
+                                                            setErrors({ ...errors, email_error: '' , loginType_error: '' });
+                                                        } else{
+                                                            setErrors({ ...errors, loginType_error: '' })
+                                                        }
+                                                    }
                                                 }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
@@ -349,9 +356,18 @@ const EditUser = ({ ...props }) => {
                                                 type='radio'
                                                 value="NIH"
                                                 checked={loginType === 'NIH'}
-                                                onChange={(e) => { 
-                                                    setLoginType(e.target.value); 
-                                                    if (errors.loginType_error !== '') setErrors({ ...errors, loginType_error: '' }) }}
+                                                onChange={(e) => {
+                                                    setLoginType(e.target.value);
+
+                                                    if (errors.loginType_error !== '') {
+                                                        if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.loginType_error ) {
+                                                            setErrors({ ...errors, email_error: '' , loginType_error: '' });
+                                                        } else {
+                                                            setErrors({ ...errors, loginType_error: '' })
+                                                        }
+                                                    }
+
+                                                }}
                                             />
                                             <Form.Check.Label style={{ fontWeight: 'normal' }}>
                                                 NIH &nbsp; &nbsp;
@@ -368,8 +384,15 @@ const EditUser = ({ ...props }) => {
                                         placeholder='Valid email address' maxLength="100"
                                         onChange={(e) => {
                                             setUserEmail(e.target.value);
-                                            if (errors.email_error !== '') setErrors({ ...errors, email_error: '' })
-                                        }} />
+                                            if (errors.email_error !== '') {
+                                                if (LOGIN_EMAIL_ERR_MSG.valueOf() === errors.email_error ) {
+                                                    setErrors({ ...errors, email_error: '' , loginType_error: ''});
+                                                } else {
+                                                    setErrors({ ...errors, email_error: '' })
+                                                }
+                                            }
+                                        }
+                                        } />
                                     </span>
                                 </Form.Group>
 

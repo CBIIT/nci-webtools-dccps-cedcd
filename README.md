@@ -148,54 +148,11 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     cd ..
     cd nci-webtools-dccps-cedcd
     ```
+    copy the .env.example to .env
+    modify the values in .env accordingly.
 
-    We need to go into the config folder and add a configuration file
-
-    ```console
-    cd config
-    nano cedcd.settings
-    ```
-
-    Copy and paste the following into the file
-
-        ```console
-        'use strict';
-
-        module.exports = {
-
-        mysql:{
-            connectionLimit: 100,
-            host: 'localhost',
-            port: 3306,
-            user: 'username',
-            password: 'password',
-            db: 'cedcd'
-        },
-
-        logDir: 'Logs',
-        file_path: 'Uploads',
-
-        mail:{
-
-            host:'',
-            port:8000,
-            from:'',
-            to:''
-        },
-
-        env: 'dev'
-        };
-        ```
-
-    Make sure that the username and password are replaced by the username and password you used earlier
-    Use the following commands to save and exit if you are using nano
-
-    ```console
-    Ctrl-x
-    y
-    Enter
-    ```
-
+    If need to test the login module locally, according to the OAuth call back url, it may need to update local network hosts configuration. 
+    
 17) You're almost there!
     Now we have to build the client. First, we go to client folder.
 
@@ -234,12 +191,12 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     $ cd ..
 
     $ node index.js
-    Project CEDCD listening on port:9221
+    Project CEDCD listening on port:8221
     ```
 
 19) Everything should be working now, and you can just open up your browser of choice and go to the following link
 
-    http://localhost:9221/
+    http://localhost:8221/
 
 
     

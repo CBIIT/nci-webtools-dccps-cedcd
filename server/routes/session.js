@@ -92,15 +92,19 @@ export async function getDestLink(request) {
     const accountType = loginDomain.endsWith("login.gov") ? "Login.gov" : "NIH";
     const { userManager } = request.app.locals;
     let userobj = await userManager.getUserForLogin(request.user.email, accountType);
-    if (/SystemAdmin/.test(userobj.role)) {
-      destination = '/admin/managecohort';
+    if (userobj && userobj.role ) {
+      if (/SystemAdmin/.test(userobj.role)) {
+        destination = '/admin/managecohort';
 
-    } else if (/CohortAdmin/.test(userobj.role)) {
-      if (userobj.cohorts.length === 1) {
-        destination = `/cohort/questionnaire/${userobj.cohorts[0].id}`;
-      } else {
-        destination = `/cohort/questionnaire`;
+      } else if (/CohortAdmin/.test(userobj.role)) {
+        if (userobj.cohorts.length === 1) {
+          destination = `/cohort/questionnaire/${userobj.cohorts[0].id}`;
+        } else {
+          destination = `/cohort/questionnaire`;
+        }
       }
+    }else{
+      destination = '/unauthorized';
     }
   }
   return destination;
