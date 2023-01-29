@@ -27,7 +27,7 @@ export function fetchUser() {
         try {
             const response = await fetch(`/api/user-session`)
             const value = await response.json();
-            dispatch(setUser(value));
+            dispatch(setUser(value?.user));
         } catch(e) {
             console.log(e);
             dispatch(setUser({error: String(e)}));
@@ -40,7 +40,7 @@ export function updateUserSession() {
         try {
             const response = await fetch(`/api/update-session`)
             const value = await response.json();
-            dispatch(setUser(value));
+            dispatch(setUser(value.user));
         } catch(e) {
             console.log(e);
             dispatch(setUser({error: String(e)}));

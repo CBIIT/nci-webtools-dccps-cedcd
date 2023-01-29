@@ -57,8 +57,11 @@ router.get("/api/user-session", (request, response) => {
   const { session } = request;
 
   if (session.passport?.user) {
-    response.json(request?.user
-    );
+    response.json({
+      authenticated: true,
+      expires: session.expires,
+      user: request?.user,
+    });
   } else {
     response.json(null);
   }
@@ -72,13 +75,19 @@ router.get("/api/update-session", async (request, response) => {
   } else {
     const { userManager } = request.app.locals;
     const user = await userManager.updateUserSession(request.user);
-    user.expires = new Date().getTime() + parseInt(cedcd_settings.maxSessionAge);
+    if(user){
+      user.expires = new Date().getTime() + parseInt(cedcd_settings.maxSessionAge);
+    }
 
     const { session } = request;
     session.touch();
     session.expires = user.expires;
     request.user = { ...user };
-    response.json(user || null);
+    response.json({
+      authenticated: true,
+      expires: session.expires,
+      user: request?.user,
+    });
   }
 });
 
