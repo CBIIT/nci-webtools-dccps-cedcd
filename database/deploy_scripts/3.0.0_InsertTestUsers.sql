@@ -43,3 +43,6 @@ select "PLCO", user.id, now() from user where user.user_name in (
 "zhaox18@nih.gov",
 "ben.chen@nih.gov");
 
+update user a set a.login_type = 'Login.gov' where a.id > 0 and a.user_name like '%@%';
+
+update user a set a.login_type = 'NIH' where a.id > 0 and a.login_type is null;
