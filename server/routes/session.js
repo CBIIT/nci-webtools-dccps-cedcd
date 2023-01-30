@@ -57,10 +57,13 @@ router.get("/api/user-session", (request, response) => {
   const { session } = request;
 
   if (session.passport?.user) {
+    let user = {...request?.user};
+    if(user.expires) {user.expires = new Date(session.expires).getTime();}
+    
     response.json({
       authenticated: true,
-      expires: session.expires,
-      user: request?.user,
+      expires: user.expires? user.expires : session.expires,
+      user: user||null,
     });
   } else {
     response.json(null);
