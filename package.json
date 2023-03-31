@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "node -r @contrast/agent index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config client/webpack.config.js",
     "watch": "webpack --watch --config client/webpack.config.js"
@@ -13,6 +13,7 @@
   "author": "Wei Yu",
   "license": "ISC",
   "dependencies": {
+    "@contrast/agent": "^4.32.0",
     "axios": "^1.2.1",
     "body-parser": "^1.17.2",
     "compression": "^1.6.2",
