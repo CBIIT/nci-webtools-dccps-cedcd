@@ -163,6 +163,7 @@ class AddNewCohort extends Component {
         cohortList = result.data.list
         state.name_error = ''
         state.acronym_error = ''
+        state.type_error = ''
         state.notes_error = ''
 
         if (state.cohortName === null || !state.cohortName) {
@@ -268,6 +269,7 @@ class AddNewCohort extends Component {
                   message_required: false,
                   cohortName: "",
                   cohortAcronym: "",
+                  type: "",
                   cohortOwners: [],
                   notes: ""
                 });
