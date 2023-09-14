@@ -339,7 +339,7 @@ class AddNewCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_type">Cohort Type<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.type_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.type_error}</Form.Label>}
                   <div style={{ width: '90%' }}>
-                    <Select name='type' isMulti='false' value={this.state.type} options={[
+                    <Select name='type' value={this.state.type} options={[
                       { value: "etiology", label: "Etiology Cohort" },
                       { value: "survivor", label: "Survivor Cohort" },
                     ]} onChange={this.handleSelectChange} />

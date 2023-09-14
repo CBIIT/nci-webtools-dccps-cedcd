@@ -1457,7 +1457,7 @@ class Details extends Component {
 					<div id="cedcd-home-filter" className="filter-block col-md-12">
 						<div id="filter-panel" className="panel panel-default">
 							<div className="panel-heading" onClick={this.toggle}>
-								<h2 className="panel-title">Variables Collected in Cohort Study</h2>
+								<h2 className="panel-title">Cohort Characteristics</h2>
 								<span className={`pull-right d-inline-block ${this.state.collapse ? 'toggle-up' : 'toggle-down'}`}>
 									<i className="fas fa-chevron-up" id="toggle-switch"></i>
 								</span>
