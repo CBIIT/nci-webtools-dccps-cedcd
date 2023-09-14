@@ -19,9 +19,11 @@ class AddNewCohort extends Component {
       background_gray: false,
       name_error: "",
       acronym_error: "",
+      type_error: "",
       notes_error: "",
       cohortName: "",
       cohortAcronym: "",
+      type: "",
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
@@ -40,6 +42,15 @@ class AddNewCohort extends Component {
       };
     });
   }
+
+  handleSelectChange(option){
+    this.setState(state => {
+      return {
+        type: option
+      }
+    })
+  }
+
 
   componentDidMount = () => {
     this.setState({ isFetching: true });
@@ -131,8 +142,10 @@ class AddNewCohort extends Component {
   handleSubmit = async (event) => {
 
     event.preventDefault();
+
     //check required field
     const state = Object.assign({}, this.state);
+    console.log(state)
     let errors = 0;
     let cohortList;
     let reqBody = {
@@ -168,6 +181,12 @@ class AddNewCohort extends Component {
           state.acronym_error = ' Max length of 100 characters'
           errors += 1
         }
+
+        if(!state.type){
+          state.type_error = " Required field"
+          errors += 1
+        }
+      
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
@@ -314,6 +333,14 @@ class AddNewCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.acronym_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.acronym_error}</Form.Label>}
                   <input className="form-control" placeholder="Max of 100 characters" name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
+                </Form.Group>
+                <Form.Group id="ctl11_div_cohortType">
+                  <Form.Label className="oneLineLabel" htmlFor="cu_type">Cohort Type<span style={{ color: 'red' }}>*</span></Form.Label>
+                  {this.state.type_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.type_error}</Form.Label>}
+                  <Select name='type' isMulti='false' value={this.state.type} options={[
+                      { value: "etiology", label: "Etiology Cohort"},
+                      { value: "survivor", label: "Survivor Cohort"},
+                    ]} onChange={this.handleSelectChange}/>
                 </Form.Group>
                 <Form.Group id="ctl11_div_organization" className={org_cls}>
                   <Form.Label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s)</Form.Label>
