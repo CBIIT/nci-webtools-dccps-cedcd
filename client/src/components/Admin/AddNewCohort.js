@@ -33,6 +33,7 @@ class AddNewCohort extends Component {
     };
 
     this.handleMultiChange = this.handleMultiChange.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   handleMultiChange(option) {
@@ -43,7 +44,7 @@ class AddNewCohort extends Component {
     });
   }
 
-  handleSelectChange(option){
+  handleSelectChange(option) {
     this.setState(state => {
       return {
         type: option
@@ -182,11 +183,11 @@ class AddNewCohort extends Component {
           errors += 1
         }
 
-        if(!state.type){
+        if (!state.type) {
           state.type_error = " Required field"
           errors += 1
         }
-      
+
 
         if (state.name_error === '' || state.acronym_error === '') {
           cohortList.map((cohort) => {
@@ -316,7 +317,7 @@ class AddNewCohort extends Component {
               <p className="welcome p-0">
                 <NavLink to="/admin/managecohort">
                   <i className="fas fa-chevron-left mr-2" />
-                    Back to Manage Cohorts
+                  Back to Manage Cohorts
                 </NavLink>
               </p>
               <h1 className="pg-title">Add New Cohort</h1>
@@ -337,10 +338,12 @@ class AddNewCohort extends Component {
                 <Form.Group id="ctl11_div_cohortType">
                   <Form.Label className="oneLineLabel" htmlFor="cu_type">Cohort Type<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.type_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.type_error}</Form.Label>}
-                  <Select name='type' isMulti='false' value={this.state.type} options={[
-                      { value: "etiology", label: "Etiology Cohort"},
-                      { value: "survivor", label: "Survivor Cohort"},
-                    ]} onChange={this.handleSelectChange}/>
+                  <div style={{ width: '90%' }}>
+                    <Select name='type' isMulti='false' value={this.state.type} options={[
+                      { value: "etiology", label: "Etiology Cohort" },
+                      { value: "survivor", label: "Survivor Cohort" },
+                    ]} onChange={this.handleSelectChange} />
+                  </div>
                 </Form.Group>
                 <Form.Group id="ctl11_div_organization" className={org_cls}>
                   <Form.Label className="oneLineLabel" htmlFor="cu_organization">Cohort Owner(s)</Form.Label>
