@@ -2000,6 +2000,7 @@ BEGIN
 		-- cohort_id
         cohort_name
         ,cohort_acronym
+		,cohort_type
         ,coalesce(cohort_web_site, '') AS cohort_web_site
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') AS completionDate
         ,clarification_contact
@@ -3686,7 +3687,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), out popSuccess int)
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
@@ -3699,7 +3700,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym) values (cohortID,  cohortName, acronym);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID,  cohortName, acronym, cohortType);
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	
