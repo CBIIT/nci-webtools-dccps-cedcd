@@ -612,7 +612,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cohort_list` //
 
 CREATE PROCEDURE `SELECT_cohort_list`()
 BEGIN
-	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym FROM cohort_basic cs 
+	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, cs.cohort_type FROM cohort_basic cs 
 	JOIN cohort ch ON ch.id = cs.cohort_id
 	WHERE lower(ch.status)='published' ORDER BY cs.cohort_acronym;
 END //
@@ -625,7 +625,7 @@ DROP PROCEDURE IF EXISTS `SELECT_all_cohort` //
 
 CREATE PROCEDURE `SELECT_all_cohort`()
 BEGIN
-	SELECT id, name, acronym  AS cohort_acronym FROM cohort ORDER BY acronym;
+	SELECT id, name, acronym, type  AS cohort_acronym FROM cohort ORDER BY acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
