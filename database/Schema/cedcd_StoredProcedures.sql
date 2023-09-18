@@ -3446,6 +3446,7 @@ BEGIN
 		BEGIN
 			set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.type'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
 
@@ -3453,13 +3454,13 @@ BEGIN
 			
 			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
 			
-			INSERT into cohort (name,acronym,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,"new",@latest_ver, @createBy,now());
+			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now());
             set new_id = last_insert_id();
 			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
             
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
-			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, popSuccess);
+			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, popSuccess);
             
 			IF popSuccess < 1 THEN
 				BEGIN
