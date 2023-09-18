@@ -2897,8 +2897,8 @@ BEGIN
         ELSE -- IF copy not exists, create a new one
 		   SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
         	IF (@latest_ver IS NULL or @latest_ver = '') THEN set @latest_ver='1.0'; END IF;
-           INSERT cohort (name, acronym, status, publish_by, document_ver,create_by, create_time, update_time, cohort_last_update_date, publish_time) 
-           SELECT name, acronym, 'draft', null,@latest_ver,user_id, now(), now(),now(),  publish_time FROM cohort
+           INSERT cohort (name, acronym, type, status, publish_by, document_ver,create_by, create_time, update_time, cohort_last_update_date, publish_time) 
+           SELECT name, acronym, type, 'draft', null,@latest_ver,user_id, now(), now(),now(),  publish_time FROM cohort
            WHERE id = targetID;
            set new_id = last_insert_id();
            call insert_new_cohort_from_published(new_id, targetID);
