@@ -279,11 +279,13 @@ class ManageCohort extends Component {
 		const list = this.state.list;
 		let content = list.map((item, index) => {
 			let id = item.id;
+
 			return (
 				<tr key={id}>
 					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.name}</Link></td>
 					<td><Link to={`/admin/activitylog/${item.acronym}`}>{item.acronym}</Link></td>
 					<td className="text-capitalize">{item.status}</td>
+					<td>{item.type}</td>
 					<td>{item.ver}</td>
 					<td>{item.submit_by}</td>
 					<td>{item.update_time}</td>

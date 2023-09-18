@@ -1423,6 +1423,7 @@ class Details extends Component {
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
+						<td>{item.cohort_type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
 						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
@@ -1480,6 +1481,7 @@ class Details extends Component {
 									<Workbook.Sheet name="Cohort_Selection">
 										<Workbook.Column label="Cohort Name" value="cohort_name" />
 										<Workbook.Column label="Cohort Acronym" value="cohort_acronym" />
+										<Workbook.Column label="Cohort Type" value="cohort_type" />
 										<Workbook.Column label="Total Enrollments (n=)" value="enrollment_total" />
 										<Workbook.Column label="Website" value="cohort_web_site" />
 										<Workbook.Column label="Last Updated" value="update_time" />
@@ -1504,7 +1506,8 @@ class Details extends Component {
 										{this.renderSelectHeader("5%")}
 										{this.renderTableHeader("cohort_name", "30%")}
 										{this.renderTableHeader("cohort_acronym", "10%")}
-										{this.renderTableHeaderMiddle("enrollment_total", "20%")}
+										{this.renderTableHeader("cohort_type", "10%")}
+										{this.renderTableHeaderMiddle("enrollment_total", "10%")}
 										<th className="sortable" width="20%" scope="col">
 											<a href="javascript:void(0);" style={{ cursor: 'default' }}>Website
 												</a>
