@@ -228,11 +228,13 @@ class AddNewCohort extends Component {
           let reqBody = {
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
-            cohortType: state.type,
+            cohortType: state.type.label,
             cohortOwners: ownerIDs,
             notes: state.notes,
             createBy: this.props.user
           };
+
+          console.log(reqBody)
           fetch('/api/cohort/add', {
             method: "POST",
             body: JSON.stringify(reqBody),
