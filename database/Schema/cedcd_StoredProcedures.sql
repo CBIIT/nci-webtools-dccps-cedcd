@@ -3446,7 +3446,7 @@ BEGIN
 		BEGIN
 			set @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
-			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.type'));
+			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
 
