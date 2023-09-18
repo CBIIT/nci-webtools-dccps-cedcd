@@ -18,6 +18,9 @@ class TableHeaderMiddle extends Component {
     else if(this.props.value === "update_time"){
       name="Last Updated";
     }
+    else if(this.props.value === "cohort_type"){
+      name="Cohort Type";
+    }
     else{
       name="Cohort Name";
     }

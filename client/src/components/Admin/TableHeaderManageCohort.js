@@ -14,6 +14,9 @@ class TableHeaderManageCohort extends Component {
     else if (this.props.value === "acronym") {
       name = "Acronym";
     }
+    else if (this.props.value === "type") {
+      name = "Cohort Type";
+    }
     else if (this.props.value === "status") {
       name = "Status";
     }

@@ -354,9 +354,10 @@ class ManageCohort extends Component {
 									<tr id="summaryHeader" className="col-header">
 										{this.renderTableHeader("name", "30%")}
 										{this.renderTableHeader("acronym", "10%")}
-										{this.renderTableHeader("status", "15%")}
+										{this.renderTableHeader("status", "10%")}
+										{this.renderTableHeader("type", "10%")}
 										{this.renderTableHeader("ver", "5%")}
-										{this.renderTableHeader("submit_by", "15%")}
+										{this.renderTableHeader("submit_by", "10%")}
 										{this.renderTableHeader("update_time", "15%")}
 										{this.renderTableHeader("action", "10%")}
 									</tr>
