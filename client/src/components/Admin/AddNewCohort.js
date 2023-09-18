@@ -228,6 +228,7 @@ class AddNewCohort extends Component {
           let reqBody = {
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
+            cohortType: state.type,
             cohortOwners: ownerIDs,
             notes: state.notes,
             createBy: this.props.user
