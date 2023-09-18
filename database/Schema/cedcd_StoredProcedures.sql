@@ -3700,7 +3700,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID,  cohortName, acronym, cohortType);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID,  cohortName, acronym, "test");
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	
