@@ -228,7 +228,7 @@ class AddNewCohort extends Component {
           let reqBody = {
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
-            cohortType: state.type.label,
+            cohortType: state.type.value,
             cohortOwners: ownerIDs,
             notes: state.notes,
             createBy: this.props.user
@@ -345,8 +345,8 @@ class AddNewCohort extends Component {
                   {this.state.type_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.type_error}</Form.Label>}
                   <div style={{ width: '90%' }}>
                     <Select name='type' value={this.state.type} options={[
-                      { value: "etiology", label: "Etiology Cohort" },
-                      { value: "survivor", label: "Survivor Cohort" },
+                      { value: "Etiology", label: "Etiology Cohort" },
+                      { value: "Survivor", label: "Survivor Cohort" },
                     ]} onChange={this.handleSelectChange} />
                   </div>
                 </Form.Group>
