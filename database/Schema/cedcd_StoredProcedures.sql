@@ -654,7 +654,7 @@ DROP PROCEDURE IF EXISTS `SELECT_admin_info` //
 CREATE PROCEDURE `SELECT_admin_info`(in targetID int)
 BEGIN
 	set @cohort_id = targetID;
-    SELECT distinct first_name, last_name, email, name, acronym 
+    SELECT distinct first_name, last_name, email, name, type, acronym 
 	FROM user x
     JOIN cohort y 
     WHERE access_level='SystemAdmin' and x.active_status='Y' and y.id= @cohort_id and x.id >1 ;
