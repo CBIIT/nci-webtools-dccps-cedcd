@@ -869,7 +869,7 @@ BEGIN
 			DEALLOCATE PREPARE stmt;
         END IF;
     END IF;
-    
+
     IF pageIndex > -1 THEN 
         set page_size = IFNULL(pageSize,50);
         set page_index = pageIndex;
@@ -878,7 +878,7 @@ BEGIN
         set page_index = 0;
     END IF;
  
-	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site, ch.publish_time AS update_time, 
+	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, cs.cohort_type, cs.cohort_web_site, ch.publish_time AS update_time, 
 	 sum(ec.enrollment_counts) AS enrollment_total 
 	FROM cohort_basic cs 
     JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id
@@ -907,6 +907,7 @@ BEGIN
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'cohort_type' THEN cs.cohort_type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
@@ -918,6 +919,7 @@ BEGIN
         CASE WHEN lower(columnOrder) = 'desc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
+				 WHEN columnName = 'cohort_type' THEN cs.cohort_type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time 
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
@@ -3463,7 +3465,7 @@ BEGIN
             
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
-			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, popSuccess);
+			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, popSuccess);
             
 			IF popSuccess < 1 THEN
 				BEGIN
@@ -3689,7 +3691,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), out popSuccess int)
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
@@ -3702,7 +3704,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym) values (cohortID, cohortName, acronym);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID, cohortName, acronym, cohortType);
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	

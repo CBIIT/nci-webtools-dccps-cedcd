@@ -2,4 +2,4 @@
 
 use cedcd;
 
-ALTER TABLE `cohort` ADD `type` VARCHAR(20);
+ALTER TABLE `cohort_basic` ADD `cohort_type` VARCHAR(20);
