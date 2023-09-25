@@ -368,9 +368,13 @@ class AddNewCohort extends Component {
                   {this.state.notes_error !== '' && <Form.Label style={{ color: 'red', paddingLeft: '5px' }}> {this.state.notes_error}</Form.Label>}
                   <textarea className="form-control" placeholder="Max of 2000 characters" name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
                 </Form.Group>
-                <Form.Group id="ctl11_div_active">
-                  <input type="checkbox" checked={this.state.active} onClick={this.handleActive}>Active</input>
-                </Form.Group>
+                <Form.Check
+                  type="checkbox"
+                  id="active"
+                  label="Active"
+                  checked={this.state.active}
+                  onClick={this.handleActive}
+                />
                 <div className="bttn-group" style={{ width: '90%' }}>
                   <Button
                     variant="primary"
