@@ -24,6 +24,7 @@ class AddNewCohort extends Component {
       cohortName: "",
       cohortAcronym: "",
       type: "",
+      active: true,
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
@@ -34,6 +35,7 @@ class AddNewCohort extends Component {
 
     this.handleMultiChange = this.handleMultiChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
+    this.handleActive = this.handleActive.bind(this);
   }
 
   handleMultiChange(option) {
@@ -94,6 +96,10 @@ class AddNewCohort extends Component {
     let dict = {};
     dict[field] = event.target.value;
     this.setState(dict);
+  }
+
+  handleActive() {
+    this.setState({ active: !this.state.active })
   }
 
   sendEmail(userName, userEmail) {
@@ -230,6 +236,7 @@ class AddNewCohort extends Component {
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
+            active: state.active,
             notes: state.notes,
             createBy: this.props.user
           };
@@ -360,6 +367,9 @@ class AddNewCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_message">Notes </Form.Label>
                   {this.state.notes_error !== '' && <Form.Label style={{ color: 'red', paddingLeft: '5px' }}> {this.state.notes_error}</Form.Label>}
                   <textarea className="form-control" placeholder="Max of 2000 characters" name="cu_message" rows="4" cols="20" id="cu_message" value={this.state.notes} onChange={(e) => this.handleChange("notes", e)} />
+                </Form.Group>
+                <Form.Group id="ctl11_div_active">
+                  <input type="checkbox" checked={this.state.active} onClick={this.handleActive}>Active</input>
                 </Form.Group>
                 <div className="bttn-group" style={{ width: '90%' }}>
                   <Button

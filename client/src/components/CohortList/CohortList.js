@@ -81,6 +81,7 @@ class CohortList extends Component {
 				</li>
 			);
 		});
+		console.log(cohorts)
 		const displayMax = parseInt(this.props.displayMax);
 		const selectedList = values.map((item, idx) => {
 			const key = "s_cohort_" + idx;

@@ -1941,7 +1941,7 @@ BEGIN
     END IF;
     
 	SELECT sql_calc_found_rows r.* FROM (
-    SELECT ch.id, ch.name, ch.acronym, ch.type, ch.status,l_status.id AS status_id, ch.document_ver as ver,
+    SELECT ch.id, ch.name, ch.acronym, ch.type, ch.active, ch.status,l_status.id AS status_id, ch.document_ver as ver,
 		concat(u1.first_name, ' ', u1.last_name) create_by, 
 		(	case
 			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
@@ -1968,6 +1968,7 @@ BEGIN
 			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
+			 WHEN columnName = 'active' then r.active
 			 WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -1980,6 +1981,7 @@ BEGIN
 			 WHEN columnName = 'ver' THEN  cast(r.ver as signed)
 			 WHEN columnName = 'publish_by' THEN r.submit_by
              WHEN columnName = 'update_time' THEN STR_TO_DATE(r.update_time, '%m/%d/%Y') 
+			 WHEN columnName = 'active' then r.active
              WHEN columnName = 'action' THEN r.action
 			ELSE r.name 
 		END 
@@ -3454,18 +3456,19 @@ BEGIN
 			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+			set @active = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'))
 
 			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
 			
 			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
 			
-			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now());
+			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time,active) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now(),@active);
             set new_id = last_insert_id();
 			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
             
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
-			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, popSuccess);
+			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, @active, popSuccess);
             
 			IF popSuccess < 1 THEN
 				BEGIN
@@ -3691,7 +3694,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20), out popSuccess int)
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20),in active varchar(10), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
@@ -3704,7 +3707,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID, cohortName, acronym, cohortType);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type, active) values (cohortID, cohortName, acronym, cohortType, active);
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	
