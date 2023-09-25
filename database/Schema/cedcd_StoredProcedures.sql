@@ -3456,13 +3456,13 @@ BEGIN
 			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
-			set @active = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'));
+			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'));
 
 			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
 			
 			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
 			
-			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time,active) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now(),@active);
+			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time,active) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now(),@activeInput);
             set new_id = last_insert_id();
 			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
             
@@ -3694,7 +3694,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20),in active varchar(10), out popSuccess int)
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20),in activeInput varchar(10), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
@@ -3707,7 +3707,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type, active) values (cohortID, cohortName, acronym, cohortType, active);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type, active) values (cohortID, cohortName, acronym, cohortType, activeInput);
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	
