@@ -236,7 +236,7 @@ class AddNewCohort extends Component {
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
-            active: state.active,
+            active: state.active ? "Active" : "Inactive",
             notes: state.notes,
             createBy: this.props.user
           };
