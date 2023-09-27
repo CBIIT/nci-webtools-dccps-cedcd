@@ -1426,7 +1426,7 @@ class Details extends Component {
 						<td>{item.cohort_type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
-						<td><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
+						<td style={{ backgroundColor: item.active === "Inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
 					</tr>
 				);
 			});

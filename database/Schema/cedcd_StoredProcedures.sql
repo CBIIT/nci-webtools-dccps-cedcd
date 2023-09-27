@@ -612,7 +612,7 @@ DROP PROCEDURE IF EXISTS `SELECT_cohort_list` //
 
 CREATE PROCEDURE `SELECT_cohort_list`()
 BEGIN
-	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, cs.cohort_type FROM cohort_basic cs 
+	SELECT cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, cs.cohort_type, ch.active FROM cohort_basic cs 
 	JOIN cohort ch ON ch.id = cs.cohort_id
 	WHERE lower(ch.status)='published' ORDER BY cs.cohort_acronym;
 END //
@@ -878,7 +878,7 @@ BEGIN
         set page_index = 0;
     END IF;
  
-	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, cs.cohort_type, cs.cohort_web_site, ch.publish_time AS update_time, 
+	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, cs.cohort_type, cs.cohort_web_site, ch.active, ch.publish_time AS update_time, 
 	 sum(ec.enrollment_counts) AS enrollment_total 
 	FROM cohort_basic cs 
     JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id
@@ -903,12 +903,13 @@ BEGIN
 	and ( @ageinfo_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ageinfo) )
 	and ( @specimen_null = 1 OR cs.cohort_id in (SELECT val FROM temp_specimen) )
     and ( @cancer_null = 1 OR cs.cohort_id in (SELECT cohort_id FROM cancer_count WHERE cancer_id in (SELECT val FROM temp_cancer ) and cancer_counts > 0 ) )
-	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time  
+	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time, ch.active
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN cs.cohort_type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'active' THEN  ch.active
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -921,6 +922,7 @@ BEGIN
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN cs.cohort_type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time 
+				 WHEN columnName = 'active' THEN  ch.active
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 		 END DESC,
@@ -3468,7 +3470,7 @@ BEGIN
             
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
-			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, @active, popSuccess);
+			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, popSuccess);
             
 			IF popSuccess < 1 THEN
 				BEGIN
@@ -3694,7 +3696,7 @@ END //
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `populate_cohort_tables` //
 
-CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20),in activeInput varchar(10), out popSuccess int)
+CREATE  PROCEDURE `populate_cohort_tables`(in cohortID int, in cohortName varchar(50), in acronym varchar(20), in cohortType varchar(20), out popSuccess int)
 BEGIN
 	DECLARE flag INT DEFAULT 1;
  
@@ -3707,7 +3709,7 @@ BEGIN
 	
    START TRANSACTION;
    
-   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type, active) values (cohortID, cohortName, acronym, cohortType, activeInput);
+   INSERT cohort_basic (cohort_id, cohort_name, cohort_acronym, cohort_type) values (cohortID, cohortName, acronym, cohortType);
    INSERT cohort_edit_status (cohort_id, page_code, status) values (cohortID, 'A', 'new'), (cohortID, 'B', 'new'), (cohortID, 'C', 'new'),
  																   (cohortID, 'D', 'new'), (cohortID, 'E', 'new'), (cohortID, 'F', 'new'), (cohortID, 'G', 'new');
 	

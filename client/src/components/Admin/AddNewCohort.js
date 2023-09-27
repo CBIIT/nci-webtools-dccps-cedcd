@@ -24,7 +24,7 @@ class AddNewCohort extends Component {
       cohortName: "",
       cohortAcronym: "",
       type: "",
-      active: true,
+      notUpdated: true,
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
@@ -35,7 +35,7 @@ class AddNewCohort extends Component {
 
     this.handleMultiChange = this.handleMultiChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleActive = this.handleActive.bind(this);
+    this.handleNotUpdated = this.handleNotUpdated.bind(this);
   }
 
   handleMultiChange(option) {
@@ -98,8 +98,8 @@ class AddNewCohort extends Component {
     this.setState(dict);
   }
 
-  handleActive() {
-    this.setState({ active: !this.state.active })
+  handleNotUpdated() {
+    this.setState({ notUpdated: !this.state.notUpdated })
   }
 
   sendEmail(userName, userEmail) {
@@ -232,11 +232,11 @@ class AddNewCohort extends Component {
 
           //submit
           let reqBody = {
-            cohortName: state.cohortName,
+            cohortName: state.cohortName, 
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
-            active: state.active ? "Active" : "Inactive",
+            active: state.notUpdated ? "Inactive" : "Active",
             notes: state.notes,
             createBy: this.props.user
           };
@@ -280,6 +280,7 @@ class AddNewCohort extends Component {
                   cohortName: "",
                   cohortAcronym: "",
                   type: "",
+                  notUpdated: false,
                   cohortOwners: [],
                   notes: ""
                 });
@@ -370,10 +371,10 @@ class AddNewCohort extends Component {
                 </Form.Group>
                 <Form.Check
                   type="checkbox"
-                  id="active"
-                  label="Active"
-                  checked={this.state.active}
-                  onClick={this.handleActive}
+                  id="notUpdated"
+                  label="Profile not Updated"
+                  checked={this.state.notUpdated}
+                  onClick={this.handleNotUpdated}
                 />
                 <div className="bttn-group" style={{ width: '90%' }}>
                   <Button
