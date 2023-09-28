@@ -451,9 +451,10 @@ class Details extends Component {
 			ethnicity: [],
 			cancer: [],
 			data: [],
+			type: [],
 			specimen: [],
-			booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
-			booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
+			booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
+			booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
 			allCancer: false
 		};
 		const previousState = sessionStorage.getItem('informationHistory_select');
@@ -1248,7 +1249,7 @@ class Details extends Component {
 											<CollectedDataList rightBorderStyle="straight" values={this.state.advancedFilter.data} displayMax="5" onClick={this.handleAdvancedDataClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
-											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[5]} title="Boolean operation between options in Data filter" onChange={e => this.handleBooleanWithinChange(e, 5)}>
+											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[6]} title="Boolean operation between options in Data filter" onChange={e => this.handleBooleanWithinChange(e, 6)}>
 												<option value="AND">AND</option>
 												<option value="OR">OR</option>
 											</select>
@@ -1267,7 +1268,7 @@ class Details extends Component {
 											<CollectedSpecimensList rightBorderStyle="straight" values={this.state.advancedFilter.specimen} displayMax="5" onClick={this.handleAdvancedSpecimenClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
-											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[6]} title="Boolean operation between options in biospecimens filter" onChange={e => this.handleBooleanWithinChange(e, 6)}>
+											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in biospecimens filter" onChange={e => this.handleBooleanWithinChange(e, 7)}>
 												<option value="AND">AND</option>
 												<option value="OR">OR</option>
 											</select>
@@ -1287,7 +1288,7 @@ class Details extends Component {
 												hasSelectAll={this.state.advancedFilter.allCancer} values={this.state.advancedFilter.cancer} displayMax="5" onClick={this.handleAdvancedCancerClick} />
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
-											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[7]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e, 7)}>
+											<select className="btn btn-default" style={{ "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[8]} title="Boolean operation between options in cancers filter" onChange={e => this.handleBooleanWithinChange(e, 8)}>
 												<option value="AND">AND</option>
 												<option value="OR">OR</option>
 											</select>
