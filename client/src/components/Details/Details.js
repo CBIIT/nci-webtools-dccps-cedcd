@@ -38,7 +38,8 @@ class Details extends Component {
 					gender: [],
 					race: [],
 					ethnicity: [],
-					age: []
+					age: [],
+					type: []
 				},
 				collect: {
 					cancer: [],
@@ -56,11 +57,12 @@ class Details extends Component {
 				state: [],
 				race: [],
 				ethnicity: [],
+				type: [],
 				cancer: [],
 				data: [],
 				specimen: [],
-				booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
-				booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
+				booleanOperationBetweenField: ["AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND", "AND"],
+				booleanOperationWithInField: ["OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR", "OR"],
 				allCancer: false
 			},
 			orderBy: {
@@ -890,6 +892,24 @@ class Details extends Component {
 		});
 	}
 
+	handleAdvancedTypeClick = (v) => {
+		const advancedFilter = Object.assign({}, this.state.advancedFilter);
+		let idx = advancedFilter.type.indexOf(v);
+
+		if (idx > -1) {
+			//remove element
+			advancedFilter.type.splice(idx, 1);
+		}
+		else {
+			//add element
+			advancedFilter.type.push(v);
+		}
+		this.setState({
+			advancedFilter: advancedFilter
+		});
+	}
+
+
 	handleAdvancedDataClick = (v) => {
 		const advancedFilter = Object.assign({}, this.state.advancedFilter);
 		let idx = advancedFilter.data.indexOf(v.id);
@@ -1183,6 +1203,25 @@ class Details extends Component {
 										</div>
 										<div style={{ "width": "8%", "float": "left" }}>
 											<select className="btn btn-default" style={{ "borderColor": "#ccc", "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[4]} title="Boolean operation between options in ethnicity filter" onChange={e => this.handleBooleanWithinChange(e, 4)}>
+												<option value="AND">AND</option>
+												<option value="OR">OR</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col-sm-1" style={{ "width": "10%" }}>
+										<select className="btn btn-default" style={{ padding: '6px 6px' }} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
+											<option value="AND">AND</option>
+											<option value="OR">OR</option>
+										</select>
+									</div>
+									<div className="col-sm-11" style={{ "width": "90%" }}>
+										<div style={{ "width": "92%", "float": "left" }}>
+											<TypeList rightBorderStyle="straight" values={this.state.advancedFilter.type} displayMax="3" onClick={this.handleAdvancedTypeClick} />
+										</div>
+										<div style={{ "width": "8%", "float": "left" }}>
+											<select className="btn btn-default" style={{ "borderColor": "#ccc", "borderTopLeftRadius": "0px", "borderBottomLeftRadius": "0px" }} value={this.state.advancedFilter.booleanOperationWithInField[5]} title="Boolean operation between options in type filter" onChange={e => this.handleBooleanWithinChange(e, 5)}>
 												<option value="AND">AND</option>
 												<option value="OR">OR</option>
 											</select>

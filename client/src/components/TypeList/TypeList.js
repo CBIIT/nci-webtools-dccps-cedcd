@@ -43,29 +43,23 @@ class TypeList extends Component {
 		let reqBody = {
 			category:"type"
 		};
-		fetch('./api/cohort/lookup',{
-			method: "POST",
-			body: JSON.stringify(reqBody),
-			headers: {
-		        'Content-Type': 'application/json'
-		    }
-		})
-		.then(res => res.json())
-		.then(result => {
-			let types = result.data.list;
-			let arr = [];
-			let dict = {};
-			types.forEach(function(element){
-				arr.push({type:element.type,id:element.id});
-				dict[element.id] = {type:element.type,id:element.id};
+
+		let arr = [
+			{type: "Etiology", id: 1},
+			{type: "Survivor", id: 2}
+		]
+
+		let dict = {
+			1: {type: "Etiology", id: 1},
+			2: {type: "Survivor", id: 2}
+		}
+
+		if (this._isMounted) {
+			this.setState({
+				list: arr,
+				lookup: dict
 			});
-			if (this._isMounted) {
-				this.setState({
-						list: arr,
-						lookup: dict
-				});
-			}
-		});
+		}
 	}
 
 	componentWillUnmount() {
