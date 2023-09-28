@@ -1483,7 +1483,7 @@ class Details extends Component {
 							<Link to={url} onClick={this.saveHistory}>{item.cohort_name}</Link>
 						</td>
 						<td><Link to={url} onClick={this.saveHistory}>{item.cohort_acronym}</Link></td>
-						<td>{item.cohort_type}</td>
+						<td>{item.type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
 						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment>{item.active === "inactive" ? "*" : ""}</td>

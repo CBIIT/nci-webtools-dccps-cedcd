@@ -916,7 +916,7 @@ BEGIN
         set page_index = 0;
     END IF;
  
-	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, cs.cohort_type, cs.cohort_web_site, ch.active, ch.publish_time AS update_time, 
+	SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.active, ch.publish_time AS update_time, 
 	 sum(ec.enrollment_counts) AS enrollment_total 
 	FROM cohort_basic cs 
     JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id
@@ -942,7 +942,7 @@ BEGIN
 	and ( @ageinfo_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ageinfo) )
 	and ( @specimen_null = 1 OR cs.cohort_id in (SELECT val FROM temp_specimen) )
     and ( @cancer_null = 1 OR cs.cohort_id in (SELECT cohort_id FROM cancer_count WHERE cancer_id in (SELECT val FROM temp_cancer ) and cancer_counts > 0 ) )
-	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time, ch.active
+	group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.publish_time, ch.active
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
