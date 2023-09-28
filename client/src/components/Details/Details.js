@@ -1426,7 +1426,7 @@ class Details extends Component {
 						<td>{item.cohort_type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
-						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment></td>
+						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time + `${item.active === "inactive" ? "*" : ""}`}</Moment></td>
 					</tr>
 				);
 			});
@@ -1527,6 +1527,9 @@ class Details extends Component {
 								<ul className="table-controls">
 									<FloatingSubmit onClick={this.handleComparasion} align="true" placement="bottom" values={this.state.selected} />
 								</ul>
+							</div>
+							<div style={{ paddingTop: "7px"}}>
+								*Cohort has been active for 2 or more years
 							</div>
 							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
