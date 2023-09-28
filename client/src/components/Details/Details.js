@@ -9,6 +9,7 @@ import TableHeaderMiddle from '../TableHeader/TableHeaderMiddle'
 import SelectBox from '../SelectBox/SelectBox';
 import GenderList from '../GenderList/GenderList';
 import RaceList from '../RaceList/RaceList';
+import TypeList from '../TypeList/TypeList';
 import EthnicityList from '../EthnicityList/EthnicityList';
 import AgeList from '../AgeList/AgeList';
 import CollectedDataList from '../CollectedDataList/CollectedDataList';
@@ -690,6 +691,23 @@ class Details extends Component {
 		});
 	}
 
+	handleTypeClick = (v) => {
+		const filter = Object.assign({}, this.state.filter);
+		let idx = filter.participant.type.indexOf(v.id);
+
+		if (idx > -1) {
+			//remove element
+			filter.participant.type.splice(idx, 1);
+		}
+		else {
+			//add element
+			filter.participant.type.push(v.id);
+		}
+		this.setState({
+			filter: filter
+		});
+	}
+
 	handleEthnicityClick = (v) => {
 		const filter = Object.assign({}, this.state.filter);
 		let idx = filter.participant.ethnicity.indexOf(v.id);
@@ -1015,6 +1033,7 @@ class Details extends Component {
 								<div className="col-sm-12">
 									<RaceList values={this.state.filter.participant.race} displayMax="3" onClick={this.handleRaceClick} />
 									<EthnicityList values={this.state.filter.participant.ethnicity} displayMax="3" onClick={this.handleEthnicityClick} />
+									<TypeList values={this.state.filter.participant.type} displayMax="3" onClick={this.handleTypeClick} />
 								</div>
 							</div>
 						</div>
@@ -1426,7 +1445,7 @@ class Details extends Component {
 						<td>{item.cohort_type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
-						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time + `${item.active === "inactive" ? "*" : ""}`}</Moment></td>
+						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment>{item.active === "inactive" ? "*" : ""}</td>
 					</tr>
 				);
 			});
@@ -1529,7 +1548,7 @@ class Details extends Component {
 								</ul>
 							</div>
 							<div style={{ paddingTop: "7px"}}>
-								*Cohort has been active for 2 or more years
+								*Cohort has been inactive for 2 or more years
 							</div>
 							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
