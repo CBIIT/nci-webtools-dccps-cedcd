@@ -391,7 +391,7 @@ BEGIN
     END IF;
     
     IF @globalANDOR = 'AND' THEN 
-		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time AS update_time,
+		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.active, cs.cohort_web_site,ch.publish_time AS update_time,
 			sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -405,7 +405,7 @@ BEGIN
 		and ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 		and ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 		and ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) )
-		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time 
+		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.type, ch.active, ch.publish_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
@@ -435,7 +435,7 @@ BEGIN
         cs.cohort_name
     limit page_index, page_size;
     ELSE 
-        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym,cs.cohort_web_site,ch.publish_time AS update_time,
+        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.active, cs.cohort_web_site,ch.publish_time AS update_time,
 		sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -449,7 +449,7 @@ BEGIN
 			OR ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 			OR ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 			OR ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) ) )
-		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.publish_time 
+		group by cs.cohort_id, cs.cohort_name, cs.cohort_acronym, cs.cohort_web_site, ch.type, ch.active, ch.publish_time 
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
