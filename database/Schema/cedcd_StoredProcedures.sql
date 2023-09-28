@@ -120,9 +120,9 @@ BEGIN
     create temporary table IF not exists temp_race( val int );
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
-	 drop temporary table IF exists temp_ethnicity;
+	drop temporary table IF exists temp_type;
     create temporary table IF not exists temp_type( val int );
-    drop temporary table IF exists temp_type;
+    drop temporary table IF exists temp_category;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
     create temporary table IF not exists temp_cancer( val int );
