@@ -40,9 +40,6 @@ class TypeList extends Component {
 
 	componentDidMount(){
 		this._isMounted = true;
-		let reqBody = {
-			category:"type"
-		};
 
 		let arr = [
 			{type: "Etiology", id: 1},

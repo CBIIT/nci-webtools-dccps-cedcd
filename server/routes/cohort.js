@@ -186,6 +186,13 @@ router.post('/select', function (req, res) {
 		params.push("");
 	}
 
+	if(filter.participant.type.length > 0) {
+		params.push(filter.participant.type.toString())
+	}
+	else{
+		params.push("")
+	}
+
 	if (filter.collect.data.length > 0) {
 		params.push(filter.collect.data.toString());
 	}

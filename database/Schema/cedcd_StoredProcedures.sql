@@ -718,7 +718,7 @@ END //
 DROP PROCEDURE IF EXISTS `SELECT_cohort` //
 
 CREATE PROCEDURE `SELECT_cohort`(in `@gender` varchar(100),in `@age_info` varchar(100), in `@study_population` varchar(1000), 
-									in `@race` varchar(1000), in `@ethnicity` varchar(1000), 
+									in `@race` varchar(1000), in `@ethnicity` varchar(1000), in `@type` varchar(1000),
 									in `@category` varchar(1000),in `@collected_specimen` varchar(2000),in `@cancer` varchar(2000),
                                     in columnName varchar(40), in columnOrder varchar(10),
 									in pageIndex int, in pageSize int)
@@ -740,6 +740,8 @@ BEGIN
     create temporary table IF not exists temp_race( val int );
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
+	drop temporary table IF exists temp_type;
+    create temporary table IF not exists temp_type( val int );
     drop temporary table IF exists temp_category;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
@@ -753,6 +755,7 @@ BEGIN
     set @category_null = 1;
     set @ethnicity_null = 1;
 	set @race_null = 1;
+	set @type_null = 1;
     set @specimen_null = 1;
    
     -- expected input is '' or looks like '1,2,3' (foreign key id)
@@ -770,6 +773,12 @@ BEGIN
 		set @race_null = 0 ;
 		call ConvertIntToTable(`@race`);
         INSERT into temp_race SELECT distinct val FROM tempIntTable;
+	END IF;
+
+	IF `@type` != "" AND `@type` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
+		set @type_null = 0 ;
+		call ConvertIntToTable(`@type`);
+        INSERT into temp_type SELECT distinct val FROM tempIntTable;
 	END IF;
     
     IF `@ethnicity` != "" AND `@ethnicity` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
@@ -888,6 +897,7 @@ BEGIN
     and  cs.cohort_id in (
 			SELECT cohort_id FROM enrollment_count WHERE 
             ( @race_null = 1 OR ( enrollment_counts > 0  and race_id in (SELECT val FROM temp_race )) )
+			and ( @type_null = 1 OR ( enrollment_counts > 0  and type_id in (SELECT val FROM temp_type )) )
 			and ( @ethnicity_null = 1 OR (  enrollment_counts > 0  and ethnicity_id in (SELECT val FROM temp_ethnicity )))
       ) 
 	and ( @category_null = 1  OR ( 

@@ -289,7 +289,8 @@ class Details extends Component {
 				gender: [],
 				race: [],
 				ethnicity: [],
-				age: []
+				age: [],
+				type: [],
 			},
 			collect: {
 				cancer: [],
