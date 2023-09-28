@@ -88,7 +88,7 @@ DROP PROCEDURE IF EXISTS `SELECT_advanced_cohort` //
 
 CREATE PROCEDURE `SELECT_advanced_cohort`(
 		in `@gender` varchar(100),in `@age_info` varchar(100), in `@study_population` varchar(1000), 
-		in `@race` varchar(1000), in `@ethnicity` varchar(1000), 
+		in `@race` varchar(1000), in `@ethnicity` varchar(1000), in `@type` varchar(1000),
 		in `@category` varchar(1000),in `@collected_specimen` varchar(2000),in `@cancer` varchar(2000),
 		in booleanOperationBetweenField varchar(200), in booleanOperationWithInField varchar(200),
 		in columnName varchar(40), in columnOrder varchar(10),
@@ -103,6 +103,7 @@ BEGIN
     DECLARE len_study INT DEFAULT 0;
     DECLARE len_race INT DEFAULT 0;
     DECLARE len_ethnicity INT DEFAULT 0;
+	DECLARE len_type INT DEFAULT 0;
     DECLARE len_category INT DEFAULT 0;
     DECLARE len_specimen INT DEFAULT 0;
     DECLARE len_cancer INT DEFAULT 0;
@@ -119,7 +120,9 @@ BEGIN
     create temporary table IF not exists temp_race( val int );
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
-    drop temporary table IF exists temp_category;
+	 drop temporary table IF exists temp_ethnicity;
+    create temporary table IF not exists temp_type( val int );
+    drop temporary table IF exists temp_type;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
     create temporary table IF not exists temp_cancer( val int );
@@ -131,6 +134,7 @@ BEGIN
     set @cancer_info_null = 1;
     set @category_null = 1;
     set @ethnicity_null = 1;
+	set @type_null = 1;
 	set @race_null = 1;
     set @specimen_null = 1;
   
@@ -269,6 +273,21 @@ BEGIN
 			SELECT cohort_id FROM enrollment_count WHERE ethnicity_id in (SELECT val FROM tempIntTable) and enrollment_counts > 0 ;
         END IF;
     END IF;
+
+	IF `@type` != "" AND `@type` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
+		set @type_null = 0 ;
+		call ConvertIntToTable(`@type`);
+        set @len_type = 1+length(`@type`) - length(replace(`@type`,',','')); 
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
+        IF @andor = "AND" then
+			INSERT into temp_type
+			SELECT cohort_id FROM enrollment_count WHERE type_id in (SELECT val FROM tempIntTable) and enrollment_counts > 0 
+            GROUP BY cohort_id having sum(1) >= @len_race;
+		else
+			INSERT into temp_type
+			SELECT cohort_id FROM enrollment_count WHERE type_id in (SELECT val FROM tempIntTable) and enrollment_counts > 0 ;
+        END IF;
+    END IF;
     
     IF `@category` != "" AND `@category` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
         set @category_null = 0;
@@ -285,7 +304,7 @@ BEGIN
 			WHERE ld.category=vld.data_category and vld.id in (SELECT val FROM tempIntTable);
             SELECT count(distinct val) into @len_category  FROM temp_category_id;
 			-- set @len_category = 1+length(`@category`) - length(replace(`@category`,',','')); 
-			set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
+			set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1)));
             IF locate("99", `@category`) > 0 then
 				set @cancer_info_null = 0;
             END IF;
@@ -322,7 +341,7 @@ BEGIN
     IF `@collected_specimen` != "" AND `@collected_specimen` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
         set @specimen_null = 0;
         -- set @len_specimen = 1+length(`@collected_specimen`) - length(replace(`@collected_specimen`,',','')); 
-        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',7)),',',1)));
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1)));
 		call ConvertIntToTable(`@collected_specimen`);
         drop temporary table IF exists temp_specimen_id;
 		create temporary table IF not exists temp_specimen_id( val int );
@@ -352,7 +371,7 @@ BEGIN
 		set @cancer_null = 0;
         call ConvertIntToTable(`@cancer`);
         set @len_cancer = 1+length(`@cancer`) - length(replace(`@cancer`,',','')); 
-        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',8)),',',1)));
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',9)),',',1)));
         IF @andor  = "OR" then
 			INSERT into temp_cancer 
             SELECT distinct cohort_id FROM cancer_count WHERE cancer_id in (SELECT distinct val FROM tempIntTable) and cancer_counts > 0 ;
@@ -382,6 +401,7 @@ BEGIN
 		and ( @ageinfo_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_ageinfo) )
 		and ( @race_null = 1 OR cs.cohort_id in (SELECT val FROM temp_race) )
 		and ( @ethnicity_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ethnicity) )
+		and ( @type_null = 1 OR cs.cohort_id in (SELECT val FROM temp_type) )
 		and ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 		and ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 		and ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) )
@@ -421,6 +441,7 @@ BEGIN
 			OR ( @ageinfo_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_ageinfo) )
 			OR ( @race_null = 1 OR cs.cohort_id in (SELECT val FROM temp_race) )
 			OR ( @ethnicity_null = 1 OR cs.cohort_id in (SELECT val FROM temp_ethnicity) )
+			OR ( @type_null = 1 OR cs.cohort_id in (SELECT val FROM temp_type) )
 			OR ( @category_null = 1 OR cs.cohort_id in (SELECT val FROM temp_category) )
 			OR ( @specimen_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_specimen) )
 			OR ( @cancer_null = 1 OR cs.cohort_id in ( SELECT val FROM temp_cancer  ) ) )

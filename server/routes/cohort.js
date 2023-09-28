@@ -300,6 +300,13 @@ router.post('/advancedSelect', function (req, res) {
 		params.push("");
 	}
 
+	if (advancedFilter.type.length > 0) {
+		params.push(advancedFilter.type.toString());
+	}
+	else {
+		params.push("");
+	}
+
 	if (advancedFilter.data.length > 0) {
 		params.push(advancedFilter.data.toString());
 	}

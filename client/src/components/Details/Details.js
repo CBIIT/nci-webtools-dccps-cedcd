@@ -896,7 +896,7 @@ class Details extends Component {
 
 	handleAdvancedTypeClick = (v) => {
 		const advancedFilter = Object.assign({}, this.state.advancedFilter);
-		let idx = advancedFilter.type.indexOf(v);
+		let idx = advancedFilter.type.indexOf(v.id);
 
 		if (idx > -1) {
 			//remove element
@@ -904,7 +904,7 @@ class Details extends Component {
 		}
 		else {
 			//add element
-			advancedFilter.type.push(v);
+			advancedFilter.type.push(v.id);
 		}
 		this.setState({
 			advancedFilter: advancedFilter
