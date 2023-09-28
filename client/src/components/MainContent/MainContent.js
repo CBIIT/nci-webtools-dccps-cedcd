@@ -11,6 +11,7 @@ import Contact from '../Contact/Contact';
 import Questionnaire from '../Questionnaire/Questionnaire';
 import ManageCohort from '../Admin/ManageCohort'
 import NewCohort from '../Admin/AddNewCohort'
+import EditCohort from '../EditCohort/EditCohort';
 import SelectCohort from '../SelectCohort/SelectCohort';
 import ManageUser from '../Admin/ManageUser'
 import EditUser from '../Admin/EditUser'
@@ -79,6 +80,11 @@ class MainContent extends Component {
         <Route exact path={match + '/admin/newcohort'} render={() => 
           <RequireAuthorization role="SystemAdmin">
             <NewCohort />
+          </RequireAuthorization>
+        } />
+        <Route exact path={match + '/admin/editcohort'} render={() => 
+          <RequireAuthorization role="SystemAdmin">
+            <EditCohort />
           </RequireAuthorization>
         } />
         <Route exact path={match + '/admin/newuser'} render={() => 

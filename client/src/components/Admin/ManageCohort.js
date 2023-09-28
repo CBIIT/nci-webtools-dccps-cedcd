@@ -32,7 +32,7 @@ class ManageCohort extends Component {
 		};
 		this.toFocus = React.createRef()
 	}
-    
+
 	refreshDataList(pageIndex, cohortSearch, cohortStatus, pageSize, orderByColumn) {
 		const state = Object.assign({}, this.state);
 		let filter = state.filter;
@@ -105,8 +105,8 @@ class ManageCohort extends Component {
 
 				} else {
 					return orderBy.order === 'asc'
-						? (aValue === 'N/A' ? 'ZZZ':aValue).localeCompare(bValue === 'N/A' ? 'ZZZ' : bValue )
-						: (bValue === 'N/A' ? 'aaa':bValue).localeCompare(aValue === 'N/A' ? 'aaa' : aValue )
+						? (aValue === 'N/A' ? 'ZZZ' : aValue).localeCompare(bValue === 'N/A' ? 'ZZZ' : bValue)
+						: (bValue === 'N/A' ? 'aaa' : bValue).localeCompare(aValue === 'N/A' ? 'aaa' : aValue)
 				}
 			});
 		} else {
@@ -139,7 +139,7 @@ class ManageCohort extends Component {
 		if (pageIndex > 0) {
 			startIndex = (paging.page - 1) * paging.pageSize;
 			endIndex = paging.page * paging.pageSize;
-		}else if (pageIndex === -1){
+		} else if (pageIndex === -1) {
 			startIndex = (lastPage - 1) * paging.pageSize;
 			endIndex = lastPage * paging.pageSize;
 		}
@@ -307,7 +307,7 @@ class ManageCohort extends Component {
 			<div>
 				<h1 className="welcome pg-title">Manage Cohorts</h1>
 				<p className="welcome">The list below contains all the published and unpublished cohorts currently registered on the CEDCD website.
-      		    </p><p></p>
+				</p><p></p>
 				<div className="d-flex flex-wrap flex-fill justify-content-between mx-4" style={{ verticalAlign: 'middle', marginBottom: '-15px' }}>
 					<div className="d-flex flex-wrap flex-fill justify-content-left" >
 
@@ -329,6 +329,8 @@ class ManageCohort extends Component {
 
 							<Link className="linkButton" style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
 								to={`/admin/newcohort`} onClick={this.saveHistory}>Add New Cohort</Link>
+							<Link className="linkButton" style={{ color: 'blue', textDecorationLine: 'underline', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}
+								to={`/admin/editcohort`} onClick={this.saveHistory}>Edit Cohort</Link>
 						</div>
 
 					</div>
