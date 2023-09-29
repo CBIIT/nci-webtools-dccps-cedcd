@@ -23,6 +23,7 @@ import Workbook from '../Workbook/Workbook';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import { red } from '@material-ui/core/colors';
 
 class Details extends Component {
 
@@ -1486,7 +1487,7 @@ class Details extends Component {
 						<td>{item.type}</td>
 						<td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
 						<td>{website_content}</td>
-						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment>{item.active === "inactive" ? "*" : ""}</td>
+						<td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}><Moment format="MM/DD/YYYY">{item.update_time}</Moment><span style={{ color: "red"}}>{item.active === "inactive" ? "*" : ""}</span></td>
 					</tr>
 				);
 			});
@@ -1583,13 +1584,8 @@ class Details extends Component {
 					</div>
 					<div className="filter-block home col-md-12">
 						<div className="row" style={{ "display": "flex" }}>
-							<div id="tableControls" className="" style={{ "paddingLeft": "10px" }}>
-								<ul className="table-controls">
-									<FloatingSubmit onClick={this.handleComparasion} align="true" placement="bottom" values={this.state.selected} />
-								</ul>
-							</div>
 							<div style={{ paddingTop: "7px"}}>
-								*Cohort has been inactive for 2 or more years
+								<span style={{color: "red"}}>*</span>Indicates cohort profile has not been updated for at least 2 years or will not have future updates.
 							</div>
 							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
 								<PageSummary pageInfo={this.state.pageInfo} mid="true" />
