@@ -1584,7 +1584,7 @@ class Details extends Component {
 					</div>
 					<div className="filter-block home col-md-12">
 						<div className="row" style={{ "display": "flex" }}>
-							<div style={{ paddingTop: "7px"}}>
+							<div style={{ paddingTop: "7px", paddingLeft: "10px"}}>
 								<span style={{color: "red"}}>*</span>Indicates cohort profile has not been updated for at least 2 years or will not have future updates.
 							</div>
 							<div style={{ "marginLeft": "auto", "paddingRight": "1rem", "paddingTop": "7px" }}>
