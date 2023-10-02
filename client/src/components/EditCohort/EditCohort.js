@@ -46,20 +46,21 @@ class EditCohort extends Component {
     console.log(option)
     const selectedCohort = this.state.cohortList.find((e) => e.id === option.value)
     const owners = this.state.cohortList.filter((e) => e.id === option.value).map((e) => e.user_id )
-    console.log(cohort)
+    console.log(selectedCohort)
     console.log(owners)
     this.setState(state => {
       return {
         cohort: option,
         cohortName: selectedCohort.name,
         cohortAcronym: selectedCohort.label,
-        type: selectedCohort.type,
-        notUpdated: selectedCohort.active === 'active' ? false : true
+        type: selectedCohort.type === "Survivor" ? { value: "Survivor", label: "Survivor Cohort" } : { value: "Etiology", label: "Etiology Cohort" },
+        notUpdated: selectedCohort.active === "Acive" ? false : true
       }
     })
   }
 
   handleMultiChange(option) {
+    console.log(this.state.cohortOwners)
     this.setState(state => {
       return {
         cohortOwners: option
