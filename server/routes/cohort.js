@@ -76,6 +76,26 @@ router.post('/list', function (req, res) {
 	});
 });
 
+router.post('/edit_list', function (req, res) {
+	let body = req.body;
+	//let searchText = body.searchText || "";
+	let func = "select_all_cohort_edit";
+	let params = [];
+
+	mysql.callProcedure(func, params, function (results) {
+		if (results && results[0] && results[0].length > 0) {
+			let dt = {};
+			dt.list = results[0];
+			dt.total = dt.list.length;
+			res.json({ status: 200, data: dt });
+		}
+		else {
+			res.json({ status: 200, data: { list: [], total: 0 } });
+		}
+	});
+});
+
+
 router.post('/published_list', function (req, res) {
 	let body = req.body;
 	//let searchText = body.searchText || "";
@@ -128,6 +148,22 @@ router.post('/add', function (req, res) {
 			res.json({ status: 500, message: 'update failed' })
 	})
 });
+
+router.post('/update', function(req, res) {
+
+	let func = 'update_cohort'
+	let body = JSON.stringify(req.body)
+	let params = []
+	params.push(body)
+
+	mysql.callJsonProcedure(func, params, function (result) {
+
+		if (result && result[0] && result[0][0].success === 1)
+			res.json({ status: 200, message: 'update successful' })
+		else
+			res.json({ status: 500, message: 'update failed' })
+	})
+})
 
 router.post('/lookup', function (req, res) {
 	let body = req.body;

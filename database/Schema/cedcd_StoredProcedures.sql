@@ -654,7 +654,21 @@ DROP PROCEDURE IF EXISTS `SELECT_all_cohort` //
 
 CREATE PROCEDURE `SELECT_all_cohort`()
 BEGIN
-	SELECT id, name, type, status, active, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
+	SELECT id, name, type, status, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
+END //
+
+-- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: SELECT_all_cohort_edit
+-- -----------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `SELECT_all_cohort_edit` //
+
+CREATE PROCEDURE `SELECT_all_cohort_edit`()
+BEGIN
+	SELECT distinct ch.id, name, type, status, ch.active, cum.user_id, acronym AS cohort_acronym
+	FROM cohort ch 
+	LEFT JOIN cohort_user_mapping cum ON cum.cohort_acronym = ch.acronym  
+	ORDER BY acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------
@@ -3471,7 +3485,34 @@ BEGIN
     END IF;
  END //
 
+ -- -----------------------------------------------------------------------------------------------------------
+-- Stored Procedure: update_cohort
+-- -----------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `update_cohort` //
 
+CREATE PROCEDURE `update_cohort`(in info JSON)
+BEGIN
+	DECLARE flag INT DEFAULT 1;
+
+	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
+	BEGIN
+      SET flag = 0;
+      ROLLBACK;
+      SELECT flag AS success;
+	END;
+
+	START TRANSACTION;
+		BEGIN
+			set @id = JSON_UNQUOTE(info, '$.id')
+			set @cohortName = JSON_UNQUOTE(info, '$.cohortName');
+			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
+			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'));
+			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+		END;
+	COMMIT;
+	SELECT flag AS success;
+END
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: insert_new_cohort
 -- -----------------------------------------------------------------------------------------------------------

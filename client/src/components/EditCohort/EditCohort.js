@@ -26,7 +26,7 @@ class EditCohort extends Component {
       cohortName: "",
       cohortAcronym: "",
       type: "",
-      notUpdated: true,
+      notUpdated: false,
       ownerOptions: null,
       cohortList: [],
       cohortOwners: [],
@@ -44,9 +44,17 @@ class EditCohort extends Component {
 
   handleAcronymChange(option) {
     console.log(option)
+    const selectedCohort = cohortList.find((e) => e.id === option.value)
+    const owners = cohortList.filter((e) => e.id === option.value).map((e) => e.user_id )
+    console.log(cohort)
+    console.log(owners)
     this.setState(state => {
       return {
-        cohort: option
+        cohort: option,
+        cohortName: selectedCohort.name,
+        cohortAcronym: selectedCohort.label,
+        type: selectedCohort.type,
+        notUpdated: selectedCohort.active === 'active' ? false : true
       }
     })
   }
@@ -98,10 +106,10 @@ class EditCohort extends Component {
         console.log(ownerResult)
         const cohorts = cohortResult.data.list
         const toAddCohorts = []
-
+        console.log(cohortResult)
         cohorts.map((cohort) => {
-          if (cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published"))
-            toAddCohorts.push({ value: cohort.id, label: cohort.acronym, type: cohort.type, active: cohort.active })
+          if ((cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published")) && !toAddCohorts.find((e) => e.acronym === cohort.cohort_acronym))
+            toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
         })
 
         const owners = ownerResult.data.list
@@ -112,7 +120,7 @@ class EditCohort extends Component {
           const option = { value: owner.id, label: name, name: owner.first_name + ' ' + owner.last_name, email: owner.email }
           toAddOwners.push(option)
         })
-
+        console.log(toAddCohorts)
         this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, isFetching: false })
       })
   }
