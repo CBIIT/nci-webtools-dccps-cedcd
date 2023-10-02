@@ -377,7 +377,7 @@ class EditCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.list_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.list_error}</Form.Label>}
                   <div style={{ width: '90%' }}>
-                    <Select name="cohort" value={this.state.cohort} options={this.state.cohortList} onChange={this.handleAcronymChange} />
+                    <Select name="cohort" value={this.state.cohort} options={this.state.cohortList.map((e) => { return({ value: e.value, label: e.label})})} onChange={this.handleAcronymChange} />
                   </div>
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortName">
