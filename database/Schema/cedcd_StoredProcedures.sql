@@ -654,7 +654,7 @@ DROP PROCEDURE IF EXISTS `SELECT_all_cohort` //
 
 CREATE PROCEDURE `SELECT_all_cohort`()
 BEGIN
-	SELECT id, name, type, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
+	SELECT id, name, type, status, acronym AS cohort_acronym FROM cohort ORDER BY acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------

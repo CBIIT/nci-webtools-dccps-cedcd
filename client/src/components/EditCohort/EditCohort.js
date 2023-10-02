@@ -17,15 +17,18 @@ class EditCohort extends Component {
       open: false,
       submitted: false,
       background_gray: false,
+      list_error: "",
       name_error: "",
       acronym_error: "",
       type_error: "",
       notes_error: "",
+      cohort: "",
       cohortName: "",
       cohortAcronym: "",
       type: "",
       notUpdated: true,
       ownerOptions: null,
+      cohortList: [],
       cohortOwners: [],
       notes: "",
       isFetching: false,
@@ -33,9 +36,19 @@ class EditCohort extends Component {
       failureMsg: false
     };
 
+    this.handleAcronymChange = this.handleAcronymChange.bind(this)
     this.handleMultiChange = this.handleMultiChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleNotUpdated = this.handleNotUpdated.bind(this);
+  }
+
+  handleAcronymChange(option){
+    console.log(option)
+    this.setState(state => {
+      return{
+        cohort: option
+      }
+    })
   }
 
   handleMultiChange(option) {
@@ -60,16 +73,38 @@ class EditCohort extends Component {
     let reqBody = {
     };
 
-    fetch('/api/cohort/owners', {
-      method: "POST",
-      body: JSON.stringify(reqBody),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }, [])
-      .then(res => res.json())
-      .then(result => {
-        const owners = result.data.list
+    Promise.all([
+      fetch('/api/cohort/list', {
+        method: "POST",
+        body: JSON.stringify(reqBody),
+        header: {
+          'Content-Type': 'application/json'
+        }
+      }, []),
+      fetch('/api/cohort/owners', {
+        method: "POST",
+        body: JSON.stringify(reqBody),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }, [])
+    ])
+      .then(([cohortRes, ownerRes]) => {
+        return Promise.all([cohortRes.json(), ownerRes.json()])
+      })
+      .then(([cohortResult, ownerResult]) => {
+
+        console.log(cohortResult)
+        console.log(ownerResult)
+        const cohorts = cohortResult.data.list
+        const toAddCohorts = []
+
+        cohorts.map((cohort) => {
+          if(cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published"))
+            toAddCohorts.push({ value: cohort.id, label: cohort.acronym, type: cohort.type, active: cohort.active })
+        })
+
+        const owners = ownerResult.data.list
         const toAddOwners = []
 
         owners.map((owner) => {
@@ -78,7 +113,7 @@ class EditCohort extends Component {
           toAddOwners.push(option)
         })
 
-        this.setState({ ownerOptions: toAddOwners, isFetching: false })
+        this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, isFetching: false })
       })
   }
 
@@ -333,11 +368,16 @@ class EditCohort extends Component {
                   Back to Manage Cohorts
                 </NavLink>
               </p>
-              <h1 className="pg-title">EditCohort</h1>
+              <h1 className="pg-title">Edit Cohort</h1>
             </div>
             <div id="contact-col-1" className="col-md-6 contact-col">
               <Form onSubmit={this.handleSubmit}>
                 <p id="ctl11_rg_errorMsg" className="bg-danger"></p>
+                <Form.Group id="ctl11_div_cohortList">
+                  <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort<span style={{ color: 'red' }}>*</span></Form.Label>
+                  {this.state.list_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.list_error}</Form.Label>}
+                  <Select name="cohort" value={this.state.cohort} options={this.state.cohortList} onChange={this.handleAcronymChange}/>
+                </Form.Group>
                 <Form.Group id="ctl11_div_cohortName">
                   <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.name_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.name_error}</Form.Label>}
@@ -347,6 +387,7 @@ class EditCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.acronym_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.acronym_error}</Form.Label>}
                   <input className="form-control" placeholder="Max of 100 characters" name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
+                 
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortType">
                   <Form.Label className="oneLineLabel" htmlFor="cu_type">Cohort Type<span style={{ color: 'red' }}>*</span></Form.Label>
@@ -392,10 +433,6 @@ class EditCohort extends Component {
                   </Button>
                 </div>
               </Form>
-            </div>
-            <div id="contact-col-2" className="col-md-6 contact-col">
-              <h2>General Instructions</h2>
-              <p>For new Cohort, <span className="required" style={{ fontWeight: "bold" }}>*</span> fields are required.</p>
             </div>
           </div>
         </div>
