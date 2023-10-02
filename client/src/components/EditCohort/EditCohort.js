@@ -107,7 +107,7 @@ class EditCohort extends Component {
         console.log(cohortResult)
         console.log(ownerResult)
         var cohorts = cohortResult.data.list
-        cohorts = cohorts.filter((e) => e.status === published || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && e.status === "published")) === undefined)
+        cohorts = cohorts.filter((e) => e.status === "published" || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && e.status === "published")) === undefined)
         console.log(cohorts)
         const toAddCohorts = []
         console.log(cohortResult)
