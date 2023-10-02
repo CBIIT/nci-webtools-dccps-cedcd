@@ -110,15 +110,16 @@ class EditCohort extends Component {
         cohorts = cohorts.filter((e) => e.status === "published" || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && e.status === "published")) === undefined)
         console.log(cohorts)
         const toAddCohorts = []
+        var map = {}
         console.log(cohortResult)
         cohorts.map((cohort) => {
 
           if (!toAddCohorts.find((e) => { e.label === cohort.cohort_acronym })) {
             toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
-            cohortOwnerMap[cohort.id] = [cohort.user_id]
+            map[cohort.id] = [cohort.user_id]
           }
           else
-            cohortOwnerMap[cohort.id].push(cohort.user_id)
+            map[cohort.id].push(cohort.user_id)
         })
 
         const owners = ownerResult.data.list
@@ -130,8 +131,8 @@ class EditCohort extends Component {
           toAddOwners.push(option)
         })
         console.log(toAddCohorts)
-        console.log(cohortOwnerMap)
-        this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, isFetching: false })
+        console.log(map)
+        this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, cohortOwnerMap: map, isFetching: false })
       })
   }
 
