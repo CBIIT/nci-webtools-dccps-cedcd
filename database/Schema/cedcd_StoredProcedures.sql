@@ -3507,7 +3507,7 @@ BEGIN
 			set @cohortName = JSON_UNQUOTE(info, '$.cohortName');
 			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
 			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
-			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'));
+			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(info, '$.active'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
 		END;
 	COMMIT;
