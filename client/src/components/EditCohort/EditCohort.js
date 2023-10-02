@@ -114,7 +114,7 @@ class EditCohort extends Component {
         console.log(cohortResult)
         cohorts.map((cohort) => {
 
-          if (!toAddCohorts.find((e) => { e.label === cohort.cohort_acronym })) {
+          if (toAddCohorts.find((e) => { e.label === cohort.cohort_acronym }) !== undefined) {
             toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
             map[cohort.id] = [cohort.user_id]
           }
