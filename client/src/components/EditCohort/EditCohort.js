@@ -42,10 +42,10 @@ class EditCohort extends Component {
     this.handleNotUpdated = this.handleNotUpdated.bind(this);
   }
 
-  handleAcronymChange(option){
+  handleAcronymChange(option) {
     console.log(option)
     this.setState(state => {
-      return{
+      return {
         cohort: option
       }
     })
@@ -100,7 +100,7 @@ class EditCohort extends Component {
         const toAddCohorts = []
 
         cohorts.map((cohort) => {
-          if(cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published"))
+          if (cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published"))
             toAddCohorts.push({ value: cohort.id, label: cohort.acronym, type: cohort.type, active: cohort.active })
         })
 
@@ -267,7 +267,7 @@ class EditCohort extends Component {
 
           //submit
           let reqBody = {
-            cohortName: state.cohortName, 
+            cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
@@ -376,7 +376,9 @@ class EditCohort extends Component {
                 <Form.Group id="ctl11_div_cohortList">
                   <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.list_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.list_error}</Form.Label>}
-                  <Select name="cohort" value={this.state.cohort} options={this.state.cohortList} onChange={this.handleAcronymChange}/>
+                  <div style={{ width: '90%' }}>
+                    <Select name="cohort" value={this.state.cohort} options={this.state.cohortList} onChange={this.handleAcronymChange} />
+                  </div>
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortName">
                   <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort Name<span style={{ color: 'red' }}>*</span></Form.Label>
@@ -387,7 +389,7 @@ class EditCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_lastName">Cohort Acronym<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.acronym_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.acronym_error}</Form.Label>}
                   <input className="form-control" placeholder="Max of 100 characters" name="cu_lastName" type="text" id="cu_lastName" value={this.state.cohortAcronym} onChange={(e) => this.handleChange("cohortAcronym", e)} />
-                 
+
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortType">
                   <Form.Label className="oneLineLabel" htmlFor="cu_type">Cohort Type<span style={{ color: 'red' }}>*</span></Form.Label>
