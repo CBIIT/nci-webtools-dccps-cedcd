@@ -46,7 +46,7 @@ class EditCohort extends Component {
   handleAcronymChange(option) {
     console.log(option)
     const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
-    const owners = this.state.cohortList.filter((e) => e.value === option.value).map((e) => e.user_id )
+    const owners = this.state.cohortList.filter((e) => e.value === option.value).map((e) => e.user_id)
     console.log(selectedCohort)
     console.log(owners)
     this.setState(state => {
@@ -106,23 +106,19 @@ class EditCohort extends Component {
 
         console.log(cohortResult)
         console.log(ownerResult)
-        const cohorts = cohortResult.data.list
+        var cohorts = cohortResult.data.list
+        cohorts = cohorts.filter((e) => e.status === published || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && e.status === "published")) === undefined)
+        console.log(cohorts)
         const toAddCohorts = []
         console.log(cohortResult)
         cohorts.map((cohort) => {
-          if ((cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published")) && !toAddCohorts.find((e) => e.acronym === cohort.cohort_acronym))
-            toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
 
-          if(cohort.status === "published" || cohorts.find((e) => e.cohort_acronym === cohort.cohort_acronym && e.status === "published") === undefined){
-            
-            if(!toAddCohorts.find((e) => { e.label === cohort.cohort_acronym})){
-              toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
-              cohortOwnerMap[cohort.id] = [cohort.user_id]
-            }
-            else 
-              cohortOwnerMap[cohort.id].push(cohort.user_id)
+          if (!toAddCohorts.find((e) => { e.label === cohort.cohort_acronym })) {
+            toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
+            cohortOwnerMap[cohort.id] = [cohort.user_id]
           }
-        
+          else
+            cohortOwnerMap[cohort.id].push(cohort.user_id)
         })
 
         const owners = ownerResult.data.list
@@ -399,7 +395,7 @@ class EditCohort extends Component {
                   <Form.Label className="oneLineLabel" htmlFor="cu_firstName">Cohort<span style={{ color: 'red' }}>*</span></Form.Label>
                   {this.state.list_error !== '' && <Form.Label style={{ color: 'red' }}> {this.state.list_error}</Form.Label>}
                   <div style={{ width: '90%' }}>
-                    <Select name="cohort" value={this.state.cohort} options={this.state.cohortList.map((e) => { return({ value: e.value, label: e.label})})} onChange={this.handleAcronymChange} />
+                    <Select name="cohort" value={this.state.cohort} options={this.state.cohortList.map((e) => { return ({ value: e.value, label: e.label }) })} onChange={this.handleAcronymChange} />
                   </div>
                 </Form.Group>
                 <Form.Group id="ctl11_div_cohortName">
