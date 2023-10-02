@@ -665,10 +665,11 @@ DROP PROCEDURE IF EXISTS `SELECT_all_cohort_edit` //
 
 CREATE PROCEDURE `SELECT_all_cohort_edit`()
 BEGIN
-	SELECT distinct ch.id, name, type, status, ch.active, cum.user_id, acronym AS cohort_acronym
+	SELECT distinct ch.id, name, type, status, ch.active, cum.user_id, acronym AS cohort_acronym, cal.notes
 	FROM cohort ch 
-	LEFT JOIN cohort_user_mapping cum ON cum.cohort_acronym = ch.acronym  
-	ORDER BY acronym;
+	LEFT JOIN cohort_user_mapping cum ON cum.cohort_acronym = ch.acronym
+	JOIN cohort_activity_log cal on cal.cohort_id = ch.id
+	ORDER BY cohort_acronym;
 END //
 
 -- -----------------------------------------------------------------------------------------------------------

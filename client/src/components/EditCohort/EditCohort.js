@@ -30,6 +30,7 @@ class EditCohort extends Component {
       ownerOptions: null,
       cohortList: [],
       cohortOwners: [],
+      cohortOwnerMap: {},
       notes: "",
       isFetching: false,
       successMsg: false,
@@ -44,8 +45,8 @@ class EditCohort extends Component {
 
   handleAcronymChange(option) {
     console.log(option)
-    const selectedCohort = this.state.cohortList.find((e) => e.id === option.value)
-    const owners = this.state.cohortList.filter((e) => e.id === option.value).map((e) => e.user_id )
+    const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
+    const owners = this.state.cohortList.filter((e) => e.value === option.value).map((e) => e.user_id )
     console.log(selectedCohort)
     console.log(owners)
     this.setState(state => {
@@ -83,7 +84,7 @@ class EditCohort extends Component {
     };
 
     Promise.all([
-      fetch('/api/cohort/list', {
+      fetch('/api/cohort/edit_list', {
         method: "POST",
         body: JSON.stringify(reqBody),
         header: {
@@ -111,6 +112,17 @@ class EditCohort extends Component {
         cohorts.map((cohort) => {
           if ((cohort.status === "published" || !cohorts.find((e) => e.acronym === cohort.acronym && e.status === "published")) && !toAddCohorts.find((e) => e.acronym === cohort.cohort_acronym))
             toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
+
+          if(cohort.status === "published" || cohorts.find((e) => e.cohort_acronym === cohort.cohort_acronym && e.status === "published") === undefined){
+            
+            if(!toAddCohorts.find((e) => { e.label === cohort.cohort_acronym})){
+              toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
+              cohortOwnerMap[cohort.id] = [cohort.user_id]
+            }
+            else 
+              cohortOwnerMap[cohort.id].push(cohort.user_id)
+          }
+        
         })
 
         const owners = ownerResult.data.list
@@ -122,6 +134,7 @@ class EditCohort extends Component {
           toAddOwners.push(option)
         })
         console.log(toAddCohorts)
+        console.log(cohortOwnerMap)
         this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, isFetching: false })
       })
   }
