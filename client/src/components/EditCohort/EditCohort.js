@@ -54,7 +54,7 @@ class EditCohort extends Component {
         cohortName: selectedCohort.name,
         cohortAcronym: selectedCohort.label,
         type: selectedCohort.type === "Survivor" ? { value: "Survivor", label: "Survivor Cohort" } : { value: "Etiology", label: "Etiology Cohort" },
-        notUpdated: selectedCohort.active === "Acive" ? false : true
+        notUpdated: selectedCohort.active === "active" ? false : true
       }
     })
   }
