@@ -47,8 +47,6 @@ class EditCohort extends Component {
     console.log(option)
     const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
     const owners = this.state.cohortOwnerMap[option.value]
-    console.log(selectedCohort)
-    console.log(owners)
     console.log(owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}))
     this.setState(state => {
       return {
@@ -57,7 +55,8 @@ class EditCohort extends Component {
         cohortAcronym: selectedCohort.label,
         type: selectedCohort.type === "Survivor" ? { value: "Survivor", label: "Survivor Cohort" } : { value: "Etiology", label: "Etiology Cohort" },
         notUpdated: selectedCohort.active === "active" ? false : true,
-        cohortOwners: owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))})
+        cohortOwners: owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}),
+        notes: selectedCohorts.notes,
       }
     })
   }
