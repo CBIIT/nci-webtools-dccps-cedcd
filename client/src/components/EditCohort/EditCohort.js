@@ -46,7 +46,7 @@ class EditCohort extends Component {
   handleAcronymChange(option) {
     console.log(option)
     const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
-    const owners = this.state.cohortOwnerMap[e.value]
+    const owners = this.state.cohortOwnerMap[option.value]
     console.log(selectedCohort)
     console.log(owners)
     console.log(owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}))
