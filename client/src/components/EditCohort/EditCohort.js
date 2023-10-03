@@ -56,7 +56,7 @@ class EditCohort extends Component {
         type: selectedCohort.type === "Survivor" ? { value: "Survivor", label: "Survivor Cohort" } : { value: "Etiology", label: "Etiology Cohort" },
         notUpdated: selectedCohort.active === "active" ? false : true,
         cohortOwners: owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}),
-        notes: selectedCohorts.notes,
+        notes: selectedCohort.notes,
       }
     })
   }
