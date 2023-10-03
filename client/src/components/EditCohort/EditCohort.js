@@ -46,16 +46,18 @@ class EditCohort extends Component {
   handleAcronymChange(option) {
     console.log(option)
     const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
-    const owners = this.state.cohortList.filter((e) => e.value === option.value).map((e) => e.user_id)
+    const owners = this.state.cohortOwnerMap[e.value]
     console.log(selectedCohort)
     console.log(owners)
+    console.log(owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}))
     this.setState(state => {
       return {
         cohort: option,
         cohortName: selectedCohort.name,
         cohortAcronym: selectedCohort.label,
         type: selectedCohort.type === "Survivor" ? { value: "Survivor", label: "Survivor Cohort" } : { value: "Etiology", label: "Etiology Cohort" },
-        notUpdated: selectedCohort.active === "active" ? false : true
+        notUpdated: selectedCohort.active === "active" ? false : true,
+        cohortOwners: owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))})
       }
     })
   }
@@ -106,14 +108,11 @@ class EditCohort extends Component {
 
         var cohorts = cohortResult.data.list
         cohorts = cohorts.filter((e) => e.status === "published" || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && j.status === "published")) === undefined)
-        console.log(cohorts)
         const toAddCohorts = []
         var map = {}
         cohorts.map((cohort) => {
-          console.log(map)
-          console.log(cohort)
           if (!toAddCohorts.find((e) => e.label === cohort.cohort_acronym)) {
-            toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
+            toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, name: cohort.name, type: cohort.type, active: cohort.active, notes: cohort.notes })
 
             if (cohort.user_id)
               map = { ...map, [cohort.id]: [cohort.user_id] }
@@ -130,8 +129,7 @@ class EditCohort extends Component {
           const option = { value: owner.id, label: name, name: owner.first_name + ' ' + owner.last_name, email: owner.email }
           toAddOwners.push(option)
         })
-        console.log(toAddCohorts)
-        console.log(map)
+
         this.setState({ ownerOptions: toAddOwners, cohortList: toAddCohorts, cohortOwnerMap: map, isFetching: false })
       })
   }
