@@ -104,23 +104,21 @@ class EditCohort extends Component {
       })
       .then(([cohortResult, ownerResult]) => {
 
-        console.log(cohortResult)
-        console.log(ownerResult)
         var cohorts = cohortResult.data.list
         cohorts = cohorts.filter((e) => e.status === "published" || (cohorts.find((j) => e.cohort_acronym === j.cohort_acronym && j.status === "published")) === undefined)
         console.log(cohorts)
         const toAddCohorts = []
         var map = {}
-        console.log(cohortResult)
         cohorts.map((cohort) => {
-
+          console.log(map)
+          console.log(cohort)
           if (toAddCohorts.find((e) => e.label === cohort.cohort_acronym)) {
             toAddCohorts.push({ value: cohort.id, label: cohort.cohort_acronym, type: cohort.type, active: cohort.active, notes: cohort.notes })
-            
-            if(cohort.user_id)
-              map[cohort.id] = [cohort.user_id]
+
+            if (cohort.user_id)
+              map = { ...map, [cohort.id]: [cohort.user_id] }
           }
-          else if(cohort.user_id)
+          else if (cohort.user_id)
             map[cohort.id].push(cohort.user_id)
         })
 
