@@ -25,6 +25,7 @@ class EditCohort extends Component {
       cohort: "",
       cohortName: "",
       cohortAcronym: "",
+      id: "",
       type: "",
       notUpdated: false,
       ownerOptions: null,
@@ -44,12 +45,13 @@ class EditCohort extends Component {
   }
 
   handleAcronymChange(option) {
-    console.log(option)
+
     const selectedCohort = this.state.cohortList.find((e) => e.value === option.value)
     const owners = this.state.cohortOwnerMap[option.value]
-    console.log(owners.map((e) => { return( this.state.ownerOptions.find((owner) => e === owner.value))}))
+
     this.setState(state => {
       return {
+        id: selectedCohort.value,
         cohort: option,
         cohortName: selectedCohort.name,
         cohortAcronym: selectedCohort.label,
@@ -218,10 +220,16 @@ class EditCohort extends Component {
       .then(res => res.json())
       .then(result => {
         cohortList = result.data.list
+        state.list_error = ''
         state.name_error = ''
         state.acronym_error = ''
         state.type_error = ''
         state.notes_error = ''
+
+        if(!state.cohort){
+          state.list_error = ' Required field'
+          errors += 1
+        }
 
         if (state.cohortName === null || !state.cohortName) {
           state.name_error = ' Required field'
@@ -283,6 +291,7 @@ class EditCohort extends Component {
 
           //submit
           let reqBody = {
+            id: state.cohort.value,
             cohortName: state.cohortName,
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
