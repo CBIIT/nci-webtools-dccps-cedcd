@@ -29,7 +29,7 @@
     "xlsx": "^0.12.9"
   },
   "scripts": {
-    "start:dev": "sudo react-scripts start",
+    "start:dev": "sudo react-scripts --openssl-legacy-provider start",
     "start": "sudo react-scripts start",
     "build": "react-scripts build",
     "build:prod": "react-scripts build && cp -rf build www",
