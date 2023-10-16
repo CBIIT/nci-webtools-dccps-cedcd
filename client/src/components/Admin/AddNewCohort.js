@@ -22,8 +22,7 @@ class AddNewCohort extends Component {
       notes_error: "",
       cohortName: "",
       cohortAcronym: "",
-      type: "",
-      notUpdated: true,
+      type: { value: "Etiology", label: "Etiology Cohort" },
       ownerOptions: null,
       cohortOwners: [],
       notes: "",
@@ -34,7 +33,6 @@ class AddNewCohort extends Component {
 
     this.handleMultiChange = this.handleMultiChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleNotUpdated = this.handleNotUpdated.bind(this);
   }
 
   handleMultiChange(option) {
@@ -102,10 +100,6 @@ class AddNewCohort extends Component {
     let dict = {};
     dict[field] = event.target.value;
     this.setState(dict);
-  }
-
-  handleNotUpdated() {
-    this.setState({ notUpdated: !this.state.notUpdated });
   }
 
   sendEmail(userName, userEmail) {
@@ -230,7 +224,7 @@ class AddNewCohort extends Component {
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
-            active: state.notUpdated ? "inactive" : "active",
+            active: "active",
             notes: state.notes,
             createBy: this.props.user,
           };
@@ -428,13 +422,6 @@ class AddNewCohort extends Component {
                       onChange={(e) => this.handleChange("notes", e)}
                     />
                   </Form.Group>
-                  <Form.Check
-                    type="checkbox"
-                    id="notUpdated"
-                    label="Profile not Updated"
-                    checked={this.state.notUpdated}
-                    onClick={this.handleNotUpdated}
-                  />
                   <div className="bttn-group" style={{ width: "90%" }}>
                     <Button variant="primary" type="submit" value="Submit" className="col-lg-2 col-md-6 float-right">
                       Submit
