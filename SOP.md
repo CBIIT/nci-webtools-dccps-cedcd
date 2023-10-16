@@ -1,113 +1,115 @@
 # CEDCD
+
 Cancer Epidemiology Descriptive Cohort Database
 
 # CEDCD Dev Startup
 
 Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + Shift + V.
 
-1)  Clone the git repository
-    1.1.    Navigate terminal to where you want to save the project and run the following command (If you are using Windows, git bash works fine)
+1.  Clone the git repository
+    1.1. Navigate terminal to where you want to save the project and run the following command (If you are using Windows, git bash works fine)
 
-    ```console 
+    ```console
     git clone https://github.com/CBIIT/nci-webtools-dccps-cedcd.git
     ```
-    
-2)  Go to the root directory
-    
+
+2.  Go to the root directory
+
     ```console
     cd nci-webtools-dccps-cedcd/
     ```
 
-3)  Install the packages needed for the project
-    
+3.  Install the packages needed for the project
+
     ```console
     npm install
     ```
 
-4)  Go to the client directory
-    
+4.  Go to the client directory
+
     ```console
     cd client
     ```
 
-5)  Install the packages needed for the client
-    
+5.  Install the packages needed for the client
+
     ```console
     npm install
     ```
 
-6)  Now we need to do some setup in the backend side!
+6.  Now we need to do some setup in the backend side!
     If you don't have mysql installed, then perform the following steps
     First, return to the directory where you cloned the project
-    
+
     ```console
     cd ..
     cd ..
     ```
 
-7)  Clone the portable-wamp from the following git repository
+7.  Clone the portable-wamp from the following git repository
 
     ```console
     git clone https://github.com/park-brian/portable-wamp
     ```
 
-8)  Enter the folder
+8.  Enter the folder
 
     ```console
     cd portable-wamp
     ```
 
-9)  run the setup scripts
+9.  run the setup scripts
 
     ```console
     ./setup.sh
     ```
 
-10) Open a new terminal (or Git Bash) and navigate to your current location
+10. Open a new terminal (or Git Bash) and navigate to your current location
 
-11) In this terminal, run the sql server script
+11. In this terminal, run the sql server script
 
     ```console
     ./start_mysqld.sh
     ```
 
-12) Go back to the first terminal and first copy some files that we will need later on into this folder
+12. Go back to the first terminal and first copy some files that we will need later on into this folder
     So, go back to the directory with the two cloned repositories in it
 
     ```console
     cd ..
     ```
 
-    Copy some sql files over 
+    Copy some sql files over
 
     ```console
     cp nci-webtools-dccps-cedcd/database/Schema/cedcd_Tables.sql portable-wamp/cedcd-dev-20190627.sql
     cp nci-webtools-dccps-cedcd/database/Schema/cedcd_StoredProcedures.sql portable-wamp/cedcd_StoredProcedures.sql
     ```
 
-13) Now navigate back into the portable-wamp folder
+13. Now navigate back into the portable-wamp folder
 
     ```console
     cd portable-wamp
     ```
 
     And run the mysql script
-    
+
     ```console
     ./start_mysql.sh
     ```
 
     This should lead to a prompt that looks like the following
-    
+
     ```console
     mysql>
     ```
 
-14) We need to create a new user by typing in the following
+14. We need to create a new user by typing in the following
 
     ```console
     CREATE USER 'username'@'%' IDENTIFIED BY 'password';
     ```
+
     Replace username and password with the username and password given to you by someone with access to the servers
     We give this user rights by doing the following
 
@@ -115,7 +117,7 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     GRANT ALL PRIVILEGES ON *.* TO 'username'@'%';
     ```
 
-15) Awesome! Now we need to create the database that we will be using
+15. Awesome! Now we need to create the database that we will be using
     We will create a new database using the following command
 
     ```console
@@ -141,7 +143,8 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     ```console
     \q
     ```
-16) Now, we need to create the configuration file.
+
+16. Now, we need to create the configuration file.
     Go back into nci-webtools-dccps-cedcd folder
 
     ```console
@@ -196,7 +199,7 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     Enter
     ```
 
-17) You're almost there!
+17. You're almost there!
     Now we have to build the client. First, we go to client folder.
 
     ```console
@@ -217,7 +220,7 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
     cp -r build/* www/
     ```
 
-18) Now, we can run the client.
+18. Now, we can run the client.
     Use the following commands to go to the webtool's root folder and run index.js.
 
     ```console
@@ -230,17 +233,13 @@ Run the following commands in Terminal. Copy and paste with Ctrl + C and Ctrl + 
 
     ```console
     $ cd ..
-    
+
     $ cd ..
 
     $ node index.js
     Project CEDCD listening on port:9221
     ```
 
-19) Everything should be working now, and you can just open up your browser of choice and go to the following link
+19. Everything should be working now, and you can just open up your browser of choice and go to the following link
 
     http://localhost:9221/
-
-
-    
-

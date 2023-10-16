@@ -1,34 +1,33 @@
-
-.zero-padding{
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+.zero-padding {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
-.form-group{
-    margin-bottom: 2rem !important;
+.form-group {
+  margin-bottom: 2rem !important;
 }
 
-.question{
-    margin-bottom: .5rem;
+.question {
+  margin-bottom: 0.5rem;
 }
 
-.specify{
-    margin-top: .5rem;
+.specify {
+  margin-top: 0.5rem;
 }
 
-.error-input{
-    color: red;
-    line-height: 2em;
+.error-input {
+  color: red;
+  line-height: 2em;
 }
 
-.error{
-    color: red;
+.error {
+  color: red;
 }
 
-.checkbox-padding{
-    width: 50px;
+.checkbox-padding {
+  width: 50px;
 }
 
-.click-width{
-    width: 30px;
+.click-width {
+  width: 30px;
 }

@@ -1,28 +1,28 @@
 .form-check-label {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .cancer-table-head {
-    text-align: center;
-    color: rgba(255, 255, 255, 1);
-    opacity: 1;
-    font-size: 2rem !important;
-  }
+  text-align: center;
+  color: rgba(255, 255, 255, 1);
+  opacity: 1;
+  font-size: 2rem !important;
+}
 
 .btn-cancer-form {
-    color: black !important;
-    background-color:white !important;
-    border-color: lightgray !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-    text-align: left !important;
-    border-radius: 8px !important;
-    margin: .25rem !important;
-    height: 30px !important;
-    font-size: small !important;
-    white-space: nowrap;
-    display:flex !important;
-   /* min-width: max-content; */
+  color: black !important;
+  background-color: white !important;
+  border-color: lightgray !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  text-align: left !important;
+  border-radius: 8px !important;
+  margin: 0.25rem !important;
+  height: 30px !important;
+  font-size: small !important;
+  white-space: nowrap;
+  display: flex !important;
+  /* min-width: max-content; */
 }
 
 /* .btn-cancer-form {
@@ -34,16 +34,14 @@
 .btn-cancer-form:focus,
 .btn-cancer-form.active,
 .open > .dropdown-toggle.btn-cancer-form {
-    color: #fff !important;
-    background-color: lightseagreen !important;
-    border-color: #01857b !important;
+  color: #fff !important;
+  background-color: lightseagreen !important;
+  border-color: #01857b !important;
 }
-
 
 .btn-cancer-form:hover,
 .open > .dropdown-toggle.btn-cancer-form {
-    color: black !important;
-    background-color: #B6DCC5 !important;
-    border-color: #B6DCC5 !important;
+  color: black !important;
+  background-color: #b6dcc5 !important;
+  border-color: #b6dcc5 !important;
 }
-

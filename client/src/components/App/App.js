@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import './App.css';
-import Header from '../Header/Header';
-import NavBar from '../NavBar/NavBar';
-import ContactBox from '../ContactBox/ContactBox';
-import MainContent from '../MainContent/MainContent';
-import ScrollToTop from '../ScrollToTop/ScrollToTop';
-import SessionModal from '../SessionModal/SessionModal';
+import React, { Component } from "react";
+import "./App.css";
+import Header from "../Header/Header";
+import NavBar from "../NavBar/NavBar";
+import ContactBox from "../ContactBox/ContactBox";
+import MainContent from "../MainContent/MainContent";
+import ScrollToTop from "../ScrollToTop/ScrollToTop";
+import SessionModal from "../SessionModal/SessionModal";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currTab: 0,
-      admin: 0
+      admin: 0,
     };
   }
 
@@ -22,15 +22,17 @@ class App extends Component {
   }
 
   handleAdmin(v) {
-    this.setState({ admin: v })
+    this.setState({ admin: v });
   }
   componentDidMount() {
     this.updateTab();
-    window.addEventListener('popstate', () => setTimeout(()=> this.updateTab(), 100), false)    
+    window.addEventListener("popstate", () => setTimeout(() => this.updateTab(), 100), false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('popstate', () => {alert(window.location.pathname)})
+    window.removeEventListener("popstate", () => {
+      alert(window.location.pathname);
+    });
   }
 
   updateTab() {
@@ -40,28 +42,23 @@ class App extends Component {
       setTimeout(() => {
         this.setState({ currTab: 0 });
       }, 100);
-    }
-    else if (path.indexOf("/select") >= 0) {
+    } else if (path.indexOf("/select") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 1 });
       }, 100);
-    }
-    else if (path.indexOf("/enrollment") >= 0) {
+    } else if (path.indexOf("/enrollment") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 2 });
       }, 100);
-    }
-    else if (path.indexOf("/cancer") >= 0) {
+    } else if (path.indexOf("/cancer") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 3 });
       }, 100);
-    }
-    else if (path.indexOf("/biospecimen") >= 0) {
+    } else if (path.indexOf("/biospecimen") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 4 });
       }, 100);
-    }
-    else if (path.indexOf("/about") >= 0) {
+    } else if (path.indexOf("/about") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 5 });
       }, 100);
@@ -69,18 +66,15 @@ class App extends Component {
       setTimeout(() => {
         this.setState({ currTab: 7 });
       }, 100);
-    }
-    else if (path.indexOf("/admin/managecohort") >= 0) {
+    } else if (path.indexOf("/admin/managecohort") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 8 });
       }, 100);
-    }
-    else if (path.indexOf("/admin/manage") >= 0) {
+    } else if (path.indexOf("/admin/manage") >= 0) {
       setTimeout(() => {
         this.setState({ currTab: 8 });
       }, 100);
-    }
-    else {
+    } else {
       setTimeout(() => {
         this.setState({ currTab: 0 });
       }, 100);
@@ -88,9 +82,7 @@ class App extends Component {
   }
 
   render() {
-    let content = (
-      <MainContent />
-    );
+    let content = <MainContent />;
     return (
       <div>
         <ScrollToTop />
@@ -103,7 +95,7 @@ class App extends Component {
         </div>
         <div id="cedcd-main-content" className="row">
           <ContactBox />
-          <MainContent onClickLink={(i) => this.handleClick(i)}/>
+          <MainContent onClickLink={(i) => this.handleClick(i)} />
           <div className="clearFix"></div>
         </div>
       </div>

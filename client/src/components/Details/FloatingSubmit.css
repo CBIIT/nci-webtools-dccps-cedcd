@@ -1,17 +1,16 @@
-.btn-cohort-des-coloring{
-    background-color: #a46fdb;
-    color: white;
-    
+.btn-cohort-des-coloring {
+  background-color: #a46fdb;
+  color: white;
 }
-.btn-cohort-des-coloring:hover:enabled{
-    background-color:#62269e;
-    border-color: #62269e;
+.btn-cohort-des-coloring:hover:enabled {
+  background-color: #62269e;
+  border-color: #62269e;
 }
 .btn-link.compare-button {
-    font-size: 16px;
-    color: #23527C;
-    padding-top: 4px;
-  }
+  font-size: 16px;
+  color: #23527c;
+  padding-top: 4px;
+}
 
 /*
 .btn-cohort-des-coloring:disabled{

@@ -1,4 +1,4 @@
-import inspect from "util" ;
+import inspect from "util";
 import { createLogger as createWinstonLogger, format, transports } from "winston";
 import pick from "lodash/pick.js";
 import isEmpty from "lodash/isEmpty.js";
@@ -22,7 +22,7 @@ export function createLogger(name, level = "info") {
     format: format.combine(
       format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
       format.label({ label: name }),
-      format.printf((e) => `[${e.label}] [${e.timestamp}] [${e.level}] - ${formatObject(e.message)}`)
+      format.printf((e) => `[${e.label}] [${e.timestamp}] [${e.level}] - ${formatObject(e.message)}`),
     ),
     transports: [new transports.Console()],
     exitOnError: false,

@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import Reminder from '../Tooltip/Tooltip'
-import './FloatingSubmit.css';
+import React, { Component } from "react";
+import Reminder from "../Tooltip/Tooltip";
+import "./FloatingSubmit.css";
 
 class FloatingSubmit extends Component {
-
   handleScroll(event) {
     let screenHeight = window.innerHeight;
-    let obj = document.getElementById('cohortGridView');
+    let obj = document.getElementById("cohortGridView");
     let box = obj.getBoundingClientRect();
     let body = document.body;
     let docEl = document.documentElement;
@@ -25,13 +24,12 @@ class FloatingSubmit extends Component {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener("scroll", this.handleScroll);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
-
 
   render() {
     /* Puts it inside of a bar 
@@ -39,34 +37,58 @@ class FloatingSubmit extends Component {
     */
     if (this.props.align === undefined) {
       return (
-        <div align="center" >
-          <Reminder viewCohort={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
+        <div align="center">
+          <Reminder
+            viewCohort={true}
+            message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
-              <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
-                className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
-                disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Selected Cohort Data <img className="mw-100" height="50" src="/assets/img/ViewDetails.png" alt="View Cohort Data" />
-
+              <button
+                id="compareButton"
+                type="submit"
+                name="submitBtn"
+                value="View Selected Cohort Data"
+                className="btn btn-link compare-button"
+                onClick={this.props.onClick}
+                style={{ fontSize: 18 }}
+                disabled={this.props.values.length === 0}
+                style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}}>
+                View Selected Cohort Data{" "}
+                <img className="mw-100" height="50" src="/assets/img/ViewDetails.png" alt="View Cohort Data" />
               </button>
             </span>
           </Reminder>
-
-        </div >);
-    }
-    else {
+        </div>
+      );
+    } else {
       return (
-        <div align="" >
-          <Reminder viewCohort={true} message="Click to view selected cohort data when one or multiple check-boxes are checked">
+        <div align="">
+          <Reminder
+            viewCohort={true}
+            message="Click to view selected cohort data when one or multiple check-boxes are checked">
             <span style={{ fontSize: 18 }}>
-              <button id="compareButton" type="submit" name="submitBtn" value="View Selected Cohort Data"
-                className="btn btn-link compare-button" onClick={this.props.onClick} style={{ fontSize: 18 }}
-                disabled={this.props.values.length === 0} style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}} >
-                View Selected Cohort Data <img className="mw-100" width="15" src="/assets/img/ViewDetails.png"
-                  style={{ marginBottom: '0', paddingBottom: '4px' }} alt="View Cohort Data" />
+              <button
+                id="compareButton"
+                type="submit"
+                name="submitBtn"
+                value="View Selected Cohort Data"
+                className="btn btn-link compare-button"
+                onClick={this.props.onClick}
+                style={{ fontSize: 18 }}
+                disabled={this.props.values.length === 0}
+                style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}}>
+                View Selected Cohort Data{" "}
+                <img
+                  className="mw-100"
+                  width="15"
+                  src="/assets/img/ViewDetails.png"
+                  style={{ marginBottom: "0", paddingBottom: "4px" }}
+                  alt="View Cohort Data"
+                />
               </button>
             </span>
           </Reminder>
-        </div >);
+        </div>
+      );
     }
   }
 }

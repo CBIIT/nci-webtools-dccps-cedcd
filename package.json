@@ -8,7 +8,8 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config client/webpack.config.js",
-    "watch": "webpack --watch --config client/webpack.config.js"
+    "watch": "webpack --watch --config client/webpack.config.js",
+    "format": "prettier --write --ignore-unknown ."
   },
   "author": "Wei Yu",
   "license": "ISC",
@@ -44,5 +45,16 @@
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
     "xlsx-populate": "^1.14.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.3"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "quoteProps": "consistent",
+    "bracketSameLine": true
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

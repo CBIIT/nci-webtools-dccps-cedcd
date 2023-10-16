@@ -24,7 +24,6 @@ export async function createOAuthStrategy({ baseUrl, clientId, clientSecret, red
   });
 
   return new Strategy({ client, params }, async (tokenSet, done) => {
- 
     const user = await client.userinfo(tokenSet);
     await logoutOAuthToolkitSession({ baseUrl, clientId, clientSecret, tokenSet });
     done(null, user);

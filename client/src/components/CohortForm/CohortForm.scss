@@ -1,55 +1,56 @@
 .accordion {
-    background-color: #eee;
-    color: #444;
-    cursor: pointer;
-    padding: 18px;
-    margin-bottom: 10px;
-    width: 100%;
-    text-align: left;
-    border: none;
-    outline: none;
-    transition: 0.4s;
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  margin-bottom: 10px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
 }
 
-.active, .accordion:hover {
-    background-color: #ccc;
-    color: blue;
+.active,
+.accordion:hover {
+  background-color: #ccc;
+  color: blue;
 }
-
 
 .accordion:hover > span {
-    border-bottom: 1px solid blue;
+  border-bottom: 1px solid blue;
 }
 
 .errorBackground {
-    background-color:  #f66;
+  background-color: #f66;
 }
 
 .react-datepicker__input-container input {
-    width: 340px;
- }
+  width: 340px;
+}
 
- .react-datepicker__input-container input[class*='errorDate']{
-    border: 1px solid red;
- }
- /*
+.react-datepicker__input-container input[class*="errorDate"] {
+  border: 1px solid red;
+}
+/*
  .errorDate, .react-datepicker__input-container input,
  .react-datepicker__day--today {
    border: 1px solid red;
  }
 */
- .closer {
-    //  text-align: center;
-    //  padding: 0;
-     color: red;
- }
+.closer {
+  //  text-align: center;
+  //  padding: 0;
+  color: red;
+}
 
- .closer:hover, .upperCloser:hover{
-     color: red;
-     border-bottom: 1px solid red;
-     cursor: pointer;
- }
- 
- .glyphicon{
-     font-size: 10px
- }
+.closer:hover,
+.upperCloser:hover {
+  color: red;
+  border-bottom: 1px solid red;
+  cursor: pointer;
+}
+
+.glyphicon {
+  font-size: 10px;
+}
