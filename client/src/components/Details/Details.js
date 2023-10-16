@@ -1611,7 +1611,7 @@ class Details extends Component {
             <td>{item.type}</td>
             <td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
             <td>{website_content}</td>
-            <td style={{ backgroundColor: item.active === "inactive" ? "lightgrey" : "" }}>
+            <td>
               <Moment format="MM/DD/YYYY">{item.update_time}</Moment>
               <span style={{ color: "red" }}>{item.active === "inactive" ? "*" : ""}</span>
             </td>
