@@ -409,7 +409,7 @@ BEGIN
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'active' THEN ch.active
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
@@ -422,7 +422,7 @@ BEGIN
 			 CASE  WHEN lower(columnOrder) = 'desc' then
 				 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'active' THEN ch.active
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
@@ -453,7 +453,7 @@ BEGIN
 		order by CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'active' THEN ch.active
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
@@ -466,7 +466,7 @@ BEGIN
 			 CASE  WHEN lower(columnOrder) = 'desc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'active' THEN ch.active
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
@@ -941,7 +941,7 @@ BEGIN
     and  cs.cohort_id in (
 			SELECT cohort_id FROM enrollment_count WHERE 
             ( @race_null = 1 OR ( enrollment_counts > 0  and race_id in (SELECT val FROM temp_race )) )
-			and ( @type_null = 1 OR ( enrollment_counts > 0  and type_id in (SELECT val FROM temp_type )) )
+			and ( @type_null = 1 OR ( enrollment_counts > 0 and type_id in (SELECT val FROM temp_type )) )
 			and ( @ethnicity_null = 1 OR (  enrollment_counts > 0  and ethnicity_id in (SELECT val FROM temp_ethnicity )))
       ) 
 	and ( @category_null = 1  OR ( 
@@ -961,7 +961,7 @@ BEGIN
     ORDER BY CASE WHEN lower(columnOrder) = 'asc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time
 				 WHEN columnName = 'active' THEN  ch.active
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
@@ -974,7 +974,7 @@ BEGIN
         CASE WHEN lower(columnOrder) = 'desc' then
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
-				 WHEN columnName = 'type' THEN ch.type
+				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'update_time' THEN  ch.publish_time 
 				 WHEN columnName = 'active' THEN  ch.active
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
