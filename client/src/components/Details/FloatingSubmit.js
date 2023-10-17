@@ -49,7 +49,6 @@ class FloatingSubmit extends Component {
                 value="View Selected Cohort Data"
                 className="btn btn-link compare-button"
                 onClick={this.props.onClick}
-                style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0}
                 style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}}>
                 View Selected Cohort Data{" "}
@@ -73,7 +72,6 @@ class FloatingSubmit extends Component {
                 value="View Selected Cohort Data"
                 className="btn btn-link compare-button"
                 onClick={this.props.onClick}
-                style={{ fontSize: 18 }}
                 disabled={this.props.values.length === 0}
                 style={this.props.values.length === 0 ? { pointerEvents: "none" } : {}}>
                 View Selected Cohort Data{" "}
