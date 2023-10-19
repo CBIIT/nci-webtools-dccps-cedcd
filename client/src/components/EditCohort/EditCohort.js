@@ -269,19 +269,19 @@ class EditCohort extends Component {
           errors += 1;
         }
 
-        if (state.name_error === "" || state.acronym_error === "") {
-          cohortList.map((cohort) => {
-            if (state.cohortName.trim() === cohort.name.trim()) {
-              state.name_error = " Cohort already exists";
-              errors += 1;
-            }
+        // if (state.name_error === "" || state.acronym_error === "") {
+        //   cohortList.map((cohort) => {
+        //     if (state.cohortName.trim() === cohort.name.trim()) {
+        //       state.name_error = " Cohort already exists";
+        //       errors += 1;
+        //     }
 
-            if (state.cohortAcronym.trim() === cohort.cohort_acronym.trim()) {
-              state.acronym_error = " Acronym already exists";
-              errors += 1;
-            }
-          });
-        }
+        //     if (state.cohortAcronym.trim() === cohort.cohort_acronym.trim()) {
+        //       state.acronym_error = " Acronym already exists";
+        //       errors += 1;
+        //     }
+        //   });
+        // }
 
         let ownerIDs = [];
 
@@ -311,7 +311,7 @@ class EditCohort extends Component {
           };
 
           console.log(reqBody);
-          fetch("/api/cohort/add", {
+          fetch("/api/cohort/update", {
             method: "POST",
             body: JSON.stringify(reqBody),
             headers: {

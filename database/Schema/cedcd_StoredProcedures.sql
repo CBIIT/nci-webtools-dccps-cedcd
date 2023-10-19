@@ -3485,14 +3485,15 @@ BEGIN
 		SELECT flag AS rowAffacted;
     END IF;
  END //
-/*
- -- -----------------------------------------------------------------------------------------------------------
+
+-- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: update_cohort
 -- -----------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `update_cohort` //
 
 CREATE PROCEDURE `update_cohort`(in info JSON)
 BEGIN
+	DECLARE i INT DEFAULT 0;
 	DECLARE flag INT DEFAULT 1;
 
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
@@ -3504,16 +3505,50 @@ BEGIN
 
 	START TRANSACTION;
 		BEGIN
-			set @id = JSON_UNQUOTE(info, '$.id')
-			set @cohortName = JSON_UNQUOTE(info, '$.cohortName');
-			set @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
-			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
-			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(info, '$.active'));
-			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+			SET @id = JSON_UNQUOTE(JSON_EXTRACT(info, '$.id'));
+			SET @cohortName = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortName'));
+			SET @cohortAcronym = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym'));
+			SET @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
+			SET @activeInput = JSON_UNQUOTE(JSON_EXTRACT(info, '$.active'));
+			SET @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
+			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
+
+			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
+			IF (@latest_ver IS NULL or @latest_status = '') THEN SET @latest_status='1.0'; END IF;
+
+			SELECT acronym INTO @oldAcronym FROM cohort WHERE id = @id;
+			DELETE FROM cohort_user_mapping
+			WHERE cohort_acronym = @oldAcronym;
+
+			UPDATE cohort
+			SET name = @cohortName,
+				acronym = @cohortAcronym,
+				type = @cohortType,
+				document_ver = @latest_ver, 
+				update_time = now(), 
+				active = @activeInput
+			WHERE id = @id;
+
+			UPDATE cohort_activity_log
+			SET notes = @notes
+            WHERE cohort_id = @id;
+
+			UPDATE cohort_basic 
+			SET cohort_name = @cohortName, 
+				cohort_acronym = @cohortAcronym, 
+				cohort_type = @cohortType
+			WHERE cohort_id = @id;
+
+			WHILE i < JSON_LENGTH(@owners) DO
+			INSERT into cohort_user_mapping (cohort_acronym, user_id,active,update_time) 
+				values(@cohortAcronym,JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+			SELECT i + 1 INTO i;	
+			END WHILE;
 		END;
 	COMMIT;
 	SELECT flag AS success;
-END*/
+END //
+
 -- -----------------------------------------------------------------------------------------------------------
 -- Stored Procedure: insert_new_cohort
 -- -----------------------------------------------------------------------------------------------------------
