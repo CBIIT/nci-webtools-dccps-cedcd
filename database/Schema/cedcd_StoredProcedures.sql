@@ -3563,9 +3563,9 @@ BEGIN
     
 	DECLARE EXIT HANDLER FOR SQLEXCEPTION 
 	BEGIN
-      SET flag = 0;
-      ROLLBACK;
-      SELECT flag AS success;
+		SET flag = 0;
+      	ROLLBACK;
+      	SELECT flag AS success;
 	END;
 
     START TRANSACTION;
@@ -3575,18 +3575,21 @@ BEGIN
 			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
-			set @activeInput = JSON_UNQUOTE(JSON_EXTRACT(active, '$.active'));
+			SET @activeInput = JSON_UNQUOTE(JSON_EXTRACT(info, '$.active'));
+			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
 			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
 			
 			IF (@latest_ver IS NULL or @latest_status = '') THEN set @latest_status='1.0'; END IF;
 			
-			INSERT into cohort (name,acronym,type,status,document_ver,create_by,update_time,active) values(@cohortName,@cohortAcronym,@cohortType,"new",@latest_ver, @createBy,now(),@activeInput);
+			INSERT into cohort 
+				(name, acronym, type, status, document_ver, create_by, update_time, active) 
+				values(@cohortName, @cohortAcronym, @cohortType, "new", @latest_ver, @createBy, now(), @activeInput);
             set new_id = last_insert_id();
-			INSERT into cohort_activity_log (cohort_id, user_id, activity, notes ) values(new_id, @createBy, 'new', @notes);
+			INSERT into cohort_activity_log 
+				(cohort_id, user_id, activity, notes ) 
+				values(new_id, @createBy, 'new', @notes);
             
-			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
-
 			call populate_cohort_tables(new_id, @cohortName, @cohortAcronym, @cohortType, popSuccess);
             
 			IF popSuccess < 1 THEN
@@ -3597,7 +3600,9 @@ BEGIN
 			END IF;
             
 			WHILE i < JSON_LENGTH(@owners) DO
-				INSERT into cohort_user_mapping (cohort_acronym, user_id,active,update_time) values(JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortAcronym')),JSON_EXTRACT(@owners,concat('$[',i,']')),'Y',NOW());
+				INSERT into cohort_user_mapping 
+					(cohort_acronym, user_id, active, update_time) 
+					values(@cohortAcronym, JSON_EXTRACT(@owners, concat('$[',i,']')), 'Y', NOW());
 				SELECT i + 1 INTO i;	
 			 END WHILE;
 		END;
