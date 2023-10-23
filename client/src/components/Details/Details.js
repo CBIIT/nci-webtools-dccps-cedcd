@@ -980,6 +980,7 @@ class Details extends Component {
                   />
                   <AgeList values={this.state.filter.participant.age} displayMax="3" onClick={this.handleAgeClick} />
                   {/*<DiseaseStateList values={this.state.filter.study.state} displayMax="5" onClick={this.handleStateClick} />*/}
+                  <TypeList values={this.state.filter.participant.type} displayMax="3" onClick={this.handleTypeClick} />
                 </div>
               </div>
             </div>
@@ -993,7 +994,6 @@ class Details extends Component {
                     displayMax="3"
                     onClick={this.handleEthnicityClick}
                   />
-                  <TypeList values={this.state.filter.participant.type} displayMax="3" onClick={this.handleTypeClick} />
                 </div>
               </div>
             </div>

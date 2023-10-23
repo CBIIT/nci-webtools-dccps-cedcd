@@ -941,7 +941,7 @@ BEGIN
     and  cs.cohort_id in (
 			SELECT cohort_id FROM enrollment_count WHERE 
             ( @race_null = 1 OR ( enrollment_counts > 0  and race_id in (SELECT val FROM temp_race )) )
-			and ( @type_null = 1 OR ( enrollment_counts > 0 and type_id in (SELECT val FROM temp_type )) )
+			and ( @type_null = 1 OR ( type_id in (SELECT val FROM temp_type )) )
 			and ( @ethnicity_null = 1 OR (  enrollment_counts > 0  and ethnicity_id in (SELECT val FROM temp_ethnicity )))
       ) 
 	and ( @category_null = 1  OR ( 
