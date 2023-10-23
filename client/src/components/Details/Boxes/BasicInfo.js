@@ -148,7 +148,7 @@ class BasicInfo extends Component {
       }
     }
     params.config.sideHeader = [
-      48, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
+      48, 40, 48, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 48, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40,
     ];
     let cohorts_export = params.cohorts.map((item, idx) => {
       const key = "export_c_" + idx;

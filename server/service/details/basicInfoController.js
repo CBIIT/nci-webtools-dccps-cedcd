@@ -20,6 +20,15 @@ export default function basicInfoController(req, res) {
       let list = results[0];
       dt.list.push({
         type: "block",
+        name: "Cohort Type",
+        rows: 1,
+      });
+      list.forEach(function (l) {
+        const val = l["cohort_type"] || "N/P";
+        dt.list.push({ type: "data", name: "Cohort Type", [`c_${l.id}`]: val });
+      });
+      dt.list.push({
+        type: "block",
         name: "Eligibility Criteria",
         rows: 4,
       });
