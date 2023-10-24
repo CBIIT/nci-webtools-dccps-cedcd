@@ -1601,6 +1601,7 @@ class Details extends Component {
             <td>
               <Link to={url} onClick={this.saveHistory}>
                 {item.cohort_name}
+                <span style={{ color: "red" }}>{item.active === "inactive" ? "*" : ""}</span>
               </Link>
             </td>
             <td>
@@ -1613,7 +1614,6 @@ class Details extends Component {
             <td>{website_content}</td>
             <td>
               <Moment format="MM/DD/YYYY">{item.update_time}</Moment>
-              <span style={{ color: "red" }}>{item.active === "inactive" ? "*" : ""}</span>
             </td>
           </tr>
         );
