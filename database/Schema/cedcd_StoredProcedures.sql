@@ -2000,8 +2000,8 @@ BEGIN
     SELECT ch.id, ch.name, ch.acronym, ch.type, ch.active, ch.status,l_status.id AS status_id, ch.document_ver as ver,
 		concat(u1.first_name, ' ', u1.last_name) create_by, 
 		(	case
-			 WHEN lower(ch.status) in ('new', 'draft', 'submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'System Admin'
-			 WHEN lower(ch.status) in ('new', 'draft', 'submitted', 'in review','published', 'rejected') and submit_by is not null THEN  (SELECT concat(u2.first_name, ' ', u2.last_name) FROM user u2 WHERE u2.id=ch.submit_by) 
+			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by =1 THEN 'SystemAdmin'
+			 WHEN lower(ch.status) in ('submitted', 'in review','published', 'rejected') and submit_by is not null THEN  (SELECT concat(u2.first_name, ' ', u2.last_name) FROM user u2 WHERE u2.id=ch.submit_by) 
 			ELSE 'N/A' end) submit_by,
 		(	 CASE  WHEN lower(ch.status) in ('submitted','draft', 'in review','published', 'rejected') and ch.update_time is not null THEN DATE_FORMAT(ch.update_time, '%m/%d/%Y') 
 			ELSE 'Never' end) AS update_time,
