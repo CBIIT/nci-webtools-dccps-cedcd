@@ -758,7 +758,7 @@ router.get("/:id", function (req, res) {
             name: attach.filename,
           });
         } else {
-        /*else if (attach.category == 0) {
+          /*else if (attach.category == 0) {
 					//study protocol
 					if (info.attachments.protocols == undefined) {
 						info.attachments.protocols = [];

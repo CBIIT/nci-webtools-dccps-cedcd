@@ -26,7 +26,7 @@ class EditCohort extends Component {
       cohortAcronym: "",
       id: "",
       type: "",
-      notUpdated: false,
+      outdated: false,
       ownerOptions: null,
       cohortList: [],
       cohortOwners: [],
@@ -40,7 +40,7 @@ class EditCohort extends Component {
     this.handleAcronymChange = this.handleAcronymChange.bind(this);
     this.handleMultiChange = this.handleMultiChange.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
-    this.handleNotUpdated = this.handleNotUpdated.bind(this);
+    this.handleOutdated = this.handleOutdated.bind(this);
   }
 
   handleAcronymChange(option) {
@@ -57,7 +57,7 @@ class EditCohort extends Component {
           selectedCohort.type === "Survivor"
             ? { value: "Survivor", label: "Survivor Cohort" }
             : { value: "Etiology", label: "Etiology Cohort" },
-        notUpdated: selectedCohort.active === "active" ? false : true,
+        outdated: selectedCohort.outdated,
         cohortOwners: owners.map((e) => {
           return this.state.ownerOptions.find((owner) => e === owner.value);
         }),
@@ -130,7 +130,7 @@ class EditCohort extends Component {
               label: cohort.cohort_acronym,
               name: cohort.name,
               type: cohort.type,
-              active: cohort.active,
+              outdated: cohort.outdated,
               notes: cohort.notes,
             });
 
@@ -172,8 +172,8 @@ class EditCohort extends Component {
     this.setState(dict);
   }
 
-  handleNotUpdated() {
-    this.setState({ notUpdated: !this.state.notUpdated });
+  handleOutdated() {
+    this.setState({ outdated: !this.state.outdated });
   }
 
   sendEmail(userName, userEmail) {
@@ -305,7 +305,7 @@ class EditCohort extends Component {
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
-            active: state.notUpdated ? "inactive" : "active",
+            outdated: state.outdated,
             notes: state.notes,
             createBy: this.props.user,
           };
@@ -346,7 +346,7 @@ class EditCohort extends Component {
                   cohortName: "",
                   cohortAcronym: "",
                   type: "",
-                  notUpdated: false,
+                  outdated: false,
                   cohortOwners: [],
                   notes: "",
                 });
@@ -523,10 +523,10 @@ class EditCohort extends Component {
                   </Form.Group>
                   <Form.Check
                     type="checkbox"
-                    id="notUpdated"
-                    label="Profile not Updated"
-                    checked={this.state.notUpdated}
-                    onClick={this.handleNotUpdated}
+                    id="outdated"
+                    label="Cohort outdated"
+                    checked={this.state.outdated}
+                    onClick={this.handleOutdated}
                   />
                   <div className="bttn-group" style={{ width: "90%" }}>
                     <Button variant="primary" type="submit" value="Submit" className="col-lg-2 col-md-6 float-right">

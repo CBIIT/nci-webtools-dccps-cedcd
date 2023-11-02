@@ -24,7 +24,7 @@ export default function basicInfoController(req, res) {
         rows: 1,
       });
       list.forEach(function (l) {
-        const val = l["cohort_type"] || "N/P";
+        const val = l["type"] || "N/P";
         dt.list.push({ type: "data", name: "Cohort Type", [`c_${l.id}`]: val });
       });
       dt.list.push({

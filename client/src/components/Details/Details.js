@@ -1135,6 +1135,40 @@ class Details extends Component {
                     </div>
                   </div>
                 </div>
+                <div className="row">
+                  <div className="col-sm-1" style={{ width: "10%" }}>
+                    <select
+                      className="btn btn-default"
+                      style={{ padding: "6px 6px" }}
+                      value={this.state.advancedCondition}
+                      title="Boolean Operation between filters"
+                      disabled="disabled">
+                      <option value="AND">AND</option>
+                      <option value="OR">OR</option>
+                    </select>
+                  </div>
+                  <div className="col-sm-11" style={{ width: "90%" }}>
+                    <div style={{ width: "92%", float: "left" }}>
+                      <TypeList
+                        rightBorderStyle="straight"
+                        values={this.state.advancedFilter.type}
+                        displayMax="3"
+                        onClick={this.handleAdvancedTypeClick}
+                      />
+                    </div>
+                    <div style={{ width: "8%", float: "left" }}>
+                      <select
+                        className="btn btn-default"
+                        style={{ borderColor: "#ccc", borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px" }}
+                        value={this.state.advancedFilter.booleanOperationWithInField[5]}
+                        title="Boolean operation between options in type filter"
+                        onChange={(e) => this.handleBooleanWithinChange(e, 5)}>
+                        <option value="AND">AND</option>
+                        <option value="OR">OR</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 {/*<div className="row">
 									<div className="col-sm-1" style={{ "width": "10%" }}>
 										<select className="btn btn-default" style={{padding: '6px 6px'}} value={this.state.advancedCondition} title="Boolean Operation between filters" disabled="disabled">
@@ -1227,40 +1261,6 @@ class Details extends Component {
                         value={this.state.advancedFilter.booleanOperationWithInField[4]}
                         title="Boolean operation between options in ethnicity filter"
                         onChange={(e) => this.handleBooleanWithinChange(e, 4)}>
-                        <option value="AND">AND</option>
-                        <option value="OR">OR</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-sm-1" style={{ width: "10%" }}>
-                    <select
-                      className="btn btn-default"
-                      style={{ padding: "6px 6px" }}
-                      value={this.state.advancedCondition}
-                      title="Boolean Operation between filters"
-                      disabled="disabled">
-                      <option value="AND">AND</option>
-                      <option value="OR">OR</option>
-                    </select>
-                  </div>
-                  <div className="col-sm-11" style={{ width: "90%" }}>
-                    <div style={{ width: "92%", float: "left" }}>
-                      <TypeList
-                        rightBorderStyle="straight"
-                        values={this.state.advancedFilter.type}
-                        displayMax="3"
-                        onClick={this.handleAdvancedTypeClick}
-                      />
-                    </div>
-                    <div style={{ width: "8%", float: "left" }}>
-                      <select
-                        className="btn btn-default"
-                        style={{ borderColor: "#ccc", borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px" }}
-                        value={this.state.advancedFilter.booleanOperationWithInField[5]}
-                        title="Boolean operation between options in type filter"
-                        onChange={(e) => this.handleBooleanWithinChange(e, 5)}>
                         <option value="AND">AND</option>
                         <option value="OR">OR</option>
                       </select>
@@ -1601,7 +1601,7 @@ class Details extends Component {
             <td>
               <Link to={url} onClick={this.saveHistory}>
                 {item.cohort_name}
-                <span style={{ color: "red" }}>{item.active === "inactive" ? "*" : ""}</span>
+                <span style={{ color: "red" }}>{item.outdated ? "*" : ""}</span>
               </Link>
             </td>
             <td>
