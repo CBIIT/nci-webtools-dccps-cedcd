@@ -1613,7 +1613,7 @@ class Details extends Component {
             <td align="center">{item.enrollment_total > -1 ? this.numberWithCommas(item.enrollment_total) : 0}</td>
             <td>{website_content}</td>
             <td>
-              <Moment format="MM/DD/YYYY">{item.update_time}</Moment>
+              <Moment format="MM/DD/YYYY">{item.publish_time}</Moment>
             </td>
           </tr>
         );
@@ -1683,7 +1683,7 @@ class Details extends Component {
                     <Workbook.Column label="Cohort Type" value="cohort_type" />
                     <Workbook.Column label="Total Enrollments (n=)" value="enrollment_total" />
                     <Workbook.Column label="Website" value="cohort_web_site" />
-                    <Workbook.Column label="Last Updated" value="update_time" />
+                    <Workbook.Column label="Published" value="publish_time" />
                   </Workbook.Sheet>
                   <Workbook.Sheet name="Criteria"></Workbook.Sheet>
                 </Workbook>
@@ -1718,7 +1718,7 @@ class Details extends Component {
                         Website
                       </a>
                     </th>
-                    {this.renderTableHeader("update_time", "15%")}
+                    {this.renderTableHeader("publish_time", "15%")}
                   </tr>
                 </thead>
                 <tbody>{content}</tbody>

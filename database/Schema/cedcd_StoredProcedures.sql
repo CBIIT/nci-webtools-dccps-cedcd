@@ -391,7 +391,7 @@ BEGIN
     END IF;
     
     IF @globalANDOR = 'AND' THEN 
-		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time AS update_time,
+		SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time,
 			sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -411,7 +411,7 @@ BEGIN
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'outdated' THEN ch.outdated
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -424,7 +424,7 @@ BEGIN
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'outdated' THEN ch.outdated
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END DESC,
@@ -435,7 +435,7 @@ BEGIN
         cs.cohort_name
     limit page_index, page_size;
     ELSE 
-        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time AS update_time,
+        SELECT sql_calc_found_rows cs.cohort_id AS id,cs.cohort_name, cs.cohort_acronym, ch.type, ch.outdated, cs.cohort_web_site,ch.publish_time,
 		sum(ec.enrollment_counts) AS enrollment_total 
 		FROM cohort_basic cs 
 		JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id  
@@ -455,7 +455,7 @@ BEGIN
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'outdated' THEN ch.outdated
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END ASC,
@@ -468,7 +468,7 @@ BEGIN
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
 				 WHEN columnName = 'outdated' THEN ch.outdated
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
 			 END DESC,
@@ -931,7 +931,7 @@ BEGIN
         set page_index = 0;
     END IF;
  
-	SELECT sql_calc_found_rows cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.outdated, ch.publish_time AS update_time, 
+	SELECT sql_calc_found_rows cs.cohort_id AS id, cs.cohort_name, cs.cohort_acronym, ch.type, cs.cohort_web_site, ch.outdated, ch.publish_time, 
 	 sum(ec.enrollment_counts) AS enrollment_total 
 	FROM cohort_basic cs 
     JOIN enrollment_count ec ON cs.cohort_id = ec.cohort_id
@@ -962,7 +962,7 @@ BEGIN
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
-				 WHEN columnName = 'update_time' THEN  ch.publish_time
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time
 				 WHEN columnName = 'outdated' THEN  ch.outdated
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
@@ -975,7 +975,7 @@ BEGIN
 			 CASE  WHEN columnName = 'cohort_name' THEN  cs.cohort_name
 				 WHEN columnName = 'cohort_acronym' THEN cs.cohort_acronym
 				 WHEN columnName = 'cohort_type' THEN ch.type
-				 WHEN columnName = 'update_time' THEN  ch.publish_time 
+				 WHEN columnName = 'publish_time' THEN  ch.publish_time 
 				 WHEN columnName = 'outdated' THEN  ch.outdated
 				 WHEN columnName = 'enrollment_total' THEN length(sum(ec.enrollment_counts))
 				ELSE cs.cohort_name  END 
