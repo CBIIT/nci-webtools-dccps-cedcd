@@ -1,12 +1,21 @@
-use cedcd;
-UPDATE cohort_basic
-SET cohort_type = 'Etiology'
-WHERE cohort_acronym != 'Pathways';
+USE cedcd;
 
-UPDATE cohort
-SET `type` = 'Etiology'
-WHERE acronym != 'Pathways';
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+  
+    ALTER TABLE cohort
+    ADD `type` VARCHAR(20) NOT NULL DEFAULT 'Etiology',
+    ADD `outdated` BOOLEAN NOT NULL DEFAULT false;
 
-UPDATE enrollment_count
-SET `type_id` = 1
-WHERE cohort_id != 45;
+    UPDATE cohort
+    SET `type` = 'Survivor'
+    WHERE acronym = 'Pathways';
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
+
+
