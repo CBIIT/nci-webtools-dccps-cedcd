@@ -39,13 +39,13 @@ class TypeList extends Component {
     this._isMounted = true;
 
     let arr = [
-      { type: "Etiology", id: 1 },
-      { type: "Survivor", id: 2 },
+      { type: "Etiology", id: "Etiology" },
+      { type: "Survivor", id: "Survivor" },
     ];
 
     let dict = {
-      1: { type: "Etiology", id: 1 },
-      2: { type: "Survivor", id: 2 },
+      Etiology: { type: "Etiology", id: "Etiology" },
+      Survivor: { type: "Survivor", id: "Survivor" },
     };
 
     if (this._isMounted) {

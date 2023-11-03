@@ -173,6 +173,21 @@ BEGIN
         SELECT cohort_id FROM cohort_basic gendercs WHERE gendercs.eligible_gender_id in (SELECT val FROM tempIntTable);
         -- assume OR and skip AND for gender/sex option (not applicable for male and female, 'All'(id 4) is being applied )
 	END IF;
+	
+    IF `@type` != "" then
+		set @type_null = 0;
+        call ConvertStrToTable(`@type`);
+		set @len_type = 1+length(`@type`) - length(replace(`@type`,',','')); 
+        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
+        IF @andor = "AND" then
+			INSERT into temp_type
+			SELECT id FROM cohort WHERE `type` in (SELECT val FROM tempStrTable)
+            GROUP BY id having sum(1) >= @len_type;
+		else
+			INSERT into temp_type
+			SELECT id FROM cohort WHERE `type` in (SELECT val FROM tempStrTable);
+        END IF;
+	END IF;
     
     set i = 0;
     set @age_query = "";
@@ -271,21 +286,6 @@ BEGIN
 		else
 			INSERT into temp_ethnicity 
 			SELECT cohort_id FROM enrollment_count WHERE ethnicity_id in (SELECT val FROM tempIntTable) and enrollment_counts > 0 ;
-        END IF;
-    END IF;
-
-	IF `@type` != "" AND `@type` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$' then
-		set @type_null = 0 ;
-		call ConvertIntToTable(`@type`);
-        set @len_type = 1+length(`@type`) - length(replace(`@type`,',','')); 
-        set @andor = trim(reverse(substring_index(reverse(substring_index(booleanOperationWithInField,',',6)),',',1)));
-        IF @andor = "AND" then
-			INSERT into temp_type
-			SELECT cohort_id FROM enrollment_count WHERE type_id in (SELECT val FROM tempIntTable)
-            GROUP BY cohort_id having sum(1) >= @len_race;
-		else
-			INSERT into temp_type
-			SELECT cohort_id FROM enrollment_count WHERE type_id in (SELECT val FROM tempIntTable);
         END IF;
     END IF;
     
@@ -785,7 +785,7 @@ BEGIN
     drop temporary table IF exists temp_ethnicity;
     create temporary table IF not exists temp_ethnicity( val int );
 	drop temporary table IF exists temp_type;
-    create temporary table IF not exists temp_type( val int );
+    create temporary table IF not exists temp_type( val VARCHAR(200) );
     drop temporary table IF exists temp_category;
     create temporary table IF not exists temp_category( val int );
 	drop temporary table IF exists temp_cancer;
@@ -819,10 +819,10 @@ BEGIN
         INSERT into temp_race SELECT distinct val FROM tempIntTable;
 	END IF;
 
-	IF `@type` != "" AND `@type` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
+	IF `@type` != "" then
 		set @type_null = 0 ;
-		call ConvertIntToTable(`@type`);
-        INSERT into temp_type SELECT distinct val FROM tempIntTable;
+		call ConvertStrToTable(`@type`);
+        INSERT into temp_type SELECT distinct val FROM tempStrTable;
 	END IF;
     
     IF `@ethnicity` != "" AND `@ethnicity` REGEXP '^[[:space:]]*[0-9]+(?:[[:space:]]?,[[:space:]]?[0-9]+)*?[[:space:]]*$'  then
@@ -938,10 +938,10 @@ BEGIN
     JOIN cohort ch ON ch.id = cs.cohort_id
 	WHERE lower(ch.status)='published' 
     and ( @gender_null = 1 OR cs.eligible_gender_id in (SELECT val FROM temp_gender) )
+	and ( @type_null = 1 OR ( ch.type in (SELECT val FROM temp_type )) )
     and  cs.cohort_id in (
 			SELECT cohort_id FROM enrollment_count WHERE 
             ( @race_null = 1 OR ( enrollment_counts > 0  and race_id in (SELECT val FROM temp_race )) )
-			and ( @type_null = 1 OR ( type_id in (SELECT val FROM temp_type )) )
 			and ( @ethnicity_null = 1 OR (  enrollment_counts > 0  and ethnicity_id in (SELECT val FROM temp_ethnicity )))
       ) 
 	and ( @category_null = 1  OR ( 

@@ -246,10 +246,9 @@ router.post("/select", function (req, res) {
 
   mysql.callProcedure(func, params, function (results) {
     if (results && results[0] && results[0].length > 0) {
-      let dt = {};
-      dt.list = results[0];
-      dt.total = results[1][0].total;
-      res.json({ status: 200, data: dt });
+      const [list, total, ...rest] = results;
+      const data = { list: list, total: total[0].total, ...rest };
+      res.json({ status: 200, data });
     } else {
       res.json({ status: 200, data: { list: [], total: 0 } });
     }

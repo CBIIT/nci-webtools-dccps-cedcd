@@ -649,7 +649,7 @@ class Details extends Component {
 
     if (idx > -1) {
       //remove element
-      filter.participant.type.splice(idx, 1);
+      filter.participant.type.splice(v.id, 1);
     } else {
       //add element
       filter.participant.type.push(v.id);
