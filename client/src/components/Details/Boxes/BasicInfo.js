@@ -58,7 +58,7 @@ class BasicInfo extends Component {
             curr_block++;
             l.cls = true;
           } else {
-            if (curr_block <= 1) {
+            if (curr_block <= 2) {
               l.cls = true && l.parent_pos === undefined;
             } else {
               l.cls = false;
