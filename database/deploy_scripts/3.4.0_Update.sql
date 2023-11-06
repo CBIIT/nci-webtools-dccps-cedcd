@@ -8,7 +8,8 @@ BEGIN
   
     ALTER TABLE cohort
     ADD `type` VARCHAR(20) NOT NULL DEFAULT 'Etiology',
-    ADD `outdated` BOOLEAN NOT NULL DEFAULT false;
+    ADD `outdated` BOOLEAN NOT NULL DEFAULT false,
+    ADD `outdated_reminder` BOOLEAN NOT NULL DEFAULT false;
 
     UPDATE cohort
     SET `type` = 'Survivor'
