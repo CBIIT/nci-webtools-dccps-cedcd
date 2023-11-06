@@ -62,12 +62,12 @@ class EditCohort extends Component {
           return this.state.ownerOptions.find((owner) => e === owner.value);
         }),
         notes: selectedCohort.notes,
+        status: selectedCohort.status,
       };
     });
   }
 
   handleMultiChange(option) {
-    console.log(this.state.cohortOwners);
     this.setState((state) => {
       return {
         cohortOwners: option,
@@ -132,6 +132,7 @@ class EditCohort extends Component {
               type: cohort.type,
               outdated: cohort.outdated,
               notes: cohort.notes,
+              status: cohort.status,
             });
 
             if (cohort.user_id) map = { ...map, [cohort.id]: [cohort.user_id] };
@@ -223,7 +224,7 @@ class EditCohort extends Component {
 
     //check required field
     const state = Object.assign({}, this.state);
-    console.log(state);
+
     let errors = 0;
     let cohortList;
     let reqBody = {};
@@ -310,7 +311,6 @@ class EditCohort extends Component {
             createBy: this.props.user,
           };
 
-          console.log(reqBody);
           fetch("/api/cohort/update", {
             method: "POST",
             body: JSON.stringify(reqBody),
@@ -451,6 +451,7 @@ class EditCohort extends Component {
                       id="cu_firstName"
                       value={this.state.cohortName}
                       onChange={(e) => this.handleChange("cohortName", e)}
+                      disabled={!this.state.id}
                     />
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortAcronym">
@@ -468,6 +469,7 @@ class EditCohort extends Component {
                       id="cu_lastName"
                       value={this.state.cohortAcronym}
                       onChange={(e) => this.handleChange("cohortAcronym", e)}
+                      disabled={!this.state.id}
                     />
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortType">
@@ -486,6 +488,7 @@ class EditCohort extends Component {
                           { value: "Survivor", label: "Survivor Cohort" },
                         ]}
                         onChange={this.handleSelectChange}
+                        isDisabled={!this.state.id}
                       />
                     </div>
                   </Form.Group>
@@ -500,6 +503,7 @@ class EditCohort extends Component {
                         value={this.state.cohortOwners}
                         options={this.state.ownerOptions}
                         onChange={this.handleMultiChange}
+                        isDisabled={!this.state.id}
                       />
                     </div>
                   </Form.Group>
@@ -519,6 +523,7 @@ class EditCohort extends Component {
                       id="cu_message"
                       value={this.state.notes}
                       onChange={(e) => this.handleChange("notes", e)}
+                      disabled={!this.state.id}
                     />
                   </Form.Group>
                   <Form.Check
@@ -527,6 +532,8 @@ class EditCohort extends Component {
                     label="Cohort outdated"
                     checked={this.state.outdated}
                     onClick={this.handleOutdated}
+                    disabled={this.state.status !== "published"}
+                    title={"Only available for published cohorts"}
                   />
                   <div className="bttn-group" style={{ width: "90%" }}>
                     <Button variant="primary" type="submit" value="Submit" className="col-lg-2 col-md-6 float-right">
