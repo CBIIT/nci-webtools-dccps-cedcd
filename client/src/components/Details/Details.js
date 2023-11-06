@@ -1683,7 +1683,7 @@ class Details extends Component {
                     <Workbook.Column label="Cohort Type" value="cohort_type" />
                     <Workbook.Column label="Total Enrollments (n=)" value="enrollment_total" />
                     <Workbook.Column label="Website" value="cohort_web_site" />
-                    <Workbook.Column label="Published" value="publish_time" />
+                    <Workbook.Column label="Last Published" value="publish_time" />
                   </Workbook.Sheet>
                   <Workbook.Sheet name="Criteria"></Workbook.Sheet>
                 </Workbook>
