@@ -26,9 +26,8 @@ import path from "path";
 
 const router = Router();
 
-async function readTemplate(filePath, data) {
+export async function readTemplate(filePath, data) {
   const template = await fs.promises.readFile(path.resolve(filePath));
-  console.log(template);
 
   // replace {tokens} with data values or removes them if not found
   return String(template).replace(/{[^{}]+}/g, (key) => data[key.replace(/[{}]+/g, "")] || "");

@@ -25,6 +25,7 @@ import config from "./server/config/index.js";
 import * as mysql from "./server/components/mysql.js";
 import { setValue as cache_setValue } from "./server/components/cache.js";
 import routes from "./server/routes/routes.js";
+import { startReminderService } from "./server/service/emailReminder.js";
 
 try {
   await startApp();
@@ -35,6 +36,7 @@ try {
 
 export async function startApp() {
   const app = await createApp();
+  startReminderService(app);
   const logger = app.locals.logger;
   const connection = app.locals.connection;
   logger.debug("Created application, starting server");

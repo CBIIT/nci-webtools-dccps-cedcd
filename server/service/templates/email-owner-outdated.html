@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>CEDCD Cohort Owner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    Dear {user}, <br />
+    <p>
+      Your cohorts published on CEDCD have not been updated in 1 year and 9 months.  If you intend to update your cohort
+      data, please log into the <a href="{website}">CEDCD website</a> and update your cohort questionnaire.  If there are no
+      updates in the next 90 days, your cohort will be marked as "Outdated."
+    </p>
+
+    <p>The following cohort(s) are scheduled to be marked outdated:</p>
+    <table style="border:1px solid;">
+      <tr>
+        <th>Cohort</th>
+        <th>Acronym</th>
+        <th>Last Published</th>
+      </tr>
+      {tableRows}
+    </table>
+
+    <p>
+      Sincerely, <br />
+      CEDCD Web Admin Team
+    </p>
+  </body>
+</html>
