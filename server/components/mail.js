@@ -33,3 +33,8 @@ export async function sendMail(from, to, subject, text, html, next) {
 	});
 	*/
 }
+
+export async function sendMail2({ from, to, subject, html, ...rest }) {
+  const transporter = nodeMailer.createTransport(config.mail);
+  return transporter.sendMail({ from, to, subject, html, ...rest });
+}

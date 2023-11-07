@@ -2,7 +2,7 @@ import path from "path";
 import { CronJob } from "cron";
 import lodash from "lodash";
 import moment from "moment";
-import * as mail from "../components/mail.js";
+import { sendMail2 } from "../components/mail.js";
 import { readTemplate } from "../routes/cohort.js";
 import config from "../config/index.js";
 const { groupBy } = lodash;
@@ -14,7 +14,7 @@ export function startReminderService(app) {
       const { mysql } = app.locals;
       const cohortsPerUser = await getOutdatedCohorts(mysql);
       cohortsPerUser.forEach(async (data) => {
-        await sendEmail(data);
+        await sendReminder(data);
         await updateReminderSent(mysql, data, true);
       });
     }, // onTick
@@ -61,14 +61,13 @@ async function updateReminderSent(mysql, data, status = false) {
  *
  * @param {Object[]} data cohort data array
  */
-async function sendEmail(data) {
+async function sendReminder(data) {
   const { full_name, email } = data[0];
   const tableRows = data
     .map(
       (e) => `<tr><td>${e.name}</td><td>${e.acronym}</td><td>${moment(e.publish_time).format("MM/DD/YYYY")}</td></tr>`,
     )
     .join("");
-
   const templateData = {
     user: full_name,
     tableRows,
@@ -78,13 +77,13 @@ async function sendEmail(data) {
   const templatePath = path.resolve(dirname, "templates/email-owner-outdated.html");
   try {
     console.log("sending cohort email reminder");
-    await mail.sendMail(
-      process.env.EMAIL_SENDER,
-      email,
-      "Your CEDCD Cohort(s) are scheduled to be marked outdated ",
-      "",
-      await readTemplate(templatePath, templateData),
-    );
+    await sendEmail({
+      from: process.env.EMAIL_SENDER,
+      to: email,
+      cc: process.env.EMAIL_SENDER,
+      subject: "Your CEDCD Cohort(s) are scheduled to be marked outdated",
+      html: await readTemplate(templatePath, templateData),
+    });
     console.log("sent cohort email reminder");
   } catch (e) {
     console.log(e);
