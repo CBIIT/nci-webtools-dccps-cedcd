@@ -9,13 +9,17 @@ const { groupBy } = lodash;
 
 export function startReminderService(app) {
   const job = new CronJob(
-    "0 12 * * *", // cronTime
+    "0 9 * * *", // cronTime
     async () => {
-      const { mysql } = app.locals;
+      const { mysql, logger } = app.locals;
       const cohortsPerUser = await getOutdatedCohorts(mysql);
       cohortsPerUser.forEach(async (data) => {
-        await sendReminder(data);
-        await updateReminderSent(mysql, data, true);
+        try {
+          await sendReminder(data);
+          await updateReminderSent(mysql, data, true);
+        } catch (error) {
+          logger.error(error);
+        }
       });
     }, // onTick
     null, // onComplete
@@ -77,7 +81,7 @@ async function sendReminder(data) {
   const templatePath = path.resolve(dirname, "templates/email-owner-outdated.html");
   try {
     console.log("sending cohort email reminder");
-    await sendEmail({
+    await sendMail2({
       from: process.env.EMAIL_SENDER,
       to: email,
       cc: process.env.EMAIL_SENDER,
