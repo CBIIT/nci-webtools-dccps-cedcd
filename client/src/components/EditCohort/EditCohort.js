@@ -127,7 +127,7 @@ class EditCohort extends Component {
           if (!toAddCohorts.find((e) => e.label === cohort.cohort_acronym)) {
             toAddCohorts.push({
               value: cohort.id,
-              label: cohort.cohort_acronym,
+              label: `${cohort.name} (${cohort.cohort_acronym})`,
               name: cohort.name,
               type: cohort.type,
               outdated: cohort.outdated,
