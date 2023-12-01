@@ -52,7 +52,7 @@ class EditCohort extends Component {
         id: selectedCohort.value,
         cohort: option,
         cohortName: selectedCohort.name,
-        cohortAcronym: selectedCohort.label,
+        cohortAcronym: selectedCohort.cohort_acronym,
         type:
           selectedCohort.type === "Survivor"
             ? { value: "Survivor", label: "Survivor Cohort" }
@@ -126,13 +126,9 @@ class EditCohort extends Component {
         cohorts.map((cohort) => {
           if (!toAddCohorts.find((e) => e.label === cohort.cohort_acronym)) {
             toAddCohorts.push({
+              ...cohort,
               value: cohort.id,
               label: `${cohort.name} (${cohort.cohort_acronym})`,
-              name: cohort.name,
-              type: cohort.type,
-              outdated: cohort.outdated,
-              notes: cohort.notes,
-              status: cohort.status,
             });
 
             if (cohort.user_id) map = { ...map, [cohort.id]: [cohort.user_id] };
@@ -438,38 +434,36 @@ class EditCohort extends Component {
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortName">
                     <Form.Label className="oneLineLabel" htmlFor="cu_firstName">
-                      Cohort Name<span style={{ color: "red" }}>*</span>
+                      Cohort Name
                     </Form.Label>
                     {this.state.name_error !== "" && (
                       <Form.Label style={{ color: "red" }}> {this.state.name_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
-                      placeholder="Max of 500 characters"
+                      placeholder="Cohort Name"
                       name="cu_firstName"
                       type="text"
                       id="cu_firstName"
                       value={this.state.cohortName}
-                      onChange={(e) => this.handleChange("cohortName", e)}
-                      disabled={!this.state.id}
+                      disabled={true}
                     />
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortAcronym">
                     <Form.Label className="oneLineLabel" htmlFor="cu_lastName">
-                      Cohort Acronym<span style={{ color: "red" }}>*</span>
+                      Cohort Acronym
                     </Form.Label>
                     {this.state.acronym_error !== "" && (
                       <Form.Label style={{ color: "red" }}> {this.state.acronym_error}</Form.Label>
                     )}
                     <input
                       className="form-control"
-                      placeholder="Max of 100 characters"
+                      placeholder="Cohort Acronym"
                       name="cu_lastName"
                       type="text"
                       id="cu_lastName"
                       value={this.state.cohortAcronym}
-                      onChange={(e) => this.handleChange("cohortAcronym", e)}
-                      disabled={!this.state.id}
+                      disabled={true}
                     />
                   </Form.Group>
                   <Form.Group id="ctl11_div_cohortType">
