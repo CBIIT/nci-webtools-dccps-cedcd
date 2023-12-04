@@ -339,6 +339,7 @@ class EditCohort extends Component {
                   cohortAcronym_required: false,
                   org_required: false,
                   message_required: false,
+                  cohort: "",
                   cohortName: "",
                   cohortAcronym: "",
                   type: "",
