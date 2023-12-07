@@ -2062,7 +2062,6 @@ BEGIN
 		-- cohort_id
         cohort_name
         ,cohort_acronym
-		,cohort_type
         ,coalesce(cohort_web_site, '') AS cohort_web_site
         -- ,date_format(date_completed, '%Y-%m-%dT%H:%i:%s.000Z') AS completionDate
         ,clarification_contact
