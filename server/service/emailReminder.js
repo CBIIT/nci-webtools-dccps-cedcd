@@ -12,11 +12,13 @@ export function startReminderService(app) {
     "0 9 * * *", // cronTime
     async () => {
       const { mysql, logger } = app.locals;
+      logger.info("Checking for upcoming outdated cohorts");
       const cohortsPerUser = await getOutdatedCohorts(mysql);
       cohortsPerUser.forEach(async (data) => {
         try {
           await sendReminder(data);
           await updateReminderSent(mysql, data, true);
+          logger.info("Reminder emails sent");
         } catch (error) {
           logger.error(error);
         }
