@@ -51,7 +51,7 @@ export default function CohortActivity() {
 
   return (
     <div className="w-100">
-      <h1 class="welcome pg-title">{abbreviation} Activities</h1>
+      <h1 className="welcome pg-title">{abbreviation} Activities</h1>
       <p className="welcome mb-4">
         <NavLink to="/admin/managecohort">
           <i className="fas fa-chevron-left mr-2" />

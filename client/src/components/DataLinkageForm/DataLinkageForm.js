@@ -1106,7 +1106,7 @@ const DataLinkageForm = ({ ...props }) => {
                                             {!isReadOnly && dataLinkage.dataFileName.filename &&
                                                 <>
                                                     {' '}(
-                                                    <span class="closer"
+                                                    <span className="closer"
                                                         onClick={() =>
                                                             deleteFileFromList('mainFileName', dataLinkage.dataFileName.filename, dataLinkage.dataFileName.fileId)
                                                         }>x</span>

@@ -312,13 +312,13 @@ class AddNewCohort extends Component {
         )}
         <div className="col-md-12">
           <div id="myModal" className={success_back} onClick={this.handleModalClick}>
-            <div className={submit_cls} style={{ "textAlign": "center", "border-radius": "10px" }}>
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">
+            <div className={submit_cls} style={{ "textAlign": "center", "borderRadius": "10px" }}>
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">
                   &times;
                 </button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <h3>Message sent successfully!</h3>
               </div>
             </div>

@@ -26,7 +26,7 @@ class FloatingSideHeader extends Component {
             <a data-tip={item.title} className="reactTooltip">
               &#9432;
             </a>
-            <ReactTooltip class="customeTheme" effect="solid" />
+            <ReactTooltip className="customeTheme" effect="solid" />
           </span>
         );
       } else {
