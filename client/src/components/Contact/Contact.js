@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./Contact.css";
 import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 
 class Contact extends Component {
   constructor(props) {
@@ -175,13 +176,13 @@ class Contact extends Component {
     return (
       <div>
         <div id="myModal" className={success_back} onClick={this.handleModalClick}>
-          <div className={submit_cls} style={{ "textAlign": "center", "border-radius": "10px" }}>
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">
+          <div className={submit_cls} style={{ "textAlign": "center", "borderRadius": "10px" }}>
+            <div className="modal-header">
+              <button type="button" className="close" data-dismiss="modal">
                 &times;
               </button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <h3>Message sent successfully!</h3>
             </div>
           </div>
@@ -316,7 +317,10 @@ class Contact extends Component {
               <h2>Contacting a Specific Cohort</h2>
               <p>
                 You can find contact info for each cohort on their{" "}
-                <span style={{ fontWeight: "bold" }}>Cohort Profile</span> page.
+                <Link to="/select" style={{ fontWeight: "bold" }}>
+                  Cohort Profile{" "}
+                </Link>
+                page.
               </p>
             </div>
           </div>

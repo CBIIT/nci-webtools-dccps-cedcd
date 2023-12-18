@@ -1,11 +1,13 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
-import { resetUser } from "../../reducers/user";
+import { useParams } from "react-router-dom";
+
 const NavBar = (props) => {
   const userSession = useSelector((state) => state.user);
+  const urlParams = useParams();
 
   const logout = async (e) => {
     // can not use normal 301 response, since session is not properly cleared
