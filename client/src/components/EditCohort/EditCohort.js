@@ -302,7 +302,7 @@ class EditCohort extends Component {
             cohortAcronym: state.cohortAcronym,
             cohortType: state.type.value,
             cohortOwners: ownerIDs,
-            outdated: state.outdated,
+            // outdated: state.outdated,
             notes: state.notes,
             createBy: this.props.user,
           };
@@ -526,8 +526,8 @@ class EditCohort extends Component {
                     id="outdated"
                     label="Cohort outdated"
                     checked={this.state.outdated}
-                    onClick={this.handleOutdated}
-                    disabled={this.state.status !== "published"}
+                    // onClick={this.handleOutdated}
+                    disabled={true}
                     title={"Only available for published cohorts"}
                   />
                   <div className="bttn-group" style={{ width: "90%" }}>
