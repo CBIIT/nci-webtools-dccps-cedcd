@@ -84,6 +84,10 @@ class EditCohort extends Component {
   }
 
   componentDidMount = () => {
+    this.setOptions();
+  };
+
+  setOptions = () => {
     this.setState({ isFetching: true });
     let reqBody = {};
 
@@ -347,6 +351,7 @@ class EditCohort extends Component {
                   cohortOwners: [],
                   notes: "",
                 });
+                this.setOptions();
               }, 1500);
             });
         }
