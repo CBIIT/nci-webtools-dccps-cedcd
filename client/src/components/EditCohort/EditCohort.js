@@ -339,17 +339,6 @@ class EditCohort extends Component {
                 this.setState({
                   submitted: !this.state.submitted,
                   background_gray: true,
-                  cohortName_required: false,
-                  cohortAcronym_required: false,
-                  org_required: false,
-                  message_required: false,
-                  cohort: "",
-                  cohortName: "",
-                  cohortAcronym: "",
-                  type: "",
-                  outdated: false,
-                  cohortOwners: [],
-                  notes: "",
                 });
                 this.setOptions();
               }, 1500);
@@ -371,8 +360,7 @@ class EditCohort extends Component {
       dropCLS = dropCLS + " open";
     }
 
-    let org_cls = this.state.org_required ? "contact-us-field field-required" : "contact-us-field";
-
+    const org_cls = "contact-us-field";
     const submit_cls = this.state.background_gray ? "message-mid fade-away" : "message-mid";
     const success_back = this.state.background_gray ? "modal" : "non-modal";
     return (
