@@ -291,7 +291,7 @@ class EditCohort extends Component {
             ownerIDs.push(owner.value);
           });
         }
-        if ((state.notes !== null || !state.notes) && state.notes.length > 2000) {
+        if ((state.notes !== null || !state.notes) && state.notes?.length > 2000) {
           state.notes_error = " Max length of 2000 characters";
           errors += 1;
         }
