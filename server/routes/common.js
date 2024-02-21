@@ -227,6 +227,12 @@ router.post("/export/select", function (req, res) {
     params.push("");
   }
 
+  if (filter.participant.type.length > 0) {
+    params.push(filter.participant.type.toString());
+  } else {
+    params.push("");
+  }
+
   if (filter.participant.ethnicity.length > 0) {
     params.push(filter.participant.ethnicity.toString());
   } else {
