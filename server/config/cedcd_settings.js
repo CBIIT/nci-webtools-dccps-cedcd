@@ -36,7 +36,7 @@ const cedcd_settings = {
     debug: true,
   },
   log_level: process.env.LOGGER_LEVEL || "debug",
-  env: process.env.ENV || "dev",
+  env: process.env.APP_TIER || "dev",
 };
 
 export default cedcd_settings;

@@ -17,6 +17,14 @@ export function formatObject(object) {
 }
 
 export function createLogger(name, level = "info") {
+  const { APP_TIER, DATADOG_HOST, DATADOG_API_KEY } = process.env;
+  const datadogTransportOptions = {
+    host: DATADOG_HOST,
+    path: `/api/v2/logs?dd-api-key=${DATADOG_API_KEY}&ddsource=nodejs&service=${APP_TIER}-cedcd-backend`,
+    ssl: true,
+    format: format.json(),
+  };
+
   return new createWinstonLogger({
     level: level,
     format: format.combine(
@@ -24,7 +32,7 @@ export function createLogger(name, level = "info") {
       format.label({ label: name }),
       format.printf((e) => `[${e.label}] [${e.timestamp}] [${e.level}] - ${formatObject(e.message)}`),
     ),
-    transports: [new transports.Console()],
+    transports: [new transports.Console(), new transports.Http(datadogTransportOptions)],
     exitOnError: false,
   });
 }
