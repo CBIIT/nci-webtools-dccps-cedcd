@@ -1,4 +1,4 @@
-import inspect from "util";
+import { inspect } from "util";
 import { createLogger as createWinstonLogger, format, transports } from "winston";
 import pick from "lodash/pick.js";
 import isEmpty from "lodash/isEmpty.js";
