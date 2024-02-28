@@ -2,7 +2,6 @@
 import express from "express";
 import Router from "express-promise-router";
 import * as mysql from "../components/mysql.js";
-import logger from "../components/logger.js";
 import * as cache from "../components/cache.js";
 import fs from "fs";
 import ejs from "ejs";
@@ -103,6 +102,7 @@ router.post("/select_admin_info", async function (req, res) {
 }) */
 
 router.post("/upload/:id/:category", function (req, res, next) {
+  const { logger } = req.app.locals;
   let cohortFiles = req.files.cohortFile.length > 1 ? Array.from(req.files.cohortFile) : req.files.cohortFile;
   fs.access(`${config.file_path}`, (err) => {
     if (err) {
@@ -599,6 +599,7 @@ router.post("/update_mortality/:id", function (req, res) {
 });
 
 router.post("/dlh/:id", function (req, res) {
+  const { logger } = req.app.locals;
   let id = req.params.id;
   let func = "select_dlh";
   let params = [];
@@ -664,7 +665,7 @@ router.get("/cancer_info/:id", function (req, res) {
 
 router.post("/update_cancer_count/:id", async function (req, res) {
   const { app, params, body } = req;
-  const { mysql } = app.locals;
+  const { mysql, logger } = app.locals;
   const { id } = params;
   try {
     const [result] = await mysql.query("CALL update_cancer_count(?, ?)", [id, JSON.stringify(body)]);
@@ -682,7 +683,7 @@ router.post("/update_cancer_count/:id", async function (req, res) {
 
 router.post("/update_cancer_info/:id", async function (req, res) {
   const { app, params, body } = req;
-  const { mysql } = app.locals;
+  const { mysql, logger } = app.locals;
   const { id } = params;
   try {
     const [result, result1] = await mysql.query("CALL update_cancer_info(?, ?)", [id, JSON.stringify(body)]);
@@ -744,7 +745,7 @@ router.post("/update_specimen/:id", function (req, res) {
 
 router.get("/cohort/:id(\\d+)", async (request, response) => {
   const { app, params } = request;
-  const { mysql } = app.locals;
+  const { mysql, logger } = app.locals;
   const { id } = params;
   try {
     response.json(await getCohort(mysql, id));
@@ -756,7 +757,7 @@ router.get("/cohort/:id(\\d+)", async (request, response) => {
 
 router.post("/cohort(/:id(\\d+))?", async (request, response) => {
   const { app, params, body, user } = request;
-  const { mysql } = app.locals;
+  const { mysql, logger } = app.locals;
   let id = params ? params.id : undefined; // can be undefined (for new cohorts)
 
   try {
@@ -769,7 +770,7 @@ router.post("/cohort(/:id(\\d+))?", async (request, response) => {
 
 router.get("/lookup", async (request, response) => {
   let { locals } = request.app;
-  let { lookup, mysql } = locals;
+  let { lookup, mysql, logger } = locals;
 
   try {
     if (!lookup) {
