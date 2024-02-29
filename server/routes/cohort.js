@@ -130,7 +130,11 @@ router.post("/add", function (req, res) {
 
   mysql.callJsonProcedure(func, params, function (result) {
     if (result && result[0] && result[0][0].success === 1) res.json({ status: 200, message: "update successful" });
-    else res.json({ status: 500, message: "update failed" });
+    else {
+      logger.error(result);
+      throw new Error("update failed");
+      // res.json({ status: 500, message: "update failed" });
+    }
   });
 });
 
