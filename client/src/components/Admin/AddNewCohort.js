@@ -226,6 +226,7 @@ class AddNewCohort extends Component {
             cohortOwners: ownerIDs,
             notes: state.notes,
             createBy: this.props.user,
+            outdated: false,
           };
 
           console.log(reqBody);
@@ -311,7 +312,7 @@ class AddNewCohort extends Component {
         )}
         <div className="col-md-12">
           <div id="myModal" className={success_back} onClick={this.handleModalClick}>
-            <div className={submit_cls} style={{ "textAlign": "center", "borderRadius": "10px" }}>
+            <div className={submit_cls} style={{ textAlign: "center", borderRadius: "10px" }}>
               <div className="modal-header">
                 <button type="button" className="close" data-dismiss="modal">
                   &times;
