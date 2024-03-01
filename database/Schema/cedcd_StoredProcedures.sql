@@ -3577,7 +3577,7 @@ BEGIN
 			set @cohortType = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortType'));
             set @createBy = JSON_UNQUOTE(JSON_EXTRACT(info, '$.createBy'));
 			set @notes = JSON_UNQUOTE(JSON_EXTRACT(info, '$.notes'));
-			SET @outdated = JSON_UNQUOTE(JSON_EXTRACT(info, '$.outdated'));
+			SET @outdated = JSON_EXTRACT(info, '$.outdated')=true;
 			SET @owners = JSON_UNQUOTE(JSON_EXTRACT(info, '$.cohortOwners'));
 
 			SELECT value into @latest_ver FROM lu_config WHERE type = 'questionnaire ver' and active = 1 order by id desc LIMIT 1;
