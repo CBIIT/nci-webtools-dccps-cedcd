@@ -1,0 +1,16 @@
+USE cedcd;
+
+DROP PROCEDURE IF EXISTS `?`;
+DELIMITER //
+CREATE PROCEDURE `?`()
+BEGIN
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+
+    UPDATE cohort
+    SET `type` = 'Survivor'
+    WHERE acronym IN('ColoCare', 'Detroit ROCS', 'Leo-MER', 'Leo-PHASE1', 'SJLIFE', 'WHI-CSC');
+    
+END //
+DELIMITER ;
+CALL `?`();
+DROP PROCEDURE `?`;
