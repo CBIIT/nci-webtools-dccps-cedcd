@@ -5,7 +5,6 @@
 "use strict";
 
 import config from "../config/index.js";
-import logger from "./logger.js";
 import nodeMailer from "nodemailer";
 
 export async function sendMail(from, to, subject, text, html, next) {

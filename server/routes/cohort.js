@@ -12,7 +12,6 @@ import Router from "express-promise-router";
 import * as mysql from "../components/mysql.js";
 import * as cache from "../components/cache.js";
 import config from "../config/index.js";
-import logger from "../components/logger.js";
 import basicInfoController from "../service/details/basicInfoController.js";
 import baselineController from "../service/details/baselineController.js";
 import followupController from "../service/details/followupController.js";
@@ -34,6 +33,7 @@ export async function readTemplate(filePath, data) {
 }
 
 router.post("/sendUserEmail", async function (req, res, next) {
+  const { logger } = req.app.locals;
   // get template path
   const dirname = path.normalize(config.root + "/service");
 
@@ -660,6 +660,7 @@ router.post("/specimen", function (req, res) {
 });
 
 router.get("/:id", function (req, res) {
+  const { logger } = req.app.locals;
   let id = req.params.id;
   let info = cache.getValue("cohort:" + id);
   //if (info == undefined) {

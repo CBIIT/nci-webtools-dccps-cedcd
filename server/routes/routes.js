@@ -12,8 +12,12 @@ import adminRouter from "./admin.js";
 import sessionRouter from "./session.js";
 import config from "../config/index.js";
 import path from "path";
+import { logErrors, logRequests } from "../service/middleware.js";
 
 const routes = Router();
+
+// log requests
+routes.use(logRequests());
 
 //allows CrossDomainAccess to API
 routes.use(function (req, res, next) {
@@ -50,5 +54,8 @@ routes.get("/api/ping", (request, response) => {
 routes.get("/*", function (req, res) {
   res.sendFile(path.join(config.root, "../client/www", "index.html"));
 });
+
+// log errors
+routes.use(logErrors());
 
 export default routes;

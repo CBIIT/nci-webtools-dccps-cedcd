@@ -10,7 +10,6 @@ import path from "path";
 import moment from "moment";
 import * as mail from "../components/mail.js";
 import XlsxPopulate from "xlsx-populate";
-import logger from "../components/logger.js";
 
 const router = Router();
 
@@ -76,6 +75,7 @@ router.post("/contact/add", function (req, res, next) {
 });
 
 router.get("/download/:filename", function (req, res, next) {
+  const { logger } = request.app.locals;
   let filename = req.params.filename;
   let filePath = path.format({
     dir: config.file_path,
@@ -223,6 +223,12 @@ router.post("/export/select", function (req, res) {
 
   if (filter.participant.race.length > 0) {
     params.push(filter.participant.race.toString());
+  } else {
+    params.push("");
+  }
+
+  if (filter.participant.type.length > 0) {
+    params.push(filter.participant.type.toString());
   } else {
     params.push("");
   }

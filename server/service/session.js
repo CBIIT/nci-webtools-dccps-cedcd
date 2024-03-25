@@ -2,7 +2,7 @@ import cedcd_settings from "../config/cedcd_settings.js";
 import session from "express-session";
 import memorystore from "memorystore";
 const MemoryStore = memorystore(session);
-const production = (process.env.ENV || "dev") !== "dev";
+const production = (process.env.APP_TIER || "dev") !== "dev";
 
 export default session({
   cookie: {

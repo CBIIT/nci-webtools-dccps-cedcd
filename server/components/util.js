@@ -6,10 +6,12 @@
 import moment from "moment";
 import { fileURLToPath } from "url";
 import { parse } from "csv-parse";
-import logger from "./logger.js";
 import fs from "fs";
 import crypto from "crypto";
 import MD5 from "md5";
+import { createLogger } from "../service/logger";
+
+const logger = createLogger("cedcd", process.env?.LOGGER_LEVEL || "debug");
 
 function file(name) {
   const filename = fileURLToPath(import.meta.url);

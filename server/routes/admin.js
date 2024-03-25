@@ -11,7 +11,6 @@
 //
 import Router from "express-promise-router";
 import * as mysql from "../components/mysql.js";
-import logger from "../components/logger.js";
 
 const router = Router();
 router.use((request, response, next) => {
@@ -117,6 +116,7 @@ router.post("/adminuserlist", function (req, res) {
 });
 
 router.post("/getUserProfile/:id", function (req, res) {
+  const { logger } = req.app.locals;
   let id = req.params.id;
   let func = "select_user_profile";
   let params = [];
@@ -153,7 +153,7 @@ router.post("/updateUserProfile/:id", function (req, res) {
 
 router.get("/cohortActivityLog/:abbreviation", async function (request, response) {
   const { app, params } = request;
-  const { mysql } = app.locals;
+  const { mysql, logger } = app.locals;
   const { abbreviation } = params;
 
   try {
