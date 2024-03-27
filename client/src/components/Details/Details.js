@@ -1680,7 +1680,7 @@ class Details extends Component {
                   <Workbook.Sheet name="Cohort_Selection">
                     <Workbook.Column label="Cohort Name" value="cohort_name" />
                     <Workbook.Column label="Cohort Acronym" value="cohort_acronym" />
-                    <Workbook.Column label="Cohort Type" value="cohort_type" />
+                    <Workbook.Column label="Cohort Type" value="type" />
                     <Workbook.Column label="Total Enrollments (n=)" value="enrollment_total" />
                     <Workbook.Column label="Website" value="cohort_web_site" />
                     <Workbook.Column label="Last Published" value="publish_time" />
@@ -1711,7 +1711,7 @@ class Details extends Component {
                     {this.renderSelectHeader("5%")}
                     {this.renderTableHeader("cohort_name", "30%")}
                     {this.renderTableHeader("cohort_acronym", "10%")}
-                    {this.renderTableHeader("cohort_type", "10%")}
+                    {this.renderTableHeader("type", "10%")}
                     {this.renderTableHeaderMiddle("enrollment_total", "10%")}
                     <th className="sortable" width="20%" scope="col">
                       <a href="javascript:void(0);" style={{ cursor: "default" }}>
