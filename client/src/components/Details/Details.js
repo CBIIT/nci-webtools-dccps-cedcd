@@ -120,6 +120,7 @@ class Details extends Component {
       booleanStates: state.booleanStates,
       orderBy: state.orderBy,
       paging: state.pageInfo,
+      advancedCondition: state.advancedCondition,
     };
     reqBody.paging.page = 0;
 
