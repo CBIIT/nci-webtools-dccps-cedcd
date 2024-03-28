@@ -369,6 +369,7 @@ router.post("/export/select", function (req, res) {
   mysql.callProcedure(func, params, function (results) {
     if (results && results[0] && results[0].length > 0) {
       results[0].forEach(function (entry) {
+        entry.publish_time = moment(entry.publish_time).format("MM/DD/YYYY");
         entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
       });
       data.list["Cohort_Selection"].rows = results[0];
@@ -651,6 +652,7 @@ router.post("/export/advancedSelect", function (req, res) {
   mysql.callProcedure(func, params, function (results) {
     if (results && results[0] && results[0].length > 0) {
       results[0].forEach(function (entry) {
+        entry.publish_time = moment(entry.publish_time).format("MM/DD/YYYY");
         entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
       });
       data.list["Cohort_Selection"].rows = results[0];
