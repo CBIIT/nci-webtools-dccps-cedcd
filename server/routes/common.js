@@ -341,9 +341,12 @@ router.post("/export/select", function (req, res) {
       });
     }
     if (filter.collect.specimen.length !== 0) {
+      const specimens = cache
+        .getValue("lookup:collected_specimen")
+        .reduce((a, e) => ({ ...a, [e.id]: e.specimen }), {});
       data.list["Criteria"].header.push(["Specimens Collected:"]);
       filter.collect.specimen.forEach(function (s) {
-        data.list["Criteria"].header.push([" - " + s]);
+        data.list["Criteria"].header.push([" - " + specimens[s]]);
       });
     }
     if (filter.collect.cancer.length !== 0) {
@@ -603,6 +606,9 @@ router.post("/export/advancedSelect", function (req, res) {
       data.list["Criteria"].header.push(str);
     }
     if (advancedFilter.specimen.length !== 0) {
+      const specimens = cache
+        .getValue("lookup:collected_specimen")
+        .reduce((a, e) => ({ ...a, [e.id]: e.specimen }), {});
       let str = [];
       str.push(advancedFilter.booleanOperationBetweenField[6]);
       str.push("Specimens Collected");
@@ -610,7 +616,7 @@ router.post("/export/advancedSelect", function (req, res) {
       let tmp = [];
 
       advancedFilter.specimen.forEach(function (s) {
-        tmp.push(s);
+        tmp.push(specimens[s]);
       });
       str.push(tmp.join(" " + advancedFilter.booleanOperationWithInField[6] + " "));
       data.list["Criteria"].header.push(str);
