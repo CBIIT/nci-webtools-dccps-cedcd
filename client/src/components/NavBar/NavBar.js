@@ -165,7 +165,7 @@ const NavBar = (props) => {
             />
             <Tab id="aboutTab" value={5} currTab={props.currTab} active={active} onClick={() => props.onClick(5)} />
             <Tab id="contactTab" value={6} currTab={props.currTab} active={active} onClick={() => props.onClick(6)} />
-            <TourBox currTab={props.currTab} />
+            {/* <TourBox currTab={props.currTab} /> */}
             {userSession && /CohortAdmin/.test(userSession.role) && (
               <Tab
                 id="newCohortTab"
