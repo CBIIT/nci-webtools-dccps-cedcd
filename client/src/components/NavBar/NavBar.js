@@ -3,11 +3,9 @@ import { useSelector } from "react-redux";
 import "./NavBar.scss";
 import Tab from "../Tab/Tab";
 import TourBox from "../Tour/TourBox";
-import { useParams } from "react-router-dom";
 
 const NavBar = (props) => {
   const userSession = useSelector((state) => state.user);
-  const urlParams = useParams();
 
   const logout = async (e) => {
     // can not use normal 301 response, since session is not properly cleared
@@ -26,6 +24,7 @@ const NavBar = (props) => {
   urlparts.shift();
   let active = "/" + urlparts.join("/");
   if (active === "/") active = "/home";
+  const validTour = [/^\/select*/, /^\/enrollment*/, /^\/cancer*/, /^\/biospecimen*/];
 
   return (
     <>
@@ -78,7 +77,6 @@ const NavBar = (props) => {
                   active={active}
                   onClick={() => props.onClick(6)}
                 />
-                {/*<TourBox currTab={this.props.currTab}  />*/}
 
                 {userSession && /CohortAdmin/.test(userSession.role) && (
                   <Tab
@@ -165,7 +163,7 @@ const NavBar = (props) => {
             />
             <Tab id="aboutTab" value={5} currTab={props.currTab} active={active} onClick={() => props.onClick(5)} />
             <Tab id="contactTab" value={6} currTab={props.currTab} active={active} onClick={() => props.onClick(6)} />
-            {/* <TourBox currTab={props.currTab} /> */}
+            {validTour.some((e) => e.test(active)) && <TourBox currTab={props.currTab} />}
             {userSession && /CohortAdmin/.test(userSession.role) && (
               <Tab
                 id="newCohortTab"
