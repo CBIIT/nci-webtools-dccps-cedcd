@@ -190,7 +190,7 @@ class Contact extends Component {
         <div id="contactForm" className="row pop-form">
           <div id="contact-main" className="col">
             <div id="contact-header" className="col-md-12">
-              <h1 className="pg-title">Contact</h1>
+              <h1 className="pg-title">Contact Us</h1>
             </div>
             <div id="contact-col-1" className="col-md-6 contact-col">
               <form onSubmit={this.handleSubmit}>

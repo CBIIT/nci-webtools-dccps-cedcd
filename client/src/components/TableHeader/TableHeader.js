@@ -15,7 +15,7 @@ class TableHeader extends Component {
       name = "Last Updated";
     } else if (this.props.value === "publish_time") {
       name = "Last Published";
-    } else if (this.props.value === "cohort_type") {
+    } else if (this.props.value === "type") {
       name = "Cohort Type";
     } else {
       name = "Cohort Name";

@@ -227,14 +227,14 @@ router.post("/export/select", function (req, res) {
     params.push("");
   }
 
-  if (filter.participant.type.length > 0) {
-    params.push(filter.participant.type.toString());
+  if (filter.participant.ethnicity.length > 0) {
+    params.push(filter.participant.ethnicity.toString());
   } else {
     params.push("");
   }
 
-  if (filter.participant.ethnicity.length > 0) {
-    params.push(filter.participant.ethnicity.toString());
+  if (filter.participant.type.length > 0) {
+    params.push(filter.participant.type.toString());
   } else {
     params.push("");
   }
@@ -246,11 +246,13 @@ router.post("/export/select", function (req, res) {
   }
 
   if (filter.collect.specimen.length > 0) {
-    let specimen_columns = [];
-    filter.collect.specimen.forEach(function (cs) {
-      specimen_columns.push(config.collected_specimen[cs]);
-    });
-    params.push(specimen_columns.toString());
+    /*  changed in 2021 use dtabase view to match selections
+				let specimen_columns = [];
+				filter.collect.specimen.forEach(function (cs) {
+					specimen_columns.push(config.collected_specimen[cs]);
+				});
+		*/
+    params.push(filter.collect.specimen.toString());
   } else {
     params.push("");
   }
@@ -339,9 +341,12 @@ router.post("/export/select", function (req, res) {
       });
     }
     if (filter.collect.specimen.length !== 0) {
+      const specimens = cache
+        .getValue("lookup:collected_specimen")
+        .reduce((a, e) => ({ ...a, [e.id]: e.specimen }), {});
       data.list["Criteria"].header.push(["Specimens Collected:"]);
       filter.collect.specimen.forEach(function (s) {
-        data.list["Criteria"].header.push([" - " + s]);
+        data.list["Criteria"].header.push([" - " + specimens[s]]);
       });
     }
     if (filter.collect.cancer.length !== 0) {
@@ -367,6 +372,7 @@ router.post("/export/select", function (req, res) {
   mysql.callProcedure(func, params, function (results) {
     if (results && results[0] && results[0].length > 0) {
       results[0].forEach(function (entry) {
+        entry.publish_time = moment(entry.publish_time).format("MM/DD/YYYY");
         entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
       });
       data.list["Cohort_Selection"].rows = results[0];
@@ -404,6 +410,7 @@ router.post("/export/advancedSelect", function (req, res) {
   let advancedFilter = body.advancedFilter || {};
   let orderBy = body.orderBy || {};
   let paging = body.paging || {};
+  let advancedCondition = body.advancedCondition || "";
   let func = "select_advanced_cohort";
   let params = [];
   //form filter into Strings
@@ -442,6 +449,12 @@ router.post("/export/advancedSelect", function (req, res) {
     params.push("");
   }
 
+  if (advancedFilter.type.length > 0) {
+    params.push(advancedFilter.type.toString());
+  } else {
+    params.push("");
+  }
+
   if (advancedFilter.data.length > 0) {
     params.push(advancedFilter.data.toString());
   } else {
@@ -449,11 +462,7 @@ router.post("/export/advancedSelect", function (req, res) {
   }
 
   if (advancedFilter.specimen.length > 0) {
-    let specimen_columns = [];
-    advancedFilter.specimen.forEach(function (cs) {
-      specimen_columns.push(config.collected_specimen[cs]);
-    });
-    params.push(specimen_columns.toString());
+    params.push(advancedFilter.specimen.toString());
   } else {
     params.push("");
   }
@@ -464,12 +473,16 @@ router.post("/export/advancedSelect", function (req, res) {
     params.push("");
   }
 
-  if (advancedFilter.booleanOperationBetweenField.length > 0) {
-    params.push(advancedFilter.booleanOperationBetweenField.toString());
-  } else {
-    params.push("");
-  }
-
+  advancedFilter.booleanOperationBetweenField = advancedCondition == "AND" ? Array(8).fill("AND") : Array(8).fill("OR");
+  params.push(advancedFilter.booleanOperationBetweenField.toString());
+  /*
+	if(advancedFilter.booleanOperationBetweenField.length > 0){
+		params.push(advancedFilter.booleanOperationBetweenField.toString());
+	}
+	else{
+		params.push("");
+	}
+	*/
   if (advancedFilter.booleanOperationWithInField.length > 0) {
     params.push(advancedFilter.booleanOperationWithInField.toString());
   } else {
@@ -593,6 +606,9 @@ router.post("/export/advancedSelect", function (req, res) {
       data.list["Criteria"].header.push(str);
     }
     if (advancedFilter.specimen.length !== 0) {
+      const specimens = cache
+        .getValue("lookup:collected_specimen")
+        .reduce((a, e) => ({ ...a, [e.id]: e.specimen }), {});
       let str = [];
       str.push(advancedFilter.booleanOperationBetweenField[6]);
       str.push("Specimens Collected");
@@ -600,7 +616,7 @@ router.post("/export/advancedSelect", function (req, res) {
       let tmp = [];
 
       advancedFilter.specimen.forEach(function (s) {
-        tmp.push(s);
+        tmp.push(specimens[s]);
       });
       str.push(tmp.join(" " + advancedFilter.booleanOperationWithInField[6] + " "));
       data.list["Criteria"].header.push(str);
@@ -642,6 +658,7 @@ router.post("/export/advancedSelect", function (req, res) {
   mysql.callProcedure(func, params, function (results) {
     if (results && results[0] && results[0].length > 0) {
       results[0].forEach(function (entry) {
+        entry.publish_time = moment(entry.publish_time).format("MM/DD/YYYY");
         entry.update_time = moment(entry.update_time).format("MM/DD/YYYY");
       });
       data.list["Cohort_Selection"].rows = results[0];

@@ -23,7 +23,7 @@ export default function mortalityController(req, res) {
         name: "Mortality",
         rows: 10,
       });
-      values = [
+      const values = [
         {
           name: "Number of Deaths from Most Recent Mortality Follow-up",
           text: true,

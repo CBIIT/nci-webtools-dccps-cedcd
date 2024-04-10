@@ -13,7 +13,7 @@ class TableHeaderMiddle extends Component {
       name = "Total Enrollments (n=)";
     } else if (this.props.value === "update_time") {
       name = "Last Updated";
-    } else if (this.props.value === "cohort_type") {
+    } else if (this.props.value === "type") {
       name = "Cohort Type";
     } else {
       name = "Cohort Name";
