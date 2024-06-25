@@ -685,7 +685,7 @@ router.get("/:id", function (req, res) {
             tmp.name = p.name;
             tmp.institution = p.institution;
             info.pis.push(tmp);
-          } else if (p.category_id in [1, 4]) {
+          } else if ([1, 4].includes(p.category_id)) {
             info.collab_name = p.name;
             info.collab_position = p.position;
             info.collab_phone = p.phone;
