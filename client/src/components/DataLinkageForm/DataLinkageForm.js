@@ -1118,7 +1118,7 @@ const DataLinkageForm = ({ ...props }) => {
                                     }
                                     {dataLinkage.dataFileName.length > 1 && !MfileLoading && (
                                         <>
-                                            <span classNamne="mx-1">
+                                            <span className="mx-1">
                                                 {' '}and{' '}
                                             </span>
                                             <span>

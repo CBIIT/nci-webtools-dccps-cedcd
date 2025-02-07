@@ -2849,7 +2849,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.questionnaire_url.length > 1 && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -2932,7 +2932,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.questionnaireFileName.length > 1 && !QfileLoading && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -3028,7 +3028,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.main_cohort_url.length > 1 && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -3109,7 +3109,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.mainFileName.length > 1 && !MfileLoading && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -3195,7 +3195,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.data_url.length > 1 && (
                                                                                 <>
-                                                                                    <span classNamne="mx-1">
+                                                                                    <span className="mx-1">
                                                                                         {' '}and{' '}
                                                                                     </span>
                                                                                     <span>
@@ -3270,7 +3270,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.dataFileName.length > 1 && !DfileLoading && (
                                                                                 <>
-                                                                                    <span classNamne="mx-1">
+                                                                                    <span className="mx-1">
                                                                                         {' '}and{' '}
                                                                                     </span>
                                                                                     <span>
@@ -3354,7 +3354,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimen_url.length > 1 && (
                                                                                 <>
-                                                                                    <span classNamne="mx-1">
+                                                                                    <span className="mx-1">
                                                                                         {' '}and{' '}
                                                                                     </span>
                                                                                     <span>
@@ -3429,7 +3429,7 @@ const CohortForm = ({ ...props }) => {
                                                                             }
                                                                             {cohort.specimenFileName.length > 1 && !SfileLoading && (
                                                                                 <>
-                                                                                    <span classNamne="mx-1">
+                                                                                    <span className="mx-1">
                                                                                         {' '}and{' '}
                                                                                     </span>
                                                                                     <span>
@@ -3524,7 +3524,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.publication_url.length > 1 && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -3607,7 +3607,7 @@ const CohortForm = ({ ...props }) => {
                                       )}
                                       {cohort.publicationFileName.length > 1 && !PfileLoading && (
                                         <>
-                                          <span classNamne="mx-1"> and </span>
+                                          <span className="mx-1"> and </span>
                                           <span>
                                             <a
                                               href="#"
@@ -3712,7 +3712,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.questionnaire_url.length > 1 && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
@@ -3789,7 +3789,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.questionnaireFileName.length > 1 && !QfileLoading && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
@@ -3873,7 +3873,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.main_cohort_url.length > 1 && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
@@ -3947,7 +3947,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.mainFileName.length > 1 && !MfileLoading && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
@@ -4021,7 +4021,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.data_url.length > 1 && (
                                                                 <>
-                                                                    <span classNamne="mx-1">
+                                                                    <span className="mx-1">
                                                                         {' '}and{' '}
                                                                     </span>
                                                                     <span>
@@ -4093,7 +4093,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.dataFileName.length > 1 && !DfileLoading && (
                                                                 <>
-                                                                    <span classNamne="mx-1">
+                                                                    <span className="mx-1">
                                                                         {' '}and{' '}
                                                                     </span>
                                                                     <span>
@@ -4170,7 +4170,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimen_url.length > 1 && (
                                                                 <>
-                                                                    <span classNamne="mx-1">
+                                                                    <span className="mx-1">
                                                                         {' '}and{' '}
                                                                     </span>
                                                                     <span>
@@ -4242,7 +4242,7 @@ const CohortForm = ({ ...props }) => {
                                                             }
                                                             {cohort.specimenFileName.length > 1 && !SfileLoading && (
                                                                 <>
-                                                                    <span classNamne="mx-1">
+                                                                    <span className="mx-1">
                                                                         {' '}and{' '}
                                                                     </span>
                                                                     <span>
@@ -4321,7 +4321,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.publication_url.length > 1 && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
@@ -4397,7 +4397,7 @@ const CohortForm = ({ ...props }) => {
                               )}
                               {cohort.publicationFileName.length > 1 && !PfileLoading && (
                                 <>
-                                  <span classNamne="mx-1"> and </span>
+                                  <span className="mx-1"> and </span>
                                   <span>
                                     <a
                                       href="#"
