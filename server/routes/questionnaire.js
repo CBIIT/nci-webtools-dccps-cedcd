@@ -533,7 +533,8 @@ router.post("/major_content/:id", function (req, res) {
   mysql.callProcedure(func, params, function (result) {
     //logger.debug(result)
     const majorContent = {};
-    majorContent.counts = result[0];
+    // remove sex/orientation
+    majorContent.counts = result[0].filter((e) => e.category_id !== 43);
     majorContent.cancerInfo = result[1][0];
     if (majorContent) res.json({ status: 200, data: majorContent });
     else res.json({ status: 500, message: "failed to load data" });
@@ -778,7 +779,9 @@ router.get("/lookup", async (request, response) => {
         cancer: await mysql.query(`SELECT id, icd9, icd10, cancer FROM lu_cancer  ORDER BY icd9 = '', icd9`),
         case_type: await mysql.query(`SELECT id, case_type FROM lu_case_type`),
         cohort_status: await mysql.query(`SELECT id, cohortstatus FROM lu_cohort_status`),
-        data_category: await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`),
+        data_category: (await mysql.query(`SELECT id, category, sub_category FROM lu_data_category`)).filter(
+          (e) => e.id !== 43,
+        ),
         ethnicity: await mysql.query(`SELECT id, ethnicity FROM lu_ethnicity`),
         gender: await mysql.query(`SELECT id, gender FROM lu_gender`),
         person_category: await mysql.query(`SELECT id, category FROM lu_person_category`),

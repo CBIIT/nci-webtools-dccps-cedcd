@@ -115,8 +115,8 @@ const MajorContentForm = ({ ...props }) => {
     "",
     "C.30 Residential history Information (zip code, GIS) over time?",
     "",
-    "C.31 Sexual Orientation and Gender Identity (Beyond Male and Female Only)",
-    "",
+    // "C.31 Sexual Orientation and Gender Identity (Beyond Male and Female Only)",
+    // "",
     //removed to snyc with majorContent index 'C.31 Other Medical Conditions', '',
     "a. Diabetes",
     "",
@@ -247,10 +247,10 @@ const MajorContentForm = ({ ...props }) => {
             dispatch(allactions.majorContentActions.tobaccoUseBaseLine(content[41].baseline));
             dispatch(allactions.majorContentActions.tobaccoUseFollowUp(content[41].followup));
           }
-          if (content[42]) {
-            dispatch(allactions.majorContentActions.sexgenderIdentityBaseLine(content[42].baseline));
-            dispatch(allactions.majorContentActions.sexgenderIdentityFollowUp(content[42].followup));
-          }
+          // if (content[42]) {
+          //   dispatch(allactions.majorContentActions.sexgenderIdentityBaseLine(content[42].baseline));
+          //   dispatch(allactions.majorContentActions.sexgenderIdentityFollowUp(content[42].followup));
+          // }
           dispatch(allactions.majorContentActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA));
           dispatch(allactions.majorContentActions.cancerToxicity(cancerInfo.cancerToxicity));
           dispatch(allactions.majorContentActions.cancerLateEffects(cancerInfo.cancerLateEffects));
@@ -330,12 +330,12 @@ const MajorContentForm = ({ ...props }) => {
             dispatch(allactions.majorContentErrorActions.tobaccoUseFollowUp(content[41].followup == 1));
           }
 
-          dispatch(
-            allactions.majorContentErrorActions.sexgenderIdentityBaseLine([0, 1].includes(content[42].baseline)),
-          );
-          dispatch(
-            allactions.majorContentErrorActions.sexgenderIdentityFollowUp([0, 1].includes(content[42].followup)),
-          );
+          // dispatch(
+          //   allactions.majorContentErrorActions.sexgenderIdentityBaseLine([0, 1].includes(content[42].baseline)),
+          // );
+          // dispatch(
+          //   allactions.majorContentErrorActions.sexgenderIdentityFollowUp([0, 1].includes(content[42].followup)),
+          // );
 
           dispatch(
             allactions.majorContentErrorActions.cancerRelatedConditionsNA(cancerInfo.cancerRelatedConditionsNA == 1),
@@ -716,7 +716,7 @@ const MajorContentForm = ({ ...props }) => {
 
   const getFirstContent = () => {
     return Object.keys(majorContent)
-      .slice(0, 75)
+      .slice(0,73)
       .map((key, idx) => {
         if (idx <= 28 || idx > 42) {
           //skip questions first
@@ -847,10 +847,10 @@ const MajorContentForm = ({ ...props }) => {
 
   const getSecondContent = () => {
     return Object.keys(majorContent)
-      .slice(75)
+      .slice(73)
       .map((key, idx) => {
-        if (key.includes("BaseLine")) return getQuestionEntry("BaseLine", key, idx + 75);
-        else if (key.includes("FollowUp")) return getQuestionEntry("FollowUp", key, idx + 75);
+        if (key.includes("BaseLine")) return getQuestionEntry("BaseLine", key, idx + 73);
+        else if (key.includes("FollowUp")) return getQuestionEntry("FollowUp", key, idx + 73);
       });
   };
 
