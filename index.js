@@ -54,6 +54,8 @@ export async function startApp() {
         let specimen = results[5];
         let cohortstatus = results[6];
         let collected_specimen = results[7];
+        // remove sex/orientation
+        data_category = data_category.filter((e) => e.id !== 43);
         cache_setValue("lookup:gender", gender, -1);
         cache_setValue("lookup:cancer", cancer, -1);
         cache_setValue("lookup:data_category", data_category, -1);
