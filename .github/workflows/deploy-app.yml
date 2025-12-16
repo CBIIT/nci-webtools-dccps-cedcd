@@ -118,8 +118,8 @@ jobs:
                   cache-from: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache
                   cache-to: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache,image-manifest=true,oci-mediatypes=true,mode=max
 
-            - name: Install envsubst
-              run: sudo apt-get update && sudo apt-get install -y gettext-base
+            # - name: Install envsubst
+            #   run: sudo apt-get update && sudo apt-get install -y gettext-base
 
             - name: Substitute web task definition variables
               id: substitute-web-task-definition
