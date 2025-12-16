@@ -187,7 +187,7 @@ export class CedcdFargateStack extends cdk.Stack {
         PORT: '8221',
         LOG_DIR: '/app/deploy/log',
         FILE_PATH: '/app/deploy/data',
-        LOGGER_LEVEL: envConfig.logLevel,
+        LOG_LEVEL: envConfig.logLevel,
         ENV: environment,
         MYSQL_HOST: databaseEndpoint,
         MYSQL_PORT: databasePort.toString(),
