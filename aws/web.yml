@@ -96,7 +96,7 @@ containerDefinitions:
       - name: OAUTH2_CLIENT_ID
         valueFrom: "/analysistools/${TIER}/${APP}/oauth2_client_id"
       - name: OAUTH2_CLIENT_SECRET
-        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_secret"
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_client_secret"
       - name: OAUTH2_BASE_URL
         valueFrom: "/analysistools/${TIER}/${APP}/oauth2_base_url"
       - name: OAUTH2_REDIRECT_URI
