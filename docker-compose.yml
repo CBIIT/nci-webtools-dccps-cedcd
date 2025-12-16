@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: "."
+      dockerfile: "./docker/backend.dockerfile"
+    env_file: server/.env
+    volumes:
+      - ./data:/app/data
+    ports:
+      - "8221:8221"
+
+  frontend:
+    build:
+      context: "."
+      dockerfile: "./docker/frontend.dockerfile"
+      args:
+        - API_BASE_URL=http://backend:8221
+        - REACT_APP_VERSION=docker
+    environment:
+      API_BASE_URL: http://backend:8221
+      APP_PATH: ""
+    ports:
+      - "80:80"
