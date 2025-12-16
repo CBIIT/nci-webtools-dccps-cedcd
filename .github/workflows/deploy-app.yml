@@ -118,9 +118,6 @@ jobs:
                   cache-from: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache
                   cache-to: type=registry,ref=${{ env.IMAGE_REPOSITORY }}:frontend-cache,image-manifest=true,oci-mediatypes=true,mode=max
 
-            # - name: Install envsubst
-            #   run: sudo apt-get update && sudo apt-get install -y gettext-base
-
             - name: Substitute web task definition variables
               id: substitute-web-task-definition
               run: |
@@ -163,8 +160,8 @@ jobs:
                     --propagate-tags TASK_DEFINITION \
                     --force-new-deployment
 
-            - name: Wait for service stability
-              run: |
-                  aws ecs wait services-stable \
-                    --cluster ${{ env.ECS_CLUSTER }} \
-                    --services ${{ env.ECS_WEB_SERVICE }}
+            # - name: Wait for service stability
+            #   run: |
+            #       aws ecs wait services-stable \
+            #         --cluster ${{ env.ECS_CLUSTER }} \
+            #         --services ${{ env.ECS_WEB_SERVICE }}
