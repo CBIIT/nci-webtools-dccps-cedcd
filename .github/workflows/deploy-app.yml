@@ -160,7 +160,7 @@ jobs:
                     --service ${{ env.ECS_WEB_SERVICE }} \
                     --task-definition $WEB_TASK_DEF_ARN \
                     --desired-count 1 \
-                    --propagateTags TASK_DEFINITION \
+                    # --propagateTags TASK_DEFINITION \
                     --force-new-deployment
 
             - name: Wait for service stability
