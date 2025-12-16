@@ -5,11 +5,11 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY server/package*.json ./server/
 COPY client/package*.json ./client/
 
 # Install dependencies
-RUN npm ci
+RUN cd server && npm ci
 RUN cd client && npm ci
 
 # Copy source code
@@ -33,13 +33,12 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 # Copy package files
-COPY package*.json ./
+COPY server/package*.json ./server/
 
 # Install production dependencies only
-RUN npm ci --only=production && npm cache clean --force
+RUN cd server && npm ci --only=production && npm cache clean --force
 
 # Copy built application from builder
-COPY --from=builder --chown=nodejs:nodejs /app/index.js ./
 COPY --from=builder --chown=nodejs:nodejs /app/server ./server
 COPY --from=builder --chown=nodejs:nodejs /app/client/www ./client/www
 
@@ -49,6 +48,9 @@ RUN mkdir -p deploy/log deploy/data && \
 
 # Switch to non-root user
 USER nodejs
+
+# Set working directory to server
+WORKDIR /app/server
 
 # Expose port
 EXPOSE 8221
@@ -62,5 +64,3 @@ ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application
 CMD ["node", "index.js"]
-
-
