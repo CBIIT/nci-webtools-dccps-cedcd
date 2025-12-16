@@ -11,7 +11,7 @@ import crypto from "crypto";
 import MD5 from "md5";
 import { createLogger } from "../service/logger";
 
-const logger = createLogger("cedcd", process.env?.LOGGER_LEVEL || "debug");
+const logger = createLogger("cedcd", process.env?.LOG_LEVEL || "debug");
 
 function file(name) {
   const filename = fileURLToPath(import.meta.url);

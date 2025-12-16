@@ -8,7 +8,7 @@ import mysql from "mysql";
 import { promisify } from "util";
 
 let pool = null;
-const logger = createLogger("cedcd", process.env?.LOGGER_LEVEL || "debug");
+const logger = createLogger("cedcd", process.env?.LOG_LEVEL || "debug");
 
 export function getConnectionPool(config) {
   pool = mysql.createPool({

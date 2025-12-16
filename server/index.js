@@ -13,13 +13,13 @@ import bodyParser from "body-parser";
 import methodOverride from "method-override";
 import cookieParser from "cookie-parser";
 import path from "path";
-import { createLogger } from "./server/service/logger.js";
+import { createLogger } from "./service/logger.js";
 import morgan from "morgan";
 import fs from "fs";
 import rfs from "rotating-file-stream";
 import fileUpload from "express-fileupload";
-import session from "./server/service/session.js";
-import UserManager from "./server/service/auth/userManager.js";
+import session from "./service/session.js";
+import UserManager from "./service/auth/userManager.js";
 
 import config from "./server/config/index.js";
 import * as mysql from "./server/components/mysql.js";
@@ -157,3 +157,4 @@ process.on("SIGINT", function () {
   mysql.close();
   process.exit();
 });
+

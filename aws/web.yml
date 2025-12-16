@@ -1,0 +1,138 @@
+family: "${ECS_WEB_TASK}"
+networkMode: awsvpc
+cpu: "${ECS_WEB_TASK_CPU_UNITS}"
+memory: "${ECS_WEB_TASK_MEMORY_UNITS}"
+executionRoleArn: "${ROLE_ARN}"
+taskRoleArn: "${ROLE_ARN}"
+requiresCompatibilities:
+  - FARGATE
+volumes:
+  - name: data
+    efsVolumeConfiguration:
+      fileSystemId: "${EFS_FILESYSTEM_ID}"
+      authorizationConfig:
+        accessPointId: "${EFS_ACCESS_POINT_ID}"
+        iam: ENABLED
+      transitEncryption: ENABLED
+containerDefinitions:
+  - name: logs
+    image: public.ecr.aws/aws-observability/aws-for-fluent-bit:stable
+    firelensConfiguration:
+      type: fluentbit
+    memoryReservation: 50
+    logConfiguration:
+      logDriver: awslogs
+      options:
+        awslogs-group: "/analysistools/${TIER}/${APP}/web"
+        awslogs-region: "${AWS_REGION}"
+        awslogs-stream-prefix: logs
+
+  - name: frontend
+    image: "${FRONTEND_IMAGE_LATEST}"
+    portMappings:
+      - protocol: tcp
+        containerPort: ${FRONTEND_CONTAINER_PORT}
+    environment:
+      - name: API_BASE_URL
+        value: http://localhost:${BACKEND_CONTAINER_PORT}
+    secrets:
+      - name: APP_PATH
+        valueFrom: "/analysistools/${TIER}/${APP}/application_path"
+    logConfiguration:
+      logDriver: awsfirelens
+      options:
+        Name: datadog
+        tls: "on"
+        tls.verify: "off"
+        dd_service: "${TIER}-${APP}-frontend"
+        dd_source: "httpd"
+        dd_tags: "project:${APP} tier:${TIER}"
+        provider: ecs
+      secretOptions:
+        - name: Host
+          valueFrom: /analysistools/${TIER}/datadog/log_endpoint_host
+        - name: apikey
+          valueFrom: /analysistools/${TIER}/datadog/api_key
+    memoryReservation: 100
+
+  - name: backend
+    image: "${BACKEND_IMAGE_LATEST}"
+    environment:
+      - name: AWS_DEFAULT_REGION
+        value: "${AWS_REGION}"
+      - name: APP_NAME
+        value: "${APP}"
+      - name: APP_PORT
+        value: "${BACKEND_CONTAINER_PORT}"
+      - name: APP_TIER
+        value: "${TIER}"
+    secrets:
+      - name: LOG_LEVEL
+        valueFrom: "/analysistools/${TIER}/datadog/log_level"
+      - name: LOG_DIR
+        valueFrom: "/analysistools/${TIER}/${APP}/log_dir"
+      - name: FILE_PATH
+        valueFrom: "/analysistools/${TIER}/${APP}/file_path"
+      - name: EMAIL_SMTP_FROM
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_from"
+      - name: EMAIL_SMTP_TO
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_to"
+      - name: EMAIL_SMTP_HOST
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_host"
+      - name: EMAIL_SMTP_PORT
+        valueFrom: "/analysistools/${TIER}/${APP}/email_smtp_port"
+      - name: MYSQL_HOST
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_host"
+      - name: MYSQL_PORT
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_port"
+      - name: MYSQL_DB
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_db"
+      - name: MYSQL_CONNECTIONLIMIT
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_connectionlimit"
+      - name: MYSQL_USER
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_user"
+      - name: MYSQL_PASSWORD
+        valueFrom: "/analysistools/${TIER}/${APP}/mysql_password"
+      - name: OAUTH2_CLIENT_ID
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_client_id"
+      - name: OAUTH2_CLIENT_SECRET
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_secret"
+      - name: OAUTH2_BASE_URL
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_base_url"
+      - name: OAUTH2_REDIRECT_URI
+        valueFrom: "/analysistools/${TIER}/${APP}/oauth2_redirect_uri"
+      - name: SESSION_MAX_AGE
+        valueFrom: "/analysistools/${TIER}/${APP}/session_max_age"
+
+    mountPoints:
+      - sourceVolume: data
+        containerPath: "/data"
+        readOnly: false
+    logConfiguration:
+      logDriver: awsfirelens
+      options:
+        Name: datadog
+        tls: "on"
+        tls.verify: "off"
+        dd_service: "${TIER}-${APP}-backend"
+        dd_source: "nodejs"
+        dd_tags: "project:${APP} tier:${TIER}"
+        provider: ecs
+      secretOptions:
+        - name: Host
+          valueFrom: /analysistools/${TIER}/datadog/log_endpoint_host
+        - name: apikey
+          valueFrom: /analysistools/${TIER}/datadog/api_key
+tags:
+  - key: Project
+    value: "${APP}"
+  - key: ApplicationName
+    value: "${APP}"
+  - key: ResourceName
+    value: "${TIER}-${APP}-web-ecs-task"
+  - key: ResourceFunction
+    value: compute
+  - key: EnvironmentTier
+    value: "${ENVIRONMENT_TIER}"
+  - key: Creator
+    value: TF

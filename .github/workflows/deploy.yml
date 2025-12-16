@@ -1,0 +1,220 @@
+name: Deploy to Environment
+
+on:
+  push:
+    branches:
+      - develop
+      - qa
+      - stage
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+          - prod
+      image_tag:
+        description: 'Docker image tag to deploy (optional, defaults to environment tag)'
+        required: false
+        type: string
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: cedcd
+
+jobs:
+  determine-environment:
+    name: Determine Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.env.outputs.environment }}
+      stack_name: ${{ steps.env.outputs.stack_name }}
+      default_tag: ${{ steps.env.outputs.default_tag }}
+      github_environment: ${{ steps.env.outputs.github_environment }}
+    steps:
+      - name: Determine environment from branch or input
+        id: env
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            ENV="${{ github.event.inputs.environment }}"
+          elif [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            ENV="prod"
+          elif [ "${{ github.ref }}" == "refs/heads/stage" ]; then
+            ENV="stage"
+          elif [ "${{ github.ref }}" == "refs/heads/qa" ]; then
+            ENV="qa"
+          elif [ "${{ github.ref }}" == "refs/heads/develop" ]; then
+            ENV="dev"
+          else
+            ENV="dev"
+          fi
+          
+          # Map environment to GitHub environment name
+          if [ "$ENV" == "prod" ]; then
+            GITHUB_ENV="production"
+          else
+            GITHUB_ENV="$ENV"
+          fi
+          
+          # Generate stack name
+          STACK_NAME="CedcdFargateStack-$(echo $ENV | awk '{print toupper(substr($0,1,1)) tolower(substr($0,2))}')"
+          
+          # Default image tag
+          if [ "$ENV" == "prod" ]; then
+            DEFAULT_TAG="latest"
+          else
+            DEFAULT_TAG="$ENV"
+          fi
+          
+          echo "environment=$ENV" >> $GITHUB_OUTPUT
+          echo "stack_name=$STACK_NAME" >> $GITHUB_OUTPUT
+          echo "default_tag=$DEFAULT_TAG" >> $GITHUB_OUTPUT
+          echo "github_environment=$GITHUB_ENV" >> $GITHUB_OUTPUT
+          
+          echo "Environment: $ENV"
+          echo "Stack Name: $STACK_NAME"
+          echo "Default Tag: $DEFAULT_TAG"
+          echo "GitHub Environment: $GITHUB_ENV"
+
+  deploy:
+    name: Deploy to ${{ needs.determine-environment.outputs.environment }}
+    needs: determine-environment
+    runs-on: ubuntu-latest
+    environment: ${{ needs.determine-environment.outputs.github_environment }}
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install CDK dependencies
+        working-directory: ./cdk
+        run: npm ci
+
+      - name: Build CDK
+        working-directory: ./cdk
+        run: npm run build
+
+      - name: Determine image tag
+        id: image-tag
+        env:
+          ENVIRONMENT: ${{ needs.determine-environment.outputs.environment }}
+          DEFAULT_TAG: ${{ needs.determine-environment.outputs.default_tag }}
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ -n "${{ github.event.inputs.image_tag }}" ]; then
+            echo "tag=${{ github.event.inputs.image_tag }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event_name }}" == "push" ]; then
+            echo "tag=${ENVIRONMENT}-${{ github.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${DEFAULT_TAG}" >> $GITHUB_OUTPUT
+          fi
+          echo "Using image tag: $(cat $GITHUB_OUTPUT | grep '^tag=' | cut -d'=' -f2)"
+
+      - name: Get ECR repository URI
+        id: ecr
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          ECR_URI="${ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}"
+          echo "uri=${ECR_URI}" >> $GITHUB_OUTPUT
+          echo "ECR Repository: ${ECR_URI}"
+
+      - name: Get environment-specific configuration
+        id: config
+        env:
+          ENVIRONMENT: ${{ needs.determine-environment.outputs.environment }}
+          DEV_VPC_ID: ${{ secrets.DEV_VPC_ID }}
+          QA_VPC_ID: ${{ secrets.QA_VPC_ID }}
+          STAGE_VPC_ID: ${{ secrets.STAGE_VPC_ID }}
+          PROD_VPC_ID: ${{ secrets.PROD_VPC_ID }}
+        run: |
+          # Map environment to VPC ID
+          case "${ENVIRONMENT}" in
+            dev)
+              VPC_ID="${DEV_VPC_ID}"
+              ;;
+            qa)
+              VPC_ID="${QA_VPC_ID}"
+              ;;
+            stage)
+              VPC_ID="${STAGE_VPC_ID}"
+              ;;
+            prod)
+              VPC_ID="${PROD_VPC_ID}"
+              ;;
+            *)
+              VPC_ID=""
+              ;;
+          esac
+          
+          echo "vpc_id=${VPC_ID}" >> $GITHUB_OUTPUT
+          
+          if [ -n "${VPC_ID}" ]; then
+            echo "Using VPC ID: ${VPC_ID}"
+          else
+            echo "No VPC ID provided, CDK will create a new VPC"
+          fi
+          
+          echo "Database endpoint will be read from Parameter Store: /cedcd/${ENVIRONMENT}/database/endpoint"
+
+      - name: Deploy CDK Stack
+        working-directory: ./cdk
+        env:
+          ENVIRONMENT: ${{ needs.determine-environment.outputs.environment }}
+          STACK_NAME: ${{ needs.determine-environment.outputs.stack_name }}
+          IMAGE_TAG: ${{ steps.image-tag.outputs.tag }}
+          ECR_URI: ${{ steps.ecr.outputs.uri }}
+          VPC_ID: ${{ steps.config.outputs.vpc_id }}
+        run: |
+          # Build CDK deploy command
+          DEPLOY_CMD="cdk deploy ${STACK_NAME} --require-approval never --context environment=${ENVIRONMENT} --context imageUri=${ECR_URI}:${IMAGE_TAG}"
+          
+          # Add optional VPC ID if provided
+          if [ -n "${VPC_ID}" ] && [ "${VPC_ID}" != "" ]; then
+            DEPLOY_CMD="${DEPLOY_CMD} --context vpcId=${VPC_ID}"
+          fi
+          
+          # Note: Database endpoint is read from Parameter Store, not passed as context
+          echo "Deploying to ${ENVIRONMENT} environment"
+          echo "Stack: ${STACK_NAME}"
+          echo "Image: ${ECR_URI}:${IMAGE_TAG}"
+          echo "Database: Reading from Parameter Store /cedcd/${ENVIRONMENT}/database/endpoint"
+          echo "Command: ${DEPLOY_CMD}"
+          eval ${DEPLOY_CMD}
+
+      - name: Get Load Balancer URL
+        env:
+          STACK_NAME: ${{ needs.determine-environment.outputs.stack_name }}
+        run: |
+          ALB_DNS=$(aws cloudformation describe-stacks \
+            --stack-name ${STACK_NAME} \
+            --query 'Stacks[0].Outputs[?OutputKey==`LoadBalancerDNS`].OutputValue' \
+            --output text)
+          
+          if [ -n "${ALB_DNS}" ] && [ "${ALB_DNS}" != "None" ]; then
+            echo "Load Balancer URL: http://${ALB_DNS}"
+            echo "::notice::Deployment complete! Application available at http://${ALB_DNS}"
+          else
+            echo "::warning::Could not retrieve Load Balancer DNS. Check CloudFormation stack outputs."
+          fi
+
